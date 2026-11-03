@@ -1,0 +1,10 @@
+{
+  "version": "5.5.4",
+  "commit": "7e548e6eff172f38f97664afe7f7ce40db36c8d6",
+  "url": "https://codeload.github.com/tesseract-ocr/tesseract/tar.gz/7e548e6eff172f38f97664afe7f7ce40db36c8d6",
+  "sha256": "445603ab1d0a63df552e193a600d9d5c4021aff36e144f3091af149e5efb381a",
+  "bytes": 1971321,
+  "sdk_lock": "tesseract-sdk.lock.json",
+  "sdk_lock_sha256": "b7bd5fee225d96cf76f82a6863e714f322e55879d90fb5136298fbd289446b8d",
+  "scope": "Unmodified upstream source input for offline build; not source delivery, security or license approval"
+}

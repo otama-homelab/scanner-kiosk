@@ -1,0 +1,7 @@
+# Build-only input image. Reconstruct and verify this SDK from its APK lock first.
+FROM scanner-kiosk:tesseract-sdk-locked-20261104
+COPY source.tar.gz tesseract-source.SHA256SUMS /inputs/
+COPY build-tesseract.sh /inputs/build.sh
+USER 10001:10001
+WORKDIR /work
+ENTRYPOINT ["/usr/bin/env", "-i", "PATH=/usr/bin:/bin", "HOME=/work/home", "TMPDIR=/work/tmp", "LC_ALL=C", "OMP_THREAD_LIMIT=1", "/bin/sh", "/inputs/build.sh"]

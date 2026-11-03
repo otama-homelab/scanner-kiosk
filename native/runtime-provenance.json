@@ -1,0 +1,788 @@
+{
+  "apk_source_components": {
+    "avahi-libs": {
+      "purl": "pkg:apk/alpine/avahi-libs@0.9_rc4-r0?arch=x86_64&distro=alpine-3.24.3&upstream=avahi",
+      "retained_files": [
+        "usr/lib/libavahi-client.so.3",
+        "usr/lib/libavahi-client.so.3.2.9",
+        "usr/lib/libavahi-common.so.3",
+        "usr/lib/libavahi-common.so.3.5.4"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "c8147a84799898ff9780bc4f3c179ccc141e8e67",
+        "originPackage": "avahi",
+        "package": "avahi-libs",
+        "url": "https://www.avahi.org/",
+        "version": "0.9_rc4-r0"
+      },
+      "version": "0.9_rc4-r0"
+    },
+    "brotli-libs": {
+      "purl": "pkg:apk/alpine/brotli-libs@1.2.1-r0?arch=x86_64&distro=alpine-3.24.3&upstream=brotli",
+      "retained_files": [
+        "usr/lib/libbrotlicommon.so.1",
+        "usr/lib/libbrotlicommon.so.1.2.1",
+        "usr/lib/libbrotlidec.so.1",
+        "usr/lib/libbrotlidec.so.1.2.1",
+        "usr/lib/libbrotlienc.so.1",
+        "usr/lib/libbrotlienc.so.1.2.1"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "8313352127992a9d82e2c2024494f6c38a4dffb4",
+        "originPackage": "brotli",
+        "package": "brotli-libs",
+        "url": "https://github.com/google/brotli",
+        "version": "1.2.1-r0"
+      },
+      "version": "1.2.1-r0"
+    },
+    "ca-certificates-bundle": {
+      "package_archive_sha256": "bb008f6d214b6af7576324659856fb63dc8dcb4373f8345ff706388696f1254d",
+      "purl": "pkg:apk/alpine/ca-certificates-bundle@20261020-r0?arch=noarch&distro=alpine-3.24.3",
+      "relocated_from": {
+        "usr/share/scanner-kiosk/ca-certificates.crt": "etc/ssl/certs/ca-certificates.crt"
+      },
+      "retained_files": [
+        "usr/share/scanner-kiosk/ca-certificates.crt"
+      ],
+      "source_metadata": {
+        "architecture": "noarch",
+        "gitCommitOfApkPort": "e78f5987166c6ffbe23f6472e2e8f040298fe2da",
+        "originPackage": "ca-certificates",
+        "package": "ca-certificates-bundle",
+        "url": "https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/",
+        "version": "20261020-r0"
+      },
+      "version": "20261020-r0"
+    },
+    "dbus-libs": {
+      "purl": "pkg:apk/alpine/dbus-libs@1.16.2-r2?arch=x86_64&distro=alpine-3.24.3&upstream=dbus",
+      "retained_files": [
+        "usr/lib/libdbus-1.so.3",
+        "usr/lib/libdbus-1.so.3.38.3"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "0dac2d7bf76016e3bb78ccc734edbb157a1d4b51",
+        "originPackage": "dbus",
+        "package": "dbus-libs",
+        "url": "https://www.freedesktop.org/Software/dbus",
+        "version": "1.16.2-r2"
+      },
+      "version": "1.16.2-r2"
+    },
+    "giflib": {
+      "purl": "pkg:apk/alpine/giflib@5.2.2-r2?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libgif.so.7",
+        "usr/lib/libgif.so.7.2.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca",
+        "originPackage": "giflib",
+        "package": "giflib",
+        "url": "https://sourceforge.net/projects/giflib/",
+        "version": "5.2.2-r2"
+      },
+      "version": "5.2.2-r2"
+    },
+    "gmp": {
+      "purl": "pkg:apk/alpine/gmp@6.3.0-r4?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libgmp.so.10",
+        "usr/lib/libgmp.so.10.5.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "206e7b39f7884d62a174aba4d33a42454518c1c2",
+        "originPackage": "gmp",
+        "package": "gmp",
+        "url": "https://gmplib.org/",
+        "version": "6.3.0-r4"
+      },
+      "version": "6.3.0-r4"
+    },
+    "gnutls": {
+      "purl": "pkg:apk/alpine/gnutls@3.8.13-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libgnutls.so.30",
+        "usr/lib/libgnutls.so.30.42.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "c09f2e94a4b0b4077da49683cf0faa09ed63fb5b",
+        "originPackage": "gnutls",
+        "package": "gnutls",
+        "url": "https://www.gnutls.org/",
+        "version": "3.8.13-r0"
+      },
+      "version": "3.8.13-r0"
+    },
+    "leptonica": {
+      "purl": "pkg:apk/alpine/leptonica@1.87.0-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libleptonica.so.6",
+        "usr/lib/libleptonica.so.6.0.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "65d7583d02d64188863a325a30fff98e0b476e37",
+        "originPackage": "leptonica",
+        "package": "leptonica",
+        "url": "http://www.leptonica.com/",
+        "version": "1.87.0-r0"
+      },
+      "version": "1.87.0-r0"
+    },
+    "libffi": {
+      "purl": "pkg:apk/alpine/libffi@3.5.2-r1?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libffi.so.8",
+        "usr/lib/libffi.so.8.2.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "2c2a7bb4a8b16066834e90402567b2c19403a790",
+        "originPackage": "libffi",
+        "package": "libffi",
+        "url": "https://sourceware.org/libffi/",
+        "version": "3.5.2-r1"
+      },
+      "version": "3.5.2-r1"
+    },
+    "libgcc": {
+      "purl": "pkg:apk/alpine/libgcc@15.2.0-r5?arch=x86_64&distro=alpine-3.24.3&upstream=gcc",
+      "retained_files": [
+        "usr/lib/libgcc_s.so.1"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "423a8ad043d07f2c7546c8ec3e2b0384cda360ae",
+        "originPackage": "gcc",
+        "package": "libgcc",
+        "url": "https://gcc.gnu.org",
+        "version": "15.2.0-r5"
+      },
+      "version": "15.2.0-r5"
+    },
+    "libgomp": {
+      "purl": "pkg:apk/alpine/libgomp@15.2.0-r5?arch=x86_64&distro=alpine-3.24.3&upstream=gcc",
+      "retained_files": [
+        "usr/lib/libgomp.so.1",
+        "usr/lib/libgomp.so.1.0.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "423a8ad043d07f2c7546c8ec3e2b0384cda360ae",
+        "originPackage": "gcc",
+        "package": "libgomp",
+        "url": "https://gcc.gnu.org",
+        "version": "15.2.0-r5"
+      },
+      "version": "15.2.0-r5"
+    },
+    "libidn2": {
+      "purl": "pkg:apk/alpine/libidn2@2.3.8-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libidn2.so.0",
+        "usr/lib/libidn2.so.0.4.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "8240e09aa2fdd8f9979b2016be082273965aff0c",
+        "originPackage": "libidn2",
+        "package": "libidn2",
+        "url": "https://www.gnu.org/software/libidn#libidn2",
+        "version": "2.3.8-r0"
+      },
+      "version": "2.3.8-r0"
+    },
+    "libintl": {
+      "purl": "pkg:apk/alpine/libintl@1.0-r0?arch=x86_64&distro=alpine-3.24.3&upstream=gettext",
+      "retained_files": [
+        "usr/lib/libintl.so.8",
+        "usr/lib/libintl.so.8.4.6"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391",
+        "originPackage": "gettext",
+        "package": "libintl",
+        "url": "https://www.gnu.org/software/gettext/gettext.html",
+        "version": "1.0-r0"
+      },
+      "version": "1.0-r0"
+    },
+    "libjpeg-turbo": {
+      "purl": "pkg:apk/alpine/libjpeg-turbo@3.1.3-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libjpeg.so.8",
+        "usr/lib/libjpeg.so.8.3.2"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "5fe6bebf850fc964a8525c81548397c39cb6f7cd",
+        "originPackage": "libjpeg-turbo",
+        "package": "libjpeg-turbo",
+        "url": "https://libjpeg-turbo.org/",
+        "version": "3.1.3-r0"
+      },
+      "version": "3.1.3-r0"
+    },
+    "libpng": {
+      "purl": "pkg:apk/alpine/libpng@1.6.59-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libpng16.so.16",
+        "usr/lib/libpng16.so.16.59.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b",
+        "originPackage": "libpng",
+        "package": "libpng",
+        "url": "http://www.libpng.org",
+        "version": "1.6.59-r0"
+      },
+      "version": "1.6.59-r0"
+    },
+    "libsharpyuv": {
+      "purl": "pkg:apk/alpine/libsharpyuv@1.6.0-r0?arch=x86_64&distro=alpine-3.24.3&upstream=libwebp",
+      "retained_files": [
+        "usr/lib/libsharpyuv.so.0",
+        "usr/lib/libsharpyuv.so.0.1.2"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "af8b48fabd19b69b00f5efe192f461896a38cf74",
+        "originPackage": "libwebp",
+        "package": "libsharpyuv",
+        "url": "https://developers.google.com/speed/webp",
+        "version": "1.6.0-r0"
+      },
+      "version": "1.6.0-r0"
+    },
+    "libstdc++": {
+      "purl": "pkg:apk/alpine/libstdc%2B%2B@15.2.0-r5?arch=x86_64&distro=alpine-3.24.3&upstream=gcc",
+      "retained_files": [
+        "usr/lib/libstdc++.so.6",
+        "usr/lib/libstdc++.so.6.0.34"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "423a8ad043d07f2c7546c8ec3e2b0384cda360ae",
+        "originPackage": "gcc",
+        "package": "libstdc++",
+        "url": "https://gcc.gnu.org",
+        "version": "15.2.0-r5"
+      },
+      "version": "15.2.0-r5"
+    },
+    "libtasn1": {
+      "purl": "pkg:apk/alpine/libtasn1@4.21.0-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libtasn1.so.6",
+        "usr/lib/libtasn1.so.6.6.5"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "771f180774aa0d9d3783d7f4eb9e3788c615658b",
+        "originPackage": "libtasn1",
+        "package": "libtasn1",
+        "url": "https://www.gnu.org/software/gnutls/",
+        "version": "4.21.0-r0"
+      },
+      "version": "4.21.0-r0"
+    },
+    "libunistring": {
+      "purl": "pkg:apk/alpine/libunistring@1.4.2-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libunistring.so.5",
+        "usr/lib/libunistring.so.5.2.1"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c",
+        "originPackage": "libunistring",
+        "package": "libunistring",
+        "url": "https://www.gnu.org/software/libunistring/",
+        "version": "1.4.2-r0"
+      },
+      "version": "1.4.2-r0"
+    },
+    "libusb": {
+      "purl": "pkg:apk/alpine/libusb@1.0.30-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libusb-1.0.so.0",
+        "usr/lib/libusb-1.0.so.0.6.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "01432283613d87d80efdd9f78362a4c58c895439",
+        "originPackage": "libusb",
+        "package": "libusb",
+        "url": "https://libusb.info/",
+        "version": "1.0.30-r0"
+      },
+      "version": "1.0.30-r0"
+    },
+    "libwebp": {
+      "purl": "pkg:apk/alpine/libwebp@1.6.0-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libwebp.so.7",
+        "usr/lib/libwebp.so.7.2.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "af8b48fabd19b69b00f5efe192f461896a38cf74",
+        "originPackage": "libwebp",
+        "package": "libwebp",
+        "url": "https://developers.google.com/speed/webp",
+        "version": "1.6.0-r0"
+      },
+      "version": "1.6.0-r0"
+    },
+    "libwebpmux": {
+      "purl": "pkg:apk/alpine/libwebpmux@1.6.0-r0?arch=x86_64&distro=alpine-3.24.3&upstream=libwebp",
+      "retained_files": [
+        "usr/lib/libwebpmux.so.3",
+        "usr/lib/libwebpmux.so.3.1.2"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "af8b48fabd19b69b00f5efe192f461896a38cf74",
+        "originPackage": "libwebp",
+        "package": "libwebpmux",
+        "url": "https://developers.google.com/speed/webp",
+        "version": "1.6.0-r0"
+      },
+      "version": "1.6.0-r0"
+    },
+    "libxml2": {
+      "purl": "pkg:apk/alpine/libxml2@2.13.9-r2?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libxml2.so.2",
+        "usr/lib/libxml2.so.2.13.9"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "f1bd5b6767a0e7fdda380c95138a1c938eb6e102",
+        "originPackage": "libxml2",
+        "package": "libxml2",
+        "url": "https://gitlab.gnome.org/GNOME/libxml2",
+        "version": "2.13.9-r2"
+      },
+      "version": "2.13.9-r2"
+    },
+    "musl": {
+      "purl": "pkg:apk/alpine/musl@1.2.6-r3?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "lib/ld-musl-x86_64.so.1",
+        "lib/libc.musl-x86_64.so.1"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "8f79d39391b46d6dbf1800fb68b8212a21d5ee2e",
+        "originPackage": "musl",
+        "package": "musl",
+        "url": "https://musl.libc.org/",
+        "version": "1.2.6-r3"
+      },
+      "version": "1.2.6-r3"
+    },
+    "nettle": {
+      "purl": "pkg:apk/alpine/nettle@3.10.2-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libhogweed.so.6",
+        "usr/lib/libhogweed.so.6.11",
+        "usr/lib/libnettle.so.8",
+        "usr/lib/libnettle.so.8.11"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "bf898e6d067c1c0ecc0f5ff39c79fc893399acd8",
+        "originPackage": "nettle",
+        "package": "nettle",
+        "url": "https://www.lysator.liu.se/~nisse/nettle/",
+        "version": "3.10.2-r0"
+      },
+      "version": "3.10.2-r0"
+    },
+    "p11-kit": {
+      "purl": "pkg:apk/alpine/p11-kit@0.26.2-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libp11-kit.so.0",
+        "usr/lib/libp11-kit.so.0.4.8"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "922ca1ffc9cc326f7d95b093b365e31da5cba1a9",
+        "originPackage": "p11-kit",
+        "package": "p11-kit",
+        "url": "https://p11-glue.freedesktop.org/",
+        "version": "0.26.2-r0"
+      },
+      "version": "0.26.2-r0"
+    },
+    "sane": {
+      "purl": "pkg:apk/alpine/sane@1.4.0-r4?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libsane.so.1",
+        "usr/lib/libsane.so.1.4.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "6bbd45b4dd10f4ec6cd6d99265aba2de11569522",
+        "originPackage": "sane",
+        "package": "sane",
+        "url": "http://www.sane-project.org/",
+        "version": "1.4.0-r4"
+      },
+      "version": "1.4.0-r4"
+    },
+    "sane-utils": {
+      "purl": "pkg:apk/alpine/sane-utils@1.4.0-r4?arch=x86_64&distro=alpine-3.24.3&upstream=sane",
+      "retained_files": [
+        "usr/bin/scanimage"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "6bbd45b4dd10f4ec6cd6d99265aba2de11569522",
+        "originPackage": "sane",
+        "package": "sane-utils",
+        "url": "http://www.sane-project.org/",
+        "version": "1.4.0-r4"
+      },
+      "version": "1.4.0-r4"
+    },
+    "tesseract-ocr": {
+      "purl": "pkg:apk/alpine/tesseract-ocr@5.5.2-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/share/tessdata/configs/alto",
+        "usr/share/tessdata/configs/ambigs.train",
+        "usr/share/tessdata/configs/api_config",
+        "usr/share/tessdata/configs/bigram",
+        "usr/share/tessdata/configs/box.train",
+        "usr/share/tessdata/configs/box.train.stderr",
+        "usr/share/tessdata/configs/digits",
+        "usr/share/tessdata/configs/get.images",
+        "usr/share/tessdata/configs/hocr",
+        "usr/share/tessdata/configs/inter",
+        "usr/share/tessdata/configs/kannada",
+        "usr/share/tessdata/configs/linebox",
+        "usr/share/tessdata/configs/logfile",
+        "usr/share/tessdata/configs/lstm.train",
+        "usr/share/tessdata/configs/lstmbox",
+        "usr/share/tessdata/configs/lstmdebug",
+        "usr/share/tessdata/configs/makebox",
+        "usr/share/tessdata/configs/page",
+        "usr/share/tessdata/configs/pdf",
+        "usr/share/tessdata/configs/quiet",
+        "usr/share/tessdata/configs/rebox",
+        "usr/share/tessdata/configs/strokewidth",
+        "usr/share/tessdata/configs/tsv",
+        "usr/share/tessdata/configs/txt",
+        "usr/share/tessdata/configs/unlv",
+        "usr/share/tessdata/configs/wordstrbox",
+        "usr/share/tessdata/pdf.ttf",
+        "usr/share/tessdata/tessconfigs/batch",
+        "usr/share/tessdata/tessconfigs/batch.nochop",
+        "usr/share/tessdata/tessconfigs/matdemo",
+        "usr/share/tessdata/tessconfigs/msdemo",
+        "usr/share/tessdata/tessconfigs/nobatch",
+        "usr/share/tessdata/tessconfigs/segdemo"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "88850a34f2f6651da71b267289f38cfdad477505",
+        "originPackage": "tesseract-ocr",
+        "package": "tesseract-ocr",
+        "url": "https://github.com/tesseract-ocr/tesseract/releases",
+        "version": "5.5.2-r0"
+      },
+      "version": "5.5.2-r0"
+    },
+    "tesseract-ocr-data-eng": {
+      "purl": "pkg:apk/alpine/tesseract-ocr-data-eng@5.5.2-r0?arch=x86_64&distro=alpine-3.24.3&upstream=tesseract-ocr",
+      "retained_files": [
+        "usr/share/tessdata/eng.traineddata"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "88850a34f2f6651da71b267289f38cfdad477505",
+        "originPackage": "tesseract-ocr",
+        "package": "tesseract-ocr-data-eng",
+        "url": "https://github.com/tesseract-ocr/tesseract/releases",
+        "version": "5.5.2-r0"
+      },
+      "version": "5.5.2-r0"
+    },
+    "tesseract-ocr-data-jpn": {
+      "purl": "pkg:apk/alpine/tesseract-ocr-data-jpn@5.5.2-r0?arch=x86_64&distro=alpine-3.24.3&upstream=tesseract-ocr",
+      "retained_files": [
+        "usr/share/tessdata/jpn.traineddata"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "88850a34f2f6651da71b267289f38cfdad477505",
+        "originPackage": "tesseract-ocr",
+        "package": "tesseract-ocr-data-jpn",
+        "url": "https://github.com/tesseract-ocr/tesseract/releases",
+        "version": "5.5.2-r0"
+      },
+      "version": "5.5.2-r0"
+    },
+    "tesseract-ocr-data-osd": {
+      "purl": "pkg:apk/alpine/tesseract-ocr-data-osd@5.5.2-r0?arch=x86_64&distro=alpine-3.24.3&upstream=tesseract-ocr",
+      "retained_files": [
+        "usr/share/tessdata/osd.traineddata"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "88850a34f2f6651da71b267289f38cfdad477505",
+        "originPackage": "tesseract-ocr",
+        "package": "tesseract-ocr-data-osd",
+        "url": "https://github.com/tesseract-ocr/tesseract/releases",
+        "version": "5.5.2-r0"
+      },
+      "version": "5.5.2-r0"
+    },
+    "tiff": {
+      "purl": "pkg:apk/alpine/tiff@4.7.2-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libtiff.so.6",
+        "usr/lib/libtiff.so.6.3.0"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "bbcfbafeadf5dac4744d065ac69338c1b58fc0d1",
+        "originPackage": "tiff",
+        "package": "tiff",
+        "url": "https://gitlab.com/libtiff/libtiff",
+        "version": "4.7.2-r0"
+      },
+      "version": "4.7.2-r0"
+    },
+    "xz-libs": {
+      "purl": "pkg:apk/alpine/xz-libs@5.8.4-r0?arch=x86_64&distro=alpine-3.24.3&upstream=xz",
+      "retained_files": [
+        "usr/lib/liblzma.so.5",
+        "usr/lib/liblzma.so.5.8.4"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "0c088d609f9fe69eedd6b4c7f4b99cdad847c20a",
+        "originPackage": "xz",
+        "package": "xz-libs",
+        "url": "https://tukaani.org/xz/",
+        "version": "5.8.4-r0"
+      },
+      "version": "5.8.4-r0"
+    },
+    "zlib": {
+      "purl": "pkg:apk/alpine/zlib@1.3.2-r1?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/libz.so.1",
+        "usr/lib/libz.so.1.3.2"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "0afa2da0e8c8051c6f8f64a7a388e5a259904245",
+        "originPackage": "zlib",
+        "package": "zlib",
+        "url": "https://zlib.net/",
+        "version": "1.3.2-r1"
+      },
+      "version": "1.3.2-r1"
+    },
+    "zstd-libs": {
+      "purl": "pkg:apk/alpine/zstd-libs@1.5.7-r2?arch=x86_64&distro=alpine-3.24.3&upstream=zstd",
+      "retained_files": [
+        "usr/lib/libzstd.so.1",
+        "usr/lib/libzstd.so.1.5.7"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "3c6e2ee2b16f403d53eab39c4426eb61f003c322",
+        "originPackage": "zstd",
+        "package": "zstd-libs",
+        "url": "https://facebook.github.io/zstd/",
+        "version": "1.5.7-r2"
+      },
+      "version": "1.5.7-r2"
+    }
+  },
+  "firstparty_components": [
+    {
+      "build_settings": {
+        "CGO_ENABLED": "1",
+        "buildvcs": false,
+        "tags": [
+          "saneparams"
+        ],
+        "trimpath": true
+      },
+      "files": {
+        "usr/libexec/scanner/sane-parameters": {
+          "mode": 365,
+          "sha256": "0266e0812b622d0569d5dd6e0ba26a09a3464d9fc0fa985793c6db4ebe73f0d0",
+          "size": 4924568
+        }
+      },
+      "name": "sane-parameters",
+      "sdk_lock": "sane-sdk.lock.json",
+      "sdk_lock_sha256": "e1b5345b4a30ac129b6857471951e2fce7e86745e47da5e5aaf22a91bc66e92d",
+      "source_sha256": {
+        "cmd/sane-parameters/main_linux.go": "c00cc3e473c29a60dfcbe8b579e8bc146adc4f50504300a3a62f4b3fa3f5cbb7",
+        "go.mod": "f81d68434f65bc4d5b1d2050e22f87413474e7bb0423361ebb99ee3729e52a14",
+        "go.sum": "ad18f926bb18a6a0d5edc8c3833e30d8dde3d6c348374eb69111b7a83b86ccd9",
+        "internal/captureimage/validate.go": "ee5a5e8760032de31561eb8e33b340969600e42526d28928e18b8cb1d1965822",
+        "internal/processrun/run_linux.go": "831240d4e7edff9b0c580914e576c76fa0a59e220dacbf9197b1cfc968f3241e",
+        "internal/scanner/port.go": "d0ab898aa0187913e9f9af9e948c4fd2f36241cd288f20ef738cb1f2f3d0bb51",
+        "internal/scanner/sane/capabilities.go": "89f55d02ac85180471b3abc3747bf28e84e6cba14f0b32d6fb9eeffdf2477e77",
+        "internal/scanner/sane/capture_linux.go": "1c8ce1db9b32e0a5153fc3157e6e8343b20e23bc0bf30025be6d8bbe501a44b6",
+        "internal/scanner/sane/config_linux.go": "61c3c9d7f1847451ab1213aa4ad4e90d372ca87b580731f992f3634d8a66bfd1",
+        "internal/scanner/sane/parameters_linux.go": "28e952cf579a5843bdcd2371aa21ccbdd8e6f057e1aa4f9e36b608a5c00d2b3d",
+        "internal/scanner/sane/probe_linux.go": "b36fe40a7cf0fd027b8add25d44f7f02d54051f5e765cd22b8784d3b3f2b1232",
+        "internal/scanner/sane/selection_linux.go": "fd897f109a3b8d04015fe84d1f32d3f7253c2eb09030a08214a06e36eaba8cc3"
+      }
+    }
+  ],
+  "format": 1,
+  "notice_files": [
+    "usr/share/scanner-kiosk/notices/README.txt",
+    "usr/share/scanner-kiosk/notices/apkbuild/sane-airscan.APKBUILD",
+    "usr/share/scanner-kiosk/notices/apkbuild/sane.APKBUILD",
+    "usr/share/scanner-kiosk/notices/apkbuild/tesseract-ocr.APKBUILD",
+    "usr/share/scanner-kiosk/notices/delivery-selection.json",
+    "usr/share/scanner-kiosk/notices/go/index.json",
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/AUTHORS",
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE-3RD-PARTY.md",
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE-SQLITE",
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE-SQLITE_VEC",
+    "usr/share/scanner-kiosk/notices/go/modules/0d1e2d67ae64f2b5/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/0d1e2d67ae64f2b5/PATENTS",
+    "usr/share/scanner-kiosk/notices/go/modules/108dfdc5a4ad9af3/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/126ca532490193ba/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/126ca532490193ba/internal/lzw/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/12802620d9f724f9/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/12802620d9f724f9/json/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/1e7b1aaf85f9116b/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/1e7b1aaf85f9116b/PATENTS",
+    "usr/share/scanner-kiosk/notices/go/modules/37a1867ef0a7f064/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/37a1867ef0a7f064/PATENTS",
+    "usr/share/scanner-kiosk/notices/go/modules/4182e4eea1eec26c/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/4182e4eea1eec26c/PATENTS",
+    "usr/share/scanner-kiosk/notices/go/modules/4fd601d1d188212e/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/51bf2a17bdc4c906/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/636809519be14c75/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/6cdec685f8b76c93/LICENSE.txt",
+    "usr/share/scanner-kiosk/notices/go/modules/6cdec685f8b76c93/internal/filter/lzw/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/6cdec685f8b76c93/pkg/pdfcpu/pkcs7/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/6e4ce618136452ca/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/6e4ce618136452ca/NOTICE",
+    "usr/share/scanner-kiosk/notices/go/modules/790f498af6e56cbc/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/7cd0fd73658571a4/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/7cd0fd73658571a4/NOTICE",
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/AUTHORS",
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE-GO",
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE-LOGO",
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE-MMAP-GO",
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/AUTHORS",
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/mersenne/AUTHORS",
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/mersenne/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/ccde9cb2b3b92254/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/d0d666767bf9063c/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/d5394666bff0dd4c/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/AUTHORS",
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/LICENSE-3RD-PARTY.md",
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/testdata/nsz.repo.hu/libc-test/AUTHORS",
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/testdata/nsz.repo.hu/libc-test/COPYRIGHT",
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/testdata/nsz.repo.hu/libc-test/src/math/crlibm/COPYING",
+    "usr/share/scanner-kiosk/notices/go/stdlib/LICENSE",
+    "usr/share/scanner-kiosk/notices/go/stdlib/PATENTS",
+    "usr/share/scanner-kiosk/notices/image-notices-receipt.json",
+    "usr/share/scanner-kiosk/notices/native/provenance.json",
+    "usr/share/scanner-kiosk/notices/native/sane-airscan/COPYING",
+    "usr/share/scanner-kiosk/notices/native/sane-airscan/LICENSE",
+    "usr/share/scanner-kiosk/notices/native/sane/COPYING",
+    "usr/share/scanner-kiosk/notices/native/sane/LICENSE",
+    "usr/share/scanner-kiosk/notices/native/sane/dll.c",
+    "usr/share/scanner-kiosk/notices/native/sane/sane.h",
+    "usr/share/scanner-kiosk/notices/native/tesseract-ocr/LICENSE",
+    "usr/share/scanner-kiosk/notices/original-delivery-inventory.json",
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/APKBUILD",
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt",
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt",
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/source.json",
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/COPYING",
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/LICENSE",
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/build.json",
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/patch.diff",
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.build",
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.sdk",
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/LICENSE",
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/build-receipt.json",
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/build.sh",
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/replacement.json",
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json"
+  ],
+  "notice_scope": "Preserved notices and historical observation receipts, plus current fork patch/build metadata. Past images/package inventories/run-specific fields remain historical evidence, not current installed-package claims. Do not drop license texts.",
+  "publication_approved": false,
+  "runtime_manifest_sha256": "e9c70be7cf0609f00bbd44da016acfc44bd48b23ef291f4e1a54080fadaa4c48",
+  "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
+  "upstream_source_components": [
+    {
+      "commit": "7e548e6eff172f38f97664afe7f7ce40db36c8d6",
+      "files": {
+        "usr/bin/tesseract": {
+          "mode": 365,
+          "sha256": "5cc985582023a51d1ecd15bba88bf5b531607f60a4a68c4bf2b43344fcea3b66",
+          "size": 64768
+        },
+        "usr/lib/libtesseract.so": {
+          "link": "libtesseract.so.5.5",
+          "mode": 0,
+          "sha256": "",
+          "size": 0
+        },
+        "usr/lib/libtesseract.so.5.5": {
+          "link": "libtesseract.so.5.5.4",
+          "mode": 0,
+          "sha256": "",
+          "size": 0
+        },
+        "usr/lib/libtesseract.so.5.5.4": {
+          "mode": 365,
+          "sha256": "32fbf74170f6522581fa13297bf866761009c911a27153661e4c5be2cb66edb7",
+          "size": 4920840
+        }
+      },
+      "name": "tesseract",
+      "source_receipt_sha256": "7827fa1ac4d0787866c01b308d5fd418fa25b7171c9df11378bafe1f2892e74b",
+      "version": "5.5.4"
+    },
+    {
+      "commit": "9da18d88c88f542671b24fc0433dd7d69dcb0132",
+      "files": {
+        "usr/lib/sane/libsane-airscan.so.1": {
+          "mode": 365,
+          "sha256": "480e1bbdac3c6088cc74e220c5df486530fe822582666cb72941a3bbea84226e",
+          "size": 1246024
+        }
+      },
+      "modified": true,
+      "name": "sane-airscan",
+      "patch_sha256": "ee7a58daeedc8d2efefae615b1eb93c295ab69a7f34c3b1a1448ca966049bb4c",
+      "sdk_lock_sha256": "a318f78c7334fb9361bd45576cce8e3842aa2a497cfbe94e223220722b0123b3",
+      "source_sha256": "7e8f82e668a63199747830cdd09bb36ca2ec2917374ce8846f6069d94ae41295",
+      "version": "0.99.38+homelab-unreleased"
+    }
+  ]
+}

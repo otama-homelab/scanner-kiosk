@@ -1,0 +1,101 @@
+# Deployment example. Local offline startup checked; released image and durable storage acceptance still required.
+x-common-env: &common-env
+  XDG_CACHE_HOME: /tmp
+  SCANNER_STATE_DIR: /var/lib/scanner/state
+  SCANNER_DOCUMENT_DIR: /var/lib/scanner/documents
+  SCANNER_SCANNERS_JSON: ${SCANNER_SCANNERS_JSON:?configure registered scanners}
+  SCANNER_OCR_PLUGINS: ${SCANNER_OCR_PLUGINS:-tesseract}
+  SCANNER_OCR_DEFAULT_PLUGIN: ${SCANNER_OCR_DEFAULT_PLUGIN:-tesseract}
+  SCANNER_OCR_DEFAULT_LANGUAGES: ${SCANNER_OCR_DEFAULT_LANGUAGES:-ja,en}
+  SCANNER_OCR_LLM_PROFILES_JSON: ${SCANNER_OCR_LLM_PROFILES_JSON:-[]}
+  SCANNER_OCR_LLM_TEXT_LAYER_FONT: ${SCANNER_OCR_LLM_TEXT_LAYER_FONT:-}
+  SCANNER_RETENTION_SECONDS: ${SCANNER_RETENTION_SECONDS:-86400}
+  SCANNER_RECEIPT_RETENTION_SECONDS: ${SCANNER_RECEIPT_RETENTION_SECONDS:-259200}
+  SCANNER_PROCESSING_CONCURRENCY: ${SCANNER_PROCESSING_CONCURRENCY:-1}
+  SCANNER_USER_MAX_DOCUMENTS: ${SCANNER_USER_MAX_DOCUMENTS:-20}
+  SCANNER_USER_MAX_BYTES: ${SCANNER_USER_MAX_BYTES:-524288000}
+  SCANNER_GLOBAL_MAX_BYTES: ${SCANNER_GLOBAL_MAX_BYTES:-1073741824}
+  SCANNER_MIN_FREE_BYTES: ${SCANNER_MIN_FREE_BYTES:-67108864}
+  SCANNER_JOB_MAX_PAGES: ${SCANNER_JOB_MAX_PAGES:-50}
+  SCANNER_JOB_MAX_BYTES: ${SCANNER_JOB_MAX_BYTES:-209715200}
+  SCANNER_MAX_PAGE_PIXELS: ${SCANNER_MAX_PAGE_PIXELS:-40000000}
+  SCANNER_SCAN_TIMEOUT_SECONDS: ${SCANNER_SCAN_TIMEOUT_SECONDS:-120}
+  SCANNER_OCR_TIMEOUT_SECONDS: ${SCANNER_OCR_TIMEOUT_SECONDS:-600}
+  SCANNER_PROCESS_STOP_GRACE_SECONDS: ${SCANNER_PROCESS_STOP_GRACE_SECONDS:-15}
+  SCANNER_OCR_MAX_RESULT_BYTES: ${SCANNER_OCR_MAX_RESULT_BYTES:-16777216}
+  # Unset passthrough leaves the onefile bundled paths in charge.
+  SCANNER_OCR_TESSERACT_PATH:
+  SCANNER_OCR_TESSERACT_DATA_DIR:
+  SCANNER_LOG_LEVEL: ${SCANNER_LOG_LEVEL:-info}
+x-common-volumes: &common-volumes
+  - type: bind
+    source: ${SCANNER_STATE_HOST_PATH:?choose durable state directory}
+    target: /var/lib/scanner/state
+    bind:
+      create_host_path: false
+  - type: bind
+    source: ${SCANNER_DOCUMENT_HOST_PATH:?choose verified temporary document directory}
+    target: /var/lib/scanner/documents
+    bind:
+      create_host_path: false
+services:
+  api:
+    image: ${SCANNER_IMAGE:?set a released immutable image digest}
+    command: [serve]
+    user: "10001:10001"
+    init: true
+    read_only: true
+    tmpfs: ["/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      <<: *common-env
+      SCANNER_LISTEN_ADDR: :8080
+      SCANNER_API_MAX_INFLIGHT: ${SCANNER_API_MAX_INFLIGHT:-32}
+      SCANNER_API_REQUESTS_PER_MINUTE: ${SCANNER_API_REQUESTS_PER_MINUTE:-600}
+      SCANNER_API_BURST: ${SCANNER_API_BURST:-32}
+      SCANNER_TRANSFER_TIMEOUT_SECONDS: ${SCANNER_TRANSFER_TIMEOUT_SECONDS:-300}
+      SCANNER_PUBLIC_URL: ${SCANNER_PUBLIC_URL:?set public HTTPS origin}
+      SCANNER_AUTH_LOGIN_REQUESTS_PER_MINUTE: ${SCANNER_AUTH_LOGIN_REQUESTS_PER_MINUTE:-10}
+      SCANNER_AUTH_LOGIN_BURST: ${SCANNER_AUTH_LOGIN_BURST:-5}
+      SCANNER_AUTHENTICATE_TYPE: ${SCANNER_AUTHENTICATE_TYPE:-oidc}
+      SCANNER_OIDC_ISSUER: ${SCANNER_OIDC_ISSUER:-}
+      SCANNER_OIDC_CLIENT_ID: ${SCANNER_OIDC_CLIENT_ID:-}
+      SCANNER_OIDC_CLIENT_SECRET: ${SCANNER_OIDC_CLIENT_SECRET:-}
+      SCANNER_OIDC_CLIENT_AUTH: ${SCANNER_OIDC_CLIENT_AUTH:-client_secret_basic}
+      SCANNER_OIDC_SCOPES: ${SCANNER_OIDC_SCOPES:-openid,profile}
+      SCANNER_OIDC_ADMIN_GROUPS: ${SCANNER_OIDC_ADMIN_GROUPS:-[]}
+      SCANNER_SESSION_LIFETIME_SECONDS: ${SCANNER_SESSION_LIFETIME_SECONDS:-28800}
+      SCANNER_SESSION_IDLE_SECONDS: ${SCANNER_SESSION_IDLE_SECONDS:-1800}
+    ports: ["127.0.0.1:8080:8080"]
+    volumes: *common-volumes
+    mem_limit: 512m
+    cpus: 1
+    stop_grace_period: 180s
+  worker:
+    image: ${SCANNER_IMAGE:?set a released immutable image digest}
+    command: [worker]
+    user: "10001:10001"
+    init: true
+    read_only: true
+    tmpfs: ["/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment:
+      <<: *common-env
+      SCANNER_CLEANUP_TIMEOUT_SECONDS: ${SCANNER_CLEANUP_TIMEOUT_SECONDS:-300}
+      SCANNER_OCR_CATALOG_LEASE_SECONDS: ${SCANNER_OCR_CATALOG_LEASE_SECONDS:-30}
+      SCANNER_SCAN_CONCURRENCY: ${SCANNER_SCAN_CONCURRENCY:-1}
+      SCANNER_ACQUISITION_ENABLED: ${SCANNER_ACQUISITION_ENABLED:-false}
+      SCANNER_SCANIMAGE_PATH:
+      SCANNER_SANE_PARAMETERS_PATH:
+      SCANNER_SANE_LIBRARY_DIRS_JSON:
+      # For a configured LLM profile, add only its named credential here.
+      # Never forward the complete API environment or the OIDC client secret.
+      # Go soft heap/runtime budget; the 1536m container limit still applies.
+      GOMEMLIMIT: ${GOMEMLIMIT:-1024MiB}
+      OMP_THREAD_LIMIT: "1"
+    volumes: *common-volumes
+    mem_limit: 1536m
+    cpus: 2
+    stop_grace_period: 180s

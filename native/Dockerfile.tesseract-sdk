@@ -1,0 +1,11 @@
+# Build tooling only. Package inputs are prepared from tesseract-sdk.lock.json.
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
+COPY tesseract-sdk.SHA256SUMS alpine-sdk-keys.SHA256SUMS /inputs/
+RUN --network=none --mount=type=bind,source=apks,target=/inputs/apks,readonly \
+    sha256sum -c /inputs/alpine-sdk-keys.SHA256SUMS \
+ && test "$(find /inputs/apks -mindepth 1 -maxdepth 1 | wc -l)" -eq 174 \
+ && test "$(find /inputs/apks -mindepth 1 -maxdepth 1 -type f | wc -l)" -eq 174 \
+ && cd /inputs/apks \
+ && sha256sum -c /inputs/tesseract-sdk.SHA256SUMS \
+ && apk --no-network add /inputs/apks/*.apk \
+ && apk info -vv > /sdk-packages.txt

@@ -1,0 +1,8 @@
+# Build-only input image. Reconstruct and verify the SDK from its APK lock first.
+FROM scanner-kiosk:sane-sdk-locked-20261104
+COPY source /inputs/source
+COPY helper-source.SHA256SUMS /inputs/
+COPY build-sane-parameters.sh /inputs/build.sh
+USER 10001:10001
+WORKDIR /work
+ENTRYPOINT ["/usr/bin/env", "-i", "PATH=/usr/local/go/bin:/usr/bin:/bin", "LC_ALL=C", "GOMAXPROCS=2", "/bin/sh", "/inputs/build.sh", "/inputs/source", "/inputs/helper-source.SHA256SUMS"]

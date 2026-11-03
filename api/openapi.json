@@ -1,0 +1,3186 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Scanner kiosk API design",
+    "version": "0.1.0",
+    "description": "Full API contract for the Go/Astro scanner, including endpoints still being implemented. Runtime supports authenticated sessions, document history/page edits/preview/download, jobs/render and readiness-gated new/next scan admission. Physical handoff/readiness production, remaining cleanup/thumbnail UI and deployment acceptance are unfinished. No Paperless settings or delivery. Cookie mutations require exact public Origin; ownership, revision and retention are enforced server-side."
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "security": [
+    {
+      "serverSession": []
+    }
+  ],
+  "paths": {
+    "/api/session": {
+      "get": {
+        "operationId": "getSession",
+        "description": "Safe bootstrap; does not create a guest or scan.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/oidc/start": {
+      "post": {
+        "operationId": "startOIDC",
+        "description": "OIDC mode only. Validate public Origin; persist short-lived idempotent state/nonce/PKCE bound to browser session. Return the configured authorization URL as JSON so a same-origin fetch can send Idempotency-Key, then the browser navigates to the IdP.",
+        "responses": {
+          "200": {
+            "description": "Authorization request ready; no authentication grant yet.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationTarget"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "security": [],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ]
+      }
+    },
+    "/auth/oidc/callback": {
+      "get": {
+        "operationId": "oidcCallback",
+        "description": "Consume short-lived browser-bound state exactly once before token exchange. Require an ID token and nonempty sub; verify signature/issuer/audience/expiry and expected nonce. Validate code or a fixed provider error, never log code/state/token. Renew the session after success.",
+        "responses": {
+          "303": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "headers": {
+              "Location": {
+                "description": "Same-origin job URL, or the registered OIDC authorization endpoint for login.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "security": [],
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 512
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 4096
+            }
+          },
+          {
+            "name": "error",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          }
+        ]
+      }
+    },
+    "/auth/guest": {
+      "post": {
+        "operationId": "createGuest",
+        "description": "Guest mode only. Validate Origin and create independent guest principal; never shared history.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest returns the original result; different input conflicts. Retain content-free tombstones for 72 hours; a gone result is never re-executed."
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ],
+        "security": []
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "description": "OIDC and simple modes. Revoke this browser session/pending login and its single successor; keep owned jobs/documents until original expiry.",
+        "responses": {
+          "204": {
+            "description": "Success; caller authorization and retention are still enforced."
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest returns the original result; different input conflicts. Retain content-free tombstones for 72 hours; a gone result is never re-executed."
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ]
+      }
+    },
+    "/auth/guest/end": {
+      "post": {
+        "operationId": "endGuest",
+        "description": "Guest mode only. Confirm UI intent, deny further access, cancel and clean this guest region. Repeating request cannot create a new guest.",
+        "responses": {
+          "202": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "headers": {
+              "Location": {
+                "description": "Same-origin job URL, or the registered OIDC authorization endpoint for login.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest returns the original result; different input conflicts. Retain content-free tombstones for 72 hours; a gone result is never re-executed."
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ]
+      }
+    },
+    "/api/documents": {
+      "get": {
+        "operationId": "listDocuments",
+        "description": "Return only this principal’s unexpired projections. Cursor is opaque and never grants access.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 384
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "createDocumentAndScan",
+        "description": "Create a document only on the first scan command. Atomically persist creation-based TTL, immutable capture/photo-format intent, a job bound to the reconciled ready worker boot, physical lease epoch, capacity reservation and canonical receipt. Missing/held/reconciling devices cannot be claimed. Replay never starts another capture. Runtime admission resolves current boot, scan capacity, readiness, exact capability tuple and idle epoch in the same transaction. Receipt replay precedes registry/readiness checks. Reserve bytes and worker identity are server-owned. No production readiness producer is wired yet; absent readiness returns 503 and creates no work.",
+        "responses": {
+          "202": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Same-origin job URL, or the registered OIDC authorization endpoint for login.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateScan"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{document_id}": {
+      "get": {
+        "operationId": "getDocument",
+        "description": "Owned document metadata only.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "description": "Quoted current document revision for If-Match.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^\"[1-9][0-9]*\"$"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "deleteDocument",
+        "description": "Atomically deny new content reads and request cancellation of queued/running work. Return one durable cleanup job; exact Idempotency-Key replay returns its latest status even after the content TTL. Require the current quoted document revision. Device leases, reservations and files remain worker-owned until stop and publication outcomes are reconciled. This endpoint never unlinks files or retries acquisition.",
+        "responses": {
+          "202": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Same-origin job URL, or the registered OIDC authorization endpoint for login.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ]
+      }
+    },
+    "/api/documents/{document_id}/scans": {
+      "post": {
+        "operationId": "scanNextPage",
+        "description": "Explicitly append one flatbed page to Document, or retry an empty failed Photo. A Photo with a captured page cannot append. Preserve initial TTL and existing pages; advance revision and freeze capture settings/ready-worker boot/lease epoch. Reject lease conflict without delayed or automatic scan retry. Runtime admission resolves current boot, scan capacity, readiness, exact capability tuple and idle epoch in the same transaction. Receipt replay precedes registry/readiness checks. Reserve bytes and worker identity are server-owned. No production readiness producer is wired yet; absent readiness returns 503 and creates no work.",
+        "responses": {
+          "202": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Same-origin job URL, or the registered OIDC authorization endpoint for login.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScanNext"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{document_id}/render": {
+      "post": {
+        "operationId": "renderDocument",
+        "description": "Validate If-Match and canonical idempotency receipt. A newly admitted output advances the document revision and invalidates its previous publication atomically with the immutable page/settings/model snapshot, job and capacity reservation. Replay returns the original job without advancing revision. Publish only if its new revision is still current and unexpired.",
+        "responses": {
+          "202": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Same-origin job URL, or the registered OIDC authorization endpoint for login.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Render"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{document_id}/pages/{page_id}": {
+      "patch": {
+        "operationId": "updatePage",
+        "description": "Set absolute rotation for the owned page, increase revision, and invalidate published output.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "description": "Quoted current document revision for If-Match.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^\"[1-9][0-9]*\"$"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "page_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageEdit"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deletePage",
+        "description": "Keep other pages and invalidate derived output.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "description": "Quoted current document revision for If-Match.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^\"[1-9][0-9]*\"$"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "page_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ]
+      }
+    },
+    "/api/documents/{document_id}/pages/order": {
+      "put": {
+        "operationId": "reorderPages",
+        "description": "Require exact current page-ID set with no duplicates. Increase revision atomically; invalidate published output.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Document"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "description": "Quoted current document revision for If-Match.",
+                "schema": {
+                  "type": "string",
+                  "pattern": "^\"[1-9][0-9]*\"$"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PageOrder"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{document_id}/download": {
+      "get": {
+        "operationId": "downloadDocument",
+        "description": "Authorized current export only. Range requests repeat owner/expiry checks. Abort active transfer at expiry/deletion; no-store. Binary response schema to be finalized.",
+        "responses": {
+          "200": {
+            "description": "Authorized artifact, Cache-Control: no-store. Active streams abort at expiry or deletion.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          },
+          "206": {
+            "description": "Single authorized byte range; repeat owner and expiry checks.",
+            "headers": {
+              "Content-Range": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "416": {
+            "description": "Invalid or unsatisfiable range."
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Range",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "pattern": "^bytes=([0-9]+-[0-9]*|-[0-9]+)$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/documents/{document_id}/pages/{page_id}/thumbnail": {
+      "get": {
+        "operationId": "getThumbnail",
+        "description": "Authorized sealed source-orientation JPEG thumbnail, maximum edge 512 pixels and at most 1 MiB. No-store; missing derivative returns 404 without decoding or falling back to an original. Apply Page.rotation in the UI. Ownership, page membership and expiry are rechecked during streaming.",
+        "responses": {
+          "200": {
+            "description": "Authorized artifact, Cache-Control: no-store. Active streams abort at expiry or deletion.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "page_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/jobs/{job_id}": {
+      "get": {
+        "operationId": "getJob",
+        "description": "Owned durable job projection; no worker paths or provider secrets.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/api/jobs/{job_id}/cancel": {
+      "post": {
+        "operationId": "cancelJob",
+        "description": "Request cancellation, not immediate completion. Wait for child/process and device reconciliation.",
+        "responses": {
+          "202": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "headers": {
+              "Location": {
+                "description": "Same-origin job URL, or the registered OIDC authorization endpoint for login.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Scope to principal and canonical operation. Same key/digest replays; different input conflicts. rq1_<13 decimal server-time milliseconds>_<32 lowercase hex random> keys allow new admission for 24 hours (30 seconds future skew); receipt lookup precedes age checks. Such hashes may retire only after both key and receipt deadlines with a durable clock floor. Legacy opaque keys retain permanent content-free tombstones. A retired/expired key never re-executes. Document TTL is independent."
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ]
+      }
+    },
+    "/api/capabilities": {
+      "get": {
+        "operationId": "getCapabilities",
+        "description": "Registered scanner and OCR capabilities only. Exclude arbitrary URLs, keys and unavailable models.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Capabilities"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        }
+      }
+    },
+    "/api/documents/{document_id}/pages/{page_id}/preview": {
+      "get": {
+        "operationId": "getPagePreview",
+        "description": "Authorized source-orientation page preview, separate from the small thumbnail. Apply Page.rotation in the UI.",
+        "responses": {
+          "200": {
+            "description": "Authorized artifact, Cache-Control: no-store. Active streams abort at expiry or deletion.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          {
+            "name": "page_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          }
+        ]
+      }
+    },
+    "/auth/simple/login": {
+      "post": {
+        "operationId": "simpleLogin",
+        "description": "Simple mode only. An active anonymous Secure session and exact Origin are required. Verify credentials once, rotate the cookie and atomically recheck the credential version. No self-registration or automatic retry; the source cookie can revoke an uncertain successor through logout.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Unique explicit login operation identifier. This does not cache or automatically replay credentials. A source session may rotate only once."
+          },
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          }
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "username",
+                  "password"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "maxLength": 256
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "writeOnly": true,
+                    "maxLength": 1024
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/scanners": {
+      "get": {
+        "operationId": "listScanners",
+        "description": "Authenticated OCR-independent scanner list. Coupled native choices and operational states are read from current coordinator/readiness/lease/slot data. No native/device IO, endpoints, identities, job ownership or worker details are exposed. Missing/stale evidence yields unknown; status is advisory and never replaces atomic POST admission.",
+        "responses": {
+          "200": {
+            "description": "Success; caller authorization and retention are still enforced.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScannerList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/SessionRequired"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "410": {
+            "$ref": "#/components/responses/Gone"
+          },
+          "412": {
+            "$ref": "#/components/responses/RevisionChanged"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedCapability"
+          },
+          "429": {
+            "$ref": "#/components/responses/LimitExceeded"
+          },
+          "413": {
+            "$ref": "#/components/responses/PayloadTooLarge"
+          },
+          "415": {
+            "$ref": "#/components/responses/UnsupportedMedia"
+          },
+          "503": {
+            "$ref": "#/components/responses/ProviderUnavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "serverSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-scanner"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "Capture": {
+        "type": "object",
+        "properties": {
+          "size": {
+            "enum": [
+              "a4",
+              "a5",
+              "a6",
+              "letter",
+              "photo10x15"
+            ]
+          },
+          "color": {
+            "enum": [
+              "color",
+              "gray"
+            ]
+          },
+          "dpi": {
+            "enum": [
+              75,
+              100,
+              150,
+              200,
+              300,
+              600
+            ]
+          }
+        },
+        "required": [
+          "size",
+          "color",
+          "dpi"
+        ],
+        "additionalProperties": false
+      },
+      "OCR": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "provider_id": {
+            "type": "string"
+          },
+          "model_id": {
+            "type": "string"
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "quality_preset": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "enabled": {
+                  "const": true
+                }
+              },
+              "required": [
+                "enabled"
+              ]
+            },
+            "then": {
+              "required": [
+                "provider_id",
+                "model_id",
+                "languages"
+              ]
+            }
+          }
+        ]
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "purpose": {
+            "enum": [
+              "document",
+              "photo"
+            ]
+          },
+          "state": {
+            "enum": [
+              "scanning",
+              "review",
+              "processing",
+              "ready",
+              "failed",
+              "cancelling",
+              "expired",
+              "deleting"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "page_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "ready_revision": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Page"
+            }
+          },
+          "output": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Output"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "photo_format": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "jpeg",
+              "png",
+              null
+            ],
+            "description": "Persisted photo output intent from the latest accepted scan/render; null for documents. Legacy photos default to JPEG."
+          },
+          "active_job_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[A-Za-z0-9_-]{16,96}$",
+            "description": "Owned active non-cleanup job for this retained document; server-derived and null after terminal completion. Opening it reads status and never replays work."
+          }
+        },
+        "required": [
+          "id",
+          "revision",
+          "purpose",
+          "state",
+          "created_at",
+          "expires_at",
+          "page_count",
+          "pages",
+          "output"
+        ],
+        "additionalProperties": false,
+        "description": "Only output at the current revision may be downloaded. Empty documents can be retried or deleted. Expiry never extends."
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "document_id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "kind": {
+            "enum": [
+              "scan",
+              "render",
+              "ocr",
+              "cleanup"
+            ]
+          },
+          "state": {
+            "enum": [
+              "queued",
+              "running",
+              "cancelling",
+              "cancelled",
+              "succeeded",
+              "failed",
+              "interrupted",
+              "reconciling"
+            ]
+          },
+          "input_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "error_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "document_id",
+          "kind",
+          "state",
+          "input_revision"
+        ],
+        "additionalProperties": false,
+        "description": "Owned minimal status. During expiry/deletion, cleanup status may remain visible without document content. Cancelling is not cancelled."
+      },
+      "CreateScan": {
+        "type": "object",
+        "properties": {
+          "scanner_id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "purpose": {
+            "enum": [
+              "document",
+              "photo"
+            ]
+          },
+          "capture": {
+            "$ref": "#/components/schemas/Capture"
+          },
+          "photo_format": {
+            "enum": [
+              "jpeg",
+              "png"
+            ]
+          }
+        },
+        "required": [
+          "scanner_id",
+          "purpose",
+          "capture"
+        ],
+        "additionalProperties": false
+      },
+      "Render": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "enum": [
+              "pdf",
+              "jpeg",
+              "png"
+            ]
+          },
+          "pdf_encoding": {
+            "enum": [
+              "jpeg",
+              "lossless"
+            ]
+          },
+          "ocr": {
+            "$ref": "#/components/schemas/OCR"
+          }
+        },
+        "required": [
+          "format",
+          "ocr"
+        ],
+        "additionalProperties": false
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "authenticated": {
+            "type": "boolean"
+          },
+          "principal_kind": {
+            "enum": [
+              "oidc",
+              "simple",
+              "guest",
+              "none"
+            ]
+          },
+          "can_administer": {
+            "type": "boolean"
+          },
+          "authenticate_type": {
+            "enum": [
+              "oidc",
+              "simple",
+              "guest"
+            ],
+            "description": "Configured type. guest is a legacy isolated-session mode; named none is not yet implemented."
+          }
+        },
+        "required": [
+          "authenticated",
+          "principal_kind",
+          "authenticate_type",
+          "can_administer"
+        ],
+        "additionalProperties": false
+      },
+      "ScanNext": {
+        "type": "object",
+        "properties": {
+          "scanner_id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "capture": {
+            "$ref": "#/components/schemas/Capture"
+          }
+        },
+        "required": [
+          "scanner_id",
+          "capture"
+        ],
+        "additionalProperties": false
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "ordinal": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rotation": {
+            "enum": [
+              0,
+              90,
+              180,
+              270
+            ]
+          },
+          "capture": {
+            "$ref": "#/components/schemas/Capture"
+          },
+          "thumbnail_url": {
+            "type": "string",
+            "pattern": "^/api/documents/"
+          },
+          "preview_url": {
+            "type": "string",
+            "pattern": "^/api/documents/"
+          }
+        },
+        "required": [
+          "id",
+          "ordinal",
+          "rotation",
+          "capture",
+          "thumbnail_url",
+          "preview_url"
+        ],
+        "additionalProperties": false,
+        "description": "Images are returned in source orientation; apply rotation from metadata exactly once. URLs are authorized API routes, never storage paths."
+      },
+      "DocumentList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Document"
+            }
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 384
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "additionalProperties": false
+      },
+      "Output": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "format": {
+            "enum": [
+              "pdf",
+              "jpeg",
+              "png"
+            ]
+          },
+          "byte_size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "download_url": {
+            "type": "string",
+            "pattern": "^/api/documents/"
+          }
+        },
+        "required": [
+          "revision",
+          "format",
+          "byte_size",
+          "download_url"
+        ],
+        "additionalProperties": false
+      },
+      "PageEdit": {
+        "type": "object",
+        "properties": {
+          "rotation": {
+            "enum": [
+              0,
+              90,
+              180,
+              270
+            ]
+          }
+        },
+        "required": [
+          "rotation"
+        ],
+        "additionalProperties": false
+      },
+      "PageOrder": {
+        "type": "object",
+        "properties": {
+          "page_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 96,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "page_ids"
+        ],
+        "additionalProperties": false
+      },
+      "OCRModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "quality_presets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "native_outputs": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "text",
+                "positioned_text",
+                "searchable_pdf",
+                "pdf_text_layer"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "text",
+                "positioned_text",
+                "searchable_pdf"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "max_pages": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "max_page_pixels": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "unavailable_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "default_quality_preset": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Explicit worker default, or null when the caller must select a preset."
+          },
+          "processing_destination": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "description": "Administrator-provided public processing destination label. Required for external searchable-PDF models; excludes private endpoint URLs and credentials."
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "languages",
+          "quality_presets",
+          "name",
+          "native_outputs",
+          "outputs",
+          "max_pages",
+          "max_page_pixels",
+          "available",
+          "unavailable_reason",
+          "default_quality_preset"
+        ],
+        "additionalProperties": false,
+        "description": "Native outputs come from the plugin. Effective outputs additionally require an installed renderer. Only available models compatible with the requested output can be selected; no implicit fallback. A pdf_text_layer is an internal invisible-text artifact that requires the PDF assembler; it is not a complete document."
+      },
+      "OCRPlugin": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "models": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OCRModel"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "text",
+                "positioned_text",
+                "searchable_pdf"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "external_processing": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "models",
+          "outputs",
+          "external_processing",
+          "name"
+        ],
+        "additionalProperties": false
+      },
+      "DPIOption": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "available": {
+            "type": "boolean"
+          },
+          "reason_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "value",
+          "available",
+          "reason_code"
+        ],
+        "additionalProperties": false
+      },
+      "Scanner": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "description": "Configured display label, measured in Unicode code points. Preserved without truncation."
+          },
+          "state": {
+            "enum": [
+              "idle",
+              "busy",
+              "unavailable",
+              "unknown"
+            ],
+            "description": "Advisory operational availability. Idle requires current verified readiness and a free scan slot; busy includes a held device or exhausted shared slot capacity. Recovery barriers yield unavailable. Metadata alone or stale/consumed proof yields unknown. Revalidated at admission."
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "flatbed",
+                "adf"
+              ]
+            }
+          },
+          "sizes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "colors": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "color",
+                "gray"
+              ]
+            }
+          },
+          "dpi_options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DPIOption"
+            }
+          },
+          "default_capture": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Capture"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Standard A4/color/300 preference only if this exact tuple is verified within deployment limits; otherwise null."
+          },
+          "capture_options": {
+            "type": "array",
+            "maxItems": 60,
+            "items": {
+              "$ref": "#/components/schemas/Capture"
+            },
+            "description": "Verified complete setting tuples. Facet lists are not a supported Cartesian product. Metadata alone does not establish readiness."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "state",
+          "sources",
+          "sizes",
+          "colors",
+          "dpi_options",
+          "default_capture",
+          "capture_options"
+        ],
+        "additionalProperties": false
+      },
+      "Capabilities": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "scanners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Scanner"
+            }
+          },
+          "ocr_plugins": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OCRPlugin"
+            }
+          },
+          "defaults": {
+            "type": "object",
+            "properties": {
+              "capture": {
+                "$ref": "#/components/schemas/Capture"
+              },
+              "ocr": {
+                "$ref": "#/components/schemas/OCR"
+              }
+            },
+            "required": [
+              "capture",
+              "ocr"
+            ],
+            "additionalProperties": false
+          },
+          "limits": {
+            "type": "object",
+            "properties": {
+              "retention_seconds": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "max_documents": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "user_max_bytes": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "job_max_pages": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "job_max_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "retention_seconds",
+              "max_documents",
+              "user_max_bytes",
+              "job_max_pages",
+              "job_max_bytes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "revision",
+          "scanners",
+          "ocr_plugins",
+          "defaults",
+          "limits"
+        ],
+        "additionalProperties": false
+      },
+      "AuthorizationTarget": {
+        "type": "object",
+        "properties": {
+          "authorization_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Validated HTTPS authorization endpoint from fixed provider discovery, with this browser-bound request parameters."
+          }
+        },
+        "required": [
+          "authorization_url"
+        ],
+        "additionalProperties": false
+      },
+      "ScannerList": {
+        "type": "object",
+        "properties": {
+          "revision": {
+            "type": "string"
+          },
+          "scanners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Scanner"
+            }
+          },
+          "default_capture": {
+            "$ref": "#/components/schemas/Capture"
+          },
+          "limits": {
+            "type": "object",
+            "properties": {
+              "retention_seconds": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "max_documents": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "user_max_bytes": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "job_max_pages": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "job_max_bytes": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "retention_seconds",
+              "max_documents",
+              "user_max_bytes",
+              "job_max_pages",
+              "job_max_bytes"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "revision",
+          "scanners",
+          "default_capture",
+          "limits"
+        ],
+        "additionalProperties": false,
+        "description": "OCR-independent registered scanner settings and advisory operational state. Global default_capture is a preference, not verified support. Idle requires live readiness, epoch and slot checks; POST always revalidates."
+      }
+    },
+    "responses": {
+      "InvalidRequest": {
+        "description": "InvalidRequest",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "SessionRequired": {
+        "description": "Session required; no automatic authentication downgrade.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "OriginDenied": {
+        "description": "Invalid public Origin or forbidden operation.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Missing or not owned; do not reveal another principal’s resource.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Scanner busy, duplicate request key with a different request, or conflicting operation.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Gone": {
+        "description": "Owned expired document or expired/deleted idempotency result. Never repeat the physical scan.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "RevisionChanged": {
+        "description": "If-Match does not match the current document revision.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PayloadTooLarge": {
+        "description": "PayloadTooLarge",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "UnsupportedMedia": {
+        "description": "UnsupportedMedia",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "UnsupportedCapability": {
+        "description": "UnsupportedCapability",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "LimitExceeded": {
+        "description": "LimitExceeded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "ProviderUnavailable": {
+        "description": "Registered device, plugin or identity provider unavailable; no silent fallback.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "PublicOrigin": {
+        "name": "Origin",
+        "in": "header",
+        "required": true,
+        "description": "Browser-supplied exact public origin for unsafe cookie-authenticated requests. Missing, wrong scheme/host/port, or cross-site browser metadata is rejected.",
+        "schema": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}

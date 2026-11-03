@@ -1,0 +1,6 @@
+apiVersion: v2
+name: scanner-kiosk
+version: 0.1.0
+appVersion: 0.1.0-design
+description: Scanner kiosk deployment design example, not a released application image
+type: application

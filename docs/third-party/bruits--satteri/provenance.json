@@ -1,0 +1,19 @@
+{
+  "repository": "bruits/satteri",
+  "commit": "b3d38e1e341c809b20b76a655e9b1601d11bd1f0",
+  "source_url": "https://raw.githubusercontent.com/bruits/satteri/b3d38e1e341c809b20b76a655e9b1601d11bd1f0/LICENSE",
+  "notice_sha256": "902c04ca47795eb6e9b2a2f178a9d9e62f5330988a8d6e1818ee33aeb0f426c1",
+  "packages": [
+    {
+      "name": "@bruits/satteri-linux-x64-gnu",
+      "version": "0.10.5",
+      "integrity": "sha512-FVaLoPT1fBgGl0J+AYebyyXJYBachGl8Oyyrf1lye4RTqCB4S0Gwkj1uM9RJyThUOvx5VUmAT1CnNh1SFHA+kw=="
+    },
+    {
+      "name": "@bruits/satteri-linux-x64-musl",
+      "version": "0.10.5",
+      "integrity": "sha512-EHpVAx2bqW3GINHTKkljtxVfQmVDGWIuwOYOP5YghTj+0PkBa2o8oKPRtQ9Kbsr1Fye8jtUcDjhwj2jMNugZKg=="
+    }
+  ],
+  "scope": "Supplementary source notice only; native bundled dependencies, exact binary-source correspondence and distribution obligations remain unaccepted."
+}

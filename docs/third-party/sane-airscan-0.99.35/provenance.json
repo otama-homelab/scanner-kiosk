@@ -1,0 +1,35 @@
+{
+  "scope": "Verbatim source notices and explicitly marked leading copyright excerpt; not complete native license acceptance",
+  "source_package": "sane-airscan",
+  "source_version": "0.99.35-1",
+  "source_archive": {
+    "filename": "sane-airscan_0.99.35.orig.tar.gz",
+    "size": 218337,
+    "sha256": "c947246c0e3bf0e2c79b3d795a8b59f0159d4ac81650ba8328ba8d49545eb308",
+    "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/pool/main/s/sane-airscan/sane-airscan_0.99.35.orig.tar.gz"
+  },
+  "binary_packages": [
+    {
+      "name": "sane-airscan",
+      "version": "0.99.35-1"
+    }
+  ],
+  "files": [
+    {
+      "file": "LICENSE",
+      "source_path": "sane-airscan-0.99.35/LICENSE",
+      "sha256": "a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373",
+      "source_file_sha256": "a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373",
+      "excerpt": false
+    },
+    {
+      "file": "COPYING",
+      "source_path": "sane-airscan-0.99.35/COPYING",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "source_file_sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "excerpt": false
+    }
+  ],
+  "source_manifest_sha256": "dd25a71634007a7dd65d105d202972f663d86b5d43741b094c5bf56432e7c695",
+  "release_license_gate_passed": false
+}

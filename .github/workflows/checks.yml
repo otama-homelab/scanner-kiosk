@@ -1,0 +1,133 @@
+name: Source checks
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: source-checks-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'pull_request' && 'pr' || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  release-ref-policy:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate preview or release source
+        run: python3 scripts/check-release-ref.py --ref "$GITHUB_REF" --sha "$GITHUB_SHA"
+
+  test-and-build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.27.3'
+          cache: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.22.2'
+      - name: Match the image npm version
+        run: npm install --global npm@11.21.1 --ignore-scripts --no-audit --no-fund
+      - name: Verify Go dependencies
+        run: go mod verify
+      - name: Release channel and ancestry contract
+        run: python3 -m unittest discover -s scripts -p test_release_ref.py -v
+      - name: Embedded app identity contract
+        run: python3 -m unittest discover -s scripts -p test_build_web_identity.py -v
+      - name: Source bundle collector safety checks
+        run: python3 -m unittest discover -s scripts -p test_collect_debian_sources.py -v
+      - name: Aports recipe source collector safety checks
+        run: python3 -m unittest discover -s scripts -p test_collect_aports_sources.py -v
+      - name: Aports upstream archive collector safety checks
+        run: python3 -m unittest discover -s scripts -p test_collect_aports_archives.py -v
+      - name: Native SDK input lock contract
+        run: python3 -m unittest discover -s scripts -p test_native_sdk_lock.py -v
+      - name: Pinned Tesseract source and build failure gates
+        run: python3 -m unittest discover -s scripts -p test_tesseract_build.py -v
+      - name: SANE SDK input lock contract
+        run: python3 -m unittest discover -s scripts -p test_sane_sdk_lock.py -v
+      - name: SANE helper source selection and build failure gates
+        run: python3 -m unittest discover -s scripts -p test_sane_helper_build.py -v
+      - name: Native secfixes comparison safety checks
+        run: python3 -m unittest discover -s scripts -p test_native_secfixes.py -v
+      - name: Native runtime identity and origin contract
+        run: python3 -m unittest discover -s scripts -p test_native_runtime_lock.py -v
+      - name: Offline native assembly safety checks
+        run: python3 -m unittest discover -s scripts -p test_assemble_native.py -v
+      - name: Native selected-origin SBOM safety checks
+        run: python3 -m unittest discover -s scripts -p test_native_sbom.py -v
+      - name: Onefile inventory input binding and output safety
+        run: python3 -m unittest discover -s scripts -p test_onefile_sbom.py -v
+      - name: Native runtime APK input lock contract
+        run: python3 -m unittest discover -s scripts -p test_runtime_apk_lock.py -v
+      - name: Native APK preparation safety checks
+        run: python3 -m unittest discover -s scripts -p test_prepare_native_apks.py -v
+      - name: Pinned standalone build input safety checks
+        run: python3 -m unittest discover -s scripts -p test_build_standalone.py -v
+      - name: Single-file packager and tagged launcher safety checks
+        run: python3 -m unittest discover -s scripts -p test_pack_standalone.py -v
+      - name: Go contracts and race checks
+        run: go test -race -count=1 ./...
+      - name: Compiled identity and document recovery
+        run: python3 scripts/check-state-recovery.py --receipt "$RUNNER_TEMP/state-recovery.json"
+      - name: Build embedded frontend
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = push ]; then
+            python3 scripts/build-web.py --output "$RUNNER_TEMP/scanner" --ref "$GITHUB_REF" --sha "$GITHUB_SHA"
+          else
+            python3 scripts/build-web.py --output "$RUNNER_TEMP/scanner"
+          fi
+      - name: Test embedded assets and executable
+        run: |
+          go test -tags webui ./internal/webui
+          "$RUNNER_TEMP/scanner" version > "$RUNNER_TEMP/scanner-version.json"
+          cat "$RUNNER_TEMP/scanner-version.json"
+          if [ "$GITHUB_EVENT_NAME" = push ]; then
+            python3 scripts/check-release-ref.py --ref "$GITHUB_REF" --sha "$GITHUB_SHA" > "$RUNNER_TEMP/scanner-identity.json"
+            python3 -c 'import json,os,pathlib; root=pathlib.Path(os.environ["RUNNER_TEMP"]); actual=json.loads((root/"scanner-version.json").read_text()); expected=json.loads((root/"scanner-identity.json").read_text()); assert actual["version"]==expected["version"] and actual["revision"]==expected["source_sha"], "built identity does not match event source"'
+          fi
+      - name: Require unchanged dependency locks
+        run: git diff --exit-code -- go.mod go.sum web/package.json web/package-lock.json
+
+  deployment-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Install hash-locked deployment test dependencies
+        run: |
+          python -m venv "$RUNNER_TEMP/deployment-tools"
+          "$RUNNER_TEMP/deployment-tools/bin/python" -m pip install --require-hashes --only-binary=:all: -r scripts/requirements-deployment.txt
+      - name: Install verified Helm
+        run: |
+          curl --fail --silent --show-error --location --retry 3 --max-time 60 --output "$RUNNER_TEMP/helm.tar.gz" https://get.helm.sh/helm-v3.21.1-linux-amd64.tar.gz
+          echo "a349c62d6ab2d5d11f044fc0d3afa6deed7d27cc7d5c351f536b169d9fc2cc1a  $RUNNER_TEMP/helm.tar.gz" | sha256sum --check -
+          tar -xzf "$RUNNER_TEMP/helm.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/linux-amd64" >> "$GITHUB_PATH"
+      - name: Kubernetes render and native runtime contracts
+        run: '"$RUNNER_TEMP/deployment-tools/bin/python" scripts/test_helm_native.py -v'
+      - name: Compose render and native runtime contracts
+        run: python3 scripts/test_compose_native.py -v

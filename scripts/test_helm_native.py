@@ -1,0 +1,90 @@
+"""Render-only Kubernetes contracts; never contacts a cluster or scanner."""
+from pathlib import Path
+import subprocess
+import unittest
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+BASE = ['helm', 'template', 'scanner-kiosk', 'deploy/helm',
+        '--set-string', 'image.repository=registry.example.test/scanner-kiosk',
+        '--set-string', 'image.digest=sha256:'+'1'*64,
+        '--set-string', 'state.existingClaim=scanner-state',
+        '--set-string', 'documents.existingClaim=scanner-documents']
+
+
+def render(*extra):
+    result = subprocess.run([*BASE, *extra], cwd=ROOT, check=True,
+                            capture_output=True, text=True, timeout=30)
+    resources = list(yaml.safe_load_all(result.stdout))
+    deployment = next(r for r in resources if r['kind']=='Deployment')
+    return deployment['spec']['template']['spec']
+
+
+class KubernetesNativeTests(unittest.TestCase):
+    def test_chart_lints(self):
+        result = subprocess.run(['helm', 'lint', 'deploy/helm', *BASE[4:]], cwd=ROOT,
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_chart_rejects_invalid_deployment_inputs(self):
+        cases = [
+            ('missing inputs', BASE[:4], 'image.repository is required'),
+            ('mutable image', [*BASE, '--set-string', 'image.digest=latest'], 'immutable sha256 digest'),
+            ('shared storage', [*BASE, '--set-string', 'documents.existingClaim=scanner-state'], 'different claims'),
+        ]
+        for name, command, message in cases:
+            with self.subTest(name=name):
+                result = subprocess.run(command, cwd=ROOT, capture_output=True,
+                                        text=True, timeout=30)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(message, result.stderr)
+
+    def test_image_entrypoint_owns_executable(self):
+        pod = render()
+        for container in pod['containers']:
+            self.assertNotIn('command', container)
+            self.assertEqual(container['args'], ['serve' if container['name']=='api' else 'worker'])
+
+    def test_private_runtime_directories_use_separate_ephemeral_volumes(self):
+        pod = render()
+        volumes = {v['name']:v for v in pod['volumes']}
+        mounted = []
+        for container in pod['containers']:
+            env = {e['name']:e['value'] for e in container['env']}
+            self.assertEqual(env['XDG_CACHE_HOME'], '/tmp')
+            temp = next(m for m in container['volumeMounts'] if m['mountPath']=='/tmp')
+            self.assertEqual(volumes[temp['name']]['emptyDir']['sizeLimit'], '512Mi')
+            mounted.append(temp['name'])
+            self.assertTrue(container['securityContext']['readOnlyRootFilesystem'])
+        self.assertEqual(len(set(mounted)), 2)
+        self.assertNotIn('fsGroup', pod['securityContext'])
+        self.assertFalse(pod['automountServiceAccountToken'])
+
+    def test_startup_probe_protects_self_extraction(self):
+        api = next(c for c in render()['containers'] if c['name']=='api')
+        startup = api['startupProbe']
+        self.assertEqual(startup['httpGet'], {'path':'/health/live','port':'http'})
+        self.assertGreaterEqual(startup['failureThreshold']*startup['periodSeconds'], 300)
+        for name, path in [('livenessProbe','/health/live'), ('readinessProbe','/health/ready')]:
+            self.assertEqual(api[name]['httpGet'], {'path':path,'port':'http'})
+            self.assertGreater(api[name]['timeoutSeconds'], 0)
+
+    def test_bundled_native_paths_are_not_overridden_by_chart_defaults(self):
+        pod = render()
+        names = {'SCANNER_SCANIMAGE_PATH','SCANNER_SANE_PARAMETERS_PATH','SCANNER_SANE_LIBRARY_DIRS_JSON',
+                 'SCANNER_OCR_TESSERACT_PATH','SCANNER_OCR_TESSERACT_DATA_DIR'}
+        for container in pod['containers']:
+            self.assertFalse(names.intersection(e['name'] for e in container['env']))
+
+    def test_explicit_native_path_override_remains_worker_only(self):
+        pod = render('--set-string', 'workerEnv.SCANNER_SCANIMAGE_PATH=/opt/scanimage')
+        for container in pod['containers']:
+            env = {e['name']:e['value'] for e in container['env']}
+            if container['name']=='worker':
+                self.assertEqual(env['SCANNER_SCANIMAGE_PATH'], '/opt/scanimage')
+            else:
+                self.assertNotIn('SCANNER_SCANIMAGE_PATH', env)
+
+
+if __name__=='__main__':
+    unittest.main()

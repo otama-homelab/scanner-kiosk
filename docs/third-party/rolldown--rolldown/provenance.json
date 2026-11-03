@@ -1,0 +1,19 @@
+{
+  "repository": "rolldown/rolldown",
+  "commit": "de6facf2228279718e042b801dd6b60dd6503918",
+  "source_url": "https://raw.githubusercontent.com/rolldown/rolldown/de6facf2228279718e042b801dd6b60dd6503918/LICENSE",
+  "notice_sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+  "packages": [
+    {
+      "name": "@rolldown/binding-linux-x64-gnu",
+      "version": "1.2.16",
+      "integrity": "sha512-TNKhgE3uJTsTzatUSSYt0Kgo+Oa2uSlSjz4r1aEIea7HX6ULBym4fAlYUhG1i6pjNf2njfCUAfKwr6C3E9Xg1w=="
+    },
+    {
+      "name": "@rolldown/binding-linux-x64-musl",
+      "version": "1.2.16",
+      "integrity": "sha512-7chXdpjXZ8qG0+mIxECN3cT9kvhZ3/oZhMX6Pp876P7CDrIy8nJswva6Mq357JR7eYXfuskwZxMeV1SzoZdHrA=="
+    }
+  ],
+  "scope": "Supplementary source notice only; native bundled dependencies, exact binary-source correspondence and distribution obligations remain unaccepted."
+}

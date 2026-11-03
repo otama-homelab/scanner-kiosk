@@ -1,0 +1,15 @@
+# Native OCR staging reservations
+
+The optional `ocrplugin.ScratchAccess` port lets native adapters reserve planned staging bytes through coordinator resource policy without importing the filesystem/scope implementation. Existing OCR Access/Provider interfaces remain compatible. `ocrplugin.ErrReconciliation` now expresses unknown execution/cleanup across providers; Tesseract preserves its old exported error as an alias.
+
+`artifactscope.ReserveScratch` obtains input size from the scope allowlist and reserves input bytes plus one bounded over-read byte, configured result bytes and diagnostic bytes. The lease exposes the authorized input length so staging copy is capped by both that size and provider input policy. Shared-budget scopes use the job budget; legacy independent scopes lazily promote their existing output charge into a local combined budget. An insufficient reservation poisons the scope before native input copying/execution begins.
+
+A scratch lease prevents Seal and Close from declaring the scope complete while native cleanup is unresolved. Cancellation alone does not refund it. `ReleaseAfterCleanup` is trusted adapter evidence, not a filesystem observer: adapters must call it only after owned processing ended and staged files were deleted/synced. It is idempotent and remains usable after the scope was marked closed. Providers are trusted compiled code, not sandboxed extensions.
+
+Tesseract reserves one page at a time. After confirmed process-group exit and output-handle closure it removes/syncs the page workspace and releases its lease before the next page. This eliminates retaining all earlier input/result/stderr files until the entire request ends. On ordinary failure, complete root cleanup/sync releases outstanding leases; unknown process-group state or failed root cleanup retains work/credit and returns the shared reconciliation error. Parent/root directory sync errors remain visible.
+
+This is planned-byte accounting, not a filesystem quota. The native growth watchdog still permits overshoot between observations; unexpected native scratch files, filesystem blocks/metadata, disk-full behavior and deployment/storage acceptance remain separate. Providers lacking the optional port retain their own local limits and do not gain shared accounting automatically. The executable worker still needs OCR orchestration and durable native recovery.
+
+## Evidence
+
+Scope tests verify input-derived footprint, output/scratch coexistence, reservation rejection, blocked early seal/delete, idempotent release and promotion of already-written output. A two-page native CLI fixture observes that no staged files remain when each credit is returned and that a new page cannot borrow while the previous lease is active. The installed Japanese/English Tesseract composition proof now uses a 64-MiB synthetic combined budget (16-MiB output-file bound) to cover the configured 16-MiB native result plus diagnostics/input and staged outputs. Independent final text/pixel/render checks still pass. These fixtures do not establish production resource capacity.

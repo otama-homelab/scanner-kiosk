@@ -1,0 +1,19 @@
+{
+  "repository": "withastro/compiler-rs",
+  "commit": "342e26603bf6416545a85b506b434d25226e1435",
+  "source_url": "https://raw.githubusercontent.com/withastro/compiler-rs/342e26603bf6416545a85b506b434d25226e1435/LICENSE",
+  "notice_sha256": "ee92354a87bc4a402e022fa15e10a6c713136aba84c46095dccc2b8091132806",
+  "packages": [
+    {
+      "name": "@astrojs/compiler-binding-linux-x64-gnu",
+      "version": "0.5.2",
+      "integrity": "sha512-9XAqGTMQAtIslMsjK3xdyY6OI9d59OZqcLBB6pvD/DcoR0daYswfrKx2azdDERDY4AqAnWPC7odVM1BmxYv3Vw=="
+    },
+    {
+      "name": "@astrojs/compiler-binding-linux-x64-musl",
+      "version": "0.5.2",
+      "integrity": "sha512-jOViewGeTh9bSfS8vK72ECxoy2yvmA+Pd/ZcEvBI5c7+7IcfHwZ5qA4L9fRYuOhSrAifvQ2dV4vm1XAtloaWBw=="
+    }
+  ],
+  "scope": "Supplementary source notice only; native bundled dependencies, exact binary-source correspondence and distribution obligations remain unaccepted."
+}

@@ -1,0 +1,9 @@
+# Claimed render input resolution
+
+`documents.LoadRenderWork` provides worker-internal metadata for an already claimed render. It reloads the job by owner, job ID and exact runner ID; it does not trust a caller-supplied configuration or claim/retry a job. Enabled-principal guarding, document revision/state, running/start state, deadline, retention and reservation are checked in a short metadata transaction.
+
+The immutable version-1 configuration is decoded strictly with a byte/page bound. Current pages and ready original artifacts are joined by document and owner and compared in ordinal order with the snapshot's page ID, original ID, paper size, color, DPI and rotation. Missing, changed, duplicate or invalid input metadata is rejected. Returned records include private relative paths, bytes and SHA256, never browser URLs. Any failure returns an empty result. The clock is checked again after reading; publication must still recheck mutable conditions after processing.
+
+The coordinator constructs `artifactscope.Input` records from this result. The scope independently verifies actual private files, byte sizes and hashes before handing bytes to the engine. Image geometry is not persisted in the current artifact schema: `renderjob.Prepare` reads bounded image headers through the verified scope before calling the PDF assembler, which fully decodes and validates images. Capture-stage optical/expected geometry validation remains separate.
+
+Synthetic tests cover ordered mixed capture settings, rotation, unclaimed/foreign/disabled/cancelled/stale/expired work and removed/unready originals. The PDF component integration now registers a real synthetic PNG as an immutable artifact before admission, resolves it from the running job, and generates/seals/publishes/retains the final PDF. It does not run an executable worker, HTTP application, real scanner or OCR overlay coordinator.

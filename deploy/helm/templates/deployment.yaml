@@ -1,0 +1,118 @@
+{{- $repository := required "image.repository is required" .Values.image.repository -}}
+{{- $digest := required "image.digest is required" .Values.image.digest -}}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" $digest) -}}
+{{- fail "image.digest must be an immutable sha256 digest" -}}
+{{- end -}}
+{{- $state := required "state.existingClaim is required" .Values.state.existingClaim -}}
+{{- $documents := required "documents.existingClaim is required" .Values.documents.existingClaim -}}
+{{- if eq $state $documents -}}
+{{- fail "state and document storage must be different claims" -}}
+{{- end -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 180
+      securityContext:
+        runAsUser: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        # Existing claims must already be UID/GID 10001 with private modes.
+        # fsGroup can recursively add group permissions, rejected by the app.
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        {{- range $role := list "api" "worker" }}
+        - name: {{ $role }}
+          image: {{ printf "%s@%s" $repository $digest | quote }}
+          args: [{{ if eq $role "api" }}serve{{ else }}worker{{ end }}]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          {{- $secret := $.Values.workerSecretName }}
+          {{- if eq $role "api" }}{{ $secret = $.Values.apiSecretName }}{{ end }}
+          {{- if $secret }}
+          envFrom:
+            - secretRef:
+                name: {{ $secret | quote }}
+          {{- end }}
+          env:
+            {{- range $name, $value := $.Values.commonEnv }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- $specific := $.Values.workerEnv }}
+            {{- if eq $role "api" }}{{ $specific = $.Values.apiEnv }}{{ end }}
+            {{- range $name, $value := $specific }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- if eq $role "api" }}
+          ports:
+            - containerPort: 8080
+              name: http
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 2
+          {{- end }}
+          resources:
+            requests:
+              cpu: {{ if eq $role "api" }}100m{{ else }}250m{{ end }}
+              memory: {{ if eq $role "api" }}256Mi{{ else }}512Mi{{ end }}
+              ephemeral-storage: 256Mi
+            limits:
+              cpu: {{ if eq $role "api" }}"1"{{ else }}"2"{{ end }}
+              memory: {{ if eq $role "api" }}512Mi{{ else }}1536Mi{{ end }}
+              ephemeral-storage: 1Gi
+          volumeMounts:
+            - name: state
+              mountPath: /var/lib/scanner/state
+            - name: documents
+              mountPath: /var/lib/scanner/documents
+            - name: {{ $role }}-temporary
+              mountPath: /tmp
+        {{- end }}
+      volumes:
+        - name: state
+          persistentVolumeClaim:
+            claimName: {{ $state | quote }}
+        - name: documents
+          persistentVolumeClaim:
+            claimName: {{ $documents | quote }}
+        - name: api-temporary
+          emptyDir:
+            sizeLimit: 512Mi
+        - name: worker-temporary
+          emptyDir:
+            sizeLimit: 512Mi

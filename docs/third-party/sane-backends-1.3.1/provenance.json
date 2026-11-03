@@ -1,0 +1,57 @@
+{
+  "scope": "Verbatim source notices and explicitly marked leading copyright excerpt; not complete native license acceptance",
+  "source_package": "sane-backends",
+  "source_version": "1.3.1-3",
+  "source_archive": {
+    "filename": "sane-backends_1.3.1.orig.tar.bz2",
+    "size": 4409356,
+    "sha256": "84315815e74fec970e815a0cc2e66914e7d98f36ad61fb1584683ae6dbf33080",
+    "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/pool/main/s/sane-backends/sane-backends_1.3.1.orig.tar.bz2"
+  },
+  "binary_packages": [
+    {
+      "name": "libsane-common",
+      "version": "1.3.1-3"
+    },
+    {
+      "name": "libsane1:amd64",
+      "version": "1.3.1-3+b1"
+    },
+    {
+      "name": "sane-utils",
+      "version": "1.3.1-3+b1"
+    }
+  ],
+  "files": [
+    {
+      "file": "LICENSE",
+      "source_path": "backends-1.3.1/LICENSE",
+      "sha256": "704fb487721423f16eea1f8f9da208434a0f93bca4a98ce543a0fb2038fb2b38",
+      "source_file_sha256": "704fb487721423f16eea1f8f9da208434a0f93bca4a98ce543a0fb2038fb2b38",
+      "excerpt": false
+    },
+    {
+      "file": "COPYING",
+      "source_path": "backends-1.3.1/COPYING",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "source_file_sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "excerpt": false
+    },
+    {
+      "file": "sane.h",
+      "source_path": "backends-1.3.1/include/sane/sane.h",
+      "sha256": "288334864eb01b4773892a2b696cb12c87bb05fada46cb9d588cb42a732d935d",
+      "source_file_sha256": "288334864eb01b4773892a2b696cb12c87bb05fada46cb9d588cb42a732d935d",
+      "excerpt": false
+    },
+    {
+      "file": "dll.c.copyright",
+      "source_path": "backends-1.3.1/backend/dll.c",
+      "sha256": "7ad668aa521e24cf111873f9e23059a4c9dc615355e1be41afb175a68e96c7fc",
+      "source_file_sha256": "662d68482dc637e728b0db3a0e4c65391b0cedd45a192223c36e7bb06996e36f",
+      "excerpt": true
+    }
+  ],
+  "source_manifest_sha256": "dd25a71634007a7dd65d105d202972f663d86b5d43741b094c5bf56432e7c695",
+  "release_license_gate_passed": false
+}

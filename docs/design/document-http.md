@@ -1,0 +1,25 @@
+# Document metadata HTTP
+
+`GET /api/documents` and `GET /api/documents/{document_id}` are connected to the API runtime. They use server-session authentication with exact public Host, Origin and cross-site checks. Anonymous requests receive 401 without creating a principal or replacing the cookie. Public-owner headers and query parameters do not select an identity. The document store rechecks enabled principals under its state→documents transaction lock order.
+
+History accepts `limit` (default 20, range 1–100) and an opaque base64url cursor. The cursor carries only an expiry/ID ordering position, grants no access, and is always applied alongside owner and retention filters. Invalid, repeated and unknown query parameters fail with 400. Ordering follows expiry then ID. Because document expiry is immutable, normal changes in processing state do not move rows across cursor boundaries. Expired/deleting rows can disappear between requests; pagination is not a long-lived snapshot.
+
+Metadata includes pages in ordinal order, capture settings, rotations, creation/expiry timestamps, and a current-revision output projection or null. Storage paths, hashes, filenames, owner IDs and processing configuration are excluded. Each projection and its pages/output are read in one transaction. History uses the same transaction for the selected rows and projections. Any failed or uncertain transaction yields no projection. Detail responses include the quoted revision ETag. Cross-owner, expired and deleting documents all return 404. Responses use no-store, nosniff and no-referrer.
+
+The [source preview and current-export download routes](image-delivery.md) are implemented with streaming authorization and expiry guards. Downloads accept a single byte range. [Job status and cancellation intent](job-http.md) are also connected. Thumbnail delivery, document creation/scanning, whole-document deletion and the product frontend remain pending. Returning metadata does not prove those features work.
+
+Tests cover authenticated guest identity, disabled/ended principals, forged identity headers, origin/Host rejection, history owner isolation, cursor pagination, malformed input, exact expiry, page capture/rotation and current output metadata. Compiled CLI verification also reads synthetic document rows through a restarted server. This is not physical scanning or real-browser acceptance.
+
+## Page editing
+
+`PATCH /api/documents/{document_id}/pages/{page_id}` sets an absolute rotation. `PUT /api/documents/{document_id}/pages/order` requires the exact current page-ID set without duplicates. `DELETE /api/documents/{document_id}/pages/{page_id}` removes that page from the document and compacts ordinals. Deleting the last page leaves an empty review document which can be retried or deleted later.
+
+Each route requires exact Origin, Idempotency-Key and a quoted positive integer If-Match. New mutations reject changed revisions with 412, active jobs or incompatible document states with 409, and unavailable documents/pages with 404. JSON has exactly the one required field; null, duplicate/unknown fields, trailing values and invalid rotations are rejected. Bodies are capped at 64 KiB. Mutations increment revision once, return the document to review and invalidate the current output pointer. Original and old derived files remain accounted for until later cleanup; this operation does not physically delete files or recycle their budget.
+
+Document migration 0004 adds edit result metadata tied to the existing principal/key receipt namespace. The transaction stores a canonical request digest and the resulting public projection together with the mutation. Replaying the same request returns that original projection, including its original revision, even after later edits. Clients should fetch current metadata after reconciling a replay if they need the latest state. A different command with the same key conflicts. Expired/deleted results return 410 and never rerun. No text, filenames, tokens or storage paths are stored in edit receipts. Receipt lifetime must cover the document's remaining TTL. Unknown commit outcomes return no projection; retrying the same key reconciles through the stored receipt.
+
+State→documents transaction ordering prevents principal disable from interleaving edits. SQLite serialization and revision preconditions admit one winner for concurrent different edits at the same revision; concurrent copies of the same command reuse its result. Reordering first moves ordinals outside the old range to preserve the unique ordinal constraint, then installs contiguous positions atomically. Capture settings and original artifact identities remain immutable.
+
+Expiry is checked again immediately before committing an edit. If it elapses after projection, the mutation, output invalidation and receipt all roll back. Replay also rechecks expiry before returning saved metadata.
+
+[Render admission](render-http.md) is connected; OCR capability publication/selection is pending.

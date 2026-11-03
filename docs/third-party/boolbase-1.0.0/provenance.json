@@ -1,0 +1,29 @@
+{
+  "name": "boolbase",
+  "version": "1.0.0",
+  "repository": "fb55/boolbase",
+  "content_matched_source_commit": "be0bcd8a4e917a0a5895e95b523fbbed05a64871",
+  "publisher_declared_git_head": null,
+  "archive_sha256": "69628ff8092c5ff940ea4a0f29da98d520615bae138755c9e059033606c6caa8",
+  "exact_source_files": {
+    "index.js": "c62510fca8738c7444cdf5012bdd0ce214a1b6f7eaff7facb3a919e4656d7341",
+    "README.md": "9cac5bfc290d30ccd13fa833923cb545584481e8ced66380bf758f1053f9d81d"
+  },
+  "manifest_field_differences": {
+    "scripts": {
+      "archive": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+      },
+      "source": {
+        "test": "node tests.js"
+      }
+    }
+  },
+  "package_lock_sha256": "4130271d181916f52ec51fd995dde430a2f786eb3171476e492fe34c6479396d",
+  "source_notice": {
+    "url": "https://raw.githubusercontent.com/fb55/boolbase/be0bcd8a4e917a0a5895e95b523fbbed05a64871/LICENSE",
+    "file": "LICENSE",
+    "sha256": "cdf4d87ae0a6c160227263bf4e39a0a10e30e89ae7256e0f7ac7bde0836552c6"
+  },
+  "scope": "Content-matched source notice, not publisher build attestation or complete distribution license clearance"
+}

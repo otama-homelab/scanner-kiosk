@@ -1,0 +1,12 @@
+FROM golang:1.27.3-alpine3.24@sha256:d200d2dd76b03a99b52651fd1325aff7dcd35422c35c01bac56571b0507f3deb
+ENV GOTOOLCHAIN=local
+COPY sane-sdk.SHA256SUMS alpine-sdk-keys.SHA256SUMS /inputs/
+RUN --network=none --mount=type=bind,source=apks,target=/inputs/apks,readonly \
+    sha256sum -c /inputs/alpine-sdk-keys.SHA256SUMS \
+ && test "$(find /inputs/apks -mindepth 1 -maxdepth 1 | wc -l)" -eq 46 \
+ && test "$(find /inputs/apks -mindepth 1 -maxdepth 1 -type f | wc -l)" -eq 46 \
+ && cd /inputs/apks \
+ && sha256sum -c /inputs/sane-sdk.SHA256SUMS \
+ && apk --no-network verify /inputs/apks/*.apk \
+ && apk --no-network add /inputs/apks/*.apk \
+ && apk info -vv > /sdk-packages.txt

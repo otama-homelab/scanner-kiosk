@@ -1,0 +1,996 @@
+{
+  "files": {
+    "lib/ld-musl-x86_64.so.1": {
+      "mode": 365,
+      "sha256": "095b047c631447e4fa50401fa7ffce01f678587040d65ba18c574981dc630de5",
+      "size": 670312
+    },
+    "lib/libc.musl-x86_64.so.1": {
+      "link": "ld-musl-x86_64.so.1",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/bin/scanimage": {
+      "mode": 365,
+      "sha256": "c904581405f70a7bd850c41ddb7a3f1c1745592ce308c4441022f8eee74de587",
+      "size": 56232
+    },
+    "usr/bin/tesseract": {
+      "mode": 365,
+      "sha256": "5cc985582023a51d1ecd15bba88bf5b531607f60a4a68c4bf2b43344fcea3b66",
+      "size": 64768
+    },
+    "usr/lib/libavahi-client.so.3": {
+      "link": "libavahi-client.so.3.2.9",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libavahi-client.so.3.2.9": {
+      "mode": 365,
+      "sha256": "03352c8fc419a36f003a9cd899fc952ca222303410193402b9190f0ffcd9fbb5",
+      "size": 59488
+    },
+    "usr/lib/libavahi-common.so.3": {
+      "link": "libavahi-common.so.3.5.4",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libavahi-common.so.3.5.4": {
+      "mode": 365,
+      "sha256": "9eeda35314b88f0e6a54a7631491cf406343ef06e62233616e0fea446622e8ab",
+      "size": 47160
+    },
+    "usr/lib/libbrotlicommon.so.1": {
+      "link": "libbrotlicommon.so.1.2.1",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libbrotlicommon.so.1.2.1": {
+      "mode": 365,
+      "sha256": "570b996f56d64d9136900203e3d919d2386280365d3ec3c86906ff38ffed78e8",
+      "size": 140992
+    },
+    "usr/lib/libbrotlidec.so.1": {
+      "link": "libbrotlidec.so.1.2.1",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libbrotlidec.so.1.2.1": {
+      "mode": 365,
+      "sha256": "79077f16b521a3f2b945a7eec5a2d16caacbc66fe0f60be4ecaa4a93135aca0c",
+      "size": 54896
+    },
+    "usr/lib/libbrotlienc.so.1": {
+      "link": "libbrotlienc.so.1.2.1",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libbrotlienc.so.1.2.1": {
+      "mode": 365,
+      "sha256": "452902a60ed97316fc63b4d29b8aae41c7ab0ce37861c07324190baff21147a2",
+      "size": 784600
+    },
+    "usr/lib/libdbus-1.so.3": {
+      "link": "libdbus-1.so.3.38.3",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libdbus-1.so.3.38.3": {
+      "mode": 365,
+      "sha256": "59003e53934538d49c3d297126aff3f152e6fb2b1de8269261e5e8ca5f7889ce",
+      "size": 296952
+    },
+    "usr/lib/libffi.so.8": {
+      "link": "libffi.so.8.2.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libffi.so.8.2.0": {
+      "mode": 365,
+      "sha256": "05ff2c2379c35e867e039cf48b4eb390c0faa30c73b04b3b66f1cb86fb287fa2",
+      "size": 38960
+    },
+    "usr/lib/libgcc_s.so.1": {
+      "mode": 292,
+      "sha256": "5ea51dd885b6fc691eccc569d0bda739204204f6161e97075b26dc9c050d1ca1",
+      "size": 173920
+    },
+    "usr/lib/libgif.so.7": {
+      "link": "libgif.so.7.2.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libgif.so.7.2.0": {
+      "mode": 365,
+      "sha256": "d3de2a8fd74b318be530b25dde706b56044752e54897fd7a9f2ceb4f88bfccae",
+      "size": 34416
+    },
+    "usr/lib/libgmp.so.10": {
+      "link": "libgmp.so.10.5.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libgmp.so.10.5.0": {
+      "mode": 365,
+      "sha256": "3c1954cb458975dbc924d68825e86885adb0acf10b5e6bdc3f8a02b6be5bf8b4",
+      "size": 423880
+    },
+    "usr/lib/libgnutls.so.30": {
+      "link": "libgnutls.so.30.42.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libgnutls.so.30.42.0": {
+      "mode": 365,
+      "sha256": "125e23c2b0070d677dab168029aa47be5745a6e9ec4ab1faa01db4b49a46b9e1",
+      "size": 2060368
+    },
+    "usr/lib/libgomp.so.1": {
+      "link": "libgomp.so.1.0.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libgomp.so.1.0.0": {
+      "mode": 365,
+      "sha256": "6c4ee8071c044b05fd55e0b06e1ccbe49d0da2b496429c2372f8dfc3858dd8e2",
+      "size": 338704
+    },
+    "usr/lib/libhogweed.so.6": {
+      "link": "libhogweed.so.6.11",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libhogweed.so.6.11": {
+      "mode": 292,
+      "sha256": "eefdf7e999857435acef52358d4155463be23cb064a27a792deecde29d63f1a9",
+      "size": 288680
+    },
+    "usr/lib/libidn2.so.0": {
+      "link": "libidn2.so.0.4.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libidn2.so.0.4.0": {
+      "mode": 365,
+      "sha256": "9e6121c48274280c4258f1b3da895c5e63266639cd7ff611e9a562311e210263",
+      "size": 198632
+    },
+    "usr/lib/libintl.so.8": {
+      "link": "libintl.so.8.4.6",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libintl.so.8.4.6": {
+      "mode": 365,
+      "sha256": "c43f799d118a30b411000220133bf8d297ef5b4684dbca30b45b605e484815a0",
+      "size": 136912
+    },
+    "usr/lib/libjpeg.so.8": {
+      "link": "libjpeg.so.8.3.2",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libjpeg.so.8.3.2": {
+      "mode": 365,
+      "sha256": "9309c5a71b9ec1a2f60ff90687839ba24dff1c58dbbbaa440305d7e068cdec6a",
+      "size": 657232
+    },
+    "usr/lib/libleptonica.so.6": {
+      "link": "libleptonica.so.6.0.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libleptonica.so.6.0.0": {
+      "mode": 365,
+      "sha256": "96eb706e5124291b97a7f5b9111993ba59d90a70471f1d48c43fa41553ddee2d",
+      "size": 2474640
+    },
+    "usr/lib/liblzma.so.5": {
+      "link": "liblzma.so.5.8.4",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/liblzma.so.5.8.4": {
+      "mode": 365,
+      "sha256": "6106974ac44f821cf97633527c65e7413be657a95e55aafb0885bf84743bb8a4",
+      "size": 227192
+    },
+    "usr/lib/libnettle.so.8": {
+      "link": "libnettle.so.8.11",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libnettle.so.8.11": {
+      "mode": 292,
+      "sha256": "9cdb023dde75392b9a1a7ca0f624e25703c372a8840ff094bec2f3acced9cbf7",
+      "size": 309192
+    },
+    "usr/lib/libp11-kit.so.0": {
+      "link": "libp11-kit.so.0.4.8",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libp11-kit.so.0.4.8": {
+      "mode": 365,
+      "sha256": "171a0528711ecba98f692c132308d0f798272236117c3a2664b3a20e1e6d3be4",
+      "size": 1400680
+    },
+    "usr/lib/libpng16.so.16": {
+      "link": "libpng16.so.16.59.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libpng16.so.16.59.0": {
+      "mode": 365,
+      "sha256": "4651d9bebd2001344b47eda8fc2ab517232a71eb8bfc98a090d89db5e575bf84",
+      "size": 186280
+    },
+    "usr/lib/libsane.so.1": {
+      "link": "libsane.so.1.4.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libsane.so.1.4.0": {
+      "mode": 365,
+      "sha256": "b538624aeba8f6f92d52690a601899e3bcecd1a52bc80b0af719136c2e2e35f3",
+      "size": 79784
+    },
+    "usr/lib/libsharpyuv.so.0": {
+      "link": "libsharpyuv.so.0.1.2",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libsharpyuv.so.0.1.2": {
+      "mode": 365,
+      "sha256": "40030402847612f26a9d60bd7d70ddb91416c48b5ed30378cff0926410c94f0e",
+      "size": 26240
+    },
+    "usr/lib/libstdc++.so.6": {
+      "link": "libstdc++.so.6.0.34",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libstdc++.so.6.0.34": {
+      "mode": 365,
+      "sha256": "67a940194aec6c44c3eb47a98e44c53d248e4dac5f4eb57c0971c0d6286eafe5",
+      "size": 2804104
+    },
+    "usr/lib/libtasn1.so.6": {
+      "link": "libtasn1.so.6.6.5",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libtasn1.so.6.6.5": {
+      "mode": 365,
+      "sha256": "cb7fb655ce9686ef877754bf940d8e29d41a1c1c9f6b1a3a9ac28dc05f90573f",
+      "size": 67424
+    },
+    "usr/lib/libtesseract.so": {
+      "link": "libtesseract.so.5.5",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libtesseract.so.5.5": {
+      "link": "libtesseract.so.5.5.4",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libtesseract.so.5.5.4": {
+      "mode": 365,
+      "sha256": "32fbf74170f6522581fa13297bf866761009c911a27153661e4c5be2cb66edb7",
+      "size": 4920840
+    },
+    "usr/lib/libtiff.so.6": {
+      "link": "libtiff.so.6.3.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libtiff.so.6.3.0": {
+      "mode": 365,
+      "sha256": "74a429d55ecb49a7c1c35133c888f4e1022122fc119e9e2fdbcb818ec2f50985",
+      "size": 473016
+    },
+    "usr/lib/libunistring.so.5": {
+      "link": "libunistring.so.5.2.1",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libunistring.so.5.2.1": {
+      "mode": 365,
+      "sha256": "62fe5110253cb5ba3a1673e33097b0bca9903b5e016ed50aca4977bd9b905009",
+      "size": 1922880
+    },
+    "usr/lib/libusb-1.0.so.0": {
+      "link": "libusb-1.0.so.0.6.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libusb-1.0.so.0.6.0": {
+      "mode": 365,
+      "sha256": "9d0faf4511a4564e18d1551fa0c1b9ab24bd84108db33f602431f06f35438a19",
+      "size": 108320
+    },
+    "usr/lib/libwebp.so.7": {
+      "link": "libwebp.so.7.2.0",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libwebp.so.7.2.0": {
+      "mode": 365,
+      "sha256": "3963f600473b6f481536c1e94f554ba1b96533aa8ee64e369f9425a9fcaa6f1f",
+      "size": 558984
+    },
+    "usr/lib/libwebpmux.so.3": {
+      "link": "libwebpmux.so.3.1.2",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libwebpmux.so.3.1.2": {
+      "mode": 365,
+      "sha256": "33a04a75a3d8c1cf2831bbef8a113b7d2757f529307dc70660624056c10982f7",
+      "size": 46704
+    },
+    "usr/lib/libxml2.so.2": {
+      "link": "libxml2.so.2.13.9",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libxml2.so.2.13.9": {
+      "mode": 365,
+      "sha256": "c7742d413585cee3e2750472e04da810a7a9883a1c10a8270c2f6e8c56231ad7",
+      "size": 1072096
+    },
+    "usr/lib/libz.so.1": {
+      "link": "libz.so.1.3.2",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libz.so.1.3.2": {
+      "mode": 365,
+      "sha256": "ecc8b9dfc45eb7fa29b410ffaca6257873890de53b80fe91735737b49067c5f2",
+      "size": 108376
+    },
+    "usr/lib/libzstd.so.1": {
+      "link": "libzstd.so.1.5.7",
+      "mode": 0,
+      "sha256": "",
+      "size": 0
+    },
+    "usr/lib/libzstd.so.1.5.7": {
+      "mode": 365,
+      "sha256": "a0a285da817a61e65d9e89bbfd38243cf8a4798cc429adc2772b5931f1d4fbb6",
+      "size": 714432
+    },
+    "usr/lib/sane/libsane-airscan.so.1": {
+      "mode": 365,
+      "sha256": "480e1bbdac3c6088cc74e220c5df486530fe822582666cb72941a3bbea84226e",
+      "size": 1246024
+    },
+    "usr/libexec/scanner/sane-parameters": {
+      "mode": 365,
+      "sha256": "0266e0812b622d0569d5dd6e0ba26a09a3464d9fc0fa985793c6db4ebe73f0d0",
+      "size": 4924568
+    },
+    "usr/share/scanner-kiosk/ca-certificates.crt": {
+      "mode": 292,
+      "sha256": "5961c0a3c65459931c023e0075c09733f09aea4ca439cb85bc4a08bb4f3f568b",
+      "size": 178791
+    },
+    "usr/share/scanner-kiosk/notices/README.txt": {
+      "mode": 292,
+      "sha256": "1fbb15515169d61f2c5c88d004750009fae25b6e181e6d1b4c0a77564c4e0aff",
+      "size": 488
+    },
+    "usr/share/scanner-kiosk/notices/apkbuild/sane-airscan.APKBUILD": {
+      "mode": 292,
+      "sha256": "2fe49677adb9e576e03fc1383233640fcbed5245351ab5d6e93175c5320ac54c",
+      "size": 896
+    },
+    "usr/share/scanner-kiosk/notices/apkbuild/sane.APKBUILD": {
+      "mode": 292,
+      "sha256": "6177156ccd65ffeb5c7ebdb61dc9dc4596a48c1d2098b7c01373e60623cf43c4",
+      "size": 5432
+    },
+    "usr/share/scanner-kiosk/notices/apkbuild/tesseract-ocr.APKBUILD": {
+      "mode": 292,
+      "sha256": "60f136bf6e62a470c4c302346d57e7f8e11e831f221bf7834f393af880b61ab6",
+      "size": 2215
+    },
+    "usr/share/scanner-kiosk/notices/delivery-selection.json": {
+      "mode": 292,
+      "sha256": "6a822eadaa1a98c7e7cd027ca7c7d753c37029c0c71a98efef5cb821a7837ee8",
+      "size": 45479
+    },
+    "usr/share/scanner-kiosk/notices/go/index.json": {
+      "mode": 292,
+      "sha256": "d9d4e43412e6153dbffa083c1aea49ba784f8e3e2807937ffe79791968962e5e",
+      "size": 16277
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/AUTHORS": {
+      "mode": 292,
+      "sha256": "86555660d038cc73180fbc221e83ce43ac6624c5b4ce629172e0011df06b321d",
+      "size": 1335
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE": {
+      "mode": 292,
+      "sha256": "c6fe05491a60ae13bcd223088d2705e36dede24e5587226231d2459ada5c4822",
+      "size": 1489
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE-3RD-PARTY.md": {
+      "mode": 292,
+      "sha256": "4194f8e7119be72babd499db4f6f1f7547e36e8a7bffcb2b9c8df241b8f1576a",
+      "size": 74323
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE-SQLITE": {
+      "mode": 292,
+      "sha256": "8438c9c89b849131ead81d5435cb97fcf052df5b0b286dda8a2d4c29e6cb3fd0",
+      "size": 1506
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/LICENSE-SQLITE_VEC": {
+      "mode": 292,
+      "sha256": "6ce72bbe12d975bd5286e5ab0a064c069693300c47bccbc57bec18485f1621ea",
+      "size": 1068
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/0d1e2d67ae64f2b5/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/0d1e2d67ae64f2b5/PATENTS": {
+      "mode": 292,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "size": 1303
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/108dfdc5a4ad9af3/LICENSE": {
+      "mode": 292,
+      "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b",
+      "size": 10142
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/126ca532490193ba/LICENSE": {
+      "mode": 292,
+      "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+      "size": 1479
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/126ca532490193ba/internal/lzw/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/12802620d9f724f9/LICENSE": {
+      "mode": 292,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "size": 11358
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/12802620d9f724f9/json/LICENSE": {
+      "mode": 292,
+      "sha256": "dd26a7abddd02e2d0aba97805b31f248ef7835d9e10da289b22e3b8ab78b324d",
+      "size": 1479
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/1e7b1aaf85f9116b/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/1e7b1aaf85f9116b/PATENTS": {
+      "mode": 292,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "size": 1303
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/37a1867ef0a7f064/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/37a1867ef0a7f064/PATENTS": {
+      "mode": 292,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "size": 1303
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/4182e4eea1eec26c/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/4182e4eea1eec26c/PATENTS": {
+      "mode": 292,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "size": 1303
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/4fd601d1d188212e/LICENSE": {
+      "mode": 292,
+      "sha256": "07e9e3daaccc707c9b7d535ed1405a65d37919fdd42197fe55e68820e974688c",
+      "size": 1069
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/51bf2a17bdc4c906/LICENSE": {
+      "mode": 292,
+      "sha256": "a973b4498c13eb74baa2a8e5c351426a6826f2fcdd909916dbe53ee2e755fd71",
+      "size": 1136
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/636809519be14c75/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/6cdec685f8b76c93/LICENSE.txt": {
+      "mode": 292,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "size": 11358
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/6cdec685f8b76c93/internal/filter/lzw/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/6cdec685f8b76c93/pkg/pdfcpu/pkcs7/LICENSE": {
+      "mode": 292,
+      "sha256": "0e8bec4750de7c8b2fdef97083c4fe1f9f5b7a0a71ca1ccf781fc2b135284ce0",
+      "size": 1079
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/6e4ce618136452ca/LICENSE": {
+      "mode": 292,
+      "sha256": "d18f6323b71b0b768bb5e9616e36da390fbd39369a81807cca352de4e4e6aa0b",
+      "size": 2151
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/6e4ce618136452ca/NOTICE": {
+      "mode": 292,
+      "sha256": "f6c2dd3a67b576eafb89b80200b8b1627230bf3821a0c14cb99a22ac19107d00",
+      "size": 560
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/790f498af6e56cbc/LICENSE": {
+      "mode": 292,
+      "sha256": "60aa83c124df5a317fe85b1ad9c4984ad056e0221d572d195b00d5b45b8f3bb1",
+      "size": 1079
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/7cd0fd73658571a4/LICENSE": {
+      "mode": 292,
+      "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14",
+      "size": 11325
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/7cd0fd73658571a4/NOTICE": {
+      "mode": 292,
+      "sha256": "dccd26c6fd9c296daf44d0bc56bb4efc566edd4880381b3331c9a63e6e471338",
+      "size": 126
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/AUTHORS": {
+      "mode": 292,
+      "sha256": "df1f424436f279309de85b82e494d548297a2570e9b5794630d7e72c9eb50b6a",
+      "size": 529
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE": {
+      "mode": 292,
+      "sha256": "59895e669f48f168b6b858358f6005779cdf40a265f7828813061b56af67b496",
+      "size": 1484
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE-GO": {
+      "mode": 292,
+      "sha256": "2d36597f7117c38b006835ae7f537487207d8ec407aa9d9980794b2030cbc067",
+      "size": 1479
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE-LOGO": {
+      "mode": 292,
+      "sha256": "5ae5bee3072a841376451b48d8cfcec7188e10543926d5870828d36c8a750dc5",
+      "size": 62
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/LICENSE-MMAP-GO": {
+      "mode": 292,
+      "sha256": "c2eba69f20d05414538c3a5df7694dde392e065ff70882e1625e90f5d6659fff",
+      "size": 1518
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/AUTHORS": {
+      "mode": 292,
+      "sha256": "51fcdd68bb605f080283bb6eabb72452591289650599d3d67603381834e536af",
+      "size": 412
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/LICENSE": {
+      "mode": 292,
+      "sha256": "bfa9bf72a72ca009fd62a8f84fca3dca67e51d93af96352723646599898b6cf5",
+      "size": 1486
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/mersenne/AUTHORS": {
+      "mode": 292,
+      "sha256": "f79ff8b413938c3ce7c60db12242a663d8e840249bd838fcf58f4aaccfec5454",
+      "size": 346
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/bc866d47782e62af/mersenne/LICENSE": {
+      "mode": 292,
+      "sha256": "c05630f9ca899ea094620d37daea6ba66f99adbf9268ea5fea9db607e1102bd9",
+      "size": 1486
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/ccde9cb2b3b92254/LICENSE": {
+      "mode": 292,
+      "sha256": "dd26a7abddd02e2d0aba97805b31f248ef7835d9e10da289b22e3b8ab78b324d",
+      "size": 1479
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/d0d666767bf9063c/LICENSE": {
+      "mode": 292,
+      "sha256": "0a8d61ed3cbfd5312326e8126c31ce9c627a283adc99131b56896d29ada04b2d",
+      "size": 1480
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/d5394666bff0dd4c/LICENSE": {
+      "mode": 292,
+      "sha256": "88a2379b3ca34bf5c57127aff9dcb802bbb60ece0805cdbda65b3bd115f971d9",
+      "size": 1085
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/AUTHORS": {
+      "mode": 292,
+      "sha256": "40224528f3c7363534f59521d803a4eb627966b334d732bfc68a788655cb2545",
+      "size": 827
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/LICENSE": {
+      "mode": 292,
+      "sha256": "95ff867eb55a56935fa7492406cfa953fb7c13ca73f4c0a86ae05756b4605600",
+      "size": 1482
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/LICENSE-3RD-PARTY.md": {
+      "mode": 292,
+      "sha256": "f597097efe3d97021f89170746bd3a0fb9a8b6fb26b82043ed68a4e0283bee6c",
+      "size": 10505
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/testdata/nsz.repo.hu/libc-test/AUTHORS": {
+      "mode": 292,
+      "sha256": "d04faa7fbed5d7e30d5f55c014c0f5e702245ca5ba62a39c7bc4df8724853a6c",
+      "size": 103
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/testdata/nsz.repo.hu/libc-test/COPYRIGHT": {
+      "mode": 292,
+      "sha256": "41b8f2e2706012eb534f89e72ff547308cb81dcb9acf077c40a9058a7c06088d",
+      "size": 1314
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/e7e9a74be99acf27/testdata/nsz.repo.hu/libc-test/src/math/crlibm/COPYING": {
+      "mode": 292,
+      "sha256": "dcc100d4161cc0b7177545ab6e47216f84857cda3843847c792a25289852dcaa",
+      "size": 18007
+    },
+    "usr/share/scanner-kiosk/notices/go/stdlib/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/stdlib/PATENTS": {
+      "mode": 292,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "size": 1303
+    },
+    "usr/share/scanner-kiosk/notices/image-notices-receipt.json": {
+      "mode": 292,
+      "sha256": "2779eb3d546435656e67e913a27c696f7b8218fd658c7ae70760e66c119957f3",
+      "size": 7911
+    },
+    "usr/share/scanner-kiosk/notices/native/provenance.json": {
+      "mode": 292,
+      "sha256": "2e15a03b26573a3ebedc0e732528e6a7e0546b426be85c94cfb8ec2b38f20eef",
+      "size": 3196
+    },
+    "usr/share/scanner-kiosk/notices/native/sane-airscan/COPYING": {
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "size": 18092
+    },
+    "usr/share/scanner-kiosk/notices/native/sane-airscan/LICENSE": {
+      "mode": 292,
+      "sha256": "a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373",
+      "size": 1863
+    },
+    "usr/share/scanner-kiosk/notices/native/sane/COPYING": {
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "size": 18092
+    },
+    "usr/share/scanner-kiosk/notices/native/sane/LICENSE": {
+      "mode": 292,
+      "sha256": "704fb487721423f16eea1f8f9da208434a0f93bca4a98ce543a0fb2038fb2b38",
+      "size": 2140
+    },
+    "usr/share/scanner-kiosk/notices/native/sane/dll.c": {
+      "mode": 292,
+      "sha256": "662d68482dc637e728b0db3a0e4c65391b0cedd45a192223c36e7bb06996e36f",
+      "size": 37782
+    },
+    "usr/share/scanner-kiosk/notices/native/sane/sane.h": {
+      "mode": 292,
+      "sha256": "288334864eb01b4773892a2b696cb12c87bb05fada46cb9d588cb42a732d935d",
+      "size": 7928
+    },
+    "usr/share/scanner-kiosk/notices/native/tesseract-ocr/LICENSE": {
+      "mode": 292,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "size": 11358
+    },
+    "usr/share/scanner-kiosk/notices/original-delivery-inventory.json": {
+      "mode": 292,
+      "sha256": "49357229497ab31123ada3aff0c41844ade769298cd9e76bd9b44e4cca1e0132",
+      "size": 84260
+    },
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/APKBUILD": {
+      "mode": 292,
+      "sha256": "7b35fb8e11790105578f47d57a3b22831227b0d8ad7d064e575bad146023f3da",
+      "size": 2520
+    },
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt": {
+      "mode": 292,
+      "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85",
+      "size": 16726
+    },
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt": {
+      "mode": 292,
+      "sha256": "f63a93ed6525d62c9cb979f5dff7a9a7e71bab35cdc3ef3c435e00233e315d2c",
+      "size": 201
+    },
+    "usr/share/scanner-kiosk/notices/source-build/ca-certificates/source.json": {
+      "mode": 292,
+      "sha256": "b98310fb60f1a8874c5e2674e94796afce7d9a18ed615e93ac2463b457cda61d",
+      "size": 1527
+    },
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/COPYING": {
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "size": 18092
+    },
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/LICENSE": {
+      "mode": 292,
+      "sha256": "a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373",
+      "size": 1863
+    },
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/build.json": {
+      "mode": 292,
+      "sha256": "7a7f480c7735fed782a4d0337ecfea6744faa5aecad97dff00b79ae4b6b6dc83",
+      "size": 826
+    },
+    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/patch.diff": {
+      "mode": 292,
+      "sha256": "ee7a58daeedc8d2efefae615b1eb93c295ab69a7f34c3b1a1448ca966049bb4c",
+      "size": 5105
+    },
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.build": {
+      "mode": 292,
+      "sha256": "a7bf7052afb843beb57135c8127170da381b329d410f224ba4ff366dc094ca55",
+      "size": 309
+    },
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.sdk": {
+      "mode": 292,
+      "sha256": "36c3fd8c00771203fdad70b50a6b77d2c84d33c87b85ab605955494a8787b9a1",
+      "size": 448
+    },
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/LICENSE": {
+      "mode": 292,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "size": 11358
+    },
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/build-receipt.json": {
+      "mode": 292,
+      "sha256": "96ca6012ff8c0aac655552e221b5c56d0f8ca8ae0d3ca9ecbb618f6b0d186d42",
+      "size": 4840
+    },
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/build.sh": {
+      "mode": 292,
+      "sha256": "0cc15604416f8f89d308c516443b0e888d69c8b28f171e7156f1e606cf2f3396",
+      "size": 1206
+    },
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/replacement.json": {
+      "mode": 292,
+      "sha256": "d604cbb4b99eff6a57bbefcb1cfc2983a2e6771e848709e573d6f4945bf64b49",
+      "size": 5019
+    },
+    "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json": {
+      "mode": 292,
+      "sha256": "7827fa1ac4d0787866c01b308d5fd418fa25b7171c9df11378bafe1f2892e74b",
+      "size": 1557
+    },
+    "usr/share/tessdata/configs/alto": {
+      "mode": 292,
+      "sha256": "23a038ff290c7471a1a8aa4b5d23e310b0bf49f718480dad6b619a7d06eca330",
+      "size": 23
+    },
+    "usr/share/tessdata/configs/ambigs.train": {
+      "mode": 292,
+      "sha256": "717e534fd4330ed3f9bdb006f0465aa2633cca866786a8f8d469dbd4b01c10c2",
+      "size": 146
+    },
+    "usr/share/tessdata/configs/api_config": {
+      "mode": 292,
+      "sha256": "2929bc0f1d2ba77f28cfc230f7b835b2b54038c0f9d2e8e4c5ada43803c999fd",
+      "size": 26
+    },
+    "usr/share/tessdata/configs/bigram": {
+      "mode": 292,
+      "sha256": "65e6583abc617a34d4091285181f2493d312c296a85629ac3c092d3b93b6e554",
+      "size": 129
+    },
+    "usr/share/tessdata/configs/box.train": {
+      "mode": 292,
+      "sha256": "a421355e3488bf3fdfc14a1bdcca08c6f6414ec92c53f0eea22317c868c1a623",
+      "size": 311
+    },
+    "usr/share/tessdata/configs/box.train.stderr": {
+      "mode": 292,
+      "sha256": "3e62cd37d2383abf0c6dfa5ba39fd1187fcff6856c4f4f27ea1554cb4c1874d2",
+      "size": 311
+    },
+    "usr/share/tessdata/configs/digits": {
+      "mode": 292,
+      "sha256": "e757d95bb1e51444860ea10d7f2c8bb8a0c9c4ccc58a0e8c67e8dc2933a56e2e",
+      "size": 37
+    },
+    "usr/share/tessdata/configs/get.images": {
+      "mode": 292,
+      "sha256": "28c774c157a2f48d835a1d58f5a35dd70106c136e176572ee43bbf46f3d65c92",
+      "size": 24
+    },
+    "usr/share/tessdata/configs/hocr": {
+      "mode": 292,
+      "sha256": "d6a7ec7c5143317a59fce2393054f6b7a8261824b934e7426fdd24febc929ad6",
+      "size": 40
+    },
+    "usr/share/tessdata/configs/inter": {
+      "mode": 292,
+      "sha256": "46303bf83668e446f4966d1ebf7418ad9f0c5e08836bc59d98cae3bbfc3aee9d",
+      "size": 59
+    },
+    "usr/share/tessdata/configs/kannada": {
+      "mode": 292,
+      "sha256": "7d34fec99283142a3a22d157dc5cc8824b93ee923e576e6bfd1b026039c2e8f0",
+      "size": 101
+    },
+    "usr/share/tessdata/configs/linebox": {
+      "mode": 292,
+      "sha256": "eb0279527b009a53432a9e1dde85bf42814901393546bc365bb61837f83355c9",
+      "size": 70
+    },
+    "usr/share/tessdata/configs/logfile": {
+      "mode": 292,
+      "sha256": "5eed5e41e5fbbf0862836c0e4cda7821f8e08441645858ec6821ab41d926e195",
+      "size": 25
+    },
+    "usr/share/tessdata/configs/lstm.train": {
+      "mode": 292,
+      "sha256": "3d1f8e5ab4e41467fdd938dc4d266eea081b477f8d74ab6b198dd1d854b5301c",
+      "size": 282
+    },
+    "usr/share/tessdata/configs/lstmbox": {
+      "mode": 292,
+      "sha256": "61255d1b7c9df76b673ff43d2d91cda7f4c3c2e7d7f0643a71b212739833017e",
+      "size": 26
+    },
+    "usr/share/tessdata/configs/lstmdebug": {
+      "mode": 292,
+      "sha256": "62d40d7a7d80315e10cdca2561d2ddf2981f53dfdbd567513b04d36f3add7f4e",
+      "size": 98
+    },
+    "usr/share/tessdata/configs/makebox": {
+      "mode": 292,
+      "sha256": "a8fe20a2bc9ff1e9e8ed06d56845336c978627b8e965600abd63f1f412c18ffe",
+      "size": 26
+    },
+    "usr/share/tessdata/configs/page": {
+      "mode": 292,
+      "sha256": "6e4b43f27a77124e66c87fce8de518ff81e918d3cc36fe71a3d01179c1856a07",
+      "size": 67
+    },
+    "usr/share/tessdata/configs/pdf": {
+      "mode": 292,
+      "sha256": "54d56e81dfefe289b0d2e4c7bc9bbe662711f5b8255c128b73bcd66efb6bba1a",
+      "size": 22
+    },
+    "usr/share/tessdata/configs/quiet": {
+      "mode": 292,
+      "sha256": "8a93fad8251f61b5f17b8628203a0e068c71e0907cd63012ab22afb7b560fce3",
+      "size": 21
+    },
+    "usr/share/tessdata/configs/rebox": {
+      "mode": 292,
+      "sha256": "73ca35d7d71084fb88e2eb9a5c53ad91682754b3aecb918dece7591ec22a0b26",
+      "size": 65
+    },
+    "usr/share/tessdata/configs/strokewidth": {
+      "mode": 292,
+      "sha256": "ffb140aadd3e26d0d9b3b355d592b50cff8b2c3ce0394b4a6de4fabc1c0942c9",
+      "size": 377
+    },
+    "usr/share/tessdata/configs/tsv": {
+      "mode": 292,
+      "sha256": "59d079bb75d8b3d7c839a3564580cb559e362c93a9d70f234e421c0c3e767e04",
+      "size": 22
+    },
+    "usr/share/tessdata/configs/txt": {
+      "mode": 292,
+      "sha256": "9bcbdbe285fd3a024be563cb237751ceb3435d86610e231f08894023321af5d7",
+      "size": 166
+    },
+    "usr/share/tessdata/configs/unlv": {
+      "mode": 292,
+      "sha256": "1b02e7801de71f0757a26ba6d749e9182a0d9971929966bebb67f99db8733f40",
+      "size": 45
+    },
+    "usr/share/tessdata/configs/wordstrbox": {
+      "mode": 292,
+      "sha256": "9d1787cdce085ad36dc9d6ba6b2702ac262beaf06a0bb4a0b84355f6458261e5",
+      "size": 29
+    },
+    "usr/share/tessdata/eng.traineddata": {
+      "mode": 292,
+      "sha256": "daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047",
+      "size": 23466654
+    },
+    "usr/share/tessdata/jpn.traineddata": {
+      "mode": 292,
+      "sha256": "6f416b902d129d8cc28e99c33244034b1cf52549e8560f6320b06d317852159a",
+      "size": 35659159
+    },
+    "usr/share/tessdata/osd.traineddata": {
+      "mode": 292,
+      "sha256": "e19f2ae860792fdf372cf48d8ce70ae5da3c4052962fe22e9de1f680c374bb0e",
+      "size": 10562874
+    },
+    "usr/share/tessdata/pdf.ttf": {
+      "mode": 292,
+      "sha256": "c7845420925a23d88ed830a63957b8af85a66a8daf8d9fc90e843673b2ef1a59",
+      "size": 572
+    },
+    "usr/share/tessdata/tessconfigs/batch": {
+      "mode": 292,
+      "sha256": "d91107c3a8c1c311b00c64aee56cbce4d48894c6e5762165f1ec7871c7b7bf4e",
+      "size": 49
+    },
+    "usr/share/tessdata/tessconfigs/batch.nochop": {
+      "mode": 292,
+      "sha256": "5acabb534cfd4fd8fe111c854955e1ffa9390619ef43775b1a5fbaf5283f68bb",
+      "size": 37
+    },
+    "usr/share/tessdata/tessconfigs/matdemo": {
+      "mode": 292,
+      "sha256": "d098cdf6ffe691ccc9dfa4490603f6ae33cdd313010cedfa50007ebde3ddd2d0",
+      "size": 243
+    },
+    "usr/share/tessdata/tessconfigs/msdemo": {
+      "mode": 292,
+      "sha256": "0ed753a05ea60766f4269d81873b6390e937ea2df1758de91c57db7e92429555",
+      "size": 368
+    },
+    "usr/share/tessdata/tessconfigs/nobatch": {
+      "mode": 292,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size": 1
+    },
+    "usr/share/tessdata/tessconfigs/segdemo": {
+      "mode": 292,
+      "sha256": "7ec19f77f8c76b4dfb33ec8b13e11d7685ae5c9cf6eca4e7333cce0513ddac56",
+      "size": 295
+    }
+  },
+  "format": 1,
+  "platform": "linux/amd64"
+}
