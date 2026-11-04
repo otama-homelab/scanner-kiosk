@@ -119,7 +119,7 @@ inputs; the build itself uses the candidate's official pinned Go 1.27.3 SDK,
 network disabled, no host mounts, a read-only root and private bounded compiler
 storage. The file proxy and pinned go.sum supply/check dependencies offline.
 
-The resulting CGO-free webui API executable matches the current candidate's
+The resulting CGO-free webui API executable matched the then-current historical candidate's
 SHA256 `0020b142bae8b6e4b429131cfff8afb4fd02ca44b10583fcc8bd0fb8e701aa28`.
 Its version command also runs in that isolated SDK container. This is a local
 API rebuild proof with the same SDK; it does not establish independent-builder,
@@ -197,3 +197,27 @@ or ABI/source-rebuild proof is inferred. Product/runtime locks are unchanged.
 Corresponding source, permission to modify/relink the relevant materials, any
 required installation information, recipient access and all other component
 conditions still need review before the license gate can pass.
+
+## Current application-source rebuild (2026-11-04)
+
+The current e5363774… onefile was rebuilt from the exact application commit
+`5af8f14c53f8891473aab39986bc899004fa64e2`, a Git source archive, the retained
+47-module file proxy and its 141 original zip/mod/info files. The original
+`go.mod`/`go.sum` bytes match and remain unchanged. A fresh empty module cache,
+read-only official Go 1.27.3 SDK, no host module cache, no external network and
+bounded private scratch produced API SHA256 `9e26d8e7…`, identical to the current
+inner app. Repackaging with the exact 232 native files from the current onefile
+then reproduced the whole onefile SHA256 `e5363774…`. Those native bytes were
+verified and reused; they were not rebuilt from source in this run. Embedded
+frontend assets were likewise the previously verified build inputs.
+
+A portable local application-source archive is retained as
+`scanner-application-sources.tar` (98,703,360 bytes, SHA256
+`c4cc4ffbe646819547b9041e1dce3f9f53bc46bba551096823cb0992d1abc892`).
+It contains the committed source archive, complete retained Go file proxy,
+embedded assets, checksum index and an API rebuild recipe. An isolated verifier
+checked all 146 outer archive members and their hashes without extraction.
+The archive remains local and does not supply the complete native source/SDK
+closure, npm archive set, final license/relinking review or recipient source
+access. The project license is still undecided. Parent-plan evidence:
+`current-application-source-rebuild-20261104/current-evidence.json`.
