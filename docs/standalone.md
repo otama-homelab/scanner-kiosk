@@ -151,3 +151,14 @@ OOMなし。Go/nativeの実装変更はないが、新candidateでのOCR/全API-
 実phone/screenreader、時計/障害試験、fresh security/license/source提供・release
 受入は未完。表示は開発版の`0.0.0-dev`/`unreleased`で、previewの公開ではない。
 親計画の `keyboard-onefile-20261104/current-evidence.json` を参照。
+
+同じe5363774…候補について、既存`check-web.py`のbuild部分だけを検証済み
+onefile配置へ置換した隔離fixtureで、総合ブラウザー検証も完走した。5assetを
+実HTTPからbuild hashと照合し、文書操作19・実simple認証9・capture12・
+レート制限8・keyboard12を確認。実SQLite/APIで利用者間の分離、PDF/PNG
+ダウンロード、削除後のworker file cleanup、guest終了を検証した。
+模擬job終端遷移やcapture/keyboardのHTTP fixtureは維持しており、実スキャンの
+停止保証、native OCR、実IdP/LLM、phone/screenreaderの受入とは区別する。
+検査はbrowserを含む3GiB上限で65.213秒、観測peak707.9MiB・swap0で完了。
+この数値は製品の最低RAM要件を示さない。
+親計画 `current-onefile-full-browser-20261104/current-evidence.json` を参照。
