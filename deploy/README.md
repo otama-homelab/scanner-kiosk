@@ -11,10 +11,15 @@ is excluded from these examples and homelab GitOps. It passed installed-CRD and
 server dry-run validation, but has not been applied or tested in the datapath.
 It covers only the known legacy Pod transport; see the [handoff prerequisites](../docs/design/physical-writer-fencing.md).
 
-Preprovision bind/PVC roots as UID/GID 10001, mode 0700 (existing files: 0600).
+Preprovision bind/PVC roots for UID/GID 10001 **as seen inside the containers**, mode 0700 (existing files: 0600). Rootless/user-namespace host IDs may differ; verify their mapping before setting host ownership.
 The Helm pod omits fsGroup because recursive group permission changes conflict
 with the application's private-store checks. Image directory ownership does not
 repair an existing mount. Validate the actual storage driver before deployment.
+
+Both mounts contain SQLite databases; a shared NFS document directory is not a
+supported substitute for the local-store contract. See the
+[homelab requirements check](../docs/design/homelab-readiness.md) for UID/GID,
+NAS/backup, HTTPS, resources and upgrade acceptance gaps.
 
 Both examples use a single application replica and separate API/worker process roles with bounded resources. Helm uses Recreate; stopping old work and reconciling hardware remains an application/operator requirement. Initial image/resources/storage/OIDC behavior must be validated before release. See `docs/design/operations-release.md`.
 
