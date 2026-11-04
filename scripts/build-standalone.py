@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import stat
 import subprocess
 import tempfile
 
@@ -34,6 +35,21 @@ def build(app, native, expected_manifest, output):
         raise FileExistsError('output directory must not exist')
     if not app.is_file() or app.is_symlink():
         raise ValueError('app must be a regular file, not a symlink')
+    try:
+        descriptor = os.open(ROOT / 'LICENSE', os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    except OSError:
+        raise ValueError('project license must be a bounded regular file') from None
+    with os.fdopen(descriptor, 'rb') as license_file:
+        before = os.fstat(license_file.fileno())
+        if not stat.S_ISREG(before.st_mode) or not 0 < before.st_size <= 65536:
+            raise ValueError('project license must be a bounded regular file')
+        license_bytes = license_file.read(65537)
+        after = os.fstat(license_file.fileno())
+        if (len(license_bytes) != before.st_size
+                or (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
+                != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
+            raise ValueError('project license changed during reading')
+    license_sha256 = hashlib.sha256(license_bytes).hexdigest()
     expected_bytes = expected_manifest.read_bytes()
     expected = json.loads(expected_bytes)['files']
     if not isinstance(expected, dict) or not expected:
@@ -68,13 +84,16 @@ def build(app, native, expected_manifest, output):
                    'app_sha256': manifest['files']['app/scanner']['sha256'],
                    'native_manifest_sha256': hashlib.sha256(expected_bytes).hexdigest(),
                    'native_entries': len(actual), 'app_go_version': info['GoVersion'],
-                   'publication_approved': False}
+                   'project_license_sha256': license_sha256, 'publication_approved': False}
         output.mkdir(mode=0o700)
         try:
             shutil.copyfile(binary, output / binary.name)
             (output / binary.name).chmod(0o555)
             shutil.copyfile(launcher / 'manifest.json', output / 'manifest.json')
-            (output / 'SHA256SUMS').write_text(sha + '  ' + binary.name + '\n')
+            (output / 'LICENSE').write_bytes(license_bytes)
+            (output / 'LICENSE').chmod(0o444)
+            (output / 'SHA256SUMS').write_text(sha + '  ' + binary.name + '\n'
+                                              + license_sha256 + '  LICENSE\n')
             (output / 'build.json').write_text(json.dumps(receipt, indent=2) + '\n')
         except Exception:
             shutil.rmtree(output)

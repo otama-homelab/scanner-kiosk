@@ -46,7 +46,7 @@ def pack(app, native, destination):
                     archive.addfile(header)
                 else:
                     data = source.read_bytes()
-                    mode = 0o555 if source.stat().st_mode & 0o111 else 0o444
+                    mode = 0o555 if name == 'app/scanner' or source.stat().st_mode & 0o111 else 0o444
                     header.mode, header.size = mode, len(data)
                     files[name] = {'size': len(data), 'mode': mode,
                                    'sha256': hashlib.sha256(data).hexdigest()}

@@ -2,14 +2,16 @@
 
 The root `Dockerfile` is the canonical runtime image recipe. It copies the complete
 Linux amd64 onefile produced by `scripts/build-standalone.py`; frontend, application,
-SANE/airscan, Tesseract, language models and notices belong inside that executable.
+SANE/airscan, Tesseract, language models and native notices belong inside that executable.
+The project LICENSE accompanies the standalone distribution and is copied into the
+image at `/usr/share/doc/scanner-kiosk/LICENSE`; it is not a runtime dependency.
 It does not build an API-only binary or install runtime packages. Alpine is a native
 build input, not the container runtime. The distroless base is pinned by digest.
 
 Prepare a new, private build directory containing only the root `Dockerfile`, root
-`.dockerignore` and the verified onefile renamed `scanner`. Verify the packager's
+`.dockerignore`, the packager's verified `LICENSE` and the onefile renamed `scanner`. Verify the packager's
 `SHA256SUMS` and provenance before copying. Do not put captured content or credentials
-in the context. The ignore file denies everything except those three inputs.
+in the context. The ignore file denies everything except those four inputs.
 
 ```sh
 docker build --platform=linux/amd64 --network=none --pull=false \
@@ -21,7 +23,7 @@ docker run --rm --network none --read-only --cap-drop ALL \
 ```
 
 The pinned base must already be available locally for an offline build. Missing
-`scanner` fails the build; this recipe does not fetch or assemble native inputs.
+`scanner` or `LICENSE` fails the build; this recipe does not fetch or assemble native inputs.
 Only the complete reviewed packager output is a valid input. Do not substitute
 `build-web.py`'s inner application executable.
 

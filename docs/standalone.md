@@ -25,7 +25,7 @@ python3 scripts/build-standalone.py \
   --output-dir /absolute/path/new-output-directory
 ```
 
-Go 1.27.3を使う既存build環境で実行する。入力appは事前に検証済みのものとし、Go build metadataでも`scanner-kiosk/cmd/scanner`、Linux amd64、CGO無効、`webui` tagを検査する。tagだけでは画面内容の検証を代替しない。manifestはpackager形式のreview済み固定入力で、`app/scanner`以外の全file/link/size/mode/hashを新payloadと完全比較する。余分なfileやOSD辞書の欠落、差替えを許容しない。launcherは一時directoryでbuildし、既存output directoryは上書きしない。新outputには`scanner-onefile-linux-amd64`、`manifest.json`、`SHA256SUMS`、`build.json`が入る。`build.json`がないpartial outputは配布入力にしない。
+Go 1.27.3を使う既存build環境で実行する。入力appは事前に検証済みのものとし、Go build metadataでも`scanner-kiosk/cmd/scanner`、Linux amd64、CGO無効、`webui` tagを検査する。tagだけでは画面内容の検証を代替しない。manifestはpackager形式のreview済み固定入力で、`app/scanner`以外の全file/link/size/mode/hashを新payloadと完全比較する。余分なfileやOSD辞書の欠落、差替えを許容しない。launcherは一時directoryでbuildし、既存output directoryは上書きしない。新outputには`scanner-onefile-linux-amd64`、`LICENSE`、`manifest.json`、`SHA256SUMS`、`build.json`が入る。`LICENSE`は自作部分の原文で、binaryとともに配布する。checksumはbinaryとLICENSE双方を含み、build receiptにもlicense SHA256を記録する。`build.json`がないpartial outputは配布入力にしない。
 
 このcommandはnative資材を取得せず、実行もしない。compilerへ渡す環境はbuild用キーに限定し、launcher buildではnetwork取得とworkspace/ambient Go flagsを無効化する。native資材とnotice/sourceの出自・security/license受入は別の必須条件。再現性確認やchecksum一致だけでpublish gateを通過したことにはならない。appのVersion/Revisionは事前のapp buildで固定し、包装時には変更しない。
 
@@ -51,7 +51,7 @@ Go 1.27.3を使う既存build環境で実行する。入力appは事前に検証
 
 配布containerはdistrolessを目標とし、Alpineはnative資材の試作取得元としてのみ使用する。scratch検証成功はdistroless imageの動作検証を代替しない。
 
-専用imageの試作には root `Dockerfile` と `.dockerignore` を、空のbuild contextへコピーし、検証済みの同梱実行ファイルを `scanner` として配置する。repo全体をcontextへ追加しない。
+専用imageの試作には root `Dockerfile` と `.dockerignore` を、空のbuild contextへコピーし、検証済みの同梱実行ファイルを `scanner` として配置し、同じ包装出力の `LICENSE` も置く。repo全体をcontextへ追加しない。
 
 ```sh
 docker build --platform=linux/amd64 --network=none -t scanner-kiosk:experimental /path/to/prepared-context

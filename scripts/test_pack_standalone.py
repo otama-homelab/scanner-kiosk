@@ -48,6 +48,17 @@ class StandalonePackageTests(unittest.TestCase):
         self.assertEqual(manifest['files']['lib/libc.so']['link'], 'ld-musl-x86_64.so.1')
         self.assertEqual(manifest['files']['app/scanner']['mode'], 0o555)
 
+    def test_application_mode_independent_of_host(self):
+        self.app.chmod(0o644)
+        self.pack()
+        self.app.chmod(0o755)
+        other = self.root / 'executable-input'
+        self.pack(other)
+        for name in ('payload.tar.gz', 'manifest.json'):
+            self.assertEqual((self.destination / name).read_bytes(), (other / name).read_bytes())
+        manifest = json.loads((other / 'manifest.json').read_text())
+        self.assertEqual(manifest['files']['app/scanner']['mode'], 0o555)
+
     def test_rejects_escaping_link_before_publication(self):
         (self.native/'escape').symlink_to('../scanner')
         with self.assertRaises(AssertionError):
