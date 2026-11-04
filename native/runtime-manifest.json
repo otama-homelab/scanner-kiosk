@@ -1152,8 +1152,8 @@
     },
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/source.json": {
       "mode": 292,
-      "sha256": "c4a83f559ee9f0f95a214820431401a6f521ad39ea9aecd542a5343b2f18228c",
-      "size": 10991
+      "sha256": "d904385ded968b1600142610d31ad19efc0dd5d7f71886267312ab476db8880d",
+      "size": 18368
     },
     "usr/share/scanner-kiosk/notices/native/provenance.json": {
       "mode": 292,
@@ -1269,6 +1269,11 @@
       "mode": 292,
       "sha256": "49357229497ab31123ada3aff0c41844ade769298cd9e76bd9b44e4cca1e0132",
       "size": 84260
+    },
+    "usr/share/scanner-kiosk/notices/p11-kit-0.26.2/library-header-notices.txt": {
+      "mode": 292,
+      "sha256": "378b30431117cc2a94c4bfe80664f35a6bf322e61a3a4035b1cbd2c0ae2e6ab9",
+      "size": 34980
     },
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/APKBUILD": {
       "mode": 292,

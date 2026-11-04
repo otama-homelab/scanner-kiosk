@@ -64,6 +64,8 @@ in historical Debian package inventories.
 
 ## Complete selected notice index
 
+The selected notice inputs now contain188 entries; the retained unreleased
+8e8c75f4… candidate still contains187 until the planned batch rebuild.
 These paths and SHA-256 values are taken from the committed runtime manifest
 and provenance. Source bytes were checked against every value when this index
 was created. Runtime paths are relative to the unpacked native root. This is
@@ -220,7 +222,7 @@ have been discharged. Preserve the actual texts when redistributing.
 | `usr/share/scanner-kiosk/notices/native/nettle-3.10.2/source.json` | [nettle-3.10.2/source.json](native/notice-files/nettle-3.10.2/source.json) | `3aa4facacc545b9553bc31e1c2aa965fa4fc5430b8f171cebdd1f326ae03e638` |
 | `usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/COPYING` | [p11-kit-0.26.2/COPYING](native/notice-files/p11-kit-0.26.2/COPYING) | `2e1ba993904df807a10c3eda1e5c272338edc35674b679773a8b3ad460731054` |
 | `usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/library-source-notices.txt` | [p11-kit-0.26.2/library-source-notices.txt](native/notice-files/p11-kit-0.26.2/library-source-notices.txt) | `8601671b1ef73fbe168085298391c7536e15ebaffa495d91e945eeefca810b1d` |
-| `usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/source.json` | [p11-kit-0.26.2/source.json](native/notice-files/p11-kit-0.26.2/source.json) | `c4a83f559ee9f0f95a214820431401a6f521ad39ea9aecd542a5343b2f18228c` |
+| `usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/source.json` | [p11-kit-0.26.2/source.json](native/notice-files/p11-kit-0.26.2/source.json) | `d904385ded968b1600142610d31ad19efc0dd5d7f71886267312ab476db8880d` |
 | `usr/share/scanner-kiosk/notices/native/provenance.json` | [retained/native/provenance.json](native/notice-files/retained/native/provenance.json) | `2e15a03b26573a3ebedc0e732528e6a7e0546b426be85c94cfb8ec2b38f20eef` |
 | `usr/share/scanner-kiosk/notices/native/sane-airscan/COPYING` | [retained/native/sane-airscan/COPYING](native/notice-files/retained/native/sane-airscan/COPYING) | `8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643` |
 | `usr/share/scanner-kiosk/notices/native/sane-airscan/LICENSE` | [retained/native/sane-airscan/LICENSE](native/notice-files/retained/native/sane-airscan/LICENSE) | `a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373` |
@@ -244,6 +246,7 @@ have been discharged. Preserve the actual texts when redistributing.
 | `usr/share/scanner-kiosk/notices/native/zstd-1.5.7/LICENSE` | [zstd-1.5.7/LICENSE](native/notice-files/zstd-1.5.7/LICENSE) | `7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8` |
 | `usr/share/scanner-kiosk/notices/native/zstd-1.5.7/source.json` | [zstd-1.5.7/source.json](native/notice-files/zstd-1.5.7/source.json) | `cd1ae99019c15361e06d8d3858fc75ba74cae24454261746d280513b7575259d` |
 | `usr/share/scanner-kiosk/notices/original-delivery-inventory.json` | [retained/original-delivery-inventory.json](native/notice-files/retained/original-delivery-inventory.json) | `49357229497ab31123ada3aff0c41844ade769298cd9e76bd9b44e4cca1e0132` |
+| `usr/share/scanner-kiosk/notices/p11-kit-0.26.2/library-header-notices.txt` | [p11-kit-0.26.2/library-header-notices.txt](native/notice-files/p11-kit-0.26.2/library-header-notices.txt) | `378b30431117cc2a94c4bfe80664f35a6bf322e61a3a4035b1cbd2c0ae2e6ab9` |
 | `usr/share/scanner-kiosk/notices/source-build/ca-certificates/APKBUILD` | [retained/source-build/ca-certificates/APKBUILD](native/notice-files/retained/source-build/ca-certificates/APKBUILD) | `7b35fb8e11790105578f47d57a3b22831227b0d8ad7d064e575bad146023f3da` |
 | `usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt` | [retained/source-build/ca-certificates/MPL-2.0.txt](native/notice-files/retained/source-build/ca-certificates/MPL-2.0.txt) | `fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85` |
 | `usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt` | [retained/source-build/ca-certificates/certdata-license-header.txt](native/notice-files/retained/source-build/ca-certificates/certdata-license-header.txt) | `f63a93ed6525d62c9cb979f5dff7a9a7e71bab35cdc3ef3c435e00233e315d2c` |

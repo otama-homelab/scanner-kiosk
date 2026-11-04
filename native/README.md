@@ -458,3 +458,15 @@ a separate working tree, provisional inventory and user-owned standalone build.
 It preserves the original cache verification and does not require a signing key.
 The tested path covers a non-loaded GnuTLS ELF marker and actual isolated TLS
 execution, not a source rebuild or full LGPL/source-delivery acceptance.
+
+### Selected p11-kit header supplement
+
+The selected inputs now include20 additional unique leading notices from the
+local-header/template include closure of35 selected p11-kit library C files.
+This retains BSD/ISC and common/pkcs11.h's special permission, including the
+version.h.in template, without adding unrelated test/mock header notices.
+No local include remains unresolved in the conservative conditional closure.
+Code/data bytes are unchanged. Native inputs now have299entries/188notices;
+the retained8e8c75f4… candidate remains its earlier298entry/187notice build
+until the next planned batch candidate. Do not infer it already contains the
+supplement or refresh that binary on each documentation change.

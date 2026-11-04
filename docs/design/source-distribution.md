@@ -79,3 +79,51 @@ R4 preparation is not complete until exact component terms and any remaining
 notice/source gaps have concrete dispositions. Actual tag/image/source binding
 closes in remaining plan 43-06.1 after G5; no local document can substitute for
 that final check.
+
+## Adopted material set for the next candidate
+
+Use these materials together; do not substitute an upstream homepage for a
+missing covered source input:
+
+1. The exact project Git source (launcher, API, helper, static frontend source,
+   license/notices, locks and build/repack controls), with the release revision.
+2. The existing native source set: pinned upstream archives, aports recipes,
+   local patches, exact airscan fork source/controls and helper inputs. Update
+   source-managed notice/source records from the final tree once after the
+   preparation batch; the older source bundle is an input, not the final offer.
+3. For the container, the exact base-files/CA source inputs identified in
+   distroless-source-inputs.json, the retained netbase preferred-form text files
+   and notices/licenses, and the actual timezone/media data at the image digest.
+4. Corresponding application/build materials for the LGPL native combinations,
+   rather than relying only on the optional suitable-shared-library shortcut.
+   This includes the exact helper source and native command source/build controls.
+   Existing source rebuild/repack proofs apply to unchanged code/materials.
+
+The native commands/libraries are a separate licensing scope from the independent
+CGO-free API, launcher and browser assets. A SANE/airscan linking exception does
+not override a GPL dependency elsewhere in the loaded native combination. Use
+the GPL2-or-later permissions as needed for GPL3-compatible native combinations,
+retain the LGPL options/texts and their required application materials, and keep
+Apache/BSD/MIT notices for permissively licensed portions. The native combination
+must not be advertised as Apache-only. Project-owned source retains Apache-2.0;
+this is not a demand to relicense independent first-party source.
+
+No proprietary optimizer or intermediate-code plugin is part of the recorded
+native build controls: the Tesseract rebuild identifies GNU15.2.0 C/C++ with
+normal CMake compilation, and the helper SDK pins GCC15.2.0 plus Go's normal CGO
+build. Preserve those controls for the GCC Runtime Library Exception's Eligible
+Compilation Process condition. Do not strip the exception from runtime sources
+or treat it as permission to relicense GCC runtime libraries themselves.
+
+Go/npm compiler caches and build SDK images are not default release assets.
+The first-party project source and locks/build instructions do not require
+redistributing every cached module archive or repository logo/test fixture.
+If optional caches are subsequently shipped, they introduce their own source
+archive scope and must retain the terms for the material actually included.
+This does not permit omitting required native corresponding source or helper
+application/relink materials.
+
+The pipeline in43-02 must generate and verify this concrete material set against
+the candidate. It must fail on a missing/mismatched required material.43-06 must
+then verify the actual recipient access/download and release hashes after G5.
+Preparation approval cannot be used as publication approval.

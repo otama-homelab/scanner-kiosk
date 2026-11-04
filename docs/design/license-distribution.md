@@ -521,3 +521,67 @@ notice is not evidence of complete per-file/compiled-source coverage. All 28
 current APK source origins now have major-notice mappings; exact patch/build
 transformations and recipient/distribution obligations remain under review.
 The retained 235-entry onefile predates these notice-input additions.
+
+## Named permissive-source findings closed for selected inputs (2026-11-04)
+
+- **p11-kit:** root COPYING requires binary notices in accompanying materials.
+  The35 selected library C preambles were already retained. A bounded textual
+  include closure now covers their local headers, all conditional branches and
+  version.h.in generation;20 additional unique preambles are retained verbatim.
+  This includes common/pkcs11.h’s unlimited-copy permission with notice
+  preservation, ISC and BSD holder/year notices. Test/mock headers not reached
+  by that closure were excluded. No project-local include remains unresolved.
+- **musl:** root COPYRIGHT explicitly places the x86_64 port under standard MIT,
+  identifies the third-party TRE/math/crypt/qsort regions and permits public
+  headers/crt to omit attribution. The existing118-comment supplement preserves
+  identified generic/x86_64 third-party texts. Do not require attribution for
+  the exempt header/crt material, or ARM code absent from this target. Source
+  redistribution keeps the complete upstream copyright text and source notices.
+- **libffi:** root LICENSE requires copyright/permission preservation. Existing
+  Linux non-x32 X86_64 selection retains generic/ffi64/ffiw64/assembly/template
+  notices and allocator attribution; Win64 ABI support on Linux is included.
+  Preserve these with root LICENSE and unchanged source/recipe controls.
+  A byte-identical rebuild of every APK is not an extra license condition.
+- **libxml2:** root Copyright’s specifically named dict.c/list.c exceptions and
+  dict.c’s additional common-license statement are already retained as exact
+  byte-range excerpts. They are not relicensed solely under the root holder.
+
+These are dispositions of the named notice-preservation findings, not claims
+about every source file in unrelated architectures/tools. Required source and
+final artifact/recipient access remain subject to their separate gates. The
+header supplement changes selected notice inputs only; the old candidate is
+not represented as containing it, and no per-notice repack is performed.
+
+## Preparation disposition (2026-11-04)
+
+The named data/source-form findings now have concrete dispositions:
+
+- The tessdata4.1.0 LICENSE member is Apache-2.0 and matches the retained license
+  SHA-256. Its complete archive identity reuses the earlier source-integrity
+  proof; this was a bounded fresh member read, not a new668MB full rehash.
+  eng/jpn/osd source/recipe associations remain distinct from rebuilt executable
+  and the glyphless font/configs.
+- The container actually retains `/etc/protocols`, `/etc/rpc` and `/etc/services`
+  as plain UTF-8 data. Preserve these preferred-form texts with netbase's GPL2
+  copyright/license; don't invent an object-code source gap from absent Debian
+  utilities. Matching base-files/CA sources are already retained separately.
+- The frontend’s SVG path drawing, static theme/CSS, template and JA/EN catalogs
+  are maintained as project assets under ADR0005. The existing output graph
+  records only project-rendered JS modules. Current entry/public source has no
+  external font/stylesheet/code import. This records the actual project source
+  origin; it invents neither a copyright holder nor rights in upstream npm or
+  source-module logos.
+- The recorded GNU15.2.0 compiler/cache and ordinary CMake/CGO build controls
+  provide the selected GCC exception build path; known whole-archive sources,
+  fork patches and helper materials are selected for distribution. All LGPL
+  application/relink materials are supplied in source as described by the
+  adopted source set; the design does not rely solely on a shared-library
+  label to avoid those materials.
+
+Preparation has no remaining unspecified component-condition finding for this
+selected input set. **This is a preparation disposition, not the final license
+gate.**43-02 must generate the refreshed exact source/notice material set, verify
+build/control completeness and bind it to the candidate; a missing required
+material fails that plan.43-06 must bind actual tag/image/served assets and
+recipient access after G5. No existing source bundle or old executable is
+retroactively relabeled to include the new header supplement.

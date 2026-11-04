@@ -187,11 +187,198 @@
           "notice_sha256": "23c296bdb0bd5e15d2c65cfc64a7ded8b9928498417c473bf4e3c9d29654b057"
         }
       ]
+    },
+    {
+      "file": "library-header-notices.txt",
+      "sha256": "378b30431117cc2a94c4bfe80664f35a6bf322e61a3a4035b1cbd2c0ae2e6ab9",
+      "scope": "Verbatim previously unretained leading notices from20 unique headers/templates in textual include closure of35 selected library C sources; conditional paths included",
+      "source_members": [
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/proxy.h",
+          "source_file_sha256": "cbd1af204a5c52c397d0864bd372fa19f689602d9d97dc114f00f82e2c708b41",
+          "notice_sha256": "dc441a51743395c1716ddf72cb4cc3144fb7098eb00c6037cdbc3f2f38790f39",
+          "source_bytes": [
+            0,
+            1618
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/rpc.h",
+          "source_file_sha256": "fdc043e08dbd11240cd69df3c9acec93f123d720165be48cfe03230ae2c62fab",
+          "notice_sha256": "cd6e9598244ed3b63b4971fad2fb9f6505bd6e7a711e14a60a267636abd3584c",
+          "source_bytes": [
+            0,
+            1654
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/virtual.h",
+          "source_file_sha256": "0e1b14c4a089d8f4ea6eb421ac48c31cfcb2b6b59605b959096fbd170cb071ce",
+          "notice_sha256": "04a00001aa0c153e71cd39e6ae5970afb5a508bd7832424df50f820433f06a6a",
+          "source_bytes": [
+            0,
+            1618
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/version.h.in",
+          "source_file_sha256": "3184c940b28025fdc4221a69ffd77d0ec98c9eae50b15a53c3d209886a11e4d6",
+          "notice_sha256": "945d49e8ea7282cd9b99bbf2da6685e361f5f91263aa1382419b585f89240115",
+          "source_bytes": [
+            0,
+            1599
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/remote.h",
+          "source_file_sha256": "39480beb059df14f9d6d3717552ef8a09506ca777d811b5ecbf0512f814a6e56",
+          "notice_sha256": "40edd8368b030a5a63a87c71f749de66c6aef010882875def556d5593a37edc0",
+          "source_bytes": [
+            0,
+            1618
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/pkcs11.h",
+          "source_file_sha256": "e17e187eb04f9abfe50c4a03c3fdd7751657d593ff1c58a4c05b9f3d98aa6395",
+          "notice_sha256": "b72b08611b072153695a309fa6c5304ab05e3638333521f5390e2d8e527e7015",
+          "source_bytes": [
+            0,
+            1778
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/conf.h",
+          "source_file_sha256": "f1f86b312ebf1bce5216d3ed4fb3b582cdedd2a53c5c60229dfacae1288401de",
+          "notice_sha256": "cce543f7ba13a1ad597944f05222c190d794f18e9883616e2542549c0ba83d5f",
+          "source_bytes": [
+            0,
+            1661
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/iter.h",
+          "source_file_sha256": "3194d3feeaaf469da6ca8ad6dc144619d0cc07459ab7fc9136bc3a0869e4ec5b",
+          "notice_sha256": "07d9600e4591120b527b20f99d88b84793d3c915746ff7c389cccfdc6b3a332d",
+          "source_bytes": [
+            0,
+            1623
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/log.h",
+          "source_file_sha256": "5aa7294acbaf3c8b6b0aa23e7a92b94b9e5250686af107e0fe4de9c1e1670aef",
+          "notice_sha256": "0c81d90f7896da6dabd4b59ab28385f743acacab6ef4692217c03197d45d84cb",
+          "source_bytes": [
+            0,
+            1660
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/base64.h",
+          "source_file_sha256": "9a5131427b7ad0598a2d0f51500ab1301bed45697e3d42b800d11298bf9483d9",
+          "notice_sha256": "ee461ec7731d91078cc35f536ca6cdd06ef8dd7d05839326084415941dfb0883",
+          "source_bytes": [
+            0,
+            2218
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/url.h",
+          "source_file_sha256": "54c39afd806729243245390f8f4ebd0c73e88500aa1c6f11feb91f946cfe6b2f",
+          "notice_sha256": "b14d763f0a611dd88221fb9f8e5a692e9c16e7f20e19ae27534a62460b453330",
+          "source_bytes": [
+            0,
+            1660
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/lexer.h",
+          "source_file_sha256": "0083b4e841f8de62f911ce0115f530b88cb65661652d03c7c00bf67790b47fa2",
+          "notice_sha256": "ce291ca82eaabad6f61783a675d19ffacbc62a4b81ca799fe67f4cd9026b288b",
+          "source_bytes": [
+            0,
+            1691
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/hex.h",
+          "source_file_sha256": "0c16a8deb6419389554b04b6e392dd3a4734ac0c27c4603668a4404942b04ddb",
+          "notice_sha256": "feab8690b72ad2dbba7e81ec79f7f357eff91cdf6126d393679d2dee498692f8",
+          "source_bytes": [
+            0,
+            1673
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/library.h",
+          "source_file_sha256": "7651427e856ba67ac6cf0d412b2b4d8e1c27893ab1b0bf3c4879c835a2535a5b",
+          "notice_sha256": "d328018ff5a1668b801133106dac95727ca19d3ff5daa8bba8aaf6fb6db69e6e",
+          "source_bytes": [
+            0,
+            1634
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/pkcs11x.h",
+          "source_file_sha256": "8349b0b923eec09e14799184330a7caa65b9c6ccb3021238c584781abfb1f459",
+          "notice_sha256": "37393565f493a6d7c56985033f0e62ead7f5293ab5b44c8d099656e7030edd3c",
+          "source_bytes": [
+            0,
+            1618
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/buffer.h",
+          "source_file_sha256": "de03c9a3b1c5520a9bd9d574905f91b796825ae5ea2f2596472997b3f28ee50e",
+          "notice_sha256": "adf7ffd7d52cd79717c283a1f7bb448a147a064c8f412c8479f5e03a2acad292",
+          "source_bytes": [
+            0,
+            1662
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/array.h",
+          "source_file_sha256": "9438d300ce69159805c85b207e3f0804f2b4c9d54ec7830b3ae1a96c28a98e19",
+          "notice_sha256": "cf663c2f6965e23c8e52614f04daa02c38c96258d3941b9fdff3e31b4cef0eb1",
+          "source_bytes": [
+            0,
+            1624
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/pkcs11.h",
+          "source_file_sha256": "669d76b12dfdb36001a31685f21f94d8c51d108db6487f5af3724dfbd486699b",
+          "notice_sha256": "8c66d5e0c9ae38c0aca0234bce0aafd4b0ece0b0d90c19d3528a98d6c6c98212",
+          "source_bytes": [
+            0,
+            2211
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/pkcs11i.h",
+          "source_file_sha256": "1b63634268421f6e592a0ea280c8d568361995637d084826775256f8b9276362",
+          "notice_sha256": "c4522afba2d548361c71307c1b5cb803a99f40886b66d43536866a4fa530f23d",
+          "source_bytes": [
+            0,
+            1624
+          ]
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/dict.h",
+          "source_file_sha256": "f1343b26fd4128c1a0cce4b5eb1f98eb9c5d9a0dc8926379284cd52d4ded6552",
+          "notice_sha256": "b16bf6b776493753aa68c31223aa6f9af9e18d54bd7e0e922e1b229884287d52",
+          "source_bytes": [
+            0,
+            1660
+          ]
+        }
+      ]
     }
   ],
   "publication_approved": false,
   "review_remaining": [
-    "Selected library C-file copyright and terms are retained, including ISC base64/hash notices. Header/generated-template notices, conditional sources and recipe/build transformations remain under review."
+    "Final corresponding-source/control and recipient/artifact binding. Selected library C notices and their project-header/template include closure are retained; this is a conservative conditional include set, not exact compiled-object attribution."
   ],
   "runtime_files": [
     "usr/lib/libp11-kit.so.0",

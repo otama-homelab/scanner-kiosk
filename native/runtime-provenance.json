@@ -824,6 +824,7 @@
     "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/LICENSE",
     "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/source.json",
     "usr/share/scanner-kiosk/notices/original-delivery-inventory.json",
+    "usr/share/scanner-kiosk/notices/p11-kit-0.26.2/library-header-notices.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/APKBUILD",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt",
@@ -840,7 +841,7 @@
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/replacement.json",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json"
   ],
-  "notice_scope": "Preserved notices and historical observation receipts, plus current fork patch/build metadata. Past images/package inventories/run-specific fields remain historical evidence, not current installed-package claims. Do not drop license texts. Six source-managed Leptonica/libjpeg-turbo notice, attribution and source-association files are selected from native/notice-files; they are not historical observations or complete license/source clearance. A further32 source-managed notice/association/attribution files preserve12 transitive upstream packages; per-file/build/source review remains open. Three exact libxml2dict/list comment excerpts supplement the root Copyright; other per-file coverage remains open.",
+  "notice_scope": "Preserved notices and historical observation receipts, plus current fork patch/build metadata. Past images/package inventories/run-specific fields remain historical evidence, not current installed-package claims. Do not drop license texts. Six source-managed Leptonica/libjpeg-turbo notice, attribution and source-association files are selected from native/notice-files; they are not historical observations or complete license/source clearance. A further32 source-managed notice/association/attribution files preserve12 transitive upstream packages; per-file/build/source review remains open. Three exact libxml2dict/list comment excerpts supplement the root Copyright; other per-file coverage remains open. P11-kit library-header supplement preserves20 additional unique preambles reached from the35 selected library C sources, including generated version template, ISC and PKCS11 special permission; not new code or publication approval.",
   "notice_sources": {
     "usr/share/scanner-kiosk/notices/README.txt": "retained/README.txt",
     "usr/share/scanner-kiosk/notices/apkbuild/sane-airscan.APKBUILD": "retained/apkbuild/sane-airscan.APKBUILD",
@@ -1014,6 +1015,7 @@
     "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/LICENSE": "zstd-1.5.7/LICENSE",
     "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/source.json": "zstd-1.5.7/source.json",
     "usr/share/scanner-kiosk/notices/original-delivery-inventory.json": "retained/original-delivery-inventory.json",
+    "usr/share/scanner-kiosk/notices/p11-kit-0.26.2/library-header-notices.txt": "p11-kit-0.26.2/library-header-notices.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/APKBUILD": "retained/source-build/ca-certificates/APKBUILD",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt": "retained/source-build/ca-certificates/MPL-2.0.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt": "retained/source-build/ca-certificates/certdata-license-header.txt",
@@ -1031,7 +1033,7 @@
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json": "retained/source-build/tesseract-5.5.4/source-receipt.json"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "ece379e0af6b142bfc671fbe2b70c373e7424ad48fb81682414a617958e2c4c5",
+  "runtime_manifest_sha256": "38d7d3bff19630689db3f961ebf5c73caf924ed83331fad32cb491b80b5f2635",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {
