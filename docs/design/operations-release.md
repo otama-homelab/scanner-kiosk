@@ -112,6 +112,62 @@ infrastructure/secret recovery remain separate acceptance work.
 
 Migration versions/checksums prevent an older binary opening a newer incompatible DB. Introduce backward-compatible migrations where possible; rollback to an older schema requires an explicit recovery path, not disabling the version check. Draining and scanner reconciliation precede both upgrade and rollback. Never copy new private outputs into the old shared output directory as a rollback shortcut.
 
+### Operator sequence for upgrade and rollback
+
+This is the procedure to accept on the selected storage/deployment before
+production, not evidence that a live upgrade has occurred.
+
+1. Record the old/new immutable image digests (or binary checksums), matching
+   deployment configuration, numeric UID/GID, claims/paths and migration files.
+   Keep the old executable/image available. Recover secrets through their
+   existing managed system; identity export does not contain deployment secrets.
+2. Stop new admissions and edits through the deployment's maintenance routing,
+   retaining monitoring/cancel access. Verify new work is refused. Drain active
+   jobs or request cancellation and verify local processes have stopped and the
+   physical device is reconciled. An unknown job/held lease is a stop condition;
+   do not erase it, release it manually or start a second writer to continue.
+3. Export identities with the **old** executable to a new private archive outside
+   the document volume. As the same application account, the standalone command
+   is `SCANNER_STATE_DIR="$state_root" scanner state export "$new_archive"`.
+   Use an existing private backup directory, verify success/private file mode
+   and retain its checksum. For a container, mount that private backup directory
+   explicitly and invoke the same command through the existing entrypoint;
+   an archive left only in an ephemeral container filesystem is not a backup.
+4. Stop the old application normally and verify termination before replacing it.
+   Keep both existing data roots and their ownership unchanged; do not copy live
+   SQLite DB/WAL files, reuse the legacy shared output root or snapshot documents.
+   Apply the new pinned artifact/configuration with one writer and Recreate.
+   Acquisition stays disabled until storage/schema startup and device ownership
+   checks pass. A failed migration/startup keeps maintenance in place.
+5. Check API health, fresh authentication, an existing owner's unexpired document
+   visibility and denial to another owner, then perform the accepted scanner
+   smoke task. Confirm job terminal state, stop/release and cleanup. Only then
+   reopen admissions. A health probe alone is not the scanner acceptance result.
+
+For rollback, first repeat the maintenance/drain/confirmed-stop steps for the
+new worker. Reuse the old artifact with existing stores only when its checked
+migration versions/names/hashes accept **both** resulting databases. Even an
+additive SQL migration is not automatically downgrade-compatible: storage.Open
+rejects an unknown version or changed checksum. Never edit migration rows or
+retry with guards disabled.
+
+If the old artifact cannot open those schemas, remain in maintenance. Restore
+its pre-upgrade identity archive with that old artifact into a **new, empty,
+private state root** using `SCANNER_STATE_DIR="$fresh_state_root" scanner state
+restore "$preupgrade_archive"`. Use a separate empty document root; this recovery
+restores no sessions or documents. Confirm the impact with the operator before
+switching volumes: existing pending outputs must not disappear through an
+implicit recovery choice. Keep the stopped roots available only within their
+existing retention/privacy policy; recovery is not permission to retain scans
+longer or include them in backup. If required preconditions or compatible
+recovery materials are absent, stop rather than inventing a downgrade.
+
+The initial transition back to legacy scanservjs is a separate cutover rollback:
+stop/reconcile the new writer first, then restore the recorded old route and
+writer controls. Never run both writers or import private outputs into legacy
+shared history. Record the selected-artifact pair, storage results, known-job
+outcomes and operator acceptance before marking the real upgrade/rollback gate.
+
 The existing portal/scanservjs/Stirling and printing remain unchanged during development. Production switch, URL/auth changes, old output ownership/retention, and eventual PVC/snapshot deletion follow the parent migration gates. Local image build/runtime fixture checks are connected. Actual storage/CSI, native/OCR combined load and deployment acceptance remain pending; the initial absence of a local Docker daemon was resolved using the existing Docker Desktop tool.
 
 ## Executable core configuration validation
