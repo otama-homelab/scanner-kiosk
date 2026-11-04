@@ -23,8 +23,9 @@ The local 2026-11-04 inventory retained these two Syft/CycloneDX outputs plus a
 separate provenance-derived native CycloneDX supplement. The supplement binds
 `native/runtime-manifest.json` and `runtime-provenance.json` to the actual packed
 manifest and rehashed cached files. It records 36 selected APK origins, two
-source-built components and the first-party SANE helper; 111 runtime code/data
-entries and 80 preserved notices cover all 191 native entries. Package records
+source-built components and the first-party SANE helper; The initial snapshot contained 111 runtime code/data
+entries and 80 preserved notices. Later source-managed additions bring the
+current tree to 232 entries: 111 code/data entries and 121 notices. Package records
 represent selected archive files, not complete installed packages. In particular,
 the retained 5.5.2 Tesseract APK configs/data are separate from the source-built
 5.5.4 engine, and the modified airscan fork keeps its patch/source identity.
@@ -394,7 +395,7 @@ govulncheck -db=file:///path/to/validated-db -mode=binary -scan=symbol -format=j
 
 JSON mode can exit zero even when findings exist: parse its finding stream rather
 than using the exit status as a gate. A compiled, never-executed OpenPGP control
-produced GO-2026-5932 findings; official text mode returned exit3 as expected.
+produced GO-2026-5932 findings; official text mode returned exit 3 as expected.
 
 The stripped API binary produced one module-level finding and seven wildcard
 placeholders for GO-2026-5932. These are the official tool's conservative
@@ -453,3 +454,43 @@ synthetic old-libxml2 control produced exit 2; repeat output creation refused to
 overwrite its report. These are scoped comparison results, not clearance of the
 current onefile or distroless candidate. Source CI runs the four offline safety
 tests only; snapshot acquisition and real `apk` comparison are separate checks.
+
+
+## Current Go binary and source-package checks, 2026-11-04
+
+The local onefile candidate `85202ac0…` was checked with the retained official
+govulncheck 1.9.0 and freshly retrieved complete official v1 indexes. The
+database's published modified time remained 2026-11-02T22:01:43Z. All 235 records
+referenced by the 22 candidate/control module paths were retained without
+severity, affected-version or withdrawal filtering. Previously retained records
+were reused only when their original SHA256 and current index modified timestamps
+matched. This is a target-scoped database snapshot, not a global mirror.
+
+After actual integrity-checked extraction, the exact app 29b2b6b9, helper 0266e081
+and outer launcher 85202ac0 were analyzed offline. The launcher/helper had no
+findings at this snapshot. The API retained GO-2026-5932 for x/crypto 0.58.0: one
+module finding, seven package indicators and seven function fields ending in
+`/*`. Those wildcard fields are not exact compiled function names or evidence of
+call reachability. Do not interpret JSON mode's successful exit as a clean scan
+or discard the raw indicators.
+
+An additional `source`/`package` analysis used current tracked runtime sources,
+Linux/amd64, CGO disabled, the webui tag and the same five verified embedded
+assets. Its 21 third-party module versions matched the actual API binary. The
+module finding remained, with zero affected-package findings for this app. A
+separate OpenPGP-using source control produced six affected-package findings.
+This supports package-level triage for this exact build; source call analysis,
+VEX and vulnerability acceptance were not performed or implied.
+
+The known vulnerable binary control produced the advisory and official text
+mode exit 3. Removing its required GO-2026-5932 record from a private database copy
+caused exit 1 instead of a silent clean result. All target processes had no
+external networking. The initial local classifier incorrectly treated path
+wildcards as exact function names; the raw JSON was preserved and classification
+corrected for fields ending in `/*`.
+
+The Go binary gate remains uncleared, and the overall vulnerability/release
+gates remain false. Native C/OS advisory matching, the source-built fork, full
+component/license/source delivery and scanner operational acceptance are separate
+requirements. These checks were local; no hosted security job or publisher was
+added by this observation.
