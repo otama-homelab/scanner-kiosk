@@ -90,10 +90,13 @@ inputs, mutable image digests and reused PVC names. It has no cluster credential
 and performs no deployment or native scanner execution. It does not build or
 approve the complete onefile/native distribution.
 
-This workflow has been linted locally; it has not run on GitHub. The application
-repository has no configured remote yet. Choosing/creating that remote, pushing,
-observing the actual hosted checks and configuring required branch checks remain
-release work. A source-check pass does not approve distribution: this workflow
+The source repository is https://github.com/otama-homelab/scanner-kiosk and is
+currently private. Hosted source checks passed all four jobs for commit
+c4a4fa799085c2f37b509c98a4068b99d60a6179 (run 41787580872), including the
+required-checks aggregate. Main branch protection remains unconfigured: the
+Free/private repository API rejects it with HTTP 403; public/private visibility
+is still an operator decision. A paid plan or visibility change has not been
+applied. A source-check pass does not approve distribution: this workflow
 does not publish an image, create a release, deploy, or implement the image SBOM,
 vulnerability, license/source-delivery and hardware/recovery acceptance gates.
 Those must be completed for the exact release inputs before publication. Current

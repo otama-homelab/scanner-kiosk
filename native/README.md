@@ -144,8 +144,8 @@ are deliberately identified as preserved inputs, not regenerated current proofs.
 ## Source-managed notices
 
 The current native manifest has **298 entries**:111 code/data entries and187
-notice/source/observation files.All187 notices are source-managed in `notice-files/`.
-The80 retained historical inputs preserve their original runtime bytes. The first six source-managed files
+notice/source/observation files. All 187 notices are source-managed in `notice-files/`.
+The 80 retained historical inputs preserve their original runtime bytes. The first six source-managed files
 cover Leptonica1.87.0/libjpeg-turbo3.1.3.32 additional files preserve19 upstream
 texts for12 transitive packages,12 source-association records and LibTIFF's
 Berkeley attribution. Original native code/data and prior notices are unchanged.
@@ -166,7 +166,7 @@ manifest, instead of the historical `--notices-root`. Both source-managed and le
 manifest size/hash checks and descriptor-relative no-follow traversal. Missing,
 changed or symlinked source-managed notices fail without falling back to historical
 input. Keep this directory beside the manifest in a source export or build input.
-The current manifest needs no historical notice root: all187 inputs are now
+The current manifest needs no historical notice root: all 187 inputs are now
 in the checkout. For the assembler’s required `--notices-root` argument, supply
 a new empty directory; it is not read for this manifest. Generic older input
 manifests retain the existing explicit historical-root path.
