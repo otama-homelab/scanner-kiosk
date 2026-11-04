@@ -577,3 +577,28 @@ remaining triage are recorded in the parent plan's
 retrieved only public metadata; source inspection and scanning had no external
 network and used read-only inputs. Both owned units terminated and staging was
 removed. Other source-built components still need advisory coverage.
+
+
+### Follow-up review of the three changed source cases
+
+The later deltas for CVE-2026-88052/88053/88054 were reviewed against the
+retained exact source archive. Nine changed-since-fix source files matched the
+current Git blob identities from official upstream compare metadata; plumbing
+retained the earlier exact-fixed-file proof. Nine explicit source checks across
+ten files passed in an isolated, read-only-input inspection.
+
+For 88052, the positive count and inserted-vector-size checks remain before
+property writes; the later delta adds a MAX_NUM_CLASSES limit. For 88053, the
+class/pruner/proto-set limits and initialization error propagation remain;
+later changes add runtime class-ID checks, earlier neutralization of file-sourced
+pointers and adapted-template construction failure handling. For 88054, empty
+stack/one-element-series rejection and LSTM Load failure cleanup remain; the
+later tessedit change adds a separate unicharset limit.
+
+These three follow-up static reviews are complete. Together with the five
+exact-fixed-source identities, they support scoped source triage of the eight
+retained findings; they do not prove the shipped binary was rebuilt from those
+sources or replace exploit regression tests. No ignores or VEX were added, and
+the raw high-severity scan exit remains unchanged. Recipient Tesseract rebuild,
+other source-built coverage and overall security/release acceptance remain open.
+Evidence: parent plan `tesseract-followup-source-review-20261104/current-evidence.json`.
