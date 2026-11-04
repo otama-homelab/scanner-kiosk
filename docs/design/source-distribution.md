@@ -147,3 +147,12 @@ recipient build command and retains actual build settings. A refreshed source
 archive is not a new API/native rebuild, a frozen release RC, license/security
 approval or proof of actual recipient access. Final base/material binding and
 the hosted main/tag/publisher gates remain open.
+
+The container-only base subset is now prepared as `scanner-base-sources.tar`
+(SHA256`8afa410e…`, 471,040bytes). A stopped container of the exact current
+image supplied21 checked source/image members: eight notices/license texts,
+three preferred-form netbase text files, six package-status records and four
+matching base-files/CA source files. The source bytes are rechecked against
+retained authenticated metadata; all image-file hashes match the reviewed
+base ledger. The container was never started and was removed. This closes
+local base subset preparation, not final manifest/recipient/publication gates.

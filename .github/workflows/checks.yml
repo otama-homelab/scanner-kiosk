@@ -54,6 +54,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_required_jobs.py -v
       - name: Release channel and ancestry contract
         run: python3 -m unittest discover -s scripts -p test_release_ref.py -v
+      - name: Immutable publication and alias ordering contract
+        run: python3 -m unittest discover -s scripts -p test_publication_policy.py -v
       - name: Preserve vulnerability scan timeout evidence
         run: python3 -m unittest discover -s scripts -p test_check_vulnerabilities.py -v
       - name: Embedded app identity contract

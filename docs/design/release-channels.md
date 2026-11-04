@@ -107,3 +107,35 @@ diagnostics are a separate artifact. No registry alias, GitHub Release,
 visibility or billing setting is changed. Hosted validation of this workflow
 remains pending the existing workflow-authentication checkpoint; local
 fixtures alone do not establish a clean-runner success.
+
+## Publication decision policy
+
+`scripts/publication-policy.py` reuses the exact-checkout/trunk/tag policy and
+outputs a write-free JSON plan. It does not upload, move an alias or authorize
+publication. A future writer must first verify the full staged candidate and
+approval gates, then obtain complete fresh service state while holding the
+single publisher lock; an old saved snapshot is not sufficient for writes.
+
+The remote-state input has three required fields: `releases` contains GitHub
+release records (`tag_name`, boolean `draft` and `prerelease`), `image_tags`
+contains all relevant existing registry tags, and `preview_source_sha` is the
+verified source commit of the current preview alias (or null if absent). Missing
+state is rejected rather than treated as an empty registry. Existing aliases
+with unknown ownership must not be reset.
+
+Preview releases use `preview-<full commit>` and versioned images use
+`sha-<full commit>`, while the executable retains its validated preview version.
+Only a descendant of the current preview may advance `preview`. Stable tags
+use their exact version; numeric SemVer ordering determines whether `latest`
+may advance. Higher drafts reserve names but do not count as qualified stable
+releases. Prereleases never advance `latest`. An existing release or versioned
+image is rejected, including reruns; partial publication requires explicit
+recovery rather than an overwrite. Versions exceeding registry tag limits are
+rejected before a writer runs. PR/manual source-check events are rejected.
+
+Sixteen isolated tests cover the policy and CLI, including late old runs,
+prereleases, moved tags, collisions, unknown remote state and numeric ordering.
+The six existing ref tests and actionlint also pass. The source workflow runs
+the new contract tests with its existing read-only permissions. The material
+stager, service writer/serialized workflow and actual main/tag publication are
+still incomplete; this policy is not a successful-looking publishing job.
