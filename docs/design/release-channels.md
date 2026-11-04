@@ -174,3 +174,38 @@ This is not the missing formal main/tag RC. Fifteen isolated failure/identity
 tests and actionlint pass; the source workflow runs these tests read-only.
 The service writer/serialized publishing workflow and actual publication
 remain unfinished.
+
+## Candidate and approval preflight
+
+The publication policy accepts `--candidate`, `--approval` and
+`--approval-sha256` together to verify a full candidate before returning the
+write-free plan. The expected approval hash must come from trusted operator
+state, separately from the candidate artifact or an untrusted checkout. It is
+not obtained from the approval document itself. Run this parsing/validation
+credential-free, network-isolated and read-only with the staging resource
+bounds. Nothing here fetches a service token, uploads an asset or grants a
+repository permission.
+
+`verify_staged` reuses the original file bounds/hash checks and material
+correspondence without making another copy. It requires the final receipt,
+canonical manifest and exact SHA256SUMS; post-stage changes fail. Preflight
+also checks an approval record bound to that exact manifest/source and fixed
+repository, with explicit private/public intent. Each existing gate
+(required_checks, security, license, g5, recipient_access, c1) must have
+`passed:true` and a SHA256 evidence identity. This validates the authenticated
+record, not the underlying human review. The service writer must verify the
+live visibility/access and current serialized service state separately, with
+no implicit visibility or billing change.
+
+The candidate's version and embedded revision must match the validated
+main/tag policy. A development build cannot become a release by approving its
+metadata. Incomplete scans also fail preflight. Raw advisory threshold results
+remain unchanged, including when an explicit security review later supplies a
+triage disposition; approval never erases the original report or marks its
+matcher output clean.
+
+Nineteen staging/revalidation tests, nine approval-preflight tests, sixteen
+publication-policy regressions and actionlint pass. The actual local staged
+manifest e2e81496… was reverified and correctly rejected with a deliberately
+unapproved record; no successful approval for that candidate was minted. The
+external service writer/serialized workflow is still unfinished.

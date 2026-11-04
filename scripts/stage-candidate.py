@@ -6,6 +6,7 @@ source-review receipts are cross-checked; this does not repeat source builds,
 archive semantic review, exploitability review or physical acceptance.
 """
 import argparse
+from contextlib import nullcontext
 import hashlib
 import json
 import os
@@ -56,7 +57,7 @@ def read_json(path):
     return json.loads(path.read_bytes(), object_pairs_hook=unique_object)
 
 
-def copy_checked(root, record, destination):
+def check_file(root, record, destination=None):
     relative = record['path']
     require(isinstance(relative, str) and relative and '\\' not in relative
             and not PurePosixPath(relative).is_absolute()
@@ -68,7 +69,7 @@ def copy_checked(root, record, destination):
     path /= PurePosixPath(relative).name
     require(stat.S_ISREG(path.lstat().st_mode), 'input must be a regular file')
     descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-    with os.fdopen(descriptor, 'rb') as source, destination.open('xb') as output:
+    with os.fdopen(descriptor, 'rb') as source, (destination.open('xb') if destination else nullcontext()) as output:
         info = os.fstat(source.fileno())
         require(stat.S_ISREG(info.st_mode) and info.st_size == record['bytes'], 'input size/type mismatch')
         digest, size = hashlib.sha256(), 0
@@ -76,11 +77,13 @@ def copy_checked(root, record, destination):
             size += len(chunk)
             require(size <= record['bytes'], 'input grew during staging')
             digest.update(chunk)
-            output.write(chunk)
+            if output is not None:
+                output.write(chunk)
         after = os.fstat(source.fileno())
         require(size == record['bytes'] and digest.hexdigest() == record['sha256'], 'input hash mismatch')
         require((info.st_size, info.st_mtime_ns) == (after.st_size, after.st_mtime_ns), 'input changed during staging')
-    destination.chmod(0o444)
+    if destination is not None:
+        destination.chmod(0o444)
 
 
 def verify_raw_reports(path, scans):
@@ -182,6 +185,56 @@ def bind_materials(root, records, source_sha):
                                            and s['exit_code'] == 0 for s in scans.values())}
 
 
+def validate_records(records):
+    require(isinstance(records, dict) and set(NAMES)-OPTIONAL <= set(records) <= set(NAMES), 'missing or unknown material role')
+    total = 0
+    for role, record in records.items():
+        require(isinstance(record, dict) and set(record) == {'path', 'bytes', 'sha256'}
+                and type(record['bytes']) is int and 0 < record['bytes'] <= MAX_ASSET
+                and isinstance(record['sha256'], str) and re.fullmatch(r'[0-9a-f]{64}', record['sha256']), 'invalid material record: '+role)
+        total += record['bytes']
+    require(total <= MAX_TOTAL, 'candidate exceeds material size bound')
+
+
+def material_manifest(identity, records):
+    return {'format': 1, 'candidate_id': 'sha256:'+identity['binary_sha256'], **identity,
+            'publication_approved': False,
+            'files': {role: {'file': NAMES[role], 'bytes': r['bytes'], 'sha256': r['sha256']}
+                      for role, r in sorted(records.items())}}
+
+
+def checksum_text(digest, records):
+    return '\n'.join([digest+'  manifest.json']+
+                     [r['sha256']+'  '+NAMES[role] for role, r in sorted(records.items())])+'\n'
+
+
+def verify_staged(root):
+    root = Path(root)
+    require(stat.S_ISDIR(root.lstat().st_mode), 'candidate root must be a real directory')
+    manifest, receipt = read_json(root/'manifest.json'), read_json(root/'receipt.json')
+    records = {}
+    for role, record in manifest['files'].items():
+        require(role in NAMES and set(record) == {'file', 'bytes', 'sha256'}
+                and record['file'] == NAMES[role], 'invalid staged filename/role')
+        records[role] = {'path': record['file'], 'bytes': record['bytes'], 'sha256': record['sha256']}
+    validate_records(records)
+    require(isinstance(manifest['source_sha'], str)
+            and re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', manifest['source_sha']), 'invalid staged source')
+    for record in records.values():
+        check_file(root, record)
+    identity = bind_materials(root, records, manifest['source_sha'])
+    raw = (json.dumps(material_manifest(identity, records), indent=2, sort_keys=True)+'\n').encode()
+    require((root/'manifest.json').read_bytes() == raw, 'manifest identity/status mismatch')
+    digest = hashlib.sha256(raw).hexdigest()
+    expected_receipt = {'passed': True, 'manifest_sha256': digest, 'candidate_id': manifest['candidate_id'],
+                        'publication_approved': False, 'external_writes': False}
+    require(receipt == expected_receipt, 'incomplete/changed stage receipt')
+    checksums = checksum_text(digest, records).encode()
+    check_file(root, {'path': 'SHA256SUMS', 'bytes': len(checksums),
+                      'sha256': hashlib.sha256(checksums).hexdigest()})
+    return manifest
+
+
 def stage(inputs, inventory_path, output):
     inputs, output = Path(inputs), Path(output)
     require(stat.S_ISDIR(inputs.lstat().st_mode), 'input root must be a real directory')
@@ -191,32 +244,21 @@ def stage(inputs, inventory_path, output):
     require(spec['format'] == 1 and isinstance(spec['source_sha'], str)
             and re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', spec['source_sha']), 'invalid source identity')
     records = spec['files']
-    require(isinstance(records, dict) and set(NAMES)-OPTIONAL <= set(records) <= set(NAMES), 'missing or unknown material role')
-    total = 0
-    for role, record in records.items():
-        require(isinstance(record, dict) and set(record) == {'path', 'bytes', 'sha256'}
-                and type(record['bytes']) is int and 0 < record['bytes'] <= MAX_ASSET
-                and isinstance(record['sha256'], str) and re.fullmatch(r'[0-9a-f]{64}', record['sha256']), 'invalid material record: '+role)
-        total += record['bytes']
-    require(total <= MAX_TOTAL, 'candidate exceeds material size bound')
+    validate_records(records)
     # mkdir reserves the output name atomically; a failed stage never gets a receipt.
     output.mkdir(mode=0o700)
     try:
         for role, record in records.items():
-            copy_checked(inputs, record, output/NAMES[role])
+            check_file(inputs, record, output/NAMES[role])
         try:
             identity = bind_materials(output, records, spec['source_sha'])
         except (KeyError, TypeError, IndexError, AttributeError, tarfile.TarError) as error:
             raise ValueError('malformed material metadata') from error
-        manifest = {'format': 1, 'candidate_id': 'sha256:'+identity['binary_sha256'], **identity,
-                    'publication_approved': False,
-                    'files': {role: {'file': NAMES[role], 'bytes': r['bytes'], 'sha256': r['sha256']}
-                              for role, r in sorted(records.items())}}
+        manifest = material_manifest(identity, records)
         raw = (json.dumps(manifest, indent=2, sort_keys=True)+'\n').encode()
         (output/'manifest.json').write_bytes(raw)
         digest = hashlib.sha256(raw).hexdigest()
-        checksums = [digest+'  manifest.json']+[r['sha256']+'  '+NAMES[role] for role, r in sorted(records.items())]
-        (output/'SHA256SUMS').write_text('\n'.join(checksums)+'\n')
+        (output/'SHA256SUMS').write_text(checksum_text(digest, records))
         (output/'manifest.json').chmod(0o444)
         (output/'SHA256SUMS').chmod(0o444)
         receipt = {'passed': True, 'manifest_sha256': digest, 'candidate_id': manifest['candidate_id'],

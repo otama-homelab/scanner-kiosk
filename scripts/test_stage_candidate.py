@@ -92,7 +92,42 @@ class StageCandidateTest(unittest.TestCase):
         spec.loader.exec_module(module)
         inventory = self.root/'inventory.json'
         inventory.write_text(json.dumps({'format': 1, 'source_sha': self.source, 'files': self.files}))
+        self.module = module
         return module.stage(self.inputs, inventory, self.output)
+
+    def test_read_only_verification_reuses_candidate_bindings(self):
+        result = self.run_stage()
+        before = {p.name: p.read_bytes() for p in self.output.iterdir()}
+        manifest = self.module.verify_staged(self.output)
+        self.assertEqual(manifest['binary_sha256'], self.files['binary']['sha256'])
+        self.assertEqual(result['candidate_id'], manifest['candidate_id'])
+        self.assertEqual(before, {p.name: p.read_bytes() for p in self.output.iterdir()})
+
+    def test_read_only_verification_rejects_post_stage_changes(self):
+        self.run_stage()
+        target = self.output/'scanner-onefile-linux-amd64'
+        target.chmod(0o644)
+        target.write_bytes(b'poison')
+        with self.assertRaises(ValueError):
+            self.module.verify_staged(self.output)
+
+    def test_read_only_verification_requires_final_receipt(self):
+        self.run_stage()
+        (self.output/'receipt.json').unlink()
+        with self.assertRaises((ValueError, OSError)):
+            self.module.verify_staged(self.output)
+
+    def test_read_only_verification_rejects_changed_manifest_and_checksums(self):
+        for name in ['manifest.json', 'SHA256SUMS']:
+            with self.subTest(name=name):
+                self.run_stage()
+                path = self.output/name
+                path.chmod(0o644)
+                path.write_text('{}\n')
+                with self.assertRaises((ValueError, OSError, KeyError)):
+                    self.module.verify_staged(self.output)
+                import shutil
+                shutil.rmtree(self.output)
 
     def test_stage_rehashes_and_copies_materials_without_publication_approval(self):
         result = self.run_stage()

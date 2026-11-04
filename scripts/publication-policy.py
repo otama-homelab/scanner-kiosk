@@ -6,6 +6,7 @@ validate candidate materials/approvals, and apply the returned plan separately.
 This policy does not turn a ref check into permission to publish.
 """
 import argparse
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -82,20 +83,68 @@ def publication_plan(ref, sha, event, state, repository=Path('.')):
             'aliases': aliases, 'external_writes': False}
 
 
+def prepare_publication(candidate, approval_path, approval_sha256, ref, sha, event, state, repository=Path('.')):
+    """Offline preflight; the approval hash must come from trusted operator state.
+
+    Run credential-free in the same bounded/read-only sandbox as staging. This
+    authenticates an explicit approval record, not its human review process.
+    The writer still owns fresh service-state checks and the serialized lock.
+    """
+    stage_spec = importlib.util.spec_from_file_location('stage_candidate', Path(__file__).with_name('stage-candidate.py'))
+    staging = importlib.util.module_from_spec(stage_spec)
+    stage_spec.loader.exec_module(staging)
+    manifest = staging.verify_staged(candidate)
+    require = staging.require
+    require(isinstance(approval_sha256, str) and re.fullmatch(r'[0-9a-f]{64}', approval_sha256), 'invalid trusted approval hash')
+    approval_path = Path(approval_path)
+    approval = staging.read_json(approval_path)
+    staging.check_file(approval_path.parent, {'path': approval_path.name,
+        'bytes': approval_path.stat().st_size, 'sha256': approval_sha256})
+    manifest_hash = hashlib.sha256((Path(candidate)/'manifest.json').read_bytes()).hexdigest()
+    gates = {'required_checks', 'security', 'license', 'g5', 'recipient_access', 'c1'}
+    require(set(approval) == {'format', 'manifest_sha256', 'source_sha', 'repository', 'visibility', 'gates'}
+            and type(approval['format']) is int and approval['format'] == 1
+            and approval['manifest_sha256'] == manifest_hash and approval['source_sha'] == manifest['source_sha']
+            and approval['repository'] == 'otama-homelab/scanner-kiosk'
+            and approval['visibility'] in ['private', 'public'], 'approval scope/manifest mismatch')
+    require(isinstance(approval['gates'], dict) and set(approval['gates']) == gates, 'missing acceptance gate')
+    for gate in approval['gates'].values():
+        require(isinstance(gate, dict) and set(gate) == {'passed', 'evidence_sha256'}
+                and gate['passed'] is True and isinstance(gate['evidence_sha256'], str)
+                and re.fullmatch(r'[0-9a-f]{64}', gate['evidence_sha256']), 'unpassed gate or missing evidence identity')
+    require(manifest['scans_completed'] is True, 'incomplete advisory scans')
+    plan = publication_plan(ref, sha, event, state, repository)
+    require(manifest['source_sha'] == plan['source_sha']
+            and manifest['version']['revision'] == plan['source_sha']
+            and manifest['version']['version'] == plan['version'], 'candidate is not the exact main/tag build')
+    return {**plan, 'manifest_sha256': manifest_hash, 'approval_sha256': approval_sha256,
+            'repository': approval['repository'], 'visibility': approval['visibility'],
+            'image_id': manifest['image_id'], 'advisory_threshold_passed': manifest['advisory_threshold_passed'],
+            'uploads': sorted(r['file'] for r in manifest['files'].values())+
+                       ['manifest.json', 'SHA256SUMS', 'receipt.json']}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--ref', required=True)
     parser.add_argument('--sha', required=True)
     parser.add_argument('--event', required=True)
     parser.add_argument('--remote-state', type=Path, required=True)
+    parser.add_argument('--candidate', type=Path)
+    parser.add_argument('--approval', type=Path)
+    parser.add_argument('--approval-sha256')
     args = parser.parse_args()
+    if any([args.candidate, args.approval, args.approval_sha256]) and not all([args.candidate, args.approval, args.approval_sha256]):
+        parser.error('candidate preflight requires --candidate, --approval and --approval-sha256 together')
     try:
         if args.remote_state.stat().st_size > 2 << 20:
             raise ValueError('remote state exceeds bound')
-        result = publication_plan(args.ref, args.sha, args.event,
-                                  json.loads(args.remote_state.read_text()))
-    except (ValueError, OSError, subprocess.SubprocessError):
-        parser.exit(1, 'publication plan rejected: ref, immutable version or complete remote state is invalid\n')
+        state = json.loads(args.remote_state.read_text())
+        result = (prepare_publication(args.candidate, args.approval, args.approval_sha256,
+                                     args.ref, args.sha, args.event, state)
+                  if args.candidate else publication_plan(args.ref, args.sha, args.event, state))
+    except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError):
+        parser.exit(1, 'publication plan rejected: ref, materials, approvals or remote state is invalid\n')
     print(json.dumps(result, sort_keys=True))
 
 
