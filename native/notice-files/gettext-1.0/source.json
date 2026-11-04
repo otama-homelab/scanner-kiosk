@@ -25,7 +25,7 @@
       "scope": "complete-notice"
     },
     {
-      "file": "gettext-runtime/intl/AUTHORS",
+      "file": "gettext-runtime--intl--AUTHORS",
       "sha256": "4bd9e2cd15ab6d68b30965512b63a1d4aae95f4c1dd040657a4d1300252a695f",
       "source_member": "gettext-1.0/gettext-runtime/intl/AUTHORS",
       "source_file_sha256": "4bd9e2cd15ab6d68b30965512b63a1d4aae95f4c1dd040657a4d1300252a695f",
@@ -39,14 +39,14 @@
       "scope": "complete-notice"
     },
     {
-      "file": "gettext-runtime/intl/COPYING.LIB",
+      "file": "gettext-runtime--intl--COPYING.LIB",
       "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
       "source_member": "gettext-1.0/gettext-runtime/intl/COPYING.LIB",
       "source_file_sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
       "scope": "complete-notice"
     },
     {
-      "file": "gettext-runtime/intl/dcigettext.c.notice.txt",
+      "file": "gettext-runtime--intl--dcigettext.c.notice.txt",
       "sha256": "c301874fcfdb27a49237157c7831e7c645e0a6dc44dcee6592e598e858410e3e",
       "source_member": "gettext-1.0/gettext-runtime/intl/dcigettext.c",
       "source_file_sha256": "45207e8ae3149af68a73de267e46ec05a996d6b0ca0fee0ed8f9e56f7e5de6b4",
@@ -61,5 +61,9 @@
   "publication_approved": false,
   "review_remaining": [
     "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ],
+  "source_archive_sha512": "fa657faf5685dae7121a9b0293d3308a3910a72b90943a7a493b88cf88e95f29c5758e1573320169fe9beac6f101ef76f4165a279a7f3294155d7a773e2fa09f",
+  "source_recipe_origins": [
+    "a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext"
   ]
 }

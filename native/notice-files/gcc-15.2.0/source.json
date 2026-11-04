@@ -91,7 +91,7 @@
       "scope": "complete-notice"
     },
     {
-      "file": "libgomp/libgomp.h.notice.txt",
+      "file": "libgomp--libgomp.h.notice.txt",
       "sha256": "046c131874b7a208e212af311bb4f7da51effe3012ccf764dea27abca79299fa",
       "source_member": "gcc-15.2.0/libgomp/libgomp.h",
       "source_file_sha256": "caf8846bef59a11d4ae725c21f51690bc326c847b4647f2cf742386ab38f3a74",
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "file": "libgcc/libgcc2.c.notice.txt",
+      "file": "libgcc--libgcc2.c.notice.txt",
       "sha256": "339909457c9ffd6328dcad49cc03155a72d6f27f0ae37e3c32d835c3493745a9",
       "source_member": "gcc-15.2.0/libgcc/libgcc2.c",
       "source_file_sha256": "00bd4be43efbd9f70f6c8918cfaf7453d5bc1516c469ecb38da8777da4850fcc",
@@ -113,7 +113,7 @@
       ]
     },
     {
-      "file": "libstdc++-v3/include/bits/stl_vector.h.notice.txt",
+      "file": "libstdc++-v3--include--bits--stl_vector.h.notice.txt",
       "sha256": "b8ef9d594258e73babd585aa3c4965b1c6e274712a6153188fd8cc9102779191",
       "source_member": "gcc-15.2.0/libstdc++-v3/include/bits/stl_vector.h",
       "source_file_sha256": "463f0dc30617595d996443e2c74193319bf47019ae3b589fe58a0daccf440704",
@@ -135,5 +135,9 @@
   "publication_approved": false,
   "review_remaining": [
     "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ],
+  "source_archive_sha512": "89047a2e07bd9da265b507b516ed3635adb17491c7f4f67cf090f0bd5b3fc7f2ee6e4cc4008beef7ca884b6b71dffe2bb652b21f01a702e17b468cca2d10b2de",
+  "source_recipe_origins": [
+    "423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc"
   ]
 }

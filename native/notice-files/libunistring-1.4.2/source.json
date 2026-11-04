@@ -39,5 +39,9 @@
   "publication_approved": false,
   "review_remaining": [
     "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ],
+  "source_archive_sha512": "0215f7f40f426227eca5174140654a3fa43ac1520eeb212c2ba08043470f905687b2703afdda12e9635359a6187643900136b6bb11b422bd7567d17ca71b555f",
+  "source_recipe_origins": [
+    "30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c/main/libunistring"
   ]
 }

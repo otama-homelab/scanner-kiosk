@@ -30,5 +30,9 @@
   "publication_approved": false,
   "review_remaining": [
     "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ],
+  "source_archive_sha512": "6d097dd01496dca1e1db56b462ba85707a035af91c211906ca58a8e7be6980c00b56524d5ce64281791c6e298217fadd9a6639dd81471631642562d4ab345bc2",
+  "source_recipe_origins": [
+    "c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi"
   ]
 }

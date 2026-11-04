@@ -39,5 +39,9 @@
   "publication_approved": false,
   "review_remaining": [
     "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ],
+  "source_archive_sha512": "6a581c4c072b168bf29a0dec7e59a9329a798e392b7d1033791d0e3166a5d1164e2a7065373a84018d500a01563657900c318b1fd437c227c3174b754f9998d3",
+  "source_recipe_origins": [
+    "771f180774aa0d9d3783d7f4eb9e3788c615658b/main/libtasn1"
   ]
 }

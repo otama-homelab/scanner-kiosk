@@ -193,6 +193,10 @@ does not assign every included license to each runtime library. All28 current
 APK source origins now have major-notice mappings; per-file and distribution
 approval remain separate.
 
+Per-component notice filenames are flat; source_member retains the original
+upstream path. Each source record includes the pinned archive SHA-512 required
+by the native runtime contract tests.
+
 ## Fixed runtime input
 
 `runtime-manifest.json` pins the current 298 native file/link entries, without
