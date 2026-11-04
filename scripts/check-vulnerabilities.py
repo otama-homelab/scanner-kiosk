@@ -38,7 +38,11 @@ try:
         config.write_text('ignore: []\n')
         report = args.output_dir/'grype.json'
         command = [tool,'--config',str(config),'sbom:'+str(args.sbom.resolve()),'--fail-on','high','--output','json','--file',str(report.resolve())]
-        process = subprocess.run(command,env=env,capture_output=True,timeout=600)
+        try:
+            process = subprocess.run(command,env=env,capture_output=True,timeout=600)
+        except subprocess.TimeoutExpired as error:
+            (args.output_dir/'scan.log').write_bytes(error.stderr or b'')
+            raise
         (args.output_dir/'scan.log').write_bytes(process.stderr)
         receipt['exit_code'] = process.returncode
         if process.returncode not in {0,2}:

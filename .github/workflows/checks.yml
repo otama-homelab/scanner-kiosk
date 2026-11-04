@@ -50,6 +50,8 @@ jobs:
         run: go mod verify
       - name: Release channel and ancestry contract
         run: python3 -m unittest discover -s scripts -p test_release_ref.py -v
+      - name: Preserve vulnerability scan timeout evidence
+        run: python3 -m unittest discover -s scripts -p test_check_vulnerabilities.py -v
       - name: Embedded app identity contract
         run: python3 -m unittest discover -s scripts -p test_build_web_identity.py -v
       - name: Source bundle collector safety checks
