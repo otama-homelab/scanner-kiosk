@@ -43,6 +43,10 @@ class PrepareCandidateTests(unittest.TestCase):
         (native/'tesseract-source.tar.gz').write_bytes(b'source')
         reports=inputs/'security/reports';reports.mkdir(parents=True)
         security=json.loads((fixture.inputs/'security').read_text());security['scans_completed']=True
+        for scope,scan in security['scans'].items():
+            scan['artifacts_sha256']['scan.log']=hashlib.sha256(b'').hexdigest()
+            (reports/scope).mkdir()
+            (reports/scope/'scan.log').write_bytes(b'')
         (reports/'receipt.json').write_text(json.dumps(security))
         with tarfile.open(fixture.inputs/'security-reports') as archive:
             for member in archive:
@@ -55,6 +59,12 @@ class PrepareCandidateTests(unittest.TestCase):
         (candidate/'base-inventory.json').unlink()
         with self.assertRaises(FileNotFoundError):module.prepare(inputs,fixture.root/'incomplete')
         self.assertFalse((fixture.root/'incomplete/candidate').exists())
+
+    def test_empty_assets_are_rejected_unless_explicitly_allowed_for_logs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'empty';path.write_bytes(b'')
+            with self.assertRaises(ValueError):module.record(path)
+            self.assertEqual(module.record(path,allow_empty=True)['bytes'],0)
 
     def test_source_archive_revalidates_inputs_and_preserves_project_correspondence(self):
         for changed in [False,True]:

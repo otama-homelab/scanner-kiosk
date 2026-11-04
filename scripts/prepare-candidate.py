@@ -18,11 +18,11 @@ spec=importlib.util.spec_from_file_location('stage',Path(__file__).with_name('st
 stage=importlib.util.module_from_spec(spec);spec.loader.exec_module(stage)
 
 
-def record(path):
+def record(path,allow_empty=False):
     descriptor=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
     with os.fdopen(descriptor,'rb') as stream:
         info=os.fstat(stream.fileno())
-        if not stat.S_ISREG(info.st_mode) or not 0<info.st_size<=stage.MAX_ASSET:
+        if not stat.S_ISREG(info.st_mode) or not (0 if allow_empty else 1)<=info.st_size<=stage.MAX_ASSET:
             raise ValueError('material outside bounds')
         return {'bytes':info.st_size,'sha256':hashlib.file_digest(stream,'sha256').hexdigest()}
 
@@ -141,7 +141,7 @@ def prepare(inputs,work):
             for name,digest in scan['artifacts_sha256'].items():
                 if not re.fullmatch(r'[A-Za-z0-9_.-]+',name) or scope not in {'image','onefile','native','native-cpe'}:
                     raise ValueError('unsafe advisory member')
-                path=reports/scope/name;identity=record(path)
+                path=reports/scope/name;identity=record(path,allow_empty=True)
                 if identity['sha256']!=digest or identity['bytes']>16<<20:raise ValueError('advisory report changed')
                 tar_bytes(archive,scope+'/'+name,path.read_bytes())
     generated('security-reports')
