@@ -498,3 +498,10 @@ checkout, empty environment and private scratch. Its failure/cancellation/skip
 blocks required-checks. It proves acquisition/signature/preparation only, not
 SDK/source compilation, a complete candidate or publishing. No release write
 permissions are added.
+
+The bootstrap check now fetches all three committed APK locks (runtime, SANE
+SDK and Tesseract SDK), each into a separate cold input directory. All archive
+signatures and hashes must pass before the network-free runtime preparation.
+The shared volume is limited to 512MiB; each stage has a 300-second bound and
+the keeper has a 1260-second lifetime. This verifies SDK acquisition, not SDK
+installation, native recompilation or a complete publishing pipeline.

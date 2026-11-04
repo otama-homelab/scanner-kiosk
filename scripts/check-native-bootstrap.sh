@@ -9,7 +9,7 @@ repo_root=$(cd "$1" && pwd -P)
 test -d "$repo_root/native"
 image=$2
 task_volume=$(docker volume create --driver local --opt type=tmpfs --opt device=tmpfs \
-    --opt o=size=128m,uid=10001,gid=10001,mode=0700)
+    --opt o=size=512m,uid=10001,gid=10001,mode=0700)
 fetch_container="scanner-fetch-$task_volume"
 prepare_container="scanner-prepare-$task_volume"
 holder_container="scanner-inputs-$task_volume"
@@ -29,7 +29,7 @@ docker run --detach --name "$holder_container" --network none --read-only \
     --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges \
     --memory 32m --memory-swap 32m --cpus 0.25 --pids-limit 8 \
     --mount "type=volume,src=$task_volume,dst=/cache" \
-    --entrypoint /bin/sleep "$image" 660 >/dev/null
+    --entrypoint /bin/sleep "$image" 1260 >/dev/null
 run_stage() {
     stage_name=$1
     stage_network=$2
@@ -46,10 +46,12 @@ run_stage() {
         -i PATH=/usr/local/bin:/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 TMPDIR=/work \
         python3 "$@"
 }
-run_stage "$fetch_container" bridge false /src/scripts/fetch-native-apks.py \
-    --lock /src/native/runtime-apks.lock.json --keys /build-keys \
-    --apk /usr/local/bin/apk --output /cache/apks
+for lock in runtime-apks sane-sdk tesseract-sdk; do
+    run_stage "$fetch_container" bridge false /src/scripts/fetch-native-apks.py \
+        --lock "/src/native/$lock.lock.json" --keys /build-keys \
+        --apk /usr/local/bin/apk --output "/cache/$lock"
+done
 run_stage "$prepare_container" none true /src/scripts/prepare-native-apks.py \
     --lock /src/native/runtime-apks.lock.json --manifest /src/native/runtime-manifest.json \
-    --provenance /src/native/runtime-provenance.json --archives /cache/apks \
+    --provenance /src/native/runtime-provenance.json --archives /cache/runtime-apks \
     --keys /build-keys --apk /usr/local/bin/apk --output /work/selected

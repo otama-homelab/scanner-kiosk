@@ -48,7 +48,7 @@ payload is created for this review. Final component/source archive review still
 must account for relevant upstream exceptions and actual recipient access.
 The remaining special-source reviews are the already named libxml2 dict/list,
 musl third-party sections, libffi templates, p11-kit conditional/generated files,
-SANE/fork/library combinations, Go subcomponents, assets and container base.
+SANE/airscan/library combinations, Go subcomponents, assets and container base.
 Do not turn generic historical “all per-file coverage open” language into a new
 requirement to compile every APK or copy every source comment into runtime.
 
@@ -134,7 +134,7 @@ source/replacement proofs are reused; no new binary is produced for this review.
 | D-Bus 1.16.2 library | Choose GPL-2.0-or-later alternative, allowing GPL3-compatible combinations when required by linked LGPL3 components. Retain exact source/notice and combination terms. | COPYING and dbus-connection.c offer AFL2.1 or GPL2+. No local patch. Do not infer that this choice relicenses the separate CGO-free API, or that a library exception removes another dependency’s GPL. Actual native combination/source obligations must be accounted for in final delivery. |
 | GCC libgcc/libgomp/libstdc++ 15.2.0 | GPL3 with GCC Runtime Library Exception 3.1 for files granting it. Preserve both texts. Independent modules may use the exception only for an Eligible Compilation Process. The runtime library itself retains its terms. | Current source-managed preambles explicitly grant the exception. Final build controls must identify the actual compiler/transforms; merely seeing a GCC package name does not establish eligibility. |
 | SANE 1.4.0 and sane-parameters | The header’s retained permission/modification record and dll.c’s SANE linking exception support the independent Apache helper; scanimage remains GPL-2.0-or-later. | Reuse exact source/recipe review and helper rebuild. Preserve sane.h’s Alpine include.patch modification. Exception is not extended to scanimage or unrelated backends. |
-| Modified airscan 0.99.38 fork | GPL-2.0-or-later plus the retained library-linking exception. Provide exact fork source, patch and build controls, retaining exception for the modifications as recorded by the fork. | Existing pinned fork/source rebuild and provenance bind its bytes. No hidden application-Dockerfile patch or unmodified upstream substitute. |
+| Official sane-airscan 0.99.36-r0 | GPL-2.0-or-later plus the retained library-linking exception. Supply the exact 0.99.36 archive and recorded aports recipe; retain LICENSE/COPYING. | Runtime provenance and signed APK lock select the unmodified official library. Previous fork-specific proofs are historical. |
 
 For LGPL combined works, distribution must permit modification for the
 recipient’s own use and reverse engineering to debug those modifications. No

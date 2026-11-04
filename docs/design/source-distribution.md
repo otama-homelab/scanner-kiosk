@@ -22,8 +22,9 @@ these routes do not assign one license to every file in a component.
 A separate CLI's GPL does not automatically relicense the independent API.
 SANE/airscan linking exceptions apply only to the files granting them, not to
 scanimage as a whole. Preserve the exceptions and the modified sane.h record.
-The modified airscan source must be the recorded fork revision, with its patch
-and build controls, not an unmodified upstream release under the same name.
+The selected airscan backend is the unmodified official Alpine 0.99.36-r0 APK.
+Supply its exact 0.99.36 upstream archive and recorded aports build recipe;
+no local fork or TLS patch is part of the selected runtime.
 
 ## Release asset contents
 
@@ -31,8 +32,7 @@ The same candidate manifest must bind:
 
 - Application commit/source, LICENSE, retained Go module sources and notices,
   module sums, launcher/API/helper build instructions and pinned tool versions.
-- Native upstream archives, exact aports recipes and local patches, modified
-  fork source and controls, model/CA source and notices, the Tesseract 5.5.2 `pdf.ttf`/config source
+- Native upstream archives, exact aports recipes and their local patches, model/CA source and notices, the Tesseract 5.5.2 `pdf.ttf`/config source
   association (distinct from the rebuilt 5.5.4 executable), source identity checksums,
   and any generated inputs required to build the delivered covered work.
 - Frontend source and build instructions/lockfile for the delivered assets.
@@ -88,7 +88,7 @@ missing covered source input:
 1. The exact project Git source (launcher, API, helper, static frontend source,
    license/notices, locks and build/repack controls), with the release revision.
 2. The existing native source set: pinned upstream archives, aports recipes,
-   local patches, exact airscan fork source/controls and helper inputs. Update
+   local patches, official airscan source/recipe and helper inputs. Update
    source-managed notice/source records from the final tree once after the
    preparation batch; the older source bundle is an input, not the final offer.
 3. For the container, the exact base-files/CA source inputs identified in

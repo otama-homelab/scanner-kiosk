@@ -57,15 +57,15 @@ for tools absent from the runtime. Publication approval remains pending.
 | zlib-1.3.2 | [source record](native/notice-files/zlib-1.3.2/source.json) |
 | zstd-1.5.7 | [source record](native/notice-files/zstd-1.5.7/source.json) |
 
-SANE, the modified airscan fork, Tesseract and OCR model notices are also present
+SANE, official unmodified sane-airscan, Tesseract and OCR model notices are also present
 in the complete payload index below. Their current binary/source identities are
 recorded in [native provenance](native/runtime-provenance.json), rather than
 in historical Debian package inventories.
 
 ## Complete selected notice index
 
-The selected notice inputs now contain188 entries; the retained unreleased
-8e8c75f4… candidate still contains187 until the planned batch rebuild.
+The selected notice inputs contain 184 entries. Older unreleased candidates
+retain their historical inventories; they are not the current official-airscan build.
 These paths and SHA-256 values are taken from the committed runtime manifest
 and provenance. Source bytes were checked against every value when this index
 was created. Runtime paths are relative to the unpacked native root. This is
@@ -251,10 +251,6 @@ have been discharged. Preserve the actual texts when redistributing.
 | `usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt` | [retained/source-build/ca-certificates/MPL-2.0.txt](native/notice-files/retained/source-build/ca-certificates/MPL-2.0.txt) | `fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85` |
 | `usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt` | [retained/source-build/ca-certificates/certdata-license-header.txt](native/notice-files/retained/source-build/ca-certificates/certdata-license-header.txt) | `f63a93ed6525d62c9cb979f5dff7a9a7e71bab35cdc3ef3c435e00233e315d2c` |
 | `usr/share/scanner-kiosk/notices/source-build/ca-certificates/source.json` | [retained/source-build/ca-certificates/source.json](native/notice-files/retained/source-build/ca-certificates/source.json) | `b98310fb60f1a8874c5e2674e94796afce7d9a18ed615e93ac2463b457cda61d` |
-| `usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/COPYING` | [retained/source-build/sane-airscan-homelab/COPYING](native/notice-files/retained/source-build/sane-airscan-homelab/COPYING) | `8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643` |
-| `usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/LICENSE` | [retained/source-build/sane-airscan-homelab/LICENSE](native/notice-files/retained/source-build/sane-airscan-homelab/LICENSE) | `a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373` |
-| `usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/build.json` | [retained/source-build/sane-airscan-homelab/build.json](native/notice-files/retained/source-build/sane-airscan-homelab/build.json) | `7a7f480c7735fed782a4d0337ecfea6744faa5aecad97dff00b79ae4b6b6dc83` |
-| `usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/patch.diff` | [retained/source-build/sane-airscan-homelab/patch.diff](native/notice-files/retained/source-build/sane-airscan-homelab/patch.diff) | `ee7a58daeedc8d2efefae615b1eb93c295ab69a7f34c3b1a1448ca966049bb4c` |
 | `usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.build` | [retained/source-build/tesseract-5.5.4/Dockerfile.build](native/notice-files/retained/source-build/tesseract-5.5.4/Dockerfile.build) | `a7bf7052afb843beb57135c8127170da381b329d410f224ba4ff366dc094ca55` |
 | `usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.sdk` | [retained/source-build/tesseract-5.5.4/Dockerfile.sdk](native/notice-files/retained/source-build/tesseract-5.5.4/Dockerfile.sdk) | `36c3fd8c00771203fdad70b50a6b77d2c84d33c87b85ab605955494a8787b9a1` |
 | `usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/LICENSE` | [retained/source-build/tesseract-5.5.4/LICENSE](native/notice-files/retained/source-build/tesseract-5.5.4/LICENSE) | `cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30` |

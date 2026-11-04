@@ -37,6 +37,16 @@ if 'prepare-native-apks.py' in ' '.join(args) and os.environ['FAILURE'] == 'prep
             recorded = [json.loads(line) for line in calls.read_text().splitlines()] if calls.exists() else []
             return result, recorded
 
+    def test_fetches_runtime_and_both_build_sdk_locks(self):
+        result, calls = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        fetches = [c for c in calls if 'fetch-native-apks.py' in ' '.join(c)]
+        self.assertEqual([c[c.index('--lock')+1] for c in fetches], [
+            '/src/native/runtime-apks.lock.json', '/src/native/sane-sdk.lock.json',
+            '/src/native/tesseract-sdk.lock.json'])
+        self.assertEqual(len({c[c.index('--output')+1] for c in fetches}), 3)
+        self.assertTrue(all(c[c.index('--network')+1] == 'bridge' for c in fetches))
+
     def test_fetch_failure_stops_before_parsing_and_cleans(self):
         result, calls = self.invoke('fetch')
         self.assertEqual(result.returncode, 17, result.stderr)
