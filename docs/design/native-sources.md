@@ -269,3 +269,27 @@ from this archive has not yet been run. Final corresponding-source/relinking
 review, individual licenses, project license choice and recipient access remain
 open, as do security and operational release gates. Parent-plan evidence:
 `current-native-source-bundle-20261104/current-evidence.json`.
+
+### Airscan recipient-source rebuild
+
+The portable native source bundle was then used as the sole fork-source input
+for a separate build check. A bounded isolated reader selected its committed
+airscan archive, verified SHA256 `3cc22666…`, validated all 94 source files and
+normalized only the outer input-directory prefix/timestamps for the SDK image.
+The fork's unchanged `homelab/build.sh` ran in the retained locked SDK
+`sha256:705578ca…`, with no external network/host mounts, read-only root,
+UID10001, 2CPU/2GiB/no swap and 1GiB private executable scratch.
+
+Compilation and the URI/zeroconf upstream tests succeeded. The generated
+1,246,024-byte library matched the current native SHA256
+`480e1bbdac3c6088cc74e220c5df486530fe822582666cb72941a3bbea84226e`;
+all 216 SDK package identities matched the provided lock. The raw build artifact
+mode was 0700 under its private umask, while the existing native assembler owns
+the recorded 0555 deployment-mode normalization. Temporary input image, build
+container and context were removed; the locked SDK was retained.
+
+This checks the airscan subset using the source archive with a pre-existing
+verified SDK. It does not reconstruct every SDK from scratch, rebuild all APK
+origins/Tesseract/helper here, validate changed-library ABI/relinking behavior,
+or clear the full native corresponding-source/license/security/release gates.
+Parent evidence: `native-recipient-airscan-rebuild-20261104/current-evidence.json`.
