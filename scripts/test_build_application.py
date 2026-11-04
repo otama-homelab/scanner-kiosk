@@ -90,6 +90,32 @@ class ApplicationBuildTests(unittest.TestCase):
         self.assertEqual(env['CGO_ENABLED'],'0')
         self.assertNotEqual(env['NPM_CONFIG_USERCONFIG'],env['NPM_CONFIG_GLOBALCONFIG'])
 
+    def test_application_sources_bind_runtime_modules_and_reject_wrong_sums(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);source=root/'source';source.mkdir();cache=root/'modules';cache.mkdir()
+            (source/'go.sum').write_text('example.test/module v1.0.0 h1:runtime\nexample.test/module v1.0.0/go.mod h1:mod\n')
+            for name in ['app-buildinfo','launcher-buildinfo']:
+                (root/(name+'.json')).write_text(json.dumps({'Deps':[{'Path':'example.test/module','Version':'v1.0.0','Sum':'h1:runtime'}]}))
+            for name in ['module.zip','module.mod']:(cache/name).write_bytes(b'source data')
+            item={'Path':'example.test/module','Version':'v1.0.0','Sum':'h1:runtime','GoModSum':'h1:mod',
+                  'Zip':str(cache/'module.zip'),'GoMod':str(cache/'module.mod')}
+            def output(command,**kwargs):
+                self.assertEqual(kwargs['env']['GOPROXY'],'off')
+                if command[:3]==['git','archive','--format=tar']:return b'project source archive'
+                return json.dumps(item).encode()
+            with patch.object(module,'WORK',root),patch.object(module.subprocess,'check_output',side_effect=output):
+                module.retain_sources('a'*40)
+                with tarfile.open(root/'application-sources.tar') as archive:
+                    self.assertEqual(archive.extractfile('project.tar').read(),b'project source archive')
+                    index=json.load(archive.extractfile('INDEX.json'))
+                    self.assertEqual(index['source_revision'],'a'*40)
+                    self.assertEqual(len(index['modules']),1)
+                    self.assertFalse(index['publication_approved'])
+                (root/'application-sources.tar').unlink()
+                item['Sum']='h1:wrong'
+                with self.assertRaises(ValueError):module.retain_sources('a'*40)
+                self.assertFalse((root/'application-sources.tar').exists())
+
     def test_build_refuses_changed_dependency_inputs_before_compiling(self):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary)

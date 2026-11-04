@@ -9,6 +9,9 @@ import subprocess
 import tarfile
 import urllib.request
 import io
+import os
+import stat
+import tempfile
 
 WORK=Path('/work')
 LOCKS=['go.mod','go.sum','web/package.json','web/package-lock.json','web/npm-tool.lock.json']
@@ -118,6 +121,66 @@ def acquire(revision,ref):
     (WORK/'acquisition.json').write_text(json.dumps({'source_revision':revision,'locks':before,'npm_tool':tool})+'\n')
 
 
+
+def retain_sources(revision):
+    """Retain only linked Go modules plus the exact project source, offline."""
+    source=WORK/'source'
+    output=WORK/'application-sources.tar'
+    if output.exists() or output.is_symlink():raise FileExistsError('application sources already exist')
+    sums={(parts[0],parts[1]):parts[2] for line in (source/'go.sum').read_text().splitlines()
+          if len(parts:=line.split())==3}
+    dependencies={}
+    for name in ['app-buildinfo','launcher-buildinfo']:
+        for item in json.loads((WORK/(name+'.json')).read_text()).get('Deps',[]):
+            if item.get('Replace'):raise ValueError('replaced module requires explicit source mapping')
+            key=(item['Path'],item['Version'])
+            if item['Sum']!=sums.get(key):raise ValueError('linked module sum differs from source lock')
+            dependencies[key]=item['Sum']
+    if len(dependencies)>256:raise ValueError('too many linked modules')
+    index={'source_revision':revision,'modules':[],'files':[], 'publication_approved':False,
+           'scope':'project source and linked Go module archives; not native/base sources or license approval'}
+    with tempfile.TemporaryDirectory(prefix='application-sources-',dir=WORK) as directory:
+        temporary=Path(directory)
+        (temporary/'project.tar').write_bytes(subprocess.check_output(
+            ['git','archive','--format=tar',revision],cwd=source,env=environment(True),timeout=60))
+        total=0
+        with tarfile.open(temporary/'bundle.tar','w',format=tarfile.USTAR_FORMAT) as archive:
+            def add(path,name,limit):
+                nonlocal total
+                descriptor=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+                with os.fdopen(descriptor,'rb') as stream:
+                    info=os.fstat(stream.fileno());total+=info.st_size
+                    if not stat.S_ISREG(info.st_mode) or not 0<info.st_size<=limit or total>512<<20:
+                        raise ValueError('application source file outside bounds')
+                    digest=hashlib.file_digest(stream,'sha256').hexdigest();stream.seek(0)
+                    member=tarfile.TarInfo(name);member.size=info.st_size;member.mode=0o444
+                    archive.addfile(member,stream)
+                    after=os.fstat(stream.fileno())
+                    if (info.st_size,info.st_mtime_ns)!=(after.st_size,after.st_mtime_ns):
+                        raise ValueError('application source changed')
+                    index['files'].append({'path':name,'bytes':info.st_size,'sha256':digest})
+            add(temporary/'project.tar','project.tar',64<<20)
+            for (name,version),digest in sorted(dependencies.items()):
+                item=json.loads(subprocess.check_output(['go','mod','download','-json',name+'@'+version],
+                    cwd=source,env=environment(True),timeout=60))
+                if (item.get('Path')!=name or item.get('Version')!=version or item.get('Sum')!=digest
+                        or item.get('GoModSum')!=sums.get((name,version+'/go.mod'))):
+                    raise ValueError('cached module differs from linked module/source lock')
+                prefix='modules/'+hashlib.sha256((name+'@'+version).encode()).hexdigest()
+                for key,suffix in [('Zip','.zip'),('GoMod','.mod')]:
+                    path=Path(item[key])
+                    if not path.resolve().is_relative_to((WORK/'modules').resolve()):
+                        raise ValueError('module input outside private cache')
+                    add(path,prefix+suffix,256<<20)
+                index['modules'].append({'path':name,'version':version,'sum':digest,
+                                         'go_mod_sum':item['GoModSum'],'archive_prefix':prefix})
+            raw=json.dumps(index,sort_keys=True,indent=2).encode()+b'\n'
+            member=tarfile.TarInfo('INDEX.json');member.size=len(raw);member.mode=0o444
+            archive.addfile(member,io.BytesIO(raw))
+        (temporary/'bundle.tar').chmod(0o444)
+        os.link(temporary/'bundle.tar',output)
+
+
 def build(revision,ref,sha):
     source=WORK/'source'
     acquired=json.loads((WORK/'acquisition.json').read_text())
@@ -151,6 +214,8 @@ def build(revision,ref,sha):
             'assets':{p.relative_to(source/'web/dist').as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
                       for p in (source/'web/dist').rglob('*') if p.is_file()}}
     (WORK/'application.json').write_text(json.dumps(result,indent=2)+'\n')
+    run(['go','mod','verify'],True)
+    retain_sources(revision)
 
 
 if __name__=='__main__':

@@ -216,6 +216,7 @@ jobs:
             ${{ runner.temp }}/candidate/image.json
             ${{ runner.temp }}/candidate/image-binary.json
             ${{ runner.temp }}/candidate/native-build.json
+            ${{ runner.temp }}/candidate/application-sources.tar
             ${{ runner.temp }}/candidate/application.json
             ${{ runner.temp }}/candidate/app-buildinfo.json
             ${{ runner.temp }}/candidate/launcher-buildinfo.json

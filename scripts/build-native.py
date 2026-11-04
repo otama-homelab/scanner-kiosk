@@ -152,7 +152,7 @@ def build(root, output, retain_sources=False):
             call('fetch-external-sources',run('fetch-external-sources',bootstrap,
                  ['python3','/snapshot/source/scripts/fetch-source-inputs.py',
                   '--lock','/snapshot/source/native/source-inputs.lock.json','--output','/sources/inputs'],
-                 [source_mount,source_inputs],network='bridge',memory='2g'),timeout=900)
+                 [source_mount,source_inputs],network='bridge',memory='2g',file_limit=1 << 30),timeout=900)
             call('pack-external-sources',run('pack-external-sources',bootstrap,
                  ['/bin/sh','-c','python3 /snapshot/source/scripts/pack-source-inputs.py '
                   '--lock /snapshot/source/native/source-inputs.lock.json '

@@ -94,6 +94,7 @@ done
 for name in native-origin.cdx.json native-origin-inventory.json receipt.json; do
     timeout 30 docker cp "$keeper:/work/native-sbom/$name" "$out/native-sbom/$name"
 done
+timeout 90 docker cp "$keeper:/work/application-sources.tar" "$out/application-sources.tar"
 for name in application app-buildinfo launcher-buildinfo; do
     timeout 30 docker cp "$keeper:/work/$name.json" "$out/$name.json"
 done
