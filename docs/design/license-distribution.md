@@ -221,3 +221,32 @@ The archive remains local and does not supply the complete native source/SDK
 closure, npm archive set, final license/relinking review or recipient source
 access. The project license is still undecided. Parent-plan evidence:
 `current-application-source-rebuild-20261104/current-evidence.json`.
+
+## Fresh offline frontend dependency reconstruction (2026-11-04)
+
+A later check closes the prebuilt-frontend limitation for the exact five asset
+bytes used above. All 201 Linux x64/glibc build records in the committed lockfile
+were available in the retained npm content cache and verified against SHA512
+SRI. The 59 other-platform records are explicitly listed and excluded from this
+target-specific input set. The check exposed no host `node_modules` or npm
+configuration, created a fresh cache and dependency tree, and used Node 24.22.2
+with npm 11.21.1. The npm tool tarball was reacquired as data and matched the
+previously retained SHA256/SRI exactly; registry signature verification remains
+unperformed. No package tarballs were downloaded by the build.
+
+`npm ci --offline --ignore-scripts --no-audit --no-fund` followed by Astro build
+produced five assets whose paths/hashes exactly match the current e5363774…
+onefile inputs. Product package/lock files remained unchanged; the only source
+config adaptation places Astro/Vite caches in private scratch. The initial
+fixture's duplicate npm-config path and host npm 11.19.1 mismatch were retained,
+then corrected without relaxing the fixed tool versions.
+
+The local `scanner-frontend-source-inputs.tar` contains the committed source,
+201 cached archives, pinned npm tool, integrity/index records and tested build
+recipe: 76,195,840 bytes, SHA256
+`27c537f9dbf6465752c97be8a8d384aeb3874d2278a6f10132e4bd38c34c6d28`.
+A separate isolated verifier checked all 208 outer members and their hashes.
+Node binaries, other-platform dependency variants and native C/APK/SDK sources
+are separate inputs. These source archives remain local and unpublished; they
+do not replace the final license/source-delivery or vulnerability acceptance.
+Parent evidence: `current-frontend-offline-source-20261104/current-evidence.json`.
