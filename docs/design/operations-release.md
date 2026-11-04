@@ -198,3 +198,39 @@ for at least 60 seconds, repeat the OCR bad-version case 100 times, then run the
 full Go race/design suite. Retain all earlier failures. Reappearance of backwards
 steps leaves acceptance incomplete and requires further clock-authority analysis.
 This plan introduces no product timestamp clamping or relaxed stop evidence.
+
+
+### Initial catalog publication under a backward wall clock
+
+The catalog's lease deadline alone does not establish usable authority. Writes
+also require the observed wall clock to be at least the stored heartbeat. A
+backward step between Begin and the first Publish therefore rejects publication,
+cancels the catalog publisher and withdraws its snapshots, even if valid_until
+is still in the future. Advancing the wall clock afterwards does not revive the
+stopped authority. This preserves the existing fail-closed behavior.
+
+`TestCatalogInitialPublicationClockRegressionStopsAuthority` uses the real SQLite
+catalog store and publisher lifecycle with an atomic controlled clock. Its steady
+control publishes; its backward case moves from 1000 ms to 999 ms before first publication,
+observes worker-context cancellation and stopped authority with the original
+1000 ms heartbeat/31000 ms deadline, and confirms no revival after 1001 ms. Twenty
+race-enabled repetitions passed. This proves a possible causal path matching the
+earlier stopped/future-deadline failure shape, not the cause of every historical
+failure or end-to-end scan safety.
+
+A current 65-second read-only host probe still observed two realtime backward
+steps (about 40.9 ms and 41.3 ms), while monotonic time continued forwards. Guest
+timesyncd remained active/enabled and Hyper-V implicit synchronization remained
+enabled. The correction writer is still unidentified; no host setting was
+changed. The administrator remediation and full validation above remain open.
+
+```sh
+go test -race -count=20 \
+  -run '^TestCatalogInitialPublicationClockRegressionStopsAuthority$' \
+  ./internal/workerruntime
+```
+
+This controlled-clock regression cannot clear host clock stability or substitute
+for the original failed full Go run, OCR repetitions and subsequent whole-suite
+acceptance in a stable environment. No timestamp clamping, authority retry,
+lease release or reduced validation was introduced.
