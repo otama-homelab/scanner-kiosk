@@ -239,3 +239,33 @@ artifact, not a complete corresponding-source/relinking delivery or permission
 to release the whole scanner. The parent plan's
 `current-native-source-coverage-20261104/current-evidence.json` records the
 correspondence, retained data paths and remaining delivery/license gates.
+
+## Portable local native source inputs (2026-11-04)
+
+The current correspondence is now assembled into a local source-only review
+archive, `scanner-native-sources.tar`: 859,699,200 bytes, SHA256
+`86cdd71468a4a7416e7e63df72c089ab422b775bf7ac8eaf85e4994ebc3a3b9b`.
+Its 161 payload files include all 30 current APK-origin upstream source artifacts,
+124 complete recipe files, the Tesseract 5.5.4 archive, the committed modified
+airscan source, exact patch/build record, runtime manifest/provenance and the
+application/helper source archive with SDK locks and build/selection scripts.
+The outer INDEX/README make 163 regular entries; no host-local source paths are
+embedded in the portable index.
+
+Every payload SHA256 was freshly checked during streaming assembly; all 30
+APK-origin archives also matched their SHA512 values and all recipe files
+matched their Git blob identities. The 13 selected helper/SDK source members
+and five airscan source/build/license members were checked within their source
+archives. A separate isolated reader verified the completed outer archive's
+163 paths/types/modes/sizes/hashes without extraction or source execution.
+The assembly selected 859,444,767 payload bytes.
+
+This supplies local source inputs for review rather than final approval.
+SDK/APK binaries and compiler images are intentionally separate pinned standard
+build inputs; redistributing those build-only binaries would add another
+distribution scope. Go module and npm inputs are in their separate local
+application/frontend source archives. A recipient-style complete native rebuild
+from this archive has not yet been run. Final corresponding-source/relinking
+review, individual licenses, project license choice and recipient access remain
+open, as do security and operational release gates. Parent-plan evidence:
+`current-native-source-bundle-20261104/current-evidence.json`.
