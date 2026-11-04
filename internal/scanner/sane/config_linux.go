@@ -21,8 +21,10 @@ func ConfigFiles(deviceID, endpoint string) (map[string][]byte, error) {
 	if !opaque(deviceID) || len(endpoint) > 4096 {
 		return nil, ErrInvalid
 	}
+	// The unmodified native backend has no verified TLS peer policy.
+	// Keep scanner transport HTTP-only rather than silently accepting HTTPS.
 	u, err := url.Parse(endpoint)
-	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || u.Opaque != "" {
+	if err != nil || u.Scheme != "http" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || u.Opaque != "" {
 		return nil, ErrInvalid
 	}
 	if u.Port() != "" {

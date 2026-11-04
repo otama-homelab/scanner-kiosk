@@ -161,7 +161,7 @@ class NativeAPKFetchTests(unittest.TestCase):
 
     def test_committed_runtime_and_sdk_locks_are_supported(self):
         native = Path(__file__).resolve().parents[1]/'native'
-        for filename, count in [('runtime-apks.lock.json', 36), ('sane-sdk.lock.json', 46),
+        for filename, count in [('runtime-apks.lock.json', 37), ('sane-sdk.lock.json', 46),
                                 ('tesseract-sdk.lock.json', 174)]:
             with self.subTest(filename=filename):
                 records = module.validate(json.loads((native/filename).read_bytes()))

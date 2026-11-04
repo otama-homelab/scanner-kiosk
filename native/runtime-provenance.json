@@ -442,6 +442,21 @@
       },
       "version": "1.4.0-r4"
     },
+    "sane-airscan": {
+      "purl": "pkg:apk/alpine/sane-airscan@0.99.36-r0?arch=x86_64&distro=alpine-3.24.3",
+      "retained_files": [
+        "usr/lib/sane/libsane-airscan.so.1"
+      ],
+      "source_metadata": {
+        "architecture": "x86_64",
+        "gitCommitOfApkPort": "487cfc21a9f5138579c3e38b4a5e55a6230f839a",
+        "originPackage": "sane-airscan",
+        "package": "sane-airscan",
+        "url": "https://github.com/alexpevzner/sane-airscan",
+        "version": "0.99.36-r0"
+      },
+      "version": "0.99.36-r0"
+    },
     "sane-utils": {
       "purl": "pkg:apk/alpine/sane-utils@1.4.0-r4?arch=x86_64&distro=alpine-3.24.3&upstream=sane",
       "retained_files": [
@@ -627,7 +642,7 @@
       "files": {
         "usr/libexec/scanner/sane-parameters": {
           "mode": 365,
-          "sha256": "0266e0812b622d0569d5dd6e0ba26a09a3464d9fc0fa985793c6db4ebe73f0d0",
+          "sha256": "55fda9d4cd4e64e702591b4add66cc6475ffbe1003641573482b6d05455cb810",
           "size": 4924568
         }
       },
@@ -643,7 +658,7 @@
         "internal/scanner/port.go": "d0ab898aa0187913e9f9af9e948c4fd2f36241cd288f20ef738cb1f2f3d0bb51",
         "internal/scanner/sane/capabilities.go": "89f55d02ac85180471b3abc3747bf28e84e6cba14f0b32d6fb9eeffdf2477e77",
         "internal/scanner/sane/capture_linux.go": "1c8ce1db9b32e0a5153fc3157e6e8343b20e23bc0bf30025be6d8bbe501a44b6",
-        "internal/scanner/sane/config_linux.go": "61c3c9d7f1847451ab1213aa4ad4e90d372ca87b580731f992f3634d8a66bfd1",
+        "internal/scanner/sane/config_linux.go": "489ecb6336deb3eee55fab55f09aa7759da5ff57e0082bf6803a06a5b9d0048f",
         "internal/scanner/sane/parameters_linux.go": "28e952cf579a5843bdcd2371aa21ccbdd8e6f057e1aa4f9e36b608a5c00d2b3d",
         "internal/scanner/sane/probe_linux.go": "b36fe40a7cf0fd027b8add25d44f7f02d54051f5e765cd22b8784d3b3f2b1232",
         "internal/scanner/sane/selection_linux.go": "fd897f109a3b8d04015fe84d1f32d3f7253c2eb09030a08214a06e36eaba8cc3"
@@ -829,10 +844,6 @@
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/source.json",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/COPYING",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/LICENSE",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/build.json",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/patch.diff",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.build",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.sdk",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/LICENSE",
@@ -1020,10 +1031,6 @@
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/MPL-2.0.txt": "retained/source-build/ca-certificates/MPL-2.0.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/certdata-license-header.txt": "retained/source-build/ca-certificates/certdata-license-header.txt",
     "usr/share/scanner-kiosk/notices/source-build/ca-certificates/source.json": "retained/source-build/ca-certificates/source.json",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/COPYING": "retained/source-build/sane-airscan-homelab/COPYING",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/LICENSE": "retained/source-build/sane-airscan-homelab/LICENSE",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/build.json": "retained/source-build/sane-airscan-homelab/build.json",
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/patch.diff": "retained/source-build/sane-airscan-homelab/patch.diff",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.build": "retained/source-build/tesseract-5.5.4/Dockerfile.build",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.sdk": "retained/source-build/tesseract-5.5.4/Dockerfile.sdk",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/LICENSE": "retained/source-build/tesseract-5.5.4/LICENSE",
@@ -1033,7 +1040,7 @@
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json": "retained/source-build/tesseract-5.5.4/source-receipt.json"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "38d7d3bff19630689db3f961ebf5c73caf924ed83331fad32cb491b80b5f2635",
+  "runtime_manifest_sha256": "6aed76d75ca28d6b57de86d0cfeb08fe805be044850572091aebaf839334f449",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {
@@ -1065,22 +1072,6 @@
       "name": "tesseract",
       "source_receipt_sha256": "7827fa1ac4d0787866c01b308d5fd418fa25b7171c9df11378bafe1f2892e74b",
       "version": "5.5.4"
-    },
-    {
-      "commit": "9da18d88c88f542671b24fc0433dd7d69dcb0132",
-      "files": {
-        "usr/lib/sane/libsane-airscan.so.1": {
-          "mode": 365,
-          "sha256": "480e1bbdac3c6088cc74e220c5df486530fe822582666cb72941a3bbea84226e",
-          "size": 1246024
-        }
-      },
-      "modified": true,
-      "name": "sane-airscan",
-      "patch_sha256": "ee7a58daeedc8d2efefae615b1eb93c295ab69a7f34c3b1a1448ca966049bb4c",
-      "sdk_lock_sha256": "a318f78c7334fb9361bd45576cce8e3842aa2a497cfbe94e223220722b0123b3",
-      "source_sha256": "7e8f82e668a63199747830cdd09bb36ca2ec2917374ce8846f6069d94ae41295",
-      "version": "0.99.38+homelab-unreleased"
     }
   ]
 }

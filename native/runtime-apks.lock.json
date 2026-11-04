@@ -354,6 +354,19 @@
       "version": "1.4.0-r4"
     },
     {
+      "apk_control_checksum": "Q1Ci2MYBgXvQfA7ttvbNXSLbrTEq8=",
+      "archive_architecture": "x86_64",
+      "bytes": 200451,
+      "filename": "sane-airscan-0.99.36-r0.apk",
+      "name": "sane-airscan",
+      "origin": "sane-airscan",
+      "repository": "community",
+      "repository_architecture": "x86_64",
+      "sha256": "217825991f9dd7b576aedfdb825c3b3fbdf5478065a74a49ca7eb129e1fb9d54",
+      "source_commit": "487cfc21a9f5138579c3e38b4a5e55a6230f839a",
+      "version": "0.99.36-r0"
+    },
+    {
       "apk_control_checksum": "Q1/owORfjPg1w5jr+OK1ehqeiHbKQ=",
       "archive_architecture": "x86_64",
       "bytes": 75972,
@@ -480,7 +493,7 @@
     "https://dl-cdn.alpinelinux.org/alpine/v3.24/main",
     "https://dl-cdn.alpinelinux.org/alpine/v3.24/community"
   ],
-  "runtime_provenance_sha256": "b489e78763760cdeb5793924633ec774b64f18430ea3bd419eab072ec1f58d2b",
+  "runtime_provenance_sha256": "60f00122db1f35b6e1912c3e9991ad470b1a612167ea80e7697608dbb22c951f",
   "scope": "Archive identity and official signature verification required; source-built code, notices, complete source/security/license approval remain separate",
   "trusted_keys_sha256": {
     "alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub": "9c102bcc376af1498d549b77bdbfa815ae86faa1d2d82f040e616b18ef2df2d4",

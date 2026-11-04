@@ -1,0 +1,11 @@
+# Independent acquisition tool: never depends on the SDKs it fetches.
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a AS apk
+FROM python@sha256:9ba6d8cbebf0fb6546ae71f2a1c14f6ffd2fdab83af7fa5669734ef30ad48844
+COPY --from=apk /lib /apk/lib
+COPY --from=apk /usr/lib /apk/usr/lib
+COPY --from=apk /sbin/apk /apk/sbin/apk
+COPY --from=apk /etc/apk/keys/alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub /etc/apk/keys/alpine-devel@lists.alpinelinux.org-5261cecb.rsa.pub /etc/apk/keys/alpine-devel@lists.alpinelinux.org-6165ee59.rsa.pub /build-keys/
+COPY --chmod=0555 apk-tool.sh /usr/local/bin/apk
+USER 10001:10001
+WORKDIR /work
+ENTRYPOINT ["/usr/bin/env", "-i", "PATH=/usr/local/bin:/usr/bin:/bin", "PYTHONDONTWRITEBYTECODE=1", "TMPDIR=/work", "python3"]

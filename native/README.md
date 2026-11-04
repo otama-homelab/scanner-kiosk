@@ -1,5 +1,21 @@
 # Native build inputs
 
+## Current decision — 2026-11-04: official airscan, no maintained fork
+
+The selected runtime uses unmodified Alpine `sane-airscan 0.99.36-r0`.
+No fork source, fork build, or separate airscan service is required. The native
+manifest selects 295 entries: 111 code/data and 184 notices, with 37 official APK
+components supplying 106 entries. Only Tesseract (four entries) and the
+first-party parameter helper (one entry) require source-build exports.
+
+Registered SANE scanner endpoints accept HTTP only: upstream does not provide
+the verified TLS policy required for HTTPS scanner endpoints. Browser/OIDC HTTPS
+is unaffected. The Canon TS8130 uses HTTP eSCL. Keep scanner traffic on a trusted
+LAN. Prior fork/TLS build results below are historical evidence, not evidence
+for this newly selected official backend. Candidate assembly and device
+acceptance must use the new manifest before release.
+
+
 The distributed container remains distroless. This directory owns build-only
 native input locks; it contains no native binaries, private documents or SDK
 package cache.
@@ -120,17 +136,9 @@ See [native source workflow](../docs/design/native-sources.md).
 
 ## Joining source-build outputs
 
-The independent sane-airscan fork owns its source change, SDK and build recipe
-in its own repository. Its `homelab/build.sh` is now one-shot and exports
-`native/usr/lib/sane/libsane-airscan.so.1`, with logs outside `native/`, matching
-the Tesseract/helper artifact convention. Do not apply a hidden upstream patch
-inside this application's image build.
-
-After validating each artifact's selected file/link identities against the native
-manifest, combine their `native/` trees into the assembler's built root. The
-expected source-build set is four Tesseract entries, one first-party helper and
-one fork backend. They have disjoint file paths; build/test/SDK logs do not belong
-in that root. The assembler selects and checks all six entries again.
+Use the official APK backend through `--apk-root`. Combine the four Tesseract
+entries and one rebuilt first-party helper through `--built-archive`; the
+assembler checks their exact file/link identities. No fork export is selected.
 
 The actual canonical build outputs from all three repositories/recipes were
 combined with the verified 105-entry APK root and the preserved 80-entry notice
@@ -271,7 +279,7 @@ python3 scripts/prepare-native-apks.py \
   --output /private/new-apk-root
 ```
 
-Run this build-only command inside the pinned SDK with networking disabled,
+Run this build-only command inside the independent acquisition image (or a verified SDK) with networking disabled,
 read-only inputs, private writable scratch and bounded resources. Its Python
 standard-library dependencies and trusted `apk` tool are not host requirements
 for scanner users. It does not fetch archives or install packages. Output must
@@ -312,7 +320,7 @@ with a `relocated_from` mapping (the CA bundle is read at its original
 `etc/ssl/certs/ca-certificates.crt` path):
 
 - `--apk-root`: installed files from verified, pinned official packages.
-- `--built-root`: source-built Tesseract, the verifying airscan fork and the
+- `--built-root`: source-built Tesseract and the
   first-party SANE helper at their recorded runtime paths.
 - `--notices-root`: pinned historical notice/source/observation files. Entries
   mapped by `notice_sources` are read from the manifest-adjacent `notice-files/`
@@ -330,7 +338,7 @@ python3 scripts/assemble-native.py \
 
 Source-build exports can be passed directly instead of manually merging a
 `--built-root`. Repeat `--built-archive` for each uncompressed tar produced by
-the canonical Tesseract/helper/fork build commands:
+the canonical Tesseract/helper build commands:
 
 ```sh
 python3 scripts/assemble-native.py \
@@ -339,7 +347,6 @@ python3 scripts/assemble-native.py \
   --apk-root /private/verified-apk-root \
   --built-archive /private/tesseract/native.tar \
   --built-archive /private/helper/helper.tar \
-  --built-archive /private/airscan/native.tar \
   --notices-root /private/verified-notices \
   --output /private/new-native-tree
 ```
@@ -470,3 +477,24 @@ Code/data bytes are unchanged. Native inputs now have299entries/188notices;
 the retained8e8c75f4… candidate remains its earlier298entry/187notice build
 until the next planned batch candidate. Do not infer it already contains the
 supplement or refresh that binary on each documentation change.
+
+### Independent acquisition bootstrap
+
+`Dockerfile.apk-fetch` combines the pinned official Python image with the pinned
+Alpine verifier/loader/libraries and three checksum-locked public keys. It does
+not install the SDK being fetched and needs no home-directory cache. The native
+SDK images remain separate, offline build inputs. Build on Linux amd64:
+
+```sh
+docker build --platform linux/amd64 --network none \
+  --file native/Dockerfile.apk-fetch --tag scanner-native-fetch native
+```
+
+Use `/build-keys` and `/usr/local/bin/apk` for fetch/prepare in this image. The
+adapter loads Alpine's verifier with its own musl/library path; it does not
+execute a downloaded target package. The source workflow's `native-bootstrap`
+job runs bounded locked acquisition and selection as UID10001 with a read-only
+checkout, empty environment and private scratch. Its failure/cancellation/skip
+blocks required-checks. It proves acquisition/signature/preparation only, not
+SDK/source compilation, a complete candidate or publishing. No release write
+permissions are added.

@@ -82,6 +82,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_native_sbom.py -v
       - name: Onefile inventory input binding and output safety
         run: python3 -m unittest discover -s scripts -p test_onefile_sbom.py -v
+      - name: Native bootstrap failure and network separation contract
+        run: python3 -m unittest discover -s scripts -p test_native_bootstrap.py -v
       - name: Native runtime APK input lock contract
         run: python3 -m unittest discover -s scripts -p test_runtime_apk_lock.py -v
       - name: Locked APK acquisition safety checks
@@ -153,9 +155,21 @@ jobs:
       - name: Compose render and native runtime contracts
         run: python3 scripts/test_compose_native.py -v
 
+  native-bootstrap:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Build independent Python and APK verifier
+        run: docker build --platform linux/amd64 --network none --file native/Dockerfile.apk-fetch --tag scanner-native-fetch native
+      - name: Fetch online, then verify and prepare offline
+        run: sh scripts/check-native-bootstrap.sh "$GITHUB_WORKSPACE" scanner-native-fetch
+
   required-checks:
     if: always()
-    needs: [release-ref-policy, test-and-build, deployment-contracts]
+    needs: [release-ref-policy, test-and-build, deployment-contracts, native-bootstrap]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -168,4 +182,5 @@ jobs:
           REF_RESULT: ${{ needs.release-ref-policy.result }}
           TEST_RESULT: ${{ needs.test-and-build.result }}
           DEPLOY_RESULT: ${{ needs.deployment-contracts.result }}
+          NATIVE_RESULT: ${{ needs.native-bootstrap.result }}
         run: sh scripts/check-required-jobs.sh

@@ -19,12 +19,20 @@ func TestConfigRejectsNativeSyntaxInjection(t *testing.T) {
 		t.Fatal("accepted unsafe identity")
 	}
 }
+func TestConfigRejectsUnverifiedScannerTLS(t *testing.T) {
+	for _, endpoint := range []string{"https://scanner/eSCL", "https://192.0.2.10/eSCL", "https://[2001:db8::1]:8443/eSCL"} {
+		if _, err := ConfigFiles("scanner_example_0001", endpoint); err == nil {
+			t.Errorf("accepted unsupported HTTPS scanner endpoint %q", endpoint)
+		}
+	}
+}
+
 func TestGeneratedConfigPrivateAndIsolated(t *testing.T) {
 	parent := t.TempDir()
 	if err := os.Chmod(parent, 0700); err != nil {
 		t.Fatal(err)
 	}
-	endpoint := "https://[2001:db8::1]:8443/eSCL"
+	endpoint := "http://[2001:db8::1]:8443/eSCL"
 	directory, err := WriteConfig(parent, "scanner_example_0001", endpoint)
 	if err != nil {
 		t.Fatal(err)

@@ -397,12 +397,12 @@
     },
     "usr/lib/sane/libsane-airscan.so.1": {
       "mode": 365,
-      "sha256": "480e1bbdac3c6088cc74e220c5df486530fe822582666cb72941a3bbea84226e",
-      "size": 1246024
+      "sha256": "636a2d309285cfe064f4b182c62033b8ed4939d4cc64a2713e73b8d76d6aa918",
+      "size": 208088
     },
     "usr/libexec/scanner/sane-parameters": {
       "mode": 365,
-      "sha256": "0266e0812b622d0569d5dd6e0ba26a09a3464d9fc0fa985793c6db4ebe73f0d0",
+      "sha256": "55fda9d4cd4e64e702591b4add66cc6475ffbe1003641573482b6d05455cb810",
       "size": 4924568
     },
     "usr/share/scanner-kiosk/ca-certificates.crt": {
@@ -1294,26 +1294,6 @@
       "mode": 292,
       "sha256": "b98310fb60f1a8874c5e2674e94796afce7d9a18ed615e93ac2463b457cda61d",
       "size": 1527
-    },
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/COPYING": {
-      "mode": 292,
-      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
-      "size": 18092
-    },
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/LICENSE": {
-      "mode": 292,
-      "sha256": "a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373",
-      "size": 1863
-    },
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/build.json": {
-      "mode": 292,
-      "sha256": "7a7f480c7735fed782a4d0337ecfea6744faa5aecad97dff00b79ae4b6b6dc83",
-      "size": 826
-    },
-    "usr/share/scanner-kiosk/notices/source-build/sane-airscan-homelab/patch.diff": {
-      "mode": 292,
-      "sha256": "ee7a58daeedc8d2efefae615b1eb93c295ab69a7f34c3b1a1448ca966049bb4c",
-      "size": 5105
     },
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/Dockerfile.build": {
       "mode": 292,

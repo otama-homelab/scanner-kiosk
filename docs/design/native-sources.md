@@ -1,5 +1,21 @@
 # Native source inputs and reproducible builds
 
+## Current decision — 2026-11-04: official airscan, no maintained fork
+
+The selected runtime uses unmodified Alpine `sane-airscan 0.99.36-r0`.
+No fork source, fork build, or separate airscan service is required. The native
+manifest selects 295 entries: 111 code/data and 184 notices, with 37 official APK
+components supplying 106 entries. Only Tesseract (four entries) and the
+first-party parameter helper (one entry) require source-build exports.
+
+Registered SANE scanner endpoints accept HTTP only: upstream does not provide
+the verified TLS policy required for HTTPS scanner endpoints. Browser/OIDC HTTPS
+is unaffected. The Canon TS8130 uses HTTP eSCL. Keep scanner traffic on a trusted
+LAN. Prior fork/TLS build results below are historical evidence, not evidence
+for this newly selected official backend. Candidate assembly and device
+acceptance must use the new manifest before release.
+
+
 The current onefile is assembled from a selected native file closure. Its APK
 package provenance describes source components; Alpine is not installed inside
 the distroless runtime. A manifest match alone does not establish source
