@@ -546,3 +546,34 @@ input hashes, database provenance and sandbox limits are in the parent plan's
 `current-go-symbols-20261104/current-evidence.json`. The run used no external
 network, read-only inputs/toolchain/modules, UID/GID 10001, two CPUs, 4GiB RAM,
 no swap and bounded private scratch; its owned staging directory was removed.
+
+
+## Inferred-CPE supplement and Tesseract triage, 2026-11-04
+
+A separate official Grype run with `--add-cpes-if-none` completed in 3.003
+seconds and exited 2 at the unchanged high-severity threshold. It reported eight
+NVD CPE matches (five high, three medium), all against Alpine
+`tesseract-ocr 5.5.2-r0`: CVE-2026-88047 through CVE-2026-88054. These findings
+remain in the raw report with zero ignored matches. The earlier default scan's
+zero-match result must not be read as clearing this supplementary scope.
+
+The APK contributes only 33 read-only configs/font files under tessdata. Actual
+Tesseract executable/library files are separately built 5.5.4, source commit
+`7e548e6e…`, and match current native provenance/manifest hashes. Official
+upstream comparison metadata places all eight referenced fix commits in that
+source commit's ancestry. Ancestry alone does not prove a fix was not reverted.
+
+The exact retained source archive was hash-verified, then inspected without
+extracting or executing it in an isolated sandbox. Every changed production
+source file was identical to the corresponding fixed-commit Git blob for
+CVE-2026-88047/88048/88049/88050/88051. Files for 88052/88053/88054 changed later
+and need further diff review. These are scoped source-identity results, not
+exploit regression tests, recipient binary rebuilds or a VEX. No finding was
+suppressed, no component version relabelled and no release gate cleared.
+
+Raw matches, bounded official upstream metadata, source-file identities and
+remaining triage are recorded in the parent plan's
+`native-grype-cpe-supplement-20261104/current-evidence.json`. External requests
+retrieved only public metadata; source inspection and scanning had no external
+network and used read-only inputs. Both owned units terminated and staging was
+removed. Other source-built components still need advisory coverage.
