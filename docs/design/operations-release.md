@@ -234,3 +234,22 @@ This controlled-clock regression cannot clear host clock stability or substitute
 for the original failed full Go run, OCR repetitions and subsequent whole-suite
 acceptance in a stable environment. No timestamp clamping, authority retry,
 lease release or reduced validation was introduced.
+
+### Read-only timesync correlation (2026-11-04)
+
+A later 90.045-second host observation sampled realtime/monotonic every 1ms
+(82,497 samples) and read timesyncd's `NTPMessage` about every 250ms
+(353 successful queries). It captured three backwards wall steps of
+-36.165/-33.836/-28.186ms, spaced 30.001/30.002 seconds apart. Each preceded
+the first observed increment of timesyncd's packet counter (2573→2576) by
+approximately 394/223/313ms. The read-only preflight reported a 32-second poll
+interval and an NTP offset of -38.330ms; no recent guest journal entries were
+returned. The interval report and measured event spacing are retained separately.
+
+This strengthens a time-sync interaction hypothesis; it does not identify the
+clock-setting syscall/process. Some steps occurred before a query still reported
+the old packet count, so the query brackets are not exact correction intervals.
+No host setting changed, and the proposed administrator remediation above is
+still unapplied. Clock acceptance and the required subsequent OCR100/full-suite
+checks remain open. Raw observations are in the parent plan's
+`clock-timesync-correlation-20261104/current-evidence.json`.
