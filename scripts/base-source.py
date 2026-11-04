@@ -11,6 +11,8 @@ from pathlib import Path, PurePosixPath
 import tarfile
 import tempfile
 import urllib.request
+import urllib.error
+import urllib.parse
 
 spec=importlib.util.spec_from_file_location('debian',Path(__file__).with_name('collect-debian-sources.py'))
 debian=importlib.util.module_from_spec(spec);spec.loader.exec_module(debian)
@@ -38,17 +40,39 @@ def read_lock(path):
     return lock
 
 
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self,request,fp,code,msg,headers,url):return None
+
+
+def cdn_url(url):
+    debian.snapshot_url(url)
+    match=re.fullmatch(r'/archive/(debian|debian-security)/[0-9]{8}T[0-9]{6}Z/(pool/[A-Za-z0-9/_.+~%-]+)',urllib.parse.urlsplit(url).path)
+    if not match or any(part in {'','.','..'} for part in urllib.parse.unquote(match[2]).split('/')):
+        raise ValueError('invalid fixed Debian pool path')
+    return 'https://deb.debian.org/'+match[1]+'/'+match[2]
+
+
 def acquire(lock_path,output):
     lock=read_lock(lock_path)
     if output.exists() or output.is_symlink():raise FileExistsError('base source output exists')
     output.mkdir(mode=0o700)
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),debian.SnapshotRedirect())
+    cdn=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
+    def fetch(url,timeout):
+        try:
+            return cdn.open(cdn_url(url),timeout=timeout)
+        except urllib.error.HTTPError as error:
+            if error.code not in {404,408,429,500,502,503,504}:raise
+        except (urllib.error.URLError,TimeoutError,ConnectionError):
+            pass
+        return opener.open(url,timeout=timeout)
     for group in lock['sources']:
         for entry in group['files']:
             debian.snapshot_url(entry['url'])
             if (PurePosixPath(entry['filename']).name!=entry['filename'] or '\\' in entry['filename']
                     or not 0<entry['size']<=16<<20):raise ValueError('invalid base source input')
-            debian.collect_file(entry,output,opener.open)
+            debian.collect_file(entry,output,fetch)
 
 
 def pack(lock_path,image_files,sources,image_metadata,output):
