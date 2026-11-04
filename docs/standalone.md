@@ -162,3 +162,13 @@ onefile配置へ置換した隔離fixtureで、総合ブラウザー検証も完
 検査はbrowserを含む3GiB上限で65.213秒、観測peak707.9MiB・swap0で完了。
 この数値は製品の最低RAM要件を示さない。
 親計画 `current-onefile-full-browser-20261104/current-evidence.json` を参照。
+
+同じ候補は、その後native OCRを有効にした総合ブラウザーfixtureも完走した。
+空cacheへ実展開した233entryのfile/link/mode/size/SHAを検査し、workerへの
+native tool/data path上書きなしで既定の同梱Tesseractを使用。実catalog公開から
+ブラウザーのja/en OCR受付、daemon処理、PDF downloadと予約解放まで成功した。
+pikepdf/Popplerによる独立検査で2pageの日英text・順序・A4寸法・0/90度rotation・
+元の可逆画素保持を確認。検査用Pillow/pikepdf/fontはruntime依存ではない。
+同時の10ms間隔clock観測は逆行2回（最小step -28.280ms）を記録しており、
+この成功はclock gate合格やOCR100反復・物理capture/停止保証を示さない。
+親計画 `current-onefile-browser-ocr-20261104/current-evidence.json` を参照。
