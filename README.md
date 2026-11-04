@@ -46,6 +46,30 @@ Local repository only. Remote hosting and publication are not configured.
 
 Paperless delivery is deferred. The initial release ends at local download; any later document organization or agent-driven delivery remains outside the initial scanner workflow. LLM OCR remains in scope.
 
+## Module ownership
+
+The CLI composes modules; it does not own their transaction or process-lifecycle
+rules. Use the existing interfaces when changing behavior:
+
+| Module | Interface and ownership | Change here for |
+|---|---|---|
+| `cmd/scanner` | Command selection, signal context, role-specific configuration | CLI commands and process entry |
+| `apiruntime` | `New`/`Run`, HTTP/session composition and request budgets | API startup and HTTP wiring |
+| `workerruntime` | `Run`, boot identity, reconciliation before dispatch, shutdown | Worker lifecycle and scheduling |
+| `documents` | Durable owner/revision/TTL/job/lease transitions | Document authorization and transactional invariants |
+| `scanner` / `scannerdriver` | Validated capture plans and owned attempts; native adapters behind the seam | Device capability/capture behavior and confirmed cleanup |
+| `pkg/ocrplugin` / `internal/ocr` | Provider contract and worker-side implementations | OCR models/providers; preserve owner/publication checks outside providers |
+| `staterecovery` | `Run`/`Export`/`Restore`, identity-only archives and fresh destination publication | Configuration recovery; sessions/documents remain excluded |
+
+For the current Linux/amd64, CGO-disabled, `webui` source configuration,
+`go list -deps -json -tags=webui ./...` completed across 53 local packages and
+143 local import edges. API and recovery imports do not reach scanner/OCR
+provider implementations or `workerruntime`; the worker owns those implementations.
+This is a source dependency check, not physical-readiness or deployment evidence.
+The bundled launcher, CGO helper and browser source require their respective
+configuration checks. The parent plan retains the exact graph and input hashes
+in `current-module-import-graph-20261104/current-evidence.json`.
+
 ## Current verification
 
 ```sh
