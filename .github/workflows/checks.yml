@@ -48,6 +48,8 @@ jobs:
         run: npm install --global npm@11.21.1 --ignore-scripts --no-audit --no-fund
       - name: Verify Go dependencies
         run: go mod verify
+      - name: Text and input boundary contrast
+        run: python3 -m unittest discover -s scripts -p test_ui_contrast.py -v
       - name: Required check aggregation contract
         run: python3 -m unittest discover -s scripts -p test_required_jobs.py -v
       - name: Release channel and ancestry contract
