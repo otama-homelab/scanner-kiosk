@@ -64,6 +64,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_write_publication.py -v
       - name: Preserve vulnerability scan timeout evidence
         run: python3 -m unittest discover -s scripts -p test_check_vulnerabilities.py -v
+      - name: Advisory collection preserves failed thresholds and tool errors
+        run: python3 -m unittest discover -s scripts -p test_scan_candidate.py -v
       - name: Embedded app identity contract
         run: python3 -m unittest discover -s scripts -p test_build_web_identity.py -v
       - name: Source bundle collector safety checks
@@ -251,9 +253,37 @@ jobs:
             ${{ runner.temp }}/candidate/*.log
             ${{ runner.temp }}/candidate/result.json
 
+  candidate-advisories:
+    needs: candidate-build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Download this run attempt's candidate inventories
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "candidate-$GITHUB_SHA-$GITHUB_RUN_ATTEMPT" --dir "$RUNNER_TEMP/security-inputs"
+      - name: Collect image, onefile and native advisory reports
+        run: bash scripts/scan-candidate.sh "$RUNNER_TEMP/security-inputs" "$RUNNER_TEMP/security"
+      - name: Retain raw findings and completion status
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: candidate-advisories-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: ${{ runner.temp }}/security/
+
   required-checks:
     if: always()
-    needs: [release-ref-policy, test-and-build, deployment-contracts, candidate-build]
+    needs: [release-ref-policy, test-and-build, deployment-contracts, candidate-build, candidate-advisories]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -267,6 +297,7 @@ jobs:
           TEST_RESULT: ${{ needs.test-and-build.result }}
           DEPLOY_RESULT: ${{ needs.deployment-contracts.result }}
           NATIVE_RESULT: ${{ needs.candidate-build.result }}
+          SECURITY_RESULT: ${{ needs.candidate-advisories.result }}
         run: sh scripts/check-required-jobs.sh
 
   publish:

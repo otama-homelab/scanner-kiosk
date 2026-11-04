@@ -96,10 +96,10 @@ class ApplicationBuildTests(unittest.TestCase):
                 with patch.object(module,'WORK',root),patch.object(module.urllib.request,'build_opener') as opener:
                     opener.return_value.open.return_value=io.BytesIO(data)
                     if wrong_hash or linked:
-                        with self.assertRaises(ValueError):module.install_syft(source)
+                        with self.assertRaises(ValueError):module.install_tool(source,'syft')
                         self.assertFalse((root/'bin/syft').exists())
                     else:
-                        module.install_syft(source)
+                        module.install_tool(source,'syft')
                         self.assertEqual((root/'bin/syft').read_bytes(),b'tool')
 
     def test_build_environment_is_explicit_and_offline(self):

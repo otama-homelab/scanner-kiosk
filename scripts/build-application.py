@@ -105,28 +105,29 @@ class GithubReleaseRedirect(urllib.request.HTTPRedirectHandler):
         return super().redirect_request(request,fp,code,msg,headers,url)
 
 
-def install_syft(source):
-    lock=json.loads((source/'native/syft-tool.lock.json').read_text())
+def install_tool(source,name):
+    if name not in {'syft','grype'}:raise ValueError('unknown inventory tool')
+    lock=json.loads((source/('native/'+name+'-tool.lock.json')).read_text())
     version,digest,size=(lock.get(k) for k in ['version','sha256','bytes'])
     if (not isinstance(version,str) or not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',version)
-            or lock.get('url')!='https://github.com/anchore/syft/releases/download/v'+version+'/syft_'+version+'_linux_amd64.tar.gz'
+            or lock.get('url')!='https://github.com/anchore/'+name+'/releases/download/v'+version+'/'+name+'_'+version+'_linux_amd64.tar.gz'
             or not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest)
             or type(size) is not int or not 0<size<=64<<20):
-        raise ValueError('invalid pinned Syft tool')
+        raise ValueError('invalid pinned inventory tool')
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),GithubReleaseRedirect())
     with opener.open(lock['url'],timeout=60) as response:data=response.read(size+1)
     if len(data)!=size or hashlib.sha256(data).hexdigest()!=digest:
-        raise ValueError('Syft archive does not match lock')
+        raise ValueError('inventory tool archive does not match lock')
     with tarfile.open(fileobj=io.BytesIO(data),mode='r:gz') as archive:
         members=archive.getmembers()
-        selected=[m for m in members if m.name=='syft']
+        selected=[m for m in members if m.name==name]
         if (len(members)>32 or sum(m.size for m in members)>256<<20 or len(selected)!=1
                 or not selected[0].isfile() or selected[0].issparse() or not 0<selected[0].size<=128<<20):
-            raise ValueError('invalid Syft executable member')
+            raise ValueError('invalid inventory tool executable member')
         with archive.extractfile(selected[0]) as stream:
             executable=stream.read((128<<20)+1)
-        if len(executable)!=selected[0].size:raise ValueError('incomplete Syft executable')
-    path=WORK/'bin/syft'
+        if len(executable)!=selected[0].size:raise ValueError('incomplete inventory tool executable')
+    path=WORK/'bin'/name
     with path.open('xb') as target:target.write(executable)
     path.chmod(0o555)
     return lock
@@ -149,7 +150,7 @@ def acquire(revision,ref):
     if (source/'.npmrc').exists() or (source/'web/.npmrc').exists():
         raise ValueError('project npm configuration is not a build input')
     tool=install_npm(source)
-    install_syft(source)
+    install_tool(source,'syft')
     if subprocess.check_output(['npm','--version'],env=environment(False),text=True).strip()!=tool['version']:
         raise ValueError('npm client version does not match lock')
     before=hashes(source)
