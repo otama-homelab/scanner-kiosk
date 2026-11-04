@@ -1,0 +1,122 @@
+{
+  "format": 1,
+  "scope": "Container-only matching source inputs from prior authenticated metadata; not a runtime lock or release approval",
+  "base_digest": "sha256:25ac8f0c3b2334a9eb05452266bd4697864a8c8ef0ef71e5e6480d7f92868329",
+  "candidate_image": "sha256:024750f34391f3402a6369d0615949c2dc885b69544b2cb8d29f7a443f223c59",
+  "packages": [
+    {
+      "name": "base-files",
+      "version": "13.8+deb13u7",
+      "source": "base-files",
+      "status_sha256": "e13087b841618232056233ebbb6602001a88d80e7cb4fc457e05aea4391d648a"
+    },
+    {
+      "name": "ca-certificates",
+      "version": "20250419+deb13u1",
+      "source": "ca-certificates",
+      "status_sha256": "3a43b8ed7f1a6116af114b5ad9f2c1b1dd462e39483e5181f2aa3e270acda128"
+    },
+    {
+      "name": "media-types",
+      "version": "13.0.0",
+      "source": "media-types",
+      "status_sha256": "60e871d56cfcc834fe0a8d0436f98996e1bb196d3ddf8f2109d0f05266a816ce"
+    },
+    {
+      "name": "netbase",
+      "version": "6.5",
+      "source": "netbase",
+      "status_sha256": "1b44f4feb536c195a150c6b83001dfa016cb40f35ed1a5972248eddd8677a254"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026f-0+deb13u1",
+      "source": "tzdata",
+      "status_sha256": "1d27b1d691bc7663341d7024bef3d2657592390d2869d86d1508a43c8bd4555d"
+    },
+    {
+      "name": "tzdata-legacy",
+      "version": "2026f-0+deb13u1",
+      "source": "tzdata",
+      "status_sha256": "ef3dcd5e5a6542aa6121d6a2dfd0a30a27ffe59a44ac4f9b7fe45633e0cf34fa"
+    }
+  ],
+  "source_groups": [
+    {
+      "source_package": "base-files",
+      "source_version": "13.8+deb13u7",
+      "binary_packages": [
+        {
+          "name": "base-files",
+          "version": "13.8+deb13u7"
+        }
+      ],
+      "suite": "trixie",
+      "directory": "pool/main/b/base-files",
+      "files": [
+        {
+          "filename": "base-files_13.8+deb13u7.dsc",
+          "size": 1247,
+          "sha256": "6240b5a02fc32bd6d925bb7776e00c467e80d930f8cf3c4a20c299ce692dc7e4",
+          "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/pool/main/b/base-files/base-files_13.8+deb13u7.dsc"
+        },
+        {
+          "filename": "base-files_13.8+deb13u7.tar.xz",
+          "size": 83444,
+          "sha256": "be32803b9408ac9aa46b96f68c83ee45e88d04d89854a87999986efc4cb34c69",
+          "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/pool/main/b/base-files/base-files_13.8+deb13u7.tar.xz"
+        }
+      ],
+      "authenticated_index": {
+        "suite": "trixie",
+        "snapshot": "20261102T000000Z",
+        "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/dists/trixie/main/source/Sources.xz",
+        "sha256": "6002f81f463a2d976d84b34170367cc16da2d60bd0ba9ab9d868d6e1c1a935d9",
+        "size": 10540436,
+        "release_date": "Sat, 12 Sep 2026 07:55:41 UTC",
+        "valid_until": null,
+        "compressed_index_retained": false
+      }
+    },
+    {
+      "source_package": "ca-certificates",
+      "source_version": "20250419+deb13u1",
+      "binary_packages": [
+        {
+          "name": "ca-certificates",
+          "version": "20250419+deb13u1"
+        }
+      ],
+      "suite": "trixie-security",
+      "directory": "pool/updates/main/c/ca-certificates",
+      "files": [
+        {
+          "filename": "ca-certificates_20250419+deb13u1.dsc",
+          "size": 1924,
+          "sha256": "347487e99c0b9f09150c8d78ad03e3552545c3904d5e0d7f731ef2ef79d484d4",
+          "url": "https://snapshot.debian.org/archive/debian-security/20261102T000000Z/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1.dsc"
+        },
+        {
+          "filename": "ca-certificates_20250419+deb13u1.tar.xz",
+          "size": 277284,
+          "sha256": "1b2e3d0b90cfc62ac8033d64e18ea4649fbb2a01c937c9ac9d36e762da6b9446",
+          "url": "https://snapshot.debian.org/archive/debian-security/20261102T000000Z/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1.tar.xz"
+        }
+      ],
+      "authenticated_index": {
+        "suite": "trixie-security",
+        "snapshot": "20261102T000000Z",
+        "url": "https://snapshot.debian.org/archive/debian-security/20261102T000000Z/dists/trixie-security/main/source/Sources.xz",
+        "sha256": "c172de76fb14605fee9836ef0e86d6928f03b2bdc2f9159feabb19a8ec00b45d",
+        "size": 247668,
+        "release_date": "Sun, 01 Nov 2026 20:43:05 UTC",
+        "valid_until": "Sun, 08 Nov 2026 20:43:05 UTC",
+        "compressed_index_retained": false
+      }
+    }
+  ],
+  "limitations": [
+    "netbase 6.5 and media-types 13.0.0 absent in retained old source manifest",
+    "tzdata/tzdata-legacy 2026f differs from retained 2026e; do not substitute"
+  ]
+}

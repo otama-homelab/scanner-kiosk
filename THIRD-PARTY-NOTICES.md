@@ -11,7 +11,8 @@ programs; the CGO sane-parameters helper links SANE. The packed native payload
 contains shared libraries, OCR models, a CA bundle and the notices indexed below.
 The container adds the pinned distroless base specified in [Dockerfile](Dockerfile).
 Node/npm and the build SDK are build inputs, not automatically browser/runtime
-contents. Optional administrator-supplied fonts are not bundled.
+contents. The native payload includes Tesseract’s glyphless `pdf.ttf`, separate
+from optional administrator-supplied fonts. See the [font source association](docs/design/license-distribution.md#bundled-pdf-font-identity). Optional administrator fonts are not bundled.
 
 [Go notice index](native/notice-files/retained/go/index.json) preserves module
 versions, checksums and source notice paths, including third-party subcomponents.
@@ -266,6 +267,6 @@ release delivery method and remaining gates, and [personal repackaging](docs/des
 for the technical replacement path. Neither an unpublished local source archive
 nor an upstream homepage is a completed recipient-facing source delivery.
 
-The distroless base is a separate container-only scope: retain its exact digest,
+The [distroless inventory and source subset](docs/design/license-distribution.md#current-distroless-only-delivery-scope-2026-11-04) identify six container-only package records. Retain its exact digest,
 package notices and source obligations with the image release. The standalone
 notice index alone does not close that scope.

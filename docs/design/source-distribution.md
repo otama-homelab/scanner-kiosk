@@ -32,7 +32,8 @@ The same candidate manifest must bind:
 - Application commit/source, LICENSE, retained Go module sources and notices,
   module sums, launcher/API/helper build instructions and pinned tool versions.
 - Native upstream archives, exact aports recipes and local patches, modified
-  fork source and controls, model/CA source and notices, source identity checksums,
+  fork source and controls, model/CA source and notices, the Tesseract 5.5.2 `pdf.ttf`/config source
+  association (distinct from the rebuilt 5.5.4 executable), source identity checksums,
   and any generated inputs required to build the delivered covered work.
 - Frontend source and build instructions/lockfile for the delivered assets.
   Build-only archives are a separate distribution scope if actually shipped;

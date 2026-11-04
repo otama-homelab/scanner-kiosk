@@ -18,7 +18,7 @@ the project license as undecided predate this decision.
 | HTML, CSS, SVG and inline/public JavaScript | `index.html` is generated from the project Astro page. `logo.svg`, `style.css` and `theme.js` are byte-identical copies of `web/public`. | Confirm source/rights of the logo, icons, styling and translations; generated HTML is not covered by the JavaScript module inventory. |
 | Node/Astro/npm build tooling | Temporary prerender chunks contain Astro and other npm modules; they are absent from the five final static assets. Docker copies `web/dist` into the Go build, without copying Node or `node_modules` into runtime. | Keep the build-stage inventory and unresolved archive notices. Review any source, build-stage image or dependency bundle actually distributed; do not treat every lockfile package as browser-delivered code. |
 | Debian native tools, libraries and OCR data | Runtime installs SANE, sane-airscan, Tesseract, English/Japanese data and their dependencies; distro notices are retained and checked. | Review exact package copyright files, exceptions, corresponding-source and replacement/relinking requirements. Supplementary repository notices cannot substitute for bundled native dependencies. |
-| Optional OCR font | Supplied separately through administrator configuration; no font is included in the current candidate image. | Record the actual font's license and redistribution/embedding conditions before distributing it or approving OCR output behavior. |
+| Tesseract PDF font and optional OCR font | The native payload includes Tesseract’s 572-byte `usr/share/tessdata/pdf.ttf`. Optional administrator-supplied fonts are separate. | Retain Tesseract source/license association for the bundled glyphless font. Review any separately supplied font before distributing it. |
 
 ## Image and compression component dispositions (2026-11-04)
 
@@ -105,6 +105,97 @@ trademark qualifications; do not infer source-archive rights from API linkage.
 This confirms the current API's module-to-notice association. The launcher/helper
 and final changed binaries still require their own identity/scope binding; this
 is not a blanket native/container/source distribution approval.
+
+The current outer launcher and sane-parameters helper were also read with the
+same isolated metadata reader. Both report Go1.27.3 and no external Go modules;
+CGO is disabled for the launcher and enabled for the helper. The helper bytes
+match current native manifest SHA `0266e0812b622d0569d5dd6e0ba26a09a3464d9fc0fa985793c6db4ebe73f0d0`.
+Their Go dependency notice scope is therefore the standard library; native
+SANE/header obligations remain separate for the helper. No target executable
+was run by this metadata check.
+
+## Current library choices and combination requirements (2026-11-04)
+
+These decisions concern the identified library/code portions, not every tool in
+their upstream archives. Full license texts remain authoritative. Existing
+source/replacement proofs are reused; no new binary is produced for this review.
+
+| Component / delivered boundary | Selected route and concrete required materials | Evidence / remaining acceptance |
+| --- | --- | --- |
+| Avahi client/common 0.9-rc4 | LGPL-2.1-or-later library route. Retain LICENSE, source/build controls and library modification/replacement rights. | Exact client.c/malloc.c preambles read from pinned `v0.9-rc4.tar.gz`; filename-selection gap from earlier review is resolved. Recipe patch only alters a daemon service dependency, not these libraries. Final source delivery remains gated. |
+| GnuTLS 3.8.13 | LGPL-2.1-or-later for library; preserve library source and LGPL text. Root GPL COPYING concerns other portions too. | lib/handshake.c and lib/gnutls_int.h identify terms. Four recipe patches affect tests, not library licensing. Existing real ELF replacement/repack proof establishes the technical path; final matching source/control delivery remains gated. |
+| gettext libintl 1.0 | LGPL-2.1-or-later for intl library, not blanket GPL for gettext tools. | Exact intl/dcigettext.c notice retained. Recipe patches affect gettext-tools tests. Full source archive retains its own tools/build-file terms. |
+| libtasn1 4.21.0 | LGPL-2.1-or-later for lib/. Preserve GNU Bison’s additional permission for generated ASN1.c; do not relabel that skeleton GPL-only. | README explicitly separates library, GPL tools and FDL manual. ASN1.c preamble has Bison exception. No local recipe patch. Source distribution must keep those distinct texts. |
+| GMP 6.3.0 | Choose LGPL-3.0-or-later option for library. Preserve LGPL3/GPL3 materials, library source, application/relink materials as applicable. | README offers LGPL3+ or GPL2+. gcc15.patch changes acinclude.m4 build detection. GPL2-only must not be inferred from an alternative. |
+| Nettle/hogweed 3.10.2 | Choose LGPL-3.0-or-later option for library. Preserve library source, notices and applicable combined-work materials. | aes-encrypt.c/rsa-sign.c permit LGPL3+ or GPL2+. No local recipe patch; pkg-config comment stripping is build metadata, not a license change. |
+| libidn2 2.3.8 | Choose LGPL-3.0-or-later option for library, retaining included Unicode terms separately. | lib/idn2.h.in grants LGPL3+ or GPL2+. No local recipe patch. Unicode notice must not be replaced by LGPL text alone. |
+| libunistring 1.4.2 | Use LGPL3+ library distribution route where granted; keep individual file notices permitting LGPL2.1+ and the applicable source/build terms. | u8-check.c has LGPL2.1+; root COPYING.LIB contains LGPL3. No local recipe patch. Do not describe every file as LGPL3-only. |
+| libusb 1.0.30 | LGPL-2.1-or-later library route; notices/source/modification and replacement materials retained. | libusb/core.c identifies terms. No local patch; configure disables udev. Runtime shared-library identity remains distinct from SDK static output. |
+| D-Bus 1.16.2 library | Choose GPL-2.0-or-later alternative, allowing GPL3-compatible combinations when required by linked LGPL3 components. Retain exact source/notice and combination terms. | COPYING and dbus-connection.c offer AFL2.1 or GPL2+. No local patch. Do not infer that this choice relicenses the separate CGO-free API, or that a library exception removes another dependency’s GPL. Actual native combination/source obligations must be accounted for in final delivery. |
+| GCC libgcc/libgomp/libstdc++ 15.2.0 | GPL3 with GCC Runtime Library Exception 3.1 for files granting it. Preserve both texts. Independent modules may use the exception only for an Eligible Compilation Process. The runtime library itself retains its terms. | Current source-managed preambles explicitly grant the exception. Final build controls must identify the actual compiler/transforms; merely seeing a GCC package name does not establish eligibility. |
+| SANE 1.4.0 and sane-parameters | The header’s retained permission/modification record and dll.c’s SANE linking exception support the independent Apache helper; scanimage remains GPL-2.0-or-later. | Reuse exact source/recipe review and helper rebuild. Preserve sane.h’s Alpine include.patch modification. Exception is not extended to scanimage or unrelated backends. |
+| Modified airscan 0.99.38 fork | GPL-2.0-or-later plus the retained library-linking exception. Provide exact fork source, patch and build controls, retaining exception for the modifications as recorded by the fork. | Existing pinned fork/source rebuild and provenance bind its bytes. No hidden application-Dockerfile patch or unmodified upstream substitute. |
+
+For LGPL combined works, distribution must permit modification for the
+recipient’s own use and reverse engineering to debug those modifications. No
+EULA or other added restriction may contradict those rights. Supply the actual
+library source and, where the chosen clause requires it, corresponding
+application/relink materials and installation information. The existing personal
+repackaging mechanism needs no distributor key. Its success is a technical
+replacement proof, not automatic satisfaction of every library’s source and
+combination conditions. The independent API invokes native programs as separate
+processes; CGO linkage belongs to sane-parameters and must be evaluated there.
+
+### Bundled PDF font identity
+
+The current native manifest’s `usr/share/tessdata/pdf.ttf` is 572 bytes, SHA-256
+`c7845420925a23d88ed830a63957b8af85a66a8daf8d9fc90e843673b2ef1a59`.
+It matches `tesseract-5.5.2/tessdata/pdf.ttf` in the pinned source archive.
+That archive’s root LICENSE is Apache-2.0; the associated pdfrenderer.cpp also
+identifies Apache-2.0. The fixed Alpine recipe installs the Tesseract tree and
+separately installs eng/jpn/osd models from tessdata 4.1.0. Therefore the bundled
+font/configs are not reattributed to the rebuilt Tesseract 5.5.4 executable or to
+the optional administrator font. Preserve the exact source association and
+original notices; no first-party ownership is claimed for this font. This
+identity check does not prove all font-specific rights or cover arbitrary fonts
+later selected by an operator.
+
+## Current distroless-only delivery scope (2026-11-04)
+
+The candidate image `sha256:024750f34391f3402a6369d0615949c2dc885b69544b2cb8d29f7a443f223c59`
+retains the pinned static-debian13 base layers unchanged. Reading its dpkg
+status files identifies six installed-package records; these are container
+scope, not extra modules packed into the standalone executable. Package records
+can describe more files than distroless retains, so they do not prove an entire
+Debian package or its executable tools are delivered.
+
+| Package record | Version | Observed terms and selected material |
+| --- | --- | --- |
+| base-files | 13.8+deb13u7 | GPL-2+ for package files, separate verbatim permissions for license documents. Copyright/GPL2 present; exact matching source .dsc/tar.xz retained and freshly size/SHA256 checked. |
+| ca-certificates | 20250419+deb13u1 | Mozilla certdata is MPL-2.0; Debian tools/build files have GPL-2+. Copyright/MPL2/GPL2 present. Exact matching source .dsc/tar.xz retained and freshly checked; include covered source and source-access notice when conveying generated certificates under MPL §3.2. Do not infer that update-ca-certificates runs in distroless. |
+| media-types | 13.0.0 | Copyright file identifies compiled public information as public-domain/ad-hoc. Preserve exact attribution; do not assign GPL from another base package. |
+| netbase | 6.5 | GPL-2-only, distinct from base-files’ or-later. Preserve copyright/GPL2 with actually retained data. Distribute preferred-form text files as source where applicable; do not substitute a different package version or infer an LGPL exception. |
+| tzdata | 2026f-0+deb13u1 | Copyright identifies IANA database as public domain. Preserve that attribution. |
+| tzdata-legacy | 2026f-0+deb13u1 | Same source package and public-domain database terms; distinct package record. |
+
+All six copyright files plus GPL2 and MPL2 were copied individually from the
+actual stopped image filesystem and SHA-256 recorded. Containers were never
+started and were removed. An initial whole-document-directory copy failed at
+the read-only application directory; only successful individual copies count.
+
+[Exact source input subset](distroless-source-inputs.json) selects the matching
+base-files and CA sources from earlier authenticated Debian source metadata.
+The prior 229-package image inventory is not the current six-package base
+inventory. In particular, its retained tzdata 2026e is **not** source identity
+for this base’s 2026f; netbase/media-types records are also not covered by that
+old inventory. Public-domain data does not acquire a new copyleft source-offer
+condition merely because its package differs. Actual retained GPL-covered data
+and covered-source/release binding still must be included by the release job.
+
+These findings close the unknown base-package/notice identity scope. They do
+not constitute an OS vulnerability scan, prove every selected data file’s
+preferred source form, or satisfy actual recipient access. Do not turn that
+limited result into complete image approval.
 
 ## Current single-file notice updates
 
