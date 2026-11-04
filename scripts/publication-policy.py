@@ -134,9 +134,12 @@ def main():
     parser.add_argument('--candidate', type=Path)
     parser.add_argument('--approval', type=Path)
     parser.add_argument('--approval-sha256')
+    parser.add_argument('--artifact-id',type=int,help='Immutable staged artifact in the same push run')
     args = parser.parse_args()
     if any([args.candidate, args.approval, args.approval_sha256]) and not all([args.candidate, args.approval, args.approval_sha256]):
         parser.error('candidate preflight requires --candidate, --approval and --approval-sha256 together')
+    if args.artifact_id is not None and (not args.candidate or not 0<args.artifact_id<1<<63):
+        parser.error('artifact ID requires complete candidate preflight and a positive bounded ID')
     try:
         if args.remote_state.stat().st_size > 2 << 20:
             raise ValueError('remote state exceeds bound')
@@ -146,6 +149,8 @@ def main():
                   if args.candidate else publication_plan(args.ref, args.sha, args.event, state))
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError):
         parser.exit(1, 'publication plan rejected: ref, materials, approvals or remote state is invalid\n')
+    if args.artifact_id is not None:
+        result['artifact_id']=args.artifact_id
     print(json.dumps(result, sort_keys=True))
 
 

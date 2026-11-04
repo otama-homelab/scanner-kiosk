@@ -262,3 +262,26 @@ Public read-only probes confirmed the installed Docker client's OCI verbose
 response and GitHub's asset-digest field. These are not actual private-service
 uploads or hosted publisher success. C1/G5/security/license/authentication and
 formal main/tag acceptance remain required; no release or image was published.
+
+
+## Protected publication plan handoff (2026-11-05)
+
+After all existing gates pass, the credential-free publication preflight accepts
+`--artifact-id ID` together with its candidate/approval inputs. Preserve the exact
+JSON output and its independently reviewed SHA-256 in the protected repository
+variables `SCANNER_PUBLICATION_PLAN_JSON` and
+`SCANNER_PUBLICATION_PLAN_SHA256`. These are public metadata, not credentials.
+`SCANNER_PUBLISH_ENABLED` remains disabled until the existing publication gates
+and C1 are resolved; setting that flag alone does not authorize a candidate.
+
+The serialized publisher imports the plan only when its protected hash and event
+source match. It checks the selected immutable artifact's repository, push run,
+source SHA, name and expiry before downloading. A protected plan may select an
+approved earlier attempt within the same run, so a rerun does not silently switch
+to newly generated materials. Another run or source is rejected. The writer then
+revalidates the manifest, every upload and fresh service state as before.
+
+No approved plan or external publication was created while implementing this
+handoff. Actual recipient access, visibility/protection, tag promotion and service
+writes remain 43-06.1 work after G5. The stage manifest's original advisory and
+approval fields are never rewritten by importing a plan.
