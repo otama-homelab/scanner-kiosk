@@ -93,6 +93,16 @@ class NativePipelineTests(unittest.TestCase):
         self.assertTrue(any('build-sane-parameters.sh' in ' '.join(c) for c in runs))
         self.assertFalse(receipt['publication_approved'])
 
+    def test_controls_are_prepared_before_read_only_input_mount(self):
+        error, calls, receipt, artifact = self.invoke()
+        self.assertIsNone(error)
+        builds = [c for c in calls if c[:2]==['docker','run'] and 'build-tesseract.sh' in ' '.join(c)]
+        self.assertEqual(len(builds), 1)
+        self.assertFalse(any(',dst=/inputs/' in a for a in builds[0]))
+        copies = [c for c in calls if c[:2]==['docker','run'] and 'copyfile' in ' '.join(c)]
+        self.assertTrue(any('/inputs/tesseract-source.SHA256SUMS' in ' '.join(c) for c in copies))
+        self.assertTrue(all(c[c.index('--network')+1]=='none' for c in copies))
+
     def test_cleanup_failure_is_not_success(self):
         error, _, receipt, artifact = self.invoke('volume rm')
         self.assertIsNotNone(error)

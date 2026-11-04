@@ -143,6 +143,9 @@ def build(root, output):
         call('fetch-tesseract',run('fetch-tesseract',bootstrap,['python3','/snapshot/source/scripts/fetch-tesseract-source.py',
              '--lock','/snapshot/source/native/tesseract-source.lock.json','--output','/inputs/source.tar.gz'],
              [source_mount,f'type=volume,src={inputs},dst=/inputs'],network='bridge'))
+        call('source-controls',run('source-controls',bootstrap,['python3','-c',
+             "import shutil; shutil.copyfile('/snapshot/source/native/tesseract-source.SHA256SUMS','/inputs/tesseract-source.SHA256SUMS')"],
+             [source_mount,f'type=volume,src={inputs},dst=/inputs']))
         with tempfile.TemporaryDirectory(prefix='native-sdk-',dir=output) as temporary:
             context_root = Path(temporary)
             sdks = {}
@@ -156,12 +159,10 @@ def build(root, output):
                 call('sdk-'+sdk,['docker','build','--platform','linux/amd64','--network','none',
                      '--file',str(context/f'Dockerfile.{sdk}-sdk'),'--tag',tag,str(context)],timeout=600)
                 sdks[sdk] = tag
-            checksum = context_root/'tesseract-source.SHA256SUMS'
-            call('copy-source-checksum',['docker','cp',keeper+':/snapshot/source/native/tesseract-source.SHA256SUMS',str(checksum)])
             trap = '''set -eu; trap 'code=$?; trap - EXIT; if [ "$code" -ne 0 ]; then for log in output/*.log; do test ! -f "$log" || tail -c 65536 "$log" >&2 || :; done; fi; exit "$code"' EXIT; '''
             call('tesseract',run('tesseract',sdks['tesseract'],['/bin/sh','-c',trap+
                  'sh /snapshot/source/native/build-tesseract.sh >&2; cat /work/native.tar'],
-                 [source_mount,input_mount,f'type=bind,src={checksum},dst=/inputs/tesseract-source.SHA256SUMS,readonly'],
+                 [source_mount,input_mount],
                  memory='4g',scratch='3g'),timeout=1200,binary=output/'tesseract.tar')
             call('helper',run('helper',sdks['sane'],['/bin/sh','-c',trap+
                  'sh /snapshot/source/native/build-sane-parameters.sh /snapshot/source /snapshot/source/native/helper-source.SHA256SUMS >&2; cat /work/native.tar'],
