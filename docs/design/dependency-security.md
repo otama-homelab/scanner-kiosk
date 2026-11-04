@@ -626,3 +626,25 @@ Evidence: parent plan `native-recipient-tesseract-rebuild-20261104/current-evide
 The build used two CPUs, 3GiB RAM, no swap, a 1GiB private scratch volume, no
 host mounts/network, read-only root and UID/GID 10001. Owned container, input
 image tag and staging contexts were removed; the locked SDK was retained.
+
+
+### Recipient-source SANE helper rebuild
+
+The same portable native-source bundle supplied the helper's 12 checksummed
+Go/module inputs, canonical build script, checksum table and SDK lock. The
+selected build-control archive and every selected input were hash-verified.
+A fresh offline build in the retained locked SANE SDK reproduced the current
+helper SHA256 `0266e081…` (4,924,568 bytes). All 46 SDK package identities matched;
+build metadata confirmed Go 1.27.3, CGO enabled, the saneparams tag and no external
+Go module dependencies. Raw mode 0700 and deployment mode 0555 were checked
+separately. This complements the recipient-source Airscan and Tesseract proofs;
+it does not rebuild every APK dependency or prove a fresh SDK reconstruction.
+
+The initial source-root selection failure occurred before source execution.
+The first compile then completed, but collection failed because the SDK lacked
+Python. Both failures are retained. A retry used a bounded descriptor-validated
+Go collector inside the same sandbox and completed normally. No product code,
+build script or private-store guard changed. No new scanner/device test ran.
+The owned containers, input image tag and staging were removed; the locked SDK
+was retained. Evidence: parent plan
+`native-recipient-helper-rebuild-20261104/current-evidence.json`.
