@@ -253,3 +253,30 @@ Node binaries, other-platform dependency variants and native C/APK/SDK sources
 are separate inputs. These source archives remain local and unpublished; they
 do not replace the final license/source-delivery or vulnerability acceptance.
 Parent evidence: `current-frontend-offline-source-20261104/current-evidence.json`.
+
+## Current SANE linking boundary, 2026-11-04
+
+The retained SANE 1.4.0 archive (`f99205c903dfe2fb8990f0c531232c9a00ec9c2c66ac7cb0ce50b4af9f407a72`)
+was read without extracting or executing its files. Its root LICENSE defers to
+individual file notices. `backend/dll.c` retains GPL-2.0-or-later with the SANE
+library linking exception; `frontend/scanimage.c` declares GPL-2.0-or-later.
+The exception does not relicense scanimage or remove source/notice obligations
+for the delivered libraries. It must not be extended to every SANE backend.
+
+`cmd/sane-parameters/main_linux.go` explicitly links `-lsane` and includes
+`sane/sane.h`; the CGO-free API/worker invokes separate native tools. The header
+permits public-domain use subject to retaining its message and indicating
+modifications. The exact Alpine 1.4.0-r4 recipe at commit
+`6bbd45b4dd10f4ec6cd6d99265aba2de11569522` carries `include.patch`, adding
+`#include <sys/types.h>` after the header guard without changing its notice.
+Its other two declared patches affect saned's pid path and test selection;
+none changes dll.c or scanimage.c. Preserve this header modification record
+alongside the retained upstream notice and recipe.
+
+The separate sane-airscan fork retains its explicit library linking exception.
+These permissions support keeping the project-owned helper under Apache-2.0;
+they do not change the fork's license or approve the complete native closure.
+Per-file coverage of SANE support code, transitive libraries, complete notices,
+and recipient-facing source/replacement delivery remain open. The workspace's
+`sane-linking-review-20261104/result.json` retains the selected full-file hashes,
+leading notices, root license texts and all seven exact recipe files.
