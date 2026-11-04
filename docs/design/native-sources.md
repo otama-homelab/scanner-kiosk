@@ -96,7 +96,7 @@ remain historical inputs. See the native input directory for both
 SDK recipes and locks. The previous native
 staging also includes historical observation receipts; their dynamic fields
 must not be mistaken for reproducible build inputs. That earlier checked-in manifest fixed 182 native entries; the current manifest
-includes 191 entries after the CA/fork updates below.
+grew to 191 entries after the CA/fork updates below; the latest notice additions bring it to 232 entries (111 code/data and 121 notices).
 `runtime-provenance.json` covers each entry with one origin/notice role and binds
 the first-party helper source. A native input archive and reproducible closure
 assembly still need a stable provenance layout before registry/release
@@ -208,3 +208,34 @@ or runtime mechanism. The native manifest is229entries; original197 entries
 are unchanged. Root license texts can refer to per-file conditions (notably
 libffi/libxml2/musl/p11-kit), and those follow-ups remain explicit in source.json.
 Full source/relink delivery, other components and release acceptance stay open.
+
+## Current source correspondence and local fork export
+
+The latest native manifest still contains 36 APK-derived components/105 selected
+files, but its 28 source origins differ from the earlier 28-origin recipe
+collection: `ca-certificates` at `e78f5987…` replaces the old `sane-airscan`
+APK origin. The modified 0.99.38 airscan backend remains a separate source build;
+the historical 0.99.36 recipe/archive is not its corresponding source.
+
+The current correspondence ledger rechecks all 124 selected recipe files. The
+CA recipe's complete three-file directory is retained at its exact commit,
+including post-deinstall and trigger scripts, and its 230,531-byte upstream
+archive was rechecked with SHA256/SHA512. The ledger selects 30 upstream source
+artifacts totalling 851,671,725 bytes for the current APK origins. For the other
+29 archives, this latest check verifies presence/type/size and links the previous
+full checksum evidence; it does not claim to have rehashed all archive contents.
+The 12 first-party helper source hashes and its SDK lock still match; the
+separate Tesseract 5.5.4 source archive and SDK lock were also rechecked.
+
+A local `git archive` of the independent airscan fork's committed tree
+`3836d081a8e113b53d4ed64030222b4d61a6b950` is retained as
+`sane-airscan-source.tar` (1,167,360 bytes, SHA256
+`3cc22666b47d1f1537d99eb4e9d5a475465e3e6938a4beb2ca69b61fc23c5fc0`).
+Its C patch equals the current runtime patch exactly, and the fork's SDK lock,
+build script, LICENSE and COPYING match the runtime's recorded materials.
+This exports committed files without Git configuration or ignored build inputs;
+it has not been extracted, executed or published. It is one local source
+artifact, not a complete corresponding-source/relinking delivery or permission
+to release the whole scanner. The parent plan's
+`current-native-source-coverage-20261104/current-evidence.json` records the
+correspondence, retained data paths and remaining delivery/license gates.
