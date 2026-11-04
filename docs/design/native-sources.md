@@ -21,8 +21,8 @@ package provenance describes source components; Alpine is not installed inside
 the distroless runtime. A manifest match alone does not establish source
 completeness, a reproducible native rebuild or permission to publish.
 
-For the current candidate, the retained package inventory maps 36 APK-derived
-components to 28 origin recipes at APK-recorded aports commits. The Tesseract
+For the current candidate, the retained package inventory maps 37 APK-derived
+components to 29 origin recipes at APK-recorded aports commits. The Tesseract
 5.5.4 executable/library are a separate unmodified upstream source build;
 traineddata and other retained files still use their recorded APK provenance.
 Do not relabel that source build as an installed APK version or substitute the
@@ -337,3 +337,22 @@ See the [input command](../../native/README.md#pinned-runtime-apk-inputs).
 
 This command prepares binary build inputs, not corresponding source, an SDK
 redistribution approval, the complete native build workflow or a release.
+
+## Exact connected candidate source refresh, 2026-11-04
+
+The local native-source archive `33a4895b…` (860,866,560 bytes, 162 ordinary
+file members) binds compiled application/helper source c304a66, manifest
+`6aed76d7…` and onefile `368f6234…`. It rechecks all 163 members of the retained
+input archive before reusing any bytes. Three historical fork/patch members
+are excluded; the official sane-airscan recipe directory at aports commit
+487cfc21… and upstream0.99.36 source are included after Git-blob/SHA256 and
+recipe-SHA512 verification respectively. No upstream source is executed here.
+
+The source export matches all184 selected notices, 12 helper source files and
+its SDK lock. The current37 APK components map to29 recorded origins and106
+retained paths. The archive excludes raw SDK caches and compiler images;
+separate Go/frontend/base source scopes remain explicit. This updates source
+correspondence, not final recipient access, license/security or publication
+approval. Detailed indexes and validation are retained in parent evidence
+`candidate-review-20261104/native-source/`. Earlier fork/source counts in
+historical sections describe their recorded candidates only.

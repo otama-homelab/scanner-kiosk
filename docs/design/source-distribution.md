@@ -127,3 +127,23 @@ The pipeline in43-02 must generate and verify this concrete material set against
 the candidate. It must fail on a missing/mismatched required material.43-06 must
 then verify the actual recipient access/download and release hashes after G5.
 Preparation approval cannot be used as publication approval.
+
+## Local exact-candidate materials, 2026-11-04
+
+Parent evidence `candidate-review-20261104/source-materials.json` binds the
+c304a66 source export, current native manifest, API/onefile/image identities
+and three refreshed source subsets. Native sources include the official
+airscan archive/recipe instead of the historical fork; all184 selected notice
+bytes match the source export. Application inputs retain47 Go modules in141
+proxy files after rehashing and use the current embedded assets. Frontend
+inputs retain201 verified npm archives; a new network-free recipient replay
+from the refreshed bundle reproduced all five candidate assets. Raw SDK
+images/caches are excluded. Optional source/build-input scopes remain separate
+from the required native source set and container-base materials.
+
+This is still the local0.0.0-dev/unreleased candidate. Its API carries VCS/debug
+metadata; the source README distinguishes its reference hash from the trimmed
+recipient build command and retains actual build settings. A refreshed source
+archive is not a new API/native rebuild, a frozen release RC, license/security
+approval or proof of actual recipient access. Final base/material binding and
+the hosted main/tag/publisher gates remain open.
