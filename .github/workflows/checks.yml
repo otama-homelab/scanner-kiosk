@@ -248,3 +248,40 @@ jobs:
           DEPLOY_RESULT: ${{ needs.deployment-contracts.result }}
           NATIVE_RESULT: ${{ needs.candidate-build.result }}
         run: sh scripts/check-required-jobs.sh
+
+  publish:
+    if: github.event_name == 'push' && vars.SCANNER_PUBLISH_ENABLED == 'true'
+    needs: required-checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    concurrency:
+      group: scanner-kiosk-publisher
+      cancel-in-progress: false
+    permissions:
+      actions: read
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Download the staged handoff from this exact run attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "staged-candidate-$GITHUB_SHA-$GITHUB_RUN_ATTEMPT" \
+            --dir "$RUNNER_TEMP/publication"
+      - name: Publish the approved sealed candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SCANNER_PUBLISH_ENABLED: ${{ vars.SCANNER_PUBLISH_ENABLED }}
+          PLAN_SHA256: ${{ vars.SCANNER_PUBLICATION_PLAN_SHA256 }}
+        run: |
+          test -n "$PLAN_SHA256"
+          python3 scripts/write-publication.py \
+            --candidate "$RUNNER_TEMP/publication/candidate" \
+            --plan "$RUNNER_TEMP/publication/publication-plan.json" \
+            --plan-sha256 "$PLAN_SHA256" \
+            --ref "$GITHUB_REF" --sha "$GITHUB_SHA" --event "$GITHUB_EVENT_NAME" --apply

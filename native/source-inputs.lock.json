@@ -1,0 +1,1760 @@
+{
+  "files": [
+    {
+      "bytes": 646598,
+      "path": "upstream/apk/brotli-1.2.1.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "98d35d11a78dc453aebb7d10c3748f3f73ff78c8267c0dc697b8631f67bf7e8f",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/brotli-1.2.1.tar.gz"
+    },
+    {
+      "bytes": 230531,
+      "path": "upstream/apk/ca-certificates-20261020.tar.bz2",
+      "role": "apk-upstream-source",
+      "sha256": "1048bc7f50fa42a6621bc2f8816173f89a0c0098f26dff072bc8fe40af714400",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/ca-certificates-20261020.tar.bz2"
+    },
+    {
+      "bytes": 1115644,
+      "path": "upstream/apk/dbus-1.16.2.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "0ba2a1a4b16afe7bceb2c07e9ce99a8c2c3508e5dec290dbb643384bd6beb7e2",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/dbus-1.16.2.tar.xz"
+    },
+    {
+      "bytes": 101056276,
+      "path": "upstream/apk/gcc-15.2.0.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "438fd996826b0c82485a29da03a72d71d6e3541a83ec702df4271f6fe025d24e",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/gcc-15.2.0.tar.xz"
+    },
+    {
+      "bytes": 10721600,
+      "path": "upstream/apk/gettext-1.0.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "71132a3fb71e68245b8f2ac4e9e97137d3e5c02f415636eb508ae607bc01add7",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/gettext-1.0.tar.xz"
+    },
+    {
+      "bytes": 447175,
+      "path": "upstream/apk/giflib-5.2.2.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "be7ffbd057cadebe2aa144542fd90c6838c6a083b5e8a9048b8ee3b66b29d5fb",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/giflib-5.2.2.tar.gz"
+    },
+    {
+      "bytes": 2094196,
+      "path": "upstream/apk/gmp-6.3.0.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "a3c2b80201b89e68616f4ad30bc66aee4927c3ce50e33929ca819d5c43538898",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/gmp-6.3.0.tar.xz"
+    },
+    {
+      "bytes": 7275324,
+      "path": "upstream/apk/gnutls-3.8.13.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "ffed8ec1bf09c2426d4f14aae377de4753b53e537d685e604e99a8b16ca9c97e",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/gnutls-3.8.13.tar.xz"
+    },
+    {
+      "bytes": 14802808,
+      "path": "upstream/apk/leptonica-1.87.0.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "c73363397f96eb1295602bf44d708a994ad42046c791bf03ea0505d829bdb6a7",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/leptonica-1.87.0.tar.gz"
+    },
+    {
+      "bytes": 1423124,
+      "path": "upstream/apk/libffi-3.5.2.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "f3a3082a23b37c293a4fcd1053147b371f2ff91fa7ea1b2a52e335676bac82dc",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libffi-3.5.2.tar.gz"
+    },
+    {
+      "bytes": 2234804,
+      "path": "upstream/apk/libidn2-2.3.8.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "f557911bf6171621e1f72ff35f5b1825bb35b52ed45325dcdee931e5d3c0787a",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libidn2-2.3.8.tar.gz"
+    },
+    {
+      "bytes": 2516606,
+      "path": "upstream/apk/libjpeg-turbo-3.1.3.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "075920b826834ac4ddf97661cc73491047855859affd671d52079c6867c1c6c0",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libjpeg-turbo-3.1.3.tar.gz"
+    },
+    {
+      "bytes": 10671,
+      "path": "upstream/apk/libpng-1.6.58-apng.patch.gz",
+      "role": "apk-upstream-source",
+      "sha256": "eee7dea22ed502868017971c86c63c4ed1e6085de0baebfdcc3d3322f00f3eb0",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libpng-1.6.58-apng.patch.gz"
+    },
+    {
+      "bytes": 1600400,
+      "path": "upstream/apk/libpng-1.6.59.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "2540302a1844ad2b2b501977abecfa850f265f97b78f065a712ab4074a89f5b5",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libpng-1.6.59.tar.gz"
+    },
+    {
+      "bytes": 1816537,
+      "path": "upstream/apk/libtasn1-4.21.0.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "1d8a444a223cc5464240777346e125de51d8e6abf0b8bac742ac84609167dc87",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libtasn1-4.21.0.tar.gz"
+    },
+    {
+      "bytes": 2786084,
+      "path": "upstream/apk/libunistring-1.4.2.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "5b46e74377ed7409c5b75e7a96f95377b095623b689d8522620927964a41499c",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libunistring-1.4.2.tar.xz"
+    },
+    {
+      "bytes": 656112,
+      "path": "upstream/apk/libusb-1.0.30.tar.bz2",
+      "role": "apk-upstream-source",
+      "sha256": "fea36f34f9156400209595e300840767ab1a385ede1dc7ee893015aea9c6dbaf",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libusb-1.0.30.tar.bz2"
+    },
+    {
+      "bytes": 4296070,
+      "path": "upstream/apk/libwebp-1.6.0.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libwebp-1.6.0.tar.gz"
+    },
+    {
+      "bytes": 2426164,
+      "path": "upstream/apk/libxml2-2.13.9.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "a2c9ae7b770da34860050c309f903221c67830c86e4a7e760692b803df95143a",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/libxml2-2.13.9.tar.xz"
+    },
+    {
+      "bytes": 1082499,
+      "path": "upstream/apk/musl-1.2.6.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "d585fd3b613c66151fc3249e8ed44f77020cb5e6c1e635a616d3f9f82460512a",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/musl-1.2.6.tar.gz"
+    },
+    {
+      "bytes": 2644644,
+      "path": "upstream/apk/nettle-3.10.2.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "fe9ff51cb1f2abb5e65a6b8c10a92da0ab5ab6eaf26e7fc2b675c45f1fb519b5",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/nettle-3.10.2.tar.gz"
+    },
+    {
+      "bytes": 1069216,
+      "path": "upstream/apk/p11-kit-0.26.2.tar.xz",
+      "role": "apk-upstream-source",
+      "sha256": "09fd9f44da4813a3141e73d5e7cf7008e5660d0405f13d56c15e1da9dcecf828",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/p11-kit-0.26.2.tar.xz"
+    },
+    {
+      "bytes": 7505056,
+      "path": "upstream/apk/sane-backends-1.4.0.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "f99205c903dfe2fb8990f0c531232c9a00ec9c2c66ac7cb0ce50b4af9f407a72",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/sane-backends-1.4.0.tar.gz"
+    },
+    {
+      "bytes": 668504362,
+      "path": "upstream/apk/tessdata-4.1.0.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "990fffb9b7a9b52dc9a2d053a9ef6852ca2b72bd8dfb22988b0b990a700fd3c7",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/tessdata-4.1.0.tar.gz"
+    },
+    {
+      "bytes": 1903633,
+      "path": "upstream/apk/tesseract-ocr-5.5.2.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "6235ea0dae45ea137f59c09320406f5888383741924d98855bd2ce0d16b54f21",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/tesseract-ocr-5.5.2.tar.gz"
+    },
+    {
+      "bytes": 4083368,
+      "path": "upstream/apk/tiff-4.7.2.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "672bd7d10aee4606171afb864f3570b83340f6a33e2c186dc0512f7145ffdf6a",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/tiff-4.7.2.tar.gz"
+    },
+    {
+      "bytes": 1096948,
+      "path": "upstream/apk/v0.9-rc4.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "08fcc57377ed05416ec4b3d8a179da716a7a9376821551a5ae16f8276a1ef0b5",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/v0.9-rc4.tar.gz"
+    },
+    {
+      "bytes": 1670561,
+      "path": "upstream/apk/xz-5.8.4.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "b6b34c52e672e810d339db14e0c10b5b6f5f67a30d8d05cdac5d8cb4d82f78d5",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/xz-5.8.4.tar.gz"
+    },
+    {
+      "bytes": 1502830,
+      "path": "upstream/apk/zlib-1.3.2.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "bb329a0a2cd0274d05519d61c667c062e06990d72e125ee2dfa8de64f0119d16",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/zlib-1.3.2.tar.gz"
+    },
+    {
+      "bytes": 2451884,
+      "path": "upstream/apk/zstd-1.5.7.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "37d7284556b20954e56e1ca85b80226768902e2edabd3b649e9e72c0c9012ee3",
+      "url": "https://distfiles.alpinelinux.org/distfiles/v3.24/zstd-1.5.7.tar.gz"
+    },
+    {
+      "bytes": 756,
+      "path": "recipes/01432283613d87d80efdd9f78362a4c58c895439/main/libusb/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "c4e5e86dbc0f37f8180a005c08dfcf2626e4edb666f38de77b3b3a5691a8969f",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/01432283613d87d80efdd9f78362a4c58c895439/main/libusb/APKBUILD"
+    },
+    {
+      "bytes": 1134,
+      "path": "recipes/0afa2da0e8c8051c6f8f64a7a388e5a259904245/main/zlib/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "c9348892bf3857602fe74fcc1d411e263b408b7d70344170396f5993a62bbe26",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0afa2da0e8c8051c6f8f64a7a388e5a259904245/main/zlib/APKBUILD"
+    },
+    {
+      "bytes": 854,
+      "path": "recipes/0afa2da0e8c8051c6f8f64a7a388e5a259904245/main/zlib/CVE-2026-85091.patch",
+      "role": "apk-recipe",
+      "sha256": "110ff14375733173d8aa54574473424fbd7dfe4b81f1ca34a759c6fe14b15b14",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0afa2da0e8c8051c6f8f64a7a388e5a259904245/main/zlib/CVE-2026-85091.patch"
+    },
+    {
+      "bytes": 1571,
+      "path": "recipes/0c088d609f9fe69eedd6b4c7f4b99cdad847c20a/main/xz/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "e66901db8f5fe99356c3ccda131290c2639a940238c998fec2ce30d7c06982c3",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0c088d609f9fe69eedd6b4c7f4b99cdad847c20a/main/xz/APKBUILD"
+    },
+    {
+      "bytes": 2907,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "c6734c71215433cec823a644f2ef5431118827baadd34d590649c1861df79785",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/APKBUILD"
+    },
+    {
+      "bytes": 708,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/README.alpine",
+      "role": "apk-recipe",
+      "sha256": "e9630e4d14f1201e4161457b9201b50480bb0f4d1c4690df0fdc6732ab62fb91",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/README.alpine"
+    },
+    {
+      "bytes": 395,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.confd",
+      "role": "apk-recipe",
+      "sha256": "9aafff3e081950805a05e37c7886af80992e20f3d304727a8755fb38cb40ba5e",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.confd"
+    },
+    {
+      "bytes": 263,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.initd",
+      "role": "apk-recipe",
+      "sha256": "08e4556b8b793610b57232d2782a4714825b25fb2d36735a36cc87cd4f2fe3ad",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.initd"
+    },
+    {
+      "bytes": 242,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.confd",
+      "role": "apk-recipe",
+      "sha256": "237dab87e5c7eacdcbe2b2d9506b3db774c0141ff55756cc51acc8299ff34cde",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.confd"
+    },
+    {
+      "bytes": 795,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.initd",
+      "role": "apk-recipe",
+      "sha256": "cfccab806705af98760a92e27531242e97a73757ad08f4c044916faa245a48a9",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.initd"
+    },
+    {
+      "bytes": 54,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.post-install",
+      "role": "apk-recipe",
+      "sha256": "c8bce42a6db7e1ee4861effa66278f123c7f6224ed897e081f54234b4325475b",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.post-install"
+    },
+    {
+      "bytes": 152,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.pre-install",
+      "role": "apk-recipe",
+      "sha256": "454dd79cd20873517ac27e36206425467cba21832382f2c16b26a4e61cafbfcb",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.pre-install"
+    },
+    {
+      "bytes": 137,
+      "path": "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.trigger",
+      "role": "apk-recipe",
+      "sha256": "9f514127b6fac999ea96df83ec8f6a96954cbaa2afeeb20d003b8b4531ff7bd2",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.trigger"
+    },
+    {
+      "bytes": 1929,
+      "path": "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "b1c489cf86a5b06ca3feb568c88bbd666b4a0f3899a2b462ee905de7e07bf70b",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/APKBUILD"
+    },
+    {
+      "bytes": 795,
+      "path": "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2021-40633.patch",
+      "role": "apk-recipe",
+      "sha256": "b76de71ede0a51035a5af97c23ef0a5ab0b5f8be37f41722260342dab8707455",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2021-40633.patch"
+    },
+    {
+      "bytes": 677,
+      "path": "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2025-31344.patch",
+      "role": "apk-recipe",
+      "sha256": "7afc208059dd0860953ce246c6af7b0617b85fd41f273d9c3a4974acaa90bec2",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2025-31344.patch"
+    },
+    {
+      "bytes": 483,
+      "path": "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2026-26740.patch",
+      "role": "apk-recipe",
+      "sha256": "b08a5bbb9414e9371b4066fdf9fac6c4a0c5e6ec96556d18e5dfd760d3138876",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2026-26740.patch"
+    },
+    {
+      "bytes": 1758,
+      "path": "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/correct-document-page-install.patch",
+      "role": "apk-recipe",
+      "sha256": "2b9a5683dda31c06a54c11d6d6f2fa3814cac38a6338a4b3f37c21286bd0b701",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/correct-document-page-install.patch"
+    },
+    {
+      "bytes": 523,
+      "path": "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/dont-build-html-pages-images.patch",
+      "role": "apk-recipe",
+      "sha256": "86a84ff0df80b5c89ac637b674fc47e2050a265776861bf7006b1c0954555f21",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/dont-build-html-pages-images.patch"
+    },
+    {
+      "bytes": 1455,
+      "path": "recipes/206e7b39f7884d62a174aba4d33a42454518c1c2/main/gmp/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "290bb17b403afbc3c70a370b7db5b262b547240f611101486d6223e488e270c0",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/206e7b39f7884d62a174aba4d33a42454518c1c2/main/gmp/APKBUILD"
+    },
+    {
+      "bytes": 725,
+      "path": "recipes/206e7b39f7884d62a174aba4d33a42454518c1c2/main/gmp/gcc15.patch",
+      "role": "apk-recipe",
+      "sha256": "fd0f1b48dbe72413efbd9c45f1ca7013d555f46c578446ce3ba202e3a9b96c6c",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/206e7b39f7884d62a174aba4d33a42454518c1c2/main/gmp/gcc15.patch"
+    },
+    {
+      "bytes": 1053,
+      "path": "recipes/2c2a7bb4a8b16066834e90402567b2c19403a790/main/libffi/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "7dcba5b144b4882426dbd4fcacf10c09d19e3c4347cdd8faa7c1946912b55c1f",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/2c2a7bb4a8b16066834e90402567b2c19403a790/main/libffi/APKBUILD"
+    },
+    {
+      "bytes": 783,
+      "path": "recipes/2c2a7bb4a8b16066834e90402567b2c19403a790/main/libffi/fix-tests-fortify.patch",
+      "role": "apk-recipe",
+      "sha256": "3b4481a269c79b8e8d89bb5b4c85db622691680d7230361e37f1ee842bbcbe8f",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/2c2a7bb4a8b16066834e90402567b2c19403a790/main/libffi/fix-tests-fortify.patch"
+    },
+    {
+      "bytes": 926,
+      "path": "recipes/30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c/main/libunistring/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "897e2505f928b37f16ebae9fa0b31d0ef67a8523f3dd5c4dcebc825c13d2fcfa",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c/main/libunistring/APKBUILD"
+    },
+    {
+      "bytes": 2381,
+      "path": "recipes/3c6e2ee2b16f403d53eab39c4426eb61f003c322/main/zstd/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "635134417b866a71fc0684bfbc1f8b5ff660c3edcd68f1b0b1335f04963ef5c1",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/3c6e2ee2b16f403d53eab39c4426eb61f003c322/main/zstd/APKBUILD"
+    },
+    {
+      "bytes": 4028,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-LoongArch-Only-allow-valid-binary-op-when-optimize-c.patch",
+      "role": "apk-recipe",
+      "sha256": "cacd4041f1a0d7fcc74a13323b30b0e0c879adb90bc3642fa43fc53c85e20b5a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-LoongArch-Only-allow-valid-binary-op-when-optimize-c.patch"
+    },
+    {
+      "bytes": 1435,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-posix_memalign.patch",
+      "role": "apk-recipe",
+      "sha256": "d7d611f683e53f42b8f4928ec044075f0f04e109fc4236260c9877abc3dbc882",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-posix_memalign.patch"
+    },
+    {
+      "bytes": 2397,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-tree-object-size.cc-Fix-assert-constant-offset-in-ch.patch",
+      "role": "apk-recipe",
+      "sha256": "a32d3f77984c4a551e3b6ef95559e85057dd3202906651a76ac1077ff13917f8",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-tree-object-size.cc-Fix-assert-constant-offset-in-ch.patch"
+    },
+    {
+      "bytes": 9509,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0002-gcc-poison-system-directories.patch",
+      "role": "apk-recipe",
+      "sha256": "8466aa1b19d862e83c7c95b3b3e577139ad302829f4775fde6869fefd13b48f8",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0002-gcc-poison-system-directories.patch"
+    },
+    {
+      "bytes": 1644,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0003-specs-turn-on-Wl-z-now-by-default.patch",
+      "role": "apk-recipe",
+      "sha256": "465bcd43c44591e19ce4b1aa0e5dd432e550f45542d65d0e99bb5ef1ab1ab66a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0003-specs-turn-on-Wl-z-now-by-default.patch"
+    },
+    {
+      "bytes": 1774,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch",
+      "role": "apk-recipe",
+      "sha256": "2dbb0fe518b6026999992a10781f39cf89ebd277580c1be87df1ed4aebe481bf",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch"
+    },
+    {
+      "bytes": 12097,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch",
+      "role": "apk-recipe",
+      "sha256": "460166779c04872acd684a30e90b0603cc22f96a2315d60f6af8e68feae94d3f",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch"
+    },
+    {
+      "bytes": 1437,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0006-Enable-Wformat-and-Wformat-security-by-default.patch",
+      "role": "apk-recipe",
+      "sha256": "a1e5c5b23cc7d4eb7c8e159d7186ecaffb7e1338d76cee22baaa31e6532b7758",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0006-Enable-Wformat-and-Wformat-security-by-default.patch"
+    },
+    {
+      "bytes": 743,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0007-Enable-Wtrampolines-by-default.patch",
+      "role": "apk-recipe",
+      "sha256": "db68b9e21f882ad271865ba619299217c5a8d5b5675d7c9666079eeb0e7638e6",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0007-Enable-Wtrampolines-by-default.patch"
+    },
+    {
+      "bytes": 1253,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0008-gcc-disable-SSP-on-ffreestanding-nostdlib-and-nodefa.patch",
+      "role": "apk-recipe",
+      "sha256": "5c8b38c74adcf2d87a5ac2eeee195fe60acdcf766aa50481baf5a96805987ae6",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0008-gcc-disable-SSP-on-ffreestanding-nostdlib-and-nodefa.patch"
+    },
+    {
+      "bytes": 963,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0009-gcc-params-set-default-ssp-buffer-size-to-4.patch",
+      "role": "apk-recipe",
+      "sha256": "ef0af1da070b627e6ff3a81f6f1d089645da6c080561a93d7fb47b58e8389eff",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0009-gcc-params-set-default-ssp-buffer-size-to-4.patch"
+    },
+    {
+      "bytes": 1771,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0010-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch",
+      "role": "apk-recipe",
+      "sha256": "8a094cbb17e832e7920915540030ac104d928e2ff0cf562883024ad60d42cd68",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0010-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch"
+    },
+    {
+      "bytes": 895,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0011-Don-t-declare-asprintf-if-defined-as-a-macro.patch",
+      "role": "apk-recipe",
+      "sha256": "212eddf17bd479babe233f15c20b6379abad2ab8e4001f34ad81b339633e9d8c",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0011-Don-t-declare-asprintf-if-defined-as-a-macro.patch"
+    },
+    {
+      "bytes": 716,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0012-libiberty-copy-PIC-objects-during-build-process.patch",
+      "role": "apk-recipe",
+      "sha256": "388080f5b65c4799aa475e71d47e301449c09eaff9a75b6cd99f5d8803a9e746",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0012-libiberty-copy-PIC-objects-during-build-process.patch"
+    },
+    {
+      "bytes": 2143,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0013-libgcc_s.patch",
+      "role": "apk-recipe",
+      "sha256": "1fb11ba7b4a55517a6f78f44d9de0965d82a6c00c54d61bd27ee8ad5d37977cb",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0013-libgcc_s.patch"
+    },
+    {
+      "bytes": 2455,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0014-nopie.patch",
+      "role": "apk-recipe",
+      "sha256": "de050e328d18f085e50e9b59fecfb18229bbe31bab40335809f20a362e5d51c8",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0014-nopie.patch"
+    },
+    {
+      "bytes": 1614,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0015-ada-fix-shared-linking.patch",
+      "role": "apk-recipe",
+      "sha256": "4df63c8c0353e717e9f3b27602760c0ce0d9f3e0472f65dc97d62bdfabfdbd14",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0015-ada-fix-shared-linking.patch"
+    },
+    {
+      "bytes": 696,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0016-build-fix-CXXFLAGS_FOR_BUILD-passing.patch",
+      "role": "apk-recipe",
+      "sha256": "9fc2ce9a2df8b498819fd4bc650f89c903801aab49a64f3d7c0c00a8d472495a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0016-build-fix-CXXFLAGS_FOR_BUILD-passing.patch"
+    },
+    {
+      "bytes": 821,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0017-add-fortify-headers-paths.patch",
+      "role": "apk-recipe",
+      "sha256": "0f378465137aa1c6b2d66a0c89e3a7359ec4125c50e73e0f200cf987b6aaab73",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0017-add-fortify-headers-paths.patch"
+    },
+    {
+      "bytes": 1204,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0018-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch",
+      "role": "apk-recipe",
+      "sha256": "570197543425bf5e348f23179956a82562c3a701c5e7abc823d68f608d68a078",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0018-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch"
+    },
+    {
+      "bytes": 3024,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0019-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch",
+      "role": "apk-recipe",
+      "sha256": "9e4ddf59a0ba5dd39e06b0864c8b7b71604190be6364ddba1743b89d3d4b1084",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0019-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch"
+    },
+    {
+      "bytes": 1044,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0020-aarch64-disable-multilib-support.patch",
+      "role": "apk-recipe",
+      "sha256": "631a4068987630d1ffc053a0eee8c1bdf7ae4d58d6303a38730e6f6db4766721",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0020-aarch64-disable-multilib-support.patch"
+    },
+    {
+      "bytes": 885,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0021-s390x-disable-multilib-support.patch",
+      "role": "apk-recipe",
+      "sha256": "15127f91185858c0ea7994ecd1543037328e4727dcd76f37d1eb3a156dc4a27d",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0021-s390x-disable-multilib-support.patch"
+    },
+    {
+      "bytes": 3467,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0022-ppc64-le-disable-multilib-support.patch",
+      "role": "apk-recipe",
+      "sha256": "65eeb0637c8d52b2128e7c05199f2b0752cd503a28d4653ff177dbabe6de12ba",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0022-ppc64-le-disable-multilib-support.patch"
+    },
+    {
+      "bytes": 1066,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0023-x86_64-disable-multilib-support.patch",
+      "role": "apk-recipe",
+      "sha256": "bfcf9bc83f7591e130b404d06ce5cab0903e727968854e9e3f98ff5f7c5b9c90",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0023-x86_64-disable-multilib-support.patch"
+    },
+    {
+      "bytes": 3506,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0024-riscv-disable-multilib-support.patch",
+      "role": "apk-recipe",
+      "sha256": "40dff2d834668966111d58e9e817447e07c38e643e0059742bcb2ef6bccef889",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0024-riscv-disable-multilib-support.patch"
+    },
+    {
+      "bytes": 1616,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0025-always-build-libgcc_eh.a.patch",
+      "role": "apk-recipe",
+      "sha256": "0105b6896dc54c33c3b296e42b8fd6409a74f7a27ac0d7d3adc0384fe5d8fac9",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0025-always-build-libgcc_eh.a.patch"
+    },
+    {
+      "bytes": 2299,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0026-ada-libgnarl-remove-use-of-glibc-specific-pthread_rw.patch",
+      "role": "apk-recipe",
+      "sha256": "1b2ad766fdabb2d027ac025923aadd0a3c82c3a6ad33eefd8eff16fd42752b06",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0026-ada-libgnarl-remove-use-of-glibc-specific-pthread_rw.patch"
+    },
+    {
+      "bytes": 1790,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0027-ada-libgnarl-use-posix_openpt-instead-of-glibc-speci.patch",
+      "role": "apk-recipe",
+      "sha256": "49aeaa495d1b9c533979b054d89c977cdfb2a4ae99b51572d63ef3902f81b3f7",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0027-ada-libgnarl-use-posix_openpt-instead-of-glibc-speci.patch"
+    },
+    {
+      "bytes": 1365,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0028-ada-libgnarl-adaint-fix-sched.h-inclusion-for-musl.patch",
+      "role": "apk-recipe",
+      "sha256": "2b3e713059e754e008f855985afbc44882bd193a8b43ec53b984d32347c4c732",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0028-ada-libgnarl-adaint-fix-sched.h-inclusion-for-musl.patch"
+    },
+    {
+      "bytes": 9253,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0029-configure-Add-enable-autolink-libatomic-use-in-LINK_.patch",
+      "role": "apk-recipe",
+      "sha256": "d4a73c034dd8ccfbbef46c3c5a65eda67673499cbe803a7abf459c9d7d83d6db",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0029-configure-Add-enable-autolink-libatomic-use-in-LINK_.patch"
+    },
+    {
+      "bytes": 2150,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0030-configure-fix-detection-of-atomic-builtins-in-libato.patch",
+      "role": "apk-recipe",
+      "sha256": "351454d833a3ace7bf46d52529790a8062125d9895aff671665bc0b026528177",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0030-configure-fix-detection-of-atomic-builtins-in-libato.patch"
+    },
+    {
+      "bytes": 941,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0031-libstdc-do-not-throw-exceptions-for-non-C-locales-on.patch",
+      "role": "apk-recipe",
+      "sha256": "e338ea3906c22671cbcce334d26edae80ea5fbce416de13dbd9cbe153152ef8b",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0031-libstdc-do-not-throw-exceptions-for-non-C-locales-on.patch"
+    },
+    {
+      "bytes": 827,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0032-gdc-unconditionally-link-libgphobos-against-libucont.patch",
+      "role": "apk-recipe",
+      "sha256": "de4217bc5b6a357e1c539bb31cc63c7525d32aeb32383fe09f695080501566cc",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0032-gdc-unconditionally-link-libgphobos-against-libucont.patch"
+    },
+    {
+      "bytes": 2056,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0033-druntime-link-against-libucontext-on-all-platforms.patch",
+      "role": "apk-recipe",
+      "sha256": "d4ad893f9fbcf1188725b05f0d74cdd048adc5f7593df08381d1347f3d5243b0",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0033-druntime-link-against-libucontext-on-all-platforms.patch"
+    },
+    {
+      "bytes": 851,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0034-libgnat-time_t-is-always-64-bit-on-musl-libc.patch",
+      "role": "apk-recipe",
+      "sha256": "ac043f2500ad3ec79f11e3efd5f627289d1f64dffb88fbb11ba40d88a73cd807",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0034-libgnat-time_t-is-always-64-bit-on-musl-libc.patch"
+    },
+    {
+      "bytes": 1081,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0035-libphobos-do-not-use-LFS64-symbols.patch",
+      "role": "apk-recipe",
+      "sha256": "62cb57a3d33912b1fbc1ab80ce57b1625a93fe8cbcb1c814985d11d8c5384106",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0035-libphobos-do-not-use-LFS64-symbols.patch"
+    },
+    {
+      "bytes": 6724,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0036-libgo-fix-lfs64-use.patch",
+      "role": "apk-recipe",
+      "sha256": "b0650eae7315da9afa11c7e2813ec3991ba07d79f30adf1c8a9c3479e5db7488",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0036-libgo-fix-lfs64-use.patch"
+    },
+    {
+      "bytes": 1227,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0037-loongarch-disable-multilib-support.patch",
+      "role": "apk-recipe",
+      "sha256": "e5c508cfdebfc73c19e21979e604f65010692e69e5f90ba06fdf20e8d688d4ff",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0037-loongarch-disable-multilib-support.patch"
+    },
+    {
+      "bytes": 4030,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0038-static-PIE-ensure-static-reaches-the-linker.patch",
+      "role": "apk-recipe",
+      "sha256": "07d87bb9aea8eecf86c6ea74f0a7d8a89c17afd12ebfea73c2977cbe84af0124",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0038-static-PIE-ensure-static-reaches-the-linker.patch"
+    },
+    {
+      "bytes": 2830,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0039-except-Don-t-use-the-cached-value-of-the-gcc_except_.patch",
+      "role": "apk-recipe",
+      "sha256": "f271babf2a4413e2eef9f5922cf53db4b93ff0b89a03375da7874e36d323a0fb",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0039-except-Don-t-use-the-cached-value-of-the-gcc_except_.patch"
+    },
+    {
+      "bytes": 7320,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0040-ada-libgnat-use-stub-symbolic-module-name-functions.patch",
+      "role": "apk-recipe",
+      "sha256": "ea960840a7a751e9be4c82c478cf25c1af7ad42b9f80a09a831f038a0dbf6484",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0040-ada-libgnat-use-stub-symbolic-module-name-functions.patch"
+    },
+    {
+      "bytes": 817,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0041-ada-libgnat-recognize-linux-musleabi-and-linux-muslg.patch",
+      "role": "apk-recipe",
+      "sha256": "6e9c993a1ccf88762453b4686c7a01eadfdfb4958e796b8c2049e0f05432205c",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0041-ada-libgnat-recognize-linux-musleabi-and-linux-muslg.patch"
+    },
+    {
+      "bytes": 1345,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0042-libsanitizer-struct_sock_fprog_sz.patch",
+      "role": "apk-recipe",
+      "sha256": "de29cfa21663011718cebca12b41d0a24759fb18a3176f513928255c9d26ce74",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0042-libsanitizer-struct_sock_fprog_sz.patch"
+    },
+    {
+      "bytes": 31920,
+      "path": "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "71d831dbef88c2b0ff7b36b7422e878a07751419583a44b06cda2e561cdb82d4",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/APKBUILD"
+    },
+    {
+      "bytes": 2667,
+      "path": "recipes/5fe6bebf850fc964a8525c81548397c39cb6f7cd/main/libjpeg-turbo/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "1218c9432f4de37d43ed320d4ddb78989f0e9f8660f00c67df8505240821de61",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/5fe6bebf850fc964a8525c81548397c39cb6f7cd/main/libjpeg-turbo/APKBUILD"
+    },
+    {
+      "bytes": 1401,
+      "path": "recipes/65d7583d02d64188863a325a30fff98e0b476e37/community/leptonica/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "703a03b44b75c266d02d3249fbb99ad3e5b75a26828f71cd5effb18f39caa24a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/65d7583d02d64188863a325a30fff98e0b476e37/community/leptonica/APKBUILD"
+    },
+    {
+      "bytes": 530,
+      "path": "recipes/65d7583d02d64188863a325a30fff98e0b476e37/community/leptonica/disable-one-failing-test.patch",
+      "role": "apk-recipe",
+      "sha256": "ee116c53eef0eb1bd5ffbf217bac0d9ae85a3dbb047fca63cd256e85480983a6",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/65d7583d02d64188863a325a30fff98e0b476e37/community/leptonica/disable-one-failing-test.patch"
+    },
+    {
+      "bytes": 5432,
+      "path": "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "6177156ccd65ffeb5c7ebdb61dc9dc4596a48c1d2098b7c01373e60623cf43c4",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/APKBUILD"
+    },
+    {
+      "bytes": 371,
+      "path": "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/check.patch",
+      "role": "apk-recipe",
+      "sha256": "bd14304a2e2612c1a3b672dba95a2413181ab3e51a2a80749eeb6169a7d13db4",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/check.patch"
+    },
+    {
+      "bytes": 172,
+      "path": "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/include.patch",
+      "role": "apk-recipe",
+      "sha256": "4112c9d6a9d7b9a3ac836e02c4617a71c0519451faf1138ee1038db8cc3422df",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/include.patch"
+    },
+    {
+      "bytes": 302,
+      "path": "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/pidfile.patch",
+      "role": "apk-recipe",
+      "sha256": "21bffa24c93c8a7cc4aec3ac433ed9b7bcf165c56f4d2ae700c9c3da18753e72",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/pidfile.patch"
+    },
+    {
+      "bytes": 101,
+      "path": "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/sane-saned.pre-install",
+      "role": "apk-recipe",
+      "sha256": "a3bc20747b517c00ff404acc504d1e06dbd40582de054dd47f365619d6d8f0bf",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/sane-saned.pre-install"
+    },
+    {
+      "bytes": 51,
+      "path": "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/sane.pre-install",
+      "role": "apk-recipe",
+      "sha256": "b363caef0d5bba7b41e6439a6b321c6b2418a0dd9a9a41c3d29d4bf287c0cae9",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/sane.pre-install"
+    },
+    {
+      "bytes": 269,
+      "path": "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/saned.initd",
+      "role": "apk-recipe",
+      "sha256": "a3885af89b86b827d491ac67a78321e8bb9d9a05cb652c1a046986217b1e28b0",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/saned.initd"
+    },
+    {
+      "bytes": 1238,
+      "path": "recipes/771f180774aa0d9d3783d7f4eb9e3788c615658b/main/libtasn1/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "23c9685d8b0d19f0f9b09e7a9c87bc10ef8cdefd47688f3b9aa7afdf4410d840",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/771f180774aa0d9d3783d7f4eb9e3788c615658b/main/libtasn1/APKBUILD"
+    },
+    {
+      "bytes": 1132,
+      "path": "recipes/8240e09aa2fdd8f9979b2016be082273965aff0c/main/libidn2/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "b10c820249ffdf9eea4864bee27618a56163a297f06708362203d553de54a34a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8240e09aa2fdd8f9979b2016be082273965aff0c/main/libidn2/APKBUILD"
+    },
+    {
+      "bytes": 2460,
+      "path": "recipes/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "f9a8f0e7a72518e32c90098916a889a18469aa0148fa0c088be4e4c5d9473f29",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/APKBUILD"
+    },
+    {
+      "bytes": 1630,
+      "path": "recipes/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/fix-lp64.patch",
+      "role": "apk-recipe",
+      "sha256": "5e8d058bc4a37b06f36004e9b0d890978059f598abd6855dbce9a82a61617857",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/fix-lp64.patch"
+    },
+    {
+      "bytes": 1474,
+      "path": "recipes/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/optimize-mips.patch",
+      "role": "apk-recipe",
+      "sha256": "b30d0c6164132d2e7d76f0229e941f51660816af3af1f0edd47640f1f74a7f53",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/optimize-mips.patch"
+    },
+    {
+      "bytes": 2215,
+      "path": "recipes/88850a34f2f6651da71b267289f38cfdad477505/community/tesseract-ocr/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "60f136bf6e62a470c4c302346d57e7f8e11e831f221bf7834f393af880b61ab6",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/88850a34f2f6651da71b267289f38cfdad477505/community/tesseract-ocr/APKBUILD"
+    },
+    {
+      "bytes": 2087,
+      "path": "recipes/8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b/main/libpng/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "1de1354d00b75a9acec130edbcc5c3eeceb8d65a37b73737c6e716fe2dc176b2",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b/main/libpng/APKBUILD"
+    },
+    {
+      "bytes": 1628,
+      "path": "recipes/8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b/main/libpng/libpng-fix-arm-neon.patch",
+      "role": "apk-recipe",
+      "sha256": "7a9ba0b862155cda2089fd7306eb2a7b75ca083afa51201cc5bf49ee2039a65a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b/main/libpng/libpng-fix-arm-neon.patch"
+    },
+    {
+      "bytes": 896,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/0001-add-stub-for-pthread_mutexattr_setprioceiling.patch",
+      "role": "apk-recipe",
+      "sha256": "b2067680c66af9eb9f4fdc1fa5d9337a9fd62bdab2c437b416aa97d79eb884ee",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/0001-add-stub-for-pthread_mutexattr_setprioceiling.patch"
+    },
+    {
+      "bytes": 6495,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "22c5adb3f3b68ab84e5ff7d20df68447063d1ecb5c7b39afd5a04a1dfd444a35",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/APKBUILD"
+    },
+    {
+      "bytes": 5943,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-107891.patch",
+      "role": "apk-recipe",
+      "sha256": "0cf0090ab433e8f9ed08ae03a0c93aff557c1d3e347260f62a61a10281f5333b",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-107891.patch"
+    },
+    {
+      "bytes": 5594,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-40200.patch",
+      "role": "apk-recipe",
+      "sha256": "1ee29f64f9ca8e8ad7c349779d661ff6b52126a27575d3586981357a52c406fb",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-40200.patch"
+    },
+    {
+      "bytes": 7506,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-6042.patch",
+      "role": "apk-recipe",
+      "sha256": "1d0be2e72b9d5bd16546b923aa8af861d271322f01644716a81823bec4065c99",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-6042.patch"
+    },
+    {
+      "bytes": 133,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/__stack_chk_fail_local.c",
+      "role": "apk-recipe",
+      "sha256": "299a7d75a09de3e2e11e7fb4acc3182e4a14e868093d2f30938fce9bfcff13da",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/__stack_chk_fail_local.c"
+    },
+    {
+      "bytes": 738,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/fix-loongarch64-zero-len-extcontext.patch",
+      "role": "apk-recipe",
+      "sha256": "92c8e965798ed516c15cb2a4e7c4ac45ec1eb68b6abff16c73adff2a3bae1b14",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/fix-loongarch64-zero-len-extcontext.patch"
+    },
+    {
+      "bytes": 11614,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/getconf.c",
+      "role": "apk-recipe",
+      "sha256": "d87d0cbb3690ae2c5d8cc218349fd8278b93855dd625deaf7ae50e320aad247c",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/getconf.c"
+    },
+    {
+      "bytes": 11656,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/getent.c",
+      "role": "apk-recipe",
+      "sha256": "a6171c2db641cdd99c164169d3c5c6ca323617483cedec4cbbe3eb39c5834df0",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/getent.c"
+    },
+    {
+      "bytes": 1214,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/handle-aux-at_base.patch",
+      "role": "apk-recipe",
+      "sha256": "2a65e03b94217063d72fe998e5fb2e25cd01716078a3ba1b0ab574ab205111e6",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/handle-aux-at_base.patch"
+    },
+    {
+      "bytes": 2577,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/iconv.c",
+      "role": "apk-recipe",
+      "sha256": "f79a2930a2e5bb0624321589edf8b889d1e9b603e01e6b7ae214616605b3fdd7",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/iconv.c"
+    },
+    {
+      "bytes": 393,
+      "path": "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/ldconfig",
+      "role": "apk-recipe",
+      "sha256": "7065021e04a5060957b5c6907af671a7028230d91927fb0c25892cadd9312b7c",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/ldconfig"
+    },
+    {
+      "bytes": 1620,
+      "path": "recipes/922ca1ffc9cc326f7d95b093b365e31da5cba1a9/main/p11-kit/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "36c00f2297d83c135abee45698e43b5b254fe30eb67ced6a5c94a4af11600ef4",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/922ca1ffc9cc326f7d95b093b365e31da5cba1a9/main/p11-kit/APKBUILD"
+    },
+    {
+      "bytes": 3072,
+      "path": "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "e22f0eecaf4e5f1f5febe725f47ee019481ded75cdcf76d3c9dd5e7a9e590d13",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/APKBUILD"
+    },
+    {
+      "bytes": 361,
+      "path": "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/cwd.patch",
+      "role": "apk-recipe",
+      "sha256": "26346ac90ef96e419b76a9540aac5918ddbb82c841480047c10276308d35895a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/cwd.patch"
+    },
+    {
+      "bytes": 522,
+      "path": "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-meaningless-pthread-rwlock-test.patch",
+      "role": "apk-recipe",
+      "sha256": "37cbe713974f29740c46b8b0e02c8e9144bb98ccda4ae4c36dac337b9e964eeb",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-meaningless-pthread-rwlock-test.patch"
+    },
+    {
+      "bytes": 2214,
+      "path": "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-tests-musl.patch",
+      "role": "apk-recipe",
+      "sha256": "8cf472a6fb37da956fc016e018f1559136e164d48c865b5ca98ed838755557a0",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-tests-musl.patch"
+    },
+    {
+      "bytes": 2822,
+      "path": "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-unicode-16-tests.patch",
+      "role": "apk-recipe",
+      "sha256": "88876f0e62e8395a25467982129b4b57a9998d1e9e3cb4b1b9c1c7cde0e6e8dc",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-unicode-16-tests.patch"
+    },
+    {
+      "bytes": 1423,
+      "path": "recipes/af8b48fabd19b69b00f5efe192f461896a38cf74/main/libwebp/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "fa01d83adb827d69372ef67b622ad667f4e39f94b4a85aeabef733e88d9f3d8a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/af8b48fabd19b69b00f5efe192f461896a38cf74/main/libwebp/APKBUILD"
+    },
+    {
+      "bytes": 3251,
+      "path": "recipes/bbcfbafeadf5dac4744d065ac69338c1b58fc0d1/main/tiff/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "8b7e2998b389cb5ece3c8951a59935675fdef3052847dcf35bf875b34a4a3b7a",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/bbcfbafeadf5dac4744d065ac69338c1b58fc0d1/main/tiff/APKBUILD"
+    },
+    {
+      "bytes": 1334,
+      "path": "recipes/bf898e6d067c1c0ecc0f5ff39c79fc893399acd8/main/nettle/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "b7934415ee1478994232cdbb873451c9f66ec53f9d1066fe32de4ec48b7e8804",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/bf898e6d067c1c0ecc0f5ff39c79fc893399acd8/main/nettle/APKBUILD"
+    },
+    {
+      "bytes": 4559,
+      "path": "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "3154d6cd6507d7e60fdd7941d0d8175a9520d111ee1bedad7ab6c77ea174960b",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/APKBUILD"
+    },
+    {
+      "bytes": 953,
+      "path": "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/gnutls-3.8.8-tests-ktls-skip-tls12-chachapoly.patch",
+      "role": "apk-recipe",
+      "sha256": "a9e98f9ca7b54e5bb5399c84f4e57ba09967413f971c94af3fcce2ee77471288",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/gnutls-3.8.8-tests-ktls-skip-tls12-chachapoly.patch"
+    },
+    {
+      "bytes": 489,
+      "path": "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/skip-meaningless-pthread-rwlock-test.patch",
+      "role": "apk-recipe",
+      "sha256": "deaab4edcbf08c2a9424c1bbecc99ab8369ee09a6b0b533ae51d095f1e1d1e94",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/skip-meaningless-pthread-rwlock-test.patch"
+    },
+    {
+      "bytes": 1688,
+      "path": "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/test-minidtls-fragments-link-error.patch",
+      "role": "apk-recipe",
+      "sha256": "81868c3809f2ec17451d7ca02d18bbf336b57795e6a13fc2b2f28534cf771da6",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/test-minidtls-fragments-link-error.patch"
+    },
+    {
+      "bytes": 1049,
+      "path": "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/tests-certtool.patch",
+      "role": "apk-recipe",
+      "sha256": "eca6bbda7516b994f8c6c60d9329a8fc5ae282d35512da3f541f4dec210d0172",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/tests-certtool.patch"
+    },
+    {
+      "bytes": 4094,
+      "path": "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "380b06634077323a070ef770a6664bc4fea12649175107a5049da5442d8ea788",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/APKBUILD"
+    },
+    {
+      "bytes": 962,
+      "path": "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/Add-hostname-dependency-to-avahi-daemon-service.patch",
+      "role": "apk-recipe",
+      "sha256": "40cb078a3bc5c7308ccedfbfe1903a5fa448bba8c50fdb386379572b8a571bdb",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/Add-hostname-dependency-to-avahi-daemon-service.patch"
+    },
+    {
+      "bytes": 87,
+      "path": "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.nft",
+      "role": "apk-recipe",
+      "sha256": "5598b93939aeff5094082c4d8630411431586f62162c3986af676f0c4a05e2e5",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.nft"
+    },
+    {
+      "bytes": 173,
+      "path": "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.pre-install",
+      "role": "apk-recipe",
+      "sha256": "3205c86d99b721ff0b76b9d486c35a0cf6372053f34a92f9177ea7f7c7d77ad6",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.pre-install"
+    },
+    {
+      "bytes": 2520,
+      "path": "recipes/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "7b35fb8e11790105578f47d57a3b22831227b0d8ad7d064e575bad146023f3da",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/APKBUILD"
+    },
+    {
+      "bytes": 137,
+      "path": "recipes/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/ca-certificates.post-deinstall",
+      "role": "apk-recipe",
+      "sha256": "9523860edc396093bd41270c6e33a569a30657e2ffd729829514ee6b6d54d652",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/ca-certificates.post-deinstall"
+    },
+    {
+      "bytes": 67,
+      "path": "recipes/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/ca-certificates.trigger",
+      "role": "apk-recipe",
+      "sha256": "1bf77c8eae3220b1bd7dd86561d0899315f51d72257c1aeb4066072ed4304fe5",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/ca-certificates.trigger"
+    },
+    {
+      "bytes": 3006,
+      "path": "recipes/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "843a8013c86b73c9873735bfe5f155f4b9b6b4cbfbf9794a6c98b57d141a52ab",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/APKBUILD"
+    },
+    {
+      "bytes": 2563,
+      "path": "recipes/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/CVE-2026-6732-test.patch",
+      "role": "apk-recipe",
+      "sha256": "7c93e102dfdeaaf5d7adeda70c0dec6bfc492dbe9a14a29d42512a6c3f39a6c2",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/CVE-2026-6732-test.patch"
+    },
+    {
+      "bytes": 1565,
+      "path": "recipes/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/CVE-2026-6732.patch",
+      "role": "apk-recipe",
+      "sha256": "42d45b35f36bf29229e39a9e5349d7347e51d92099573b5a509f448dbf0e34d7",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/CVE-2026-6732.patch"
+    },
+    {
+      "bytes": 896,
+      "path": "recipes/487cfc21a9f5138579c3e38b4a5e55a6230f839a/community/sane-airscan/APKBUILD",
+      "role": "apk-recipe",
+      "sha256": "2fe49677adb9e576e03fc1383233640fcbed5245351ab5d6e93175c5320ac54c",
+      "url": "https://raw.githubusercontent.com/alpinelinux/aports/487cfc21a9f5138579c3e38b4a5e55a6230f839a/community/sane-airscan/APKBUILD"
+    },
+    {
+      "bytes": 218775,
+      "path": "upstream/apk/sane-airscan-0.99.36.tar.gz",
+      "role": "apk-upstream-source",
+      "sha256": "43d3436c0199496ee18aca4f875fe3926a40a0fae781bc280cdb96f7b5068ac0",
+      "url": "https://codeload.github.com/alexpevzner/sane-airscan/tar.gz/refs/tags/0.99.36"
+    }
+  ],
+  "format": 1,
+  "origins": [
+    {
+      "commit": "01432283613d87d80efdd9f78362a4c58c895439",
+      "origin": "libusb",
+      "packages": [
+        {
+          "name": "libusb",
+          "retained_file_count": 2,
+          "version": "1.0.30-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/01432283613d87d80efdd9f78362a4c58c895439/main/libusb/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libusb-1.0.30.tar.bz2"
+      ]
+    },
+    {
+      "commit": "0afa2da0e8c8051c6f8f64a7a388e5a259904245",
+      "origin": "zlib",
+      "packages": [
+        {
+          "name": "zlib",
+          "retained_file_count": 2,
+          "version": "1.3.2-r1"
+        }
+      ],
+      "recipe_files": [
+        "recipes/0afa2da0e8c8051c6f8f64a7a388e5a259904245/main/zlib/APKBUILD",
+        "recipes/0afa2da0e8c8051c6f8f64a7a388e5a259904245/main/zlib/CVE-2026-85091.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/zlib-1.3.2.tar.gz"
+      ]
+    },
+    {
+      "commit": "0c088d609f9fe69eedd6b4c7f4b99cdad847c20a",
+      "origin": "xz",
+      "packages": [
+        {
+          "name": "xz-libs",
+          "retained_file_count": 2,
+          "version": "5.8.4-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/0c088d609f9fe69eedd6b4c7f4b99cdad847c20a/main/xz/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/xz-5.8.4.tar.gz"
+      ]
+    },
+    {
+      "commit": "0dac2d7bf76016e3bb78ccc734edbb157a1d4b51",
+      "origin": "dbus",
+      "packages": [
+        {
+          "name": "dbus-libs",
+          "retained_file_count": 2,
+          "version": "1.16.2-r2"
+        }
+      ],
+      "recipe_files": [
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/APKBUILD",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/README.alpine",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.confd",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.initd",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.confd",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.initd",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.post-install",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.pre-install",
+        "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.trigger"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/dbus-1.16.2.tar.xz"
+      ]
+    },
+    {
+      "commit": "167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca",
+      "origin": "giflib",
+      "packages": [
+        {
+          "name": "giflib",
+          "retained_file_count": 2,
+          "version": "5.2.2-r2"
+        }
+      ],
+      "recipe_files": [
+        "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/APKBUILD",
+        "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2021-40633.patch",
+        "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2025-31344.patch",
+        "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/CVE-2026-26740.patch",
+        "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/correct-document-page-install.patch",
+        "recipes/167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib/dont-build-html-pages-images.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/giflib-5.2.2.tar.gz"
+      ]
+    },
+    {
+      "commit": "206e7b39f7884d62a174aba4d33a42454518c1c2",
+      "origin": "gmp",
+      "packages": [
+        {
+          "name": "gmp",
+          "retained_file_count": 2,
+          "version": "6.3.0-r4"
+        }
+      ],
+      "recipe_files": [
+        "recipes/206e7b39f7884d62a174aba4d33a42454518c1c2/main/gmp/APKBUILD",
+        "recipes/206e7b39f7884d62a174aba4d33a42454518c1c2/main/gmp/gcc15.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/gmp-6.3.0.tar.xz"
+      ]
+    },
+    {
+      "commit": "2c2a7bb4a8b16066834e90402567b2c19403a790",
+      "origin": "libffi",
+      "packages": [
+        {
+          "name": "libffi",
+          "retained_file_count": 2,
+          "version": "3.5.2-r1"
+        }
+      ],
+      "recipe_files": [
+        "recipes/2c2a7bb4a8b16066834e90402567b2c19403a790/main/libffi/APKBUILD",
+        "recipes/2c2a7bb4a8b16066834e90402567b2c19403a790/main/libffi/fix-tests-fortify.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libffi-3.5.2.tar.gz"
+      ]
+    },
+    {
+      "commit": "30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c",
+      "origin": "libunistring",
+      "packages": [
+        {
+          "name": "libunistring",
+          "retained_file_count": 2,
+          "version": "1.4.2-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/30d9f19340385b2cd16eaf1cc6a9a8b30c4afe1c/main/libunistring/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libunistring-1.4.2.tar.xz"
+      ]
+    },
+    {
+      "commit": "3c6e2ee2b16f403d53eab39c4426eb61f003c322",
+      "origin": "zstd",
+      "packages": [
+        {
+          "name": "zstd-libs",
+          "retained_file_count": 2,
+          "version": "1.5.7-r2"
+        }
+      ],
+      "recipe_files": [
+        "recipes/3c6e2ee2b16f403d53eab39c4426eb61f003c322/main/zstd/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/zstd-1.5.7.tar.gz"
+      ]
+    },
+    {
+      "commit": "423a8ad043d07f2c7546c8ec3e2b0384cda360ae",
+      "origin": "gcc",
+      "packages": [
+        {
+          "name": "libgcc",
+          "retained_file_count": 1,
+          "version": "15.2.0-r5"
+        },
+        {
+          "name": "libgomp",
+          "retained_file_count": 2,
+          "version": "15.2.0-r5"
+        },
+        {
+          "name": "libstdc++",
+          "retained_file_count": 2,
+          "version": "15.2.0-r5"
+        }
+      ],
+      "recipe_files": [
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-LoongArch-Only-allow-valid-binary-op-when-optimize-c.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-posix_memalign.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-tree-object-size.cc-Fix-assert-constant-offset-in-ch.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0002-gcc-poison-system-directories.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0003-specs-turn-on-Wl-z-now-by-default.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0006-Enable-Wformat-and-Wformat-security-by-default.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0007-Enable-Wtrampolines-by-default.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0008-gcc-disable-SSP-on-ffreestanding-nostdlib-and-nodefa.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0009-gcc-params-set-default-ssp-buffer-size-to-4.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0010-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0011-Don-t-declare-asprintf-if-defined-as-a-macro.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0012-libiberty-copy-PIC-objects-during-build-process.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0013-libgcc_s.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0014-nopie.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0015-ada-fix-shared-linking.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0016-build-fix-CXXFLAGS_FOR_BUILD-passing.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0017-add-fortify-headers-paths.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0018-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0019-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0020-aarch64-disable-multilib-support.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0021-s390x-disable-multilib-support.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0022-ppc64-le-disable-multilib-support.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0023-x86_64-disable-multilib-support.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0024-riscv-disable-multilib-support.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0025-always-build-libgcc_eh.a.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0026-ada-libgnarl-remove-use-of-glibc-specific-pthread_rw.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0027-ada-libgnarl-use-posix_openpt-instead-of-glibc-speci.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0028-ada-libgnarl-adaint-fix-sched.h-inclusion-for-musl.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0029-configure-Add-enable-autolink-libatomic-use-in-LINK_.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0030-configure-fix-detection-of-atomic-builtins-in-libato.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0031-libstdc-do-not-throw-exceptions-for-non-C-locales-on.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0032-gdc-unconditionally-link-libgphobos-against-libucont.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0033-druntime-link-against-libucontext-on-all-platforms.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0034-libgnat-time_t-is-always-64-bit-on-musl-libc.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0035-libphobos-do-not-use-LFS64-symbols.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0036-libgo-fix-lfs64-use.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0037-loongarch-disable-multilib-support.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0038-static-PIE-ensure-static-reaches-the-linker.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0039-except-Don-t-use-the-cached-value-of-the-gcc_except_.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0040-ada-libgnat-use-stub-symbolic-module-name-functions.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0041-ada-libgnat-recognize-linux-musleabi-and-linux-muslg.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0042-libsanitizer-struct_sock_fprog_sz.patch",
+        "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/gcc-15.2.0.tar.xz"
+      ]
+    },
+    {
+      "commit": "5fe6bebf850fc964a8525c81548397c39cb6f7cd",
+      "origin": "libjpeg-turbo",
+      "packages": [
+        {
+          "name": "libjpeg-turbo",
+          "retained_file_count": 2,
+          "version": "3.1.3-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/5fe6bebf850fc964a8525c81548397c39cb6f7cd/main/libjpeg-turbo/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libjpeg-turbo-3.1.3.tar.gz"
+      ]
+    },
+    {
+      "commit": "65d7583d02d64188863a325a30fff98e0b476e37",
+      "origin": "leptonica",
+      "packages": [
+        {
+          "name": "leptonica",
+          "retained_file_count": 2,
+          "version": "1.87.0-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/65d7583d02d64188863a325a30fff98e0b476e37/community/leptonica/APKBUILD",
+        "recipes/65d7583d02d64188863a325a30fff98e0b476e37/community/leptonica/disable-one-failing-test.patch"
+      ],
+      "repository": "community",
+      "upstream_artifacts": [
+        "upstream/apk/leptonica-1.87.0.tar.gz"
+      ]
+    },
+    {
+      "commit": "6bbd45b4dd10f4ec6cd6d99265aba2de11569522",
+      "origin": "sane",
+      "packages": [
+        {
+          "name": "sane",
+          "retained_file_count": 2,
+          "version": "1.4.0-r4"
+        },
+        {
+          "name": "sane-utils",
+          "retained_file_count": 1,
+          "version": "1.4.0-r4"
+        }
+      ],
+      "recipe_files": [
+        "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/APKBUILD",
+        "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/check.patch",
+        "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/include.patch",
+        "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/pidfile.patch",
+        "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/sane-saned.pre-install",
+        "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/sane.pre-install",
+        "recipes/6bbd45b4dd10f4ec6cd6d99265aba2de11569522/community/sane/saned.initd"
+      ],
+      "repository": "community",
+      "upstream_artifacts": [
+        "upstream/apk/sane-backends-1.4.0.tar.gz"
+      ]
+    },
+    {
+      "commit": "771f180774aa0d9d3783d7f4eb9e3788c615658b",
+      "origin": "libtasn1",
+      "packages": [
+        {
+          "name": "libtasn1",
+          "retained_file_count": 2,
+          "version": "4.21.0-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/771f180774aa0d9d3783d7f4eb9e3788c615658b/main/libtasn1/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libtasn1-4.21.0.tar.gz"
+      ]
+    },
+    {
+      "commit": "8240e09aa2fdd8f9979b2016be082273965aff0c",
+      "origin": "libidn2",
+      "packages": [
+        {
+          "name": "libidn2",
+          "retained_file_count": 2,
+          "version": "2.3.8-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/8240e09aa2fdd8f9979b2016be082273965aff0c/main/libidn2/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libidn2-2.3.8.tar.gz"
+      ]
+    },
+    {
+      "commit": "8313352127992a9d82e2c2024494f6c38a4dffb4",
+      "origin": "brotli",
+      "packages": [
+        {
+          "name": "brotli-libs",
+          "retained_file_count": 6,
+          "version": "1.2.1-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/APKBUILD",
+        "recipes/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/fix-lp64.patch",
+        "recipes/8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli/optimize-mips.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/brotli-1.2.1.tar.gz"
+      ]
+    },
+    {
+      "commit": "88850a34f2f6651da71b267289f38cfdad477505",
+      "origin": "tesseract-ocr",
+      "packages": [
+        {
+          "name": "tesseract-ocr",
+          "retained_file_count": 33,
+          "version": "5.5.2-r0"
+        },
+        {
+          "name": "tesseract-ocr-data-eng",
+          "retained_file_count": 1,
+          "version": "5.5.2-r0"
+        },
+        {
+          "name": "tesseract-ocr-data-jpn",
+          "retained_file_count": 1,
+          "version": "5.5.2-r0"
+        },
+        {
+          "name": "tesseract-ocr-data-osd",
+          "retained_file_count": 1,
+          "version": "5.5.2-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/88850a34f2f6651da71b267289f38cfdad477505/community/tesseract-ocr/APKBUILD"
+      ],
+      "repository": "community",
+      "upstream_artifacts": [
+        "upstream/apk/tessdata-4.1.0.tar.gz",
+        "upstream/apk/tesseract-ocr-5.5.2.tar.gz"
+      ]
+    },
+    {
+      "commit": "8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b",
+      "origin": "libpng",
+      "packages": [
+        {
+          "name": "libpng",
+          "retained_file_count": 2,
+          "version": "1.6.59-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b/main/libpng/APKBUILD",
+        "recipes/8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b/main/libpng/libpng-fix-arm-neon.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libpng-1.6.58-apng.patch.gz",
+        "upstream/apk/libpng-1.6.59.tar.gz"
+      ]
+    },
+    {
+      "commit": "8f79d39391b46d6dbf1800fb68b8212a21d5ee2e",
+      "origin": "musl",
+      "packages": [
+        {
+          "name": "musl",
+          "retained_file_count": 2,
+          "version": "1.2.6-r3"
+        }
+      ],
+      "recipe_files": [
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/0001-add-stub-for-pthread_mutexattr_setprioceiling.patch",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/APKBUILD",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-107891.patch",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-40200.patch",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/CVE-2026-6042.patch",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/__stack_chk_fail_local.c",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/fix-loongarch64-zero-len-extcontext.patch",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/getconf.c",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/getent.c",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/handle-aux-at_base.patch",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/iconv.c",
+        "recipes/8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl/ldconfig"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/musl-1.2.6.tar.gz"
+      ]
+    },
+    {
+      "commit": "922ca1ffc9cc326f7d95b093b365e31da5cba1a9",
+      "origin": "p11-kit",
+      "packages": [
+        {
+          "name": "p11-kit",
+          "retained_file_count": 2,
+          "version": "0.26.2-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/922ca1ffc9cc326f7d95b093b365e31da5cba1a9/main/p11-kit/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/p11-kit-0.26.2.tar.xz"
+      ]
+    },
+    {
+      "commit": "a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391",
+      "origin": "gettext",
+      "packages": [
+        {
+          "name": "libintl",
+          "retained_file_count": 2,
+          "version": "1.0-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/APKBUILD",
+        "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/cwd.patch",
+        "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-meaningless-pthread-rwlock-test.patch",
+        "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-tests-musl.patch",
+        "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-unicode-16-tests.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/gettext-1.0.tar.xz"
+      ]
+    },
+    {
+      "commit": "af8b48fabd19b69b00f5efe192f461896a38cf74",
+      "origin": "libwebp",
+      "packages": [
+        {
+          "name": "libsharpyuv",
+          "retained_file_count": 2,
+          "version": "1.6.0-r0"
+        },
+        {
+          "name": "libwebp",
+          "retained_file_count": 2,
+          "version": "1.6.0-r0"
+        },
+        {
+          "name": "libwebpmux",
+          "retained_file_count": 2,
+          "version": "1.6.0-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/af8b48fabd19b69b00f5efe192f461896a38cf74/main/libwebp/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libwebp-1.6.0.tar.gz"
+      ]
+    },
+    {
+      "commit": "bbcfbafeadf5dac4744d065ac69338c1b58fc0d1",
+      "origin": "tiff",
+      "packages": [
+        {
+          "name": "tiff",
+          "retained_file_count": 2,
+          "version": "4.7.2-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/bbcfbafeadf5dac4744d065ac69338c1b58fc0d1/main/tiff/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/tiff-4.7.2.tar.gz"
+      ]
+    },
+    {
+      "commit": "bf898e6d067c1c0ecc0f5ff39c79fc893399acd8",
+      "origin": "nettle",
+      "packages": [
+        {
+          "name": "nettle",
+          "retained_file_count": 4,
+          "version": "3.10.2-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/bf898e6d067c1c0ecc0f5ff39c79fc893399acd8/main/nettle/APKBUILD"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/nettle-3.10.2.tar.gz"
+      ]
+    },
+    {
+      "commit": "c09f2e94a4b0b4077da49683cf0faa09ed63fb5b",
+      "origin": "gnutls",
+      "packages": [
+        {
+          "name": "gnutls",
+          "retained_file_count": 2,
+          "version": "3.8.13-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/APKBUILD",
+        "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/gnutls-3.8.8-tests-ktls-skip-tls12-chachapoly.patch",
+        "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/skip-meaningless-pthread-rwlock-test.patch",
+        "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/test-minidtls-fragments-link-error.patch",
+        "recipes/c09f2e94a4b0b4077da49683cf0faa09ed63fb5b/main/gnutls/tests-certtool.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/gnutls-3.8.13.tar.xz"
+      ]
+    },
+    {
+      "commit": "c8147a84799898ff9780bc4f3c179ccc141e8e67",
+      "origin": "avahi",
+      "packages": [
+        {
+          "name": "avahi-libs",
+          "retained_file_count": 4,
+          "version": "0.9_rc4-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/APKBUILD",
+        "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/Add-hostname-dependency-to-avahi-daemon-service.patch",
+        "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.nft",
+        "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.pre-install"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/v0.9-rc4.tar.gz"
+      ]
+    },
+    {
+      "commit": "e78f5987166c6ffbe23f6472e2e8f040298fe2da",
+      "origin": "ca-certificates",
+      "packages": [
+        {
+          "name": "ca-certificates-bundle",
+          "retained_file_count": 1,
+          "version": "20261020-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/APKBUILD",
+        "recipes/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/ca-certificates.post-deinstall",
+        "recipes/e78f5987166c6ffbe23f6472e2e8f040298fe2da/main/ca-certificates/ca-certificates.trigger"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/ca-certificates-20261020.tar.bz2"
+      ]
+    },
+    {
+      "commit": "f1bd5b6767a0e7fdda380c95138a1c938eb6e102",
+      "origin": "libxml2",
+      "packages": [
+        {
+          "name": "libxml2",
+          "retained_file_count": 2,
+          "version": "2.13.9-r2"
+        }
+      ],
+      "recipe_files": [
+        "recipes/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/APKBUILD",
+        "recipes/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/CVE-2026-6732-test.patch",
+        "recipes/f1bd5b6767a0e7fdda380c95138a1c938eb6e102/main/libxml2/CVE-2026-6732.patch"
+      ],
+      "repository": "main",
+      "upstream_artifacts": [
+        "upstream/apk/libxml2-2.13.9.tar.xz"
+      ]
+    },
+    {
+      "commit": "487cfc21a9f5138579c3e38b4a5e55a6230f839a",
+      "origin": "sane-airscan",
+      "packages": [
+        {
+          "name": "sane-airscan",
+          "retained_file_count": 1,
+          "version": "0.99.36-r0"
+        }
+      ],
+      "recipe_files": [
+        "recipes/487cfc21a9f5138579c3e38b4a5e55a6230f839a/community/sane-airscan/APKBUILD"
+      ],
+      "repository": "community",
+      "upstream_artifacts": [
+        "upstream/apk/sane-airscan-0.99.36.tar.gz"
+      ]
+    }
+  ],
+  "scope": "Pinned external source inputs for the 37 selected APK components/29 origins; first-party source and separately locked Tesseract source are generated/fetched separately. Not release approval."
+}
