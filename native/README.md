@@ -538,8 +538,9 @@ publish a release, authorize physical acquisition or complete acceptance.
 
 ## Connecting the application and distroless output
 
-Builders need Docker, Go 1.27.3 and an official-prefix Node 24.22.2 installation
-with npm 11.21.1. Consumers still need only the final executable or image.
+Builders need Docker, Go 1.27.3 and Node 24.22.2. The npm client is fetched and
+verified from `web/npm-tool.lock.json` inside the credential-free acquisition
+sandbox, without changing host npm. Consumers need only the executable or image.
 From a clean committed checkout, connect the native output with:
 
 ```sh

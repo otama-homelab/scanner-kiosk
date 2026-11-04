@@ -16,12 +16,10 @@ git diff --exit-code HEAD --
 git ls-files --error-unmatch scripts/build-application.sh scripts/build-application.py >/dev/null
 if [ -n "$ref" ]; then python3 scripts/check-release-ref.py --ref "$ref" --sha "$sha"; fi
 revision=$(git rev-parse HEAD)
-goroot=$(GOTOOLCHAIN=local GOENV=off go env GOROOT)
+goroot=$(env -u GOROOT GOTOOLCHAIN=local GOENV=off go env GOROOT)
 test "$(GOTOOLCHAIN=local "$goroot/bin/go" version)" = 'go version go1.27.3 linux/amd64'
 node=$(node -p process.execPath)
-npm=$(dirname "$(dirname "$node")")/lib/node_modules/npm
-test -f "$npm/bin/npm-cli.js"
-case "$root$native$out$goroot$node$npm" in *','*|*$'\n'*) echo 'Docker paths cannot contain comma or newline' >&2; exit 2;; esac
+case "$root$native$out$goroot$node" in *','*|*$'\n'*) echo 'Docker paths cannot contain comma or newline' >&2; exit 2;; esac
 mkdir -m 700 "$out"
 prefix=scanner-app-$(python3 -c 'import uuid; print(uuid.uuid4().hex)')
 volume=$prefix-work
@@ -83,7 +81,7 @@ stage() {
         --mount type=bind,src=/usr,dst=/usr,readonly --mount type=bind,src=/usr/bin,dst=/bin,readonly \
         --mount type=bind,src=/usr/lib,dst=/lib,readonly --mount type=bind,src=/usr/lib64,dst=/lib64,readonly \
         --mount "type=bind,src=$goroot,dst=/go,readonly" --mount "type=bind,src=$node,dst=/tools/node,readonly" \
-        --mount "type=bind,src=$npm,dst=/tools/npm,readonly" \
+        \
         --mount "type=bind,src=$out/source.bundle,dst=/source.bundle,readonly" \
         "${inputs[@]}" --mount "type=bind,src=$out/stage.py,dst=/stage.py,readonly" \
         --workdir /work --entrypoint /usr/bin/env "$tools" -i PATH=/usr/bin:/bin PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 /stage.py "$phase" "${args[@]}" > "$out/$phase.log" 2>&1

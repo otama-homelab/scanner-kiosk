@@ -10,13 +10,13 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class ApplicationPipelineTests(unittest.TestCase):
-    def invoke(self,failure):
+    def invoke(self,failure,foreign_goroot=False):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);tools=root/'bin';tools.mkdir();node=root/'node';(node/'bin').mkdir(parents=True)
             npm=node/'lib/node_modules/npm/bin';npm.mkdir(parents=True);(npm/'npm-cli.js').write_text('fixture')
             goroot=root/'go';(goroot/'bin').mkdir(parents=True);calls=root/'calls.jsonl';out=root/'output'
             def executable(path,text):path.write_text('#!/bin/sh\n'+text);path.chmod(0o755)
-            executable(tools/'go','printf "%s\\n" "$FIXTURE_GO"\n')
+            executable(tools/'go','test "${GOROOT:-}" != /wrong-go || exit 18\nprintf "%s\\n" "$FIXTURE_GO"\n')
             executable(goroot/'bin/go','printf "go version go1.27.3 linux/amd64\\n"\n')
             executable(tools/'node','printf "%s\\n" "$FIXTURE_NODE"\n')
             executable(node/'bin/node','exit 0\n')
@@ -34,6 +34,7 @@ if args[:1]==['run'] and '--name' in args and args[args.index('--name')+1].endsw
             native=root/'native.tar';native.write_bytes(b'native')
             env={'PATH':str(tools)+':/usr/bin:/bin','FIXTURE_GO':str(goroot),'FIXTURE_NODE':str(node/'bin/node'),
                  'CALLS':str(calls),'FAILURE':failure,'HOME':str(root)}
+            if foreign_goroot:env['GOROOT']='/wrong-go'
             result=subprocess.run(['/bin/bash',str(ROOT/'scripts/build-application.sh'),str(native),str(out)],env=env,capture_output=True,timeout=20)
             recorded=[json.loads(line) for line in calls.read_text().splitlines()] if calls.exists() else []
             return result,recorded,json.loads((out/'result.json').read_text()) if (out/'result.json').exists() else None
@@ -50,6 +51,15 @@ if args[:1]==['run'] and '--name' in args and args[args.index('--name')+1].endsw
         self.assertEqual(result.returncode,17,result.stderr.decode())
         acquirer=next(c for c in calls if c[:1]==['run'] and '--name' in c and c[c.index('--name')+1].endswith('-acquire'))
         self.assertFalse(any(',dst=/native.tar' in a for a in acquirer))
+
+    def test_foreign_goroot_does_not_override_selected_toolchain(self):
+        result,_,_=self.invoke('acquire',foreign_goroot=True)
+        self.assertEqual(result.returncode,17,result.stderr.decode())
+
+    def test_host_npm_client_is_not_mounted(self):
+        result,calls,_=self.invoke('acquire')
+        self.assertEqual(result.returncode,17,result.stderr.decode())
+        self.assertFalse(any(',dst=/tools/npm' in a for c in calls for a in c))
 
     def test_existing_output_is_not_overwritten(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -178,8 +178,6 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: '24.22.2'
-      - name: Install the pinned npm build client
-        run: npm install --global npm@11.21.1 --ignore-scripts --no-audit --no-fund
       - name: Build locked native payload from cold official inputs
         run: python3 scripts/build-native.py --output-dir "$RUNNER_TEMP/native"
       - name: Build frontend, API, onefile and distroless candidate

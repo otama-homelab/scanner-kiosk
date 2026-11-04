@@ -7,9 +7,11 @@ from pathlib import Path, PurePosixPath
 import re
 import subprocess
 import tarfile
+import urllib.request
+import io
 
 WORK=Path('/work')
-LOCKS=['go.mod','go.sum','web/package.json','web/package-lock.json']
+LOCKS=['go.mod','go.sum','web/package.json','web/package-lock.json','web/npm-tool.lock.json']
 
 
 def environment(offline):
@@ -47,11 +49,41 @@ def extract_native(archive,target):
         stream.extractall(target,filter='data')
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self,request,fp,code,msg,headers,url):return None
+
+
+def install_npm(source):
+    lock=json.loads((source/'web/npm-tool.lock.json').read_text())
+    if not isinstance(lock,dict):raise ValueError('npm client lock must be an object')
+    version,digest,size=(lock.get(k) for k in ['version','sha256','bytes'])
+    if (not isinstance(version,str) or not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',version)
+            or lock.get('url')!='https://registry.npmjs.org/npm/-/npm-'+version+'.tgz'
+            or not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest)
+            or type(size) is not int or not 0<size<=16<<20):
+        raise ValueError('invalid pinned npm client')
+    opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
+    with opener.open(urllib.request.Request(lock['url'],headers={'User-Agent':'scanner-kiosk-build-inputs'}),timeout=60) as response:
+        data=response.read(size+1)
+    if len(data)!=size or hashlib.sha256(data).hexdigest()!=digest:
+        raise ValueError('npm client archive does not match lock')
+    with tarfile.open(fileobj=io.BytesIO(data),mode='r:gz') as archive:
+        members=archive.getmembers()
+        if (len(members)>8192 or sum(m.size for m in members)>64<<20
+                or any(not ((m.name=='package' and m.isdir()) or
+                   (m.name.startswith('package/') and '..' not in PurePosixPath(m.name).parts
+                    and (m.isfile() or m.isdir() or m.issym()))) for m in members)):
+            raise ValueError('invalid npm client archive')
+        (WORK/'npm-tool').mkdir()
+        archive.extractall(WORK/'npm-tool',filter='data')
+    (WORK/'bin/npm').symlink_to(WORK/'npm-tool/package/bin/npm-cli.js')
+    return lock
+
+
 def acquire(revision,ref):
     for name in ['bin','home','tmp','cache','config','source']:(WORK/name).mkdir()
     for name in ['user.npmrc','global.npmrc']:(WORK/name).write_text('')
-    (WORK/'bin/npm').symlink_to('/tools/npm/bin/npm-cli.js')
-    checks=[(['node','--version'],'v24.22.2'),(['npm','--version'],'11.21.1'),
+    checks=[(['node','--version'],'v24.22.2'),
             (['go','version'],'go version go1.27.3 linux/amd64')]
     for args,expected in checks:
         actual=subprocess.check_output(args,env=environment(False),text=True).strip()
@@ -64,12 +96,15 @@ def acquire(revision,ref):
     run(['git','checkout','--quiet','--detach',revision],False)
     if (source/'.npmrc').exists() or (source/'web/.npmrc').exists():
         raise ValueError('project npm configuration is not a build input')
+    tool=install_npm(source)
+    if subprocess.check_output(['npm','--version'],env=environment(False),text=True).strip()!=tool['version']:
+        raise ValueError('npm client version does not match lock')
     before=hashes(source)
     run(['go','mod','download'],False)
     run(['go','mod','verify'],False)
     run(['npm','ci','--ignore-scripts','--no-audit','--no-fund'],False,source/'web')
     if hashes(source)!=before:raise ValueError('dependency locks changed during acquisition')
-    (WORK/'acquisition.json').write_text(json.dumps({'source_revision':revision,'locks':before})+'\n')
+    (WORK/'acquisition.json').write_text(json.dumps({'source_revision':revision,'locks':before,'npm_tool':tool})+'\n')
 
 
 def build(revision,ref,sha):
@@ -101,6 +136,7 @@ def build(revision,ref,sha):
         (WORK/(name+'.json')).write_bytes(info)
     result={'passed':True,'source_revision':revision,'version':version,'locks':acquired['locks'],
             'native_archive_sha256':native_sha,'publication_approved':False,
+            'npm_tool':acquired['npm_tool'],
             'assets':{p.relative_to(source/'web/dist').as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
                       for p in (source/'web/dist').rglob('*') if p.is_file()}}
     (WORK/'application.json').write_text(json.dumps(result,indent=2)+'\n')
