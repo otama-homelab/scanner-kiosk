@@ -209,3 +209,56 @@ publication-policy regressions and actionlint pass. The actual local staged
 manifest e2e81496… was reverified and correctly rejected with a deliberately
 unapproved record; no successful approval for that candidate was minted. The
 external service writer/serialized workflow is still unfinished.
+
+## Transfer writer implementation
+
+`scripts/write-publication.py` now consumes the preflight plan and its trusted
+SHA256, rehashes all approved uploads, and uses installed `gh` and Docker
+clients without rebuilding or running the candidate. Default execution is a
+service-read-only dry run; it may authenticate in a private temporary Docker
+configuration but creates no release, image version or alias. The temporary
+configuration is removed on exit; host credential configuration is not used.
+
+The writer verifies live repository/package visibility against approval,
+remote main ancestry and peeled tag identity, the latest GitHub Actions
+`required-checks` for the source, immutable version absence and alias ownership.
+It recalculates alias movement from current service state rather than using a
+stale preflight alias list. Unknown authorization errors are not treated as
+missing versions. A new package is supported only in the explicitly approved
+private scope; public packages must already have matching visibility. The
+writer never changes visibility or billing.
+
+With `--apply`, an enabled push workflow with matching repository/ref/SHA is
+required. Reserve a draft, upload every bound asset without clobbering, and
+compare GitHub asset digests/sizes. Recheck source/checks before making the
+source-containing release accessible. Only then load the saved candidate image,
+verify its image ID, push the immutable version and verify the registry digest.
+Source availability therefore precedes registry binary availability. Update
+owned aliases last, verify their digests, and advance GitHub stable latest only
+after registry latest succeeds.
+
+If source publication succeeds but the image fails, the source/binary release
+remains accessible without advancing aliases. Its publication metadata records
+that the image transfer is incomplete; it reserves the immutable version name
+but does not count as a qualified higher stable version for latest ordering.
+This does not relabel the actual GitHub draft/prerelease state. Existing
+versions/drafts are never overwritten on retry. Inspect and explicitly recover
+a partial publication; there is no automatic deletion or rollback across the
+two services.
+
+Call the writer only from the single serialized publisher concurrency group,
+with cancellation disabled and minimal write permissions confined to that job.
+The trusted plan hash must come from the protected read-only preflight handoff,
+not an arbitrary artifact field. Archive parsing/preflight remains credential-
+free; the credentialed writer hashes the sealed files without unpacking them.
+The source checks currently execute only the writer contract tests. The
+serialized write job and staged-plan producer/handoff are not connected yet.
+
+Eighteen writer tests, eighteen policy tests and nine preflight tests pass
+with stateful service-boundary fakes in a network-isolated sandbox. Tests cover
+source-before-image ordering, upload/push failures, digest mismatches, fresh
+checks/source state, visibility, immutable collisions and delayed old previews.
+Public read-only probes confirmed the installed Docker client's OCI verbose
+response and GitHub's asset-digest field. These are not actual private-service
+uploads or hosted publisher success. C1/G5/security/license/authentication and
+formal main/tag acceptance remain required; no release or image was published.

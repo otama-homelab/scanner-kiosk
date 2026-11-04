@@ -1,0 +1,254 @@
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import subprocess
+import unittest
+from unittest.mock import patch
+import test_publication_preflight as fixtures
+
+
+class WritePublicationTest(unittest.TestCase):
+    def setUp(self):
+        self.f = fixtures.PublicationPreflightTest()
+        self.f.setUp()
+        self.addCleanup(self.f.doCleanups)
+        self.plan = self.f.prepare()
+        self.candidate = self.f.candidate.output
+        self.path = self.f.candidate.root/'plan.json'
+        self.path.write_text(json.dumps(self.plan))
+        self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        spec = importlib.util.spec_from_file_location('write_publication', Path(__file__).with_name('write-publication.py'))
+        self.module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.module)
+        self.events, self.releases, self.tags = [], [], {}
+        self.visibility, self.package_visibility = 'private', 'private'
+        self.upload_failed, self.check_result = False, 'success'
+        self.asset_mismatch, self.push_failed, self.source_removed = False, False, False
+        self.fail_checks_after_upload = False
+        self.sha = self.f.git.sha
+        self.remote_head = self.sha
+        self.ref = 'refs/heads/main'
+        self.image_id = self.plan['image_id']
+        self.registry_digest = 'sha256:'+'d'*64
+        self.env = {'GH_TOKEN': 'fixture-not-a-real-token', 'GITHUB_ACTOR': 'fixture',
+            'GITHUB_ACTIONS': 'true', 'GITHUB_REPOSITORY': 'otama-homelab/scanner-kiosk',
+            'GITHUB_EVENT_NAME': 'push', 'GITHUB_REF': 'refs/heads/main', 'GITHUB_SHA': self.sha,
+            'SCANNER_PUBLISH_ENABLED': 'true'}
+
+    def api(self, path, env, body=None, missing=False, paginate=False):
+        if path == 'repos/otama-homelab/scanner-kiosk':
+            return {'visibility': self.visibility}
+        if path.endswith('/git/ref/heads/main'):
+            return {'object': {'sha': self.remote_head, 'type': 'commit'}}
+        if '/git/ref/tags/' in path:
+            return {'object': {'sha': self.sha, 'type': 'commit'}}
+        if '/compare/' in path:
+            return {'status': 'identical', 'merge_base_commit': {'sha': '0'*40 if self.source_removed else self.sha}}
+        if '/check-runs?' in path:
+            return [{'check_runs': [{'id': 1, 'name': 'required-checks', 'head_sha': self.sha,
+                'status': 'completed', 'conclusion': ('failure' if self.fail_checks_after_upload and 'upload-assets' in self.events else self.check_result),
+                'app': {'slug': 'github-actions'}}]}]
+        if '/packages/container/' in path:
+            return {'visibility': self.package_visibility}
+        if '/releases?' in path:
+            return [self.releases]
+        if path.endswith('/releases') and body is not None:
+            self.events.append('reserve-draft')
+            release = {**body, 'id': 42}
+            self.releases.append(release)
+            return release
+        if path.endswith('/releases/42/assets'):
+            return [[{'name': name, 'size': (self.candidate/name).stat().st_size,
+                      'digest': 'sha256:'+('0'*64 if self.asset_mismatch else hashlib.sha256((self.candidate/name).read_bytes()).hexdigest())}
+                     for name in self.plan['uploads']]]
+        if path.endswith('/releases/42') and body is not None:
+            self.events.append('publish-release' if body.get('draft') is False else 'finalize-release')
+            release = next(r for r in self.releases if r['id'] == 42)
+            release.update(body)
+            return release
+        raise AssertionError(('unexpected API request', path, body))
+
+    def registry(self, tag, env):
+        return self.tags.get(tag)
+
+    def command(self, args, env, input_data=None, timeout=60, allow_failure=False):
+        if args[:2] == ['gh', 'release']:
+            self.events.append('upload-assets')
+            if self.upload_failed:
+                raise RuntimeError('fixture upload failed')
+        elif args[:2] == ['docker', 'push']:
+            tag = args[-1].rsplit(':', 1)[1]
+            self.events.append('push-'+tag)
+            if self.push_failed:
+                raise RuntimeError('fixture registry push failed')
+            self.tags[tag] = {'digest': self.registry_digest, 'image_id': self.image_id}
+        elif args[:3] == ['docker', 'image', 'inspect']:
+            return json.dumps([{'Id': self.image_id}]).encode()
+        elif args[:2] == ['docker', 'load']:
+            self.events.append('load-image')
+        elif args[:2] not in [['docker', 'login'], ['docker', 'tag']]:
+            raise AssertionError(('unexpected command', args))
+        return b''
+
+    def run_writer(self, apply=False):
+        with patch.dict('os.environ', self.env), patch.object(self.module, 'api', self.api), \
+                patch.object(self.module, 'registry_image', self.registry), \
+                patch.object(self.module, 'command', self.command):
+            return self.module.publish(self.candidate, self.path, self.plan_hash,
+                self.ref, self.sha, 'push', self.f.git.repo, apply=apply)
+
+    def test_dry_run_performs_no_release_or_registry_writes(self):
+        result = self.run_writer()
+        self.assertFalse(result['published'])
+        self.assertEqual(self.events, [])
+
+    def test_sources_are_published_before_image_and_aliases_are_last(self):
+        result = self.run_writer(apply=True)
+        self.assertTrue(result['published'])
+        self.assertLess(self.events.index('upload-assets'), self.events.index('publish-release'))
+        self.assertLess(self.events.index('publish-release'), self.events.index('push-'+self.plan['image_tag']))
+        self.assertEqual(self.events[-1], 'push-preview')
+
+    def test_failed_upload_leaves_draft_and_no_image_or_alias(self):
+        self.upload_failed = True
+        with self.assertRaises(RuntimeError):
+            self.run_writer(apply=True)
+        self.assertTrue(self.releases[0]['draft'])
+        self.assertEqual(self.tags, {})
+
+    def test_upload_digest_mismatch_keeps_draft_and_does_not_push(self):
+        self.asset_mismatch = True
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertTrue(self.releases[0]['draft'])
+        self.assertEqual(self.tags, {})
+
+    def test_image_failure_retains_accessible_source_and_leaves_aliases_untouched(self):
+        self.push_failed = True
+        with self.assertRaises(RuntimeError):
+            self.run_writer(apply=True)
+        self.assertFalse(self.releases[0]['draft'])
+        self.assertEqual(self.releases[0]['make_latest'], 'false')
+        self.assertNotIn('push-preview', self.events)
+        self.assertEqual(self.tags, {})
+
+    def test_source_removed_from_remote_main_is_rejected_before_writes(self):
+        self.source_removed = True
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+
+    def test_existing_version_is_not_overwritten(self):
+        self.tags[self.plan['image_tag']] = {'digest': self.registry_digest, 'image_id': self.image_id}
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+
+    def test_fresh_service_state_prevents_late_old_preview_rollback(self):
+        git = self.f.git
+        git.git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test',
+                'commit', '--allow-empty', '-m', 'newer')
+        newer = git.git('rev-parse', 'HEAD')
+        git.git('update-ref', 'refs/remotes/origin/main', newer)
+        git.git('checkout', '--detach', self.sha)
+        self.remote_head = newer
+        owner_plan = {**self.plan, 'source_sha': newer, 'version': 'preview-'+newer[:12],
+                      'image_id': 'sha256:'+'c'*64}
+        owner = {'digest': 'sha256:'+'e'*64, 'image_id': owner_plan['image_id']}
+        self.tags['preview'] = owner.copy()
+        self.releases.append({'id': 101, 'tag_name': 'preview-'+newer, 'draft': False,
+                              'prerelease': True, 'body': self.module.body_text(owner_plan, owner['digest'])})
+        self.assertEqual(self.plan['aliases'], ['preview'])
+        result = self.run_writer(apply=True)
+        self.assertEqual(result['aliases'], [])
+        self.assertEqual(self.tags['preview'], owner)
+        self.assertNotIn('push-preview', self.events)
+
+    def test_source_only_release_is_reported_incomplete_without_relabelling_draft(self):
+        self.releases.append({'id': 101, 'tag_name': 'v2.0.0', 'draft': False, 'prerelease': False,
+                              'body': self.module.body_text({**self.plan, 'version': 'v2.0.0'})})
+        with patch.object(self.module, 'api', self.api), patch.object(self.module, 'registry_image', self.registry):
+            state = self.module.fresh_state(self.plan, {})
+        self.assertFalse(state['releases'][0]['publication_complete'])
+        self.assertFalse(state['releases'][0]['draft'])
+        self.assertNotIn('publication_complete', self.releases[0])
+
+    def test_live_repository_or_package_visibility_mismatch_fails_before_writes(self):
+        for field in ['visibility', 'package_visibility']:
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                setattr(self, field, 'public')
+                self.run_writer(apply=True)
+            setattr(self, field, 'private')
+        self.assertEqual(self.events, [])
+
+    def test_failed_current_checks_are_not_replaced_by_an_approval(self):
+        self.check_result = 'failure'
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+
+    def test_new_failed_checks_during_upload_prevent_publication(self):
+        self.fail_checks_after_upload = True
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertTrue(self.releases[0]['draft'])
+        self.assertEqual(self.tags, {})
+
+    def test_stable_latest_waits_for_registry_alias_verification(self):
+        self.ref = 'refs/tags/v1.10.0'
+        self.f.git.git('tag', 'v1.10.0')
+        self.f.set_identity({**self.f.candidate.version, 'version': 'v1.10.0', 'revision': self.sha})
+        self.f.candidate.output = self.f.candidate.root/'stable-candidate'
+        receipt = self.f.candidate.run_stage()
+        self.candidate = self.f.candidate.output
+        self.f.approval['manifest_sha256'] = receipt['manifest_sha256']
+        raw = (json.dumps(self.f.approval)+'\n').encode()
+        self.f.approval_path.write_bytes(raw)
+        self.plan = self.f.module.prepare_publication(self.candidate, self.f.approval_path,
+            hashlib.sha256(raw).hexdigest(), self.ref, self.sha, 'push',
+            {'releases': [], 'image_tags': [], 'preview_source_sha': None}, self.f.git.repo)
+        self.path.write_text(json.dumps(self.plan))
+        self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        self.env['GITHUB_REF'] = self.ref
+        self.run_writer(apply=True)
+        self.assertEqual(self.events[-2:], ['push-latest', 'finalize-release'])
+        self.assertEqual(self.releases[0]['make_latest'], 'true')
+        self.assertFalse(self.releases[0]['prerelease'])
+
+    def test_changed_plan_or_asset_fails_before_service_writes(self):
+        self.path.write_text('{}')
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+
+    def test_apply_requires_enabled_push_workflow_context(self):
+        self.env['SCANNER_PUBLISH_ENABLED'] = 'false'
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+
+    def test_registry_authentication_failure_is_not_an_absent_tag(self):
+        result = subprocess.CompletedProcess([], 1, b'', b'unauthorized: authentication required')
+        with patch.object(self.module, 'command', return_value=result), self.assertRaises(RuntimeError):
+            self.module.registry_image('preview', {})
+
+    def test_registry_not_found_and_single_platform_digest(self):
+        missing = subprocess.CompletedProcess([], 1, b'', b'no such manifest: ghcr.io/otama-homelab/scanner-kiosk:preview')
+        with patch.object(self.module, 'command', return_value=missing):
+            self.assertIsNone(self.module.registry_image('preview', {}))
+        raw = json.dumps({'Descriptor': {'digest': self.registry_digest},
+                          'SchemaV2Manifest': {'config': {'digest': self.image_id}}}).encode()
+        found = subprocess.CompletedProcess([], 0, raw, b'')
+        with patch.object(self.module, 'command', return_value=found):
+            self.assertEqual(self.module.registry_image('preview', {}),
+                             {'digest': self.registry_digest, 'image_id': self.image_id})
+
+    def test_github_authentication_failure_is_not_an_absent_package(self):
+        denied = subprocess.CompletedProcess([], 1, b'', b'gh: Resource not accessible (HTTP 403)')
+        with patch.object(self.module, 'command', return_value=denied), self.assertRaises(RuntimeError):
+            self.module.api('orgs/otama-homelab/packages/container/scanner-kiosk', {}, missing=True)
+
+
+if __name__ == '__main__':
+    unittest.main()

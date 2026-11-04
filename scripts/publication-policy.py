@@ -33,7 +33,8 @@ def publication_plan(ref, sha, event, state, repository=Path('.')):
     tags, stable = set(), []
     for release in releases:
         if (not isinstance(release, dict) or type(release.get('draft')) is not bool
-                or type(release.get('prerelease')) is not bool or not isinstance(release.get('tag_name'), str)):
+                or type(release.get('prerelease')) is not bool or not isinstance(release.get('tag_name'), str)
+                or ('publication_complete' in release and type(release['publication_complete']) is not bool)):
             raise ValueError('invalid release state')
         tag = release['tag_name']
         if tag in tags:
@@ -44,7 +45,7 @@ def publication_plan(ref, sha, event, state, repository=Path('.')):
                 raise ValueError('preview must be a prerelease')
             continue
         version, suffix = refs.tag_parts(tag)
-        if not suffix and not release['draft'] and not release['prerelease']:
+        if not suffix and not release['draft'] and not release['prerelease'] and release.get('publication_complete', True):
             stable.append(version)
     if previous is not None and (not isinstance(previous, str)
                                 or not re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', previous)):

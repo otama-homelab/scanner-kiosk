@@ -66,6 +66,18 @@ class PublicationPolicyTest(unittest.TestCase):
         self.state['releases'] = [{'tag_name': 'v2.0.0', 'draft': True, 'prerelease': False}]
         self.assertEqual(self.plan('refs/tags/v1.1.0')['aliases'], ['latest'])
 
+    def test_published_sources_without_completed_image_do_not_hold_back_latest(self):
+        self.fixture.git('tag', 'v1.1.0')
+        self.state['releases'] = [{'tag_name': 'v2.0.0', 'draft': False, 'prerelease': False,
+                                   'publication_complete': False}]
+        self.assertEqual(self.plan('refs/tags/v1.1.0')['aliases'], ['latest'])
+
+    def test_publication_completion_status_must_be_boolean(self):
+        self.state['releases'] = [{'tag_name': 'v2.0.0', 'draft': False, 'prerelease': False,
+                                   'publication_complete': 'false'}]
+        with self.assertRaises(ValueError):
+            self.plan()
+
     def test_prerelease_never_moves_stable_alias(self):
         self.fixture.git('tag', 'v2.0.0-rc.1')
         plan = self.plan('refs/tags/v2.0.0-rc.1')
