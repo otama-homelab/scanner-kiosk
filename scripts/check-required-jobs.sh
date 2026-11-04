@@ -4,6 +4,7 @@ test "${TEST_RESULT:-}" = success
 test "${DEPLOY_RESULT:-}" = success
 test "${NATIVE_RESULT:-}" = success
 test "${SECURITY_RESULT:-}" = success
+test "${MATERIAL_RESULT:-}" = success
 case "${EVENT_NAME:-}" in
     push) test "${REF_RESULT:-}" = success ;;
     pull_request|workflow_dispatch) test "${REF_RESULT:-}" = skipped ;;

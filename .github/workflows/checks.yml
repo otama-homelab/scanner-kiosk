@@ -56,6 +56,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_release_ref.py -v
       - name: Immutable publication and alias ordering contract
         run: python3 -m unittest discover -s scripts -p test_publication_policy.py -v
+      - name: Generated candidate source subset integrity
+        run: python3 -m unittest discover -s scripts -p test_prepare_candidate.py -v
       - name: Candidate material identity and failure contract
         run: python3 -m unittest discover -s scripts -p test_stage_candidate.py -v
       - name: Publication material and approval preflight contract
@@ -285,9 +287,48 @@ jobs:
           if-no-files-found: error
           path: ${{ runner.temp }}/security/
 
+  candidate-materials:
+    needs: [candidate-build, candidate-advisories]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Download materials from this exact run attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "candidate-$GITHUB_SHA-$GITHUB_RUN_ATTEMPT" --dir "$RUNNER_TEMP/material-inputs/candidate"
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "native-sources-$GITHUB_SHA-$GITHUB_RUN_ATTEMPT" --dir "$RUNNER_TEMP/material-inputs/native"
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "candidate-advisories-$GITHUB_SHA-$GITHUB_RUN_ATTEMPT" --dir "$RUNNER_TEMP/material-inputs/security"
+      - name: Bind and seal generated candidate materials offline
+        run: bash scripts/prepare-candidate.sh "$RUNNER_TEMP/material-inputs" "$RUNNER_TEMP/materials"
+      - name: Retain the sealed candidate handoff
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: staged-candidate-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: ${{ runner.temp }}/materials/
+      - name: Retain stage failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: material-diagnostics-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: ${{ runner.temp }}/materials/*.log
+
   required-checks:
     if: always()
-    needs: [release-ref-policy, test-and-build, deployment-contracts, candidate-build, candidate-advisories]
+    needs: [release-ref-policy, test-and-build, deployment-contracts, candidate-build, candidate-advisories, candidate-materials]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -302,6 +343,7 @@ jobs:
           DEPLOY_RESULT: ${{ needs.deployment-contracts.result }}
           NATIVE_RESULT: ${{ needs.candidate-build.result }}
           SECURITY_RESULT: ${{ needs.candidate-advisories.result }}
+          MATERIAL_RESULT: ${{ needs.candidate-materials.result }}
         run: sh scripts/check-required-jobs.sh
 
   publish:
