@@ -71,6 +71,57 @@ class AssembleNativeTest(unittest.TestCase):
                                self.roots['notices'], self.output,
                                built_archives=archives)
 
+    def test_repository_notice_replaces_only_its_selected_historical_input(self):
+        root = self.work/'notice-files/component'
+        root.mkdir(parents=True)
+        (root/'LICENSE').write_bytes(b'license')
+        (root/'unselected.txt').write_bytes(b'must not copy')
+        (self.roots['notices']/'share/LICENSE').unlink()
+        self.provenance['notice_sources'] = {'share/LICENSE': 'component/LICENSE'}
+        self.assertEqual(self.assemble()['entries'], len(self.files))
+        self.assertEqual((self.output/'share/LICENSE').read_bytes(), b'license')
+        self.assertFalse((self.output/'component/unselected.txt').exists())
+
+    def test_relative_manifest_cannot_write_output_inside_source_notices(self):
+        root = self.work/'notice-files'
+        root.mkdir()
+        (root/'LICENSE').write_bytes(b'license')
+        self.provenance['notice_sources'] = {'share/LICENSE': 'LICENSE'}
+        self.output = root/'output'
+        self.manifest = Path(os.path.relpath(self.manifest, Path.cwd()))
+        with self.assertRaises(ValueError):
+            self.assemble()
+        self.assertFalse(self.output.exists())
+
+    def test_repository_notice_corruption_symlinks_and_unsafe_mapping_fail_closed(self):
+        root = self.work/'notice-files'
+        root.mkdir()
+        source = root/'LICENSE'
+        source.write_bytes(b'changed')
+        self.provenance['notice_sources'] = {'share/LICENSE': 'LICENSE'}
+        with self.assertRaises(ValueError):
+            self.assemble()
+        self.assertFalse(self.output.exists())
+        source.unlink()
+        source.symlink_to(self.roots['notices']/'share/LICENSE')
+        with self.assertRaises(ValueError):
+            self.assemble()
+        self.assertFalse(self.output.exists())
+        source.unlink()
+        root.rmdir()
+        root.symlink_to(self.roots['notices'])
+        self.provenance['notice_sources'] = {'share/LICENSE': 'share/LICENSE'}
+        with self.assertRaises(ValueError):
+            self.assemble()
+        self.assertFalse(self.output.exists())
+        for mapping in [{'unregistered/LICENSE': 'LICENSE'},
+                        {'share/LICENSE': '../notices/share/LICENSE'},
+                        {'share/LICENSE': '/absolute/LICENSE'}, []]:
+            self.provenance['notice_sources'] = mapping
+            with self.subTest(mapping=mapping), self.assertRaises(ValueError):
+                self.assemble()
+            self.assertFalse(self.output.exists())
+
     def test_build_archive_selects_only_native_and_preserves_identity(self):
         archive = self.archive()
         with tarfile.open(archive, 'a') as stream:

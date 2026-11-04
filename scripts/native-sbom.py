@@ -51,7 +51,7 @@ def catalog(manifest, provenance, native_root, output):
         raise ValueError('SBOM output must be separate from native inputs')
     raw_origin = provenance.read_bytes()
     origin = json.loads(raw_origin)
-    files, selected = assembler.plan(manifest, origin)
+    files, _ = assembler.plan(manifest, origin)
     verify_native(root, files)
     components = []
 
@@ -82,7 +82,7 @@ def catalog(manifest, provenance, native_root, output):
     refs = [c['bom-ref'] for c in components]
     if len(refs) != len(set(refs)):
         raise ValueError('duplicate native component identity')
-    notes = {n: files[n] for n, (role, _) in selected.items() if role == 'notices'}
+    notes = {n: files[n] for n in origin['notice_files']}
     scope = ('Native selected-file origins only; not an installed APK database or ELF dependency graph. '
              'Combine with separate image and compiled Go inventories. No vulnerability/license approval.')
     receipt = {'native_manifest_sha256': origin['runtime_manifest_sha256'],

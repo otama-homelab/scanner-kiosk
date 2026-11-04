@@ -1,0 +1,21 @@
+{
+  "component": "leptonica-1.87.0",
+  "notice_files": [
+    {
+      "file": "LICENSE",
+      "sha256": "87829abb5bbb00b55a107365da89e9a33f86c4250169e5a1e5588505be7d5806",
+      "source_member": "leptonica-1.87.0/leptonica-license.txt"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libleptonica.so.6",
+    "usr/lib/libleptonica.so.6.0.0"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "leptonica-1.87.0.tar.gz",
+  "source_archive_sha512": "b689b1cfe4d5b884e7ede9d949149410117bbfbb85a1790c0516919f27e8746783c8a04cac9300c761d2736184fb4b2337ab6c3a2653fa9f69f82ba19b493a2d",
+  "source_recipe_origins": [
+    "65d7583d02d64188863a325a30fff98e0b476e37/community/leptonica"
+  ]
+}

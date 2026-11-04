@@ -51,6 +51,16 @@ class NativeSBOMTest(unittest.TestCase):
         self.assertEqual(set(index['notice_files']), {'share/LICENSE'})
         self.assertEqual(len(index['components']), 2)
 
+    def test_source_managed_notices_keep_their_notice_inventory_role(self):
+        f = self.fixture
+        f.provenance['notice_sources'] = {'share/LICENSE': 'component/LICENSE'}
+        (f.work/'provenance.json').write_text(json.dumps(f.provenance))
+        receipt = self.catalog()
+        self.assertEqual(receipt['code_and_data_files'], 4)
+        self.assertEqual(receipt['notice_files'], 1)
+        index = json.loads((self.output/'native-origin-inventory.json').read_text())
+        self.assertEqual(set(index['notice_files']), {'share/LICENSE'})
+
     def test_changed_file_refused_without_partial_output(self):
         (self.fixture.output/'bin/helper').chmod(0o644)
         (self.fixture.output/'bin/helper').write_bytes(b'broken')

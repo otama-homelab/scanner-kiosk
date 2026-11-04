@@ -77,8 +77,14 @@ def plan(manifest, provenance):
             if entry != files.get(name):
                 raise ValueError('source build identity differs from manifest')
             add(name, 'built', name)
+    notice_sources = provenance.get('notice_sources', {})
+    if not isinstance(notice_sources, dict) or not set(notice_sources).issubset(provenance['notice_files']):
+        raise ValueError('unknown source-managed notice')
     for name in provenance['notice_files']:
-        add(name, 'notices', name)
+        if name in notice_sources:
+            add(name, 'source-notices', notice_sources[name])
+        else:
+            add(name, 'notices', name)
     if set(selected) != set(files):
         raise ValueError('native origin coverage is incomplete')
     return files, selected
@@ -173,7 +179,9 @@ def assemble(manifest, provenance, apk_root, built_root, notices_root, output,
             return assemble(manifest, provenance, apk_root, root, notices_root, output)
     roots = {'apk': apk_root.resolve(strict=True), 'built': built_root.resolve(strict=True),
              'notices': notices_root.resolve(strict=True)}
-    if any(output.resolve().is_relative_to(root) for root in roots.values()):
+    if any(role == 'source-notices' for role, _ in selected.values()):
+        roots['source-notices'] = manifest.absolute().parent/'notice-files'
+    if any(output.resolve().is_relative_to(root.resolve()) for root in roots.values()):
         raise ValueError('output must be separate from inputs')
     output.mkdir(mode=0o700)
     try:

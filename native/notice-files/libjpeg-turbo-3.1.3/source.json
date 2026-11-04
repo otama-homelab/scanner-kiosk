@@ -1,0 +1,26 @@
+{
+  "component": "libjpeg-turbo-3.1.3",
+  "notice_files": [
+    {
+      "file": "LICENSE.md",
+      "sha256": "2189dc45a8fe96204069f8124caa53a148dfdc193f50f584c6ca7849a6072872",
+      "source_member": "libjpeg-turbo-3.1.3/LICENSE.md"
+    },
+    {
+      "file": "README.ijg",
+      "sha256": "75815e3bf6484201a3c3d17a1bbf10f2e8e3237f84df10a2357ea896db2a81d6",
+      "source_member": "libjpeg-turbo-3.1.3/README.ijg"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libjpeg.so.8",
+    "usr/lib/libjpeg.so.8.3.2"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "libjpeg-turbo-3.1.3.tar.gz",
+  "source_archive_sha512": "d3410a072044b4962c1aa08eb144b4e4b959f4f65203dfac4013b14e2fd987b9a6ee9b59f5570980fa691ddf5e9f9d3aa328a63afb487a46c2e76de722f3d693",
+  "source_recipe_origins": [
+    "5fe6bebf850fc964a8525c81548397c39cb6f7cd/main/libjpeg-turbo"
+  ]
+}

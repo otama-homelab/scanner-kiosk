@@ -708,6 +708,12 @@
     "usr/share/scanner-kiosk/notices/go/stdlib/LICENSE",
     "usr/share/scanner-kiosk/notices/go/stdlib/PATENTS",
     "usr/share/scanner-kiosk/notices/image-notices-receipt.json",
+    "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/LICENSE",
+    "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/source.json",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/ATTRIBUTION.txt",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/LICENSE.md",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/README.ijg",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/source.json",
     "usr/share/scanner-kiosk/notices/native/provenance.json",
     "usr/share/scanner-kiosk/notices/native/sane-airscan/COPYING",
     "usr/share/scanner-kiosk/notices/native/sane-airscan/LICENSE",
@@ -733,9 +739,17 @@
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/replacement.json",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json"
   ],
-  "notice_scope": "Preserved notices and historical observation receipts, plus current fork patch/build metadata. Past images/package inventories/run-specific fields remain historical evidence, not current installed-package claims. Do not drop license texts.",
+  "notice_scope": "Preserved notices and historical observation receipts, plus current fork patch/build metadata. Past images/package inventories/run-specific fields remain historical evidence, not current installed-package claims. Do not drop license texts. Six source-managed Leptonica/libjpeg-turbo notice, attribution and source-association files are selected from native/notice-files; they are not historical observations or complete license/source clearance.",
+  "notice_sources": {
+    "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/LICENSE": "leptonica-1.87.0/LICENSE",
+    "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/source.json": "leptonica-1.87.0/source.json",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/ATTRIBUTION.txt": "libjpeg-turbo-3.1.3/ATTRIBUTION.txt",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/LICENSE.md": "libjpeg-turbo-3.1.3/LICENSE.md",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/README.ijg": "libjpeg-turbo-3.1.3/README.ijg",
+    "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/source.json": "libjpeg-turbo-3.1.3/source.json"
+  },
   "publication_approved": false,
-  "runtime_manifest_sha256": "e9c70be7cf0609f00bbd44da016acfc44bd48b23ef291f4e1a54080fadaa4c48",
+  "runtime_manifest_sha256": "83a498406f6fb0e53946b1aa867ae1b7fb93c14c4f901b3a3e67a44d74132f13",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {

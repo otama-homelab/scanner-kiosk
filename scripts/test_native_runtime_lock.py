@@ -55,6 +55,18 @@ class NativeRuntimeLockTests(unittest.TestCase):
         self.assertEqual(set(owners), set(self.files))
         self.assertFalse(self.provenance['publication_approved'])
 
+    def test_source_managed_notices_match_the_manifest(self):
+        for destination, source in self.provenance['notice_sources'].items():
+            self.assertIn(destination, self.provenance['notice_files'])
+            path = ROOT/'native/notice-files'/source
+            self.assertFalse(path.is_symlink())
+            data = path.read_bytes()
+            self.assertEqual(len(data), self.files[destination]['size'])
+            self.assertEqual(hashlib.sha256(data).hexdigest(), self.files[destination]['sha256'])
+        attribution = ROOT/'native/notice-files/libjpeg-turbo-3.1.3/ATTRIBUTION.txt'
+        self.assertEqual(attribution.read_text(),
+                         'This software is based in part on the work of the Independent JPEG Group.\n')
+
     def test_firstparty_source_or_sdk_changes_require_native_rebuild(self):
         for component in self.provenance['firstparty_components']:
             self.assertEqual(hashlib.sha256((ROOT / 'native' / component['sdk_lock']).read_bytes()).hexdigest(), component['sdk_lock_sha256'])

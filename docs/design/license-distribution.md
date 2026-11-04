@@ -12,6 +12,18 @@ boundaries; it does not approve a release or replace the exact license texts.
 | Debian native tools, libraries and OCR data | Runtime installs SANE, sane-airscan, Tesseract, English/Japanese data and their dependencies; distro notices are retained and checked. | Review exact package copyright files, exceptions, corresponding-source and replacement/relinking requirements. Supplementary repository notices cannot substitute for bundled native dependencies. |
 | Optional OCR font | Supplied separately through administrator configuration; no font is included in the current candidate image. | Record the actual font's license and redistribution/embedding conditions before distributing it or approving OCR output behavior. |
 
+## Current single-file notice updates
+
+The current distribution uses a native closure inside one executable and a
+distroless image; the Debian inventory below is historical evidence. The native
+manifest now selects verbatim Leptonica 1.87.0 and libjpeg-turbo 3.1.3 notices, the
+IJG attribution, and source-association records from `native/notice-files/`.
+The assembler validates those files against the manifest before packaging.
+See [source-managed notices](../../native/README.md#source-managed-notices).
+Other native component obligations, replacement/relinking materials, recipient
+source access and the project's own license remain under review. This update
+does not approve distribution or establish full notice completeness.
+
 ## Browser build observation, 2026-11-03
 
 The workspace plan's `frontend-delivery-graph-20261103/receipt.json` and

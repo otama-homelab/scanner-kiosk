@@ -141,6 +141,23 @@ artifacts. A single acquisition/SDK/source-build CI orchestration, stable comple
 notices/source delivery and release gates remain unfinished. Historical notices
 are deliberately identified as preserved inputs, not regenerated current proofs.
 
+## Source-managed notices
+
+The current native manifest has **197 entries**: the prior 191 entries plus six
+Leptonica 1.87.0/libjpeg-turbo 3.1.3 notice, attribution and source-association
+files. Their upstream license texts are retained verbatim in `notice-files/`;
+libjpeg-turbo also carries the IJG attribution required by its upstream terms.
+The source records bind the exact upstream archives, selected members and runtime
+files. This addresses those specific notice gaps, not the complete license gate.
+
+`runtime-provenance.json` maps these destinations through `notice_sources`.
+The assembler reads those sources only from `notice-files/` beside the supplied
+manifest, instead of the historical `--notices-root`. Both paths pass the same
+manifest size/hash checks and descriptor-relative no-follow traversal. Missing,
+changed or symlinked source-managed notices fail without falling back to historical
+input. Keep this directory beside the manifest in a source export or build input.
+Other notices still come from the explicitly supplied historical notice root.
+
 ## Fixed runtime input
 
 `runtime-manifest.json` pins the current 191 native file/link entries, without
@@ -233,7 +250,9 @@ with a `relocated_from` mapping (the CA bundle is read at its original
 - `--apk-root`: installed files from verified, pinned official packages.
 - `--built-root`: source-built Tesseract, the verifying airscan fork and the
   first-party SANE helper at their recorded runtime paths.
-- `--notices-root`: the complete pinned notice/source/observation file set.
+- `--notices-root`: pinned historical notice/source/observation files. Entries
+  mapped by `notice_sources` are read from the manifest-adjacent `notice-files/`
+  source directory instead, without merging input trees.
 
 ```sh
 python3 scripts/assemble-native.py \

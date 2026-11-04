@@ -187,3 +187,14 @@ helper and updated HTTPS-downgrade-guard fork exports reproduced the current
 notices. This removes manual unpack/merge from that handoff; it does not execute
 the three builds, regenerate notices, or implement full source acquisition/CI
 or recipient source delivery. See the [assembly command](../../native/README.md#offline-assembly-command).
+
+
+The current native manifest additionally carries six source-managed Leptonica
+1.87.0/libjpeg-turbo 3.1.3 notice/attribution/source records. The original texts
+were selected from their exact retained archives, not fetched from a newer branch.
+`notice_sources` binds these entries to `native/notice-files/`; the assembler uses
+its existing file size/hash and no-follow guards before including them. Historical
+notices remain separate pinned inputs. See [source-managed notices](../../native/README.md#source-managed-notices).
+This closes those specific notice-delivery gaps only after the resulting package
+has been checked; other component conditions, source/relink delivery, project
+license and security/release gates remain open.
