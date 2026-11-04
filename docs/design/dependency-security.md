@@ -602,3 +602,27 @@ sources or replace exploit regression tests. No ignores or VEX were added, and
 the raw high-severity scan exit remains unchanged. Recipient Tesseract rebuild,
 other source-built coverage and overall security/release acceptance remain open.
 Evidence: parent plan `tesseract-followup-source-review-20261104/current-evidence.json`.
+
+
+### Recipient-source Tesseract rebuild
+
+The retained portable native-source bundle supplied both the unmodified 5.5.4
+source archive and its canonical build script, checksum file and SDK lock. Each
+selected outer member and the selected build-control files were hash-verified;
+no developer checkout supplied source to the build. A fresh isolated build in
+the retained locked SDK reproduced the current executable SHA256 `5cc98558…`
+and shared library `32fbf741…` byte-for-byte, with both symlink targets matching.
+All 174 SDK package identities matched the lock. The canonical two selected
+upstream tests (bitvector and indexmapbidi) passed; the container exited zero
+without OOM. Raw build mode 0700 and assembler deployment mode 0555 remain
+separate checks.
+
+This binds the reviewed source fixes to the current binary bytes. It closes
+the missing recipient-source Tesseract rebuild proof, but the two upstream tests
+are not exploit regressions for these eight CVEs. The SDK was retained rather
+than reconstructed anew, other native components are outside this rebuild,
+and source-delivery/license/security/release approval remains incomplete.
+Evidence: parent plan `native-recipient-tesseract-rebuild-20261104/current-evidence.json`.
+The build used two CPUs, 3GiB RAM, no swap, a 1GiB private scratch volume, no
+host mounts/network, read-only root and UID/GID 10001. Owned container, input
+image tag and staging contexts were removed; the locked SDK was retained.
