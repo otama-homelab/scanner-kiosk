@@ -118,6 +118,10 @@ jobs:
           GOBIN: ${{ runner.temp }}/security-tools
         run: go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
       - name: Check reachable Go vulnerabilities with embedded frontend
+        env:
+          CGO_ENABLED: '0'
+          GOOS: linux
+          GOARCH: amd64
         run: '"$RUNNER_TEMP/security-tools/govulncheck" -tags webui ./...'
       - name: Require unchanged dependency locks
         run: git diff --exit-code -- go.mod go.sum web/package.json web/package-lock.json

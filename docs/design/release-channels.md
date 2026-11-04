@@ -55,20 +55,25 @@ The source build job also runs `npm audit --audit-level=high` against the locked
 frontend build dependencies and the pinned `govulncheck` v1.9.0 against `./...`
 with the `webui` tag after generating embedded assets. Both are required steps:
 advisory-service failures and findings at their respective thresholds fail the
-job. Go source scanning uses the tool's default symbol-level analysis, rather
+job. Go source scanning uses Linux/amd64 with CGO disabled, matching the shipped API,
+and the tool's default symbol-level analysis, rather
 than treating a binary scan's JSON exit status as a clean result. These live
 source/build checks do not cover native C libraries or the distroless OS, prove
 license compliance, or authorize publication. Local snapshot-based diagnostics
-remain separate evidence; hosted execution has not yet been observed.
+remain separate evidence. Initial hosted run
+[41780461741](https://github.com/otama-homelab/scanner-kiosk/actions/runs/41780461741)
+passed all four jobs for commit `99990c12…`; this does not publish artifacts.
 
-The GitHub remote, hosted runs, branch/tag protections, complete reproducible
-native build/source offer, SBOM/security/license acceptance and publishing jobs
-are still pending. There is deliberately no successful-looking empty publishing
-job or API-only binary advertised as the plug-and-play preview. Native payload
+The private GitHub remote and initial hosted source checks are established.
+Branch/tag protections, final native distribution/source offer,
+SBOM/security/license acceptance and publishing jobs remain pending. GitHub Free
+returned HTTP403 for branch protection on this private repository; changing
+visibility or paying for another plan requires the operator's choice. There is
+deliberately no successful-looking empty publishing job or API-only binary advertised as the plug-and-play preview. Native payload
 and release gates must be implemented for the exact input before wiring registry
 or GitHub Release writes. Until then, tag pushes verify a release input; they do
-not produce a published release. No release tag, remote push, registry upload,
-production deployment or external workflow execution was performed here.
+not produce a published release. That source check created no release tag,
+registry upload or production deployment.
 
 
 ## Required source status
@@ -84,4 +89,5 @@ Two local contract tests cover supported events and refusal of non-success
 required results. Pinned actionlint validated the workflow; shellcheck/pyflakes
 were unavailable in that fixture. This adds no publishing permissions or jobs,
 and does not approve native artifacts, licensing, release or deployment.
-Hosted checks and actual branch protection remain unverified.
+The initial hosted aggregate succeeded. Actual branch protection remains
+unconfigured under the private-repository plan restriction.
