@@ -521,3 +521,28 @@ image scanning cannot see those compressed payloads. Whole-product security,
 Go reachability, source-built coverage and release gates remain open. Raw
 receipts are in the parent plan's `native-grype-cpu-aligned-20261104`,
 `current-image-inventory-20261104` and `current-image-grype-20261104` directories.
+
+
+## Current source symbol analysis, 2026-11-04
+
+Official govulncheck 1.9.0 completed source `-scan=symbol -tags=webui ./...`
+with Linux/amd64, CGO disabled and Go 1.27.3. All 352 selected Go/SQL/module
+files matched the current candidate's recorded build inputs, and all five
+embedded assets were hash-verified before analysis. The retained official
+snapshot's 237 files (two indexes and 235 advisories) were freshly rehashed
+against acquisition receipts; this run fetched no new database data.
+
+The application retained the GO-2026-5932 module warning but had zero affected
+package or symbol findings. A separate source fixture calling OpenPGP
+`armor.Decode` produced three symbol findings, including an explicit
+`main → armor.Decode` trace. Module, package and symbol findings were classified
+separately; JSON exit zero alone was not used as evidence of absence.
+
+This closes the missing local source symbol analysis for that configuration.
+It does not cover the bundled-tag launcher or CGO/native helper, issue a VEX,
+or establish whole-product security acceptance. Existing binary wildcard
+warnings and earlier failures remain retained. The raw source/control results,
+input hashes, database provenance and sandbox limits are in the parent plan's
+`current-go-symbols-20261104/current-evidence.json`. The run used no external
+network, read-only inputs/toolchain/modules, UID/GID 10001, two CPUs, 4GiB RAM,
+no swap and bounded private scratch; its owned staging directory was removed.
