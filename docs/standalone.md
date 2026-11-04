@@ -134,3 +134,20 @@ UID10001/read-only/768MiB/fresh-cache versionを検証した範囲に限る。
 最新dbef72cf…/distroless e2dfe991…は、元runtime layersを保持しCGO0/stdlib Go fixtureだけを追加したcontainerで、scanimage/parameters各13件・計26件の直接TLS peer/trust確認に成功。明示CAのIPv4/DNS+SNI/IPv6/scopedIPv6はGET到達、default bundleのprivateCA・不明CA・名前違い・期限切れは拒否、missing/emptyCAはHTTPS拒否かつHTTP継続。接続した22件は実cached backendのmapsをhandshake/GET時点で観測、14GET/非GET0・実scanなし。768MiB/swapなし/2CPU/128PID/RO/network none/UID10001/512MiB tmpfs、exit0/OOMなし。image/binaryは同一bytes、追加native libs/Python/host mountなし。redirect/downgrade方針、実証明書配備、製品job経由・全security/license/release/physical fence受入は未完。古い段落のcontainer TLS未確認は当時のscopeで、この追加検査とは分離する。
 
 最新候補はonefile b85a7dae…/56,258,720bytes、distroless fef2bd85…/58,633,293bytes。backend480e1bbd…のHTTPS downgrade guardと新patch/build情報を同梱し、191nativeの変更はlibrary/patch/build.jsonの3件だけ。Go app/frontend9b26a1c0…とAPK105件は不変、source/lockの対応6tests成功。ENTRYPOINT/空cache/version確認に加え、元runtime layer＋CGO0 Go fixtureだけのcontainerでscanimage/parameters各20件（direct13＋redirect7）、計40件成功。証明書/名前/期限/default trust拒否・HTTPS→HTTP/upgrade後downgrade拒否を実cached backend mapsとGET countsで確認、relative/trusted HTTPS/HTTP互換性維持。768MiB/swapなし/2CPU/128PID/512MiB tmpfs、exit0/OOMなし・非GET0/実scanなし。旧dbefのdirect26証明はdowngrade修正を含まない履歴として保持。新候補の製品job/OCR/独立PDF/実Compose・実機/全security/license/source/release受入は未完。
+
+## キーボード導線同梱候補（2026-11-04）
+
+最新の未公開onefileは `e5363774…`（56,316,064 bytes）、distrolessは
+`sha256:636cd516…`。日英の本文スキップリンクを現フロントから再buildして
+同梱した。native232件は固定manifestと完全一致し、Go module verifyも成功した。
+実onefileの5asset hash一致、capture回帰12項目、日英・幅320/1440・
+session/home/historyのキーボード12case、API正常停止を確認済み。
+ブラウザーの検証用TLS証明書だけを許容し、製品のTLS検証設定は変更しない。
+
+root Dockerfileから同じonefileのdistroless imageをbuildし、既存base layers、
+ENTRYPOINT/CMD/nonroot設定、image内binary SHAを照合した。外部networkなし・
+read-only・768MiB/swapなし・空cacheから既定ENTRYPOINTの`version`が成功し、
+OOMなし。Go/nativeの実装変更はないが、新candidateでのOCR/全API-worker回帰、
+実phone/screenreader、時計/障害試験、fresh security/license/source提供・release
+受入は未完。表示は開発版の`0.0.0-dev`/`unreleased`で、previewの公開ではない。
+親計画の `keyboard-onefile-20261104/current-evidence.json` を参照。

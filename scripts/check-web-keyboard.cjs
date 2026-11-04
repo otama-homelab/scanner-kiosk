@@ -5,7 +5,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
  const checks=[],errors=[];let mutations=0;
  try{
   for(const locale of ['en','ja'])for(const width of [320,1440])for(const view of ['session','home','history']){
-   const context=await browser.newContext({viewport:{width,height:900}});
+   const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width,height:900}});
    await context.addInitScript(value=>localStorage.setItem('scanner.locale',value),locale);
    const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
    await page.route('**/api/**',route=>{
