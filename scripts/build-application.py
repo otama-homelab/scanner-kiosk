@@ -263,11 +263,13 @@ def build(revision,ref,sha):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase',choices=['acquire','build'])
+    parser.add_argument('phase',choices=['acquire','build','inventory'])
     parser.add_argument('--revision',required=True)
     parser.add_argument('--ref');parser.add_argument('--sha')
     args=parser.parse_args()
     if not re.fullmatch('[0-9a-f]{40}',args.revision) or bool(args.ref)!=bool(args.sha):
         parser.error('revision and optional ref/SHA pair required')
     if args.phase=='acquire':acquire(args.revision,args.ref)
-    else:build(args.revision,args.ref,args.sha)
+    elif args.phase=='build':build(args.revision,args.ref,args.sha)
+    else:run(['python3','scripts/saved-image-sbom.py','--archive','/image.tar','--metadata','/image.json',
+              '--syft','/work/bin/syft','--output','/work/image-sbom'],True)

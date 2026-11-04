@@ -90,6 +90,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_native_sbom.py -v
       - name: Onefile inventory input binding and output safety
         run: python3 -m unittest discover -s scripts -p test_onefile_sbom.py -v
+      - name: Saved image configuration and layer identity contract
+        run: python3 -m unittest discover -s scripts -p test_saved_image_sbom.py -v
       - name: Native bootstrap failure and network separation contract
         run: python3 -m unittest discover -s scripts -p test_native_bootstrap.py -v
       - name: Native runtime APK input lock contract
@@ -213,6 +215,7 @@ jobs:
             ${{ runner.temp }}/candidate/packaged/
             ${{ runner.temp }}/candidate/native-sbom/
             ${{ runner.temp }}/candidate/onefile-sbom/
+            ${{ runner.temp }}/candidate/image-sbom/
             ${{ runner.temp }}/candidate/image.tar
             ${{ runner.temp }}/candidate/image.json
             ${{ runner.temp }}/candidate/image-binary.json

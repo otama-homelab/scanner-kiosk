@@ -33,7 +33,7 @@ cleanup() {
     status=$?
     trap - EXIT
     set +e
-    timeout 60 docker rm --force "$acquirer" "$builder" "$smoke" "$keeper" >/dev/null 2>&1
+    timeout 60 docker rm --force "$acquirer" "$builder" "$smoke" "$keeper" "$prefix-inventory" >/dev/null 2>&1
     timeout 60 docker volume rm "$volume" >> "$out/cleanup.log" 2>&1
     clean_status=$?
     timeout 60 docker image rm --force "$tools" >> "$out/cleanup.log" 2>&1
@@ -74,6 +74,9 @@ stage() {
     phase=$1; network=$2; memory=$3; seconds=$4
     inputs=()
     if [ "$phase" = build ]; then inputs+=(--mount "type=bind,src=$out/native-input.tar,dst=/native.tar,readonly"); fi
+    if [ "$phase" = inventory ]; then
+        inputs+=(--mount "type=bind,src=$out/image.tar,dst=/image.tar,readonly" --mount "type=bind,src=$out/image.json,dst=/image.json,readonly")
+    fi
     args=(--revision "$revision")
     if [ -n "$ref" ]; then args+=(--ref "$ref" --sha "$sha"); fi
     timeout "$seconds" docker run --rm --name "$prefix-$phase" --network "$network" --read-only --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges --memory "$memory" --memory-swap "$memory" --cpus 2 --pids-limit 128 --ulimit nofile=1024:1024 --ulimit fsize=536870912:536870912 \
@@ -135,6 +138,9 @@ out=pathlib.Path(sys.argv[1]);assert json.loads((out/'image-version.json').read_
 s=json.loads((out/'image-container.json').read_text())[0]['State'];assert not s['Running'] and not s['OOMKilled'] and s['ExitCode']==0
 PY2
 timeout 120 docker image save --output "$out/image.tar" "$image"
+chmod 444 "$out/image.tar" "$out/image.json"
+stage inventory none 2g 300
+timeout 90 docker cp "$keeper:/work/image-sbom" "$out/image-sbom"
 python3 - "$out" <<'PY2'
 import json,pathlib,sys,hashlib,stat
 out=pathlib.Path(sys.argv[1]);checks={}
