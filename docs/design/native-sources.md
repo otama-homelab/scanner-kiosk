@@ -306,3 +306,18 @@ the generic assembler retains that argument for older caller-supplied manifests.
 Source CI requires every notice to be mapped into the checkout and verifies
 its bytes. This changes input acquisition only, not the current binary or
 complete license/source/publication acceptance.
+
+## Fetching pinned binary build inputs
+
+`fetch-native-apks.py` obtains the exact APK filenames recorded by the runtime or
+supported SDK lock from fixed filename URLs. It snapshots the pinned
+public keys, uses only the fixed Alpine 3.24 main/community repositories with
+proxies and redirects disabled, checks downloaded file type/size/SHA-256 and verifies signatures offline
+before publishing a new local archive directory. Failed acquisition or
+verification produces no output directory and never installs package scripts.
+Run acquisition without credentials in a bounded sandbox with networking, then
+run preparation, source compilation and assembly with networking disabled.
+See the [input command](../../native/README.md#pinned-runtime-apk-inputs).
+
+This command prepares binary build inputs, not corresponding source, an SDK
+redistribution approval, the complete native build workflow or a release.

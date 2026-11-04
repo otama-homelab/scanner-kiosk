@@ -235,6 +235,28 @@ runtime provenance binding. Construct a download URL from a recorded repository,
 `repository_architecture` and `filename`; never resolve an unversioned latest
 package. Retain the verified archive cache for offline builds.
 
+Acquire the recorded package versions in a bounded, credential-free build
+sandbox containing Python 3 and the trusted Alpine `apk` tool:
+
+```sh
+python3 scripts/fetch-native-apks.py \
+  --lock native/runtime-apks.lock.json \
+  --keys /private/pinned-public-keys --apk /sbin/apk \
+  --output /private/new-locked-apk-cache
+```
+
+The command supports the existing runtime, SANE SDK and Tesseract SDK lock
+formats for Linux amd64/Alpine 3.24. It validates fixed repository URLs, package
+identities, sizes, hashes and the exact trusted-key set before fetching each
+exact filename URL with Python’s standard HTTP client.
+Proxies and redirects are disabled. It checks complete private archive snapshots
+and runs `apk verify` offline before creating a new directory of read-only archives.
+No package is installed or target code extracted. Existing output is refused;
+acquisition or verification failure creates no output directory. Save its JSON receipt outside the archive
+folder so the SDK's exact file-count checks stay meaningful. Missing locked
+archives fail; retain verified archive caches for later offline builds. Only
+acquisition needs networking.
+
 Before reading package content, verify every archive's checksum and official
 signature with the pinned trusted keys. `scripts/prepare-native-apks.py` now owns
 this step and selects only the manifest's APK-origin members:
