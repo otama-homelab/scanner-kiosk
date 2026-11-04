@@ -505,3 +505,33 @@ signatures and hashes must pass before the network-free runtime preparation.
 The shared volume is limited to 512MiB; each stage has a 300-second bound and
 the keeper has a 1260-second lifetime. This verifies SDK acquisition, not SDK
 installation, native recompilation or a complete publishing pipeline.
+
+## Cold native build orchestration
+
+From a clean, committed checkout, run:
+
+```sh
+python3 scripts/build-native.py --output-dir /path/to/new-native-output
+```
+
+This controller pulls the digest-pinned official bootstrap/SDK bases, snapshots
+Git source without home configuration or credentials, acquires all three APK
+locks and the exact upstream Tesseract archive, reconstructs both SDKs offline,
+builds Tesseract and the first-party helper, and invokes the existing verifier
+and assembler. The selected airscan backend comes directly from its official
+APK. No custom airscan source, patch, fork repository or running service is used.
+
+Source and input volumes remain mounted by a bounded keeper across stages.
+Compilers run with network disabled, read-only inputs/root, UID10001, dropped
+capabilities and explicit empty environments. Tesseract has 4GiB RAM/swap0 and
+3GiB scratch; the helper has 1GiB RAM/swap0 and 512MiB scratch. The controller
+allows at most 2700 seconds before cleanup; stage timeouts can be shorter.
+Only task-owned containers, temporary SDK tags and volumes are removed.
+
+`native.tar` is the assembled payload input for the standalone build. The
+helper/Tesseract tar files and source snapshot are diagnostic build inputs,
+not automatically release assets. `result.json` and per-stage logs retain the
+commands, source/archive hashes and failures. A failed stage or failed cleanup
+leaves no final `native.tar`; an existing output directory is never overwritten.
+This step does not yet build the frontend/API, freeze source/security materials,
+publish a release, authorize physical acquisition or complete acceptance.
