@@ -174,3 +174,12 @@ corresponding-source delivery. Vulnerability gates remain failed. This candidate
 is unreleased and does not replace the Debian image candidate.
 
 The [native source input workflow](native-sources.md) adds bounded, non-executing collection of the exact aports recipe directories and adjacent patches. Recipe content completeness is distinct from upstream source archive completeness or a recipient-facing source offer; all existing license and publication gates remain.
+
+
+The known libxml2dict.c/list.c exceptions are now preserved as three exact
+comment excerpts (including dict.c's additional main-license statement). Each
+has an original source member, complete source-file digest and byte/line range.
+The shipped library exposes xmlDictCreate and xmlListCreate. This supports these
+specific modules' relevance without proving a complete binary/source rebuild or
+all other per-file obligations. Other libxml2/musl/p11-kit/libffi conditions and
+the full release license/source gate remain open.

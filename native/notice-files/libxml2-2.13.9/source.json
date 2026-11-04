@@ -5,11 +5,56 @@
       "file": "Copyright",
       "sha256": "c99aae1afe013e50b8b3701e089222b351258043c3025b64053a233fd25b4be7",
       "source_member": "libxml2-2.13.9/Copyright"
+    },
+    {
+      "file": "dict.c.additional-license.txt",
+      "scope": "Exact original C comment excerpt, not the complete source file",
+      "sha256": "8d10f68393d4beba204211ade832f1d92fa5b1226f78481dec7e7ec03b89630e",
+      "source_bytes": [
+        10234,
+        10482
+      ],
+      "source_file_sha256": "516f59a03a18bc92234e3e06515d598e59a56450c7c587e64be48c5cd63db8e1",
+      "source_lines": [
+        457,
+        462
+      ],
+      "source_member": "libxml2-2.13.9/dict.c"
+    },
+    {
+      "file": "dict.c.notice.txt",
+      "scope": "Exact original C comment excerpt, not the complete source file",
+      "sha256": "a3b2725bfa5d14eaade702d2023c97a6e744a3a8e5f0e8eb0da29d77a11f96c8",
+      "source_bytes": [
+        0,
+        704
+      ],
+      "source_file_sha256": "516f59a03a18bc92234e3e06515d598e59a56450c7c587e64be48c5cd63db8e1",
+      "source_lines": [
+        1,
+        17
+      ],
+      "source_member": "libxml2-2.13.9/dict.c"
+    },
+    {
+      "file": "list.c.notice.txt",
+      "scope": "Exact original C comment excerpt, not the complete source file",
+      "sha256": "b3b090ffa88200a97a60feda84ebeec4894e139edc4fc9749eb1efeb2686c786",
+      "source_bytes": [
+        0,
+        659
+      ],
+      "source_file_sha256": "ab4fa4cd8ddda86d0fbc79ea31456bf0038321b8f5a15700d513ac3de6ec4b9b",
+      "source_lines": [
+        1,
+        16
+      ],
+      "source_member": "libxml2-2.13.9/list.c"
     }
   ],
   "publication_approved": false,
   "review_remaining": [
-    "Root Copyright explicitly excludes dict.c and list.c copyright notices; per-file review remains open."
+    "The known dict.c/list.c exception texts and dict.c additional-license comment are now retained. Other per-file notices, patches/build transformations and full source delivery remain unreviewed."
   ],
   "runtime_files": [
     "usr/lib/libxml2.so.2",

@@ -785,10 +785,25 @@
       "sha256": "c99aae1afe013e50b8b3701e089222b351258043c3025b64053a233fd25b4be7",
       "size": 1273
     },
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/dict.c.additional-license.txt": {
+      "mode": 292,
+      "sha256": "8d10f68393d4beba204211ade832f1d92fa5b1226f78481dec7e7ec03b89630e",
+      "size": 248
+    },
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/dict.c.notice.txt": {
+      "mode": 292,
+      "sha256": "a3b2725bfa5d14eaade702d2023c97a6e744a3a8e5f0e8eb0da29d77a11f96c8",
+      "size": 704
+    },
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/list.c.notice.txt": {
+      "mode": 292,
+      "sha256": "b3b090ffa88200a97a60feda84ebeec4894e139edc4fc9749eb1efeb2686c786",
+      "size": 659
+    },
     "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/source.json": {
       "mode": 292,
-      "sha256": "ab496ea99b26dcde689afa46fe0865d367b75d22ace3c8468f7d23a3631057d1",
-      "size": 954
+      "sha256": "95112e43ee94e634b9787475b533404a0dd1c1320cdeb24c5d2e6d9321a8ae62",
+      "size": 2468
     },
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/COPYRIGHT": {
       "mode": 292,

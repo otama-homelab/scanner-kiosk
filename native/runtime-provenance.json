@@ -727,6 +727,9 @@
     "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/PATENTS",
     "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/source.json",
     "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/Copyright",
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/dict.c.additional-license.txt",
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/dict.c.notice.txt",
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/list.c.notice.txt",
     "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/source.json",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/COPYRIGHT",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/source.json",
@@ -771,7 +774,7 @@
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/replacement.json",
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json"
   ],
-  "notice_scope": "Preserved notices and historical observation receipts, plus current fork patch/build metadata. Past images/package inventories/run-specific fields remain historical evidence, not current installed-package claims. Do not drop license texts. Six source-managed Leptonica/libjpeg-turbo notice, attribution and source-association files are selected from native/notice-files; they are not historical observations or complete license/source clearance. A further32 source-managed notice/association/attribution files preserve12 transitive upstream packages; per-file/build/source review remains open.",
+  "notice_scope": "Preserved notices and historical observation receipts, plus current fork patch/build metadata. Past images/package inventories/run-specific fields remain historical evidence, not current installed-package claims. Do not drop license texts. Six source-managed Leptonica/libjpeg-turbo notice, attribution and source-association files are selected from native/notice-files; they are not historical observations or complete license/source clearance. A further32 source-managed notice/association/attribution files preserve12 transitive upstream packages; per-file/build/source review remains open. Three exact libxml2dict/list comment excerpts supplement the root Copyright; other per-file coverage remains open.",
   "notice_sources": {
     "usr/share/scanner-kiosk/notices/native/brotli-1.2.1/LICENSE": "brotli-1.2.1/LICENSE",
     "usr/share/scanner-kiosk/notices/native/brotli-1.2.1/source.json": "brotli-1.2.1/source.json",
@@ -792,6 +795,9 @@
     "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/PATENTS": "libwebp-1.6.0/PATENTS",
     "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/source.json": "libwebp-1.6.0/source.json",
     "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/Copyright": "libxml2-2.13.9/Copyright",
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/dict.c.additional-license.txt": "libxml2-2.13.9/dict.c.additional-license.txt",
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/dict.c.notice.txt": "libxml2-2.13.9/dict.c.notice.txt",
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/list.c.notice.txt": "libxml2-2.13.9/list.c.notice.txt",
     "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/source.json": "libxml2-2.13.9/source.json",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/COPYRIGHT": "musl-1.2.6/COPYRIGHT",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/source.json": "musl-1.2.6/source.json",
@@ -813,7 +819,7 @@
     "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/source.json": "zstd-1.5.7/source.json"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "b1f12de086cb8eb0e4554e1d1ad7461b9f6732647e2d5ac56cbc7b30175a7fec",
+  "runtime_manifest_sha256": "5993f9cace57851a298accff2ea777377f7578ad85b156df36f66b23b0bdf318",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {

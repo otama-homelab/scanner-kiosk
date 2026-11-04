@@ -82,6 +82,19 @@ class NativeRuntimeLockTests(unittest.TestCase):
         self.assertEqual((root/'tiff-4.7.2/ATTRIBUTION.txt').read_text(),
                          'This product includes software developed by the University of California, Berkeley.\n')
 
+    def test_libxml_exception_excerpts_keep_source_ranges_and_hashes(self):
+        root = ROOT/'native/notice-files/libxml2-2.13.9'
+        record = json.loads((root/'source.json').read_text())
+        excerpts = [item for item in record['notice_files'] if 'source_bytes' in item]
+        self.assertEqual({item['file'] for item in excerpts},
+                         {'dict.c.notice.txt', 'dict.c.additional-license.txt', 'list.c.notice.txt'})
+        for item in excerpts:
+            self.assertRegex(item['source_file_sha256'], r'^[0-9a-f]{64}$')
+            start, end = item['source_bytes']
+            self.assertGreaterEqual(start, 0)
+            self.assertEqual(end-start, len((root/item['file']).read_bytes()))
+            self.assertLessEqual(item['source_lines'][0], item['source_lines'][1])
+
     def test_firstparty_source_or_sdk_changes_require_native_rebuild(self):
         for component in self.provenance['firstparty_components']:
             self.assertEqual(hashlib.sha256((ROOT / 'native' / component['sdk_lock']).read_bytes()).hexdigest(), component['sdk_lock_sha256'])

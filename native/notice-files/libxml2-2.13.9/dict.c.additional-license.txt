@@ -1,0 +1,6 @@
+/*****************************************************************
+ *
+ * The code below was rewritten and is additionally licensed under
+ * the main license in file 'Copyright'.
+ *
+ *****************************************************************/
