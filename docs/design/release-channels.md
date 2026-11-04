@@ -51,6 +51,16 @@ being silently treated as previews. The ref checker does not publish anything.
 
 [Native source inputs](native-sources.md) distinguishes verified recipe/patch collection from upstream archives and source delivery. Both build SDKs now have complete APK locks and offline replay evidence; Tesseract and the SANE helper reproduce their current native file bytes. Stable native closure/provenance packaging and source delivery remain required. Source CI runs the collector’s offline safety tests only.
 
+The source build job also runs `npm audit --audit-level=high` against the locked
+frontend build dependencies and the pinned `govulncheck` v1.9.0 against `./...`
+with the `webui` tag after generating embedded assets. Both are required steps:
+advisory-service failures and findings at their respective thresholds fail the
+job. Go source scanning uses the tool's default symbol-level analysis, rather
+than treating a binary scan's JSON exit status as a clean result. These live
+source/build checks do not cover native C libraries or the distroless OS, prove
+license compliance, or authorize publication. Local snapshot-based diagnostics
+remain separate evidence; hosted execution has not yet been observed.
+
 The GitHub remote, hosted runs, branch/tag protections, complete reproducible
 native build/source offer, SBOM/security/license acceptance and publishing jobs
 are still pending. There is deliberately no successful-looking empty publishing
