@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class NativePipelineTests(unittest.TestCase):
-    def invoke(self, failure='', empty=False):
+    def invoke(self, failure='', empty=False, retain_sources=False):
         with tempfile.TemporaryDirectory() as temporary:
             out = Path(temporary)/'candidate'
             calls = []
@@ -46,12 +46,31 @@ class NativePipelineTests(unittest.TestCase):
                 return subprocess.CompletedProcess(args, 0, value)
             with patch.object(module.subprocess, 'run', side_effect=command):
                 try:
-                    module.build(ROOT, out)
+                    module.build(ROOT, out, retain_sources=retain_sources)
                     error = None
                 except Exception as exc:
                     error = exc
             receipt = json.loads((out/'result.json').read_text())
             return error, calls, receipt, (out/'native.tar').exists()
+
+    def test_retained_sources_are_acquired_separately_and_packed_offline(self):
+        error, calls, receipt, artifact = self.invoke(retain_sources=True)
+        self.assertIsNone(error)
+        self.assertTrue(artifact and receipt['passed'])
+        runs = [c for c in calls if c[:2] == ['docker','run']]
+        acquire = next(c for c in runs if 'fetch-source-inputs.py' in ' '.join(c))
+        pack = next(c for c in runs if 'pack-source-inputs.py' in ' '.join(c))
+        self.assertEqual(acquire[acquire.index('--network')+1], 'bridge')
+        self.assertEqual(pack[pack.index('--network')+1], 'none')
+        self.assertIn('dst=/sources,readonly', ' '.join(pack))
+        self.assertIn('external_sources_sha256', receipt)
+        self.assertIn('tesseract_source_sha256', receipt)
+        self.assertEqual(len([c for c in calls if c[:3] == ['docker','volume','rm']]), 3)
+
+    def test_source_acquisition_failure_prevents_candidate_success(self):
+        error, _, receipt, artifact = self.invoke('fetch-source-inputs.py', retain_sources=True)
+        self.assertIsNotNone(error)
+        self.assertFalse(receipt['passed'] or artifact)
 
     def test_fetch_failure_stops_before_build_and_cleans(self):
         error, calls, receipt, artifact = self.invoke('fetch-native-apks.py')

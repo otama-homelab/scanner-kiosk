@@ -191,7 +191,7 @@ jobs:
         with:
           node-version: '24.22.2'
       - name: Build locked native payload from cold official inputs
-        run: python3 scripts/build-native.py --output-dir "$RUNNER_TEMP/native"
+        run: python3 scripts/build-native.py --output-dir "$RUNNER_TEMP/native" --retain-sources
       - name: Build frontend, API, onefile and distroless candidate
         run: |
           if [ "$GITHUB_EVENT_NAME" = push ]; then
@@ -221,6 +221,17 @@ jobs:
             ${{ runner.temp }}/candidate/launcher-buildinfo.json
             ${{ runner.temp }}/candidate/result.json
             ${{ runner.temp }}/candidate/candidate-checksums.json
+      - name: Retain native corresponding-source inputs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-sources-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/native/external-sources.tar
+            ${{ runner.temp }}/native/tesseract-source.tar.gz
+            ${{ runner.temp }}/native/source.tar
+            ${{ runner.temp }}/native/result.json
       - name: Retain bounded failure diagnostics
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

@@ -39,7 +39,7 @@ with tarfile.open(fileobj=sys.stdout.buffer,mode='w|') as archive:
 '''
 
 
-def build(root, output):
+def build(root, output, retain_sources=False):
     root, output = root.resolve(), output.absolute()
     if output.exists() or output.is_symlink():
         raise FileExistsError('native output directory exists')
@@ -81,13 +81,13 @@ def build(root, output):
                     '--opt','device=tmpfs','--opt',f'o=size={size},uid=10001,gid=10001,mode=0700',name])
         return name
 
-    def run(label, image, command, mounts, network='none', memory='512m', scratch='256m'):
+    def run(label, image, command, mounts, network='none', memory='512m', scratch='256m', file_limit=536870912):
         name = prefix+'-'+label
         containers.append(name)
         args = ['docker','run','--rm','--name',name,'--network',network,'--read-only',
                 '--user','10001:10001','--cap-drop','ALL','--security-opt','no-new-privileges',
                 '--memory',memory,'--memory-swap',memory,'--cpus','2','--pids-limit','128',
-                '--ulimit','nofile=256:256','--ulimit','fsize=536870912:536870912',
+                '--ulimit','nofile=256:256','--ulimit',f'fsize={file_limit}:{file_limit}',
                 '--tmpfs',f'/work:rw,exec,nosuid,nodev,size={scratch},mode=1777','--workdir','/work']
         for mount in mounts:
             args += ['--mount',mount]
@@ -146,6 +146,30 @@ def build(root, output):
         call('source-controls',run('source-controls',bootstrap,['python3','-c',
              "import shutil; shutil.copyfile('/snapshot/source/native/tesseract-source.SHA256SUMS','/inputs/tesseract-source.SHA256SUMS')"],
              [source_mount,f'type=volume,src={inputs},dst=/inputs']))
+        if retain_sources:
+            sources = volume('external-source-volume','2g')
+            source_inputs = f'type=volume,src={sources},dst=/sources'
+            call('fetch-external-sources',run('fetch-external-sources',bootstrap,
+                 ['python3','/snapshot/source/scripts/fetch-source-inputs.py',
+                  '--lock','/snapshot/source/native/source-inputs.lock.json','--output','/sources/inputs'],
+                 [source_mount,source_inputs],network='bridge',memory='2g'),timeout=900)
+            call('pack-external-sources',run('pack-external-sources',bootstrap,
+                 ['/bin/sh','-c','python3 /snapshot/source/scripts/pack-source-inputs.py '
+                  '--lock /snapshot/source/native/source-inputs.lock.json '
+                  '--inputs /sources/inputs --output /work/external-sources.tar '
+                  '&& cat /work/external-sources.tar'],
+                 [source_mount,source_inputs+',readonly'],memory='3g',scratch='2g',
+                 file_limit=2 << 30),timeout=300,binary=output/'external-sources.tar')
+            call('export-tesseract-source',run('export-tesseract-source',bootstrap,
+                 ['/bin/cat','/inputs/source.tar.gz'],[input_mount]),
+                 binary=output/'tesseract-source.tar.gz')
+            for filename, key, limit in [('external-sources.tar','external_sources_sha256',2 << 30),
+                                         ('tesseract-source.tar.gz','tesseract_source_sha256',128 << 20)]:
+                path = output/filename
+                if not 1024 <= path.stat().st_size <= limit:
+                    raise ValueError('missing or oversized retained source export')
+                with path.open('rb') as stream:
+                    result[key] = hashlib.file_digest(stream,'sha256').hexdigest()
         with tempfile.TemporaryDirectory(prefix='native-sdk-',dir=output) as temporary:
             context_root = Path(temporary)
             sdks = {}
@@ -205,5 +229,6 @@ def build(root, output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output-dir',type=Path,required=True)
+    parser.add_argument('--retain-sources',action='store_true',help='Acquire and export locked external source data for distribution')
     args = parser.parse_args()
-    print(json.dumps(build(ROOT,args.output_dir)))
+    print(json.dumps(build(ROOT,args.output_dir,retain_sources=args.retain_sources)))
