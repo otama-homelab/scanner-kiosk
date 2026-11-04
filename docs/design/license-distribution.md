@@ -1,5 +1,10 @@
 # Distribution boundaries and open license work
 
+Current navigation: [complete selected notice index](../../THIRD-PARTY-NOTICES.md)
+and [source delivery method](source-distribution.md). The tables and dated
+observations below preserve historical findings; they are not a current
+Debian runtime inventory or a new first-party license decision.
+
 Project-owned code uses **Apache-2.0**, selected on 2026-11-04 under
 [ADR 0005](../adr/0005-project-license.md). Third-party terms remain separate.
 This document records observed distribution boundaries; it does not approve a
@@ -14,6 +19,92 @@ the project license as undecided predate this decision.
 | Node/Astro/npm build tooling | Temporary prerender chunks contain Astro and other npm modules; they are absent from the five final static assets. Docker copies `web/dist` into the Go build, without copying Node or `node_modules` into runtime. | Keep the build-stage inventory and unresolved archive notices. Review any source, build-stage image or dependency bundle actually distributed; do not treat every lockfile package as browser-delivered code. |
 | Debian native tools, libraries and OCR data | Runtime installs SANE, sane-airscan, Tesseract, English/Japanese data and their dependencies; distro notices are retained and checked. | Review exact package copyright files, exceptions, corresponding-source and replacement/relinking requirements. Supplementary repository notices cannot substitute for bundled native dependencies. |
 | Optional OCR font | Supplied separately through administrator configuration; no font is included in the current candidate image. | Record the actual font's license and redistribution/embedding conditions before distributing it or approving OCR output behavior. |
+
+## Image and compression component dispositions (2026-11-04)
+
+The following decisions use the retained exact notice texts and pinned recipe
+contents, not just Alpine license strings. Recipe review covered 20 files for
+10 current origins plus the compressed APNG patch (SHA-512 matched to APKBUILD).
+No recipe, patch, or upstream program was executed. This resolves the stated
+recipe-scope questions; it does not attest every upstream source file or grant
+release approval. Exact hashes and full recipe text are retained in workspace
+`distribution-recipe-review-20261104`.
+
+| Current component | Selected obligation / distribution action | Recipe and transformation finding |
+| --- | --- | --- |
+| Brotli 1.2.1 | MIT: preserve copyright, permission and disclaimer in delivered materials; root LICENSE is selected in native manifest. | `optimize-mips.patch` changes MIPS-only unaligned access; `fix-lp64.patch` changes platform macros. Neither adds/removes a copyright or license notice. Test-script shebang rewrite is build/test scope. |
+| GIFLIB 5.2.2 | MIT: preserve COPYING with delivered library. | Two CVE patches affect the unshipped gif2rgb utility; CVE-2026-26740 changes library egif_lib.c bounds checking. Two remaining patches affect documentation builds/install. No notice removal in these diffs. |
+| Leptonica 1.87.0 | Preserve exact LICENSE and its source notices; do not replace the custom text with a guessed SPDX label. | Only declared patch removes pngio_reg from test list. No library source or notice altered by that patch. |
+| libjpeg-turbo 3.1.3 | Retain LICENSE.md, README.ijg, required IJG attribution and applicable BSD/zlib text. The IJG sentence now appears directly in root THIRD-PARTY-NOTICES. Source redistribution must retain original notices and identify any actual source modifications. | No local patch declared. CMake builds shared/static variants; runtime manifest selects actual libraries, not every produced variant or tool. |
+| libpng 1.6.59 | PNG Reference Library License v2: preserve source copyright and mark altered source. Keep pinned APNG and ARM-NEON patches separate from pristine upstream source with modification records. | APNG 1.6.58 patch adds read/write APIs and changes a 2025 copyright year to 2026, already represented in retained LICENSE. No added licensing text. ARM-NEON patch changes configure/header guards; autoreconf regenerates build controls. Generated/build-only source remains a separate source-archive scope. |
+| WebP 1.6.0 | BSD-3-Clause: retain COPYING and patent grant, preserve disclaimer and avoid endorsement. PATENTS termination conditions are retained without rewriting. | No local patch; recipe enables mux/demux/decoder and disables TIFF. CLI tools are not implied by a library origin mapping. |
+| LibTIFF 4.7.2 | Preserve LICENSE.md and Berkeley attribution for the delivered library; do not infer rights from package name alone. | No local patch. Shared-library source selection differs from separately packaged tools/C++ library. CMake generates build controls. |
+| XZ/liblzma 5.8.4 | Select 0BSD for liblzma as explicitly stated by upstream COPYING; do not assign GPL terms from xz scripts to the delivered library. Retain bundled notices. If shipping the full source archive, retain its distinct Autotools/script terms too. | No local patch. autoreconf and libtool rpath edits affect build controls, not a GPL-only runtime script. |
+| zlib 1.3.2 | Preserve original notice in source; identify altered source and do not misrepresent origin. Include pinned security patch with corresponding source. | CVE-2026-85091 changes gzwrite.c state reset after failure. It neither deletes notice text nor creates a separately licensed file. Source bundle must identify this patched distribution. |
+| Zstandard 1.5.7 | Choose BSD-3-Clause route for the library under the declared BSD/GPL alternative; preserve copyright, disclaimer and non-endorsement condition. Keep COPYING as upstream context instead of deleting it. | No local patch. Meson PGO/LTO/tuning changes build output, not the declared license choice. Library scope excludes CLI/contrib tools unless actually selected. |
+
+The above actions use existing selected notice files; no additional native
+payload is created for this review. Final component/source archive review still
+must account for relevant upstream exceptions and actual recipient access.
+The remaining special-source reviews are the already named libxml2 dict/list,
+musl third-party sections, libffi templates, p11-kit conditional/generated files,
+SANE/fork/library combinations, Go subcomponents, assets and container base.
+Do not turn generic historical “all per-file coverage open” language into a new
+requirement to compile every APK or copy every source comment into runtime.
+
+## Current Go API dependency dispositions (2026-11-04)
+
+Read-only `go version -m` on API SHA-256
+`f3a6c12580f1d88fd476843ba099f9e7a1e58a277a3326aa24c893f47ca6569a`
+reports producer Go 1.27.3, CGO disabled, and the following 21 modules. Every
+name/version/module sum matches the retained Go notice index; all 49 indexed
+notice files (including standard-library notices) match their SHA-256 values.
+The metadata reader was official installed Go 1.25.7 in a network-none,
+read-only container; this was not a build with that older compiler.
+
+| Module | Version | Root terms and required retained materials |
+| --- | --- | --- |
+| `github.com/alexedwards/scs/v2` | `v2.9.0` | MIT; copyright, permission, disclaimer |
+| `github.com/clipperhouse/uax29/v2` | `v2.7.0` | MIT; copyright, permission, disclaimer |
+| `github.com/coreos/go-oidc/v3` | `v3.21.0` | Apache-2.0; license, attribution/NOTICE where supplied, source modification notices |
+| `github.com/dustin/go-humanize` | `v1.1.0` | MIT; copyright, permission, disclaimer |
+| `github.com/go-jose/go-jose/v4` | `v4.1.7` | Apache-2.0; license, attribution/NOTICE where supplied, source modification notices |
+| `github.com/google/uuid` | `v1.6.0` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `github.com/hhrutter/tiff` | `v1.0.7` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `github.com/mattn/go-runewidth` | `v0.0.31` | MIT; copyright, permission, disclaimer |
+| `github.com/pdfcpu/pdfcpu` | `v0.16.4` | Apache-2.0; license, attribution/NOTICE where supplied, source modification notices |
+| `github.com/remyoudompheng/bigfft` | `v0.0.0-20230129092748-24d4a6f8daec` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `github.com/xdg-go/stringprep` | `v1.0.4` | Apache-2.0; license, attribution/NOTICE where supplied, source modification notices |
+| `go.yaml.in/yaml/v3` | `v3.0.5` | MIT for libyaml-derived files plus Apache-2.0; retain full LICENSE and NOTICE |
+| `golang.org/x/crypto` | `v0.58.0` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `golang.org/x/image` | `v0.47.0` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `golang.org/x/oauth2` | `v0.37.0` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `golang.org/x/sys` | `v0.49.0` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `golang.org/x/text` | `v0.43.0` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `modernc.org/libc` | `v1.79.0` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `modernc.org/mathutil` | `v1.7.1` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `modernc.org/memory` | `v1.12.1` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+| `modernc.org/sqlite` | `v1.61.1` | BSD-style; copyright, conditions, disclaimer and applicable non-endorsement |
+
+These root terms do not override copied subcomponents: retain go-jose JSON,
+TIFF/pdfcpu LZW, pdfcpu PKCS7, modernc third-party appendices and their exact
+texts. Go standard library and golang.org/x packages retain BSD-style notices
+and the supplied patent grants. Apache-2.0 §4 requires retaining provided NOTICE
+attributions; the selected go-oidc and YAML NOTICE files are already indexed.
+No local modification to these module source archives is introduced here.
+
+The actual API metadata has neither go-isatty nor go-strftime as a dependency.
+Their absence as standalone notice-index entries is therefore not a missing
+runtime-module notice for this API candidate. The sqlite third-party appendix
+also preserves their MIT texts for source distribution. Its graph-only MPL
+entries, repository sponsor marks and memory logo reference must not be treated
+as newly embedded browser assets or relicensed as this project's logo. If
+shipping full module source archives, retain those original source notices and
+trademark qualifications; do not infer source-archive rights from API linkage.
+
+This confirms the current API's module-to-notice association. The launcher/helper
+and final changed binaries still require their own identity/scope binding; this
+is not a blanket native/container/source distribution approval.
 
 ## Current single-file notice updates
 
