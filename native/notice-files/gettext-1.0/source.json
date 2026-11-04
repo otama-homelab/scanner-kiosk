@@ -1,0 +1,65 @@
+{
+  "component": "gettext-1.0",
+  "source_archive": "upstream/apk/gettext-1.0.tar.xz",
+  "source_archive_sha256": "71132a3fb71e68245b8f2ac4e9e97137d3e5c02f415636eb508ae607bc01add7",
+  "source_recipe_files": [
+    "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/APKBUILD",
+    "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/cwd.patch",
+    "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-meaningless-pthread-rwlock-test.patch",
+    "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-tests-musl.patch",
+    "recipes/a0b12dbf67fb047e79a1b76c6dfe6f2904d0d391/main/gettext/skip-unicode-16-tests.patch"
+  ],
+  "runtime_packages": [
+    "libintl"
+  ],
+  "runtime_files": [
+    "usr/lib/libintl.so.8",
+    "usr/lib/libintl.so.8.4.6"
+  ],
+  "notice_files": [
+    {
+      "file": "AUTHORS",
+      "sha256": "167b04ed012e59c2d2cfc87d420d8c8a8f5c528ef1fd068598b36d57f39db203",
+      "source_member": "gettext-1.0/AUTHORS",
+      "source_file_sha256": "167b04ed012e59c2d2cfc87d420d8c8a8f5c528ef1fd068598b36d57f39db203",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "gettext-runtime/intl/AUTHORS",
+      "sha256": "4bd9e2cd15ab6d68b30965512b63a1d4aae95f4c1dd040657a4d1300252a695f",
+      "source_member": "gettext-1.0/gettext-runtime/intl/AUTHORS",
+      "source_file_sha256": "4bd9e2cd15ab6d68b30965512b63a1d4aae95f4c1dd040657a4d1300252a695f",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING",
+      "sha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b",
+      "source_member": "gettext-1.0/COPYING",
+      "source_file_sha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "gettext-runtime/intl/COPYING.LIB",
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "source_member": "gettext-1.0/gettext-runtime/intl/COPYING.LIB",
+      "source_file_sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "gettext-runtime/intl/dcigettext.c.notice.txt",
+      "sha256": "c301874fcfdb27a49237157c7831e7c645e0a6dc44dcee6592e598e858410e3e",
+      "source_member": "gettext-1.0/gettext-runtime/intl/dcigettext.c",
+      "source_file_sha256": "45207e8ae3149af68a73de267e46ec05a996d6b0ca0fee0ed8f9e56f7e5de6b4",
+      "scope": "leading-source-notice",
+      "source_bytes": [
+        0,
+        1046
+      ]
+    }
+  ],
+  "scope": "Exact upstream major notices and selected source preambles; package context may include licenses for tools/build files absent from runtime",
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ]
+}

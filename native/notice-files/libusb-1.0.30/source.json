@@ -1,0 +1,36 @@
+{
+  "component": "libusb-1.0.30",
+  "source_archive": "upstream/apk/libusb-1.0.30.tar.bz2",
+  "source_archive_sha256": "fea36f34f9156400209595e300840767ab1a385ede1dc7ee893015aea9c6dbaf",
+  "source_recipe_files": [
+    "recipes/01432283613d87d80efdd9f78362a4c58c895439/main/libusb/APKBUILD"
+  ],
+  "runtime_packages": [
+    "libusb"
+  ],
+  "runtime_files": [
+    "usr/lib/libusb-1.0.so.0",
+    "usr/lib/libusb-1.0.so.0.6.0"
+  ],
+  "notice_files": [
+    {
+      "file": "COPYING",
+      "sha256": "5df07007198989c622f5d41de8d703e7bef3d0e79d62e24332ee739a452af62a",
+      "source_member": "libusb-1.0.30/COPYING",
+      "source_file_sha256": "5df07007198989c622f5d41de8d703e7bef3d0e79d62e24332ee739a452af62a",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "AUTHORS",
+      "sha256": "27fd82b016838197d5276ba98d2187ed5a1ad0e171767322f356f0a9f6395941",
+      "source_member": "libusb-1.0.30/AUTHORS",
+      "source_file_sha256": "27fd82b016838197d5276ba98d2187ed5a1ad0e171767322f356f0a9f6395941",
+      "scope": "complete-notice"
+    }
+  ],
+  "scope": "Exact upstream major notices and selected source preambles; package context may include licenses for tools/build files absent from runtime",
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ]
+}

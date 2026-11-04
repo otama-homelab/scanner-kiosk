@@ -1,0 +1,43 @@
+{
+  "component": "libtasn1-4.21.0",
+  "source_archive": "upstream/apk/libtasn1-4.21.0.tar.gz",
+  "source_archive_sha256": "1d8a444a223cc5464240777346e125de51d8e6abf0b8bac742ac84609167dc87",
+  "source_recipe_files": [
+    "recipes/771f180774aa0d9d3783d7f4eb9e3788c615658b/main/libtasn1/APKBUILD"
+  ],
+  "runtime_packages": [
+    "libtasn1"
+  ],
+  "runtime_files": [
+    "usr/lib/libtasn1.so.6",
+    "usr/lib/libtasn1.so.6.6.5"
+  ],
+  "notice_files": [
+    {
+      "file": "AUTHORS",
+      "sha256": "34384e8860c713e31e9339a5d4eb0727a9a93d2a5bb74b36053d9a66920bff9e",
+      "source_member": "libtasn1-4.21.0/AUTHORS",
+      "source_file_sha256": "34384e8860c713e31e9339a5d4eb0727a9a93d2a5bb74b36053d9a66920bff9e",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "source_member": "libtasn1-4.21.0/COPYING",
+      "source_file_sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING.LESSERv2",
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "source_member": "libtasn1-4.21.0/COPYING.LESSERv2",
+      "source_file_sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "scope": "complete-notice"
+    }
+  ],
+  "scope": "Exact upstream major notices and selected source preambles; package context may include licenses for tools/build files absent from runtime",
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "component": "dbus-1.16.2",
+  "source_archive": "upstream/apk/dbus-1.16.2.tar.xz",
+  "source_archive_sha256": "0ba2a1a4b16afe7bceb2c07e9ce99a8c2c3508e5dec290dbb643384bd6beb7e2",
+  "source_recipe_files": [
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/APKBUILD",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/README.alpine",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.confd",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus-user.initd",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.confd",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.initd",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.post-install",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.pre-install",
+    "recipes/0dac2d7bf76016e3bb78ccc734edbb157a1d4b51/main/dbus/dbus.trigger"
+  ],
+  "runtime_packages": [
+    "dbus-libs"
+  ],
+  "runtime_files": [
+    "usr/lib/libdbus-1.so.3",
+    "usr/lib/libdbus-1.so.3.38.3"
+  ],
+  "notice_files": [
+    {
+      "file": "AUTHORS",
+      "sha256": "a56f6628c407e46ec72eb5512591b4c6204e7c0854c15ed0af4daad807edb84f",
+      "source_member": "dbus-1.16.2/AUTHORS",
+      "source_file_sha256": "a56f6628c407e46ec72eb5512591b4c6204e7c0854c15ed0af4daad807edb84f",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING",
+      "sha256": "150e5d08e1cb5e62b65967d7931acad2c42d98ec1bbb584bebb01921cbc853c2",
+      "source_member": "dbus-1.16.2/COPYING",
+      "source_file_sha256": "150e5d08e1cb5e62b65967d7931acad2c42d98ec1bbb584bebb01921cbc853c2",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/AFL-2.0.txt",
+      "sha256": "7ecc7db84298adb05d2cf10339c63a5315a1c5c270a68d97d7d40a53b508ccde",
+      "source_member": "dbus-1.16.2/LICENSES/AFL-2.0.txt",
+      "source_file_sha256": "7ecc7db84298adb05d2cf10339c63a5315a1c5c270a68d97d7d40a53b508ccde",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/AFL-2.1.txt",
+      "sha256": "93bb4f7417aa775bab9026cc3d0af28aeb64451fc5a8ec651876785edd8eaf9b",
+      "source_member": "dbus-1.16.2/LICENSES/AFL-2.1.txt",
+      "source_file_sha256": "93bb4f7417aa775bab9026cc3d0af28aeb64451fc5a8ec651876785edd8eaf9b",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/Apache-2.0.txt",
+      "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+      "source_member": "dbus-1.16.2/LICENSES/Apache-2.0.txt",
+      "source_file_sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/BSD-3-Clause.txt",
+      "sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d",
+      "source_member": "dbus-1.16.2/LICENSES/BSD-3-Clause.txt",
+      "source_file_sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/GPL-2.0-or-later.txt",
+      "sha256": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3",
+      "source_member": "dbus-1.16.2/LICENSES/GPL-2.0-or-later.txt",
+      "source_file_sha256": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/LGPL-2.1-or-later.txt",
+      "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb",
+      "source_member": "dbus-1.16.2/LICENSES/LGPL-2.1-or-later.txt",
+      "source_file_sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/LicenseRef-CMakeScripts.txt",
+      "sha256": "a4c1387064fda4c22bfca364b606eb4e0421efa37cad27c040a3d7ca7186d522",
+      "source_member": "dbus-1.16.2/LICENSES/LicenseRef-CMakeScripts.txt",
+      "source_file_sha256": "a4c1387064fda4c22bfca364b606eb4e0421efa37cad27c040a3d7ca7186d522",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/LicenseRef-GAP.txt",
+      "sha256": "cf4bc4c56dd0837f3d53b8c1467e0d7dbb95223de8bcfe83a4981c318a738ae3",
+      "source_member": "dbus-1.16.2/LICENSES/LicenseRef-GAP.txt",
+      "source_file_sha256": "cf4bc4c56dd0837f3d53b8c1467e0d7dbb95223de8bcfe83a4981c318a738ae3",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/LicenseRef-pycrypto-orig.txt",
+      "sha256": "2cb8f4f410f0ffc5dcfbadd188e20c859fdbb161e616cf2f3d34dfbf8c740547",
+      "source_member": "dbus-1.16.2/LICENSES/LicenseRef-pycrypto-orig.txt",
+      "source_file_sha256": "2cb8f4f410f0ffc5dcfbadd188e20c859fdbb161e616cf2f3d34dfbf8c740547",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/MIT.txt",
+      "sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+      "source_member": "dbus-1.16.2/LICENSES/MIT.txt",
+      "source_file_sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "LICENSES/TCL.txt",
+      "sha256": "36fc2d8a56a2a014ded51e298a7e63635eb4ec62e8bedb99c82b892542ac5e7d",
+      "source_member": "dbus-1.16.2/LICENSES/TCL.txt",
+      "source_file_sha256": "36fc2d8a56a2a014ded51e298a7e63635eb4ec62e8bedb99c82b892542ac5e7d",
+      "scope": "complete-notice"
+    }
+  ],
+  "scope": "Exact upstream major notices and selected source preambles; package context may include licenses for tools/build files absent from runtime",
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ]
+}

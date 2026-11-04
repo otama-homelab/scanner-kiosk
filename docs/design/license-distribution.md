@@ -320,3 +320,22 @@ allocator paths are included conservatively. Exact compiled-object/configuration
 and recipe transformation coverage remain open. The native input now has 235
 entries; the retained 233-entry onefile has not been rebuilt with the later
 musl/libffi supplements.
+
+## Major native notice coverage, 2026-11-04
+
+The source-managed set additionally retains exact major notices for Avahi,
+D-Bus, GMP, GnuTLS, GCC runtime libraries, gettext/libintl, libidn2, libtasn1,
+libunistring, libusb and Nettle. Each component record maps its pinned upstream
+archive, recipe files and actual retained runtime paths. GCC Runtime Library
+Exception 3.1 is accompanied by selected libgcc/libgomp/libstdc++ source
+preambles, including their attribution and additional permissions. libidn2’s
+Unicode terms and D-Bus’s referenced LICENSES directory are preserved.
+
+Root license files can cover upstream tools or build inputs absent from the
+runtime. In particular, D-Bus COPYING offers AFL-2.1 or GPL-2.0-or-later and
+identifies GPL-only standalone tools; it must not be read as assigning one
+license indiscriminately to all files. A full license text or a mapped root
+notice is not evidence of complete per-file/compiled-source coverage. All 28
+current APK source origins now have major-notice mappings; exact patch/build
+transformations and recipient/distribution obligations remain under review.
+The retained 235-entry onefile predates these notice-input additions.

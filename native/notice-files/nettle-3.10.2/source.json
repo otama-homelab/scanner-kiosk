@@ -1,0 +1,52 @@
+{
+  "component": "nettle-3.10.2",
+  "source_archive": "upstream/apk/nettle-3.10.2.tar.gz",
+  "source_archive_sha256": "fe9ff51cb1f2abb5e65a6b8c10a92da0ab5ab6eaf26e7fc2b675c45f1fb519b5",
+  "source_recipe_files": [
+    "recipes/bf898e6d067c1c0ecc0f5ff39c79fc893399acd8/main/nettle/APKBUILD"
+  ],
+  "runtime_packages": [
+    "nettle"
+  ],
+  "runtime_files": [
+    "usr/lib/libhogweed.so.6",
+    "usr/lib/libhogweed.so.6.11",
+    "usr/lib/libnettle.so.8",
+    "usr/lib/libnettle.so.8.11"
+  ],
+  "notice_files": [
+    {
+      "file": "COPYINGv3",
+      "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195",
+      "source_member": "nettle-3.10.2/COPYINGv3",
+      "source_file_sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING.LESSERv3",
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "source_member": "nettle-3.10.2/COPYING.LESSERv3",
+      "source_file_sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYINGv2",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "source_member": "nettle-3.10.2/COPYINGv2",
+      "source_file_sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "AUTHORS",
+      "sha256": "6fd91e60caa0c33dd22888b710fcfa36532bbbef00d85c78de385dcd97f7b9ee",
+      "source_member": "nettle-3.10.2/AUTHORS",
+      "source_file_sha256": "6fd91e60caa0c33dd22888b710fcfa36532bbbef00d85c78de385dcd97f7b9ee",
+      "scope": "complete-notice"
+    }
+  ],
+  "scope": "Exact upstream major notices and selected source preambles; package context may include licenses for tools/build files absent from runtime",
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ]
+}

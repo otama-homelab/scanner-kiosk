@@ -1,0 +1,34 @@
+{
+  "component": "avahi-0.9-rc4",
+  "source_archive": "upstream/apk/v0.9-rc4.tar.gz",
+  "source_archive_sha256": "08fcc57377ed05416ec4b3d8a179da716a7a9376821551a5ae16f8276a1ef0b5",
+  "source_recipe_files": [
+    "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/APKBUILD",
+    "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/Add-hostname-dependency-to-avahi-daemon-service.patch",
+    "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.nft",
+    "recipes/c8147a84799898ff9780bc4f3c179ccc141e8e67/main/avahi/avahi.pre-install"
+  ],
+  "runtime_packages": [
+    "avahi-libs"
+  ],
+  "runtime_files": [
+    "usr/lib/libavahi-client.so.3",
+    "usr/lib/libavahi-client.so.3.2.9",
+    "usr/lib/libavahi-common.so.3",
+    "usr/lib/libavahi-common.so.3.5.4"
+  ],
+  "notice_files": [
+    {
+      "file": "LICENSE",
+      "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+      "source_member": "avahi-0.9-rc4/LICENSE",
+      "source_file_sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+      "scope": "complete-notice"
+    }
+  ],
+  "scope": "Exact upstream major notices and selected source preambles; package context may include licenses for tools/build files absent from runtime",
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "component": "gcc-15.2.0",
+  "source_archive": "upstream/apk/gcc-15.2.0.tar.xz",
+  "source_archive_sha256": "438fd996826b0c82485a29da03a72d71d6e3541a83ec702df4271f6fe025d24e",
+  "source_recipe_files": [
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-LoongArch-Only-allow-valid-binary-op-when-optimize-c.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-posix_memalign.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0001-tree-object-size.cc-Fix-assert-constant-offset-in-ch.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0002-gcc-poison-system-directories.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0003-specs-turn-on-Wl-z-now-by-default.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0004-Turn-on-D_FORTIFY_SOURCE-2-by-default-for-C-C-ObjC-O.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0005-On-linux-targets-pass-as-needed-by-default-to-the-li.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0006-Enable-Wformat-and-Wformat-security-by-default.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0007-Enable-Wtrampolines-by-default.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0008-gcc-disable-SSP-on-ffreestanding-nostdlib-and-nodefa.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0009-gcc-params-set-default-ssp-buffer-size-to-4.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0010-Ensure-that-msgfmt-doesn-t-encounter-problems-during.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0011-Don-t-declare-asprintf-if-defined-as-a-macro.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0012-libiberty-copy-PIC-objects-during-build-process.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0013-libgcc_s.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0014-nopie.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0015-ada-fix-shared-linking.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0016-build-fix-CXXFLAGS_FOR_BUILD-passing.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0017-add-fortify-headers-paths.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0018-Alpine-musl-package-provides-libssp_nonshared.a.-We-.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0019-DP-Use-push-state-pop-state-for-gold-as-well-when-li.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0020-aarch64-disable-multilib-support.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0021-s390x-disable-multilib-support.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0022-ppc64-le-disable-multilib-support.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0023-x86_64-disable-multilib-support.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0024-riscv-disable-multilib-support.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0025-always-build-libgcc_eh.a.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0026-ada-libgnarl-remove-use-of-glibc-specific-pthread_rw.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0027-ada-libgnarl-use-posix_openpt-instead-of-glibc-speci.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0028-ada-libgnarl-adaint-fix-sched.h-inclusion-for-musl.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0029-configure-Add-enable-autolink-libatomic-use-in-LINK_.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0030-configure-fix-detection-of-atomic-builtins-in-libato.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0031-libstdc-do-not-throw-exceptions-for-non-C-locales-on.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0032-gdc-unconditionally-link-libgphobos-against-libucont.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0033-druntime-link-against-libucontext-on-all-platforms.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0034-libgnat-time_t-is-always-64-bit-on-musl-libc.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0035-libphobos-do-not-use-LFS64-symbols.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0036-libgo-fix-lfs64-use.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0037-loongarch-disable-multilib-support.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0038-static-PIE-ensure-static-reaches-the-linker.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0039-except-Don-t-use-the-cached-value-of-the-gcc_except_.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0040-ada-libgnat-use-stub-symbolic-module-name-functions.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0041-ada-libgnat-recognize-linux-musleabi-and-linux-muslg.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/0042-libsanitizer-struct_sock_fprog_sz.patch",
+    "recipes/423a8ad043d07f2c7546c8ec3e2b0384cda360ae/main/gcc/APKBUILD"
+  ],
+  "runtime_packages": [
+    "libgcc",
+    "libgomp",
+    "libstdc++"
+  ],
+  "runtime_files": [
+    "usr/lib/libgcc_s.so.1",
+    "usr/lib/libgomp.so.1",
+    "usr/lib/libgomp.so.1.0.0",
+    "usr/lib/libstdc++.so.6",
+    "usr/lib/libstdc++.so.6.0.34"
+  ],
+  "notice_files": [
+    {
+      "file": "COPYING.RUNTIME",
+      "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74",
+      "source_member": "gcc-15.2.0/COPYING.RUNTIME",
+      "source_file_sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING3",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "source_member": "gcc-15.2.0/COPYING3",
+      "source_file_sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING.LIB",
+      "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+      "source_member": "gcc-15.2.0/COPYING.LIB",
+      "source_file_sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "COPYING3.LIB",
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "source_member": "gcc-15.2.0/COPYING3.LIB",
+      "source_file_sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "scope": "complete-notice"
+    },
+    {
+      "file": "libgomp/libgomp.h.notice.txt",
+      "sha256": "046c131874b7a208e212af311bb4f7da51effe3012ccf764dea27abca79299fa",
+      "source_member": "gcc-15.2.0/libgomp/libgomp.h",
+      "source_file_sha256": "caf8846bef59a11d4ae725c21f51690bc326c847b4647f2cf742386ab38f3a74",
+      "scope": "leading-source-notice",
+      "source_bytes": [
+        0,
+        1640
+      ]
+    },
+    {
+      "file": "libgcc/libgcc2.c.notice.txt",
+      "sha256": "339909457c9ffd6328dcad49cc03155a72d6f27f0ae37e3c32d835c3493745a9",
+      "source_member": "gcc-15.2.0/libgcc/libgcc2.c",
+      "source_file_sha256": "00bd4be43efbd9f70f6c8918cfaf7453d5bc1516c469ecb38da8777da4850fcc",
+      "scope": "leading-source-notice",
+      "source_bytes": [
+        0,
+        1058
+      ]
+    },
+    {
+      "file": "libstdc++-v3/include/bits/stl_vector.h.notice.txt",
+      "sha256": "b8ef9d594258e73babd585aa3c4965b1c6e274712a6153188fd8cc9102779191",
+      "source_member": "gcc-15.2.0/libstdc++-v3/include/bits/stl_vector.h",
+      "source_file_sha256": "463f0dc30617595d996443e2c74193319bf47019ae3b589fe58a0daccf440704",
+      "scope": "leading-source-notice",
+      "source_bytes": [
+        0,
+        2343
+      ]
+    },
+    {
+      "file": "COPYING",
+      "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c",
+      "source_member": "gcc-15.2.0/COPYING",
+      "source_file_sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c",
+      "scope": "complete-notice"
+    }
+  ],
+  "scope": "Exact upstream major notices and selected source preambles; package context may include licenses for tools/build files absent from runtime",
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file/compiled-source and patch/build-transformation coverage; actual distribution-method and recipient source obligations."
+  ]
+}

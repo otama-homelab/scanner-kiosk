@@ -690,6 +690,16 @@
       "sha256": "2779eb3d546435656e67e913a27c696f7b8218fd658c7ae70760e66c119957f3",
       "size": 7911
     },
+    "usr/share/scanner-kiosk/notices/native/avahi-0.9-rc4/LICENSE": {
+      "mode": 292,
+      "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+      "size": 26527
+    },
+    "usr/share/scanner-kiosk/notices/native/avahi-0.9-rc4/source.json": {
+      "mode": 292,
+      "sha256": "d160610f499857874489db7f905169de43d89495b3691f632aea99e7d362122a",
+      "size": 1466
+    },
     "usr/share/scanner-kiosk/notices/native/brotli-1.2.1/LICENSE": {
       "mode": 292,
       "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
@@ -700,6 +710,151 @@
       "sha256": "6cc4a729db12e7c4ea046c43c506fec9a32c5961434f571d9b4ef2042b0691b8",
       "size": 1097
     },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/AUTHORS": {
+      "mode": 292,
+      "sha256": "a56f6628c407e46ec72eb5512591b4c6204e7c0854c15ed0af4daad807edb84f",
+      "size": 10813
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/COPYING": {
+      "mode": 292,
+      "sha256": "150e5d08e1cb5e62b65967d7931acad2c42d98ec1bbb584bebb01921cbc853c2",
+      "size": 1134
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/AFL-2.0.txt": {
+      "mode": 292,
+      "sha256": "7ecc7db84298adb05d2cf10339c63a5315a1c5c270a68d97d7d40a53b508ccde",
+      "size": 8987
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/AFL-2.1.txt": {
+      "mode": 292,
+      "sha256": "93bb4f7417aa775bab9026cc3d0af28aeb64451fc5a8ec651876785edd8eaf9b",
+      "size": 8948
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/Apache-2.0.txt": {
+      "mode": 292,
+      "sha256": "074e6e32c86a4c0ef8b3ed25b721ca23aca83df277cd88106ef7177c354615ff",
+      "size": 10280
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/BSD-3-Clause.txt": {
+      "mode": 292,
+      "sha256": "5a93d5831e1297ab10fe643e1a631e83be392896da14ee2951285a79012df69d",
+      "size": 1460
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/GPL-2.0-or-later.txt": {
+      "mode": 292,
+      "sha256": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3",
+      "size": 17337
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/LGPL-2.1-or-later.txt": {
+      "mode": 292,
+      "sha256": "fa6f36630bb1e0c571d34b2bbdf188d08495c9dbf58f28cac112f303fc1f58fb",
+      "size": 25967
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/LicenseRef-CMakeScripts.txt": {
+      "mode": 292,
+      "sha256": "a4c1387064fda4c22bfca364b606eb4e0421efa37cad27c040a3d7ca7186d522",
+      "size": 1411
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/LicenseRef-GAP.txt": {
+      "mode": 292,
+      "sha256": "cf4bc4c56dd0837f3d53b8c1467e0d7dbb95223de8bcfe83a4981c318a738ae3",
+      "size": 400
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/LicenseRef-pycrypto-orig.txt": {
+      "mode": 292,
+      "sha256": "2cb8f4f410f0ffc5dcfbadd188e20c859fdbb161e616cf2f3d34dfbf8c740547",
+      "size": 151
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/MIT.txt": {
+      "mode": 292,
+      "sha256": "b85dcd3e453d05982552c52b5fc9e0bdd6d23c6f8e844b984a88af32570b0cc0",
+      "size": 1078
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/LICENSES/TCL.txt": {
+      "mode": 292,
+      "sha256": "36fc2d8a56a2a014ded51e298a7e63635eb4ec62e8bedb99c82b892542ac5e7d",
+      "size": 2251
+    },
+    "usr/share/scanner-kiosk/notices/native/dbus-1.16.2/source.json": {
+      "mode": 292,
+      "sha256": "41d9656861d9ddd7b45cd69bbf777f2f4a3a1340af2e1e265882d3061614a8c0",
+      "size": 5705
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/COPYING": {
+      "mode": 292,
+      "sha256": "231f7edcc7352d7734a96eef0b8030f77982678c516876fcb81e25b32d68564c",
+      "size": 18002
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/COPYING.LIB": {
+      "mode": 292,
+      "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+      "size": 26527
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/COPYING.RUNTIME": {
+      "mode": 292,
+      "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74",
+      "size": 3324
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/COPYING3": {
+      "mode": 292,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "size": 35147
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/COPYING3.LIB": {
+      "mode": 292,
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "size": 7639
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/libgcc/libgcc2.c.notice.txt": {
+      "mode": 292,
+      "sha256": "339909457c9ffd6328dcad49cc03155a72d6f27f0ae37e3c32d835c3493745a9",
+      "size": 1058
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/libgomp/libgomp.h.notice.txt": {
+      "mode": 292,
+      "sha256": "046c131874b7a208e212af311bb4f7da51effe3012ccf764dea27abca79299fa",
+      "size": 1640
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/libstdc++-v3/include/bits/stl_vector.h.notice.txt": {
+      "mode": 292,
+      "sha256": "b8ef9d594258e73babd585aa3c4965b1c6e274712a6153188fd8cc9102779191",
+      "size": 2343
+    },
+    "usr/share/scanner-kiosk/notices/native/gcc-15.2.0/source.json": {
+      "mode": 292,
+      "sha256": "255dfd769237d13c8336a03fbbdf82264dd6e493377665d2f37f66d29504c5cc",
+      "size": 8777
+    },
+    "usr/share/scanner-kiosk/notices/native/gettext-1.0/AUTHORS": {
+      "mode": 292,
+      "sha256": "167b04ed012e59c2d2cfc87d420d8c8a8f5c528ef1fd068598b36d57f39db203",
+      "size": 2637
+    },
+    "usr/share/scanner-kiosk/notices/native/gettext-1.0/COPYING": {
+      "mode": 292,
+      "sha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b",
+      "size": 35151
+    },
+    "usr/share/scanner-kiosk/notices/native/gettext-1.0/gettext-runtime/intl/AUTHORS": {
+      "mode": 292,
+      "sha256": "4bd9e2cd15ab6d68b30965512b63a1d4aae95f4c1dd040657a4d1300252a695f",
+      "size": 96
+    },
+    "usr/share/scanner-kiosk/notices/native/gettext-1.0/gettext-runtime/intl/COPYING.LIB": {
+      "mode": 292,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "size": 26419
+    },
+    "usr/share/scanner-kiosk/notices/native/gettext-1.0/gettext-runtime/intl/dcigettext.c.notice.txt": {
+      "mode": 292,
+      "sha256": "c301874fcfdb27a49237157c7831e7c645e0a6dc44dcee6592e598e858410e3e",
+      "size": 1046
+    },
+    "usr/share/scanner-kiosk/notices/native/gettext-1.0/source.json": {
+      "mode": 292,
+      "sha256": "452174c6c83f85f1ab047491fe39d8749e8fc9f77a0ff8cd3a9d0851fe0c7d09",
+      "size": 2874
+    },
     "usr/share/scanner-kiosk/notices/native/giflib-5.2.2/COPYING": {
       "mode": 292,
       "sha256": "0c9b7990ecdca88b676db232c226548ac408b279f550d424d996f0d83591dd8e",
@@ -709,6 +864,56 @@
       "mode": 292,
       "sha256": "19b2a23f5467bb8d83d69df4ada367937c6f9fc10feceb44757502bdf7ccf9a2",
       "size": 934
+    },
+    "usr/share/scanner-kiosk/notices/native/gmp-6.3.0/AUTHORS": {
+      "mode": 292,
+      "sha256": "da5870e2f0482c5dc15b4cfed8bbfb51ce1279c8f8fc52bdb8c13c7cee949c32",
+      "size": 4098
+    },
+    "usr/share/scanner-kiosk/notices/native/gmp-6.3.0/COPYING": {
+      "mode": 292,
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "size": 35147
+    },
+    "usr/share/scanner-kiosk/notices/native/gmp-6.3.0/COPYING.LESSERv3": {
+      "mode": 292,
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "size": 7639
+    },
+    "usr/share/scanner-kiosk/notices/native/gmp-6.3.0/COPYINGv2": {
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "size": 18092
+    },
+    "usr/share/scanner-kiosk/notices/native/gmp-6.3.0/COPYINGv3": {
+      "mode": 292,
+      "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195",
+      "size": 35150
+    },
+    "usr/share/scanner-kiosk/notices/native/gmp-6.3.0/source.json": {
+      "mode": 292,
+      "sha256": "2adc4bedfeed522061c15025cfc435d8face4da34849a620510186e08c07ee83",
+      "size": 2358
+    },
+    "usr/share/scanner-kiosk/notices/native/gnutls-3.8.13/AUTHORS": {
+      "mode": 292,
+      "sha256": "79bca1136dc515b930f2f85975c0c4c687e7d430be27a9b59113637c33b8e7a3",
+      "size": 11500
+    },
+    "usr/share/scanner-kiosk/notices/native/gnutls-3.8.13/COPYING": {
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "size": 35149
+    },
+    "usr/share/scanner-kiosk/notices/native/gnutls-3.8.13/COPYING.LESSERv2": {
+      "mode": 292,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "size": 26419
+    },
+    "usr/share/scanner-kiosk/notices/native/gnutls-3.8.13/source.json": {
+      "mode": 292,
+      "sha256": "7ead2131391283c90a9a27eef2a32af1d38f9e64c77446b1f96ce2b03d73bbd5",
+      "size": 2145
     },
     "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/LICENSE": {
       "mode": 292,
@@ -734,6 +939,36 @@
       "mode": 292,
       "sha256": "5042a8403b6d49175950eeb75bd893582f89e88cc68a96c551d192ad2d4ae59d",
       "size": 6731
+    },
+    "usr/share/scanner-kiosk/notices/native/libidn2-2.3.8/AUTHORS": {
+      "mode": 292,
+      "sha256": "7719304df806ca5cd68c1f1c7e0139e0c11ed14fede560ae192d3c4d1989e839",
+      "size": 212
+    },
+    "usr/share/scanner-kiosk/notices/native/libidn2-2.3.8/COPYING": {
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "size": 35149
+    },
+    "usr/share/scanner-kiosk/notices/native/libidn2-2.3.8/COPYING.LESSERv3": {
+      "mode": 292,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118",
+      "size": 7652
+    },
+    "usr/share/scanner-kiosk/notices/native/libidn2-2.3.8/COPYING.unicode": {
+      "mode": 292,
+      "sha256": "01d621eef165cf4d3d3dbb737aa0699178d94c6f18cf87e9dde6db3ca7790f46",
+      "size": 8782
+    },
+    "usr/share/scanner-kiosk/notices/native/libidn2-2.3.8/COPYINGv2": {
+      "mode": 292,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+      "size": 17984
+    },
+    "usr/share/scanner-kiosk/notices/native/libidn2-2.3.8/source.json": {
+      "mode": 292,
+      "sha256": "53da3091baddab197d008445ee8ecb64580666ffe4168ffa2b7f590e7436837e",
+      "size": 2329
     },
     "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/ATTRIBUTION.txt": {
       "mode": 292,
@@ -764,6 +999,61 @@
       "mode": 292,
       "sha256": "dacbf32cab9e3be27200dc33349ad7d14633dd7ab0250319edcee1ae1367dd69",
       "size": 944
+    },
+    "usr/share/scanner-kiosk/notices/native/libtasn1-4.21.0/AUTHORS": {
+      "mode": 292,
+      "sha256": "34384e8860c713e31e9339a5d4eb0727a9a93d2a5bb74b36053d9a66920bff9e",
+      "size": 456
+    },
+    "usr/share/scanner-kiosk/notices/native/libtasn1-4.21.0/COPYING": {
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "size": 35149
+    },
+    "usr/share/scanner-kiosk/notices/native/libtasn1-4.21.0/COPYING.LESSERv2": {
+      "mode": 292,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "size": 26419
+    },
+    "usr/share/scanner-kiosk/notices/native/libtasn1-4.21.0/source.json": {
+      "mode": 292,
+      "sha256": "d2439ef51859d7b35226fbaf09e17b23a190fd0d23c07506d35c257c676ea17d",
+      "size": 1725
+    },
+    "usr/share/scanner-kiosk/notices/native/libunistring-1.4.2/AUTHORS": {
+      "mode": 292,
+      "sha256": "9877ee5d24b5fa059fcc3ff2f4af36918f7c5676de000b9cb5ec11efa6aac149",
+      "size": 444
+    },
+    "usr/share/scanner-kiosk/notices/native/libunistring-1.4.2/COPYING": {
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "size": 35149
+    },
+    "usr/share/scanner-kiosk/notices/native/libunistring-1.4.2/COPYING.LIB": {
+      "mode": 292,
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "size": 7639
+    },
+    "usr/share/scanner-kiosk/notices/native/libunistring-1.4.2/source.json": {
+      "mode": 292,
+      "sha256": "ee6d4b9cdec976283be63e227476b90ddfc7e1bf9d5a5f3cb9c4ed3b11b59fad",
+      "size": 1746
+    },
+    "usr/share/scanner-kiosk/notices/native/libusb-1.0.30/AUTHORS": {
+      "mode": 292,
+      "sha256": "27fd82b016838197d5276ba98d2187ed5a1ad0e171767322f356f0a9f6395941",
+      "size": 4015
+    },
+    "usr/share/scanner-kiosk/notices/native/libusb-1.0.30/COPYING": {
+      "mode": 292,
+      "sha256": "5df07007198989c622f5d41de8d703e7bef3d0e79d62e24332ee739a452af62a",
+      "size": 26436
+    },
+    "usr/share/scanner-kiosk/notices/native/libusb-1.0.30/source.json": {
+      "mode": 292,
+      "sha256": "fd2abc5f33928362ef78f836b201e183a6d308ab58408ee45f1ba4a93307abcf",
+      "size": 1399
     },
     "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/AUTHORS": {
       "mode": 292,
@@ -824,6 +1114,31 @@
       "mode": 292,
       "sha256": "2f9e533355db39de1b44de8fd63e3b180c8266f8ee5ce9dcbab2a6aa4bd4e5c4",
       "size": 73442
+    },
+    "usr/share/scanner-kiosk/notices/native/nettle-3.10.2/AUTHORS": {
+      "mode": 292,
+      "sha256": "6fd91e60caa0c33dd22888b710fcfa36532bbbef00d85c78de385dcd97f7b9ee",
+      "size": 4267
+    },
+    "usr/share/scanner-kiosk/notices/native/nettle-3.10.2/COPYING.LESSERv3": {
+      "mode": 292,
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "size": 7639
+    },
+    "usr/share/scanner-kiosk/notices/native/nettle-3.10.2/COPYINGv2": {
+      "mode": 292,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "size": 18092
+    },
+    "usr/share/scanner-kiosk/notices/native/nettle-3.10.2/COPYINGv3": {
+      "mode": 292,
+      "sha256": "e6037104443f9a7829b2aa7c5370d0789a7bda3ca65a0b904cdc0c2e285d9195",
+      "size": 35150
+    },
+    "usr/share/scanner-kiosk/notices/native/nettle-3.10.2/source.json": {
+      "mode": 292,
+      "sha256": "0e1fbfcbd8b089ae610e8ca6cfa8719eb9047ec8cf0902b3627ae447f375e063",
+      "size": 2084
     },
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/COPYING": {
       "mode": 292,
