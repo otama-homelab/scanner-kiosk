@@ -1,0 +1,203 @@
+{
+  "format": 1,
+  "base_digest": "sha256:25ac8f0c3b2334a9eb05452266bd4697864a8c8ef0ef71e5e6480d7f92868329",
+  "packages": [
+    {
+      "name": "base-files",
+      "version": "13.8+deb13u7",
+      "source": "base-files",
+      "status_sha256": "e13087b841618232056233ebbb6602001a88d80e7cb4fc457e05aea4391d648a"
+    },
+    {
+      "name": "ca-certificates",
+      "version": "20250419+deb13u1",
+      "source": "ca-certificates",
+      "status_sha256": "3a43b8ed7f1a6116af114b5ad9f2c1b1dd462e39483e5181f2aa3e270acda128"
+    },
+    {
+      "name": "media-types",
+      "version": "13.0.0",
+      "source": "media-types",
+      "status_sha256": "60e871d56cfcc834fe0a8d0436f98996e1bb196d3ddf8f2109d0f05266a816ce"
+    },
+    {
+      "name": "netbase",
+      "version": "6.5",
+      "source": "netbase",
+      "status_sha256": "1b44f4feb536c195a150c6b83001dfa016cb40f35ed1a5972248eddd8677a254"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026f-0+deb13u1",
+      "source": "tzdata",
+      "status_sha256": "1d27b1d691bc7663341d7024bef3d2657592390d2869d86d1508a43c8bd4555d"
+    },
+    {
+      "name": "tzdata-legacy",
+      "version": "2026f-0+deb13u1",
+      "source": "tzdata",
+      "status_sha256": "ef3dcd5e5a6542aa6121d6a2dfd0a30a27ffe59a44ac4f9b7fe45633e0cf34fa"
+    }
+  ],
+  "image_files": [
+    {
+      "file": "image/usr/share/doc/base-files/copyright",
+      "bytes": 1696,
+      "sha256": "c84c664bce3a83eaa327bb9e354c0df588bc535b5e95474aab7ca3cce74937cd"
+    },
+    {
+      "file": "image/usr/share/doc/ca-certificates/copyright",
+      "bytes": 18940,
+      "sha256": "e85e1bcad3a915dc7e6f41412bc5bdeba275cadd817896ea0451f2140a93967c"
+    },
+    {
+      "file": "image/usr/share/doc/media-types/copyright",
+      "bytes": 268,
+      "sha256": "5ded7c53199b6a1d089b0b7e231d77e5c84081c7156b372b3f11ad9c1c2c5cc7"
+    },
+    {
+      "file": "image/usr/share/doc/netbase/copyright",
+      "bytes": 1234,
+      "sha256": "795b66147ea5ad692991caa7008ece551fb0fa88b9c53656223bd1518dc58ab2"
+    },
+    {
+      "file": "image/usr/share/doc/tzdata/copyright",
+      "bytes": 375,
+      "sha256": "cb61132bc0fc7b26ef5a82ee18b2fb644a1362f4f286ed980ff22e408471f59a"
+    },
+    {
+      "file": "image/usr/share/doc/tzdata-legacy/copyright",
+      "bytes": 375,
+      "sha256": "cb61132bc0fc7b26ef5a82ee18b2fb644a1362f4f286ed980ff22e408471f59a"
+    },
+    {
+      "file": "image/usr/share/common-licenses/GPL-2",
+      "bytes": 17984,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+    },
+    {
+      "file": "image/usr/share/common-licenses/MPL-2.0",
+      "bytes": 16726,
+      "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85"
+    },
+    {
+      "file": "image/etc/protocols",
+      "bytes": 3144,
+      "sha256": "4959498abbadaa1e50894a266f8d0d94500101cfe5b5f09dcad82e9d5bdfab46"
+    },
+    {
+      "file": "image/etc/rpc",
+      "bytes": 911,
+      "sha256": "21947aae2ea47a87606a95250a973e4a19414bab928c88765d2972d5a49d310e"
+    },
+    {
+      "file": "image/etc/services",
+      "bytes": 12990,
+      "sha256": "20c48954659cf753baa383ecde0e6f026fadc06c2c9fbe29d88d928188c3ec17"
+    },
+    {
+      "file": "image/var/lib/dpkg/status.d/base-files",
+      "bytes": 734,
+      "sha256": "e13087b841618232056233ebbb6602001a88d80e7cb4fc457e05aea4391d648a"
+    },
+    {
+      "file": "image/var/lib/dpkg/status.d/ca-certificates",
+      "bytes": 801,
+      "sha256": "3a43b8ed7f1a6116af114b5ad9f2c1b1dd462e39483e5181f2aa3e270acda128"
+    },
+    {
+      "file": "image/var/lib/dpkg/status.d/media-types",
+      "bytes": 883,
+      "sha256": "60e871d56cfcc834fe0a8d0436f98996e1bb196d3ddf8f2109d0f05266a816ce"
+    },
+    {
+      "file": "image/var/lib/dpkg/status.d/netbase",
+      "bytes": 484,
+      "sha256": "1b44f4feb536c195a150c6b83001dfa016cb40f35ed1a5972248eddd8677a254"
+    },
+    {
+      "file": "image/var/lib/dpkg/status.d/tzdata",
+      "bytes": 764,
+      "sha256": "1d27b1d691bc7663341d7024bef3d2657592390d2869d86d1508a43c8bd4555d"
+    },
+    {
+      "file": "image/var/lib/dpkg/status.d/tzdata-legacy",
+      "bytes": 1408,
+      "sha256": "ef3dcd5e5a6542aa6121d6a2dfd0a30a27ffe59a44ac4f9b7fe45633e0cf34fa"
+    }
+  ],
+  "sources": [
+    {
+      "source_package": "base-files",
+      "source_version": "13.8+deb13u7",
+      "binary_packages": [
+        {
+          "name": "base-files",
+          "version": "13.8+deb13u7"
+        }
+      ],
+      "suite": "trixie",
+      "directory": "pool/main/b/base-files",
+      "files": [
+        {
+          "filename": "base-files_13.8+deb13u7.dsc",
+          "size": 1247,
+          "sha256": "6240b5a02fc32bd6d925bb7776e00c467e80d930f8cf3c4a20c299ce692dc7e4",
+          "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/pool/main/b/base-files/base-files_13.8+deb13u7.dsc"
+        },
+        {
+          "filename": "base-files_13.8+deb13u7.tar.xz",
+          "size": 83444,
+          "sha256": "be32803b9408ac9aa46b96f68c83ee45e88d04d89854a87999986efc4cb34c69",
+          "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/pool/main/b/base-files/base-files_13.8+deb13u7.tar.xz"
+        }
+      ],
+      "authenticated_index": {
+        "suite": "trixie",
+        "snapshot": "20261102T000000Z",
+        "url": "https://snapshot.debian.org/archive/debian/20261102T000000Z/dists/trixie/main/source/Sources.xz",
+        "sha256": "6002f81f463a2d976d84b34170367cc16da2d60bd0ba9ab9d868d6e1c1a935d9",
+        "size": 10540436,
+        "release_date": "Sat, 12 Sep 2026 07:55:41 UTC",
+        "valid_until": null,
+        "compressed_index_retained": false
+      }
+    },
+    {
+      "source_package": "ca-certificates",
+      "source_version": "20250419+deb13u1",
+      "binary_packages": [
+        {
+          "name": "ca-certificates",
+          "version": "20250419+deb13u1"
+        }
+      ],
+      "suite": "trixie-security",
+      "directory": "pool/updates/main/c/ca-certificates",
+      "files": [
+        {
+          "filename": "ca-certificates_20250419+deb13u1.dsc",
+          "size": 1924,
+          "sha256": "347487e99c0b9f09150c8d78ad03e3552545c3904d5e0d7f731ef2ef79d484d4",
+          "url": "https://snapshot.debian.org/archive/debian-security/20261102T000000Z/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1.dsc"
+        },
+        {
+          "filename": "ca-certificates_20250419+deb13u1.tar.xz",
+          "size": 277284,
+          "sha256": "1b2e3d0b90cfc62ac8033d64e18ea4649fbb2a01c937c9ac9d36e762da6b9446",
+          "url": "https://snapshot.debian.org/archive/debian-security/20261102T000000Z/pool/updates/main/c/ca-certificates/ca-certificates_20250419+deb13u1.tar.xz"
+        }
+      ],
+      "authenticated_index": {
+        "suite": "trixie-security",
+        "snapshot": "20261102T000000Z",
+        "url": "https://snapshot.debian.org/archive/debian-security/20261102T000000Z/dists/trixie-security/main/source/Sources.xz",
+        "sha256": "c172de76fb14605fee9836ef0e86d6928f03b2bdc2f9159feabb19a8ec00b45d",
+        "size": 247668,
+        "release_date": "Sun, 01 Nov 2026 20:43:05 UTC",
+        "valid_until": "Sun, 08 Nov 2026 20:43:05 UTC",
+        "compressed_index_retained": false
+      }
+    }
+  ]
+}

@@ -75,7 +75,7 @@ stage() {
     inputs=()
     if [ "$phase" = build ]; then inputs+=(--mount "type=bind,src=$out/native-input.tar,dst=/native.tar,readonly"); fi
     if [ "$phase" = inventory ]; then
-        inputs+=(--mount "type=bind,src=$out/image.tar,dst=/image.tar,readonly" --mount "type=bind,src=$out/image.json,dst=/image.json,readonly")
+        inputs+=(--mount "type=bind,src=$out/image.tar,dst=/image.tar,readonly" --mount "type=bind,src=$out/image.json,dst=/image.json,readonly" --mount "type=bind,src=$out/base-image,dst=/base-image,readonly")
     fi
     args=(--revision "$revision")
     if [ -n "$ref" ]; then args+=(--ref "$ref" --sha "$sha"); fi
@@ -138,9 +138,17 @@ out=pathlib.Path(sys.argv[1]);assert json.loads((out/'image-version.json').read_
 s=json.loads((out/'image-container.json').read_text())[0]['State'];assert not s['Running'] and not s['OOMKilled'] and s['ExitCode']==0
 PY2
 timeout 120 docker image save --output "$out/image.tar" "$image"
+install -d -m 755 "$out/base-image"
+while IFS= read -r path; do
+    install -d -m 755 "$out/base-image/$(dirname "$path")"
+    timeout 30 docker cp "$smoke:/${path#image/}" "$out/base-image/$path"
+    chmod 444 "$out/base-image/$path"
+done < <(python3 scripts/base-source.py paths --lock native/base-source.lock.json)
 chmod 444 "$out/image.tar" "$out/image.json"
 stage inventory none 2g 300
 timeout 90 docker cp "$keeper:/work/image-sbom" "$out/image-sbom"
+timeout 30 docker cp "$keeper:/work/base-sources.tar" "$out/base-sources.tar"
+timeout 30 docker cp "$keeper:/work/base-inventory.json" "$out/base-inventory.json"
 python3 - "$out" <<'PY2'
 import json,pathlib,sys,hashlib,stat
 out=pathlib.Path(sys.argv[1]);checks={}

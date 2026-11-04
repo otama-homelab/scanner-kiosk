@@ -70,6 +70,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_build_web_identity.py -v
       - name: Source bundle collector safety checks
         run: python3 -m unittest discover -s scripts -p test_collect_debian_sources.py -v
+      - name: Base source hash and image subset binding
+        run: python3 -m unittest discover -s scripts -p test_base_source.py -v
       - name: Aports recipe source collector safety checks
         run: python3 -m unittest discover -s scripts -p test_collect_aports_sources.py -v
       - name: Aports upstream archive collector safety checks
@@ -218,6 +220,8 @@ jobs:
             ${{ runner.temp }}/candidate/native-sbom/
             ${{ runner.temp }}/candidate/onefile-sbom/
             ${{ runner.temp }}/candidate/image-sbom/
+            ${{ runner.temp }}/candidate/base-sources.tar
+            ${{ runner.temp }}/candidate/base-inventory.json
             ${{ runner.temp }}/candidate/image.tar
             ${{ runner.temp }}/candidate/image.json
             ${{ runner.temp }}/candidate/image-binary.json

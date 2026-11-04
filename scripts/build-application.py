@@ -15,7 +15,7 @@ import stat
 import tempfile
 
 WORK=Path('/work')
-LOCKS=['go.mod','go.sum','web/package.json','web/package-lock.json','web/npm-tool.lock.json','native/syft-tool.lock.json']
+LOCKS=['go.mod','go.sum','web/package.json','web/package-lock.json','web/npm-tool.lock.json','native/syft-tool.lock.json','native/base-source.lock.json']
 
 
 def environment(offline):
@@ -151,6 +151,10 @@ def acquire(revision,ref):
         raise ValueError('project npm configuration is not a build input')
     tool=install_npm(source)
     install_tool(source,'syft')
+    base=json.loads((source/'native/base-source.lock.json').read_text())
+    if '@'+base['base_digest'] not in (source/'Dockerfile').read_text():raise ValueError('base source lock differs from runtime base')
+    run(['python3','scripts/base-source.py','acquire','--lock','native/base-source.lock.json',
+         '--output','/work/base-source-inputs'],False)
     if subprocess.check_output(['npm','--version'],env=environment(False),text=True).strip()!=tool['version']:
         raise ValueError('npm client version does not match lock')
     before=hashes(source)
@@ -272,5 +276,10 @@ if __name__=='__main__':
         parser.error('revision and optional ref/SHA pair required')
     if args.phase=='acquire':acquire(args.revision,args.ref)
     elif args.phase=='build':build(args.revision,args.ref,args.sha)
-    else:run(['python3','scripts/saved-image-sbom.py','--archive','/image.tar','--metadata','/image.json',
-              '--syft','/work/bin/syft','--output','/work/image-sbom'],True)
+    else:
+        run(['python3','scripts/saved-image-sbom.py','--archive','/image.tar','--metadata','/image.json',
+             '--syft','/work/bin/syft','--output','/work/image-sbom'],True)
+        with (WORK/'base-inventory.json').open('wb') as receipt:
+            subprocess.run(['python3','scripts/base-source.py','pack','--lock','native/base-source.lock.json',
+                '--sources','/work/base-source-inputs','--image-files','/base-image','--image-metadata','/image.json',
+                '--output','/work/base-sources.tar'],cwd=WORK/'source',env=environment(True),check=True,timeout=60,stdout=receipt)
