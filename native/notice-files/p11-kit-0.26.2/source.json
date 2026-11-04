@@ -5,11 +5,193 @@
       "file": "COPYING",
       "sha256": "2e1ba993904df807a10c3eda1e5c272338edc35674b679773a8b3ad460731054",
       "source_member": "p11-kit-0.26.2/COPYING"
+    },
+    {
+      "file": "library-source-notices.txt",
+      "sha256": "8601671b1ef73fbe168085298391c7536e15ebaffa495d91e945eeefca810b1d",
+      "scope": "Verbatim leading C comments from 35 explicitly selected library sources",
+      "source_members": [
+        {
+          "source_member": "p11-kit-0.26.2/common/argv.c",
+          "source_file_sha256": "dfe7877fffdfc6ecf10a43ada1b23f1cb25f3236b6ff3a8b6b20e5d58ec548ac",
+          "notice_sha256": "7ff01c58cf4cdd955a3d90ea82824778533a934f0c924c37451dea152d5ea348"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/attrs.c",
+          "source_file_sha256": "a2e02b04e51ecd7e561ff1f2e9792fdde71eb73c446862e8cdefd116011ee05e",
+          "notice_sha256": "6f7cb795e62379a9cbc5714b1479e723b658fd5327899a7bebf36c0c57e98bf9"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/array.c",
+          "source_file_sha256": "10ad8fc9b2b9841ed8af08512c31eb6cfcab72770dc10fe9613d14e864cba588",
+          "notice_sha256": "9b1ade0c34ec9f1b5d387990521ce77aa5481f665939449392896f4063036153"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/base64.c",
+          "source_file_sha256": "ed7b995bce82806292a0130294ef37be078ff6dc267ad4c8784669d423d49b60",
+          "notice_sha256": "30a9d22bebab776da2bfbd75c6ff2f664ad32fb4631fefe5ab8ad62c421fd584"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/buffer.c",
+          "source_file_sha256": "35c0c0031d59d216f6b501f9361d95de56e7a5574274a28fcdd196ae4f20c951",
+          "notice_sha256": "f0d0bef661d72299dc161215741b8fc9d527061bcb5ca0789586b64c53283231"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/compat.c",
+          "source_file_sha256": "c4e0e312db41924e870065adf16b0291c1d6f0fa49a4d0776c607439e3720d67",
+          "notice_sha256": "88d1b34d208503ccc3018878e9087dd264bb526e3e2879d5cf5f703e2be200d2"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/constants.c",
+          "source_file_sha256": "befba7b605f46572c8b1ad4415f8dbb52676c29da802eaca652496e6cd852d2d",
+          "notice_sha256": "f5a73df99f87da4da829c85fab87798b368e005c988c9576f9133debf1bcb68e"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/debug.c",
+          "source_file_sha256": "8fa0f57243d1c0d7a0e665630accfaf15a2fa017329530ea82dccc834379f23e",
+          "notice_sha256": "c101c9e30f034303638f99a894e1e27ae427424997ce9bd18831234ef5b302ee"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/dict.c",
+          "source_file_sha256": "910c5b3ad63b24df082fb5d6b21b159056f151fee764339bff8299a5994c407f",
+          "notice_sha256": "ef84e7e4d5c078e8d35c76fa73adcce2d46d9ca13850986ba320223e4c99f524"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/hash.c",
+          "source_file_sha256": "e85568e49332558ac4eb248e9a3e85a09f8bae1c267b9eeb88e22811ee826670",
+          "notice_sha256": "28781a4c53469ba3cb4727dd44fe665540de507d109afe920c41340859a03b8a"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/hex.c",
+          "source_file_sha256": "51f1a333e81e8f6b9b781c8d1a38398c6c51c103848c207b9f5e26931d9697c8",
+          "notice_sha256": "0f8d1411a0116388dce346c5437a9474228f1b689bde5f3e4bf92fa54698f6c0"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/lexer.c",
+          "source_file_sha256": "5459085a1a39c1ebaa36b5838f2732d2bf318d47533f37cff2893a51c6a5cf97",
+          "notice_sha256": "eb393af3494673a36d639a78d40dbe1263e617c77fc6ab2551a682007e6bd7be"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/message.c",
+          "source_file_sha256": "09f38c8ff069ca60aaa9e4741eab5b90721e34f9771e0590ff92feae07a2d483",
+          "notice_sha256": "4c11f16a1f560ad94cf5a67f1e3bf2a4577198a3b212b4f3d0188bed80df85b8"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/path.c",
+          "source_file_sha256": "9c9b8567f5060af34d31039cf03d9e11c61b917789828e6d14ef78ecaab59633",
+          "notice_sha256": "eb393af3494673a36d639a78d40dbe1263e617c77fc6ab2551a682007e6bd7be"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/pem.c",
+          "source_file_sha256": "cfede1d78feebeb1c72d47197f9cdc8149f8b4cfed49fea215658d20829de291",
+          "notice_sha256": "7ff01c58cf4cdd955a3d90ea82824778533a934f0c924c37451dea152d5ea348"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/runtime.c",
+          "source_file_sha256": "661832cecdd1fecbfe7095b94ab661c46a77b4bf4e3146f9175bb25682da3a90",
+          "notice_sha256": "38e3621a02fa3dcaf4346efbf316205f80cbcf8b395a95f1651fc1a36f1f9e29"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/url.c",
+          "source_file_sha256": "60f376803d314352d88a5bdfadd07a64ec591cee78dcbf8b8e64f3bf6cb0cab3",
+          "notice_sha256": "011f1a8a5dbf11f522cac7bbd81800efcb84c3b39e5d6dd60438e2488a770466"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/vsock.c",
+          "source_file_sha256": "94cd73d0b94875152423532752584542b1bb40f8b0d5eb8a88d67bd0e38380a1",
+          "notice_sha256": "3a96fb46d4715a291da376e157ceccb8cf9ea1fa16c4eb93f14bfb913956cefd"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/conf.c",
+          "source_file_sha256": "4259dc29cbaeec492d83bf56980a25735c9394bdf6c94c19b377eb4bc4aa6e93",
+          "notice_sha256": "725703ed79fd48daa44b77faacb944b7128d7af27946095b740d7d20eedab702"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/log.c",
+          "source_file_sha256": "b5a664d3d0b92926321b67843ea4ee69837efa99febafd14fb60f9fe1f350c64",
+          "notice_sha256": "6b617b1d099553ab8d2d9ac58173ce5de21c5896bdc44f0cd48fe26533a95e35"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/filter.c",
+          "source_file_sha256": "f3f1af3ca95c06bfd9880ef472b0b958d39acadd1ba56801246feb4c86d15ba1",
+          "notice_sha256": "f4402560ee9c96b39a4b2ed5f6823c656a90ec6f8de7d42ccf45ef61744c6c9c"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/rpc-transport.c",
+          "source_file_sha256": "dd6981d805d0ca288fa1bb9e95ee509e9ba73b4bb2d31ee11c37387804b63fde",
+          "notice_sha256": "6efaa26ba1482412d80124fa9bf3acfa78cc88d030ab3d1e5fa4aed94950b0b8"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/rpc-message.c",
+          "source_file_sha256": "68e35b13c9f639b6440acca346581a802cf0439602124dcc6d52d87b9d92b787",
+          "notice_sha256": "f289e6942922095726df7442a98955746e2e7fe5f21d39bddab30253c8784c17"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/rpc-client.c",
+          "source_file_sha256": "427939c143526f5f43df0af9c9c747b368db9a148b1f8c05cc152bed91463f65",
+          "notice_sha256": "f289e6942922095726df7442a98955746e2e7fe5f21d39bddab30253c8784c17"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/iter.c",
+          "source_file_sha256": "9cad0b35e874f6dc8224c2ed473e7ae42f8884a5a02d9d560f8d687b9181c840",
+          "notice_sha256": "20ce4ebfc508a586c233b895225638447e8ab474bdc9a1f1d155de42af44c069"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/messages.c",
+          "source_file_sha256": "d0a5753411afa9e3ec9889faf26517892b436f821d2c2372f41ab07bee916171",
+          "notice_sha256": "09d46dede4934debe08b660a011af4447c59d0678543b9db685101c298d57d5d"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/modules.c",
+          "source_file_sha256": "7b2a3fb6529a198d63c95fad3a66d345067d3329cc1759363d96845298e39b4e",
+          "notice_sha256": "69df83577177df9addce26e6146356a2ec2461089c1e24b4325fd544c60529b6"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/pin.c",
+          "source_file_sha256": "c6595d8629739b39c3fc04646a3ce5fd2f3631f9302d6adf7c90837d13573bc6",
+          "notice_sha256": "09d46dede4934debe08b660a011af4447c59d0678543b9db685101c298d57d5d"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/proxy.c",
+          "source_file_sha256": "a87e39fbf77cfda0e6b31cefd5b16a6020353a41288c70dec9190e82a7c16d1b",
+          "notice_sha256": "59a0e299dbc13bf020354c2a39c9f83c9515dfbccda08a75de5b4c0ffe874a3b"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/proxy-init.c",
+          "source_file_sha256": "f3ce0050ac7485a714912cc634209343971fc34d5b53d5427e3b12c218e01d58",
+          "notice_sha256": "4c11f16a1f560ad94cf5a67f1e3bf2a4577198a3b212b4f3d0188bed80df85b8"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/rpc-server.c",
+          "source_file_sha256": "25948e84d3a56fbdf3692911fa712d699e6129929fe83e7cb23075de8d7117c1",
+          "notice_sha256": "f289e6942922095726df7442a98955746e2e7fe5f21d39bddab30253c8784c17"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/uri.c",
+          "source_file_sha256": "c28b397e201aa06b1f579690f02b5bcbc5ef5bd9d6fffd93fcd29cb47424f44d",
+          "notice_sha256": "09d46dede4934debe08b660a011af4447c59d0678543b9db685101c298d57d5d"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/util.c",
+          "source_file_sha256": "49ee38840c850eb7bc73d6cfe6531b4a3208f942d7a18e69b7c0a0fa180d2164",
+          "notice_sha256": "4c11f16a1f560ad94cf5a67f1e3bf2a4577198a3b212b4f3d0188bed80df85b8"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/common/library.c",
+          "source_file_sha256": "da8c049a78d65976dcef183c620169b3d0ab8c2cbeb9dd19de175a89f660f741",
+          "notice_sha256": "4c11f16a1f560ad94cf5a67f1e3bf2a4577198a3b212b4f3d0188bed80df85b8"
+        },
+        {
+          "source_member": "p11-kit-0.26.2/p11-kit/virtual.c",
+          "source_file_sha256": "5f06582ec33e4f81e4ab858508a21b051f62e34e10b6500264db0267c41fffef",
+          "notice_sha256": "23c296bdb0bd5e15d2c65cfc64a7ded8b9928498417c473bf4e3c9d29654b057"
+        }
+      ]
     }
   ],
   "publication_approved": false,
   "review_remaining": [
-    "Root COPYING has redistribution terms but no copyright attribution; relevant source-header review remains open."
+    "Selected library C-file copyright and terms are retained, including ISC base64/hash notices. Header/generated-template notices, conditional sources and recipe/build transformations remain under review."
   ],
   "runtime_files": [
     "usr/lib/libp11-kit.so.0",

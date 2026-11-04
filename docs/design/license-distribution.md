@@ -280,3 +280,15 @@ Per-file coverage of SANE support code, transitive libraries, complete notices,
 and recipient-facing source/replacement delivery remain open. The workspace's
 `sane-linking-review-20261104/result.json` retains the selected full-file hashes,
 leading notices, root license texts and all seven exact recipe files.
+
+## p11-kit library notice supplement, 2026-11-04
+
+The source-managed native notices now include the complete leading comments
+from 35 C sources named by p11-kit 0.26.2’s shared-library, internal-library and
+common-library Meson targets. The original root COPYING is retained. The
+supplement preserves actual copyright holders and the separate ISC terms in
+common/base64.c and common/hash.c; it does not assign the root BSD-style terms
+to those files. Exact source and comment hashes accompany the collection.
+Header/generated-template coverage and conditional build transformations remain
+open. This updates the native input manifest to 233 entries; the retained
+232-entry onefile/image candidates have not been rebuilt with this supplement.
