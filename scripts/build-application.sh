@@ -76,7 +76,7 @@ stage() {
     if [ "$phase" = build ]; then inputs+=(--mount "type=bind,src=$out/native-input.tar,dst=/native.tar,readonly"); fi
     args=(--revision "$revision")
     if [ -n "$ref" ]; then args+=(--ref "$ref" --sha "$sha"); fi
-    timeout "$seconds" docker run --rm --name "$prefix-$phase" --network "$network" --read-only --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges --memory "$memory" --memory-swap "$memory" --cpus 4 --pids-limit 128 --ulimit nofile=1024:1024 --ulimit fsize=536870912:536870912 \
+    timeout "$seconds" docker run --rm --name "$prefix-$phase" --network "$network" --read-only --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges --memory "$memory" --memory-swap "$memory" --cpus 2 --pids-limit 128 --ulimit nofile=1024:1024 --ulimit fsize=536870912:536870912 \
         --mount "type=volume,src=$volume,dst=/work" \
         --mount type=bind,src=/usr,dst=/usr,readonly --mount type=bind,src=/usr/bin,dst=/bin,readonly \
         --mount type=bind,src=/usr/lib,dst=/lib,readonly --mount type=bind,src=/usr/lib64,dst=/lib64,readonly \

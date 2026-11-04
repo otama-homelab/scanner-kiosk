@@ -98,6 +98,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_fetch_native_apks.py -v
       - name: Locked Tesseract source acquisition safety checks
         run: python3 -m unittest discover -s scripts -p test_fetch_tesseract_source.py -v
+      - name: Locked external source acquisition safety checks
+        run: python3 -m unittest discover -s scripts -p test_fetch_source_inputs.py -v
       - name: Native pipeline failure, isolation and cleanup contracts
         run: python3 -m unittest discover -s scripts -p test_build_native.py -v
       - name: Native APK preparation safety checks
