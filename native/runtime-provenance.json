@@ -715,6 +715,7 @@
     "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/LICENSE",
     "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/source.json",
     "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/LICENSE",
+    "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/linux-x86_64-source-notices.txt",
     "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/source.json",
     "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/ATTRIBUTION.txt",
     "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/LICENSE.md",
@@ -785,6 +786,7 @@
     "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/LICENSE": "leptonica-1.87.0/LICENSE",
     "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/source.json": "leptonica-1.87.0/source.json",
     "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/LICENSE": "libffi-3.5.2/LICENSE",
+    "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/linux-x86_64-source-notices.txt": "libffi-3.5.2/linux-x86_64-source-notices.txt",
     "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/source.json": "libffi-3.5.2/source.json",
     "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/ATTRIBUTION.txt": "libjpeg-turbo-3.1.3/ATTRIBUTION.txt",
     "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/LICENSE.md": "libjpeg-turbo-3.1.3/LICENSE.md",
@@ -823,7 +825,7 @@
     "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/source.json": "zstd-1.5.7/source.json"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "47ded6f327e19fa1978d318d612cff56e9faa43fd09f5afe51054fca132b3d0f",
+  "runtime_manifest_sha256": "162f156cbe23894ea842fad7256d9c8a5fd9a8f990c73ba526ac93a0f1788814",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {

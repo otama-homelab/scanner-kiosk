@@ -5,11 +5,162 @@
       "file": "LICENSE",
       "sha256": "d5699fa516968e3a1550e6c902b7441c78856f2603d61bedd0b0662a26655366",
       "source_member": "libffi-3.5.2/LICENSE"
+    },
+    {
+      "file": "linux-x86_64-source-notices.txt",
+      "sha256": "85b3ab9b4bbe82811cf6f97542717e4913802fdf9d50407e4c8017bf4df1b679",
+      "scope": "15 full leading notices plus the dlmalloc opening public-domain attribution excerpt",
+      "source_members": [
+        {
+          "source_member": "libffi-3.5.2/src/prep_cif.c",
+          "source_file_sha256": "783a8258b4170d7333d4b1d79cd0618d2bb2272035ae596cb50233acd74a7732",
+          "source_bytes": [
+            0,
+            1427
+          ],
+          "sha256": "ef1056f9802963bc67f027ada4b594b64bd515273eb3c455c0b1e9b045048d2e"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/types.c",
+          "source_file_sha256": "bfa6c93acd555bf70d3d5c293240b2e3fa378e2908902b67fd0b38c0a1609fc3",
+          "source_bytes": [
+            0,
+            1340
+          ],
+          "sha256": "61376a91a389766a8489ead4cc75b8c4cb831afb08e587ca32e8ca7226f9456a"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/raw_api.c",
+          "source_file_sha256": "d7ea1c81fc13e9fceb0dc431bc865e224d7be1e84483039eb4ad79144ef29c34",
+          "source_bytes": [
+            0,
+            1334
+          ],
+          "sha256": "5e3c3b6c331d4b4f7cb243a41cb49089a361c4f3c43e22e6198ebfe3ba807bf3"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/java_raw_api.c",
+          "source_file_sha256": "5c3886d8c20ba1238135835aa132ad9c017af5f9e5c55e2167d3ad047def1bd6",
+          "source_bytes": [
+            0,
+            1451
+          ],
+          "sha256": "6ec1f124dc6d7f309a4e45c49bd827a9aa261222ccbd4d309a413019bb88f9cd"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/closures.c",
+          "source_file_sha256": "bf5d74f3fd1fc9060f71598c4ca25a84b6d5ea38313fa86e41e3ab743c2abc5f",
+          "source_bytes": [
+            0,
+            1550
+          ],
+          "sha256": "8156d8be5023ecd9f5a6bb7e9c007c8d3a53685538d77a054824c21cb760dc89"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/tramp.c",
+          "source_file_sha256": "72bd974d4db3b9aa440f762d8728feb3e9cd41ad1ea252294ca433a5e0da76f5",
+          "source_bytes": [
+            0,
+            1421
+          ],
+          "sha256": "c950c44399becc39ad1025a971944982e8ca676059f76f29c970984235fda8df"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/debug.c",
+          "source_file_sha256": "a9ee942885ee97b3448dda2ab74a8a02be3e0c8baeaed1f90d61cc69e0498dba",
+          "source_bytes": [
+            0,
+            1278
+          ],
+          "sha256": "b565811f45451df3848bea45bb5a7053803b9133c9359da529ec798c53d69f9e"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/x86/ffitarget.h",
+          "source_file_sha256": "45e4fd2585aaed711e4fa3d1377b70c8e54dcdc56bdf402fa23a8816d19cc58a",
+          "source_bytes": [
+            0,
+            1478
+          ],
+          "sha256": "85d248c5229cfdc8ea226606ba82551662b7f3d0144fc003e67d802ed6c19489"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/x86/ffi64.c",
+          "source_file_sha256": "d0a4e51a3001003c1cef9551c66352367239d510696c1819ff5cfbfa9265ee40",
+          "source_bytes": [
+            0,
+            1501
+          ],
+          "sha256": "53ea07b6223831a2d0456cf67c1d59d755c2ed640358c342ff145660c9dd2c03"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/x86/ffiw64.c",
+          "source_file_sha256": "2c31bfeaf808f694433edb0c6c1a45901c1cc48bac784aeb6f4fbd6ca05f33ca",
+          "source_bytes": [
+            0,
+            1367
+          ],
+          "sha256": "a1b4f28ac2f9253fb91ad879faa1a1384787e6933be05e7c9b6835dbd78f4714"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/x86/unix64.S",
+          "source_file_sha256": "8a3686659532c51af9cc9b27ef2566068a4eb9b2bce02e3c738df5c339a1efd0",
+          "source_bytes": [
+            0,
+            1419
+          ],
+          "sha256": "c45344b5e1bf663a813e8ca6fcbd9cc4ffe5f92ae4125e56a1f8f492c3505e88"
+        },
+        {
+          "source_member": "libffi-3.5.2/include/ffi_common.h",
+          "source_file_sha256": "1d8090956e934992f1505a21b11de69ff6cc43e0e1e4f31dc2e20b156fc5f297",
+          "source_bytes": [
+            0,
+            1518
+          ],
+          "sha256": "4fa1bed11b9220aad871e755bcd5d52ca92f9ece182f41ffad9d9de080ff45c5"
+        },
+        {
+          "source_member": "libffi-3.5.2/include/ffi_cfi.h",
+          "source_file_sha256": "13ed26eeafad029ec04b802bea0d86c68a1a09c0a71b90ee69992c4cfbc8d310",
+          "source_bytes": [
+            0,
+            1361
+          ],
+          "sha256": "212dfee6fce04ba2a175c749cf3ed5d04dd2dd22e63355d36fbf937b6f314bc9"
+        },
+        {
+          "source_member": "libffi-3.5.2/include/tramp.h",
+          "source_file_sha256": "ef20dace99925672167a5f3b3898299d462ace170f0b90ca47fd36b30cfc7fbf",
+          "source_bytes": [
+            0,
+            1321
+          ],
+          "sha256": "a95af43bf2d384f1aac834c5568548d3df0cf7465ce0bee61395ce2bec8c2e78"
+        },
+        {
+          "source_member": "libffi-3.5.2/include/ffi.h.in",
+          "source_file_sha256": "00297008a442a2bc436b9919a1fc78cd3b482c9d52f228f7516112b2eed8e25b",
+          "source_bytes": [
+            0,
+            1386
+          ],
+          "sha256": "2a29d75f79811831d22477df72423994b5def2524e00e7214a6ddaf775e18a27"
+        },
+        {
+          "source_member": "libffi-3.5.2/src/dlmalloc.c",
+          "source_file_sha256": "c603bff55ca0f128948640622cba34354f7af84f4d1e0c562f7f2307b0c21658",
+          "source_bytes": [
+            0,
+            269
+          ],
+          "sha256": "20c7671ac65f77fc9f404397f2ecba481ca78a1ff2076369a26182078162b871"
+        }
+      ]
     }
   ],
   "publication_approved": false,
   "review_remaining": [
-    "Root LICENSE refers to individual source-file copyright details; per-file review remains open."
+    "Generic/non-x32 Linux x86_64 source and header-template notices are retained. Exact compiled-object/conditional configuration and recipe transformations remain under review."
   ],
   "runtime_files": [
     "usr/lib/libffi.so.8",

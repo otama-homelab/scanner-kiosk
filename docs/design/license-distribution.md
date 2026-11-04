@@ -307,3 +307,16 @@ This closes the known missing notices in those selected source comments;
 compiled-file/assembly/line-comment and recipe-transform coverage remain open.
 The native input now has 234 entries; the existing 233-entry onefile remains a
 prior candidate until these added notices are packaged.
+
+## libffi Linux x86_64 source notice supplement, 2026-11-04
+
+The source-managed libffi notices now supplement root LICENSE with 15 complete
+leading notices from generic sources, the non-x32 X86_64 backend and associated
+header templates, plus dlmalloc’s opening public-domain attribution excerpt.
+configure.host selects ffi64.c/unix64.S and ffiw64.c/win64.S for that backend;
+the Win64 calling-convention source is relevant even on Linux. Each retained
+notice has its original source-file hash and byte range. Conditional debug and
+allocator paths are included conservatively. Exact compiled-object/configuration
+and recipe transformation coverage remain open. The native input now has 235
+entries; the retained 233-entry onefile has not been rebuilt with the later
+musl/libffi supplements.
