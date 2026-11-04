@@ -272,3 +272,21 @@ HTTPS/IdP, storage faults and upgrade/rollback remain distinct existing
 acceptance requirements. Evidence is in the parent plan's
 `current-onefile-state-recovery-20261104/current-evidence.json`. Only the fixture's
 binary selection and scratch environment changed; product code was unchanged.
+
+
+### Current contrast-fix development candidate
+
+The source input-boundary contrast fix is now included in onefile `7685e0c3…`
+and distroless image `c8bf0afc…`. Actual HTTP hashes matched all five packaged
+assets without overrides; only style.css differs from the earlier `e5363774…`
+candidate. All selected Go/SQL/module source files and 232 native entries remain
+unchanged. The new onefile passed 12 capture and 12 bilingual keyboard checks,
+and its API stopped normally. The image retained its pinned base layers,
+ENTRYPOINT/CMD and nonroot identity, and completed a fresh-cache version smoke
+under a 768MiB/no-swap limit. This is not a minimum-memory guarantee.
+
+The source contrast fix is no longer waiting for local packaging. The candidate
+still reports dev/unreleased; no registry publication, deployment, physical scan
+or new full-suite acceptance occurred. Existing broader receipts retain their
+original artifact scope. Current evidence is in the parent plan's
+`contrast-onefile-20261104/current-evidence.json`.
