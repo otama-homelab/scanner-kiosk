@@ -8,13 +8,14 @@ import re
 import subprocess
 import tarfile
 import urllib.request
+import urllib.parse
 import io
 import os
 import stat
 import tempfile
 
 WORK=Path('/work')
-LOCKS=['go.mod','go.sum','web/package.json','web/package-lock.json','web/npm-tool.lock.json']
+LOCKS=['go.mod','go.sum','web/package.json','web/package-lock.json','web/npm-tool.lock.json','native/syft-tool.lock.json']
 
 
 def environment(offline):
@@ -94,6 +95,43 @@ def install_npm(source):
     return lock
 
 
+
+class GithubReleaseRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self,request,fp,code,msg,headers,url):
+        parsed=urllib.parse.urlsplit(url)
+        if (parsed.scheme!='https' or parsed.hostname not in {'github.com','release-assets.githubusercontent.com'}
+                or parsed.username or parsed.password or parsed.port not in {None,443}):
+            raise ValueError('unexpected release tool redirect')
+        return super().redirect_request(request,fp,code,msg,headers,url)
+
+
+def install_syft(source):
+    lock=json.loads((source/'native/syft-tool.lock.json').read_text())
+    version,digest,size=(lock.get(k) for k in ['version','sha256','bytes'])
+    if (not isinstance(version,str) or not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',version)
+            or lock.get('url')!='https://github.com/anchore/syft/releases/download/v'+version+'/syft_'+version+'_linux_amd64.tar.gz'
+            or not isinstance(digest,str) or not re.fullmatch('[0-9a-f]{64}',digest)
+            or type(size) is not int or not 0<size<=64<<20):
+        raise ValueError('invalid pinned Syft tool')
+    opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),GithubReleaseRedirect())
+    with opener.open(lock['url'],timeout=60) as response:data=response.read(size+1)
+    if len(data)!=size or hashlib.sha256(data).hexdigest()!=digest:
+        raise ValueError('Syft archive does not match lock')
+    with tarfile.open(fileobj=io.BytesIO(data),mode='r:gz') as archive:
+        members=archive.getmembers()
+        selected=[m for m in members if m.name=='syft']
+        if (len(members)>32 or sum(m.size for m in members)>256<<20 or len(selected)!=1
+                or not selected[0].isfile() or selected[0].issparse() or not 0<selected[0].size<=128<<20):
+            raise ValueError('invalid Syft executable member')
+        with archive.extractfile(selected[0]) as stream:
+            executable=stream.read((128<<20)+1)
+        if len(executable)!=selected[0].size:raise ValueError('incomplete Syft executable')
+    path=WORK/'bin/syft'
+    with path.open('xb') as target:target.write(executable)
+    path.chmod(0o555)
+    return lock
+
+
 def acquire(revision,ref):
     for name in ['bin','home','tmp','cache','config','source']:(WORK/name).mkdir()
     for name in ['user.npmrc','global.npmrc']:(WORK/name).write_text('')
@@ -111,6 +149,7 @@ def acquire(revision,ref):
     if (source/'.npmrc').exists() or (source/'web/.npmrc').exists():
         raise ValueError('project npm configuration is not a build input')
     tool=install_npm(source)
+    install_syft(source)
     if subprocess.check_output(['npm','--version'],env=environment(False),text=True).strip()!=tool['version']:
         raise ValueError('npm client version does not match lock')
     before=hashes(source)
@@ -216,6 +255,10 @@ def build(revision,ref,sha):
     (WORK/'application.json').write_text(json.dumps(result,indent=2)+'\n')
     run(['go','mod','verify'],True)
     retain_sources(revision)
+    run(['python3','scripts/onefile-sbom.py','--binary','/work/package/scanner-onefile-linux-amd64',
+         '--build-receipt','/work/package/build.json','--packed-manifest','/work/package/manifest.json',
+         '--native-manifest','native/runtime-manifest.json','--provenance','native/runtime-provenance.json',
+         '--syft','/work/bin/syft','--output-dir','/work/onefile-sbom'],True)
 
 
 if __name__=='__main__':

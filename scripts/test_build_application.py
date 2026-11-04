@@ -79,6 +79,29 @@ class ApplicationBuildTests(unittest.TestCase):
                 with self.assertRaises(ValueError):module.install_npm(root)
                 opener.assert_not_called()
 
+    def test_syft_archive_hash_and_selected_member_are_required(self):
+        for wrong_hash,linked in [(False,False),(True,False),(False,True)]:
+            with self.subTest(wrong_hash=wrong_hash,linked=linked),tempfile.TemporaryDirectory() as temporary:
+                root=Path(temporary);source=root/'source';(source/'native').mkdir(parents=True);(root/'bin').mkdir()
+                blob=io.BytesIO()
+                with tarfile.open(fileobj=blob,mode='w:gz') as archive:
+                    member=tarfile.TarInfo('syft')
+                    if linked:member.type=tarfile.SYMTYPE;member.linkname='/outside'
+                    else:member.size=4
+                    archive.addfile(member,None if linked else io.BytesIO(b'tool'))
+                data=blob.getvalue()
+                lock={'version':'1.55.0','url':'https://github.com/anchore/syft/releases/download/v1.55.0/syft_1.55.0_linux_amd64.tar.gz',
+                      'bytes':len(data),'sha256':'0'*64 if wrong_hash else hashlib.sha256(data).hexdigest()}
+                (source/'native/syft-tool.lock.json').write_text(json.dumps(lock))
+                with patch.object(module,'WORK',root),patch.object(module.urllib.request,'build_opener') as opener:
+                    opener.return_value.open.return_value=io.BytesIO(data)
+                    if wrong_hash or linked:
+                        with self.assertRaises(ValueError):module.install_syft(source)
+                        self.assertFalse((root/'bin/syft').exists())
+                    else:
+                        module.install_syft(source)
+                        self.assertEqual((root/'bin/syft').read_bytes(),b'tool')
+
     def test_build_environment_is_explicit_and_offline(self):
         with patch.dict(os.environ,{'GITHUB_TOKEN':'do-not-forward','NODE_OPTIONS':'untrusted','GOPROXY':'unsafe'}):
             env=module.environment(True)

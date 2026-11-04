@@ -128,11 +128,13 @@ def build(root, output, retain_sources=False):
         snapshot, inputs = volume('source-volume','64m'), volume('input-volume','1g')
         source_mount = f'type=volume,src={snapshot},dst=/snapshot,readonly'
         input_mount = f'type=volume,src={inputs},dst=/inputs,readonly'
+        sources = volume('external-source-volume','2g') if retain_sources else None
+        source_keeper_mount = ['--mount',f'type=volume,src={sources},dst=/sources,readonly'] if sources else []
         keeper = prefix+'-keeper';containers.append(keeper)
         call('keeper',['docker','run','--detach','--name',keeper,'--network','none','--read-only',
                        '--user','10001:10001','--cap-drop','ALL','--security-opt','no-new-privileges',
                        '--memory','32m','--memory-swap','32m','--cpus','0.25','--pids-limit','8',
-                       '--mount',source_mount,'--mount',input_mount,'--entrypoint','/bin/sleep',bootstrap,'3000'])
+                       '--mount',source_mount,'--mount',input_mount,*source_keeper_mount,'--entrypoint','/bin/sleep',bootstrap,'3000'])
         call('snapshot',run('snapshot',bootstrap,['python3','-c',EXTRACT_SOURCE],
              [f'type=volume,src={snapshot},dst=/snapshot',f'type=bind,src={source_tar},dst=/source.tar,readonly']))
         for lock in ['runtime-apks','sane-sdk','tesseract-sdk']:
@@ -147,7 +149,6 @@ def build(root, output, retain_sources=False):
              "import shutil; shutil.copyfile('/snapshot/source/native/tesseract-source.SHA256SUMS','/inputs/tesseract-source.SHA256SUMS')"],
              [source_mount,f'type=volume,src={inputs},dst=/inputs']))
         if retain_sources:
-            sources = volume('external-source-volume','2g')
             source_inputs = f'type=volume,src={sources},dst=/sources'
             call('fetch-external-sources',run('fetch-external-sources',bootstrap,
                  ['python3','/snapshot/source/scripts/fetch-source-inputs.py',

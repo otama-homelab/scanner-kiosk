@@ -212,6 +212,7 @@ jobs:
           path: |
             ${{ runner.temp }}/candidate/packaged/
             ${{ runner.temp }}/candidate/native-sbom/
+            ${{ runner.temp }}/candidate/onefile-sbom/
             ${{ runner.temp }}/candidate/image.tar
             ${{ runner.temp }}/candidate/image.json
             ${{ runner.temp }}/candidate/image-binary.json
