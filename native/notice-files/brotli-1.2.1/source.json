@@ -1,0 +1,31 @@
+{
+  "component": "brotli-1.2.1",
+  "notice_files": [
+    {
+      "file": "LICENSE",
+      "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
+      "source_member": "brotli-1.2.1/LICENSE"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file and build-transformation review remains open; root text retention is not full approval."
+  ],
+  "runtime_files": [
+    "usr/lib/libbrotlicommon.so.1",
+    "usr/lib/libbrotlicommon.so.1.2.1",
+    "usr/lib/libbrotlidec.so.1",
+    "usr/lib/libbrotlidec.so.1.2.1",
+    "usr/lib/libbrotlienc.so.1",
+    "usr/lib/libbrotlienc.so.1.2.1"
+  ],
+  "runtime_packages": [
+    "brotli-libs"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "brotli-1.2.1.tar.gz",
+  "source_archive_sha512": "460591287d428c8b5a8a2766b5b424d14501fcda12c7118b8f3cc4bfae44b90ac75ca156557f07b6e22542612724d904533e5f70019be07dbbb604c46f03ab69",
+  "source_recipe_origins": [
+    "8313352127992a9d82e2c2024494f6c38a4dffb4/main/brotli"
+  ]
+}

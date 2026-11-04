@@ -690,6 +690,26 @@
       "sha256": "2779eb3d546435656e67e913a27c696f7b8218fd658c7ae70760e66c119957f3",
       "size": 7911
     },
+    "usr/share/scanner-kiosk/notices/native/brotli-1.2.1/LICENSE": {
+      "mode": 292,
+      "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
+      "size": 1084
+    },
+    "usr/share/scanner-kiosk/notices/native/brotli-1.2.1/source.json": {
+      "mode": 292,
+      "sha256": "6cc4a729db12e7c4ea046c43c506fec9a32c5961434f571d9b4ef2042b0691b8",
+      "size": 1097
+    },
+    "usr/share/scanner-kiosk/notices/native/giflib-5.2.2/COPYING": {
+      "mode": 292,
+      "sha256": "0c9b7990ecdca88b676db232c226548ac408b279f550d424d996f0d83591dd8e",
+      "size": 1088
+    },
+    "usr/share/scanner-kiosk/notices/native/giflib-5.2.2/source.json": {
+      "mode": 292,
+      "sha256": "19b2a23f5467bb8d83d69df4ada367937c6f9fc10feceb44757502bdf7ccf9a2",
+      "size": 934
+    },
     "usr/share/scanner-kiosk/notices/native/leptonica-1.87.0/LICENSE": {
       "mode": 292,
       "sha256": "87829abb5bbb00b55a107365da89e9a33f86c4250169e5a1e5588505be7d5806",
@@ -699,6 +719,16 @@
       "mode": 292,
       "sha256": "f2f9e3f987d541209d296bccd74b8cf3ad22d9cf22e95aafb0c5835177dd76de",
       "size": 806
+    },
+    "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/LICENSE": {
+      "mode": 292,
+      "sha256": "d5699fa516968e3a1550e6c902b7441c78856f2603d61bedd0b0662a26655366",
+      "size": 1132
+    },
+    "usr/share/scanner-kiosk/notices/native/libffi-3.5.2/source.json": {
+      "mode": 292,
+      "sha256": "5b4e182e253a848394677e3b98998b938c5edfd2eef387f522d8ab93b3eb8ba9",
+      "size": 932
     },
     "usr/share/scanner-kiosk/notices/native/libjpeg-turbo-3.1.3/ATTRIBUTION.txt": {
       "mode": 292,
@@ -719,6 +749,66 @@
       "mode": 292,
       "sha256": "99cccf8c4397639b8652fc1a701b98fa730dc4fbaa0207debd7adbfce990d55f",
       "size": 977
+    },
+    "usr/share/scanner-kiosk/notices/native/libpng-1.6.59/LICENSE": {
+      "mode": 292,
+      "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526",
+      "size": 5345
+    },
+    "usr/share/scanner-kiosk/notices/native/libpng-1.6.59/source.json": {
+      "mode": 292,
+      "sha256": "dacbf32cab9e3be27200dc33349ad7d14633dd7ab0250319edcee1ae1367dd69",
+      "size": 944
+    },
+    "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/AUTHORS": {
+      "mode": 292,
+      "sha256": "f251be89fd442bd9d701360730aea163cc8e2076ff03528f59267dc2c4f8b60a",
+      "size": 3279
+    },
+    "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/COPYING": {
+      "mode": 292,
+      "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf",
+      "size": 1496
+    },
+    "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/PATENTS": {
+      "mode": 292,
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c",
+      "size": 1436
+    },
+    "usr/share/scanner-kiosk/notices/native/libwebp-1.6.0/source.json": {
+      "mode": 292,
+      "sha256": "1bc8601d66117758438a63d5505f69a95c7fe6e5d5e44663871ec538a8dade3b",
+      "size": 1450
+    },
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/Copyright": {
+      "mode": 292,
+      "sha256": "c99aae1afe013e50b8b3701e089222b351258043c3025b64053a233fd25b4be7",
+      "size": 1273
+    },
+    "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/source.json": {
+      "mode": 292,
+      "sha256": "ab496ea99b26dcde689afa46fe0865d367b75d22ace3c8468f7d23a3631057d1",
+      "size": 954
+    },
+    "usr/share/scanner-kiosk/notices/native/musl-1.2.6/COPYRIGHT": {
+      "mode": 292,
+      "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b",
+      "size": 6196
+    },
+    "usr/share/scanner-kiosk/notices/native/musl-1.2.6/source.json": {
+      "mode": 292,
+      "sha256": "6405edcc6e67e5b7c025735c179a543cb9e70f7909791922ad292831a9a6a8ba",
+      "size": 946
+    },
+    "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/COPYING": {
+      "mode": 292,
+      "sha256": "2e1ba993904df807a10c3eda1e5c272338edc35674b679773a8b3ad460731054",
+      "size": 1447
+    },
+    "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/source.json": {
+      "mode": 292,
+      "sha256": "ec805c559b596edc9bc2a5799f58b6e3f9409d031bcfc70d2d14858700a2e953",
+      "size": 965
     },
     "usr/share/scanner-kiosk/notices/native/provenance.json": {
       "mode": 292,
@@ -759,6 +849,76 @@
       "mode": 292,
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
       "size": 11358
+    },
+    "usr/share/scanner-kiosk/notices/native/tiff-4.7.2/ATTRIBUTION.txt": {
+      "mode": 292,
+      "sha256": "f211568c9111a65a21e25cb0e257d421e999e1a672c91d6183bcad2134fe898d",
+      "size": 84
+    },
+    "usr/share/scanner-kiosk/notices/native/tiff-4.7.2/LICENSE.md": {
+      "mode": 292,
+      "sha256": "0e27c2382d7b8147972bbb746e04059a1152c8d0fda9d03ef1399d1a433c4ade",
+      "size": 2416
+    },
+    "usr/share/scanner-kiosk/notices/native/tiff-4.7.2/source.json": {
+      "mode": 292,
+      "sha256": "1418cc99c3b58462326cf236424a54049dff6a3dc9d8fe239363f1cfdb5443c7",
+      "size": 932
+    },
+    "usr/share/scanner-kiosk/notices/native/xz-5.8.4/COPYING": {
+      "mode": 292,
+      "sha256": "616a3ad264ce29b8f1cb97e53037b139d406899ca8d1f799651e17bfa09830b8",
+      "size": 3119
+    },
+    "usr/share/scanner-kiosk/notices/native/xz-5.8.4/COPYING.0BSD": {
+      "mode": 292,
+      "sha256": "0b01625d853911cd0e2e088dcfb743261034a091bb379246cb25a14cc4c74bf1",
+      "size": 607
+    },
+    "usr/share/scanner-kiosk/notices/native/xz-5.8.4/COPYING.GPLv2": {
+      "mode": 292,
+      "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+      "size": 17984
+    },
+    "usr/share/scanner-kiosk/notices/native/xz-5.8.4/COPYING.GPLv3": {
+      "mode": 292,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "size": 35149
+    },
+    "usr/share/scanner-kiosk/notices/native/xz-5.8.4/COPYING.LGPLv2.1": {
+      "mode": 292,
+      "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95",
+      "size": 26419
+    },
+    "usr/share/scanner-kiosk/notices/native/xz-5.8.4/source.json": {
+      "mode": 292,
+      "sha256": "33069c67c189eff290db139d55edd01f0230c99ea08f2294280855b106415d34",
+      "size": 1678
+    },
+    "usr/share/scanner-kiosk/notices/native/zlib-1.3.2/LICENSE": {
+      "mode": 292,
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2",
+      "size": 1002
+    },
+    "usr/share/scanner-kiosk/notices/native/zlib-1.3.2/source.json": {
+      "mode": 292,
+      "sha256": "edd27324d774eb0685f02f80e1c1406762741969bc3ce46d687a02355c55a7ba",
+      "size": 920
+    },
+    "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/COPYING": {
+      "mode": 292,
+      "sha256": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505",
+      "size": 18091
+    },
+    "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/LICENSE": {
+      "mode": 292,
+      "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8",
+      "size": 1549
+    },
+    "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/source.json": {
+      "mode": 292,
+      "sha256": "cd1ae99019c15361e06d8d3858fc75ba74cae24454261746d280513b7575259d",
+      "size": 1145
     },
     "usr/share/scanner-kiosk/notices/original-delivery-inventory.json": {
       "mode": 292,

@@ -1,0 +1,32 @@
+{
+  "component": "zstd-1.5.7",
+  "notice_files": [
+    {
+      "file": "COPYING",
+      "sha256": "f9c375a1be4a41f7b70301dd83c91cb89e41567478859b77eef375a52d782505",
+      "source_member": "zstd-1.5.7/COPYING"
+    },
+    {
+      "file": "LICENSE",
+      "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8",
+      "source_member": "zstd-1.5.7/LICENSE"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Preserve both upstream license documents; determine the applicable per-file terms rather than infer the whole binary license from one root file."
+  ],
+  "runtime_files": [
+    "usr/lib/libzstd.so.1",
+    "usr/lib/libzstd.so.1.5.7"
+  ],
+  "runtime_packages": [
+    "zstd-libs"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "zstd-1.5.7.tar.gz",
+  "source_archive_sha512": "26e441267305f6e58080460f96ab98645219a90d290a533410b1b0b1d2f870721c95f8384e342ee647c5e968385a5b7e30c2d04340c37f59b3e6d86762c3260c",
+  "source_recipe_origins": [
+    "3c6e2ee2b16f403d53eab39c4426eb61f003c322/main/zstd"
+  ]
+}

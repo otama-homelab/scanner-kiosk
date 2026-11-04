@@ -143,12 +143,18 @@ are deliberately identified as preserved inputs, not regenerated current proofs.
 
 ## Source-managed notices
 
-The current native manifest has **197 entries**: the prior 191 entries plus six
-Leptonica 1.87.0/libjpeg-turbo 3.1.3 notice, attribution and source-association
-files. Their upstream license texts are retained verbatim in `notice-files/`;
-libjpeg-turbo also carries the IJG attribution required by its upstream terms.
-The source records bind the exact upstream archives, selected members and runtime
-files. This addresses those specific notice gaps, not the complete license gate.
+The current native manifest has **229 entries**:111 code/data entries and118
+notice/source/observation files.38 notices are source-managed in `notice-files/`;
+the other80 remain pinned historical inputs. The first six source-managed files
+cover Leptonica1.87.0/libjpeg-turbo3.1.3.32 additional files preserve19 upstream
+texts for12 transitive packages,12 source-association records and LibTIFF's
+Berkeley attribution. Original native code/data and prior notices are unchanged.
+
+The source records bind exact archives, selected member hashes and runtime files.
+libffi, libxml2, musl and p11-kit explicitly retain per-file review follow-ups.
+XZ's root summary identifies the delivered liblzma as0BSD; the extra GNU texts
+are upstream package context, not an assignment of GPL terms to every binary.
+These selected notice deliveries do not establish complete license/source approval.
 
 `runtime-provenance.json` maps these destinations through `notice_sources`.
 The assembler reads those sources only from `notice-files/` beside the supplied

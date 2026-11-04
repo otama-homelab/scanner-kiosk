@@ -1,0 +1,27 @@
+{
+  "component": "p11-kit-0.26.2",
+  "notice_files": [
+    {
+      "file": "COPYING",
+      "sha256": "2e1ba993904df807a10c3eda1e5c272338edc35674b679773a8b3ad460731054",
+      "source_member": "p11-kit-0.26.2/COPYING"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Root COPYING has redistribution terms but no copyright attribution; relevant source-header review remains open."
+  ],
+  "runtime_files": [
+    "usr/lib/libp11-kit.so.0",
+    "usr/lib/libp11-kit.so.0.4.8"
+  ],
+  "runtime_packages": [
+    "p11-kit"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "p11-kit-0.26.2.tar.xz",
+  "source_archive_sha512": "662c77e3133a9ee00f155fc2c1f12fdb16492920f992ab6e9de587c8abf76f990d442643bf8464cc08ad4d1c584f4d6f8d3a006aa7fc791010fa9cb7acaf6b7b",
+  "source_recipe_origins": [
+    "922ca1ffc9cc326f7d95b093b365e31da5cba1a9/main/p11-kit"
+  ]
+}

@@ -67,6 +67,21 @@ class NativeRuntimeLockTests(unittest.TestCase):
         self.assertEqual(attribution.read_text(),
                          'This software is based in part on the work of the Independent JPEG Group.\n')
 
+    def test_notice_source_records_bind_original_texts_and_runtime_files(self):
+        root = ROOT/'native/notice-files'
+        for record_path in root.glob('*/source.json'):
+            record = json.loads(record_path.read_text())
+            self.assertFalse(record['publication_approved'])
+            self.assertRegex(record['source_archive_sha512'], r'^[0-9a-f]{128}$')
+            self.assertTrue(record['runtime_files'])
+            self.assertTrue(set(record['runtime_files']).issubset(self.files))
+            for item in record['notice_files']:
+                self.assertEqual(PurePosixPath(item['file']).name, item['file'])
+                path = record_path.parent/item['file']
+                self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), item['sha256'])
+        self.assertEqual((root/'tiff-4.7.2/ATTRIBUTION.txt').read_text(),
+                         'This product includes software developed by the University of California, Berkeley.\n')
+
     def test_firstparty_source_or_sdk_changes_require_native_rebuild(self):
         for component in self.provenance['firstparty_components']:
             self.assertEqual(hashlib.sha256((ROOT / 'native' / component['sdk_lock']).read_bytes()).hexdigest(), component['sdk_lock_sha256'])

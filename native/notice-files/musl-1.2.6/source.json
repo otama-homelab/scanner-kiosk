@@ -1,0 +1,27 @@
+{
+  "component": "musl-1.2.6",
+  "notice_files": [
+    {
+      "file": "COPYRIGHT",
+      "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b",
+      "source_member": "musl-1.2.6/COPYRIGHT"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Root COPYRIGHT identifies TRE, math, crypt and other per-file licenses; per-file notice review remains open."
+  ],
+  "runtime_files": [
+    "lib/ld-musl-x86_64.so.1",
+    "lib/libc.musl-x86_64.so.1"
+  ],
+  "runtime_packages": [
+    "musl"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "musl-1.2.6.tar.gz",
+  "source_archive_sha512": "1adad96eddb3a2eb0cacb3e363b0046568925fcdd75cf8b0503f2139df1f693d64730779ca0ce8131b7624ab2d37f4247bb1d3393c523de6e30d2b1d7732555c",
+  "source_recipe_origins": [
+    "8f79d39391b46d6dbf1800fb68b8212a21d5ee2e/main/musl"
+  ]
+}

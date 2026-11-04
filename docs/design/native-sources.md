@@ -198,3 +198,13 @@ notices remain separate pinned inputs. See [source-managed notices](../../native
 This closes those specific notice-delivery gaps only after the resulting package
 has been checked; other component conditions, source/relink delivery, project
 license and security/release gates remain open.
+
+
+A further32 source-managed files now preserve19 original root notice texts for
+Brotli, GIFLIB, libffi, libpng, WebP, libxml2, musl, p11-kit, LibTIFF, XZ, zlib
+and Zstandard, with12 exact archive/runtime association records and Berkeley
+attribution. This uses the existing assembler mapping without a new acquisition
+or runtime mechanism. The native manifest is229entries; original197 entries
+are unchanged. Root license texts can refer to per-file conditions (notably
+libffi/libxml2/musl/p11-kit), and those follow-ups remain explicit in source.json.
+Full source/relink delivery, other components and release acceptance stay open.

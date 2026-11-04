@@ -1,0 +1,27 @@
+{
+  "component": "libffi-3.5.2",
+  "notice_files": [
+    {
+      "file": "LICENSE",
+      "sha256": "d5699fa516968e3a1550e6c902b7441c78856f2603d61bedd0b0662a26655366",
+      "source_member": "libffi-3.5.2/LICENSE"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Root LICENSE refers to individual source-file copyright details; per-file review remains open."
+  ],
+  "runtime_files": [
+    "usr/lib/libffi.so.8",
+    "usr/lib/libffi.so.8.2.0"
+  ],
+  "runtime_packages": [
+    "libffi"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "libffi-3.5.2.tar.gz",
+  "source_archive_sha512": "76974a84e3aee6bbd646a6da2e641825ae0b791ca6efdc479b2d4cbcd3ad607df59cffcf5031ad5bd30822961a8c6de164ac8ae379d1804acd388b1975cdbf4d",
+  "source_recipe_origins": [
+    "2c2a7bb4a8b16066834e90402567b2c19403a790/main/libffi"
+  ]
+}

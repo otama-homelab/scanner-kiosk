@@ -1,0 +1,27 @@
+{
+  "component": "giflib-5.2.2",
+  "notice_files": [
+    {
+      "file": "COPYING",
+      "sha256": "0c9b7990ecdca88b676db232c226548ac408b279f550d424d996f0d83591dd8e",
+      "source_member": "giflib-5.2.2/COPYING"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file and build-transformation review remains open; root text retention is not full approval."
+  ],
+  "runtime_files": [
+    "usr/lib/libgif.so.7",
+    "usr/lib/libgif.so.7.2.0"
+  ],
+  "runtime_packages": [
+    "giflib"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "giflib-5.2.2.tar.gz",
+  "source_archive_sha512": "0865ab2b1904fa14640c655fdb14bb54244ad18a66e358565c00287875d00912343f9be8bfac7658cc0146200d626f7ec9160d7a339f20ba3be6b9941d73975f",
+  "source_recipe_origins": [
+    "167ec6ebf8ead4ee64c5c5a6ac681d0d6cf2b4ca/main/giflib"
+  ]
+}

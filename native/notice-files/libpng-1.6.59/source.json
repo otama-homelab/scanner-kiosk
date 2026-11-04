@@ -1,0 +1,27 @@
+{
+  "component": "libpng-1.6.59",
+  "notice_files": [
+    {
+      "file": "LICENSE",
+      "sha256": "bdb0a645ea18c60507d0368379b1ac5474b92255fcc2d115e07486a7672ba526",
+      "source_member": "libpng-1.6.59/LICENSE"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Review the pinned APNG patch and per-file terms against retained library before full acceptance."
+  ],
+  "runtime_files": [
+    "usr/lib/libpng16.so.16",
+    "usr/lib/libpng16.so.16.59.0"
+  ],
+  "runtime_packages": [
+    "libpng"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "libpng-1.6.59.tar.gz",
+  "source_archive_sha512": "2d753e764846a0a75a10f2a00c6f4ae23d2ae37237c69d59d5e619da3f143d59f4ea9ce29c1fb39435df1cef77877c83b042a2275934c353a6603061da2d2dd9",
+  "source_recipe_origins": [
+    "8f222b50cd6e31c83f7dd69ab7c00e7471e11d4b/main/libpng"
+  ]
+}

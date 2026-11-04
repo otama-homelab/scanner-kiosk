@@ -1,0 +1,27 @@
+{
+  "component": "tiff-4.7.2",
+  "notice_files": [
+    {
+      "file": "LICENSE.md",
+      "sha256": "0e27c2382d7b8147972bbb746e04059a1152c8d0fda9d03ef1399d1a433c4ade",
+      "source_member": "tiff-4.7.2/LICENSE.md"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file and build-transformation review remains open; root text retention is not full approval."
+  ],
+  "runtime_files": [
+    "usr/lib/libtiff.so.6",
+    "usr/lib/libtiff.so.6.3.0"
+  ],
+  "runtime_packages": [
+    "tiff"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "tiff-4.7.2.tar.gz",
+  "source_archive_sha512": "bad66954a7e7e158c6dcbfc0e2d0032b8f3e2a354b6d0fdbb8038a7963e36c5b8a433dd4ee81c6c4dabfb50094152d440aa1f32b5299098c9ae29e55de2e41fc",
+  "source_recipe_origins": [
+    "bbcfbafeadf5dac4744d065ac69338c1b58fc0d1/main/tiff"
+  ]
+}

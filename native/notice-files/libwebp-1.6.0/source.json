@@ -1,0 +1,43 @@
+{
+  "component": "libwebp-1.6.0",
+  "notice_files": [
+    {
+      "file": "PATENTS",
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c",
+      "source_member": "libwebp-1.6.0/PATENTS"
+    },
+    {
+      "file": "COPYING",
+      "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf",
+      "source_member": "libwebp-1.6.0/COPYING"
+    },
+    {
+      "file": "AUTHORS",
+      "sha256": "f251be89fd442bd9d701360730aea163cc8e2076ff03528f59267dc2c4f8b60a",
+      "source_member": "libwebp-1.6.0/AUTHORS"
+    }
+  ],
+  "publication_approved": false,
+  "review_remaining": [
+    "Per-file and build-transformation review remains open; root text retention is not full approval."
+  ],
+  "runtime_files": [
+    "usr/lib/libsharpyuv.so.0",
+    "usr/lib/libsharpyuv.so.0.1.2",
+    "usr/lib/libwebp.so.7",
+    "usr/lib/libwebp.so.7.2.0",
+    "usr/lib/libwebpmux.so.3",
+    "usr/lib/libwebpmux.so.3.1.2"
+  ],
+  "runtime_packages": [
+    "libsharpyuv",
+    "libwebp",
+    "libwebpmux"
+  ],
+  "scope": "Exact upstream notice text and current runtime association; not complete source, license or release approval",
+  "source_archive": "libwebp-1.6.0.tar.gz",
+  "source_archive_sha512": "5c159d9760efcb92749092536daada22c0a73c20926c76097a5f0448ddbf874cf761324ca97925ca5f578b30477564b2b072b47667e504673797128b31cafcbf",
+  "source_recipe_origins": [
+    "af8b48fabd19b69b00f5efe192f461896a38cf74/main/libwebp"
+  ]
+}

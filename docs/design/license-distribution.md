@@ -24,6 +24,16 @@ Other native component obligations, replacement/relinking materials, recipient
 source access and the project's own license remain under review. This update
 does not approve distribution or establish full notice completeness.
 
+The same source-managed path now also retains root notices for12 transitive
+packages: Brotli, GIFLIB, libffi, libpng, WebP, libxml2, musl, p11-kit, LibTIFF,
+XZ, zlib and Zstandard. LibTIFF carries explicit Berkeley attribution. Exact
+source/member hashes and runtime associations are recorded per package. A root
+notice is not sufficient evidence of per-file coverage: libxml2 excludes dict.c
+and list.c from its common copyright, musl identifies third-party source terms,
+libffi refers to individual files, and p11-kit's root COPYING omits copyright
+attribution. Their source records retain these open checks. No complete
+component or release license approval is inferred from the new files.
+
 ## Browser build observation, 2026-11-03
 
 The workspace plan's `frontend-delivery-graph-20261103/receipt.json` and
