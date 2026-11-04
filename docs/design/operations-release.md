@@ -253,3 +253,22 @@ No host setting changed, and the proposed administrator remediation above is
 still unapplied. Clock acceptance and the required subsequent OCR100/full-suite
 checks remain open. Raw observations are in the parent plan's
 `clock-timesync-correlation-20261104/current-evidence.json`.
+
+
+### Current onefile identity recovery acceptance
+
+The existing recovery fixture passed all eight checks using current onefile
+`e5363774…` directly, with private launcher cache defaults and no native tool
+path overrides. It exercised logical export from a live API, exclusive archive
+creation, restore into fresh state, old-session rejection and fresh login,
+preserved document ownership/bytes, rejection of an active destination,
+restart with an empty document store, and malformed/absent-source rejection.
+All owned API processes stopped normally. This completes the current-candidate
+local identity recovery check required by the distribution acceptance plan.
+
+The stores and document payloads were synthetic, with real SQLite and loopback
+HTTP; the fixture manually transported Secure cookies. Actual PVC/NAS loss,
+HTTPS/IdP, storage faults and upgrade/rollback remain distinct existing
+acceptance requirements. Evidence is in the parent plan's
+`current-onefile-state-recovery-20261104/current-evidence.json`. Only the fixture's
+binary selection and scratch environment changed; product code was unchanged.
