@@ -44,9 +44,20 @@ def extract_native(archive,target):
                 or sum(m.size for m in members)>512<<20
                 or any(not ((m.name=='native' and m.isdir()) or
                        (m.name.startswith('native/') and '..' not in PurePosixPath(m.name).parts
-                        and (m.isfile() or m.isdir() or m.issym()))) for m in members)):
+                        and PurePosixPath(m.name).as_posix()==m.name
+                        and (m.isfile() or m.isdir() or m.issym()))) for m in members)
+                or any(m.isfile() and m.mode not in [0o444,0o555] for m in members)):
             raise ValueError('invalid native archive')
-        stream.extractall(target,filter='data')
+        links={m.name for m in members if m.issym()}
+        if any(any(str(parent) in links for parent in PurePosixPath(m.name).parents) for m in members):
+            raise ValueError('native archive has a symlink parent')
+        root=target/'native'
+        root.mkdir(mode=0o700)
+        selected=[m.replace(name=m.name.removeprefix('native/')) for m in members if m.name!='native']
+        stream.extractall(root,members=selected,filter='data')
+        # data_filter adds owner write; restore only the validated pinned file modes.
+        for member in selected:
+            if member.isfile():(root/member.name).chmod(member.mode)
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):

@@ -5,6 +5,7 @@ import hashlib
 import os
 from pathlib import Path
 import tarfile
+import stat
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -16,16 +17,16 @@ spec.loader.exec_module(module)
 
 class ApplicationBuildTests(unittest.TestCase):
     def test_native_archive_accepts_root_and_refuses_escape_or_duplicates(self):
-        for bad in ['', 'parent', 'symlink', 'duplicate']:
+        for bad in ['', 'parent', 'symlink', 'scope-link', 'mode', 'duplicate']:
             with self.subTest(bad=bad), tempfile.TemporaryDirectory() as temporary:
                 root=Path(temporary);archive=root/'input.tar';target=root/'output';target.mkdir()
                 with tarfile.open(archive,'w') as out:
                     entry=tarfile.TarInfo('native/');entry.type=tarfile.DIRTYPE;entry.mode=0o755;out.addfile(entry)
                     entry=tarfile.TarInfo('native/../escape' if bad=='parent' else 'native/data')
-                    if bad=='symlink':
-                        entry.type=tarfile.SYMTYPE;entry.linkname='../../escape';out.addfile(entry)
+                    if bad in ['symlink','scope-link']:
+                        entry.type=tarfile.SYMTYPE;entry.linkname='../../escape' if bad=='symlink' else '../escape';out.addfile(entry)
                     else:
-                        entry.size=4;entry.mode=0o444;out.addfile(entry,io.BytesIO(b'data'))
+                        entry.size=4;entry.mode=0o777 if bad=='mode' else 0o444;out.addfile(entry,io.BytesIO(b'data'))
                         if bad=='duplicate':out.addfile(entry,io.BytesIO(b'data'))
                 if bad:
                     with self.assertRaises((ValueError,tarfile.FilterError)):
@@ -33,6 +34,7 @@ class ApplicationBuildTests(unittest.TestCase):
                 else:
                     module.extract_native(archive,target)
                     self.assertEqual((target/'native/data').read_bytes(),b'data')
+                    self.assertEqual(stat.S_IMODE((target/'native/data').stat().st_mode),0o444)
                 self.assertFalse((root/'escape').exists())
 
     def test_npm_client_archive_is_pinned_and_extracted_in_private_work(self):
