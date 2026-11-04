@@ -27,6 +27,33 @@ Existing volumes are not automatically chowned. Use the same identity for user
 administration and preserve it across upgrades/restores; changing the setting
 alone does not migrate existing ownership.
 
+### First deployment: prepare storage
+
+1. Choose the numeric runtime UID/GID and configure both roles before creating
+   data. For rootless Docker or user namespaces, establish the corresponding
+   host IDs first; container `10001` is not necessarily host `10001`.
+2. Allocate two new, distinct dedicated directories or PVCs for state and
+   documents. Keep the old scanservjs volume untouched. Use a filesystem whose
+   SQLite locking and durability are supported; NFS is outside this contract.
+3. With the application stopped, have the storage administrator set each new
+   root to the selected identity as seen inside the container, mode `0700`.
+   Do not recursively chown/chmod an existing data tree. Existing data needs a
+   separate stopped-service ownership migration and recovery plan.
+4. Exclude the documents volume from snapshots, replication and offsite backup
+   **before writing the first document**, including inherited NAS policies.
+   Prepare the separate state export/restore procedure described in
+   [operations](../docs/design/operations-release.md).
+5. Render the selected Compose/Helm configuration and verify distinct mounts,
+   matching identities and the immutable image digest. For Compose, both host
+   directories must already exist; for Helm, both claims must already exist.
+6. Start with acquisition disabled (the default). Check both role logs for
+   storage/permission failures, then create the simple-auth administrator, if
+   used, as the same runtime UID. Confirm HTTPS login and API health. These
+   checks do not establish worker/scanner readiness or storage fault tolerance.
+7. Before enabling acquisition, accept the actual volume's locking, free-space
+   behavior and recovery, and complete scanner fencing/readiness acceptance.
+   A successful empty-store startup alone is insufficient.
+
 Both mounts contain SQLite databases; a shared NFS document directory is not a
 supported substitute for the local-store contract. See the
 [homelab requirements check](../docs/design/homelab-readiness.md) for UID/GID,

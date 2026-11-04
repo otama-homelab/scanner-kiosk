@@ -21,6 +21,6 @@
 
 現chartはfsGroupを付けず、事前にprivate storeを準備する設計。fsGroupや共有group向けのchmodだけで直すとprivate permission検査と衝突する。rootless/CSI/NASの実際のID mappingを先に確かめる。
 
-軽量レビュー後にUID/GID設定を追加した。現在の優先残件は、初回volumeの準備/確認手順、実storageの対応可否とbackup除外の確認。既存データの一括chownや権限緩和は、このレビューでは実施していない。
+軽量レビュー後にUID/GID設定を追加した。初回volumeの準備/確認手順は配備例へ追記済み。現在の優先残件は、実storageでの手順受入、対応可否とbackup除外の確認。既存データの一括chownや権限緩和は、このレビューでは実施していない。
 
 参照: [配備例](../../deploy/README.md)、[storage契約](state-storage.md)、[運用・release](operations-release.md)、[physical fencing](physical-writer-fencing.md)。
