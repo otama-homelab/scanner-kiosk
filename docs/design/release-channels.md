@@ -139,3 +139,38 @@ The six existing ref tests and actionlint also pass. The source workflow runs
 the new contract tests with its existing read-only permissions. The material
 stager, service writer/serialized workflow and actual main/tag publication are
 still incomplete; this policy is not a successful-looking publishing job.
+
+## Offline material staging
+
+`scripts/stage-candidate.py --inputs INPUT_DIRECTORY --inventory INVENTORY.json
+--output NEW_DIRECTORY` copies a declared material set and checks its byte
+hashes and candidate correspondence. Run it with read-only inputs, no external
+network, explicit empty environment, nonroot identity and bounded resources.
+The inventory format is1 with `source_sha` and `files`: role-keyed records of
+`path` (relative to inputs), `bytes` and `sha256`. Required roles and output
+names are fixed in the script; optional application/frontend input archives
+remain explicitly separate source/build scopes.
+
+The stager ties the actual onefile, packed/native manifests, build/application
+metadata, image archive/config/inventory, three SBOMs, source/base/deployment
+records and project license together. Raw advisory reports are preserved and
+verified member-by-member against recorded hashes. Input links/traversal,
+missing roles, wrong source/candidate/SBOM identities and changed bytes fail.
+It executes no candidate, source or archived program and repeats no unchanged
+source build. Existing review receipts supply the prior semantic proofs.
+
+The output includes a content-addressed candidate identity, `manifest.json`,
+`SHA256SUMS` and a receipt written last. Existing output names are never
+overwritten; handled errors remove only the directory reserved by this run.
+A killed run without a final receipt is incomplete. A writer must recheck the
+complete manifest/checksums and separately enforce release identity, approvals
+and fresh serialized service-state policy before any upload.
+
+The local c304a66 development candidate has28 staged materials bound by
+manifest SHA256`e2e814960de4bee366215ab004fb82f87fdbb3a303b2eaf8c48ee04c7a17f505`.
+All staged hashes were read back successfully. Its advisory scans completed,
+but the inferred-CPE threshold is unpassed; publication approval remains false.
+This is not the missing formal main/tag RC. Fifteen isolated failure/identity
+tests and actionlint pass; the source workflow runs these tests read-only.
+The service writer/serialized publishing workflow and actual publication
+remain unfinished.
