@@ -648,3 +648,34 @@ build script or private-store guard changed. No new scanner/device test ran.
 The owned containers, input image tag and staging were removed; the locked SDK
 was retained. Evidence: parent plan
 `native-recipient-helper-rebuild-20261104/current-evidence.json`.
+
+## Exact connected candidate checks, 2026-11-04
+
+The connected application source c304a66 produced onefile `368f6234…` and
+distroless image `cadc3c32…`. Fresh Syft inventories verify the exact binary,
+image configuration and all image-layer diff IDs. Offline Grype 0.121.0 with
+DB schema 6.1.10 (built 2026-11-02), integrity and age validation enabled,
+completed in WSL-local OS isolation: image zero matches (23.05s), unpacked Go
+inventory one Unknown GO-2026-5932 module warning (6.04s), and native-origin
+CycloneDX zero default matches (2.50s). No custom ignore rules were added.
+
+The native inferred-CPE supplement exited 2 (4.51s): the same eight
+Tesseract 5.5.2 APK matches as the retained source triage, five high and three
+medium. All raw findings remain. The APK still contributes configs/font data;
+the Tesseract 5.5.4 executable/library hashes are unchanged from the reviewed
+source/rebuild evidence above. The current native supplement has 39 origins,
+295 entries, 111 code/data entries and 184 notices; official unmodified
+sane-airscan 0.99.36-r0 replaces the historical fork. Earlier fork inventories
+are historical evidence and do not describe this candidate.
+
+The Go warning concerns OpenPGP; the application's direct x/crypto use is
+argon2. Compared with the earlier source-symbol check, tracked Go/module
+changes are confined to SANE HTTP endpoint validation and its tests. This is
+scoped reuse evidence, not a new complete source-symbol run or an exemption.
+
+The first Docker Desktop scan timed out during DB integrity hashing. A
+SIGQUIT stack localized the wait to DB file reads; the same DB/tool/input
+completed through the WSL-local path without relaxing validation. Failure and
+diagnostic logs remain alongside successful raw reports in parent evidence
+`candidate-review-20261104/current-evidence.json`. These results do not clear
+the remaining source/license/security, hosted CI or publication gates.
