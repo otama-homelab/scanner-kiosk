@@ -9,6 +9,8 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import Mock, patch
+import urllib.error
 
 spec = importlib.util.spec_from_file_location('collector', Path(__file__).with_name('collect-debian-sources.py'))
 collector = importlib.util.module_from_spec(spec)
@@ -62,6 +64,25 @@ class SourceBundleTests(unittest.TestCase):
                 if field == 'filename':
                     manifest['sources'][0]['files'][0]['url'] = self.file['url'].rsplit('/', 1)[0] + '/' + value
                 with self.assertRaises(ValueError): collector.plan_files(manifest, self.sbom)
+
+    def test_transient_gateway_failures_retry_but_bad_content_does_not(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            error=urllib.error.HTTPError(self.file['url'],504,'Gateway Timeout',{},None)
+            fetch=Mock(side_effect=[error,Response(self.data)])
+            with patch('time.sleep') as sleep:
+                self.assertEqual(collector.collect_file(self.file,Path(tmp),fetch),'downloaded')
+                self.assertEqual(fetch.call_count,2);sleep.assert_called_once_with(2)
+        for code,calls in [(504,3),(404,1)]:
+            with self.subTest(code=code),tempfile.TemporaryDirectory() as tmp:
+                fetch=Mock(side_effect=urllib.error.HTTPError(self.file['url'],code,'failed',{},None))
+                with patch('time.sleep'),self.assertRaises(urllib.error.HTTPError):
+                    collector.collect_file(self.file,Path(tmp),fetch)
+                self.assertEqual(fetch.call_count,calls);self.assertEqual(list(Path(tmp).iterdir()),[])
+        with tempfile.TemporaryDirectory() as tmp:
+            fetch=Mock(return_value=Response(b'bad data'))
+            with patch('time.sleep') as sleep,self.assertRaises(ValueError):
+                collector.collect_file(self.file,Path(tmp),fetch)
+            self.assertEqual(fetch.call_count,1);sleep.assert_not_called()
 
     def test_verified_file_is_reused_and_corruption_is_not_overwritten(self):
         with tempfile.TemporaryDirectory() as tmp:

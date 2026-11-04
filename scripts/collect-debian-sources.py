@@ -14,6 +14,8 @@ from pathlib import Path
 import re
 import stat
 import tempfile
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -84,6 +86,19 @@ def verify_file(path, item):
 
 
 def collect_file(item, directory, fetch):
+    for attempt in range(3):
+        try:
+            return collect_file_once(item, directory, fetch)
+        except urllib.error.HTTPError as error:
+            if error.code not in {408, 429, 500, 502, 503, 504} or attempt == 2:
+                raise
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
+            if attempt == 2:
+                raise
+        time.sleep(2 ** (attempt + 1))
+
+
+def collect_file_once(item, directory, fetch):
     target = directory / item['filename']
     if target.is_symlink():
         raise ValueError('source destination is a symlink')
