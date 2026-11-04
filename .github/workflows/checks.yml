@@ -94,6 +94,10 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_build_native.py -v
       - name: Native APK preparation safety checks
         run: python3 -m unittest discover -s scripts -p test_prepare_native_apks.py -v
+      - name: Application archive and offline environment contracts
+        run: python3 -m unittest discover -s scripts -p test_build_application.py -v
+      - name: Application pipeline failure and isolation contracts
+        run: python3 -m unittest discover -s scripts -p test_application_pipeline.py -v
       - name: Pinned standalone build input safety checks
         run: python3 -m unittest discover -s scripts -p test_build_standalone.py -v
       - name: Single-file packager and tagged launcher safety checks
@@ -159,19 +163,71 @@ jobs:
       - name: Compose render and native runtime contracts
         run: python3 scripts/test_compose_native.py -v
 
-  native-build:
+  candidate-build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 50
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
+          fetch-depth: 0
           persist-credentials: false
+      - uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6
+        with:
+          go-version: '1.27.3'
+          cache: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24.22.2'
+      - name: Install the pinned npm build client
+        run: npm install --global npm@11.21.1 --ignore-scripts --no-audit --no-fund
       - name: Build locked native payload from cold official inputs
         run: python3 scripts/build-native.py --output-dir "$RUNNER_TEMP/native"
+      - name: Build frontend, API, onefile and distroless candidate
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = push ]; then
+            bash scripts/build-application.sh "$RUNNER_TEMP/native/native.tar" "$RUNNER_TEMP/candidate" "$GITHUB_REF" "$GITHUB_SHA"
+          else
+            bash scripts/build-application.sh "$RUNNER_TEMP/native/native.tar" "$RUNNER_TEMP/candidate"
+          fi
+      - name: Bind native and application source revisions
+        run: |
+          cp "$RUNNER_TEMP/native/result.json" "$RUNNER_TEMP/candidate/native-build.json"
+          python3 -c 'import json,os,pathlib; root=pathlib.Path(os.environ["RUNNER_TEMP"]); native=json.loads((root/"candidate/native-build.json").read_text()); app=json.loads((root/"candidate/result.json").read_text()); assert native["passed"] and app["passed"] and native["source_revision"]==app["source_revision"]'
+      - name: Retain the complete internal candidate
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: candidate-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/candidate/packaged/
+            ${{ runner.temp }}/candidate/native-sbom/
+            ${{ runner.temp }}/candidate/image.tar
+            ${{ runner.temp }}/candidate/image.json
+            ${{ runner.temp }}/candidate/image-binary.json
+            ${{ runner.temp }}/candidate/native-build.json
+            ${{ runner.temp }}/candidate/application.json
+            ${{ runner.temp }}/candidate/app-buildinfo.json
+            ${{ runner.temp }}/candidate/launcher-buildinfo.json
+            ${{ runner.temp }}/candidate/result.json
+            ${{ runner.temp }}/candidate/candidate-checksums.json
+      - name: Retain bounded failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: candidate-diagnostics-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/native/*.stderr
+            ${{ runner.temp }}/native/*.stdout
+            ${{ runner.temp }}/native/result.json
+            ${{ runner.temp }}/candidate/*.log
+            ${{ runner.temp }}/candidate/result.json
 
   required-checks:
     if: always()
-    needs: [release-ref-policy, test-and-build, deployment-contracts, native-build]
+    needs: [release-ref-policy, test-and-build, deployment-contracts, candidate-build]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -184,5 +240,5 @@ jobs:
           REF_RESULT: ${{ needs.release-ref-policy.result }}
           TEST_RESULT: ${{ needs.test-and-build.result }}
           DEPLOY_RESULT: ${{ needs.deployment-contracts.result }}
-          NATIVE_RESULT: ${{ needs.native-build.result }}
+          NATIVE_RESULT: ${{ needs.candidate-build.result }}
         run: sh scripts/check-required-jobs.sh

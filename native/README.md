@@ -535,3 +535,34 @@ commands, source/archive hashes and failures. A failed stage or failed cleanup
 leaves no final `native.tar`; an existing output directory is never overwritten.
 This step does not yet build the frontend/API, freeze source/security materials,
 publish a release, authorize physical acquisition or complete acceptance.
+
+## Connecting the application and distroless output
+
+Builders need Docker, Go 1.27.3 and an official-prefix Node 24.22.2 installation
+with npm 11.21.1. Consumers still need only the final executable or image.
+From a clean committed checkout, connect the native output with:
+
+```sh
+python3 scripts/build-native.py --output-dir /path/to/new-native-output
+bash scripts/build-application.sh /path/to/new-native-output/native.tar /path/to/new-candidate
+```
+
+For a verified push event, append the exact ref and event SHA to the second
+command. It reuses `build-web.py` and `build-standalone.py`; acquisition is
+separate from the network-free frontend/API/launcher build. Only read-only
+installed tools and Git input are exposed, with an empty child environment and
+private bounded scratch. No existing home module/npm cache or auth config is
+forwarded. Source/dependency changes fail the build. Native tar inputs are
+filtered in the sandbox and compared to the committed runtime manifest.
+
+The output contains `packaged/`, native SBOM/compiled Go metadata, an exact
+distroless image archive and checksum/identity records. The image's entrypoint,
+command, user, extracted executable hash and fresh-cache version are checked at
+768MiB/swap0 with a read-only root and no network. That smoke is not a claim
+that real scan/OCR workloads fit 768MiB. The local image remains available for
+acceptance; task-owned build tools/containers/volume are removed.
+
+The CI `candidate-build` job connects both commands and retains the internal
+candidate for seven days, separately from bounded failure diagnostics. These
+artifacts are not a preview/tag registry publication or source/license/security
+approval. Source/security freeze, publisher and operator acceptance remain open.

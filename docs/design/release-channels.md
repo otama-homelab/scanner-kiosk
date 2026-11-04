@@ -91,3 +91,19 @@ were unavailable in that fixture. This adds no publishing permissions or jobs,
 and does not approve native artifacts, licensing, release or deployment.
 The initial hosted aggregate succeeded. Actual branch protection remains
 unconfigured under the private-repository plan restriction.
+
+## Complete internal candidate build
+
+`candidate-build` now connects the locked native builder with
+`build-application.sh`: a clean Git bundle and fresh module/npm cache produce
+frontend/API, the complete onefile and the same executable in distroless. Go,
+Node and npm versions are checked; only acquisition has an external network.
+The image is saved with its identity and checksum for later acceptance and
+publishing, rather than rebuilding an accepted image in a publisher.
+
+Source checks and the full candidate job remain read-only. Internal Actions
+artifacts use a commit/run-attempt address and seven-day retention; failure
+diagnostics are a separate artifact. No registry alias, GitHub Release,
+visibility or billing setting is changed. Hosted validation of this workflow
+remains pending the existing workflow-authentication checkpoint; local
+fixtures alone do not establish a clean-runner success.
