@@ -494,3 +494,30 @@ gates remain false. Native C/OS advisory matching, the source-built fork, full
 component/license/source delivery and scanner operational acceptance are separate
 requirements. These checks were local; no hosted security job or publisher was
 added by this observation.
+
+
+## Current native and image Grype checks, 2026-11-04
+
+The unchanged native manifest `5993f9ca…` and native-origin CycloneDX
+`eaf1b142…` completed an official Grype 0.121.0 scan in 8.009 seconds, with
+40 imported packages, zero matches and zero ignored matches. Alpine 3.24.3 was
+recognized. Database schema 6.1.10 was valid, with both hash and age validation
+enabled. The CPU quota and GOMAXPROCS were both two; earlier timeout evidence is
+retained. This run does not isolate CPU count as the cause of the earlier delays.
+The fork, helper, Tesseract and metadata component had no CPEs, so zero matches
+does not clear those source-built components or prove distro feed completeness.
+
+A fresh Syft 1.55.0 inventory of current image `636cd516…` verified the exact
+image configuration digest and every layer diff ID from its Docker archive.
+It contains six Debian packages and two outer-launcher Go components. Official
+Grype completed that inventory in 14.725 seconds, recognized Debian 13.7, and
+reported zero matches and zero ignored matches with the same validated database.
+Neither scan added custom ignore rules; official built-in defaults remained.
+
+Both scans ran locally without external networking, with read-only tools,
+inputs and database, UID/GID 10001, two CPUs, 2GiB RAM, no swap and a 90-second
+scan deadline. Separate embedded API/helper/native inspection is still required;
+image scanning cannot see those compressed payloads. Whole-product security,
+Go reachability, source-built coverage and release gates remain open. Raw
+receipts are in the parent plan's `native-grype-cpu-aligned-20261104`,
+`current-image-inventory-20261104` and `current-image-grype-20261104` directories.
