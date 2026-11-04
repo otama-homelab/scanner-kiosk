@@ -144,8 +144,8 @@ are deliberately identified as preserved inputs, not regenerated current proofs.
 ## Source-managed notices
 
 The current native manifest has **298 entries**:111 code/data entries and187
-notice/source/observation files.107 notices are source-managed in `notice-files/`;
-the other80 remain pinned historical inputs. The first six source-managed files
+notice/source/observation files.All187 notices are source-managed in `notice-files/`.
+The80 retained historical inputs preserve their original runtime bytes. The first six source-managed files
 cover Leptonica1.87.0/libjpeg-turbo3.1.3.32 additional files preserve19 upstream
 texts for12 transitive packages,12 source-association records and LibTIFF's
 Berkeley attribution. Original native code/data and prior notices are unchanged.
@@ -162,11 +162,14 @@ establish complete license/source approval.
 
 `runtime-provenance.json` maps these destinations through `notice_sources`.
 The assembler reads those sources only from `notice-files/` beside the supplied
-manifest, instead of the historical `--notices-root`. Both paths pass the same
+manifest, instead of the historical `--notices-root`. Both source-managed and legacy caller-supplied paths pass the same
 manifest size/hash checks and descriptor-relative no-follow traversal. Missing,
 changed or symlinked source-managed notices fail without falling back to historical
 input. Keep this directory beside the manifest in a source export or build input.
-Other notices still come from the explicitly supplied historical notice root.
+The current manifest needs no historical notice root: all187 inputs are now
+in the checkout. For the assembler’s required `--notices-root` argument, supply
+a new empty directory; it is not read for this manifest. Generic older input
+manifests retain the existing explicit historical-root path.
 
 The p11-kit notice set additionally retains verbatim leading notices from the35
 C sources explicitly listed for its shared, internal and common libraries.

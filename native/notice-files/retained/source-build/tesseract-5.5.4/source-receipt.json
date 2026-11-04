@@ -1,0 +1,37 @@
+{
+  "upstream_version": "5.5.4",
+  "commit": "7e548e6eff172f38f97664afe7f7ce40db36c8d6",
+  "tag_chain": [
+    {
+      "url": "https://api.github.com/repos/tesseract-ocr/tesseract/git/ref/tags/5.5.4",
+      "sha256": "aba518b3a26af55bc1c983f82b0382d5150648ac2f1f2b47ce136370e0ae96ec"
+    },
+    {
+      "url": "https://api.github.com/repos/tesseract-ocr/tesseract/git/tags/c5065e4c17df16a75960a0e0fa50e4399df1ac74",
+      "sha256": "aa1a986e50bfa4e98a41ec9fd893e18ccc5c00389e59167067c30a2b23273ba1"
+    }
+  ],
+  "source_url": "https://codeload.github.com/tesseract-ocr/tesseract/tar.gz/7e548e6eff172f38f97664afe7f7ce40db36c8d6",
+  "source_sha256": "445603ab1d0a63df552e193a600d9d5c4021aff36e144f3091af149e5efb381a",
+  "source_bytes": 1971321,
+  "selected_files": {
+    "CMakeLists.txt": {
+      "file": "CMakeLists.txt",
+      "sha256": "6365a1dbbb3a95ace96937575785ced9f0a0fb7dce0c0c6d266befdb27d7a6d5"
+    },
+    "LICENSE": {
+      "file": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "cmake/Configure.cmake": {
+      "file": "cmake_Configure.cmake",
+      "sha256": "1da9260377dd30eeaffba512a1fcad446e2e9bededd351beb7344335336081c3"
+    },
+    "unittest/CMakeLists.txt": {
+      "file": "unittest_CMakeLists.txt",
+      "sha256": "7549c1da33554b75337c067a6c8f135601c048370d4e8bf1400ec554c8ea3acc"
+    }
+  },
+  "source_modified": false,
+  "scope": "Official upstream tag/commit reference and retained source bytes; not binary reproducibility, build success or publisher signature verification"
+}

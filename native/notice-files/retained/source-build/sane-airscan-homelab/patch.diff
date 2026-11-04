@@ -1,0 +1,141 @@
+diff --git a/airscan-http.c b/airscan-http.c
+index 0c25e57..9dbd62f 100644
+--- a/airscan-http.c
++++ b/airscan-http.c
+@@ -41,6 +41,7 @@
+ 
+ /******************** Static variables ********************/
+ static gnutls_certificate_credentials_t gnutls_cred;
++static int gnutls_trust_rc;
+ 
+ /******************** Forward declarations ********************/
+ typedef struct http_multipart http_multipart;
+@@ -2045,6 +2046,7 @@ struct http_query {
+     struct addrinfo   *addr_next;               /* Next address to try */
+     int               sock;                     /* HTTP socket */
+     gnutls_session_t  tls;                      /* NULL if not TLS */
++    char              tls_ip[INET6_ADDRSTRLEN]; /* Unbracketed TLS peer IP */
+     bool              handshake;                /* TLS handshake in progress */
+     bool              sending;                  /* We are now sending */
+     eloop_fdpoll      *fdpoll;                  /* Polls q->sock */
+@@ -2437,18 +2439,10 @@ http_query_redirect (http_query *q, const char *method)
+     /* Enforce redirects limit */
+     q->redirect_count ++;
+     if (q->redirect_count == HTTP_REDIRECT_LIMIT) {
++        http_uri_free(uri);
+         return ERROR("HTTP redirect: too many redirects");
+     }
+ 
+-    /* Save original URI and method at the first redirect */
+-    if (q->redirect_count == 1) {
+-        q->orig_uri = q->uri;
+-        q->orig_method = q->method;
+-    } else {
+-        http_uri_free(q->uri);
+-        q->uri = NULL; /* Just in case */
+-    }
+-
+     /* Issue log message */
+     log_debug(q->client->log, "HTTP redirect %d: %s %s",
+         q->redirect_count, method, http_uri_str(uri));
+@@ -2458,13 +2452,30 @@ http_query_redirect (http_query *q, const char *method)
+         char *old_uri_str = alloca(strlen(uri->str) + 1);
+ 
+         strcpy(old_uri_str, uri->str);
+-        q->onredir(q->client->ptr, uri, q->orig_uri);
++        q->onredir(q->client->ptr, uri,
++                q->orig_uri != NULL ? q->orig_uri : q->uri);
+         if (strcmp(old_uri_str, uri->str)) {
+             log_debug(q->client->log, "HTTP redirect override: %s %s",
+                 method, http_uri_str(uri));
+         }
+     }
+ 
++    /* Once TLS is used, redirect hooks must not downgrade the next hop. */
++    if (q->uri->scheme == HTTP_SCHEME_HTTPS &&
++            uri->scheme != HTTP_SCHEME_HTTPS) {
++        http_uri_free(uri);
++        return ERROR("HTTP redirect: HTTPS downgrade refused");
++    }
++
++    /* Transfer URI ownership only after the final target passes policy. */
++    if (q->redirect_count == 1) {
++        q->orig_uri = q->uri;
++        q->orig_method = q->method;
++    } else {
++        http_uri_free(q->uri);
++        q->uri = NULL;
++    }
++
+     /* Perform redirection */
+     http_query_reset(q);
+ 
+@@ -2837,9 +2848,21 @@ AGAIN:
+ 
+     /* Setup TLS, if required */
+     if (q->uri->scheme == HTTP_SCHEME_HTTPS) {
++        const struct sockaddr *addr = http_uri_addr(q->uri);
++        const char *peer = q->uri->host;
+         int rc = gnutls_init(&q->tls,
+             GNUTLS_CLIENT | GNUTLS_NONBLOCK | GNUTLS_NO_SIGNAL);
+ 
++        if (addr != NULL && addr->sa_family == AF_INET6) {
++            const struct sockaddr_in6 *addr6 = (const struct sockaddr_in6*) addr;
++
++            if (inet_ntop(AF_INET6, &addr6->sin6_addr,
++                    q->tls_ip, sizeof(q->tls_ip)) == NULL) {
++                rc = GNUTLS_E_INVALID_REQUEST;
++            }
++            peer = q->tls_ip;
++        }
++
+         if (rc == GNUTLS_E_SUCCESS) {
+             rc = gnutls_set_default_priority(q->tls);
+         }
+@@ -2849,6 +2872,15 @@ AGAIN:
+                     gnutls_cred);
+         }
+ 
++        if (rc == GNUTLS_E_SUCCESS && gnutls_trust_rc < 0) {
++            rc = gnutls_trust_rc;
++        }
++
++        if (rc == GNUTLS_E_SUCCESS && !http_uri_host_is_literal(q->uri)) {
++            rc = gnutls_server_name_set(q->tls, GNUTLS_NAME_DNS,
++                    q->uri->host, strlen(q->uri->host));
++        }
++
+         if (rc != GNUTLS_E_SUCCESS) {
+             err = ERROR(gnutls_strerror(rc));
+             http_query_disconnect(q);
+@@ -2856,6 +2888,7 @@ AGAIN:
+             return;
+         }
+ 
++        gnutls_session_set_verify_cert(q->tls, peer, 0);
+         gnutls_transport_set_int(q->tls, q->sock);
+     }
+ 
+@@ -3374,8 +3407,21 @@ http_query_test_decode_response (http_query *q, const void *data, size_t size)
+ SANE_Status
+ http_init (void)
+ {
++    const char *trust_file = getenv("SSL_CERT_FILE");
+     int rc = gnutls_certificate_allocate_credentials(&gnutls_cred);
+-    return rc == GNUTLS_E_SUCCESS ? SANE_STATUS_GOOD : SANE_STATUS_NO_MEM;
++
++    if (rc != GNUTLS_E_SUCCESS) {
++        return SANE_STATUS_NO_MEM;
++    }
++
++    /* A missing trust store must reject HTTPS without disabling plain HTTP. */
++    if (trust_file != NULL) {
++        gnutls_trust_rc = gnutls_certificate_set_x509_trust_file(
++                gnutls_cred, trust_file, GNUTLS_X509_FMT_PEM);
++    } else {
++        gnutls_trust_rc = gnutls_certificate_set_x509_system_trust(gnutls_cred);
++    }
++    return SANE_STATUS_GOOD;
+ }
+ 
+ /* Initialize HTTP client

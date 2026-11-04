@@ -1,0 +1,6 @@
+FROM scanner-kiosk:tesseract-554-sdk-20261103
+COPY source.tar.gz /inputs/source.tar.gz
+COPY build.sh /inputs/build.sh
+USER 10001:10001
+WORKDIR /work
+ENTRYPOINT ["/usr/bin/env", "-i", "PATH=/usr/bin:/bin", "HOME=/work/home", "TMPDIR=/work/tmp", "LC_ALL=C", "OMP_THREAD_LIMIT=1", "/bin/sh", "/inputs/build.sh"]

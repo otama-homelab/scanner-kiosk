@@ -1,0 +1,17 @@
+{
+  "build_script_sha256": "60316385ad3079564721f7406d044f1ecf44d6643325ddde19267b87eb51666a",
+  "library_sha256": "480e1bbdac3c6088cc74e220c5df486530fe822582666cb72941a3bbea84226e",
+  "patch_sha256": "ee7a58daeedc8d2efefae615b1eb93c295ab69a7f34c3b1a1448ca966049bb4c",
+  "publication_approved": false,
+  "scope": "Local unpublished peer-verifying and HTTPS-downgrade-refusing fork; not release/license/security clearance",
+  "sdk_lock_sha256": "a318f78c7334fb9361bd45576cce8e3842aa2a497cfbe94e223220722b0123b3",
+  "source_sha256": "7e8f82e668a63199747830cdd09bb36ca2ec2917374ce8846f6069d94ae41295",
+  "tests": {
+    "peer_cases": 11,
+    "redirect_policy_cases": 8,
+    "upstream_selected": 2
+  },
+  "upstream_commit": "9da18d88c88f542671b24fc0433dd7d69dcb0132",
+  "upstream_modified": true,
+  "upstream_version": "0.99.38"
+}

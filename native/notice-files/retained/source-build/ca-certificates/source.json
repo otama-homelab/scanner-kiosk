@@ -1,0 +1,28 @@
+{
+  "MPL_text": "Canonical MPL-2.0 text copied from the local operating system common license collection",
+  "bundle_bytes": 178791,
+  "bundle_sha256": "5961c0a3c65459931c023e0075c09733f09aea4ca439cb85bc4a08bb4f3f568b",
+  "declared_package_license": "MPL-2.0 AND MIT",
+  "original_path": "etc/ssl/certs/ca-certificates.crt",
+  "package": {
+    "apk_control_checksum": "Q1fG5jX4aq+0bLOwFdhQWzpfYRVr0=",
+    "archive_architecture": "noarch",
+    "bytes": 107116,
+    "filename": "ca-certificates-bundle-20261020-r0.apk",
+    "name": "ca-certificates-bundle",
+    "origin": "ca-certificates",
+    "repository": "main",
+    "repository_architecture": "x86_64",
+    "sha256": "bb008f6d214b6af7576324659856fb63dc8dcb4373f8345ff706388696f1254d",
+    "source_commit": "e78f5987166c6ffbe23f6472e2e8f040298fe2da",
+    "version": "20261020-r0"
+  },
+  "publication_approved": false,
+  "recipe_sha256": "7b35fb8e11790105578f47d57a3b22831227b0d8ad7d064e575bad146023f3da",
+  "relocated_path": "usr/share/scanner-kiosk/ca-certificates.crt",
+  "scope": "Public CA data and retained upstream source; not complete license/source delivery acceptance",
+  "source_archive_sha256": "1048bc7f50fa42a6621bc2f8816173f89a0c0098f26dff072bc8fe40af714400",
+  "source_archive_sha512": "d28eb01751b1a914ffb5d8cb99e662f0a35a95148c21dcf98de1ab3108b54db9714a99472d07715023867f4f76a21f2a79a2bc1c7e9876ce5167fdd865ad2dd7",
+  "source_header_license": "MPL-2.0",
+  "source_url": "https://distfiles.alpinelinux.org/distfiles/v3.24/ca-certificates-20261020.tar.bz2"
+}

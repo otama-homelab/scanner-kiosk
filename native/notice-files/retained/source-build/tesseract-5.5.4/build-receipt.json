@@ -1,0 +1,208 @@
+{
+  "passed": true,
+  "name": "scanner-tesseract554-4b02158772",
+  "scope": "Unmodified upstream 5.5.4 offline build and two selected upstream test executables; not full upstream tests or product acceptance",
+  "image": "sha256:d08f69b677f9c54d6c84775bcc6797d5639394452f5b58bb520425f7b22acc26",
+  "execution_host_config": {
+    "Binds": null,
+    "ContainerIDFile": "",
+    "LogConfig": {
+      "Type": "local",
+      "Config": {
+        "compress": "false",
+        "max-file": "1",
+        "max-size": "1m"
+      }
+    },
+    "NetworkMode": "none",
+    "PortBindings": {},
+    "RestartPolicy": {
+      "Name": "no",
+      "MaximumRetryCount": 0
+    },
+    "AutoRemove": false,
+    "VolumeDriver": "",
+    "VolumesFrom": null,
+    "ConsoleSize": [
+      0,
+      0
+    ],
+    "CapAdd": null,
+    "CapDrop": [
+      "ALL"
+    ],
+    "CgroupnsMode": "private",
+    "Dns": [],
+    "DnsOptions": [],
+    "DnsSearch": [],
+    "ExtraHosts": null,
+    "GroupAdd": null,
+    "IpcMode": "private",
+    "Cgroup": "",
+    "Links": null,
+    "OomScoreAdj": 0,
+    "PidMode": "",
+    "Privileged": false,
+    "PublishAllPorts": false,
+    "ReadonlyRootfs": true,
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Tmpfs": {
+      "/work": "rw,exec,nosuid,nodev,size=1g,mode=0700,uid=10001,gid=10001"
+    },
+    "UTSMode": "",
+    "UsernsMode": "",
+    "ShmSize": 67108864,
+    "Runtime": "runc",
+    "Isolation": "",
+    "CpuShares": 0,
+    "Memory": 3221225472,
+    "NanoCpus": 2000000000,
+    "CgroupParent": "",
+    "BlkioWeight": 0,
+    "BlkioWeightDevice": [],
+    "BlkioDeviceReadBps": [],
+    "BlkioDeviceWriteBps": [],
+    "BlkioDeviceReadIOps": [],
+    "BlkioDeviceWriteIOps": [],
+    "CpuPeriod": 0,
+    "CpuQuota": 0,
+    "CpuRealtimePeriod": 0,
+    "CpuRealtimeRuntime": 0,
+    "CpusetCpus": "",
+    "CpusetMems": "",
+    "Devices": [],
+    "DeviceCgroupRules": null,
+    "DeviceRequests": null,
+    "MemoryReservation": 0,
+    "MemorySwap": 6442450944,
+    "MemorySwappiness": null,
+    "OomKillDisable": null,
+    "PidsLimit": 128,
+    "Ulimits": [
+      {
+        "Name": "fsize",
+        "Hard": 67108864,
+        "Soft": 67108864
+      }
+    ],
+    "CpuCount": 0,
+    "CpuPercent": 0,
+    "IOMaximumIOps": 0,
+    "IOMaximumBandwidth": 0,
+    "MaskedPaths": [
+      "/proc/asound",
+      "/proc/acpi",
+      "/proc/interrupts",
+      "/proc/kcore",
+      "/proc/keys",
+      "/proc/latency_stats",
+      "/proc/timer_list",
+      "/proc/timer_stats",
+      "/proc/sched_debug",
+      "/proc/scsi",
+      "/sys/firmware",
+      "/sys/devices/virtual/powercap"
+    ],
+    "ReadonlyPaths": [
+      "/proc/bus",
+      "/proc/fs",
+      "/proc/irq",
+      "/proc/sys",
+      "/proc/sysrq-trigger"
+    ]
+  },
+  "state_at_export": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 25263,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-03T11:20:54.034454112Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "artifact_sha256": "b4326eebb0110a137e9d2f77b73daf5278e2229cbf70754b5061ed3ce77dad62",
+  "output_members": [
+    {
+      "name": ".",
+      "size": 0,
+      "link": ""
+    },
+    {
+      "name": "./sdk-packages.txt",
+      "size": 11894,
+      "link": ""
+    },
+    {
+      "name": "./CMakeCache.txt",
+      "size": 36442,
+      "link": ""
+    },
+    {
+      "name": "./libtesseract.so.5.5.4",
+      "size": 4920840,
+      "link": ""
+    },
+    {
+      "name": "./libtesseract.so.5.5",
+      "size": 0,
+      "link": "libtesseract.so.5.5.4"
+    },
+    {
+      "name": "./libtesseract.so",
+      "size": 0,
+      "link": "libtesseract.so.5.5"
+    },
+    {
+      "name": "./tesseract",
+      "size": 64768,
+      "link": ""
+    },
+    {
+      "name": "./version.log",
+      "size": 214,
+      "link": ""
+    },
+    {
+      "name": "./tests.log",
+      "size": 319,
+      "link": ""
+    },
+    {
+      "name": "./build.log",
+      "size": 20904,
+      "link": ""
+    },
+    {
+      "name": "./configure.log",
+      "size": 6268,
+      "link": ""
+    }
+  ],
+  "cleanup_initial_state": {
+    "Status": "running",
+    "Running": true,
+    "Paused": false,
+    "Restarting": false,
+    "OOMKilled": false,
+    "Dead": false,
+    "Pid": 25263,
+    "ExitCode": 0,
+    "Error": "",
+    "StartedAt": "2026-11-03T11:20:54.034454112Z",
+    "FinishedAt": "0001-01-01T00:00:00Z"
+  },
+  "container_removed": true,
+  "context_removed": true,
+  "source_sha256": {
+    "build.sh": "0cc15604416f8f89d308c516443b0e888d69c8b28f171e7156f1e606cf2f3396",
+    "Dockerfile.build": "a7bf7052afb843beb57135c8127170da381b329d410f224ba4ff366dc094ca55",
+    "run-build.py": "a60898258a3f5115209ac6cae2f941aacfe83b10de6f3b5ea894b469783e7909",
+    "tesseract-source.tar.gz": "445603ab1d0a63df552e193a600d9d5c4021aff36e144f3091af149e5efb381a"
+  }
+}

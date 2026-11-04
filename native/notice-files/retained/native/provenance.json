@@ -1,0 +1,69 @@
+{
+  "scope": "Selected upstream notices; incomplete transitive native/data/source review",
+  "sources": [
+    {
+      "origin": "sane",
+      "version": "1.4.0",
+      "recipe_sha256": "6177156ccd65ffeb5c7ebdb61dc9dc4596a48c1d2098b7c01373e60623cf43c4",
+      "source_url": "https://distfiles.alpinelinux.org/distfiles/v3.24/sane-backends-1.4.0.tar.gz",
+      "source_archive": "sane-backends-1.4.0.tar.gz",
+      "source_bytes": 7505056,
+      "source_sha512": "a5ec0cb9e12075be3c4d5eb445a290216c5699645bb6885845868a8323848cef3aafec30f0c380638195a0a8085a8cff4e190741e79ae8f2f70b4d71abeee572",
+      "source_sha256": "f99205c903dfe2fb8990f0c531232c9a00ec9c2c66ac7cb0ce50b4af9f407a72",
+      "files": {
+        "dll.c": {
+          "source_path": "sane-backends-1.4.0/backend/dll.c",
+          "sha256": "662d68482dc637e728b0db3a0e4c65391b0cedd45a192223c36e7bb06996e36f"
+        },
+        "sane.h": {
+          "source_path": "sane-backends-1.4.0/include/sane/sane.h",
+          "sha256": "288334864eb01b4773892a2b696cb12c87bb05fada46cb9d588cb42a732d935d"
+        },
+        "COPYING": {
+          "source_path": "sane-backends-1.4.0/COPYING",
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+        },
+        "LICENSE": {
+          "source_path": "sane-backends-1.4.0/LICENSE",
+          "sha256": "704fb487721423f16eea1f8f9da208434a0f93bca4a98ce543a0fb2038fb2b38"
+        }
+      }
+    },
+    {
+      "origin": "sane-airscan",
+      "version": "0.99.36",
+      "recipe_sha256": "2fe49677adb9e576e03fc1383233640fcbed5245351ab5d6e93175c5320ac54c",
+      "source_url": "https://distfiles.alpinelinux.org/distfiles/v3.24/sane-airscan-0.99.36.tar.gz",
+      "source_archive": "sane-airscan-0.99.36.tar.gz",
+      "source_bytes": 218775,
+      "source_sha512": "a87f9ede123710b4be9d0bbf950487abf71ddc9691020d2defadf99eae12afc78b4d99df834c4f84984bc2cae4e3190fa4dac7a44518a3445f263aa4ad37ea67",
+      "source_sha256": "43d3436c0199496ee18aca4f875fe3926a40a0fae781bc280cdb96f7b5068ac0",
+      "files": {
+        "COPYING": {
+          "source_path": "sane-airscan-0.99.36/COPYING",
+          "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+        },
+        "LICENSE": {
+          "source_path": "sane-airscan-0.99.36/LICENSE",
+          "sha256": "a2631c1b81992bd6f66db6be8b009ed7e3e998d1e2db4de497fa82d65011d373"
+        }
+      }
+    },
+    {
+      "origin": "tesseract-ocr",
+      "version": "5.5.2",
+      "recipe_sha256": "60f136bf6e62a470c4c302346d57e7f8e11e831f221bf7834f393af880b61ab6",
+      "source_url": "https://distfiles.alpinelinux.org/distfiles/v3.24/tesseract-ocr-5.5.2.tar.gz",
+      "source_archive": "tesseract-ocr-5.5.2.tar.gz",
+      "source_bytes": 1903633,
+      "source_sha512": "e9103c68ba186821aedd38de4d9949cd6732da93a2d0764de18aaaac70eb9c305384a6eb1fe656a8a269bee833178a583a91dd72027ae26d27c8329ed722f4a9",
+      "source_sha256": "6235ea0dae45ea137f59c09320406f5888383741924d98855bd2ce0d16b54f21",
+      "files": {
+        "LICENSE": {
+          "source_path": "tesseract-5.5.2/LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        }
+      }
+    }
+  ]
+}

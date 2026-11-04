@@ -1,0 +1,191 @@
+{
+  "scope": "Experimental runtime replacement, not release/security/license clearance",
+  "baseline_selection_sha256": "6a822eadaa1a98c7e7cd027ca7c7d753c37029c0c71a98efef5cb821a7837ee8",
+  "source_commit": "7e548e6eff172f38f97664afe7f7ce40db36c8d6",
+  "artifact_sha256": "b4326eebb0110a137e9d2f77b73daf5278e2229cbf70754b5061ed3ce77dad62",
+  "removed": {
+    "usr/lib/libtesseract.so.5": {
+      "link": "libtesseract.so.5.0.5"
+    },
+    "usr/lib/libtesseract.so.5.0.5": {
+      "sha256": "57a96f3a92e095701278a0ed56767adbba0a37c181b3f4b3f6013d594e481d67"
+    }
+  },
+  "elf_edges": {
+    "lib/ld-musl-x86_64.so.1": [],
+    "usr/lib/libwebpmux.so.3.1.2": [
+      "libwebp.so.7",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libsharpyuv.so.0.1.2": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libtasn1.so.6.6.5": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libusb-1.0.so.0.6.0": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libgnutls.so.30.42.0": [
+      "libz.so.1",
+      "libzstd.so.1",
+      "libbrotlienc.so.1",
+      "libbrotlidec.so.1",
+      "libp11-kit.so.0",
+      "libidn2.so.0",
+      "libunistring.so.5",
+      "libtasn1.so.6",
+      "libhogweed.so.6",
+      "libnettle.so.8",
+      "libgmp.so.10",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/liblzma.so.5.8.4": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libtesseract.so.5.5.4": [
+      "libleptonica.so.6",
+      "libgomp.so.1",
+      "libstdc++.so.6",
+      "libgcc_s.so.1",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libidn2.so.0.4.0": [
+      "libunistring.so.5",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libnettle.so.8.11": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libintl.so.8.4.6": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libjpeg.so.8.3.2": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libgcc_s.so.1": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libzstd.so.1.5.7": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libpng16.so.16.59.0": [
+      "libz.so.1",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libavahi-client.so.3.2.9": [
+      "libdbus-1.so.3",
+      "libavahi-common.so.3",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libavahi-common.so.3.5.4": [
+      "libintl.so.8",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libhogweed.so.6.11": [
+      "libnettle.so.8",
+      "libgmp.so.10",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libsane.so.1.4.0": [
+      "libusb-1.0.so.0",
+      "libxml2.so.2",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libstdc++.so.6.0.34": [
+      "libc.musl-x86_64.so.1",
+      "libgcc_s.so.1"
+    ],
+    "usr/lib/libbrotlidec.so.1.2.1": [
+      "libbrotlicommon.so.1",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libleptonica.so.6.0.0": [
+      "libpng16.so.16",
+      "libjpeg.so.8",
+      "libgif.so.7",
+      "libtiff.so.6",
+      "libwebp.so.7",
+      "libwebpmux.so.3",
+      "libz.so.1",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libbrotlicommon.so.1.2.1": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libbrotlienc.so.1.2.1": [
+      "libbrotlicommon.so.1",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libgomp.so.1.0.0": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libdbus-1.so.3.38.3": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libgmp.so.10.5.0": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libunistring.so.5.2.1": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libp11-kit.so.0.4.8": [
+      "libffi.so.8",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libxml2.so.2.13.9": [
+      "libz.so.1",
+      "liblzma.so.5",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libwebp.so.7.2.0": [
+      "libsharpyuv.so.0",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libgif.so.7.2.0": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libtiff.so.6.3.0": [
+      "libz.so.1",
+      "libjpeg.so.8",
+      "libzstd.so.1",
+      "libwebp.so.7",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libz.so.1.3.2": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/libffi.so.8.2.0": [
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/bin/scanimage": [
+      "libsane.so.1",
+      "libpng16.so.16",
+      "libjpeg.so.8",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/bin/tesseract": [
+      "libtesseract.so.5.5",
+      "libleptonica.so.6",
+      "libstdc++.so.6",
+      "libgcc_s.so.1",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/lib/sane/libsane-airscan.so.1": [
+      "libavahi-common.so.3",
+      "libavahi-client.so.3",
+      "libgnutls.so.30",
+      "libjpeg.so.8",
+      "libpng16.so.16",
+      "libtiff.so.6",
+      "libxml2.so.2",
+      "libc.musl-x86_64.so.1"
+    ],
+    "usr/libexec/scanner/sane-parameters": [
+      "libsane.so.1",
+      "libc.musl-x86_64.so.1"
+    ]
+  },
+  "upstream_modified": false,
+  "historical_metadata": "Earlier APK inventories/recipes retained in notices describe baseline inputs. OCR executable/library are replaced by this source build; traineddata and other native packages unchanged."
+}

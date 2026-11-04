@@ -293,3 +293,16 @@ verified SDK. It does not reconstruct every SDK from scratch, rebuild all APK
 origins/Tesseract/helper here, validate changed-library ABI/relinking behavior,
 or clear the full native corresponding-source/license/security/release gates.
 Parent evidence: `native-recipient-airscan-rebuild-20261104/current-evidence.json`.
+
+## Portable notice inputs
+
+All 187 current native notice inputs now live under native/notice-files and
+are mapped by runtime-provenance.json. The 80 retained inputs preserve the
+existing runtime bytes, including historical inventories and recipes; their
+internal paths and older package claims are context, not current host/build
+requirements. Native assembly no longer needs the original local notice working
+directory. Pass a new empty directory for --notices-root with this manifest;
+the generic assembler retains that argument for older caller-supplied manifests.
+Source CI requires every notice to be mapped into the checkout and verifies
+its bytes. This changes input acquisition only, not the current binary or
+complete license/source/publication acceptance.

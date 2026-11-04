@@ -56,6 +56,7 @@ class NativeRuntimeLockTests(unittest.TestCase):
         self.assertFalse(self.provenance['publication_approved'])
 
     def test_source_managed_notices_match_the_manifest(self):
+        self.assertEqual(set(self.provenance['notice_sources']), set(self.provenance['notice_files']))
         for destination, source in self.provenance['notice_sources'].items():
             self.assertIn(destination, self.provenance['notice_files'])
             path = ROOT/'native/notice-files'/source
