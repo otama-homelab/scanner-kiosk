@@ -5,7 +5,7 @@
 | 観点 | 現状 | 残件・運用条件 |
 |---|---|---|
 | 導入 | frontend/API/worker/SANE/OCRを単一Linux amd64 binaryへ同梱。distroless、Compose、標準Kubernetes例あり | 公開release/registryは未完。URL、認証、scanner IP、保存先の設定は必要 |
-| UID/GID | image・Compose・Helmの既定は10001:10001。API/workerは同じUIDで共有storeへアクセス。private directory0700/file0600 | Helm/Compose用の専用UID/GID設定項目と、初回volume準備の導線が要改善。アプリはPUID/PGIDを解釈して実行ユーザーを切り替えない |
+| UID/GID | image・Compose・Helmの既定は10001:10001。Helm runtimeIdentity.uid/gid、Compose PUID/PGIDで両roleの実行identityを設定。private directory0700/file0600 | 初回volume準備と実storageの検証が残る。PUID/PGIDはComposeのuser指定へ展開され、アプリ自身のユーザー切替機能ではない |
 | 所有権・NAS ACL | キャッシュ/GC等は所有UIDやprivate modeを検査。既存mountのownerはimage側USER設定だけでは変わらない | GIDだけ合わせても0600のファイルは共有できない。API/worker/管理CLIの実行UIDを揃える。NASの強制ACL・ID変換を実ボリュームで確認 |
 | rootless/user namespace | 現検証はUID10001のnonroot実行 | rootless Docker等ではcontainer IDとhost IDの対応を確認。host側を一律10001へchownする前にmappingを確認する。rootlessの実受入は未実施 |
 | 保存先 | stateとdocumentsを分離し、両方にSQLite DBを置く。1 replica/共有filesystem | NFS上のSQLiteは初期設計の対象外。SMBも未受入。NAS上のiSCSI等を単一writerのblock volume＋対応filesystemで使う場合は別途CSI/locking/fsync等を受入する。documentsだけ共有NASへ移す構成も現状はDBを含む |
@@ -21,6 +21,6 @@
 
 現chartはfsGroupを付けず、事前にprivate storeを準備する設計。fsGroupや共有group向けのchmodだけで直すとprivate permission検査と衝突する。rootless/CSI/NASの実際のID mappingを先に確かめる。
 
-軽量レビュー後の優先残件は、UID/GIDを変更する設定の整備、初回volumeの準備/確認手順、実storageの対応可否とbackup除外の確認。既存データの一括chownや権限緩和は、このレビューでは実施していない。
+軽量レビュー後にUID/GID設定を追加した。現在の優先残件は、初回volumeの準備/確認手順、実storageの対応可否とbackup除外の確認。既存データの一括chownや権限緩和は、このレビューでは実施していない。
 
 参照: [配備例](../../deploy/README.md)、[storage契約](state-storage.md)、[運用・release](operations-release.md)、[physical fencing](physical-writer-fencing.md)。

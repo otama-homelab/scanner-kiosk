@@ -42,7 +42,7 @@ services:
   api:
     image: ${SCANNER_IMAGE:?set a released immutable image digest}
     command: [serve]
-    user: "10001:10001"
+    user: "${PUID:-10001}:${PGID:-10001}"
     init: true
     read_only: true
     tmpfs: ["/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777"]
@@ -75,7 +75,7 @@ services:
   worker:
     image: ${SCANNER_IMAGE:?set a released immutable image digest}
     command: [worker]
-    user: "10001:10001"
+    user: "${PUID:-10001}:${PGID:-10001}"
     init: true
     read_only: true
     tmpfs: ["/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777"]

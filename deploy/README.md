@@ -11,10 +11,21 @@ is excluded from these examples and homelab GitOps. It passed installed-CRD and
 server dry-run validation, but has not been applied or tested in the datapath.
 It covers only the known legacy Pod transport; see the [handoff prerequisites](../docs/design/physical-writer-fencing.md).
 
-Preprovision bind/PVC roots for UID/GID 10001 **as seen inside the containers**, mode 0700 (existing files: 0600). Rootless/user-namespace host IDs may differ; verify their mapping before setting host ownership.
+Preprovision bind/PVC roots for the selected UID/GID (default 10001:10001) **as seen inside the containers**, mode 0700 (existing files: 0600). Rootless/user-namespace host IDs may differ; verify their mapping before setting host ownership.
 The Helm pod omits fsGroup because recursive group permission changes conflict
 with the application's private-store checks. Image directory ownership does not
 repair an existing mount. Validate the actual storage driver before deployment.
+
+Set Helm `runtimeIdentity.uid` / `runtimeIdentity.gid` to numeric values, or use
+Compose `PUID` / `PGID` interpolation (for example `1000` / `100`). Both roles
+use the same identity. Helm's schema requires integers in 1..4294967294;
+Compose forwards the selected user string to Docker, so supply positive numeric
+IDs there too. These Compose variables are not passed into the application and
+do not make the bare image or executable switch users. For direct `docker run`,
+use `--user UID:GID`; run the standalone binary as the chosen service account.
+Existing volumes are not automatically chowned. Use the same identity for user
+administration and preserve it across upgrades/restores; changing the setting
+alone does not migrate existing ownership.
 
 Both mounts contain SQLite databases; a shared NFS document directory is not a
 supported substitute for the local-store contract. See the
@@ -78,3 +89,12 @@ value absent unless a PEM file is mounted/provided; do not forward an empty
 string or the full host environment. The application passes only this selected
 trust setting into native processes. The current experimental verifying fork and bundled CA do not establish
 production deployment or complete security acceptance.
+
+Custom identity local smoke: the current unreleased distroless candidate also
+ran as `1000:100` with fresh private tmpfs stores/cache, no network or host
+mounts, read-only root, dropped capabilities and a 768MiB/no-swap limit. API
+stayed running while `version`, stdin user creation and `worker --once`
+succeeded, then stopped normally. This verifies those fresh-store operations;
+it does not verify real PVC ownership, rootless ID maps, NAS ACLs, HTTP readiness
+or OCR at the alternate identity. Default identity and all private-store guards
+remain unchanged.

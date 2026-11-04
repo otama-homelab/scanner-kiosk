@@ -1,3 +1,6 @@
+runtimeIdentity:
+  uid: 10001
+  gid: 10001
 image:
   repository: ""
   digest: ""

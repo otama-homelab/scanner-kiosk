@@ -77,6 +77,15 @@ class ComposeNativeTests(unittest.TestCase):
             self.assertEqual(service['environment']['XDG_CACHE_HOME'], '/tmp')
             self.assertIn('/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777', service['tmpfs'])
 
+    def test_compose_runtime_identity_override_is_shared_without_env_forwarding(self):
+        for overrides, expected in [({'PUID': '1000', 'PGID': '100'}, '1000:100'),
+                                    ({'PUID': '', 'PGID': ''}, '10001:10001')]:
+            with self.subTest(overrides=overrides):
+                for service in render(**overrides).values():
+                    self.assertEqual(service['user'], expected)
+                    self.assertNotIn('PUID', service['environment'])
+                    self.assertNotIn('PGID', service['environment'])
+
     def test_env_example_does_not_override_bundled_paths(self):
         active = {line.split('=', 1)[0] for line in (ROOT/'.env.example').read_text().splitlines()
                   if line and not line.startswith('#')}

@@ -39,6 +39,34 @@ class KubernetesNativeTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(message, result.stderr)
 
+    def test_runtime_identity_defaults_and_numeric_overrides(self):
+        for uid, gid, extra in [(10001, 10001, []),
+                                (1000, 100, ['--set', 'runtimeIdentity.uid=1000', '--set', 'runtimeIdentity.gid=100']),
+                                (4294967294, 4294967294, ['--set', 'runtimeIdentity.uid=4294967294', '--set', 'runtimeIdentity.gid=4294967294'])]:
+            with self.subTest(uid=uid, gid=gid):
+                pod = render(*extra)
+                security = pod['securityContext']
+                self.assertEqual(security['runAsUser'], uid)
+                self.assertEqual(security['runAsGroup'], gid)
+                self.assertIs(type(security['runAsUser']), int)
+                self.assertIs(type(security['runAsGroup']), int)
+                self.assertTrue(security['runAsNonRoot'])
+                self.assertNotIn('fsGroup', security)
+                for container in pod['containers']:
+                    self.assertNotIn('runAsUser', container['securityContext'])
+                    self.assertNotIn('runAsGroup', container['securityContext'])
+
+    def test_chart_rejects_invalid_runtime_identity(self):
+        for key, value, flag in [('uid', '0', '--set'), ('gid', '0', '--set'),
+                                 ('uid', '-1', '--set'), ('gid', '4294967295', '--set'),
+                                 ('uid', '1.5', '--set'), ('gid', 'root', '--set-string'),
+                                 ('uid', '1000', '--set-string')]:
+            with self.subTest(key=key, value=value, flag=flag):
+                result = subprocess.run([*BASE, flag, f'runtimeIdentity.{key}={value}'], cwd=ROOT,
+                                        capture_output=True, text=True, timeout=30)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('runtimeIdentity', result.stderr)
+
     def test_image_entrypoint_owns_executable(self):
         pod = render()
         for container in pod['containers']:

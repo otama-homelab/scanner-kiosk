@@ -27,10 +27,10 @@ spec:
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 180
       securityContext:
-        runAsUser: 10001
-        runAsGroup: 10001
+        runAsUser: {{ .Values.runtimeIdentity.uid | int64 }}
+        runAsGroup: {{ .Values.runtimeIdentity.gid | int64 }}
         runAsNonRoot: true
-        # Existing claims must already be UID/GID 10001 with private modes.
+        # Existing claims must already match runtimeIdentity with private modes.
         # fsGroup can recursively add group permissions, rejected by the app.
         seccompProfile:
           type: RuntimeDefault
