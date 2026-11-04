@@ -2,10 +2,11 @@
 <html lang="en">
 <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><title>Scanner</title><script is:inline src="/theme.js"></script><link rel="icon" type="image/svg+xml" href="/logo.svg"/><link rel="stylesheet" href="/style.css"/></head>
 <body>
+<a id="skip-link" href="#main">Skip to content</a>
 <header><a href="#" class="brand" aria-label="Scanner"><img src="/logo.svg" alt="" width="40" height="40"/><strong>Scanner</strong></a>
 <div class="display-controls"><div class="theme-switch" role="group" aria-label="Appearance"><button data-theme-choice="light" type="button" aria-label="Light"><span aria-hidden="true" class="theme-symbol">☀</span></button><button data-theme-choice="dark" type="button" aria-label="Dark"><span aria-hidden="true" class="theme-symbol">☾</span></button><button data-theme-choice="system" type="button" aria-label="System"><span aria-hidden="true" class="theme-symbol">◐</span></button></div><label class="locale-control"><span class="sr-only" id="language-label">Language</span><select id="locale" aria-labelledby="language-label"><option value="en">EN</option><option value="ja" lang="ja">日本語</option></select></label></div>
 <nav aria-label="Main navigation"><button id="home" type="button">Home</button><button id="history" type="button" hidden>History</button><button id="logout" type="button" hidden>Sign out</button></nav></header>
-<main id="main" aria-busy="true"><p role="status">Loading…</p></main><p id="status" role="status" aria-live="polite"></p>
+<main id="main" tabindex="-1" aria-busy="true"><p role="status">Loading…</p></main><p id="status" role="status" aria-live="polite"></p>
 <noscript>Enable JavaScript to use Scanner.</noscript>
 <script>import '../client/app.ts';</script>
 </body></html>

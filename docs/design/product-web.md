@@ -67,3 +67,14 @@ python3 scripts/check-web.py \
 The four fixture/tool options must be supplied together. The receipt records `native_ocr: null` without them; a passing base fixture run must not be read as native proof. With them, `native_ocr` records five browser checks, independent artifact checks, fixture/tool hashes and the exact selected model version. The fixture Python requires Pillow/pikepdf and `pdftotext` must be installed. Independent checks compare the browser download to the published artifact hash, extract Japanese and distinct English text per page, verify page order, original lossless pixels, A4 dimensions and rotations, and confirm original retention and released job/native resources. The worker exits cleanly and withdraws its catalog before the test API shuts down.
 
 This scenario exposed a language-order bug: checkboxes followed the model's advertised ordering rather than the configured preference. Controls now preserve the preferred/previously selected language ordering and append remaining languages afterward. The native command is verified as `ja,en`. Tesseract documents that output and processing time can depend on language order ([official command-line guide](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage)). This is a synthetic clean-page integration proof, not a recognition-quality benchmark, physical scanner, real mobile/IdP or deployment acceptance.
+
+## Keyboard bypass navigation
+
+The first Tab stop is a bilingual skip-to-content link. It becomes visible on
+focus and moves focus to the programmatically focusable main landmark without
+changing the hash route, so a document or history view is preserved. It uses
+the existing theme colors and a visible focus outline. `check-web-keyboard.cjs`
+checks session, home and history in English/Japanese at widths 320 and 1440,
+including locale changes and continued Tab navigation inside session content.
+The shared `check-web.py` runner includes this check with mocked GET responses;
+this does not replace real screen-reader or mobile hardware acceptance.
