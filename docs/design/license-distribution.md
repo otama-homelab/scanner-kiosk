@@ -183,3 +183,17 @@ The shipped library exposes xmlDictCreate and xmlListCreate. This supports these
 specific modules' relevance without proving a complete binary/source rebuild or
 all other per-file obligations. Other libxml2/musl/p11-kit/libffi conditions and
 the full release license/source gate remain open.
+
+
+## Technical replacement path
+
+[Native replacement and personal repackaging](native-replacement.md) documents
+the existing packager/build commands for a deliberately modified native tree.
+A bounded local fixture verified that the original executable rejects a tampered
+cache while a newly packaged executable can install and execute a byte-distinct
+GnuTLS library without a distributor key or guard bypass. The fixture added only
+a non-loaded section and preserved all allocated sections; no source-code change
+or ABI/source-rebuild proof is inferred. Product/runtime locks are unchanged.
+Corresponding source, permission to modify/relink the relevant materials, any
+required installation information, recipient access and all other component
+conditions still need review before the license gate can pass.

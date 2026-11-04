@@ -395,3 +395,12 @@ For the complete executable, prefer the
 It checks the packaged binary and app/native file identities against the build
 receipt, creates a private cache, reuses this native catalog and adds Syft's
 compiled Go inventory. Container-base inventory remains separate.
+
+
+## Personal native replacement
+
+The [native replacement guide](../docs/design/native-replacement.md) documents
+a separate working tree, provisional inventory and user-owned standalone build.
+It preserves the original cache verification and does not require a signing key.
+The tested path covers a non-loaded GnuTLS ELF marker and actual isolated TLS
+execution, not a source rebuild or full LGPL/source-delivery acceptance.
