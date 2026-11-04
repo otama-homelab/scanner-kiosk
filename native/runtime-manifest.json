@@ -812,8 +812,13 @@
     },
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/source.json": {
       "mode": 292,
-      "sha256": "6405edcc6e67e5b7c025735c179a543cb9e70f7909791922ad292831a9a6a8ba",
-      "size": 946
+      "sha256": "47aca0aebdcd8db267d91d05e88ad5db8c617ad95ec19d33ce8706161f2c88f3",
+      "size": 41469
+    },
+    "usr/share/scanner-kiosk/notices/native/musl-1.2.6/third-party-source-notices.txt": {
+      "mode": 292,
+      "sha256": "2f9e533355db39de1b44de8fd63e3b180c8266f8ee5ce9dcbab2a6aa4bd4e5c4",
+      "size": 73442
     },
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/COPYING": {
       "mode": 292,

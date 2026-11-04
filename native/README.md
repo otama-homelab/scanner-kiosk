@@ -143,8 +143,8 @@ are deliberately identified as preserved inputs, not regenerated current proofs.
 
 ## Source-managed notices
 
-The current native manifest has **233 entries**:111 code/data entries and122
-notice/source/observation files.42 notices are source-managed in `notice-files/`;
+The current native manifest has **234 entries**:111 code/data entries and123
+notice/source/observation files.43 notices are source-managed in `notice-files/`;
 the other80 remain pinned historical inputs. The first six source-managed files
 cover Leptonica1.87.0/libjpeg-turbo3.1.3.32 additional files preserve19 upstream
 texts for12 transitive packages,12 source-association records and LibTIFF's
@@ -174,9 +174,14 @@ This includes ISC terms in base64.c/hash.c alongside the BSD-style notices.
 Exact source-file and excerpt hashes are indexed in source.json. Headers,
 generated templates and conditional build transformations remain under review.
 
+The musl supplement preserves118 exact third-party comment notices from116
+selected TRE/math/complex/crypt/qsort sources, including BSD and Sun terms and
+the blowfish fallback permission. Source hashes and exact byte ranges accompany
+the notices. Other source/build coverage remains under review.
+
 ## Fixed runtime input
 
-`runtime-manifest.json` pins the current 233 native file/link entries, without
+`runtime-manifest.json` pins the current 234 native file/link entries, without
 the app executable. Pass it explicitly to `scripts/build-standalone.py` using
 `--native-manifest native/runtime-manifest.json`. Any native input change needs
 an intentional lock update and validation; the packager compares all entries.

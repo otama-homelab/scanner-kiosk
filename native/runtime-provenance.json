@@ -733,6 +733,7 @@
     "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/source.json",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/COPYRIGHT",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/source.json",
+    "usr/share/scanner-kiosk/notices/native/musl-1.2.6/third-party-source-notices.txt",
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/COPYING",
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/library-source-notices.txt",
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/source.json",
@@ -802,6 +803,7 @@
     "usr/share/scanner-kiosk/notices/native/libxml2-2.13.9/source.json": "libxml2-2.13.9/source.json",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/COPYRIGHT": "musl-1.2.6/COPYRIGHT",
     "usr/share/scanner-kiosk/notices/native/musl-1.2.6/source.json": "musl-1.2.6/source.json",
+    "usr/share/scanner-kiosk/notices/native/musl-1.2.6/third-party-source-notices.txt": "musl-1.2.6/third-party-source-notices.txt",
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/COPYING": "p11-kit-0.26.2/COPYING",
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/library-source-notices.txt": "p11-kit-0.26.2/library-source-notices.txt",
     "usr/share/scanner-kiosk/notices/native/p11-kit-0.26.2/source.json": "p11-kit-0.26.2/source.json",
@@ -821,7 +823,7 @@
     "usr/share/scanner-kiosk/notices/native/zstd-1.5.7/source.json": "zstd-1.5.7/source.json"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "b1c23bb9089ffe5d50d58f3418ce99ee931ca38ed71377218e786e96d3e631a8",
+  "runtime_manifest_sha256": "47ded6f327e19fa1978d318d612cff56e9faa43fd09f5afe51054fca132b3d0f",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {

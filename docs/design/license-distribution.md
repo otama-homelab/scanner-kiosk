@@ -292,3 +292,18 @@ to those files. Exact source and comment hashes accompany the collection.
 Header/generated-template coverage and conditional build transformations remain
 open. This updates the native input manifest to 233 entries; the retained
 232-entry onefile/image candidates have not been rebuilt with this supplement.
+
+## musl third-party source notice supplement, 2026-11-04
+
+The source-managed musl notices now supplement its root COPYRIGHT with 118
+verbatim comments from 116 selected TRE, generic/x86_64 math/complex,
+DES/blowfish crypt and qsort source files. Each excerpt retains its original
+text, full-file SHA-256 and exact byte range. This includes the TRE BSD terms,
+DES attribution to David Burren and Solar Designer, Sun notice-preservation
+terms, qsort attribution and the blowfish public-domain fallback permission.
+The existing comment inventory was reused; every selected file and excerpt
+was independently checked against the fixed upstream archive before inclusion.
+This closes the known missing notices in those selected source comments;
+compiled-file/assembly/line-comment and recipe-transform coverage remain open.
+The native input now has 234 entries; the existing 233-entry onefile remains a
+prior candidate until these added notices are packaged.

@@ -5,11 +5,1080 @@
       "file": "COPYRIGHT",
       "sha256": "b870108ec5e7790e9f9919064f1b9421d62d5f9b0e6c230c6adf7ea2da62e97b",
       "source_member": "musl-1.2.6/COPYRIGHT"
+    },
+    {
+      "file": "third-party-source-notices.txt",
+      "sha256": "2f9e533355db39de1b44de8fd63e3b180c8266f8ee5ce9dcbab2a6aa4bd4e5c4",
+      "scope": "118 verbatim C comment excerpts from 116 selected upstream files",
+      "source_members": [
+        {
+          "source_member": "musl-1.2.6/src/complex/__cexp.c",
+          "source_file_sha256": "ffcf569466b0ac3defff943c989b6b181c7c41dc4f9538c32944459a5272203b",
+          "source_bytes": [
+            52,
+            1424
+          ],
+          "sha256": "929837e06c3b9c37e61b955742111a53906b7d3382fab6fd7f9a6d8c708b8e92"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/__cexpf.c",
+          "source_file_sha256": "3cedd5c25cc80d78713bd44c53c7f3170dad26fde14ea5eb3b0028bfede24517",
+          "source_bytes": [
+            53,
+            1425
+          ],
+          "sha256": "929837e06c3b9c37e61b955742111a53906b7d3382fab6fd7f9a6d8c708b8e92"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/catan.c",
+          "source_file_sha256": "b83556e819c8fe98e9396662b60d91377f063f7f6825a38a807303e1aa5065ef",
+          "source_bytes": [
+            54,
+            850
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/catanf.c",
+          "source_file_sha256": "cda26231faad4c6abcd09006255abba34bf5d1093e92b8f1bbf62f1c82af033d",
+          "source_bytes": [
+            55,
+            851
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/catanl.c",
+          "source_file_sha256": "b7b08a341a00ecb3e5169f648c95f30efc910a7ad0f3fc180c4345d2dd920d7f",
+          "source_bytes": [
+            55,
+            851
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/ccosh.c",
+          "source_file_sha256": "9997abb272468781bc9b6b61a1550e95d1f956df109e0a646d578a3dc2c3aef9",
+          "source_bytes": [
+            54,
+            1410
+          ],
+          "sha256": "3a1692b72fb1f66d3f082862dea0bbf69cba16bba5c9d1ec144d683aba49cf53"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/ccoshf.c",
+          "source_file_sha256": "6ebf4355682268356685ba79621a47f2f955ca910bf13ca6ed32bb52e893574f",
+          "source_bytes": [
+            55,
+            1411
+          ],
+          "sha256": "3a1692b72fb1f66d3f082862dea0bbf69cba16bba5c9d1ec144d683aba49cf53"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/cexp.c",
+          "source_file_sha256": "30943458b19d417812e326d8a61a2413ebce139c826c997ad6598dcddb6e673d",
+          "source_bytes": [
+            53,
+            1425
+          ],
+          "sha256": "929837e06c3b9c37e61b955742111a53906b7d3382fab6fd7f9a6d8c708b8e92"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/cexpf.c",
+          "source_file_sha256": "7de06c6bebd823987c5eefe19821b8a473332ec724d6cc0a6a27955a33ba3734",
+          "source_bytes": [
+            54,
+            1426
+          ],
+          "sha256": "929837e06c3b9c37e61b955742111a53906b7d3382fab6fd7f9a6d8c708b8e92"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/csinh.c",
+          "source_file_sha256": "ed236ed0232c73d39a372a6799ba63b2eaeccc5f03aca0045fcb1504bb489489",
+          "source_bytes": [
+            54,
+            1410
+          ],
+          "sha256": "3a1692b72fb1f66d3f082862dea0bbf69cba16bba5c9d1ec144d683aba49cf53"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/csinhf.c",
+          "source_file_sha256": "4ed3be03188b48d701d8edaa88b0e282cb2ec88b8af1c2f0e2a3f76fba60a773",
+          "source_bytes": [
+            55,
+            1411
+          ],
+          "sha256": "3a1692b72fb1f66d3f082862dea0bbf69cba16bba5c9d1ec144d683aba49cf53"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/csqrt.c",
+          "source_file_sha256": "4f6cfa6aec61754c1ee2ea683ec00e7837eaa1993edafbc516c6c4978e3567b4",
+          "source_bytes": [
+            54,
+            1426
+          ],
+          "sha256": "6679e9aa1a98bbb9f73d944ecc84eaf508b2df5d30f620a3af64aa40e5df55fc"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/csqrtf.c",
+          "source_file_sha256": "8dd69a3ec2052cf54f38e61156b057c2ff74d00da9db64da63f646e30a36e8e3",
+          "source_bytes": [
+            55,
+            1427
+          ],
+          "sha256": "6679e9aa1a98bbb9f73d944ecc84eaf508b2df5d30f620a3af64aa40e5df55fc"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/ctanh.c",
+          "source_file_sha256": "7daa31e0831e9805934bd0e6a33816daf16c0bf1076babeb9799fe6e185ac045",
+          "source_bytes": [
+            54,
+            1389
+          ],
+          "sha256": "f11ac8260c79e3792b711323df93ff6dd6ef7866b95708c3a83626b65e579df2"
+        },
+        {
+          "source_member": "musl-1.2.6/src/complex/ctanhf.c",
+          "source_file_sha256": "1ebb7bddc872c96bf3e7c8d1a529c14f28db4cf75cc8237fdb1ad62764b405bf",
+          "source_bytes": [
+            55,
+            1390
+          ],
+          "sha256": "f11ac8260c79e3792b711323df93ff6dd6ef7866b95708c3a83626b65e579df2"
+        },
+        {
+          "source_member": "musl-1.2.6/src/crypt/crypt_blowfish.c",
+          "source_file_sha256": "0f9054739e295e3e981e7aa29c8f287a190aef065b84a82a4c6817120d5da05d",
+          "source_bytes": [
+            155,
+            2184
+          ],
+          "sha256": "a17e0d141e431d3f15bd03901da69575531e23e4556847a1de209e79c6f3a1fb"
+        },
+        {
+          "source_member": "musl-1.2.6/src/crypt/crypt_des.c",
+          "source_file_sha256": "546b4ee35446fb2a551d7414779395789f81d53aefbabd8914375686af5d228e",
+          "source_bytes": [
+            847,
+            2775
+          ],
+          "sha256": "30c3222fecfdbda6900218b4da3fe68f4753cba41a3a71dac7e05345447c40fb"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__cos.c",
+          "source_file_sha256": "3f0f774aab60a18d7ef935ffdf121bcda17cbadabff14096c614da22e31a42c1",
+          "source_bytes": [
+            52,
+            432
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__cosdf.c",
+          "source_file_sha256": "0ba872cc7e26b93bb9784d19fee84b263e1fa3543a76ec3c0893aea47453a2a7",
+          "source_bytes": [
+            181,
+            560
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__cosl.c",
+          "source_file_sha256": "fd644ce4ab8797b1220e2197b284212094a3b299bdf2c4faf66ead81b0fc620d",
+          "source_bytes": [
+            109,
+            559
+          ],
+          "sha256": "eba82a2e9f34f53e0faf5a5b6f4d9f588760d888e6aae20a2f8d7406eb256167"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__polevll.c",
+          "source_file_sha256": "4fef0127318ba19fd5796b6b69a938030d22adb16aaab2ade3e634c8c5c93479",
+          "source_bytes": [
+            54,
+            850
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__rem_pio2.c",
+          "source_file_sha256": "938329e0939cd83ee2185a52154b41242f618d4a6df1b08395f344da33d4f1e6",
+          "source_bytes": [
+            57,
+            472
+          ],
+          "sha256": "c90662135910b0f0edd97131d0e116a027ec79e46b2785b7b596fa617cca78e3"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__rem_pio2_large.c",
+          "source_file_sha256": "b97f19fb5951c83a0c10506fab35646caefde13bd03100ad2af55ef00af0b9fb",
+          "source_bytes": [
+            57,
+            437
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__rem_pio2f.c",
+          "source_file_sha256": "b73a0219ba4a34e39ed904b5008126ff1b12dfa1a4a380941363c8db5088d756",
+          "source_bytes": [
+            186,
+            565
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__rem_pio2l.c",
+          "source_file_sha256": "70f1c69285c0d211d696d5c048e269d46000e5d75fc6a80623ef45e861447a94",
+          "source_bytes": [
+            58,
+            543
+          ],
+          "sha256": "5660964828a36e1680c465c6c3ac8669926917d347dc66f803897708af319f29"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__sin.c",
+          "source_file_sha256": "f3a37ef9bcfb8a2f9c809d8c7f1aa2c17c8c3319ad7fb2fe7c0a6284ea8859d2",
+          "source_bytes": [
+            52,
+            432
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__sindf.c",
+          "source_file_sha256": "de7026bcd159b7d06a8cbcc162df722014f3b1a3cc4183116b6b7829eef1d118",
+          "source_bytes": [
+            168,
+            547
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__sinl.c",
+          "source_file_sha256": "b6dfffc327cac147a0a2b17a12e9f4ec8ff6df463733db55c316a55ef4bcdb96",
+          "source_bytes": [
+            109,
+            559
+          ],
+          "sha256": "eba82a2e9f34f53e0faf5a5b6f4d9f588760d888e6aae20a2f8d7406eb256167"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__tan.c",
+          "source_file_sha256": "e18b65b69fced8dbb2d3ed1a3dc6daea0e9f857f2762f274380bd89a6f89d2c4",
+          "source_bytes": [
+            52,
+            366
+          ],
+          "sha256": "5a534ed1f9266ed799e9f2e3f830f15411762021829da121b23df5edc498c6b6"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__tandf.c",
+          "source_file_sha256": "60455f3cc0ac743f3eaf0017a3a4f0adbab37c0ee30d29397852d22904c40444",
+          "source_bytes": [
+            168,
+            482
+          ],
+          "sha256": "5a534ed1f9266ed799e9f2e3f830f15411762021829da121b23df5edc498c6b6"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/__tanl.c",
+          "source_file_sha256": "3788db7251d2e14b17e761bc2eccd0d8faa3c72c16eef7a56ca2ca75eca177df",
+          "source_bytes": [
+            109,
+            493
+          ],
+          "sha256": "a8a75da52cf114b28d33e48992435876d121c7d410ebf740ce651821afcc79aa"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/acos.c",
+          "source_file_sha256": "cc6f9017e7e2e0ef01516fa12c68aa63865e6415c90dc039dfce9abffae09a4c",
+          "source_bytes": [
+            53,
+            433
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/acosf.c",
+          "source_file_sha256": "b20b3dcb58ce7cc55963945f8cb83efbf064b29d2da3011f2cec5d08459f2aa7",
+          "source_bytes": [
+            137,
+            516
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/acosl.c",
+          "source_file_sha256": "ed40b99c604aa593ee2ee71c02f928cb68c1afdf8a18243b0e7b6cc9a65586c1",
+          "source_bytes": [
+            54,
+            434
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/asin.c",
+          "source_file_sha256": "9302dd0b2f302f7b7decce82e737ed250bae1bcc65c19eaf3d7ec19010892e63",
+          "source_bytes": [
+            53,
+            433
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/asinf.c",
+          "source_file_sha256": "6bc9b2392b81efa4c6a80c8602a2c0898d3b5c77444f6d3266ac71c18df222c5",
+          "source_bytes": [
+            137,
+            516
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/asinl.c",
+          "source_file_sha256": "4a0e729842b1bf3181bad43b2f048dd3652b73456e0a3f44f6e65c2c51765e9f",
+          "source_bytes": [
+            54,
+            434
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/atan.c",
+          "source_file_sha256": "1cffb67a65456ae0bc5f07a94df04a4f18ebc1ac0bffe3219250c4e0555ee01d",
+          "source_bytes": [
+            53,
+            432
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/atan2.c",
+          "source_file_sha256": "a5f94b09b10b4e72bb15d94ae403c9dfd27d7ad881ecd729000004429acfca63",
+          "source_bytes": [
+            54,
+            437
+          ],
+          "sha256": "11f476f899dacfef801a097465ad0755ad4546afe03b02c9a17aa38e228344e1"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/atan2f.c",
+          "source_file_sha256": "31a61a0a4c7b00db625b708525f24673a83df868a3e363042c9cc9dcf0aaeec8",
+          "source_bytes": [
+            138,
+            517
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/atan2l.c",
+          "source_file_sha256": "c13d4d9e1329ffcbbf3ef1dd755602c771612f2dd98f38464fc9fb0f7bdf3c68",
+          "source_bytes": [
+            55,
+            438
+          ],
+          "sha256": "11f476f899dacfef801a097465ad0755ad4546afe03b02c9a17aa38e228344e1"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/atanf.c",
+          "source_file_sha256": "e0533d7b72aabce311a758a1f94fd15e5d4067be73b716cb1f425df5bc9039d6",
+          "source_bytes": [
+            137,
+            516
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/atanl.c",
+          "source_file_sha256": "5c6f655740e6f594db8a045e529582f20613d14ac2bca8bf3f881145bf459325",
+          "source_bytes": [
+            54,
+            433
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/cbrt.c",
+          "source_file_sha256": "af442893d4048c0eb485b93b5628792fb796d45ffc0f88c682041366c7da611d",
+          "source_bytes": [
+            53,
+            467
+          ],
+          "sha256": "11a1dc1ce0b6b2879da93a266c5aebe81c4324e749c77a2ce3048b5b24ab58c0"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/cbrtf.c",
+          "source_file_sha256": "87b7065f44ac0cef6d21385c2b453dde7e15a51e9008ae0d726cd9eaa2dc43da",
+          "source_bytes": [
+            182,
+            561
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/cbrtl.c",
+          "source_file_sha256": "ee82c17b1a24681dfd7de0161088b45ecbd2d0346ddeda9d4594b48e4da0d3e5",
+          "source_bytes": [
+            54,
+            663
+          ],
+          "sha256": "57c0d6534118d909d6b3e78366981596013f999307b9d0d7711a8998a0410d61"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/cos.c",
+          "source_file_sha256": "3a74e054057d636fa494bdd76a53a40db5cee618264f6ab31cb0538ba63c6bda",
+          "source_bytes": [
+            52,
+            431
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/cosf.c",
+          "source_file_sha256": "33cf828e8e733da2b72c723b9ff20057b9a4f10df72a3923dadcb626c23d222c",
+          "source_bytes": [
+            168,
+            547
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/erf.c",
+          "source_file_sha256": "795f05c9388ac277ab27cb5dc63fb4f82620a0ee11eaf8403201df5bc65c0f5b",
+          "source_bytes": [
+            52,
+            431
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/erff.c",
+          "source_file_sha256": "876ad823d25e58330628ccdc5d24a3f10cc255135046a4e2903daf33cb75c18f",
+          "source_bytes": [
+            136,
+            515
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/erfl.c",
+          "source_file_sha256": "dcce5b86a37215aee265ae27c1a00526542ab13d1dd609a560de3e3e9049a3e6",
+          "source_bytes": [
+            58,
+            437
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/erfl.c",
+          "source_file_sha256": "dcce5b86a37215aee265ae27c1a00526542ab13d1dd609a560de3e3e9049a3e6",
+          "source_bytes": [
+            438,
+            1234
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp.c",
+          "source_file_sha256": "7db56f21ca9b8915d36dd5099b707aafeb6a736eae798e19b76b074764e75f34",
+          "source_bytes": [
+            0,
+            111
+          ],
+          "sha256": "7e52a70e5de1143e4fdb710116f76b27eced3e41be7ab70310138928a3b34e5e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp2.c",
+          "source_file_sha256": "b771de769e1b69b931d1f95baa39b429a73c9904e8b5607e1736771c6ace92b1",
+          "source_bytes": [
+            0,
+            111
+          ],
+          "sha256": "e8f314eb6ab51b691f02a126ad69d2c7996a5eeb091f95f5033b1a806288e5d1"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp2f.c",
+          "source_file_sha256": "1753e636d3b395160a03e9dd4a4ed4fba2abcd9ee12e4cf2d919f5a6bd7e2732",
+          "source_bytes": [
+            0,
+            116
+          ],
+          "sha256": "9cd52ae0042ec9364291994dc497f2497414eeddaac23e792f1ab477576dfacf"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp2f_data.c",
+          "source_file_sha256": "3da38c471cc5eb8dc1c2e283c6c00a36b1d353ba5c8ca1e82d95180948e26bd5",
+          "source_bytes": [
+            0,
+            127
+          ],
+          "sha256": "eb8e488b7148e706986f5be08c5efbfcc96edb4ed7415391c12be3e512b24c74"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp2f_data.h",
+          "source_file_sha256": "fb52b690bef63df2e8996f2d2b3fd77f9ea08795863e73afdc882df04460e850",
+          "source_bytes": [
+            0,
+            79
+          ],
+          "sha256": "72a9b46f0fe5f4ab99af914882d3ad50f72612ca79b3192db87f37a06b841853"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp2l.c",
+          "source_file_sha256": "0eeba2725b540b0d5dd84b732d4c496d8e8d9492cf863dbb5c83fe102771352c",
+          "source_bytes": [
+            93,
+            1470
+          ],
+          "sha256": "a0f470d9d239f56f7d6504b1bfcd80a0dbe8f90a895558d4040d4395100ad607"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp_data.c",
+          "source_file_sha256": "c55dff64e369fe816cd8ce367064989bb119f85783599680d1a329031c660689",
+          "source_bytes": [
+            0,
+            119
+          ],
+          "sha256": "f6b5b71ae6dc49255b8982a8de10bb97d66035b0b6ad91843da71fcde64cf45f"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/exp_data.h",
+          "source_file_sha256": "df77fca837edd02b260dd09a2914202775909ae67a059218ae38cfab104e6d16",
+          "source_bytes": [
+            0,
+            74
+          ],
+          "sha256": "6ac2dcacfaa533da778dce54dac87709a1285f08d070d9d95790b50199f71486"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/expf.c",
+          "source_file_sha256": "225123b9b3a47a083c06f2580c6b73d5cadae5cec545f9e928f7041ff837b4b4",
+          "source_bytes": [
+            0,
+            116
+          ],
+          "sha256": "722fce9131e08cd408ec1029bb4fc7ad15c899b6e62ebacb911b298ad069728d"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/expl.c",
+          "source_file_sha256": "7218f10e56cd73c76f01a6924373dd1918730a0e793cf3c64670a34346173e68",
+          "source_bytes": [
+            58,
+            854
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/expm1.c",
+          "source_file_sha256": "c4764166cea03420f2dfc1840a6a7615934192d851b96d5d2dcc321cc1e39460",
+          "source_bytes": [
+            54,
+            433
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/expm1f.c",
+          "source_file_sha256": "a7d4e8f8b41f04d4b977deb59e6bf96067371387062a5987fcc3b4464f54f5e9",
+          "source_bytes": [
+            138,
+            517
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/expm1l.c",
+          "source_file_sha256": "a8362abd18ef31f00a7dd74c8b618ef658a4e9c3919c456d03d65a12fe445c2f",
+          "source_bytes": [
+            60,
+            856
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/fmaf.c",
+          "source_file_sha256": "e5baf54228b74b036da629902d811f9f57de26133a03ce290879b5ec6de04433",
+          "source_bytes": [
+            53,
+            1430
+          ],
+          "sha256": "c9479241e4e7e711c5cf43e95b86a79af7209b5ea23b8c55f8b95f1788eb5a82"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/fmal.c",
+          "source_file_sha256": "1c7587e59b9f249bd5e8dfabb154b602978fbb490348f92af5300ee8eadce518",
+          "source_bytes": [
+            53,
+            1430
+          ],
+          "sha256": "c9479241e4e7e711c5cf43e95b86a79af7209b5ea23b8c55f8b95f1788eb5a82"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/j0.c",
+          "source_file_sha256": "88fc190ff03d253791b9fab281caf82e5943e5d4251052c91cc29b14b39055bd",
+          "source_bytes": [
+            51,
+            431
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/j0f.c",
+          "source_file_sha256": "d0721c1c30f12badb67820e33299a2db0d9cec0209f7993fddee2a40d8d296a4",
+          "source_bytes": [
+            135,
+            514
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/j1.c",
+          "source_file_sha256": "73ec22fae7f2e3fccd2cc6ea777b296d0022a7c1d137035f1ef45cbf0c75ed4e",
+          "source_bytes": [
+            51,
+            431
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/j1f.c",
+          "source_file_sha256": "1b16747ce913d4e65dec522710265bd004f923a7f33b5e88d7e4057b9c7b8d79",
+          "source_bytes": [
+            135,
+            514
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/jn.c",
+          "source_file_sha256": "cd602fc99cea2f33d8b39462f9f0523c8bc3da646fa349de87e206eb3bb2aded",
+          "source_bytes": [
+            51,
+            431
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/jnf.c",
+          "source_file_sha256": "cab6c734e9a718a3e7c41b22e0e69893453befa805f2ebdafca3264d81dbcf71",
+          "source_bytes": [
+            135,
+            514
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/lgamma_r.c",
+          "source_file_sha256": "df81910c12c2ba5e82295cea6bfc6f3863e367cc6043d1bf91be1fb9597b2811",
+          "source_bytes": [
+            57,
+            440
+          ],
+          "sha256": "11f476f899dacfef801a097465ad0755ad4546afe03b02c9a17aa38e228344e1"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/lgammaf_r.c",
+          "source_file_sha256": "5aa1db729889e0705ef94b2cb4d7ab5fa6a615d28fd74b7bdf7579a22f6e7ed4",
+          "source_bytes": [
+            141,
+            520
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/lgammal.c",
+          "source_file_sha256": "852284cc7fb67db860bcf39a3a33c74481ef28ffa7818a16de82d7e2d534c312",
+          "source_bytes": [
+            61,
+            440
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/lgammal.c",
+          "source_file_sha256": "852284cc7fb67db860bcf39a3a33c74481ef28ffa7818a16de82d7e2d534c312",
+          "source_bytes": [
+            441,
+            1237
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log.c",
+          "source_file_sha256": "a0694d8587a0d145d0f8ae87cbffba014d7988bc2ebcbfad94cea73b394c9ecc",
+          "source_bytes": [
+            0,
+            114
+          ],
+          "sha256": "7d44f8a20ce2b9ab074ce883201b78815c98e669108b1dbdf3a699098444c326"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log10.c",
+          "source_file_sha256": "ef9b4b1f0918cf1fcb797f9fa4d4ffe177bfa27f668d74a41d613bfbcd83850a",
+          "source_bytes": [
+            54,
+            434
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log10f.c",
+          "source_file_sha256": "b8de5c0f14be2c622eca1cb33e80e5b131576c7c229aeffb8ea9f1d61555f6b9",
+          "source_bytes": [
+            55,
+            434
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log10l.c",
+          "source_file_sha256": "d23e3d61fe4111628efdef794ae7cd614e3443a81f70742e29070f99fdd078c4",
+          "source_bytes": [
+            60,
+            856
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log1p.c",
+          "source_file_sha256": "c76bbf714cd456a9f0de6e2c94853c27e7865581a2edfdef6d1f861739bbcb46",
+          "source_bytes": [
+            54,
+            433
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log1pf.c",
+          "source_file_sha256": "6c01aff9fcee1dcaca4d4581f17357e0f069643321c00288c672adc3521d0cc8",
+          "source_bytes": [
+            55,
+            434
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log1pl.c",
+          "source_file_sha256": "3846b55cbd55e3d3f90d7484216663030ec98c4c353e644ce3c4e3122080e4c4",
+          "source_bytes": [
+            60,
+            856
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log2.c",
+          "source_file_sha256": "281e4fc0f737419e245019d8bc8a8ca53032c2d88c31d08561e9e59dcb4b4640",
+          "source_bytes": [
+            0,
+            115
+          ],
+          "sha256": "c359dfaf15768892478461e9cb40da11d380123e47c50f29b3ede8207c04486d"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log2_data.c",
+          "source_file_sha256": "5a62bb213f19dc1364cddb612e3d13831e382f5ae6f7fafd7064362f53478dfb",
+          "source_bytes": [
+            0,
+            95
+          ],
+          "sha256": "74ae9464d17802e1e8394431844a842eb25efad729748a359a518d26685beedf"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log2_data.h",
+          "source_file_sha256": "b56e1a56f73a8700caa9787cd399fecf7f96038af56c2a590aeb6f0f8662ea8e",
+          "source_bytes": [
+            0,
+            74
+          ],
+          "sha256": "6ac2dcacfaa533da778dce54dac87709a1285f08d070d9d95790b50199f71486"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log2f.c",
+          "source_file_sha256": "f2393ef18e78e6dc540e7349dbfea000018246d64fca3eefe73f11a286403352",
+          "source_bytes": [
+            0,
+            117
+          ],
+          "sha256": "dfbd4e6eba80a4f25005d42aef337397554ca46598f64439e166633baa58cb3f"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log2f_data.c",
+          "source_file_sha256": "9261d7fdef29db26bd75310f029823593639ecf7c1cc089a6014623d49d21abe",
+          "source_bytes": [
+            0,
+            112
+          ],
+          "sha256": "719c803a410da68f48b70270cd181806b44d0c87ccec10bcba36973c8382a2a9"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log2f_data.h",
+          "source_file_sha256": "cb65ee48f557b19c8a6366a05f16ffba38aa46b00c4c136faf2dea8f53675a9b",
+          "source_bytes": [
+            0,
+            79
+          ],
+          "sha256": "72a9b46f0fe5f4ab99af914882d3ad50f72612ca79b3192db87f37a06b841853"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log2l.c",
+          "source_file_sha256": "c3294ef6fcf96c061c4511fb3f6cd2886b2f513938deadcfb16fc19fb2a9ff03",
+          "source_bytes": [
+            59,
+            855
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log_data.c",
+          "source_file_sha256": "e96bcd99d88fc57e0f3686299014f4b949a6212603ce237f39e16cedc155617a",
+          "source_bytes": [
+            0,
+            94
+          ],
+          "sha256": "d22e34751c18a13e5cb7e974c1b94c2cc89caad9d2b4f2ef1c85994d32292805"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/log_data.h",
+          "source_file_sha256": "a8dced6f0821f30cad040ba326b03e419fbe0a750ed8f3b0d7145992bee4bccc",
+          "source_bytes": [
+            0,
+            74
+          ],
+          "sha256": "6ac2dcacfaa533da778dce54dac87709a1285f08d070d9d95790b50199f71486"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/logf.c",
+          "source_file_sha256": "eecf8e5dd0afd5f64f938ccae07c85b0a8e82919f5d4269936a3b8493fb64e47",
+          "source_bytes": [
+            0,
+            116
+          ],
+          "sha256": "ffd4560b424a532b17b1f8af4405f11b4ceeaf9880ca33ad43f896b620bfb52c"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/logf_data.c",
+          "source_file_sha256": "60b08342fcef877b393a76fc36d92c576d6340ce153459aad03aad3d4716f9b5",
+          "source_bytes": [
+            0,
+            111
+          ],
+          "sha256": "7b69dd50886f7e59e969f2d7c91f6d694a42989bde841e57bed58f71a6d34fde"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/logf_data.h",
+          "source_file_sha256": "80176d1f045f162e917ca5c2879994ab0ed9e27b479086d752e5793c91135adf",
+          "source_bytes": [
+            0,
+            79
+          ],
+          "sha256": "72a9b46f0fe5f4ab99af914882d3ad50f72612ca79b3192db87f37a06b841853"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/logl.c",
+          "source_file_sha256": "e1612b2bb9a010c1914beb93fa242981f69f323392bd9816415cafaaec0d94b0",
+          "source_bytes": [
+            58,
+            854
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/pow.c",
+          "source_file_sha256": "b06f0a08d74fcff8cced7afa2c0e47e301e3e8a19c0de5becdec28cd7b014027",
+          "source_bytes": [
+            0,
+            111
+          ],
+          "sha256": "5fa165f5ae7e7b676b5ea1e2ab501f258932355ebad0ffaa76865149b47cc00a"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/pow_data.c",
+          "source_file_sha256": "2052ec913f9b4a2170a98a6fcbcd7694f5dec220036b00c36106a2b4b65a4c55",
+          "source_bytes": [
+            0,
+            110
+          ],
+          "sha256": "8867dc852d8c09b25648ac08bb5e7d7effdbff03e10614f13f8e681774ec1414"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/pow_data.h",
+          "source_file_sha256": "5014345a7958adcf6ff835b5e96afa99dd5a98c40dfe968442288e002b8e01a3",
+          "source_bytes": [
+            0,
+            74
+          ],
+          "sha256": "6ac2dcacfaa533da778dce54dac87709a1285f08d070d9d95790b50199f71486"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/powf.c",
+          "source_file_sha256": "74069b3a380cf954361e0243b38de2094ae680e2ecfb3e50af61ab576f13babf",
+          "source_bytes": [
+            0,
+            79
+          ],
+          "sha256": "72a9b46f0fe5f4ab99af914882d3ad50f72612ca79b3192db87f37a06b841853"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/powf_data.c",
+          "source_file_sha256": "136f491b0f904842b926784134d0adba7a9103d2ce8a226276dd6e9260457398",
+          "source_bytes": [
+            0,
+            111
+          ],
+          "sha256": "0bf37177bf53722a813bbd05dce155746ceb21a1aeee3c7b13a3927554fe53d6"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/powf_data.h",
+          "source_file_sha256": "5d632276e5f21cdcd47f35c53cf792640ad347aabce1e1bd5774fad5371fc8d8",
+          "source_bytes": [
+            0,
+            79
+          ],
+          "sha256": "72a9b46f0fe5f4ab99af914882d3ad50f72612ca79b3192db87f37a06b841853"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/powl.c",
+          "source_file_sha256": "be5f736310432efadcab58189a207f79f790d35a5ad11df778711ea5570f5bba",
+          "source_bytes": [
+            58,
+            854
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/scalb.c",
+          "source_file_sha256": "7f7eda8fd9d537105136d56661d70788f912b9584bb116dea185db340c78ada5",
+          "source_bytes": [
+            54,
+            434
+          ],
+          "sha256": "74344ebf347f27ca446e00f1c1921f705546f4b20e0fb31c183cd2c8464b1bc5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/scalbf.c",
+          "source_file_sha256": "b4a0485f7a11d994960c31947f0132c45afd47f599abbae4a9f2041f7f346a3f",
+          "source_bytes": [
+            138,
+            517
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/sin.c",
+          "source_file_sha256": "24e53a9d85f196f66919cc19247be5480bb607ef38844b1a24bc47c4fe4974ef",
+          "source_bytes": [
+            52,
+            431
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/sincos.c",
+          "source_file_sha256": "2b88cfba380b8d5aa8f8f6b9f055aee91fe112de9f967a4484807afcb5405d9d",
+          "source_bytes": [
+            52,
+            431
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/sincosf.c",
+          "source_file_sha256": "0196bf2ccfa370be120b917f2379bb533950ea50818d329aeee076081690c95d",
+          "source_bytes": [
+            168,
+            547
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/sinf.c",
+          "source_file_sha256": "2583af55446f07da3225186c368a7aae5a0a0a0edab268967f4122b92e222b87",
+          "source_bytes": [
+            168,
+            547
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/tan.c",
+          "source_file_sha256": "422d411bac962a1077ae394d14e54313012a6faa3476c20b2a66d3fb3f7a923f",
+          "source_bytes": [
+            52,
+            431
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/tanf.c",
+          "source_file_sha256": "38b39aaf03d33341e606b67b3743ee5fa436b7e8338af155994d4b794b366003",
+          "source_bytes": [
+            168,
+            547
+          ],
+          "sha256": "0c3d0381d2cd647be68590170490be5f624c962d9f95eb698489e578c1de8f05"
+        },
+        {
+          "source_member": "musl-1.2.6/src/math/tgammal.c",
+          "source_file_sha256": "b9f00584454232f6d4c6cf76b8198221a4cc047c92fa749e5f41476c9b54579f",
+          "source_bytes": [
+            61,
+            857
+          ],
+          "sha256": "d9d69faa82c4f80279a3832834c9a1482c52b8b3b5895f2cc869c0e4db33f36e"
+        },
+        {
+          "source_member": "musl-1.2.6/src/regex/regcomp.c",
+          "source_file_sha256": "56b0a765e084a5cd3ed7113a893b50d259265ba76b6bea98889c45d7aec302a0",
+          "source_bytes": [
+            0,
+            1444
+          ],
+          "sha256": "8313e732fdeef03ee534e30bdb0b2df8fea4c9e6618aa5abda363f873c5c961a"
+        },
+        {
+          "source_member": "musl-1.2.6/src/regex/regexec.c",
+          "source_file_sha256": "072e8a1092c98830b48e784fb74ce486f7c39e27207f79f1dd161e2c5d86ba77",
+          "source_bytes": [
+            0,
+            1446
+          ],
+          "sha256": "6b0193762d619afafa7f796e10097fbf7c255a8e96dbfa25f75ab072620a87c5"
+        },
+        {
+          "source_member": "musl-1.2.6/src/regex/tre-mem.c",
+          "source_file_sha256": "4721979ce365a395fd7644335c847a8a97913e87f14348641f7f199b57b93e28",
+          "source_bytes": [
+            0,
+            1415
+          ],
+          "sha256": "da041cb2f902d426453521b2aa036ff79e9ed03236519518d2aa0290bddf88ac"
+        },
+        {
+          "source_member": "musl-1.2.6/src/regex/tre.h",
+          "source_file_sha256": "e734e68decc33b5ee983db12cabcbdd2589c2d16088677228087b0e5dc365cf3",
+          "source_bytes": [
+            0,
+            1424
+          ],
+          "sha256": "920d6efc69e820c76c990f76db6c6da46c6a8f8ebd306b2004918896a26e4521"
+        },
+        {
+          "source_member": "musl-1.2.6/src/stdlib/qsort.c",
+          "source_file_sha256": "dc9a8fd43bd2c98c437c05c214a8715df22ed746a2912969eb154fa9090213f4",
+          "source_bytes": [
+            0,
+            1113
+          ],
+          "sha256": "a2f67fe4a33ebc5c0ddd2aadf4de7e944653d0b8d7f0426db797a40baac0891d"
+        }
+      ]
     }
   ],
   "publication_approved": false,
   "review_remaining": [
-    "Root COPYRIGHT identifies TRE, math, crypt and other per-file licenses; per-file notice review remains open."
+    "Root-identified TRE, generic/x86_64 math/complex, DES/blowfish and qsort comment notices are retained. Complete compiled-file/assembly/line-comment coverage and recipe transformations remain unreviewed."
   ],
   "runtime_files": [
     "lib/ld-musl-x86_64.so.1",
