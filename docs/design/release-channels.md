@@ -69,3 +69,19 @@ and release gates must be implemented for the exact input before wiring registry
 or GitHub Release writes. Until then, tag pushes verify a release input; they do
 not produce a published release. No release tag, remote push, registry upload,
 production deployment or external workflow execution was performed here.
+
+
+## Required source status
+
+The workflow exposes `required-checks` as the aggregate status for future branch
+protection. It runs even when a dependency fails: source build/tests and deployment
+contracts must both succeed. On pushes, release-ref-policy must also succeed;
+for PR/manual checks that inapplicable job must be skipped. Failure, cancellation,
+a missing result or an unexpected skip cannot turn the aggregate green. Select
+this exact job as required after the hosted repository has observed it.
+
+Two local contract tests cover supported events and refusal of non-success
+required results. Pinned actionlint validated the workflow; shellcheck/pyflakes
+were unavailable in that fixture. This adds no publishing permissions or jobs,
+and does not approve native artifacts, licensing, release or deployment.
+Hosted checks and actual branch protection remain unverified.

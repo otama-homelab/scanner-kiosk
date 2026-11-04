@@ -48,6 +48,8 @@ jobs:
         run: npm install --global npm@11.21.1 --ignore-scripts --no-audit --no-fund
       - name: Verify Go dependencies
         run: go mod verify
+      - name: Required check aggregation contract
+        run: python3 -m unittest discover -s scripts -p test_required_jobs.py -v
       - name: Release channel and ancestry contract
         run: python3 -m unittest discover -s scripts -p test_release_ref.py -v
       - name: Preserve vulnerability scan timeout evidence
@@ -142,3 +144,20 @@ jobs:
         run: '"$RUNNER_TEMP/deployment-tools/bin/python" scripts/test_helm_native.py -v'
       - name: Compose render and native runtime contracts
         run: python3 scripts/test_compose_native.py -v
+
+  required-checks:
+    if: always()
+    needs: [release-ref-policy, test-and-build, deployment-contracts]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Require every applicable source check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_RESULT: ${{ needs.release-ref-policy.result }}
+          TEST_RESULT: ${{ needs.test-and-build.result }}
+          DEPLOY_RESULT: ${{ needs.deployment-contracts.result }}
+        run: sh scripts/check-required-jobs.sh
