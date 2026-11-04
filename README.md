@@ -49,9 +49,8 @@ See the [license decision](docs/adr/0005-project-license.md) and
 - `deploy/`: standalone deployment examples; homelab-specific configuration lives in the infrastructure repository.
 - `scripts/`: compiled-command, browser and independent artifact verification; Go tests live beside their packages.
 
-The private [GitHub repository](https://github.com/otama-homelab/scanner-kiosk)
-is created and the local origin is configured. Initial source upload awaits the
-CLI workflow authorization; distribution publication remains unconfigured.
+Source repository: [otama-homelab/scanner-kiosk](https://github.com/otama-homelab/scanner-kiosk)
+(private). Distribution publication and production cutover remain pending.
 
 Paperless delivery is deferred. The initial release ends at local download; any later document organization or agent-driven delivery remains outside the initial scanner workflow. LLM OCR remains in scope.
 
