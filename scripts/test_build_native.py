@@ -1,6 +1,9 @@
 import importlib.util
 import json
 import os
+import io
+import sys
+import tarfile
 from pathlib import Path
 import subprocess
 import tempfile
@@ -114,6 +117,23 @@ class NativePipelineTests(unittest.TestCase):
             os.umask(previous)
         self.assertIsNone(error)
         self.assertTrue(receipt['passed'] and artifact)
+
+    def test_source_snapshot_accepts_git_archive_root_and_refuses_escape(self):
+        for escape in [False, True]:
+            with self.subTest(escape=escape), tempfile.TemporaryDirectory() as temporary:
+                work = Path(temporary); archive = work/'source.tar'; destination = work/'snapshot'
+                destination.mkdir()
+                with tarfile.open(archive,'w') as output:
+                    root = tarfile.TarInfo('source/');root.type=tarfile.DIRTYPE;root.mode=0o755
+                    output.addfile(root)
+                    member = tarfile.TarInfo('source/../outside' if escape else 'source/main.go')
+                    member.size=4;member.mode=0o644;output.addfile(member,io.BytesIO(b'data'))
+                program = module.EXTRACT_SOURCE.replace("'/source.tar'",repr(str(archive))).replace("'/snapshot'",repr(str(destination)))
+                result = subprocess.run([sys.executable,'-c',program],capture_output=True,timeout=10)
+                self.assertEqual(result.returncode==0, not escape, result.stderr.decode())
+                self.assertFalse((work/'outside').exists())
+                if not escape:
+                    self.assertEqual((destination/'source/main.go').read_bytes(), b'data')
 
     def test_existing_directory_is_untouched(self):
         with tempfile.TemporaryDirectory() as temporary:

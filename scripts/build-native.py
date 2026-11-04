@@ -12,10 +12,11 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 EXTRACT_SOURCE = '''import tarfile
+from pathlib import PurePosixPath
 with tarfile.open('/source.tar') as archive:
     members = archive.getmembers()
     assert len(members) <= 8192 and sum(m.size for m in members) <= 64 << 20
-    assert all(m.name.startswith('source/') and (m.isfile() or m.isdir() or m.issym()) for m in members)
+    assert all((m.name == 'source' and m.isdir()) or (m.name.startswith('source/') and '..' not in PurePosixPath(m.name).parts and (m.isfile() or m.isdir() or m.issym())) for m in members)
     archive.extractall('/snapshot', filter='data')
 '''
 ASSEMBLE = '''import subprocess,sys,tarfile,pathlib
