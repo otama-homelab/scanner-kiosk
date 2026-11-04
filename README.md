@@ -31,6 +31,13 @@ Development status: the Go API/worker and English/Japanese Astro frontend connec
 - [Public capability API](docs/design/capability-http.md)
 - [Deployment design examples](deploy/README.md)
 
+## License
+
+Project-owned code and assets use [Apache-2.0](LICENSE), unless otherwise marked.
+Third-party components retain their own licenses and redistribution conditions.
+See the [license decision](docs/adr/0005-project-license.md) and
+[distribution review](docs/design/license-distribution.md).
+
 ## Intended layout
 
 - `cmd/scanner/`: API server and worker commands.

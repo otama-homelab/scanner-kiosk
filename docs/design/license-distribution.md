@@ -1,11 +1,14 @@
 # Distribution boundaries and open license work
 
-The project license is not selected. This document records observed distribution
-boundaries; it does not approve a release or replace the exact license texts.
+Project-owned code uses **Apache-2.0**, selected on 2026-11-04 under
+[ADR 0005](../adr/0005-project-license.md). Third-party terms remain separate.
+This document records observed distribution boundaries; it does not approve a
+release or replace exact license texts. Dated observations below that describe
+the project license as undecided predate this decision.
 
 | Delivered material | Current evidence | Remaining work |
 | --- | --- | --- |
-| Go executables | Runtime Docker stage copies `scanner` and the CGO `sane-parameters` helper. The build collects indexed Go module and standard library notices. | Select the project license; check each module's actual terms, generated code and native linkage; bind notices and corresponding source to the release digest. |
+| Go executables | Runtime Docker stage copies `scanner` and the CGO `sane-parameters` helper. The build collects indexed Go module and standard library notices. | Include the selected project license; check each module's actual terms, generated code and native linkage; bind notices and corresponding source to the release digest. |
 | Browser JavaScript | Observed Astro client build contains seven project TypeScript modules; its single generated chunk has no static or dynamic imports. All five built assets match the embedded assets and prior candidate image delivery hashes. | Review copied/generated material and authorship. Repeat module and asset checks when build inputs or dependencies change. |
 | HTML, CSS, SVG and inline/public JavaScript | `index.html` is generated from the project Astro page. `logo.svg`, `style.css` and `theme.js` are byte-identical copies of `web/public`. | Confirm source/rights of the logo, icons, styling and translations; generated HTML is not covered by the JavaScript module inventory. |
 | Node/Astro/npm build tooling | Temporary prerender chunks contain Astro and other npm modules; they are absent from the five final static assets. Docker copies `web/dist` into the Go build, without copying Node or `node_modules` into runtime. | Keep the build-stage inventory and unresolved archive notices. Review any source, build-stage image or dependency bundle actually distributed; do not treat every lockfile package as browser-delivered code. |
@@ -21,7 +24,7 @@ IJG attribution, and source-association records from `native/notice-files/`.
 The assembler validates those files against the manifest before packaging.
 See [source-managed notices](../../native/README.md#source-managed-notices).
 Other native component obligations, replacement/relinking materials, recipient
-source access and the project's own license remain under review. This update
+source access remain under review; the project license is now Apache-2.0. This update
 does not approve distribution or establish full notice completeness.
 
 The same source-managed path now also retains root notices for12 transitive
