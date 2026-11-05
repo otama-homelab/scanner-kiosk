@@ -38,6 +38,7 @@ func setup(t *testing.T) *fixture {
 	t.Helper()
 	root := t.TempDir()
 	f := &fixture{statePath: filepath.Join(root, "state.sqlite3"), docsPath: filepath.Join(root, "documents.sqlite3"), now: 2000}
+	seedFixtureSchemas(t, f.statePath, f.docsPath)
 	var err error
 	f.state, err = storage.Open(f.statePath, storage.State)
 	if err != nil {
