@@ -26,3 +26,20 @@
 参照: [配備例](../../deploy/README.md)、[storage契約](state-storage.md)、[運用・release](operations-release.md)、[physical fencing](physical-writer-fencing.md)。
 
 600dpiカラーlosslessの高エントロピー試験では、PDF子process単体のRSSは約777MiBだった。768MiBは全負荷の上限として保証しない。組み立て用の固定profileはdata1280MiB/Go target768MiB（仮想AS3GiB）で、配備例のworker1536MiB limitは維持。実CSI/コンテナ全体の受入は別途必要。
+
+## 2026-11-06 実接続先の準備（未配備）
+
+本人指定はPocket IDと既存LiteLLM。以下は設定準備で、実OIDCログイン・実モデル推論の合格ではない。プリンタは本人申告でオフライン、夜間の実機確認は保留。検証Podのプリンタ向けegress許可も撤回済み。以前のPod内HTTP timeoutからLAN経路障害を断定しない。
+
+| 設定 | 確認値・残条件 |
+|---|---|
+| OIDC issuer | `https://services.example.com`。TLS検証付きdiscovery取得済み |
+| scanner public origin | 既存homelab chartの予定値 `https://services.example.com`。常用入口の切替は未実施 |
+| callback | 上記originを採用する場合は `https://services.example.com/auth/oidc/callback` を完全一致登録。任意redirect・wildcardは使わない |
+| OIDC client | 前回のread-only照会ではscanner用クライアントなし。client ID/secretの登録と既存の秘密管理経路への保存が必要。秘密値をsourceへ書かない |
+| LiteLLM external base | `https://services.example.com/v1` |
+| LiteLLM in-cluster base | `http://litellm.inference.svc.cluster.local:4000/v1`。profileはbaseではなく `/chat/completions` までのendpointを指定し、内部HTTPを使う場合だけ明示許可する |
+| vision model候補 | 実ConfigMap `litellm-config` に `Gemma-4-E4B-it-GGUF` と `Qwen3.8-27B-GGUF` の `supports_vision: true` を確認。稼働・OCR精度・応答model名は未確認 |
+| LLM受入前提 | 現EndpointSliceのbackendはReady=false。モデル呼出し0回。回復後に非私文書で実応答のmodel名と対応出力を確認し、それからprofileのresponse_modelを固定する |
+
+LLM credentialはworkerの専用secretだけに供給し、API/browserへ渡さない。client作成・secret作成・モデル呼出し・常用配備はこの設定準備では行っていない。実phone/支援技術・二owner/失効/再認証は別の必須受入として残る。
