@@ -506,3 +506,42 @@ connection. Existing migration checksums are unchanged.
 
 As with migration 0017, rollback to an older executable requires a compatible
 pre-upgrade database/document backup; no automatic schema downgrade is provided.
+
+## Import intake ownership (migration 0019)
+
+`AdmitImport` pins input length/digest and page policy in an immutable import job,
+reserves the complete deployment job byte ceiling, and registers an empty staging
+original before any filesystem write. Source paths, artifact IDs and producer
+tokens are generated internally. Exact receipt replay returns the existing job
+without a producer token or file-writing capability, before changed capacity
+policy is considered. A changed input under the same key is a conflict.
+
+The intake progresses pending → receiving → ready, or pending/receiving → aborted.
+`StartImportUpload` must succeed before a coordinator creates any input directory
+or file; it rechecks owner, active document/revision, deadline and producer token.
+It refuses a start before the job's creation time after clock rollback. Active
+imports and their retained reservation participate in the existing cleanup barrier.
+Registered staging paths are protected by the existing recovery GC reference check.
+
+After verifying, syncing and closing the source, the coordinator calls
+`SealStoppedImportUpload` with actual metadata. Length and digest must match the
+pinned intent. The original becomes ready, its producer-job link is recorded,
+intake becomes ready, and the reservation is reduced by the input bytes in one
+transaction. Registered input plus remaining reservation still equals the initial
+job budget. This seals bytes for later bounded parsing; it does not publish pages
+or make the raw uploaded PDF a downloadable output.
+
+A stopped failed/cancelled intake records actual partial byte size/hash, terminalizes
+the job and releases its reservation while retaining the original for owned cleanup.
+This internal stop path also works for disabled/expired owners. Pending intake can
+only abort with zero bytes and the empty-file digest. No method claims that a
+producer stopped merely because a timestamp or token exists: the trusted coordinator
+must already have joined writers and closed descriptors. Never expose these methods
+or producer tokens as browser stop assertions. Unknown/live producers remain fenced.
+
+`ImportUploadRecorded` reconciles an uncertain metadata commit against the exact
+producer/artifact metadata without creating another writer. Tests cover admission,
+replay, capacity/owner/target guards, seal/abort accounting, stopped-producer deletion
+barriers, lost acknowledgements and clock rollback. Current evidence is database
+coordination only: HTTP byte transfer, actual fsync/close, worker claim/publication,
+producer crash recovery and hosted end-to-end acceptance remain incomplete.
