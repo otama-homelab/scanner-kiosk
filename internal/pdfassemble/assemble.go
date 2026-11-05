@@ -107,21 +107,21 @@ func Build(ctx context.Context, pages []Page, encoding string, options Options) 
 		if err != nil || input == nil {
 			return nil, ErrFailed
 		}
-		raw, readErr := io.ReadAll(io.LimitReader(contextReader{ctx, input}, options.MaxInputBytes+1))
-		closeErr := input.Close()
-		if ctx.Err() != nil {
-			return nil, ctx.Err()
-		}
-		if readErr != nil || closeErr != nil {
-			return nil, ErrFailed
-		}
-		if int64(len(raw)) > options.MaxInputBytes {
-			return nil, ErrLimit
-		}
 		conf := model.NewStatelessConfiguration()
 		conf.Optimize = false
 		var encodedPage []byte
 		if page.MediaType == "application/pdf" {
+			raw, readErr := io.ReadAll(io.LimitReader(contextReader{ctx, input}, options.MaxInputBytes+1))
+			closeErr := input.Close()
+			if ctx.Err() != nil {
+				return nil, ctx.Err()
+			}
+			if readErr != nil || closeErr != nil {
+				return nil, ErrFailed
+			}
+			if int64(len(raw)) > options.MaxInputBytes {
+				return nil, ErrLimit
+			}
 			imported, err := pdfimport.Split(ctx, raw, pdfimport.Options{MaxInputBytes: options.MaxInputBytes, MaxOutputBytes: options.MaxOutputBytes - total, MaxPages: 1})
 			if err != nil {
 				if errors.Is(err, pdfimport.ErrLimit) {
@@ -134,51 +134,14 @@ func Build(ctx context.Context, pages []Page, encoding string, options Options) 
 			}
 			encodedPage = imported[0].PDF
 		} else {
-			info, err := captureimage.Validate(ctx, bytes.NewReader(raw), captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
+			remaining := options
+			remaining.MaxOutputBytes -= total
+			encodedPage, err = imagePagePDF(ctx, page, input, encoding, remaining)
 			if err != nil {
-				if ctx.Err() != nil {
-					return nil, ctx.Err()
-				}
-				return nil, ErrInvalid
+				return nil, err
 			}
-			if page.MediaType != "" && page.MediaType != info.MediaType {
-				return nil, ErrInvalid
-			}
-			prepared := raw
-			transcode := (encoding == "jpeg" && info.MediaType != "image/jpeg") || (encoding == "lossless" && info.MediaType != "image/png")
-			if transcode {
-				bitmap, _, err := image.Decode(contextReader{ctx, bytes.NewReader(raw)})
-				if err != nil {
-					return nil, ErrFailed
-				}
-				encoded := &limitedBuffer{limit: options.MaxInputBytes}
-				if encoding == "jpeg" {
-					err = jpeg.Encode(encoded, bitmap, &jpeg.Options{Quality: options.JPEGQuality})
-				} else {
-					// JPEG decoders return YCbCr; normalize to explicit 8-bit RGB.
-					rgb := image.NewRGBA(bitmap.Bounds())
-					draw.Draw(rgb, rgb.Bounds(), bitmap, bitmap.Bounds().Min, draw.Src)
-					err = png.Encode(encoded, rgb)
-				}
-				if err != nil {
-					if errors.Is(err, ErrLimit) {
-						return nil, ErrLimit
-					}
-					return nil, ErrFailed
-				}
-				prepared = encoded.Bytes()
-			}
-			width, height, _ := paper(page.Size)
-			details, err := pdfcpu.ParseImportDetails(fmt.Sprintf("dimensions:%.8f %.8f, position:c, scalefactor:1 rel", width, height), types.POINTS)
-			if err != nil {
-				return nil, ErrFailed
-			}
-			single := &limitedBuffer{limit: options.MaxOutputBytes - total}
-			if err = api.ImportImages(ctx, nil, single, []io.Reader{bytes.NewReader(prepared)}, details, conf); err != nil {
-				return nil, normalized(ctx, err)
-			}
-			encodedPage = single.Bytes()
 		}
+
 		if page.Rotation != 0 {
 			rotated := &limitedBuffer{limit: options.MaxOutputBytes - total}
 			if err = api.Rotate(ctx, bytes.NewReader(encodedPage), rotated, page.Rotation, []string{"1"}, conf); err != nil {
@@ -207,6 +170,77 @@ func Build(ctx context.Context, pages []Page, encoding string, options Options) 
 	}
 	return output.Bytes(), nil
 }
+
+// Seekable immutable inputs avoid retaining a second encoded bitmap buffer.
+func imagePagePDF(ctx context.Context, page Page, input io.ReadCloser, encoding string, options Options) (data []byte, result error) {
+	defer func() {
+		if err := input.Close(); err != nil {
+			data = nil
+			result = ErrFailed
+			if ctx.Err() != nil {
+				result = ctx.Err()
+			}
+		}
+	}()
+	reader, ok := input.(io.ReadSeeker)
+	if !ok {
+		raw, err := io.ReadAll(io.LimitReader(contextReader{ctx, input}, options.MaxInputBytes+1))
+		if ctx.Err() != nil {
+			return nil, ctx.Err()
+		}
+		if err != nil {
+			return nil, ErrFailed
+		}
+		if int64(len(raw)) > options.MaxInputBytes {
+			return nil, ErrLimit
+		}
+		reader = bytes.NewReader(raw)
+	}
+	info, err := captureimage.Validate(ctx, reader, captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
+	if err != nil {
+		if ctx.Err() != nil {
+			return nil, ctx.Err()
+		}
+		return nil, ErrInvalid
+	}
+	if page.MediaType != "" && page.MediaType != info.MediaType {
+		return nil, ErrInvalid
+	}
+	var prepared io.Reader = contextReader{ctx, io.LimitReader(reader, options.MaxInputBytes+1)}
+	transcode := (encoding == "jpeg" && info.MediaType != "image/jpeg") || (encoding == "lossless" && info.MediaType != "image/png")
+	if transcode {
+		_, bitmap, decodeErr := captureimage.Decode(ctx, reader, captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
+		if decodeErr != nil {
+			return nil, normalized(ctx, decodeErr)
+		}
+		encoded := &limitedBuffer{limit: options.MaxInputBytes}
+		if encoding == "jpeg" {
+			err = jpeg.Encode(encoded, bitmap, &jpeg.Options{Quality: options.JPEGQuality})
+		} else {
+			// JPEG decoders return YCbCr; normalize to explicit 8-bit RGB.
+			rgb := image.NewRGBA(bitmap.Bounds())
+			draw.Draw(rgb, rgb.Bounds(), bitmap, bitmap.Bounds().Min, draw.Src)
+			err = png.Encode(encoded, rgb)
+		}
+		if err != nil {
+			return nil, normalized(ctx, err)
+		}
+		prepared = bytes.NewReader(encoded.Bytes())
+	}
+	width, height, _ := paper(page.Size)
+	details, err := pdfcpu.ParseImportDetails(fmt.Sprintf("dimensions:%.8f %.8f, position:c, scalefactor:1 rel", width, height), types.POINTS)
+	if err != nil {
+		return nil, ErrFailed
+	}
+	conf := model.NewStatelessConfiguration()
+	conf.Optimize = false
+	single := &limitedBuffer{limit: options.MaxOutputBytes}
+	if err = api.ImportImages(ctx, nil, single, []io.Reader{prepared}, details, conf); err != nil {
+		return nil, normalized(ctx, err)
+	}
+	return single.Bytes(), nil
+}
+
 func normalized(ctx context.Context, err error) error {
 	if ctx.Err() != nil {
 		return ctx.Err()

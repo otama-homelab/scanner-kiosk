@@ -195,7 +195,7 @@ func AssemblyChild(args []string, input, output *os.File) int {
 	var layers []TextLayer
 	for i, p := range request.Pages {
 		bound := p.Input
-		pages[i] = Page{ID: p.ID, Size: p.Size, Color: p.Color, MediaType: p.MediaType, Width: p.Width, Height: p.Height, Rotation: p.Rotation, Open: func(ctx context.Context) (io.ReadCloser, error) { return root.Open(ctx, bound) }}
+		pages[i] = Page{ID: p.ID, Size: p.Size, Color: p.Color, MediaType: p.MediaType, Width: p.Width, Height: p.Height, Rotation: p.Rotation, Open: func(ctx context.Context) (io.ReadCloser, error) { return root.OpenFile(ctx, bound) }}
 		if p.Layer != nil {
 			if !request.OCR || p.MediaType == "application/pdf" {
 				return 10
