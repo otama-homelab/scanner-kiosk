@@ -215,7 +215,7 @@ func (s *Store) LoadCleanupWork(ctx context.Context, owner, jobID, runnerID stri
 	return work, nil
 }
 
-// AbortUnstartedRenders releases only withdrawn never-claimed render reservations.
+// AbortUnstartedRenders releases withdrawn or explicitly cancelled never-claimed render reservations.
 // Null start/runner/heartbeat plus absent produced files and leases prove that no
 // conforming executor owns output. Started/uncertain work remains untouched.
 func (s *Store) AbortUnstartedRenders(ctx context.Context, limit int) (int, error) {
@@ -227,7 +227,7 @@ func (s *Store) AbortUnstartedRenders(ctx context.Context, limit int) (int, erro
 		return 0, storageOperationError(err)
 	}
 	defer tx.Rollback()
-	rows, err := tx.QueryContext(ctx, `SELECT j.id,j.owner_id FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.kind='render' AND j.state IN ('queued','cancelling') AND j.runner_id IS NULL AND j.started_at_ms IS NULL AND j.heartbeat_at_ms IS NULL AND d.state IN ('deleting','expired') AND NOT EXISTS(SELECT 1 FROM job_artifacts a WHERE a.job_id=j.id) AND NOT EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id) ORDER BY j.created_at_ms,j.id LIMIT ?`, limit)
+	rows, err := tx.QueryContext(ctx, `SELECT j.id,j.owner_id FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.kind='render' AND j.state IN ('queued','cancelling') AND j.runner_id IS NULL AND j.started_at_ms IS NULL AND j.heartbeat_at_ms IS NULL AND (d.state IN ('deleting','expired') OR j.state='cancelling') AND NOT EXISTS(SELECT 1 FROM job_artifacts a WHERE a.job_id=j.id) AND NOT EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id) ORDER BY j.created_at_ms,j.id LIMIT ?`, limit)
 	if err != nil {
 		return 0, storageOperationError(err)
 	}
@@ -258,6 +258,12 @@ func (s *Store) AbortUnstartedRenders(ctx context.Context, limit int) (int, erro
 			return 0, storageOperationError(err)
 		}
 		if _, err = tx.ExecContext(ctx, `DELETE FROM reservations WHERE job_id=? AND owner_id=?`, job.id, job.owner); err != nil {
+			return 0, storageOperationError(err)
+		}
+		if _, err = tx.ExecContext(ctx, `UPDATE documents SET state=CASE WHEN expires_at_ms<=? THEN 'expired'
+ WHEN EXISTS(SELECT 1 FROM pages p WHERE p.document_id=documents.id AND p.owner_id=documents.owner_id) THEN 'review' ELSE 'failed' END
+ WHERE id=(SELECT document_id FROM jobs WHERE id=? AND owner_id=?) AND owner_id=?
+ AND revision=(SELECT input_revision FROM jobs WHERE id=? AND owner_id=?) AND state IN ('processing','cancelling')`, now, job.id, job.owner, job.owner, job.id, job.owner); err != nil {
 			return 0, storageOperationError(err)
 		}
 	}

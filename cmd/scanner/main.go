@@ -44,9 +44,26 @@ func main() {
 		return
 	}
 
+	if len(os.Args) >= 3 && os.Args[1] == "worker" && os.Args[2] == "recover" {
+		if len(os.Args) != 4 || os.Args[3] != "--previous-runtime-stopped" {
+			fmt.Fprintln(os.Stderr, "usage: scanner worker recover --previous-runtime-stopped (terminate the previous runtime and all child processes first)")
+			os.Exit(2)
+		}
+		c, err := config.LoadWorker(os.LookupEnv)
+		if err == nil {
+			err = workerruntime.Recover(ctx, c, true)
+		}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		fmt.Fprintln(os.Stdout, "Interrupted work recovered. Existing unexpired documents retained. Start worker normally; interrupted scans were not repeated.")
+		return
+	}
+
 	valid := len(os.Args) == 2 && os.Args[1] == "serve" || len(os.Args) >= 2 && len(os.Args) <= 3 && os.Args[1] == "worker" && (len(os.Args) == 2 || os.Args[2] == "--once")
 	if !valid {
-		fmt.Fprintln(os.Stderr, "usage: scanner version | scanner serve | scanner worker [--once] | scanner user create|set-password USERNAME | scanner state export|restore PRIVATE_ARCHIVE_PATH")
+		fmt.Fprintln(os.Stderr, "usage: scanner version | scanner serve | scanner worker [--once] | scanner worker recover --previous-runtime-stopped | scanner user create|set-password USERNAME | scanner state export|restore PRIVATE_ARCHIVE_PATH")
 		os.Exit(2)
 	}
 	var c config.Config

@@ -50,11 +50,7 @@ func (r *Root) RecoverUnpublished(ctx context.Context, unreferenced func(context
 			return ErrStorage
 		}
 		for _, name := range names {
-			generated := generatedDirectory(name)
-			if strings.HasPrefix(name, "probe_") {
-				generated = generatedDirectory("work_" + strings.TrimPrefix(name, "probe_"))
-			}
-			if !generated {
+			if !generatedDirectory(name) && !(strings.HasPrefix(name, "probe_") && generatedNonce(strings.TrimPrefix(name, "probe_"))) {
 				continue
 			}
 			allowed, e := unreferenced(ctx, name)

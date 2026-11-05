@@ -266,6 +266,10 @@ func TestEmptyArtifactAndUntrustedQuarantine(t *testing.T) {
 				if err := os.Mkdir(filepath.Join(root, ".cleanup"), 0755); err != nil {
 					t.Fatal(err)
 				}
+				// Make the unsafe fixture independent of the caller's umask.
+				if err := os.Chmod(filepath.Join(root, ".cleanup"), 0755); err != nil {
+					t.Fatal(err)
+				}
 			}
 			if result, err := gc.Remove(context.Background(), job, input); err == nil || result.RemovedAtMS != 0 || !exists(t, source) {
 				t.Fatal("untrusted quarantine accepted", result, err)

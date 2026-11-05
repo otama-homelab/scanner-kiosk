@@ -37,6 +37,10 @@ func generatedDirectory(name string) bool {
 	default:
 		return false
 	}
+	return generatedNonce(suffix)
+}
+
+func generatedNonce(suffix string) bool {
 	if len(suffix) != 48 {
 		return false
 	}

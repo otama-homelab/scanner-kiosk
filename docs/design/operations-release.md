@@ -46,6 +46,44 @@ The durable state mount and temporary document mount are separate. The latter in
 
 Before production, verify that the chosen temporary volume is outside recursive NAS snapshots, replication and offsite jobs. Existing scanservjs storage is known to be protected and is not suitable merely because its PVC exists. New storage placement/provisioning is a separate pending infrastructure action. A local directory example must not be described as snapshot-safe without checking its parent.
 
+### Retain documents after an interrupted worker
+
+A normal clean restart keeps the same stores and needs no recovery command.
+If startup reports `worker recovery required before accepting more work`, keep
+admission closed. Do not clear lease/heartbeat rows, retry an interrupted physical
+scan, or infer local stop from the printer reporting Idle.
+
+1. Terminate the **entire previous runtime and all scanner/OCR/provider child
+   processes**, including orphans. For containers, verify runtime/cgroup process
+   termination on the old host. A deleted Pod object or an unreachable node is
+   not that confirmation; restore access or fence that runtime first.
+2. With the old runtime stopped, run the same candidate as the same numeric
+   UID/GID against the **existing state and document mounts**, using the same
+   registered scanner endpoints:
+
+   ```sh
+   scanner worker recover --previous-runtime-stopped
+   ```
+
+   The flag is the administrator's explicit confirmation of step 1. The command
+   does not stop other runtimes or prove their termination. It acquires the local
+   worker guard, withdraws stale admission, protects all registered artifacts,
+   removes only recognized unpublished scratch, and independently checks the
+   old job's exact physical UUID and fresh Idle before releasing its lease.
+   Busy/changed/unavailable hardware, unknown files or uncertain storage leave
+   recovery blocked. No timeout or lock acquisition alone clears old work.
+3. Start `scanner worker` normally. Successfully recovered old jobs become
+   `interrupted` (or `cancelled` when cancellation was pending); they are never
+   automatically rescanned. Existing unexpired pages, owners and original
+   expiry remain. Open the retained document to scan another page, edit or
+   produce a PDF. Expired/deleting documents retain their cleanup policy.
+
+The command is an operator CLI, not a browser endpoint. Legacy jobs without a
+physical identity binding remain blocked rather than guessing their device.
+The separate fresh-root identity restore below remains a fallback with its
+explicit impact decision; it is not required merely because a worker crashed.
+Real-device acceptance of this new same-root command is still pending.
+
 Configuration recovery uses a logical export of permitted durable records. Restored sessions and authorization attempts are invalidated. Original-document restoration is deliberately not part of configuration recovery. Normal process restart preserves valid sessions and unexpired local documents, reconciles workers, and reruns cleanup.
 
 The executable [logical identity recovery commands](state-recovery.md) now

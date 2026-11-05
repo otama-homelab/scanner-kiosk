@@ -8,20 +8,15 @@ package workerruntime
 import (
 	"context"
 	"errors"
-	"os"
-	"path/filepath"
 	"time"
 
 	"scanner-kiosk/internal/config"
-	"scanner-kiosk/internal/diskspace"
 	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/renderjob"
 	"scanner-kiosk/internal/scannerdriver"
 	"scanner-kiosk/internal/scanthumbnail"
-	"scanner-kiosk/internal/storage"
 	"scanner-kiosk/internal/workercatalog"
-	"scanner-kiosk/internal/workeridentity"
 )
 
 var ErrReconciliation = errors.New("worker recovery required before accepting more work")
@@ -31,39 +26,12 @@ var ErrRoot = errors.New("worker storage roots must be existing private director
 // one eligible job; otherwise it polls until cancellation. Scans require explicit
 // acquisition opt-in and a never-started admission pinned to this fresh boot.
 func Run(ctx context.Context, c config.Config, once bool) (result error) {
-	if c.Role != config.Worker {
-		return configError()
-	}
-	for _, root := range []string{c.StateDir, c.DocumentDir} {
-		info, err := os.Lstat(root)
-		if err != nil || !info.IsDir() || info.Mode().Perm()&0077 != 0 {
-			return ErrRoot
-		}
-	}
-	guard, err := workeridentity.Acquire(c.DocumentDir)
+	resources, err := openWorkerStorage(c)
 	if err != nil {
 		return err
 	}
-	defer guard.Close()
-	state, err := storage.Open(filepath.Join(c.StateDir, "state.sqlite3"), storage.State)
-	if err != nil {
-		return err
-	}
-	defer state.Close()
-	docs, err := storage.Open(filepath.Join(c.DocumentDir, "documents.sqlite3"), storage.Documents)
-	if err != nil {
-		return err
-	}
-	defer docs.Close()
-	meter, err := diskspace.Open(c.DocumentDir, c.Limits["SCANNER_MIN_FREE_BYTES"])
-	if err != nil {
-		return err
-	}
-	defer meter.Close()
-	store, err := documents.New(state, docs, time.Now, meter.Available)
-	if err != nil {
-		return err
-	}
+	defer resources.close()
+	guard, docs, store := resources.guard, resources.docs, resources.store
 	catalogStore, err := workercatalog.New(docs, time.Now, c.Durations["SCANNER_OCR_CATALOG_LEASE_SECONDS"])
 	if err != nil {
 		return err

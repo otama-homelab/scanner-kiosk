@@ -60,3 +60,55 @@ func (s *Store) RecoveryScans(ctx context.Context) ([]RecoveryScan, error) {
 	}
 	return out, nil
 }
+
+// RecoveryRender carries no authority to retry processing or publish output.
+type RecoveryRender struct {
+	OwnerID, JobID, RunnerID string
+	StartedAtMS              int64
+}
+
+func (s *Store) RecoveryRenders(ctx context.Context) ([]RecoveryRender, error) {
+	rows, err := s.documents.QueryContext(ctx, `SELECT j.owner_id,j.id,COALESCE(j.runner_id,''),j.started_at_ms,COALESCE(r.byte_size,-1),
+ EXISTS(SELECT 1 FROM job_artifacts a WHERE a.job_id=j.id),EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id)
+ FROM jobs j LEFT JOIN reservations r ON r.job_id=j.id AND r.owner_id=j.owner_id
+ WHERE j.kind='render' AND (j.state IN ('running','cancelling','reconciling') OR (j.state='queued' AND (j.runner_id IS NOT NULL OR j.started_at_ms IS NOT NULL)))
+ ORDER BY j.created_at_ms,j.id LIMIT 101`)
+	if err != nil {
+		return nil, storageOperationError(err)
+	}
+	defer rows.Close()
+	out := []RecoveryRender{}
+	for rows.Next() {
+		var item RecoveryRender
+		var started sql.NullInt64
+		var reserved int64
+		var produced, leased bool
+		if rows.Scan(&item.OwnerID, &item.JobID, &item.RunnerID, &started, &reserved, &produced, &leased) != nil {
+			return nil, ErrStorage
+		}
+		if len(out) == 100 || !id(item.OwnerID) || !id(item.JobID) || !id(item.RunnerID) || !started.Valid || started.Int64 <= 0 || reserved < 0 || produced || leased {
+			return nil, ErrStorage
+		}
+		item.StartedAtMS = started.Int64
+		out = append(out, item)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, storageOperationError(err)
+	}
+	return out, nil
+}
+
+// RecoveryDirectoryUnreferenced protects ALL registered artifacts regardless
+// of owner enablement, document expiry, or publication state during offline GC.
+func (s *Store) RecoveryDirectoryUnreferenced(ctx context.Context, directory string) (bool, error) {
+	if !id(directory) {
+		return false, ErrInvalid
+	}
+	prefix := directory + "/"
+	var found int
+	err := s.documents.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM artifacts WHERE substr(relative_path,1,?)=?)`, len(prefix), prefix).Scan(&found)
+	if err != nil {
+		return false, storageOperationError(err)
+	}
+	return found == 0, nil
+}
