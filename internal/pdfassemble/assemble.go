@@ -1,4 +1,4 @@
-// Package pdfassemble creates image PDFs using the unmodified upstream pdfcpu
+// Package pdfassemble combines scanned images and imported PDF pages using upstream pdfcpu
 // library. It operates on ordered job-scoped input streams, never browser paths.
 package pdfassemble
 
@@ -18,6 +18,7 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/types"
 	"scanner-kiosk/internal/captureimage"
+	"scanner-kiosk/internal/pdfimport"
 )
 
 var (
@@ -31,7 +32,9 @@ type Options struct {
 	MaxPages, JPEGQuality                        int
 }
 type Page struct {
-	ID, Size, Color         string
+	ID, Size, Color string
+	// Empty MediaType retains the existing validated image-input contract.
+	MediaType               string
 	Width, Height, Rotation int
 	Open                    func(context.Context) (io.ReadCloser, error)
 }
@@ -74,10 +77,22 @@ func Build(ctx context.Context, pages []Page, encoding string, options Options) 
 	}
 	seen := map[string]bool{}
 	for _, page := range pages {
-		if page.ID == "" || seen[page.ID] || page.Open == nil || page.Width < 1 || page.Height < 1 || int64(page.Width) > options.MaxPagePixels/int64(page.Height) || (page.Color != "color" && page.Color != "gray") || (page.Rotation != 0 && page.Rotation != 90 && page.Rotation != 180 && page.Rotation != 270) {
+		if page.ID == "" || seen[page.ID] || page.Open == nil || (page.Rotation != 0 && page.Rotation != 90 && page.Rotation != 180 && page.Rotation != 270) {
 			return nil, ErrInvalid
 		}
-		if _, _, ok := paper(page.Size); !ok {
+		switch page.MediaType {
+		case "application/pdf":
+			if page.Size != "" || page.Color != "" || page.Width != 0 || page.Height != 0 {
+				return nil, ErrInvalid
+			}
+		case "", "image/jpeg", "image/png":
+			if page.Width < 1 || page.Height < 1 || int64(page.Width) > options.MaxPagePixels/int64(page.Height) || (page.Color != "color" && page.Color != "gray") {
+				return nil, ErrInvalid
+			}
+			if _, _, ok := paper(page.Size); !ok {
+				return nil, ErrInvalid
+			}
+		default:
 			return nil, ErrInvalid
 		}
 		seen[page.ID] = true
@@ -103,48 +118,67 @@ func Build(ctx context.Context, pages []Page, encoding string, options Options) 
 		if int64(len(raw)) > options.MaxInputBytes {
 			return nil, ErrLimit
 		}
-		info, err := captureimage.Validate(ctx, bytes.NewReader(raw), captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
-		if err != nil {
-			if ctx.Err() != nil {
-				return nil, ctx.Err()
-			}
-			return nil, ErrInvalid
-		}
-		prepared := raw
-		transcode := (encoding == "jpeg" && info.MediaType != "image/jpeg") || (encoding == "lossless" && info.MediaType != "image/png")
-		if transcode {
-			bitmap, _, err := image.Decode(contextReader{ctx, bytes.NewReader(raw)})
+		conf := model.NewStatelessConfiguration()
+		conf.Optimize = false
+		var encodedPage []byte
+		if page.MediaType == "application/pdf" {
+			imported, err := pdfimport.Split(ctx, raw, pdfimport.Options{MaxInputBytes: options.MaxInputBytes, MaxOutputBytes: options.MaxOutputBytes - total, MaxPages: 1})
 			if err != nil {
-				return nil, ErrFailed
-			}
-			encoded := &limitedBuffer{limit: options.MaxInputBytes}
-			if encoding == "jpeg" {
-				err = jpeg.Encode(encoded, bitmap, &jpeg.Options{Quality: options.JPEGQuality})
-			} else {
-				// JPEG decoders return YCbCr; normalize to explicit 8-bit RGB.
-				rgb := image.NewRGBA(bitmap.Bounds())
-				draw.Draw(rgb, rgb.Bounds(), bitmap, bitmap.Bounds().Min, draw.Src)
-				err = png.Encode(encoded, rgb)
-			}
-			if err != nil {
-				if errors.Is(err, ErrLimit) {
+				if errors.Is(err, pdfimport.ErrLimit) {
 					return nil, ErrLimit
 				}
+				if ctx.Err() != nil {
+					return nil, ctx.Err()
+				}
+				return nil, ErrInvalid
+			}
+			encodedPage = imported[0].PDF
+		} else {
+			info, err := captureimage.Validate(ctx, bytes.NewReader(raw), captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
+			if err != nil {
+				if ctx.Err() != nil {
+					return nil, ctx.Err()
+				}
+				return nil, ErrInvalid
+			}
+			if page.MediaType != "" && page.MediaType != info.MediaType {
+				return nil, ErrInvalid
+			}
+			prepared := raw
+			transcode := (encoding == "jpeg" && info.MediaType != "image/jpeg") || (encoding == "lossless" && info.MediaType != "image/png")
+			if transcode {
+				bitmap, _, err := image.Decode(contextReader{ctx, bytes.NewReader(raw)})
+				if err != nil {
+					return nil, ErrFailed
+				}
+				encoded := &limitedBuffer{limit: options.MaxInputBytes}
+				if encoding == "jpeg" {
+					err = jpeg.Encode(encoded, bitmap, &jpeg.Options{Quality: options.JPEGQuality})
+				} else {
+					// JPEG decoders return YCbCr; normalize to explicit 8-bit RGB.
+					rgb := image.NewRGBA(bitmap.Bounds())
+					draw.Draw(rgb, rgb.Bounds(), bitmap, bitmap.Bounds().Min, draw.Src)
+					err = png.Encode(encoded, rgb)
+				}
+				if err != nil {
+					if errors.Is(err, ErrLimit) {
+						return nil, ErrLimit
+					}
+					return nil, ErrFailed
+				}
+				prepared = encoded.Bytes()
+			}
+			width, height, _ := paper(page.Size)
+			details, err := pdfcpu.ParseImportDetails(fmt.Sprintf("dimensions:%.8f %.8f, position:c, scalefactor:1 rel", width, height), types.POINTS)
+			if err != nil {
 				return nil, ErrFailed
 			}
-			prepared = encoded.Bytes()
+			single := &limitedBuffer{limit: options.MaxOutputBytes - total}
+			if err = api.ImportImages(ctx, nil, single, []io.Reader{bytes.NewReader(prepared)}, details, conf); err != nil {
+				return nil, normalized(ctx, err)
+			}
+			encodedPage = single.Bytes()
 		}
-		width, height, _ := paper(page.Size)
-		details, err := pdfcpu.ParseImportDetails(fmt.Sprintf("dimensions:%.8f %.8f, position:c, scalefactor:1 rel", width, height), types.POINTS)
-		if err != nil {
-			return nil, ErrFailed
-		}
-		conf := model.NewStatelessConfiguration()
-		single := &limitedBuffer{limit: options.MaxOutputBytes - total}
-		if err = api.ImportImages(ctx, nil, single, []io.Reader{bytes.NewReader(prepared)}, details, conf); err != nil {
-			return nil, normalized(ctx, err)
-		}
-		encodedPage := single.Bytes()
 		if page.Rotation != 0 {
 			rotated := &limitedBuffer{limit: options.MaxOutputBytes - total}
 			if err = api.Rotate(ctx, bytes.NewReader(encodedPage), rotated, page.Rotation, []string{"1"}, conf); err != nil {
@@ -157,6 +191,7 @@ func Build(ctx context.Context, pages []Page, encoding string, options Options) 
 	}
 	output := &limitedBuffer{limit: options.MaxOutputBytes}
 	conf := model.NewStatelessConfiguration()
+	conf.Optimize = false
 	if err := api.MergeRaw(ctx, inputs, output, false, conf); err != nil {
 		return nil, normalized(ctx, err)
 	}

@@ -12,10 +12,11 @@ import (
 // GenerateScoped resolves IDs through the scope; callers cannot supply paths.
 type ScopedPage struct {
 	ID, Size, Color         string
+	MediaType               string
 	Width, Height, Rotation int
 }
 
-// GenerateScoped writes an ordinary image PDF, never a searchable-PDF OCR output.
+// GenerateScoped combines scoped pages without generating new OCR text layers.
 // The caller owns seal, publication/read-back, release and failed-job cleanup.
 func GenerateScoped(ctx context.Context, scope *artifactscope.Scope, ordered []ScopedPage, encoding string, options Options) (string, error) {
 	if scope == nil {
@@ -24,7 +25,7 @@ func GenerateScoped(ctx context.Context, scope *artifactscope.Scope, ordered []S
 	pages := make([]Page, len(ordered))
 	for i, page := range ordered {
 		id := page.ID
-		pages[i] = Page{ID: id, Size: page.Size, Color: page.Color, Width: page.Width, Height: page.Height, Rotation: page.Rotation, Open: func(ctx context.Context) (io.ReadCloser, error) { return scope.OpenInput(ctx, id) }}
+		pages[i] = Page{ID: id, Size: page.Size, Color: page.Color, MediaType: page.MediaType, Width: page.Width, Height: page.Height, Rotation: page.Rotation, Open: func(ctx context.Context) (io.ReadCloser, error) { return scope.OpenInput(ctx, id) }}
 	}
 	data, err := Build(ctx, pages, encoding, options)
 	if err != nil {

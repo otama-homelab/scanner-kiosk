@@ -19,13 +19,13 @@ type TextLayer struct {
 	Open   func(context.Context) (io.ReadCloser, error)
 }
 
-// BuildWithLayers composes one matching OCR layer per image, rotates complete
-// pages and merges in the requested image-page order. No partial PDF is returned.
+// BuildWithLayers adds one OCR layer per scanned image and retains imported
+// PDF text, then rotates and merges complete pages. No partial PDF is returned.
 func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, encoding string, options Options) ([]byte, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if len(pages) == 0 || len(pages) != len(layers) || len(pages) > options.MaxPages || options.MaxInputBytes < 1 || options.MaxInputBytes > 1<<30 || options.MaxOutputBytes < 1 || options.MaxOutputBytes > 1<<30 {
+	if len(pages) == 0 || len(pages) > options.MaxPages || options.MaxInputBytes < 1 || options.MaxInputBytes > 1<<30 || options.MaxOutputBytes < 1 || options.MaxOutputBytes > 1<<30 {
 		return nil, ErrInvalid
 	}
 	byID := make(map[string]TextLayer, len(layers))
@@ -39,14 +39,26 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 		byID[layer.PageID] = layer
 	}
 	seen := map[string]bool{}
+	imageCount := 0
 	for _, page := range pages {
 		if page.ID == "" || seen[page.ID] {
 			return nil, ErrInvalid
 		}
-		if _, exists := byID[page.ID]; !exists {
-			return nil, ErrInvalid
+		_, exists := byID[page.ID]
+		if page.MediaType == "application/pdf" {
+			if exists {
+				return nil, ErrInvalid
+			}
+		} else {
+			imageCount++
+			if !exists {
+				return nil, ErrInvalid
+			}
 		}
 		seen[page.ID] = true
+	}
+	if len(byID) != imageCount {
+		return nil, ErrInvalid
 	}
 	inputs := make([]io.ReadSeeker, 0, len(pages))
 	var total int64
@@ -57,6 +69,17 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 		remaining := options.MaxOutputBytes - total
 		if remaining < 1 {
 			return nil, ErrLimit
+		}
+		if page.MediaType == "application/pdf" {
+			policy := options
+			policy.MaxOutputBytes = remaining
+			retained, err := Build(ctx, []Page{page}, encoding, policy)
+			if err != nil {
+				return nil, err
+			}
+			total += int64(len(retained))
+			inputs = append(inputs, bytes.NewReader(retained))
+			continue
 		}
 		angle := page.Rotation
 		if angle != 0 && angle != 90 && angle != 180 && angle != 270 {
@@ -107,6 +130,7 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 	}
 	output := &limitedBuffer{limit: options.MaxOutputBytes}
 	conf := model.NewStatelessConfiguration()
+	conf.Optimize = false
 	if err := api.MergeRaw(ctx, inputs, output, false, conf); err != nil {
 		return nil, normalized(ctx, err)
 	}
