@@ -52,7 +52,7 @@ func Split(ctx context.Context, input []byte, options Options) ([]Page, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if options.MaxInputBytes < 1 || options.MaxInputBytes > 1<<30 || options.MaxOutputBytes < 1 || options.MaxOutputBytes > 1<<30 || options.MaxPages < 1 || options.MaxPages > 10000 {
+	if !validOptions(options) {
 		return nil, ErrInvalid
 	}
 	if int64(len(input)) > options.MaxInputBytes {
@@ -206,4 +206,8 @@ func checkObject(ctx context.Context, xref *model.XRefTable, object types.Object
 		}
 	}
 	return nil
+}
+
+func validOptions(options Options) bool {
+	return !(options.MaxInputBytes < 1 || options.MaxInputBytes > 1<<30 || options.MaxOutputBytes < 1 || options.MaxOutputBytes > 1<<30 || options.MaxPages < 1 || options.MaxPages > 10000)
 }

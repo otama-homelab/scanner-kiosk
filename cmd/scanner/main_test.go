@@ -53,3 +53,25 @@ func TestScannerCLIProcess(t *testing.T) {
 	main()
 	os.Exit(0)
 }
+
+func TestPDFImportCLIDoesNotStartServices(t *testing.T) {
+	executable, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := t.TempDir()
+	state := filepath.Join(root, "state")
+	documents := filepath.Join(root, "documents")
+	command := exec.Command(executable, "-test.run=^TestScannerCLIProcess$")
+	command.Env = []string{"SCANNER_CLI_TEST=1", "SCANNER_CLI_TEST_ARGS=__pdf-import 1024 1024 10", "SCANNER_STATE_DIR=" + state, "SCANNER_DOCUMENT_DIR=" + documents}
+	output, err := command.CombinedOutput()
+	exit, ok := err.(*exec.ExitError)
+	if !ok || exit.ExitCode() != 10 || len(output) != 0 {
+		t.Fatal("internal parser command", err, string(output))
+	}
+	for _, path := range []string{state, documents} {
+		if _, err = os.Stat(path); !os.IsNotExist(err) {
+			t.Fatal("parser touched service store", path, err)
+		}
+	}
+}

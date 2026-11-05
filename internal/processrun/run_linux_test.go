@@ -33,7 +33,7 @@ func TestHelper(t *testing.T) {
 	if mode == "stall" {
 		signal.Ignore(syscall.SIGTERM)
 		_ = os.WriteFile(os.Getenv("READY"), []byte("ready"), 0600)
-		select {}
+		<-time.After(time.Hour)
 	}
 	if mode == "env" {
 		if os.Getenv("PROCESSRUN_SECRET") != "" {

@@ -16,11 +16,11 @@ import (
 // explicit: nil means an empty environment, never inheritance from the worker.
 // Output files belong to the job workspace; callers enforce storage reservations.
 type Spec struct {
-	Path           string
-	Args, Env      []string
-	Dir            string
-	Stdout, Stderr *os.File
-	Grace          time.Duration
+	Path                  string
+	Args, Env             []string
+	Dir                   string
+	Stdin, Stdout, Stderr *os.File
+	Grace                 time.Duration
 }
 
 type Result struct {
@@ -41,6 +41,9 @@ func Run(ctx context.Context, spec Spec) Result {
 	cmd := exec.Command(spec.Path, spec.Args...)
 	cmd.Env = append([]string{}, spec.Env...)
 	cmd.Dir = spec.Dir
+	if spec.Stdin != nil {
+		cmd.Stdin = spec.Stdin
+	}
 	if spec.Stdout != nil {
 		cmd.Stdout = spec.Stdout
 	}
