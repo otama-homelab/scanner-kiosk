@@ -5,6 +5,7 @@ package pdfimport
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/binary"
 	"errors"
 	"io"
@@ -29,6 +30,7 @@ var ErrUnstopped = errors.New("PDF processing child group could not be confirmed
 type PreparedPage struct {
 	WidthPoints, HeightPoints float64
 	Offset, Size              int64
+	SHA256                    [32]byte
 }
 
 // Prepare runs the same executable with empty credentials/configuration and hard
@@ -102,7 +104,15 @@ func Prepare(ctx context.Context, input, output *os.File, options Options) ([]Pr
 }
 
 func frameLimit(options Options) int64 {
-	return 12 + int64(options.MaxPages)*24 + options.MaxOutputBytes
+	return 12 + int64(options.MaxPages)*56 + options.MaxOutputBytes
+}
+
+// MaxResultBytes reports the bounded frame size for reservation accounting.
+func MaxResultBytes(options Options) int64 {
+	if !validOptions(options) {
+		return 0
+	}
+	return frameLimit(options)
 }
 
 // Child is exclusively the internal command entry point. It changes limits for
@@ -141,7 +151,7 @@ func Child(args []string, input, output *os.File) int {
 		}
 	}
 	var header bytes.Buffer
-	header.WriteString("SCNPDF01")
+	header.WriteString("SCNPDF02")
 	_ = binary.Write(&header, binary.BigEndian, uint32(len(pages)))
 	if _, err = output.Write(header.Bytes()); err != nil {
 		return 14
@@ -151,6 +161,8 @@ func Child(args []string, input, output *os.File) int {
 		_ = binary.Write(&header, binary.BigEndian, page.WidthPoints)
 		_ = binary.Write(&header, binary.BigEndian, page.HeightPoints)
 		_ = binary.Write(&header, binary.BigEndian, uint64(len(page.PDF)))
+		digest := sha256.Sum256(page.PDF)
+		header.Write(digest[:])
 		if _, err = output.Write(header.Bytes()); err != nil {
 			return 14
 		}
@@ -193,7 +205,7 @@ func decodePages(reader io.ReadSeeker, size int64, options Options) ([]PreparedP
 		return nil, ErrProcess
 	}
 	var header [12]byte
-	if _, err := io.ReadFull(reader, header[:]); err != nil || string(header[:8]) != "SCNPDF01" {
+	if _, err := io.ReadFull(reader, header[:]); err != nil || string(header[:8]) != "SCNPDF02" {
 		return nil, ErrProcess
 	}
 	count := binary.BigEndian.Uint32(header[8:])
@@ -209,7 +221,11 @@ func decodePages(reader io.ReadSeeker, size int64, options Options) ([]PreparedP
 		if binary.Read(reader, binary.BigEndian, &width) != nil || binary.Read(reader, binary.BigEndian, &height) != nil || binary.Read(reader, binary.BigEndian, &length) != nil {
 			return nil, ErrProcess
 		}
-		offset += 24
+		var digest [32]byte
+		if _, err := io.ReadFull(reader, digest[:]); err != nil || digest == ([32]byte{}) {
+			return nil, ErrProcess
+		}
+		offset += 56
 		if !finiteDimension(width) || !finiteDimension(height) || length < 5 || offset > size || length > uint64(size-offset) || length > uint64(options.MaxOutputBytes-total) {
 			return nil, ErrProcess
 		}
@@ -217,7 +233,7 @@ func decodePages(reader io.ReadSeeker, size int64, options Options) ([]PreparedP
 		if _, err := io.ReadFull(reader, prefix[:]); err != nil || string(prefix[:]) != "%PDF-" {
 			return nil, ErrProcess
 		}
-		pages = append(pages, PreparedPage{WidthPoints: width, HeightPoints: height, Offset: offset, Size: int64(length)})
+		pages = append(pages, PreparedPage{WidthPoints: width, HeightPoints: height, Offset: offset, Size: int64(length), SHA256: digest})
 		if _, err := reader.Seek(int64(length)-5, io.SeekCurrent); err != nil {
 			return nil, ErrProcess
 		}

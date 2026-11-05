@@ -5,11 +5,31 @@ package artifactgc
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 )
+
+func TestRecoverUnpublishedFullPageScope(t *testing.T) {
+	gc, root, _ := fixture(t)
+	name := "work_" + strings.Repeat("e", 48)
+	if err := os.Mkdir(filepath.Join(root, name), 0700); err != nil {
+		t.Fatal(err)
+	}
+	for i := range 10000 {
+		if err := os.WriteFile(filepath.Join(root, name, fmt.Sprint(i)), nil, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := gc.RecoverUnpublished(context.Background(), func(context.Context, string) (bool, error) { return true, nil }, func(context.Context) error { return nil }); err != nil {
+		t.Fatal(err)
+	}
+	if exists(t, filepath.Join(root, name)) {
+		t.Fatal("full page scope retained")
+	}
+}
 
 func TestRecoverUnpublishedKeepsReferencedAndUnrecognizedDirectories(t *testing.T) {
 	gc, root, _ := fixture(t)

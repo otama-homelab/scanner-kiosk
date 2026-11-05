@@ -47,6 +47,16 @@ func (r *Root) Close() error { return r.root.Close() }
 // Open verifies the opened descriptor, not a path inspected before opening.
 // Producers must keep ready artifacts immutable after publication.
 func (r *Root) Open(ctx context.Context, input Input) (io.ReadCloser, error) {
+	file, err := r.OpenFile(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	return &reader{file, ctx, input.Size}, nil
+}
+
+// OpenFile provides the verified descriptor for a supervised processing child.
+// The caller owns close and subsequent read/cancellation bounds.
+func (r *Root) OpenFile(ctx context.Context, input Input) (*os.File, error) {
 	if input.Size < 0 || input.Size > r.max || !filepath.IsLocal(input.RelativePath) || filepath.Clean(input.RelativePath) != input.RelativePath || strings.ContainsAny(input.RelativePath, "\\\x00") {
 		return nil, ErrUnavailable
 	}
@@ -100,7 +110,7 @@ func (r *Root) Open(ctx context.Context, input Input) (io.ReadCloser, error) {
 		return nil, ErrUnavailable
 	}
 	ok = true
-	return &reader{file, ctx, input.Size}, nil
+	return file, nil
 }
 
 type reader struct {

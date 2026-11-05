@@ -92,8 +92,9 @@ func (r *Root) removeUnpublishedDirectory(ctx context.Context, name string, chec
 	if unix.Fstat(fd, &pinned) != nil || pinned.Dev != before.Dev || pinned.Ino != before.Ino {
 		return ErrStorage
 	}
-	names, err := directory.Readdirnames(4097)
-	if err != nil && !errors.Is(err, io.EOF) || len(names) > 4096 {
+	// A scope can contain one artifact per admitted page, including 10,000 PDFs.
+	names, err := directory.Readdirnames(10001)
+	if err != nil && !errors.Is(err, io.EOF) || len(names) > 10000 {
 		return ErrStorage
 	}
 	entries := make(map[string]unix.Stat_t, len(names))

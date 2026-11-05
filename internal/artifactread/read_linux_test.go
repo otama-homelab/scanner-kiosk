@@ -219,3 +219,25 @@ func TestVerifiedRangeBoundsAndWholeFileHash(t *testing.T) {
 		t.Fatal("only selected bytes were verified")
 	}
 }
+
+func TestVerifiedFileDescriptorForProcessingChild(t *testing.T) {
+	rootPath := privateDir(t)
+	raw := []byte("immutable input")
+	if err := os.WriteFile(filepath.Join(rootPath, "input"), raw, 0600); err != nil {
+		t.Fatal(err)
+	}
+	root, err := OpenRoot(rootPath, 1024)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer root.Close()
+	file, err := root.OpenFile(context.Background(), Input{"input", int64(len(raw)), sha256.Sum256(raw)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer file.Close()
+	data, err := io.ReadAll(file)
+	if err != nil || string(data) != string(raw) {
+		t.Fatal("verified descriptor", err)
+	}
+}

@@ -172,3 +172,19 @@ func (s *Store) FinishStoppedImport(ctx context.Context, owner, job string, stop
 	}
 	return nil
 }
+
+// ImportStoppedRecorded reconciles a stop acknowledgement; it is not stop proof.
+func (s *Store) ImportStoppedRecorded(ctx context.Context, owner, job, runner string) (bool, error) {
+	if !id(owner) || !id(job) || !id(runner) {
+		return false, ErrInvalid
+	}
+	var found int
+	err := s.documents.QueryRowContext(ctx, `SELECT 1 FROM jobs j JOIN import_intakes i ON i.job_id=j.id AND i.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND j.runner_id=? AND j.kind='import' AND j.state IN ('failed','cancelled','interrupted') AND i.state='ready' AND NOT EXISTS(SELECT 1 FROM reservations r WHERE r.job_id=j.id) AND NOT EXISTS(SELECT 1 FROM job_artifacts a WHERE a.job_id=j.id AND a.artifact_id!=i.artifact_id) AND NOT EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id)`, job, owner, runner).Scan(&found)
+	if errors.Is(err, sql.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, ErrStorage
+	}
+	return true, nil
+}

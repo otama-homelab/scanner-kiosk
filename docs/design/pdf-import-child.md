@@ -22,7 +22,7 @@ not a filesystem or network namespace sandbox; no path/URL from PDF input is use
 as an I/O capability and the stateless parser rejects external references.
 
 The binary result has a fixed header and bounded page count, then each standalone
-PDF's dimensions, byte length and content. The parent validates count, dimensions,
+PDF's dimensions, byte length, SHA-256 and content. The parent validates count, dimensions,
 lengths, total bytes, PDF prefix, offsets and complete framing without parsing PDF
 content. It returns file sections, rather than loading every prepared page into
 its heap. The caller can copy each section into its existing artifact publication
@@ -43,6 +43,18 @@ not created. Existing process-group cancellation/escalation tests remain in use.
 The test helper now waits on a timer rather than an empty select, so Go's deadlock
 detector cannot make it exit before cancellation is exercised.
 
-Upload/job admission, scratch reservation/expiry/recovery integration, and actual
-hosted standalone candidate acceptance remain pending in plan 43-08. No new
+The worker now claims sealed imports, verifies the raw input descriptor, runs the
+child and copies bounded result sections into the existing artifact scope. Each
+sealed page must match the child's size and SHA-256 before atomic publication.
+The remaining reservation covers both the framed scratch result and page copies:
+payload is at most half the reservation after framing overhead. Scratch is removed
+and its directory synced before publication. A known failed execution removes only
+its unpublished output; the uploaded source remains. Unknown child stop, filesystem
+or commit outcomes retain the reservation for reconciliation. Publication and failed
+stop acknowledgements have exact job/owner/runner read-back checks. The startup
+recovery file bound now matches the existing 10,000-output scope/page cap.
+
+Unstarted import cancellation/expiry, offline producer/worker recovery, PDF render
+and preview integration, upload UI and actual hosted standalone candidate acceptance
+remain pending in plan 43-08. No new
 service, runtime image, upstream fork or dependency is introduced here.

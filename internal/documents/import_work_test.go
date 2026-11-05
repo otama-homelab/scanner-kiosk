@@ -149,6 +149,9 @@ func TestImportStoppedFailureAndLostPublicationAck(t *testing.T) {
 func TestRunningImportBlocksOtherHeavyWorkAndInvalidStop(t *testing.T) {
 	f, a, stop := claimedImport(t)
 	ctx := context.Background()
+	if recorded, err := f.store.ImportStoppedRecorded(ctx, alice, a.JobID, runner); err != nil || recorded {
+		t.Fatal("running import claimed stopped", recorded, err)
+	}
 	must(t, f.docs, "UPDATE documents SET state='review' WHERE id=?", docA)
 	seedPage(t, f, docA, alice, "original_render_other1", "page_render_other01")
 	if _, err := f.store.AdmitRender(ctx, alice, admissionRequest(), admissionLimits()); err != nil {
@@ -173,5 +176,14 @@ func TestRunningImportBlocksOtherHeavyWorkAndInvalidStop(t *testing.T) {
 	}
 	if scalar(t, f.docs, "SELECT count(*) FROM jobs WHERE id=? AND state='cancelled'", a.JobID) != 1 {
 		t.Fatal("cancellation not terminalized")
+	}
+	if recorded, err := f.store.ImportStoppedRecorded(ctx, alice, a.JobID, runner); err != nil || !recorded {
+		t.Fatal("stop acknowledgement not recorded", recorded, err)
+	}
+	if recorded, err := f.store.ImportStoppedRecorded(ctx, bob, a.JobID, runner); err != nil || recorded {
+		t.Fatal("wrong owner accepted", recorded, err)
+	}
+	if recorded, err := f.store.ImportStoppedRecorded(ctx, alice, a.JobID, "worker_different01"); err != nil || recorded {
+		t.Fatal("wrong runner accepted", recorded, err)
 	}
 }

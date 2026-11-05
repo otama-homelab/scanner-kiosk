@@ -204,6 +204,19 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 				}
 				continue
 			}
+			imported, importErr := store.ClaimNextImport(ctx, guard.ID())
+			if importErr != nil && !errors.Is(importErr, documents.ErrNoWork) {
+				return errors.Join(importErr, ctx.Err())
+			}
+			if importErr == nil {
+				if err := executeImport(ctx, store, c.DocumentDir, imported.OwnerID, imported.Job.ID, guard.ID()); err != nil {
+					return err
+				}
+				if once {
+					return tasks.poll()
+				}
+				continue
+			}
 			claimed, claimErr := store.ClaimNextRender(ctx, guard.ID())
 			if claimErr != nil && !errors.Is(claimErr, documents.ErrNoWork) {
 				// Preserve both cancellation and storage/claim uncertainty; never turn

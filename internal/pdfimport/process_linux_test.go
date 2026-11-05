@@ -3,6 +3,7 @@ package pdfimport
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/binary"
 	"errors"
 	"io"
@@ -68,7 +69,7 @@ func TestPrepareUsesBoundedChildAndPreservesOriginal(t *testing.T) {
 	}
 	for _, page := range pages {
 		raw, err := io.ReadAll(io.NewSectionReader(out, page.Offset, page.Size))
-		if err != nil || int64(len(raw)) != page.Size || !bytes.HasPrefix(raw, []byte("%PDF-")) {
+		if err != nil || int64(len(raw)) != page.Size || !bytes.HasPrefix(raw, []byte("%PDF-")) || sha256.Sum256(raw) != page.SHA256 {
 			t.Fatal("invalid page section", err)
 		}
 	}
@@ -135,7 +136,7 @@ func TestDecodeRejectsBrokenOrOversizedChildOutput(t *testing.T) {
 	for _, mode := range []string{"valid", "header", "count", "truncated", "dimension", "length", "trailing"} {
 		t.Run(mode, func(t *testing.T) {
 			var b bytes.Buffer
-			b.WriteString("SCNPDF01")
+			b.WriteString("SCNPDF02")
 			binary.Write(&b, binary.BigEndian, uint32(1))
 			width := 200.0
 			if mode == "dimension" {
@@ -148,6 +149,8 @@ func TestDecodeRejectsBrokenOrOversizedChildOutput(t *testing.T) {
 				length = 1 << 30
 			}
 			binary.Write(&b, binary.BigEndian, length)
+			digest := sha256.Sum256([]byte("%PDF-"))
+			b.Write(digest[:])
 			b.WriteString("%PDF-")
 			raw := b.Bytes()
 			switch mode {
@@ -162,7 +165,7 @@ func TestDecodeRejectsBrokenOrOversizedChildOutput(t *testing.T) {
 			}
 			pages, err := decodePages(bytes.NewReader(raw), int64(len(raw)), options())
 			if mode == "valid" {
-				if err != nil || len(pages) != 1 || pages[0].Offset != 36 || pages[0].Size != 5 {
+				if err != nil || len(pages) != 1 || pages[0].Offset != 68 || pages[0].Size != 5 {
 					t.Fatal("valid frame rejected", pages, err)
 				}
 				return
