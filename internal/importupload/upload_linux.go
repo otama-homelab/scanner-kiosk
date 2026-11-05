@@ -34,7 +34,18 @@ type Service struct {
 }
 
 func New(rootPath string, records Records, limits documents.ImportLimits) (*Service, error) {
-	if records == nil || !filepath.IsAbs(rootPath) || filepath.Clean(rootPath) != rootPath {
+	if records == nil {
+		return nil, documents.ErrInvalid
+	}
+	root, err := openRoot(rootPath)
+	if err != nil {
+		return nil, err
+	}
+	return &Service{root: root, records: records, limits: limits}, nil
+}
+
+func openRoot(rootPath string) (*os.Root, error) {
+	if !filepath.IsAbs(rootPath) || filepath.Clean(rootPath) != rootPath {
 		return nil, documents.ErrInvalid
 	}
 	info, err := os.Lstat(rootPath)
@@ -45,7 +56,7 @@ func New(rootPath string, records Records, limits documents.ImportLimits) (*Serv
 	if err != nil {
 		return nil, documents.ErrStorage
 	}
-	return &Service{root: root, records: records, limits: limits}, nil
+	return root, nil
 }
 func (s *Service) Close() error { return s.root.Close() }
 

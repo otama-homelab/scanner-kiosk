@@ -43,8 +43,25 @@ upload over64KiB, identical stored bytes/private mode, replay, computed-checksum
 refusal, partial/long/broken inputs, lost metadata acknowledgement, preexisting
 file preservation, cancellation with no retained source FD, route-specific body
 ceilings, authorization/header refusal and cross-owner job isolation. These tests
-do not prove PDF parsing/page publication, producer crash recovery or the hosted
-standalone executable. Upload UI and those worker/recovery paths remain pending.
+do not prove the hosted standalone executable or the complete upload UI.
+
+The worker now performs bounded same-executable splitting and atomic page
+publication (see `pdf-import-child.md`). Normal metadata maintenance terminalizes
+withdrawn/expired/disabled-owner imports only when intake is pending or ready and
+the processing worker never started. This serializes with intake start/worker
+claim; receiving intake is never treated as stopped from a null worker start.
+Known unstarted cancellation releases the reservation and leaves source ownership
+with normal cleanup. Ready source bytes/hash are unchanged.
+
+`worker recover --previous-runtime-stopped` also covers PDF intake and processing.
+The assertion includes the entire previous API, worker and child processes.
+Recovery reads the actual bounded partial source through a confined verified
+descriptor, syncs/closes it, records its size/hash, and terminalizes the old job.
+Missing never-created source is accounted as empty. Unsafe/unknown IO retains the
+reservation. A ready never-claimed intake stays eligible for normal execution;
+an already-started worker is interrupted after unpublished scratch cleanup.
+This extension is source-tested, not hosted-candidate acceptance. Upload UI,
+PDF preview/render integration and the hosted end-to-end tracer remain pending.
 
 The job view now accepts the `import` kind in its existing status/cancellation
 screen. This small validator extension is source-reviewed; the complete imported

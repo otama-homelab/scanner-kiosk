@@ -10,6 +10,7 @@ import (
 	"scanner-kiosk/internal/artifactgc"
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/documents"
+	"scanner-kiosk/internal/importupload"
 	"scanner-kiosk/internal/scanner/escl"
 	"scanner-kiosk/internal/workercatalog"
 )
@@ -66,6 +67,15 @@ func Recover(ctx context.Context, c config.Config, previousRuntimeStopped bool) 
 	renders, err := store.RecoveryRenders(ctx)
 	if err != nil {
 		return err
+	}
+	imports, err := store.RecoveryImports(ctx)
+	if err != nil {
+		return err
+	}
+	for _, item := range imports {
+		if item.RunnerID == boot || item.StartedAtMS > stoppedAt || item.CreatedAtMS > stoppedAt {
+			return ErrReconciliation
+		}
 	}
 	for _, scan := range scans {
 		if scan.Snapshot.PhysicalID == "" || scan.Snapshot.WorkerBootID == boot || scan.StartedAtMS > stoppedAt || scan.CreatedAtMS > stoppedAt {
@@ -134,6 +144,19 @@ func Recover(ctx context.Context, c config.Config, previousRuntimeStopped bool) 
 		}
 		stop := documents.RenderStop{RunnerID: render.RunnerID, ProcessStoppedAtMS: stoppedAt, WorkspaceCleanedAtMS: cleanedAt}
 		if err = store.FinishStoppedRender(ctx, render.OwnerID, render.JobID, stop, "interrupted"); err != nil {
+			return err
+		}
+	}
+	for _, item := range imports {
+		if err = check(ctx); err != nil {
+			return err
+		}
+		if item.IntakeState == "ready" {
+			stop := documents.ImportStop{RunnerID: item.RunnerID, ProcessStoppedAtMS: stoppedAt, WorkspaceCleanedAtMS: cleanedAt}
+			if err = store.FinishStoppedImport(ctx, item.OwnerID, item.JobID, stop, "interrupted"); err != nil {
+				return err
+			}
+		} else if err = importupload.RecoverStopped(ctx, c.DocumentDir, store, item, stoppedAt); err != nil {
 			return err
 		}
 	}

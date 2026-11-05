@@ -54,7 +54,8 @@ or commit outcomes retain the reservation for reconciliation. Publication and fa
 stop acknowledgements have exact job/owner/runner read-back checks. The startup
 recovery file bound now matches the existing 10,000-output scope/page cap.
 
-Unstarted import cancellation/expiry, offline producer/worker recovery, PDF render
+Unstarted import cancellation/expiry and offline producer/worker recovery are now
+connected to the existing maintenance and administrative recovery paths. PDF render
 and preview integration, upload UI and actual hosted standalone candidate acceptance
 remain pending in plan 43-08. No new
 service, runtime image, upstream fork or dependency is introduced here.

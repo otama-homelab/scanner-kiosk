@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -22,6 +24,117 @@ func TestMain(m *testing.M) {
 		os.Exit(pdfimport.Child(os.Args[2:], os.Stdin, os.Stdout))
 	}
 	os.Exit(m.Run())
+}
+
+func TestOfflineRecoveryStopsImportProducersAndWorkers(t *testing.T) {
+	for _, mode := range []string{"pending", "receiving-empty", "receiving-partial", "receiving-symlink", "receiving-hardlink", "receiving-public", "receiving-oversize", "running"} {
+		t.Run(mode, func(t *testing.T) {
+			c, store, db, root := fixture(t)
+			raw := importFixturePDF()
+			limits := documents.ImportLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: 2 << 20, GlobalMaxBytes: 4 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}, MaxDocuments: 20, DocumentLifetime: time.Hour}
+			a, err := store.AdmitImport(context.Background(), owner, documents.ImportRequest{IdempotencyKey: "request_recover_import1", InputBytes: int64(len(raw)), SHA256: sha256.Sum256(raw)}, limits)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if mode != "pending" {
+				if err = store.StartImportUpload(context.Background(), owner, a.JobID, a.ProducerID); err != nil {
+					t.Fatal(err)
+				}
+				if mode != "receiving-empty" {
+					if err = os.Mkdir(filepath.Join(root, filepath.Dir(a.Input.RelativePath)), 0700); err != nil {
+						t.Fatal(err)
+					}
+					if mode == "receiving-symlink" {
+						err = os.Symlink(filepath.Join(root, "original.png"), filepath.Join(root, a.Input.RelativePath))
+					} else {
+						data := raw
+						if mode == "receiving-partial" {
+							data = raw[:31]
+						}
+						err = os.WriteFile(filepath.Join(root, a.Input.RelativePath), data, 0600)
+					}
+					if err != nil {
+						t.Fatal(err)
+					}
+					if mode == "receiving-hardlink" {
+						err = os.Link(filepath.Join(root, a.Input.RelativePath), filepath.Join(root, "second-link"))
+					}
+					if mode == "receiving-public" {
+						err = os.Chmod(filepath.Join(root, a.Input.RelativePath), 0644)
+					}
+					if mode == "receiving-oversize" {
+						err = os.WriteFile(filepath.Join(root, a.Input.RelativePath), append(raw, byte('x')), 0600)
+					}
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+			}
+			if mode == "running" {
+				artifact := a.Input
+				artifact.Size = int64(len(raw))
+				artifact.SHA256 = sha256.Sum256(raw)
+				if err = store.SealStoppedImportUpload(context.Background(), owner, a.JobID, a.ProducerID, artifact, time.Now().UnixMilli()); err != nil {
+					t.Fatal(err)
+				}
+				if _, err = store.ClaimNextImport(context.Background(), "worker_previous_import1"); err != nil {
+					t.Fatal(err)
+				}
+				orphan := filepath.Join(root, "work_"+strings.Repeat("b", 48))
+				if err = os.Mkdir(orphan, 0700); err != nil {
+					t.Fatal(err)
+				}
+				if err = os.WriteFile(filepath.Join(orphan, "prepared"), []byte("unpublished"), 0600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if err = Recover(context.Background(), c, false); !errors.Is(err, ErrRecoveryConfirmation) {
+				t.Fatal("missing stop assertion accepted", err)
+			}
+			err = Recover(context.Background(), c, true)
+			if mode == "receiving-symlink" || mode == "receiving-hardlink" || mode == "receiving-public" || mode == "receiving-oversize" {
+				if err == nil {
+					t.Fatal("unsafe source accepted")
+				}
+				var n int
+				if e := db.QueryRow("SELECT count(*) FROM reservations WHERE job_id=?", a.JobID).Scan(&n); e != nil || n != 1 {
+					t.Fatal("unknown source released", n, e)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			job, err := store.ReadJob(context.Background(), owner, a.JobID)
+			if err != nil || job.State != "interrupted" {
+				t.Fatal("import not stopped", job, err)
+			}
+			var n int
+			if err = db.QueryRow("SELECT count(*) FROM reservations WHERE job_id=?", a.JobID).Scan(&n); err != nil || n != 0 {
+				t.Fatal("reservation retained", n, err)
+			}
+			if mode == "receiving-partial" || mode == "running" {
+				data, err := os.ReadFile(filepath.Join(root, a.Input.RelativePath))
+				want := raw
+				if mode == "receiving-partial" {
+					want = raw[:31]
+				}
+				if err != nil || !bytes.Equal(data, want) {
+					t.Fatal("source changed", err)
+				}
+				var size int64
+				if err = db.QueryRow("SELECT byte_size FROM artifacts WHERE id=?", a.Input.ID).Scan(&size); err != nil || size != int64(len(want)) {
+					t.Fatal("partial accounting lost", size, err)
+				}
+			}
+			if err = Recover(context.Background(), c, true); err != nil {
+				t.Fatal("recovery replay", err)
+			}
+			if err = Run(context.Background(), c, true); err != nil {
+				t.Fatal("worker remained blocked", err)
+			}
+		})
+	}
 }
 func importFixturePDF() []byte {
 	content := []string{"BT /F1 12 Tf 20 30 Td (IMPORT_ALPHA) Tj ET\n0 0 1 rg 10 10 20 20 re f\n", "BT /F1 12 Tf 20 30 Td (IMPORT_BETA) Tj ET\n1 0 0 rg 10 10 20 20 re f\n"}

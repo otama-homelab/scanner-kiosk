@@ -112,3 +112,65 @@ func (s *Store) RecoveryDirectoryUnreferenced(ctx context.Context, directory str
 	}
 	return found == 0, nil
 }
+
+// RecoveryImport describes old producer/worker bindings, never stop authority.
+// A ready intake with a never-started worker is safe to execute normally.
+type RecoveryImport struct {
+	OwnerID, JobID, ProducerID, RunnerID, IntakeState string
+	CreatedAtMS, StartedAtMS, MaxInputBytes           int64
+	Input                                             ArtifactRecord
+}
+
+func (s *Store) RecoveryImports(ctx context.Context) ([]RecoveryImport, error) {
+	rows, err := s.documents.QueryContext(ctx, `SELECT j.owner_id,j.id,i.producer_id,COALESCE(j.runner_id,''),i.state,j.created_at_ms,j.started_at_ms,i.started_at_ms,j.configuration_json,a.id,a.relative_path,a.state,a.media_type,a.byte_size,a.sha256,COALESCE(r.byte_size,-1),EXISTS(SELECT 1 FROM job_artifacts x WHERE x.job_id=j.id AND x.artifact_id!=i.artifact_id),EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id) FROM jobs j JOIN import_intakes i ON i.job_id=j.id AND i.owner_id=j.owner_id JOIN artifacts a ON a.id=i.artifact_id AND a.document_id=j.document_id AND a.owner_id=j.owner_id LEFT JOIN reservations r ON r.job_id=j.id AND r.owner_id=j.owner_id WHERE j.kind='import' AND j.state IN ('queued','running','cancelling','reconciling') AND (i.state IN ('pending','receiving') OR j.runner_id IS NOT NULL OR j.started_at_ms IS NOT NULL) ORDER BY j.created_at_ms,j.id LIMIT 101`)
+	if err != nil {
+		return nil, storageOperationError(err)
+	}
+	defer rows.Close()
+	out := []RecoveryImport{}
+	for rows.Next() {
+		var item RecoveryImport
+		var started, producerStarted sql.NullInt64
+		var configuration, artifactState string
+		var digest []byte
+		var reserved int64
+		var produced, leased bool
+		if err = rows.Scan(&item.OwnerID, &item.JobID, &item.ProducerID, &item.RunnerID, &item.IntakeState, &item.CreatedAtMS, &started, &producerStarted, &configuration, &item.Input.ID, &item.Input.RelativePath, &artifactState, &item.Input.MediaType, &item.Input.Size, &digest, &reserved, &produced, &leased); err != nil {
+			return nil, ErrStorage
+		}
+		if len(out) == 100 || !id(item.OwnerID) || !id(item.JobID) || !id(item.ProducerID) || !id(item.Input.ID) || !localPath(item.Input.RelativePath) || item.CreatedAtMS < 0 || reserved < 0 || produced || leased || len(configuration) > 65536 || item.Input.MediaType != "application/pdf" {
+			return nil, ErrStorage
+		}
+		var snapshot ImportSnapshot
+		decoder := json.NewDecoder(strings.NewReader(configuration))
+		decoder.DisallowUnknownFields()
+		if decoder.Decode(&snapshot) != nil || decoder.Decode(new(any)) != io.EOF || snapshot.Version != 1 || snapshot.InputArtifactID != item.Input.ID || snapshot.InputBytes < 1 || snapshot.InputBytes > 1<<30 || snapshot.SHA256 == ([32]byte{}) || snapshot.MaxPages < 1 || snapshot.MaxPages > 10000 {
+			return nil, ErrStorage
+		}
+		item.MaxInputBytes = snapshot.InputBytes
+		if item.IntakeState == "ready" {
+			if !id(item.RunnerID) || !started.Valid || started.Int64 < item.CreatedAtMS || artifactState != "ready" || item.Input.Size != snapshot.InputBytes || !sameHash(digest, snapshot.SHA256) {
+				return nil, ErrStorage
+			}
+			item.StartedAtMS = started.Int64
+			copy(item.Input.SHA256[:], digest)
+		} else {
+			if item.RunnerID != "" || started.Valid || artifactState != "staging" || item.Input.Size != 0 || len(digest) != 0 || snapshot.InputBytes > reserved {
+				return nil, ErrStorage
+			}
+			if item.IntakeState == "receiving" {
+				if !producerStarted.Valid || producerStarted.Int64 < item.CreatedAtMS {
+					return nil, ErrStorage
+				}
+				item.StartedAtMS = producerStarted.Int64
+			} else if producerStarted.Valid {
+				return nil, ErrStorage
+			}
+		}
+		out = append(out, item)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, storageOperationError(err)
+	}
+	return out, nil
+}

@@ -17,7 +17,7 @@ type startupContextKey struct{}
 type startupMemoryRecords struct {
 	afterRecovery func()
 	t             *testing.T
-	counts        [][5]int
+	counts        [][6]int
 	calls         []string
 	round         int
 	failAt        int
@@ -47,7 +47,7 @@ func (m *startupMemoryRecords) command(ctx context.Context, name string, stage, 
 	if m.round < len(m.counts) {
 		result = m.counts[m.round][stage]
 	}
-	if stage == 4 {
+	if stage == 5 {
 		m.round++
 	}
 	return result, nil
@@ -70,17 +70,23 @@ func (m *startupMemoryRecords) AbortUnstartedRenders(ctx context.Context, limit 
 	}
 	return m.command(ctx, "renders", 2, limit)
 }
+func (m *startupMemoryRecords) AbortUnstartedImports(ctx context.Context, limit int) (int, error) {
+	if limit != 100 {
+		m.t.Fatal("import batch changed")
+	}
+	return m.command(ctx, "imports", 3, limit)
+}
 func (m *startupMemoryRecords) PurgeCompletedCleanup(ctx context.Context, limit int, retention time.Duration) (int, error) {
 	if limit != 100 || retention != time.Hour {
 		m.t.Fatal("status policy changed")
 	}
-	return m.command(ctx, "retired", 3, limit)
+	return m.command(ctx, "retired", 4, limit)
 }
 func (m *startupMemoryRecords) PurgeExpiredRequestReceipts(ctx context.Context, limit int) (int, error) {
 	if limit != 100 {
 		m.t.Fatal("request batch changed")
 	}
-	return m.command(ctx, "requests", 4, limit)
+	return m.command(ctx, "requests", 5, limit)
 }
 func (m *startupMemoryRecords) RecoveryRequired(ctx context.Context) (bool, error) {
 	m.calls = append(m.calls, "recovery")
@@ -101,15 +107,15 @@ func startupContext() context.Context {
 }
 
 func TestStartupRecordsDrainEveryFullBatchBeforeRecovery(t *testing.T) {
-	for stage, limit := range []int{20, 100, 100, 100, 100} {
+	for stage, limit := range []int{20, 100, 100, 100, 100, 100} {
 		t.Run(fmt.Sprint(stage), func(t *testing.T) {
-			first := [5]int{}
+			first := [6]int{}
 			first[stage] = limit
-			m := &startupMemoryRecords{t: t, counts: [][5]int{first, {}}}
+			m := &startupMemoryRecords{t: t, counts: [][6]int{first, {}}}
 			if err := reconcileStartup(startupContext(), m, time.Hour); err != nil {
 				t.Fatal(err)
 			}
-			expected := []string{"expired", "scans", "renders", "retired", "requests", "expired", "scans", "renders", "retired", "requests", "recovery"}
+			expected := []string{"expired", "scans", "renders", "imports", "retired", "requests", "expired", "scans", "renders", "imports", "retired", "requests", "recovery"}
 			if !reflect.DeepEqual(m.calls, expected) {
 				t.Fatal("recovery checked before drain", m.calls)
 			}
@@ -117,7 +123,7 @@ func TestStartupRecordsDrainEveryFullBatchBeforeRecovery(t *testing.T) {
 	}
 }
 func TestStartupRecordsFailClosedBeforeNativeAuthority(t *testing.T) {
-	for stage := 1; stage <= 6; stage++ {
+	for stage := 1; stage <= 7; stage++ {
 		for _, failure := range []error{documents.ErrCommitUncertain, documents.ErrStorage, context.DeadlineExceeded} {
 			t.Run(fmt.Sprintf("%d/%v", stage, failure), func(t *testing.T) {
 				m := &startupMemoryRecords{t: t, failAt: stage, failure: failure}
@@ -141,12 +147,12 @@ func TestStartupRecordsFailClosedBeforeNativeAuthority(t *testing.T) {
 	}
 }
 func TestStartupRecordsRejectInvalidBatchCounts(t *testing.T) {
-	for stage, limit := range []int{20, 100, 100, 100, 100} {
+	for stage, limit := range []int{20, 100, 100, 100, 100, 100} {
 		for _, invalid := range []int{-1, limit + 1} {
 			t.Run(fmt.Sprintf("%d/%d", stage, invalid), func(t *testing.T) {
-				counts := [5]int{}
+				counts := [6]int{}
 				counts[stage] = invalid
-				m := &startupMemoryRecords{t: t, counts: [][5]int{counts}}
+				m := &startupMemoryRecords{t: t, counts: [][6]int{counts}}
 				if err := reconcileStartup(startupContext(), m, time.Hour); !errors.Is(err, documents.ErrStorage) {
 					t.Fatal("invalid count accepted", err)
 				}
@@ -160,11 +166,11 @@ func TestStartupRecordsRejectInvalidBatchCounts(t *testing.T) {
 func TestStartupRecordsFinishBoundedBatchThenHonorCancellation(t *testing.T) {
 	ctx, cancel := context.WithCancel(startupContext())
 	defer cancel()
-	m := &startupMemoryRecords{t: t, cancel: cancel, counts: [][5]int{{20, 100, 100, 100, 100}}}
+	m := &startupMemoryRecords{t: t, cancel: cancel, counts: [][6]int{{20, 100, 100, 100, 100, 100}}}
 	if err := reconcileStartup(ctx, m, time.Hour); !errors.Is(err, context.Canceled) {
 		t.Fatal("cancellation lost", err)
 	}
-	if !reflect.DeepEqual(m.calls, []string{"expired", "scans", "renders", "retired", "requests"}) {
+	if !reflect.DeepEqual(m.calls, []string{"expired", "scans", "renders", "imports", "retired", "requests"}) {
 		t.Fatal("partial batch or work after canceled batch", m.calls)
 	}
 	m = &startupMemoryRecords{t: t}
@@ -180,7 +186,7 @@ func TestStartupRecordsCancellationAfterRecoveryReadDoesNotGrant(t *testing.T) {
 	if err := reconcileStartup(ctx, records, time.Hour); !errors.Is(err, context.Canceled) {
 		t.Fatal("canceled recovery read granted startup", err)
 	}
-	if len(records.calls) != 6 {
+	if len(records.calls) != 7 {
 		t.Fatal(records.calls)
 	}
 }

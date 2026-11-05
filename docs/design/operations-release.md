@@ -53,7 +53,7 @@ If startup reports `worker recovery required before accepting more work`, keep
 admission closed. Do not clear lease/heartbeat rows, retry an interrupted physical
 scan, or infer local stop from the printer reporting Idle.
 
-1. Terminate the **entire previous runtime and all scanner/OCR/provider child
+1. Terminate the **entire previous API/worker runtime and all scanner/OCR/provider child
    processes**, including orphans. For containers, verify runtime/cgroup process
    termination on the old host. A deleted Pod object or an unreachable node is
    not that confirmation; restore access or fence that runtime first.
@@ -72,6 +72,11 @@ scan, or infer local stop from the printer reporting Idle.
    old job's exact physical UUID and fresh Idle before releasing its lease.
    Busy/changed/unavailable hardware, unknown files or uncertain storage leave
    recovery blocked. No timeout or lock acquisition alone clears old work.
+   For interrupted PDF imports, it also stops the old intake/processing job,
+   preserves the actual partial or complete upload with its measured size/hash,
+   and removes only unpublished page preparation scratch. It never resumes an
+   old upload or automatically retries an import. Symlinks, hard links, public
+   source permissions or an upload exceeding its admitted bound block recovery.
 3. Start `scanner worker` normally. Successfully recovered old jobs become
    `interrupted` (or `cancelled` when cancellation was pending); they are never
    automatically rescanned. Existing unexpired pages, owners and original
@@ -88,6 +93,8 @@ and a two-page PDF was independently verified. One initial post-recovery start
 remained unavailable for 90 seconds; a later normal start published all capture
 profiles after about 41 seconds. Startup variability and release/storage gates
 remain pending; do not force readiness by clearing guards or lease metadata.
+The PDF import recovery extension currently has source-level real-file/SQLite
+coverage; it has not yet been exercised on the hosted candidate.
 
 Configuration recovery uses a logical export of permitted durable records. Restored sessions and authorization attempts are invalidated. Original-document restoration is deliberately not part of configuration recovery. Normal process restart preserves valid sessions and unexpired local documents, reconciles workers, and reruns cleanup.
 

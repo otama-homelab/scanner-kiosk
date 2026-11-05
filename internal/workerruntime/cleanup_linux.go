@@ -19,6 +19,7 @@ type maintenanceRecords interface {
 	QueueExpiredCleanup(context.Context, int, time.Duration) (int, error)
 	AbortWithdrawnUnstartedScans(context.Context, int) (int, error)
 	AbortUnstartedRenders(context.Context, int) (int, error)
+	AbortUnstartedImports(context.Context, int) (int, error)
 	PurgeCompletedCleanup(context.Context, int, time.Duration) (int, error)
 	PurgeExpiredRequestReceipts(context.Context, int) (int, error)
 }
@@ -140,6 +141,13 @@ func maintainCleanupBatch(ctx context.Context, store maintenanceRecords, retenti
 	if renders < 0 || renders > 100 {
 		return false, documents.ErrStorage
 	}
+	imports, err := store.AbortUnstartedImports(maintenance, 100)
+	if err != nil {
+		return false, err
+	}
+	if imports < 0 || imports > 100 {
+		return false, documents.ErrStorage
+	}
 	retired, err := store.PurgeCompletedCleanup(maintenance, 100, retention)
 	if err != nil {
 		return false, err
@@ -154,5 +162,5 @@ func maintainCleanupBatch(ctx context.Context, store maintenanceRecords, retenti
 	if requests < 0 || requests > 100 {
 		return false, documents.ErrStorage
 	}
-	return requests == 100 || expired == 20 || scans == 100 || renders == 100 || retired == 100, ctx.Err()
+	return requests == 100 || expired == 20 || scans == 100 || renders == 100 || imports == 100 || retired == 100, ctx.Err()
 }
