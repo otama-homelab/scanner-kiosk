@@ -91,6 +91,7 @@ both private CLI commands bypassing service stores. Existing kernel memory-bound
 and process-group tests cover the shared limit/supervision code. Six related full
 suites passed; hosted executable acceptance is still pending.
 
-Preview integration, upload UI and actual hosted standalone candidate acceptance
-remain pending in plan 43-08. No new
+Browser upload and prepared-page preview links are now connected (see
+`pdf-import-http.md`). Parser-specific error feedback, actual native browser PDF
+viewing and hosted standalone candidate acceptance remain pending in plan 43-08. No new
 service, runtime image, upstream fork or dependency is introduced here.

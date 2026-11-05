@@ -61,8 +61,44 @@ Missing never-created source is accounted as empty. Unsafe/unknown IO retains th
 reservation. A ready never-claimed intake stays eligible for normal execution;
 an already-started worker is interrupted after unpublished scratch cleanup.
 This extension is source-tested, not hosted-candidate acceptance. Upload UI,
-PDF preview, upload UI and the hosted end-to-end tracer remain pending. PDF output
-now runs through the bounded assembly child described in `pdf-import-child.md`.
+PDF output runs through the bounded assembly child described in
+`pdf-import-child.md`.
+
+## Browser import and prepared-page preview
+
+Authenticated Home links to `#/import`. The user chooses a file and explicitly
+submits it; selecting a file starts no upload. The form reads the existing job
+byte limit and rejects empty/oversize selections before hashing or network IO.
+SHA-256 is calculated over 256 KiB slices without holding the whole file in RAM.
+The small FIPS 180-4 implementation is checked against independent platform crypto
+at padding and streaming chunk boundaries. The raw File body lets the browser
+set its actual Content-Length; filenames are not sent as paths or headers.
+
+One immutable file/digest/request-key intent survives an uncertain response.
+Selection stays locked, and “Check import request” repeats those same bytes and
+key. Expired intents require reload/history rather than silently creating a new
+key. Route disposal aborts owned reads/requests; already admitted server work may
+remain visible in History. The accepted import uses the existing job status and
+cancellation view. Parser-specific failure messages still need integration.
+
+PDF pages retain their honest source type in review. Their “Open PDF page” link
+opens the browser's PDF viewer in a new tab with noopener/noreferrer. The existing
+authorized `/pages/{page_id}/preview` route streams only the registered prepared
+page, never the raw intake. It retains repeated owner/session/expiry/deletion and
+file-descriptor/hash checks, adds PDF byte ranges and a restrictive content policy
+(`default-src 'none'`, no form/base/frame embedding). No image decoder or PDF
+parser runs in HTTP. Original-page preview keeps its original orientation; review
+explicitly reports the rotation applied to the exported PDF. Image thumbnails and
+review navigation continue to work alongside PDF page cards.
+
+Real-file HTTP source tests cover PDF bytes/headers, HEAD, unauthenticated/other
+owner refusal and page deletion. Fresh Astro/Chromium tests with mocked APIs cover
+raw upload/hash vectors, uncertain replay identity, size bounds, PDF link safety,
+mixed review navigation and bilingual responsive layout. The existing placement
+browser fixture also passes. These are source checks; actual browser PDF-viewer
+rendering, parser-specific error feedback and the hosted upload -> edit -> export
+hardware tracer remain pending. `check-web.py` registers the new browser fixture
+for future embedded-candidate checks.
 
 The job view now accepts the `import` kind in its existing status/cancellation
 screen. This small validator extension is source-reviewed; the complete imported

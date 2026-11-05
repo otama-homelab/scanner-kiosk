@@ -25,9 +25,13 @@ func (h *Handler) preview(w http.ResponseWriter, r *http.Request, p websession.P
 		failure(w, err)
 		return
 	}
+	if reference.Artifact.MediaType == "application/pdf" {
+		// Only prepared page artifacts reach this route, never the raw intake.
+		w.Header().Set("Content-Security-Policy", "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
+	}
 	h.stream(w, r, reference, func(ctx context.Context) (documents.ArtifactReference, error) {
 		return h.store.ReadPageOriginal(ctx, p.ID, document, page)
-	}, "inline", false)
+	}, "inline", reference.Artifact.MediaType == "application/pdf")
 }
 
 // thumbnail streams a sealed source-orientation derivative using the same

@@ -16,10 +16,12 @@ export function reviewViews(grid:HTMLElement,labels:{overview:string;pageView:st
  const fallback=(image:HTMLImageElement)=>image.addEventListener('error',()=>{if(image.dataset.thumbnail&&image.getAttribute('src')===image.dataset.thumbnail){image.dataset.thumbnailUnavailable='true';source(image,true)}});
 
  for(const [index,card] of cards.entries()){
-  const image=card.querySelector('img')!;fallback(image);
+  const image=card.querySelector('img');
+  if(!image){const thumbnail=make('PDF '+(index+1),()=>{selected=index;update(true)});thumbnail.setAttribute('aria-label',card.dataset.pageLabel||labels.page+' '+(index+1));choices.push(thumbnail);thumbnails.append(thumbnail);continue}
+  fallback(image);
   const open=make('',()=>{selected=index;update(true);detail.focus()});open.className='preview-open';open.setAttribute('aria-label',image.alt);image.replaceWith(open);open.append(image);
   const thumbnail=make('',()=>{selected=index;update(true)});thumbnail.setAttribute('aria-label',image.alt);const small=image.cloneNode(true) as HTMLImageElement;small.alt='';small.loading='lazy';fallback(small);source(small,false);thumbnail.append(small);choices.push(thumbnail);thumbnails.append(thumbnail)
  }
- function update(value:boolean){single=value;state.single=single;state.pageID=cards[selected].dataset.pageId??null;state.index=selected;grid.classList.toggle('single-page',single);overview.setAttribute('aria-pressed',String(!single));detail.setAttribute('aria-pressed',String(single));navigation.hidden=!single;thumbnails.hidden=!single;previous.disabled=selected===0;next.disabled=selected===cards.length-1;position.textContent=`${labels.page} ${selected+1} / ${cards.length}`;for(const [index,card] of cards.entries()){card.hidden=single&&index!==selected;source(card.querySelector('img')!,single&&index===selected);choices[index].setAttribute('aria-pressed',String(index===selected))}}
+ function update(value:boolean){single=value;state.single=single;state.pageID=cards[selected].dataset.pageId??null;state.index=selected;grid.classList.toggle('single-page',single);overview.setAttribute('aria-pressed',String(!single));detail.setAttribute('aria-pressed',String(single));navigation.hidden=!single;thumbnails.hidden=!single;previous.disabled=selected===0;next.disabled=selected===cards.length-1;position.textContent=`${labels.page} ${selected+1} / ${cards.length}`;for(const [index,card] of cards.entries()){card.hidden=single&&index!==selected;const image=card.querySelector('img');if(image)source(image,single&&index===selected);choices[index].setAttribute('aria-pressed',String(index===selected))}}
  root.append(modes,navigation,thumbnails,grid);update(single);return root
 }
