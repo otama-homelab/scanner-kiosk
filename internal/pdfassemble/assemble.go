@@ -7,10 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"image"
-	"image/draw"
 	"image/jpeg"
-	"image/png"
 	"io"
 
 	"github.com/pdfcpu/pdfcpu/pkg/api"
@@ -196,7 +193,7 @@ func imagePagePDF(ctx context.Context, page Page, input io.ReadCloser, encoding 
 		}
 		reader = bytes.NewReader(raw)
 	}
-	info, err := captureimage.Validate(ctx, reader, captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
+	info, bitmap, err := captureimage.Decode(ctx, reader, captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
 	if err != nil {
 		if ctx.Err() != nil {
 			return nil, ctx.Err()
@@ -206,23 +203,13 @@ func imagePagePDF(ctx context.Context, page Page, input io.ReadCloser, encoding 
 	if page.MediaType != "" && page.MediaType != info.MediaType {
 		return nil, ErrInvalid
 	}
+	if encoding == "lossless" {
+		return losslessPagePDF(ctx, page.Size, bitmap, options.MaxOutputBytes)
+	}
 	var prepared io.Reader = contextReader{ctx, io.LimitReader(reader, options.MaxInputBytes+1)}
-	transcode := (encoding == "jpeg" && info.MediaType != "image/jpeg") || (encoding == "lossless" && info.MediaType != "image/png")
-	if transcode {
-		_, bitmap, decodeErr := captureimage.Decode(ctx, reader, captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color})
-		if decodeErr != nil {
-			return nil, normalized(ctx, decodeErr)
-		}
+	if info.MediaType != "image/jpeg" {
 		encoded := &limitedBuffer{limit: options.MaxInputBytes}
-		if encoding == "jpeg" {
-			err = jpeg.Encode(encoded, bitmap, &jpeg.Options{Quality: options.JPEGQuality})
-		} else {
-			// JPEG decoders return YCbCr; normalize to explicit 8-bit RGB.
-			rgb := image.NewRGBA(bitmap.Bounds())
-			draw.Draw(rgb, rgb.Bounds(), bitmap, bitmap.Bounds().Min, draw.Src)
-			err = png.Encode(encoded, rgb)
-		}
-		if err != nil {
+		if err = jpeg.Encode(encoded, bitmap, &jpeg.Options{Quality: options.JPEGQuality}); err != nil {
 			return nil, normalized(ctx, err)
 		}
 		prepared = bytes.NewReader(encoded.Bytes())
