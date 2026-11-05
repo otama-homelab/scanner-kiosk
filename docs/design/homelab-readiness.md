@@ -43,3 +43,23 @@
 | LLM受入前提 | 現EndpointSliceのbackendはReady=false。モデル呼出し0回。回復後に非私文書で実応答のmodel名と対応出力を確認し、それからprofileのresponse_modelを固定する |
 
 LLM credentialはworkerの専用secretだけに供給し、API/browserへ渡さない。client作成・secret作成・モデル呼出し・常用配備はこの設定準備では行っていない。実phone/支援技術・二owner/失効/再認証は別の必須受入として残る。
+
+### Pocket ID登録済み（2026-11-06）
+
+本人指定の `admin_group` と `user_group` をログイン許可する専用client `scanner-kiosk` を登録した。confidential client・PKCE有効・group制限有効、callbackは `https://services.example.com/auth/oidc/callback` の1件だけ。作成時からgroup制限を有効にし、許可groupとcallbackの実readback一致を確認済み。ユーザー作成・通知・ログイン操作は行っていない。アプリの管理者権限設定も変更していない。
+
+API用Secretは `scanservjs/scanner-kiosk-oidc-api`、キーは `SCANNER_OIDC_CLIENT_ID` と `SCANNER_OIDC_CLIENT_SECRET`。workerへ渡さない。既存のCoder OIDC登録方式と同様、復旧用は `homelab/bootstrap/recovery/scanner-kiosk-oidc.sops.yaml` にSOPS暗号化で保管した。実credential作成前に暗号化・復号のpreflightを行い、Secretへの保存値一致も確認済み。
+
+配備時の追加値（まだ適用しない。受入済みimage digest・既存claim・workerSecret等は配備手順で揃える）:
+
+```yaml
+apiSecretName: scanner-kiosk-oidc-api
+apiEnv:
+  SCANNER_PUBLIC_URL: https://services.example.com
+  SCANNER_AUTHENTICATE_TYPE: oidc
+  SCANNER_OIDC_ISSUER: https://services.example.com
+  SCANNER_OIDC_CLIENT_AUTH: client_secret_basic
+  SCANNER_OIDC_SCOPES: openid,profile
+```
+
+登録・保存は完了したが、実候補からのdiscovery/start、実ユーザーのOIDC往復・二owner隔離・失効/再認証は別の未完項目。常用ルート・Deploymentは変更していない。
