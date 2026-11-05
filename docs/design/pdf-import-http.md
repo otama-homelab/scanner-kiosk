@@ -61,7 +61,8 @@ Missing never-created source is accounted as empty. Unsafe/unknown IO retains th
 reservation. A ready never-claimed intake stays eligible for normal execution;
 an already-started worker is interrupted after unpublished scratch cleanup.
 This extension is source-tested, not hosted-candidate acceptance. Upload UI,
-PDF preview/render integration and the hosted end-to-end tracer remain pending.
+PDF preview, upload UI and the hosted end-to-end tracer remain pending. PDF output
+now runs through the bounded assembly child described in `pdf-import-child.md`.
 
 The job view now accepts the `import` kind in its existing status/cancellation
 screen. This small validator extension is source-reviewed; the complete imported

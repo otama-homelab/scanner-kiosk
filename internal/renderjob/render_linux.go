@@ -86,7 +86,13 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 	}
 
 	thumbRecords, withThumbnails := records.(ThumbnailRecords)
-	ocrEnabled := work.Snapshot.Settings.OCR.Enabled
+	hasScans := false
+	for _, input := range work.Inputs {
+		if input.MediaType != "application/pdf" {
+			hasScans = true
+		}
+	}
+	ocrEnabled := work.Snapshot.Settings.OCR.Enabled && hasScans
 	selector, hasOCR := records.(OCRSelector)
 	if ocrEnabled && (format != "pdf" || !hasOCR) {
 		return nil, ErrUnsupported
@@ -156,6 +162,13 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 		if page.OriginalArtifactID != input.ID {
 			return nil, documents.ErrInvalid
 		}
+		if input.MediaType == "application/pdf" {
+			if format != "pdf" || page.SourceType != "pdf" {
+				return nil, ErrUnsupported
+			}
+			pages[i] = pdfassemble.ScopedPage{ID: input.ID, MediaType: input.MediaType, Rotation: page.Rotation}
+			continue
+		}
 		reader, e := scope.OpenInput(ctx, input.ID)
 		if e != nil {
 			return nil, e
@@ -168,7 +181,7 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 		if readErr != nil || closeErr != nil || cfg.Width < 1 || cfg.Height < 1 || int64(cfg.Width) > options.MaxPagePixels/int64(max(cfg.Height, 1)) || (format != "png" && format != "jpeg") || "image/"+format != input.MediaType {
 			return nil, documents.ErrInvalid
 		}
-		pages[i] = pdfassemble.ScopedPage{ID: input.ID, Size: page.Size, Color: page.Color, Rotation: page.Rotation, Width: cfg.Width, Height: cfg.Height}
+		pages[i] = pdfassemble.ScopedPage{ID: input.ID, MediaType: input.MediaType, Size: page.Size, Color: page.Color, Rotation: page.Rotation, Width: cfg.Width, Height: cfg.Height}
 	}
 	var reference, kind, media string
 	if ocrEnabled {
@@ -182,7 +195,7 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 		}
 	} else if format == "pdf" {
 		kind, media = artifactscope.PDF, "application/pdf"
-		reference, err = pdfassemble.GenerateScoped(ctx, scope, pages, work.Snapshot.Settings.PDFEncoding, options)
+		reference, err = pdfassemble.GenerateIsolated(ctx, root, scope, assemblyRequest(work, inputs, pages, options), work.ReserveBytes)
 	} else {
 		kind, media = format, "image/"+format
 		page := pages[0]
@@ -203,7 +216,7 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 	if withThumbnails {
 		missing := 0
 		for _, input := range work.Inputs {
-			if !work.ThumbnailOriginalIDs[input.ID] {
+			if input.MediaType != "application/pdf" && !work.ThumbnailOriginalIDs[input.ID] {
 				missing++
 			}
 		}
@@ -220,7 +233,7 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 			scopes = append(scopes, thumbnailScope)
 			originals := map[string]string{}
 			for _, page := range pages {
-				if work.ThumbnailOriginalIDs[page.ID] {
+				if page.MediaType == "application/pdf" || work.ThumbnailOriginalIDs[page.ID] {
 					continue
 				}
 				policy.Input = captureimage.Options{MaxBytes: options.MaxInputBytes, MaxPixels: options.MaxPagePixels, Width: page.Width, Height: page.Height, Color: page.Color}

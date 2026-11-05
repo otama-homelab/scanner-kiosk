@@ -11,6 +11,7 @@ import (
 
 	"scanner-kiosk/internal/apiruntime"
 	"scanner-kiosk/internal/config"
+	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/pdfimport"
 	"scanner-kiosk/internal/staterecovery"
 	"scanner-kiosk/internal/useradmin"
@@ -18,6 +19,9 @@ import (
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "__pdf-assemble" {
+		os.Exit(pdfassemble.AssemblyChild(os.Args[2:], os.Stdin, os.Stdout))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "__pdf-import" {
 		os.Exit(pdfimport.Child(os.Args[2:], os.Stdin, os.Stdout))
 	}

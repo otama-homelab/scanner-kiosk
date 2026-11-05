@@ -16,10 +16,14 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/internal/importupload"
+	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/pdfimport"
 )
 
 func TestMain(m *testing.M) {
+	if len(os.Args) > 1 && os.Args[1] == "__pdf-assemble" {
+		os.Exit(pdfassemble.AssemblyChild(os.Args[2:], os.Stdin, os.Stdout))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "__pdf-import" {
 		os.Exit(pdfimport.Child(os.Args[2:], os.Stdin, os.Stdout))
 	}
@@ -242,6 +246,39 @@ func TestWorkerImportsPDFThroughBoundedChild(t *testing.T) {
 				}
 				if err != nil || !bytes.Contains(content, []byte(word)) || !bytes.Contains(content, []byte(" re f")) {
 					t.Fatal("lost text/vector", word, err)
+				}
+			}
+			for index, ocr := range []bool{false, true} {
+				projection, err = store.ReadDocument(context.Background(), owner, a.DocumentID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				settings := documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless"}
+				if ocr {
+					settings.OCR = documents.RenderOCR{Enabled: true, ProviderID: "uninstalled", ModelID: "uninstalled", ModelVersion: "1", Languages: []string{"en"}, QualityPreset: "auto"}
+				}
+				render, err := store.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: a.DocumentID, Revision: projection.Revision, IdempotencyKey: fmt.Sprintf("request_import_render%d", index), Settings: settings, ReserveBytes: 1 << 20}, documents.AdmissionLimits{UserMaxBytes: 2 << 20, GlobalMaxBytes: 4 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err = Run(context.Background(), c, true); err != nil {
+					t.Fatal(err)
+				}
+				rendered, err := store.ReadJob(context.Background(), owner, render.JobID)
+				if err != nil || rendered.State != "succeeded" {
+					t.Fatal("imported PDF render failed", rendered, err)
+				}
+				output, err := store.GetExport(context.Background(), owner, a.DocumentID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				data, err := os.ReadFile(filepath.Join(root, output.RelativePath))
+				if err != nil {
+					t.Fatal(err)
+				}
+				parsed, err := api.ReadValidateAndOptimize(context.Background(), bytes.NewReader(data), model.NewStatelessConfiguration(), nil)
+				if err != nil || parsed.PageCount != 2 {
+					t.Fatal("wrong exported PDF", err)
 				}
 			}
 		})

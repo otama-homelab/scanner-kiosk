@@ -11,11 +11,9 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"runtime/debug"
 	"strconv"
 	"time"
 
-	"golang.org/x/sys/unix"
 	"scanner-kiosk/internal/processrun"
 )
 
@@ -128,7 +126,7 @@ func Child(args []string, input, output *os.File) int {
 	if e1 != nil || e2 != nil || e3 != nil || !validOptions(options) {
 		return 10
 	}
-	if applyChildLimits(frameLimit(options)) != nil {
+	if processrun.ApplyPDFLimits(frameLimit(options)) != nil {
 		return 14
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -171,30 +169,6 @@ func Child(args []string, input, output *os.File) int {
 		}
 	}
 	return 0
-}
-
-func applyChildLimits(outputBytes int64) error {
-	for resource, limit := range map[int]unix.Rlimit{
-		unix.RLIMIT_CORE:   {Cur: 0, Max: 0},
-		unix.RLIMIT_CPU:    {Cur: 30, Max: 31},
-		unix.RLIMIT_DATA:   {Cur: 512 << 20, Max: 512 << 20},
-		unix.RLIMIT_AS:     {Cur: 2 << 30, Max: 2 << 30},
-		unix.RLIMIT_FSIZE:  {Cur: uint64(outputBytes), Max: uint64(outputBytes)},
-		unix.RLIMIT_NOFILE: {Cur: 32, Max: 32},
-	} {
-		if err := unix.Setrlimit(resource, &limit); err != nil {
-			return err
-		}
-	}
-	if err := unix.Prctl(unix.PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0); err != nil {
-		return err
-	}
-	if err := unix.Prctl(unix.PR_SET_DUMPABLE, 0, 0, 0, 0); err != nil {
-		return err
-	}
-	debug.SetMemoryLimit(256 << 20)
-	debug.SetMaxThreads(16)
-	return nil
 }
 
 func decodePages(reader io.ReadSeeker, size int64, options Options) ([]PreparedPage, error) {

@@ -38,12 +38,16 @@ func (r *ocrRecords) SelectOCR(ctx context.Context, id string, request ocrplugin
 	return registry.Select(id, request)
 }
 
-type layerProvider struct{ mode string }
+type layerProvider struct {
+	mode string
+	seen []ocrplugin.InputPage
+}
 
 func (p *layerProvider) Capabilities(context.Context) (ocrplugin.Capabilities, error) {
 	return ocrplugin.Capabilities{APIVersion: 1, ID: "testocr", Name: "Test OCR", Version: "1", Models: []ocrplugin.Model{{ID: "installed", Name: "Installed", Version: "test-version", Languages: []string{"ja", "en"}, QualityPresets: []string{"auto"}, Outputs: []ocrplugin.OutputKind{ocrplugin.PDFTextLayer}, MaxPages: 50, MaxPagePixels: 1000000}}}, nil
 }
 func (p *layerProvider) Run(ctx context.Context, request ocrplugin.Request, access ocrplugin.Access) (ocrplugin.Result, error) {
+	p.seen = append([]ocrplugin.InputPage(nil), request.Pages...)
 	result := ocrplugin.Result{ModelVersion: request.ModelVersion}
 	for _, page := range request.Pages {
 		writer, err := access.CreateOutput(ctx, ocrplugin.PDFTextLayer)

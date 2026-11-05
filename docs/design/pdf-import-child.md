@@ -55,7 +55,42 @@ stop acknowledgements have exact job/owner/runner read-back checks. The startup
 recovery file bound now matches the existing 10,000-output scope/page cap.
 
 Unstarted import cancellation/expiry and offline producer/worker recovery are now
-connected to the existing maintenance and administrative recovery paths. PDF render
-and preview integration, upload UI and actual hosted standalone candidate acceptance
+connected to the existing maintenance and administrative recovery paths.
+
+## PDF output child
+
+Plain and OCR PDF output now use the internal `__pdf-assemble` command of the same
+executable. It shares the parser resource profile in `processrun.ApplyPDFLimits`
+with import splitting. No service configuration is loaded by either command.
+The child starts in the private document root with an explicit credential-free
+environment. A private, bounded (16 MiB) file manifest contains the immutable
+ordered snapshot, relative input capabilities (path/size/SHA-256), output limits
+and optional OCR-layer capabilities. The child opens only these confined inputs
+through `artifactread`, verifying the opened files before parsing. PDF paths and
+external references never become arbitrary filesystem/network open requests.
+
+The parent accounts for manifest bytes, bounded child output and the copied final
+artifact simultaneously against the remaining job reservation; originals and OCR
+layers are read in place rather than copied into another input spool. Preparation
+scratch is closed/removed and its parent synced before the final scope is sealed
+and published. Unknown child stop or cleanup retains job/files/reservation for
+administrative reconciliation. The parent copies bounded file bytes and does not
+parse the generated PDF. Existing job cancellation/revision/owner/publication
+guards remain in the coordinator.
+
+Imported pages retain their text/vector/geometry and rotation. OCR requests and
+image thumbnails include scanned images only; imported PDF-only output does not
+invoke an OCR provider even if the pinned settings enabled OCR. The existing
+image thumbnail path does not pretend a PDF is a raster input. Safe PDF browser
+preview remains separate pending work.
+
+Source tests cover mixed page output, preserved text/vector, input digest refusal,
+credential-env isolation, budget/cancellation, scratch cleanup, mixed OCR with
+only image pages passed to the provider, actual worker import -> PDF output, and
+both private CLI commands bypassing service stores. Existing kernel memory-bound
+and process-group tests cover the shared limit/supervision code. Six related full
+suites passed; hosted executable acceptance is still pending.
+
+Preview integration, upload UI and actual hosted standalone candidate acceptance
 remain pending in plan 43-08. No new
 service, runtime image, upstream fork or dependency is introduced here.

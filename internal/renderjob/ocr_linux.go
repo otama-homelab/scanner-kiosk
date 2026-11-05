@@ -5,7 +5,7 @@ package renderjob
 import (
 	"context"
 	"errors"
-	"io"
+	"scanner-kiosk/internal/artifactread"
 
 	"scanner-kiosk/internal/artifactscope"
 	"scanner-kiosk/internal/documents"
@@ -24,6 +24,9 @@ func prepareOCR(ctx context.Context, selector OCRSelector, root string, work doc
 	settings := work.Snapshot.Settings.OCR
 	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, Output: ocrplugin.PDFTextLayer}
 	for i, page := range pages {
+		if page.MediaType == "application/pdf" {
+			continue
+		}
 		req.Pages = append(req.Pages, ocrplugin.InputPage{ID: work.Snapshot.Pages[i].ID, ArtifactID: page.ID, Width: page.Width, Height: page.Height, DPI: work.Snapshot.Pages[i].DPI})
 	}
 	provider, err := selector.SelectOCR(ctx, settings.ProviderID, req)
@@ -64,29 +67,23 @@ func prepareOCR(ctx context.Context, selector OCRSelector, root string, work doc
 		}
 		return nil, "", err
 	}
-	images := make([]pdfassemble.Page, len(pages))
-	layers := make([]pdfassemble.TextLayer, len(bound))
-	for i, page := range pages {
-		inputID := page.ID
-		images[i] = pdfassemble.Page{ID: work.Snapshot.Pages[i].ID, Size: page.Size, Color: page.Color, Width: page.Width, Height: page.Height, Rotation: page.Rotation, Open: func(ctx context.Context) (io.ReadCloser, error) { return final.OpenInput(ctx, inputID) }}
-		layerID := bound[i].Artifact.ID
-		layers[i] = pdfassemble.TextLayer{PageID: bound[i].Input.ID, Open: func(ctx context.Context) (io.ReadCloser, error) { return final.OpenInput(ctx, layerID) }}
+	request := assemblyRequest(work, inputs, pages, options)
+	request.OCR = true
+	byPage := map[string]artifactscope.Artifact{}
+	for _, layer := range bound {
+		byPage[layer.Input.ID] = layer.Artifact
 	}
-	output, err := pdfassemble.BuildWithLayers(ctx, images, layers, work.Snapshot.Settings.PDFEncoding, options)
+	for i, page := range request.Pages {
+		if layer, ok := byPage[page.ID]; ok {
+			request.Pages[i].Layer = &artifactread.Input{RelativePath: layer.RelativePath, Size: layer.Size, SHA256: layer.SHA256}
+		}
+	}
+	reference, err = pdfassemble.GenerateIsolated(ctx, root, final, request, budget.Remaining())
 	if err != nil {
 		return final, "", err
-	}
-	writer, err := final.CreateArtifact(ctx, artifactscope.PDF)
-	if err != nil {
-		return final, "", err
-	}
-	_, writeErr := writer.Write(output)
-	closeErr := writer.Close()
-	if writeErr != nil || closeErr != nil {
-		return final, "", errors.Join(writeErr, closeErr)
 	}
 	if err = ocrScope.Close(); err != nil {
 		return final, "", err
 	}
-	return final, writer.Reference(), nil
+	return final, reference, nil
 }

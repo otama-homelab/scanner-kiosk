@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"golang.org/x/sys/unix"
+	"scanner-kiosk/internal/processrun"
 )
 
 func TestMain(m *testing.M) {
@@ -23,7 +24,7 @@ func TestMain(m *testing.M) {
 		os.Exit(Child(os.Args[2:], os.Stdin, os.Stdout))
 	}
 	if len(os.Args) > 1 && os.Args[1] == "__pdf-limit-probe" {
-		if applyChildLimits(1<<20) != nil {
+		if processrun.ApplyPDFLimits(1<<20) != nil {
 			os.Exit(1)
 		}
 		var data, core, cpu unix.Rlimit
