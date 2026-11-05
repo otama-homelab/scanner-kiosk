@@ -84,7 +84,7 @@ func TestMigrationIdentityChecksumAndPrivateFiles(t *testing.T) {
 			}
 			expected := 5
 			if kind == Documents {
-				expected = 16
+				expected = 17
 			}
 			var count int
 			if e = db.QueryRow("SELECT count(*) FROM schema_migrations").Scan(&count); e != nil || count != expected {
@@ -108,6 +108,9 @@ func TestMigrationIdentityChecksumAndPrivateFiles(t *testing.T) {
 	}
 	path := filepath.Join(t.TempDir(), "public.sqlite3")
 	if e := os.WriteFile(path, []byte{}, 0644); e != nil {
+		t.Fatal(e)
+	}
+	if e := os.Chmod(path, 0644); e != nil {
 		t.Fatal(e)
 	}
 	if db, e := Open(path, State); e == nil {

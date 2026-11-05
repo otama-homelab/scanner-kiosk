@@ -53,7 +53,7 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 		if err != nil || !reflect.DeepEqual(settings, out.Snapshot.Settings) {
 			return ErrInvalid
 		}
-		rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,p.capture_size,p.capture_color,p.capture_dpi,a.relative_path,a.media_type,a.byte_size,a.sha256,EXISTS(SELECT 1 FROM page_thumbnails t JOIN artifacts thumb ON thumb.id=t.artifact_id AND thumb.document_id=t.document_id AND thumb.owner_id=t.owner_id WHERE t.original_artifact_id=a.id AND thumb.kind='thumbnail' AND thumb.state='ready')
+		rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,COALESCE(p.capture_size,''),COALESCE(p.capture_color,''),COALESCE(p.capture_dpi,0),CASE p.source_type WHEN 'pdf' THEN 'pdf' ELSE '' END,COALESCE(p.pdf_width_points,0),COALESCE(p.pdf_height_points,0),a.relative_path,a.media_type,a.byte_size,a.sha256,EXISTS(SELECT 1 FROM page_thumbnails t JOIN artifacts thumb ON thumb.id=t.artifact_id AND thumb.document_id=t.document_id AND thumb.owner_id=t.owner_id WHERE t.original_artifact_id=a.id AND thumb.kind='thumbnail' AND thumb.state='ready')
  FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id
  WHERE p.document_id=? AND p.owner_id=? AND a.kind='original' AND a.state='ready' ORDER BY p.ordinal`, out.Job.DocumentID, owner)
 		if err != nil {
@@ -67,7 +67,7 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 			var input ArtifactRecord
 			var digest []byte
 			var hasThumbnail bool
-			if err = rows.Scan(&page.ID, &page.OriginalArtifactID, &page.Rotation, &page.Size, &page.Color, &page.DPI, &input.RelativePath, &input.MediaType, &input.Size, &digest, &hasThumbnail); err != nil {
+			if err = rows.Scan(&page.ID, &page.OriginalArtifactID, &page.Rotation, &page.Size, &page.Color, &page.DPI, &page.SourceType, &page.PDFWidthPoints, &page.PDFHeightPoints, &input.RelativePath, &input.MediaType, &input.Size, &digest, &hasThumbnail); err != nil {
 				return ErrStorage
 			}
 			index := len(out.Inputs)
@@ -78,7 +78,7 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 			if hasThumbnail {
 				out.ThumbnailOriginalIDs[input.ID] = true
 			}
-			if !id(input.ID) || seen[input.ID] || !localPath(input.RelativePath) || input.Size < 1 || len(digest) != 32 || (input.MediaType != "image/png" && input.MediaType != "image/jpeg") {
+			if !id(input.ID) || seen[input.ID] || !localPath(input.RelativePath) || input.Size < 1 || len(digest) != 32 || !validPageSource(page, input.MediaType) {
 				return ErrInvalid
 			}
 			seen[input.ID] = true
@@ -101,4 +101,11 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 		return RenderWork{}, err
 	}
 	return out, nil
+}
+
+func validPageSource(page CapturedPage, media string) bool {
+	if page.SourceType == "pdf" {
+		return media == "application/pdf" && page.Size == "" && page.Color == "" && page.DPI == 0 && page.PDFWidthPoints > 0 && page.PDFWidthPoints <= 20000 && page.PDFHeightPoints > 0 && page.PDFHeightPoints <= 20000
+	}
+	return page.SourceType == "" && page.PDFWidthPoints == 0 && page.PDFHeightPoints == 0 && (media == "image/png" || media == "image/jpeg")
 }

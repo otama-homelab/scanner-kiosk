@@ -60,12 +60,15 @@ type Admission struct {
 	Replay            bool
 }
 type CapturedPage struct {
-	ID                 string `json:"id"`
-	OriginalArtifactID string `json:"original_artifact_id"`
-	Rotation           int    `json:"rotation"`
-	Size               string `json:"size"`
-	Color              string `json:"color"`
-	DPI                int    `json:"dpi"`
+	SourceType         string  `json:"source_type,omitempty"`
+	PDFWidthPoints     float64 `json:"pdf_width_points,omitempty"`
+	PDFHeightPoints    float64 `json:"pdf_height_points,omitempty"`
+	ID                 string  `json:"id"`
+	OriginalArtifactID string  `json:"original_artifact_id"`
+	Rotation           int     `json:"rotation"`
+	Size               string  `json:"size"`
+	Color              string  `json:"color"`
+	DPI                int     `json:"dpi"`
 }
 type RenderSnapshot struct {
 	Version  int            `json:"version"`
@@ -156,12 +159,16 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 			if limits.OCRMaxPages < 1 || limits.OCRMaxPagePixels < 1 {
 				return ErrInvalid
 			}
-			if pageCount > limits.OCRMaxPages {
+			var imageCount int
+			if err = tx.QueryRowContext(ctx, "SELECT count(*) FROM pages WHERE document_id=? AND owner_id=? AND source_type='scan'", request.DocumentID, owner).Scan(&imageCount); err != nil {
+				return ErrStorage
+			}
+			if imageCount > limits.OCRMaxPages {
 				return ErrOCRLimits
 			}
 			var incompatible int
 			// Division avoids overflow; NULL dimensions cannot establish compatibility.
-			if err = tx.QueryRowContext(ctx, `SELECT count(*) FROM pages WHERE document_id=? AND owner_id=? AND (pixel_width IS NULL OR pixel_height IS NULL OR pixel_width > ? / pixel_height)`, request.DocumentID, owner, limits.OCRMaxPagePixels).Scan(&incompatible); err != nil {
+			if err = tx.QueryRowContext(ctx, `SELECT count(*) FROM pages WHERE document_id=? AND owner_id=? AND source_type='scan' AND (pixel_width IS NULL OR pixel_height IS NULL OR pixel_width > ? / pixel_height)`, request.DocumentID, owner, limits.OCRMaxPagePixels).Scan(&incompatible); err != nil {
 				return ErrStorage
 			}
 			if incompatible != 0 {
@@ -169,13 +176,13 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 			}
 		}
 		pages := []CapturedPage{}
-		rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,p.capture_size,p.capture_color,p.capture_dpi FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id WHERE p.document_id=? AND p.owner_id=? AND a.kind='original' AND a.state='ready' ORDER BY p.ordinal`, request.DocumentID, owner)
+		rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,COALESCE(p.capture_size,''),COALESCE(p.capture_color,''),COALESCE(p.capture_dpi,0),CASE p.source_type WHEN 'pdf' THEN 'pdf' ELSE '' END,COALESCE(p.pdf_width_points,0),COALESCE(p.pdf_height_points,0) FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id WHERE p.document_id=? AND p.owner_id=? AND a.kind='original' AND a.state='ready' ORDER BY p.ordinal`, request.DocumentID, owner)
 		if err != nil {
 			return ErrStorage
 		}
 		for rows.Next() {
 			var page CapturedPage
-			if err = rows.Scan(&page.ID, &page.OriginalArtifactID, &page.Rotation, &page.Size, &page.Color, &page.DPI); err != nil {
+			if err = rows.Scan(&page.ID, &page.OriginalArtifactID, &page.Rotation, &page.Size, &page.Color, &page.DPI, &page.SourceType, &page.PDFWidthPoints, &page.PDFHeightPoints); err != nil {
 				rows.Close()
 				return ErrStorage
 			}

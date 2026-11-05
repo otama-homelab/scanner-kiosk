@@ -52,7 +52,7 @@ func TestCleanupAttemptUpgradePreservesManifestAndOldAuthority(t *testing.T) {
 		t.Fatal(err)
 	}
 	for query, wanted := range map[string]int{
-		"SELECT count(*) FROM schema_migrations": 16,
+		"SELECT count(*) FROM schema_migrations": 17,
 		"SELECT count(*) FROM cleanup_attempts":  0,
 		"SELECT count(*) FROM jobs WHERE state='running' AND runner_id='worker_cleanup_upgrade_01' AND started_at_ms=2000 AND deadline_at_ms=20000": 1,
 		"SELECT count(*) FROM cleanup_files WHERE state='pending'":                                                                                  1,

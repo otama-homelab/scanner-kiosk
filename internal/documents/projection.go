@@ -28,13 +28,19 @@ type CaptureProjection struct {
 	Color string `json:"color"`
 	DPI   int    `json:"dpi"`
 }
+type PDFPageProjection struct {
+	WidthPoints  float64 `json:"width_points"`
+	HeightPoints float64 `json:"height_points"`
+}
 type PageProjection struct {
-	ID           string            `json:"id"`
-	Ordinal      int               `json:"ordinal"`
-	Rotation     int               `json:"rotation"`
-	Capture      CaptureProjection `json:"capture"`
-	ThumbnailURL string            `json:"thumbnail_url"`
-	PreviewURL   string            `json:"preview_url"`
+	SourceType   string             `json:"source_type"`
+	PDF          *PDFPageProjection `json:"pdf,omitempty"`
+	ID           string             `json:"id"`
+	Ordinal      int                `json:"ordinal"`
+	Rotation     int                `json:"rotation"`
+	Capture      *CaptureProjection `json:"capture"`
+	ThumbnailURL string             `json:"thumbnail_url"`
+	PreviewURL   string             `json:"preview_url"`
 }
 type OutputProjection struct {
 	Revision    int64  `json:"revision"`
@@ -166,16 +172,23 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 		args = append(args, p.ID)
 	}
 	selected := strings.Join(marks, ",")
-	rows, err := tx.QueryContext(ctx, `SELECT document_id,id,ordinal,rotation,capture_size,capture_color,capture_dpi FROM pages WHERE owner_id=? AND document_id IN (`+selected+`) ORDER BY document_id,ordinal`, args...)
+	rows, err := tx.QueryContext(ctx, `SELECT document_id,id,ordinal,rotation,COALESCE(capture_size,''),COALESCE(capture_color,''),COALESCE(capture_dpi,0),source_type,COALESCE(pdf_width_points,0),COALESCE(pdf_height_points,0) FROM pages WHERE owner_id=? AND document_id IN (`+selected+`) ORDER BY document_id,ordinal`, args...)
 	if err != nil {
 		return ErrStorage
 	}
 	for rows.Next() {
 		var document string
 		var page PageProjection
-		if err = rows.Scan(&document, &page.ID, &page.Ordinal, &page.Rotation, &page.Capture.Size, &page.Capture.Color, &page.Capture.DPI); err != nil {
+		var capture CaptureProjection
+		var width, height float64
+		if err = rows.Scan(&document, &page.ID, &page.Ordinal, &page.Rotation, &capture.Size, &capture.Color, &capture.DPI, &page.SourceType, &width, &height); err != nil {
 			rows.Close()
 			return ErrStorage
+		}
+		if page.SourceType == "pdf" {
+			page.PDF = &PDFPageProjection{WidthPoints: width, HeightPoints: height}
+		} else {
+			page.Capture = &capture
 		}
 		i, ok := positions[document]
 		if !ok {

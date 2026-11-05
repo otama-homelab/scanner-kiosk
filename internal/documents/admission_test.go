@@ -428,7 +428,7 @@ func TestCanonicalCommandSurvivesFieldOrderAndPreservesIntegers(t *testing.T) {
 }
 
 func TestOCRModelLimitsAreCheckedBeforeMutation(t *testing.T) {
-	for _, mode := range []string{"pixel-limit", "page-limit", "unknown-dimensions", "boundary", "plain"} {
+	for _, mode := range []string{"pixel-limit", "page-limit", "unknown-dimensions", "boundary", "plain", "imported-pdf"} {
 		t.Run(mode, func(t *testing.T) {
 			f := renderFixture(t)
 			// Replace the synthetic page before admission; dimensions are immutable after insert.
@@ -449,12 +449,15 @@ func TestOCRModelLimitsAreCheckedBeforeMutation(t *testing.T) {
 			if mode == "page-limit" {
 				seedPageAt(t, f, docA, alice, "original_alice_0002", "page_alice_000002", 1)
 			}
+			if mode == "imported-pdf" {
+				seedImportedPDFPage(t, f)
+			}
 			if mode == "plain" {
 				request.Settings.OCR = RenderOCR{}
 				limits.OCRMaxPagePixels = 1
 			}
 			result, err := f.store.AdmitRender(context.Background(), alice, request, limits)
-			if mode == "boundary" || mode == "plain" {
+			if mode == "boundary" || mode == "plain" || mode == "imported-pdf" {
 				if err != nil {
 					t.Fatal(err)
 				}

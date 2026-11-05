@@ -449,3 +449,31 @@ regressions. Its concurrent clock observer nevertheless recorded 24 backwards
 wall steps. Passing tests are therefore not a stable-clock acceptance. Raw WSL
 failures and the collector's failed clock assertion remain retained under the
 parent task `stateless-full-regression-20261103/`. No clock service was changed.
+
+## PDF page sources (documents migration 0017)
+
+The page table now distinguishes `scan` and `pdf` sources. Scan rows retain the
+existing capture tuple and optional known pixel dimensions. PDF rows have no
+capture tuple or raster dimensions and carry positive bounded page dimensions
+in points. The source identity and geometry are immutable; rotation and ordinal
+remain editable. PDF originals require an application/pdf artifact and document
+purpose. Imported PDF bytes must still pass the bounded preparation worker before
+any future publication; these constraints do not parse or validate PDF content.
+
+Migration 0017 replaces only the leaf pages table, copies existing rows as scans,
+and reinstalls source/owner/original/ordinal/photo constraints. No current foreign
+key points to pages. Jobs, reservations, device leases, request receipts and
+artifact rows are not dropped or rebuilt. Checksummed prior migrations remain
+unchanged. Upgrade testing retains existing scan settings and that complete job
+graph and checks foreign-key integrity.
+
+The public projection includes `source_type`; `capture` is null for PDF pages and
+`pdf` supplies width/height in points. Existing scan projections keep their capture
+object. Render snapshots retain the old serialized scan representation (new fields
+omitted) and explicitly identify PDF sources and geometry. OCR admission counts
+only scanned images against image page/pixel limits; imported text is preserved.
+
+Older executables reject schema 0017 as newer than their known migrations. There
+is no automatic down migration: rollback requires the compatible pre-upgrade
+database/document backup and the old executable together. Source-model support
+does not yet provide PDF upload, safe preview or a bounded parsing-child runtime.
