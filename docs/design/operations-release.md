@@ -82,7 +82,12 @@ The command is an operator CLI, not a browser endpoint. Legacy jobs without a
 physical identity binding remain blocked rather than guessing their device.
 The separate fresh-root identity restore below remains a fallback with its
 explicit impact decision; it is not required merely because a worker crashed.
-Real-device acceptance of this new same-root command is still pending.
+This same-root route has been exercised on the hosted preview candidate with
+Canon TS8130: the retained page/bytes/expiry survived, a new scan was appended,
+and a two-page PDF was independently verified. One initial post-recovery start
+remained unavailable for 90 seconds; a later normal start published all capture
+profiles after about 41 seconds. Startup variability and release/storage gates
+remain pending; do not force readiness by clearing guards or lease metadata.
 
 Configuration recovery uses a logical export of permitted durable records. Restored sessions and authorization attempts are invalidated. Original-document restoration is deliberately not part of configuration recovery. Normal process restart preserves valid sessions and unexpired local documents, reconciles workers, and reruns cleanup.
 
