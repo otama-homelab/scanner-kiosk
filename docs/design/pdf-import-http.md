@@ -45,3 +45,7 @@ file preservation, cancellation with no retained source FD, route-specific body
 ceilings, authorization/header refusal and cross-owner job isolation. These tests
 do not prove PDF parsing/page publication, producer crash recovery or the hosted
 standalone executable. Upload UI and those worker/recovery paths remain pending.
+
+The job view now accepts the `import` kind in its existing status/cancellation
+screen. This small validator extension is source-reviewed; the complete imported
+PDF browser flow still requires the later hosted tracer and preview wiring.

@@ -545,3 +545,30 @@ replay, capacity/owner/target guards, seal/abort accounting, stopped-producer de
 barriers, lost acknowledgements and clock rollback. Current evidence is database
 coordination only: HTTP byte transfer, actual fsync/close, worker claim/publication,
 producer crash recovery and hosted end-to-end acceptance remain incomplete.
+
+## Import worker records and page publication
+
+`ClaimNextImport` selects only ready intake for an enabled owner, an unchanged live
+processing document, a positive reservation and no previous worker execution. It
+shares the existing global heavy-work exclusion with render/scan work. Pending or
+receiving API intake cannot be claimed. `LoadImportWork` binds the claimed runner,
+immutable content digest/size/page limit, original artifact and producing-job link;
+`PulseImport` withdraws execution authority on cancellation/expiry/owner loss.
+
+`CommitImportPages` requires trusted process/scratch stop evidence and all prepared
+page descriptors. It inserts every original PDF artifact, producer link and page
+in one transaction, retaining PDF geometry without capture settings, then completes
+the job, returns the document to review and releases the remaining reservation.
+Original upload and retention remain unchanged. A bad/stale/over-budget page or
+storage failure rolls back the entire page set. Readback for lost acknowledgement
+matches the exact newly published artifact bundle; the raw input cannot stand in
+for a published page. `FinishStoppedImport` only releases failed/cancelled work
+once owned work and scratch cleanup are confirmed and no page publication exists.
+These are database records; the child/file executor and runtime dispatch remain
+unconnected at this checkpoint.
+
+API intake can run independently while a worker starts. The startup empty-directory
+sweep now uses the same all-owner/all-state registered-artifact predicate as offline
+recovery before removing a root producer directory. Even an empty receiving work
+directory is protected; a failed reference lookup stops the sweep without deleting
+it. The existing exclusive worker guard still owns worker/GC namespaces.

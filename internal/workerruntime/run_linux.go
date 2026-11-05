@@ -62,7 +62,7 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 			return nil
 		})
 	}
-	if err = sweepStartupDirectories(ctx, c.DocumentDir, c.Limits["SCANNER_JOB_MAX_BYTES"], c.Durations["SCANNER_CLEANUP_TIMEOUT_SECONDS"], checkStartupDirectory); err != nil {
+	if err = sweepStartupDirectories(ctx, store, c.DocumentDir, c.Limits["SCANNER_JOB_MAX_BYTES"], c.Durations["SCANNER_CLEANUP_TIMEOUT_SECONDS"], checkStartupDirectory); err != nil {
 		return err
 	}
 	// Explicit operator opt-in is required before wiring native scanner resources.

@@ -4,10 +4,13 @@ package workerruntime
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+	"scanner-kiosk/internal/documents"
+	"strings"
 	"testing"
 	"time"
 )
@@ -77,7 +80,7 @@ func TestStartupUnknownPriorWorkPreventsDirectorySweep(t *testing.T) {
 func TestStartupDirectorySweepRechecksAuthorityAndCancellation(t *testing.T) {
 	for _, mode := range []string{"authority", "cancel", "timeout"} {
 		t.Run(mode, func(t *testing.T) {
-			_, _, _, root := fixture(t)
+			_, store, _, root := fixture(t)
 			for i := 0; i < 80; i++ {
 				if err := os.Mkdir(filepath.Join(root, fmt.Sprintf("work_%048x", i)), 0700); err != nil {
 					t.Fatal(err)
@@ -102,7 +105,7 @@ func TestStartupDirectorySweepRechecksAuthorityAndCancellation(t *testing.T) {
 			if mode == "timeout" {
 				budget = 0
 			}
-			err := sweepStartupDirectories(ctx, root, 1024, budget, check)
+			err := sweepStartupDirectories(ctx, store, root, 1024, budget, check)
 			if mode == "authority" && !errors.Is(err, ErrReconciliation) || mode == "cancel" && !errors.Is(err, context.Canceled) || mode == "timeout" && !errors.Is(err, context.DeadlineExceeded) {
 				t.Fatal("maintenance error hidden", err)
 			}
@@ -119,9 +122,48 @@ func TestStartupDirectorySweepRechecksAuthorityAndCancellation(t *testing.T) {
 			if retained == 0 {
 				t.Fatal("lost authority failed to bound deletion")
 			}
-			if err = sweepStartupDirectories(context.Background(), root, 1024, time.Minute, func(context.Context) error { return nil }); err != nil {
+			if err = sweepStartupDirectories(context.Background(), store, root, 1024, time.Minute, func(context.Context) error { return nil }); err != nil {
 				t.Fatal("fresh maintenance retry", err)
 			}
 		})
+	}
+}
+
+func TestStartupKeepsEmptyReceivingImportDirectory(t *testing.T) {
+	c, store, _, root := fixture(t)
+	ctx := context.Background()
+	a, err := store.AdmitImport(ctx, owner, documents.ImportRequest{IdempotencyKey: "request_live_intake1", InputBytes: 20, SHA256: sha256.Sum256([]byte("source"))}, documents.ImportLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: 2 << 20, GlobalMaxBytes: 4 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}, MaxDocuments: 20, DocumentLifetime: time.Hour})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = store.StartImportUpload(ctx, owner, a.JobID, a.ProducerID); err != nil {
+		t.Fatal(err)
+	}
+	directory := filepath.Join(root, strings.Split(a.Input.RelativePath, "/")[0])
+	if err = os.Mkdir(directory, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err = Run(ctx, c, true); err != nil {
+		t.Fatal(err)
+	}
+	if info, err := os.Stat(directory); err != nil || !info.IsDir() {
+		t.Fatal("startup removed live API intake directory", err)
+	}
+}
+
+func TestStartupSweepReferenceFailurePreservesDirectory(t *testing.T) {
+	_, store, db, root := fixture(t)
+	directory := filepath.Join(root, fmt.Sprintf("work_%048x", 42))
+	if err := os.Mkdir(directory, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := sweepStartupDirectories(context.Background(), store, root, 1024, time.Minute, func(context.Context) error { return nil }); err == nil {
+		t.Fatal("reference lookup failure accepted")
+	}
+	if _, err := os.Stat(directory); err != nil {
+		t.Fatal("uncertain reference directory removed", err)
 	}
 }

@@ -13,11 +13,13 @@ import (
 )
 
 // EmptySweep is a streaming cursor over known flat producer directories and the
-// two-level GC namespace. Caller must hold the worker guard, pass startup's
-// unknown-work barrier and start no new producer until Close. It never removes
+// two-level GC namespace. Caller holds the worker guard and starts no new worker
+// producer until Close; the reference predicate protects independent API intake.
+// It never removes
 // files, follows symlinks or descends into producer/native workspaces.
 type EmptySweep struct {
 	root         *Root
+	unreferenced func(context.Context, string) (bool, error)
 	frames       []*os.File // independent root enumeration, then optional .cleanup
 	done, closed bool
 	beforeRemove func() // deterministic filesystem-race injection in package tests
@@ -55,9 +57,12 @@ func privateEntry(stat unix.Stat_t) bool {
 	return stat.Mode&unix.S_IFMT == unix.S_IFDIR && stat.Mode&0077 == 0 && stat.Uid == uint32(os.Geteuid())
 }
 
-func (r *Root) StartEmptySweep(ctx context.Context) (*EmptySweep, error) {
+func (r *Root) StartEmptySweep(ctx context.Context, unreferenced func(context.Context, string) (bool, error)) (*EmptySweep, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	if unreferenced == nil {
+		return nil, ErrInvalid
+	}
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -73,7 +78,7 @@ func (r *Root) StartEmptySweep(ctx context.Context) (*EmptySweep, error) {
 	if err != nil {
 		return nil, ErrStorage
 	}
-	return &EmptySweep{root: r, frames: []*os.File{os.NewFile(uintptr(fd), "empty-sweep-root")}}, nil
+	return &EmptySweep{root: r, unreferenced: unreferenced, frames: []*os.File{os.NewFile(uintptr(fd), "empty-sweep-root")}}, nil
 }
 func (s *EmptySweep) Close() error {
 	s.root.mu.Lock()
@@ -231,6 +236,15 @@ func (s *EmptySweep) Step(ctx context.Context, limit int, check func(context.Con
 		candidate := len(s.frames) == 1 && generatedDirectory(name) || len(s.frames) == 2 && identifier(name)
 		if !candidate {
 			continue
+		}
+		if len(s.frames) == 1 {
+			allowed, e := s.unreferenced(ctx, name)
+			if e != nil {
+				return result, e
+			}
+			if !allowed {
+				continue
+			}
 		}
 		removed, e := s.remove(ctx, parent, name)
 		if e != nil {

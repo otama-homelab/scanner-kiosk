@@ -80,7 +80,7 @@ func TestEmptySweepStreamsLegacyProducerAndQuarantineDirectories(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	sweep, err := gc.StartEmptySweep(context.Background())
+	sweep, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -101,7 +101,7 @@ func TestEmptySweepStreamsLegacyProducerAndQuarantineDirectories(t *testing.T) {
 	if err != nil || string(bytes) != "retained original" {
 		t.Fatal("retained file changed", err)
 	}
-	again, err := gc.StartEmptySweep(context.Background())
+	again, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -137,7 +137,7 @@ func TestEmptySweepPreservesLinksPublicDirectoriesAndNestedContent(t *testing.T)
 	if err := os.WriteFile(filepath.Join(root, ".cleanup", "job_file_0000001"), []byte("untracked quarantine file"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	sweep, err := gc.StartEmptySweep(context.Background())
+	sweep, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -166,7 +166,7 @@ func TestEmptySweepRejectsPinnedDirectoryReplacement(t *testing.T) {
 			} else {
 				sweepDirectory(t, root, name)
 			}
-			sweep, err := gc.StartEmptySweep(context.Background())
+			sweep, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -207,7 +207,7 @@ func TestEmptySweepCancellationAuthorityAndSyncFailureResume(t *testing.T) {
 			} else {
 				sweepDirectory(t, root, name)
 			}
-			sweep, err := gc.StartEmptySweep(context.Background())
+			sweep, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -239,7 +239,7 @@ func TestEmptySweepCancellationAuthorityAndSyncFailureResume(t *testing.T) {
 				t.Fatal(err)
 			}
 			gc.syncDir = unix.Fsync
-			resumed, err := gc.StartEmptySweep(context.Background())
+			resumed, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -283,7 +283,7 @@ func TestEmptySweepRetiresActualScopeAfterLegacyAcknowledgedUnlink(t *testing.T)
 	if !exists(t, filepath.Join(root, parent)) {
 		t.Fatal("fixture did not retain old directory")
 	}
-	sweep, err := gc.StartEmptySweep(context.Background())
+	sweep, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -300,7 +300,7 @@ func TestEmptySweepSameCursorSettlesLostDirectorySync(t *testing.T) {
 	gc, root := sweepFixture(t)
 	name := fmt.Sprintf("work_%048x", 1)
 	sweepDirectory(t, root, name)
-	sweep, err := gc.StartEmptySweep(context.Background())
+	sweep, err := gc.StartEmptySweep(context.Background(), unreferencedTestDirectory)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -325,3 +325,5 @@ func TestEmptySweepSameCursorSettlesLostDirectorySync(t *testing.T) {
 		t.Fatal("absent entry completed without settling lost sync", result, settled)
 	}
 }
+
+func unreferencedTestDirectory(context.Context, string) (bool, error) { return true, nil }

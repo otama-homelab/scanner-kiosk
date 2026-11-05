@@ -120,7 +120,7 @@ async function loadJob(id:string,version:number,attempts=0){
  try{
   const job=await api('/api/jobs/'+id,'GET',undefined,undefined,undefined,controller.signal);
   if(version!==generation||controller.signal.aborted)return;
-  if(!opaque(job.id)||job.id!==id||!opaque(job.document_id)||!jobStates.has(job.state)||!['scan','render','ocr','cleanup'].includes(job.kind))throw new Error('Invalid job');
+  if(!opaque(job.id)||job.id!==id||!opaque(job.document_id)||!jobStates.has(job.state)||!['scan','render','ocr','cleanup','import'].includes(job.kind))throw new Error('Invalid job');
   status.textContent='';const viewKey=`${id}:${job.state}:${locale}`;
   if(jobViewKey===viewKey){if(['queued','running','cancelling','reconciling'].includes(job.state))schedule(2000);return}
   const focused=main.contains(document.activeElement)?document.activeElement:null;

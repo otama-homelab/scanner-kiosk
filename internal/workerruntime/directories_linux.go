@@ -9,11 +9,13 @@ import (
 
 	"scanner-kiosk/internal/artifactgc"
 	"scanner-kiosk/internal/cleanupjob"
+	"scanner-kiosk/internal/documents"
 )
 
 // Called only between confirmed startup reconciliation and creation of new
 // native/provider/scan/render producers, under the exclusive worker guard.
-func sweepStartupDirectories(ctx context.Context, root string, maxBytes int64, budget time.Duration, check cleanupjob.CheckAuthority) (result error) {
+// Registered API intake may be live and must be excluded even when still empty.
+func sweepStartupDirectories(ctx context.Context, store *documents.Store, root string, maxBytes int64, budget time.Duration, check cleanupjob.CheckAuthority) (result error) {
 	if err := check(ctx); err != nil {
 		return err
 	}
@@ -24,7 +26,7 @@ func sweepStartupDirectories(ctx context.Context, root string, maxBytes int64, b
 		return err
 	}
 	defer func() { result = errors.Join(result, files.Close()) }()
-	sweep, err := files.StartEmptySweep(maintenance)
+	sweep, err := files.StartEmptySweep(maintenance, store.RecoveryDirectoryUnreferenced)
 	if err != nil {
 		return err
 	}
