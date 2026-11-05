@@ -493,7 +493,7 @@
     "https://dl-cdn.alpinelinux.org/alpine/v3.24/main",
     "https://dl-cdn.alpinelinux.org/alpine/v3.24/community"
   ],
-  "runtime_provenance_sha256": "60f00122db1f35b6e1912c3e9991ad470b1a612167ea80e7697608dbb22c951f",
+  "runtime_provenance_sha256": "19ef5e5b5e697e00701563269a0bf966074b6057d30f4bf6ec9354c4e2d341ac",
   "scope": "Archive identity and official signature verification required; source-built code, notices, complete source/security/license approval remain separate",
   "trusted_keys_sha256": {
     "alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub": "9c102bcc376af1498d549b77bdbfa815ae86faa1d2d82f040e616b18ef2df2d4",
