@@ -283,7 +283,7 @@ func (s *Store) NextCleanup(ctx context.Context) (CleanupCandidate, error) {
 	return candidate, nil
 }
 
-// AbortWithdrawnUnstartedScans discovers a bounded set of withdrawn scan jobs.
+// AbortWithdrawnUnstartedScans discovers withdrawn or cancelled unstarted scans.
 // Caller holds the worker guard. The original boot identity is retained: this
 // never adopts or executes an old capture. AbortUnstartedScan rechecks immutable
 // start markers, snapshot and held lease in its transaction. Unknown/started work
@@ -292,7 +292,7 @@ func (s *Store) AbortWithdrawnUnstartedScans(ctx context.Context, limit int) (in
 	if limit < 1 || limit > 100 {
 		return 0, ErrInvalid
 	}
-	rows, err := s.documents.QueryContext(ctx, `SELECT j.id,j.owner_id,j.runner_id FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.kind='scan' AND j.state IN ('queued','cancelling') AND j.runner_id IS NOT NULL AND j.started_at_ms IS NULL AND j.heartbeat_at_ms IS NULL AND d.state IN ('deleting','expired') AND NOT EXISTS(SELECT 1 FROM job_artifacts a WHERE a.job_id=j.id) AND EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id AND l.state='held' AND l.device_id=json_extract(j.configuration_json,'$.device_id') AND l.epoch=json_extract(j.configuration_json,'$.lease_epoch')) ORDER BY j.created_at_ms,j.id LIMIT ?`, limit)
+	rows, err := s.documents.QueryContext(ctx, `SELECT j.id,j.owner_id,j.runner_id FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.kind='scan' AND j.state IN ('queued','cancelling') AND j.runner_id IS NOT NULL AND j.started_at_ms IS NULL AND j.heartbeat_at_ms IS NULL AND (d.state IN ('deleting','expired') OR j.state='cancelling') AND NOT EXISTS(SELECT 1 FROM job_artifacts a WHERE a.job_id=j.id) AND EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id AND l.state='held' AND l.device_id=json_extract(j.configuration_json,'$.device_id') AND l.epoch=json_extract(j.configuration_json,'$.lease_epoch')) ORDER BY j.created_at_ms,j.id LIMIT ?`, limit)
 	if err != nil {
 		return 0, storageOperationError(err)
 	}

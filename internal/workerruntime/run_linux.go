@@ -191,6 +191,13 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 		}
 		scanned := false
 		if scannerSession != nil {
+			// Cancellation can precede claim even while another device occupies a slot.
+			maintenance, stopMaintenance := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+			_, abortErr := store.AbortWithdrawnUnstartedScans(maintenance, 100)
+			stopMaintenance()
+			if abortErr != nil {
+				return abortErr
+			}
 			for tasks.active < tasks.limit {
 				if err := tasks.poll(); err != nil {
 					return err

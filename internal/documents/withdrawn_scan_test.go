@@ -98,3 +98,58 @@ func TestWithdrawnScanMaintenancePreservesCommitUncertainty(t *testing.T) {
 		}
 	}
 }
+
+func TestCancelledNeverStartedScanIsCompletedWithoutDeletingDocument(t *testing.T) {
+	for _, mode := range []string{"unstarted", "started", "heartbeat", "uncertain"} {
+		t.Run(mode, func(t *testing.T) {
+			ctx := context.Background()
+			f := scanFixture(t)
+			a, err := f.store.AdmitScan(ctx, alice, scanRequest(), scanLimits())
+			if err != nil {
+				t.Fatal(err)
+			}
+			switch mode {
+			case "started":
+				if _, err = f.store.ClaimScan(ctx, alice, a.JobID, runner); err != nil {
+					t.Fatal(err)
+				}
+			case "heartbeat":
+				must(t, f.docs, "UPDATE jobs SET heartbeat_at_ms=2000 WHERE id=?", a.JobID)
+			case "uncertain":
+				must(t, f.docs, "UPDATE device_leases SET state='reconciling' WHERE job_id=?", a.JobID)
+			}
+			key := "request_prelaunch_cancel_001"
+			cancelled, err := f.store.CancelJob(ctx, alice, a.JobID, key, 72*time.Hour)
+			if err != nil || cancelled.State != "cancelling" {
+				t.Fatal(cancelled, err)
+			}
+			count, err := f.store.AbortWithdrawnUnstartedScans(ctx, 1)
+			if err != nil {
+				t.Fatal(err)
+			}
+			expected := 0
+			if mode == "unstarted" {
+				expected = 1
+			}
+			if count != expected {
+				t.Fatal("cancelled scan was not handled safely", count, expected)
+			}
+			if scalar(t, f.docs, "SELECT count(*) FROM reservations WHERE job_id=?", a.JobID) != 1-expected {
+				t.Fatal("wrong reservation release")
+			}
+			if mode == "unstarted" {
+				job, err := f.store.CancelJob(ctx, alice, a.JobID, key, 72*time.Hour)
+				if err != nil || job.State != "cancelled" || job.ID != a.JobID {
+					t.Fatal("cancel replay did not retain terminal result", job, err)
+				}
+				if scalar(t, f.docs, "SELECT count(*) FROM device_leases WHERE state='idle' AND job_id IS NULL AND epoch=2") != 1 {
+					t.Fatal("device epoch changed")
+				}
+				document, err := f.store.ReadDocument(ctx, alice, a.DocumentID)
+				if err != nil || document.State != "failed" || document.PageCount != 0 {
+					t.Fatal("cancel removed or changed document", document, err)
+				}
+			}
+		})
+	}
+}
