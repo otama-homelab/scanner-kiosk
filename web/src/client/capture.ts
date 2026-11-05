@@ -1,8 +1,8 @@
 import {requestKey} from './request-key';
 type Capture={size:string;color:string;dpi:number};
 type Device={id:string;name:string;state:'idle'|'busy'|'unknown'|'unavailable';capture_options:Capture[];default_capture:Capture|null};
-export type CaptureKey='requestExpired'|'reloadView'|'scanner'|'type'|'document'|'photo'|'chooseScanner'|'changeScanner'|'searchScanners'|'noScanners'|'noMatches'|'scannerIdle'|'scannerBusy'|'scannerUnknown'|'unavailable'|'scanSettings'|'size'|'color'|'gray'|'dpi'|'advanced'|'format'|'outputFormat'|'jpeg'|'png'|'close'|'apply'|'scan'|'scanNext'|'loading'|'retry'|'history'|'settingsChanged'|'scanRejected'|'scanUncertain'|'scanning'|'a4'|'a5'|'a6'|'letter'|'photo10x15';
-type Options={t:(key:CaptureKey)=>string;current:()=>boolean;read:(signal:AbortSignal)=>Promise<unknown>;submit:(body:unknown,key:string,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;history:()=>void;rejected:(error:unknown)=>boolean;expired:(error:unknown)=>boolean;reload:()=>void;purpose?:'document'|'photo';photoFormat?:'jpeg'|'png'};
+export type CaptureKey='insertScan'|'replaceScan'|'requestExpired'|'reloadView'|'scanner'|'type'|'document'|'photo'|'chooseScanner'|'changeScanner'|'searchScanners'|'noScanners'|'noMatches'|'scannerIdle'|'scannerBusy'|'scannerUnknown'|'unavailable'|'scanSettings'|'size'|'color'|'gray'|'dpi'|'advanced'|'format'|'outputFormat'|'jpeg'|'png'|'close'|'apply'|'scan'|'scanNext'|'loading'|'retry'|'history'|'settingsChanged'|'scanRejected'|'scanUncertain'|'scanning'|'a4'|'a5'|'a6'|'letter'|'photo10x15';
+type Options={submitLabel?:'insertScan'|'replaceScan';t:(key:CaptureKey)=>string;current:()=>boolean;read:(signal:AbortSignal)=>Promise<unknown>;submit:(body:unknown,key:string,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;history:()=>void;rejected:(error:unknown)=>boolean;expired:(error:unknown)=>boolean;reload:()=>void;purpose?:'document'|'photo';photoFormat?:'jpeg'|'png'};
 const same=(a:Capture|null,b:Capture|null)=>!!a&&!!b&&a.size===b.size&&a.color===b.color&&a.dpi===b.dpi;
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
 function inventory(raw:any):Device[]{
@@ -28,7 +28,7 @@ export function captureControls(options:Options){
  const summary=node('dl');summary.className='capture-summary';const edit=action('scanSettings',()=>settingsDialog());
  const notice=node('p');notice.className='capture-notice';notice.setAttribute('role','status');
  const history=action('history',options.history);history.hidden=true;
- const start=action(options.purpose?'scanNext':'scan',()=>void submit());start.className='primary';
+ const start=action(options.submitLabel||(options.purpose?'scanNext':'scan'),()=>void submit());start.className='primary';
  const reload=action('reloadView',options.reload);reload.hidden=true;settings.append(purposes,summary,edit,notice,start,history,reload);element.append(devicePanel,settings);
  let devices:Device[]=[],selected='',capture:Capture|null=null,format=options.photoFormat||'jpeg',loading=true,available=false,pending=false,uncertain=false,expired=false,disposed=false;
  let timer:ReturnType<typeof setTimeout>|undefined,readController:AbortController|null=null,submitController:AbortController|null=null,modal:HTMLDialogElement|null=null;
@@ -42,7 +42,7 @@ export function captureControls(options:Options){
   choose.textContent=t(current?'changeScanner':'chooseScanner');choose.hidden=devices.length===1;choose.disabled=pending||!devices.length;refresh.disabled=pending||!!readController;
   for(let i=0;i<purposeButtons.length;i++){purposeButtons[i].setAttribute('aria-pressed',String(purpose===(i===0?'document':'photo')));purposeButtons[i].disabled=pending||!!options.purpose}
   summary.replaceChildren();for(const [label,value] of [['size',capture?t(capture.size as CaptureKey):'—'],['color',capture?t(capture.color as CaptureKey):'—'],['dpi',capture?String(capture.dpi):'—'],['outputFormat',purpose==='photo'?t(format as CaptureKey):'PDF']] as const){const field=node('div');field.append(node('dt',t(label)),node('dd',value));summary.append(field)}
-  edit.disabled=pending||!current?.capture_options.length;start.disabled=pending||uncertain||expired||loading||!available||current?.state!=='idle'||!valid();setText(start,t(pending?'scanning':options.purpose?'scanNext':'scan'));
+  edit.disabled=pending||!current?.capture_options.length;start.disabled=pending||uncertain||expired||loading||!available||current?.state!=='idle'||!valid();setText(start,t(pending?'scanning':options.submitLabel||(options.purpose?'scanNext':'scan')));
   history.hidden=!uncertain;reload.hidden=!expired;
  }
  function select(id:string){const chosen=devices.find(d=>d.id===id);if(!chosen)return;selected=id;capture=chosen.default_capture?{...chosen.default_capture}:chosen.capture_options[0]?{...chosen.capture_options[0]}:null;notice.textContent='';update()}

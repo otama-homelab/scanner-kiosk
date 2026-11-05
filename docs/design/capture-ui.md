@@ -84,3 +84,24 @@ The temporary compiler adds no repository dependency.
 
 Document/history now discover active jobs from the server and link to existing
 status without re-execution; see [active job/history](active-job-history.md).
+
+## Insert and replace
+
+Each editable document page offers Insert scan before and Replace with scan.
+Photos offer replacement only. These actions open the existing capture settings
+view with a stable target page ID and fetch the current owned document before
+enabling capture. Unknown/missing/ambiguous targets fail closed; an active job
+opens its existing status instead. Page actions are disabled while work is active.
+
+The capture heading and primary button name the selected operation. Replacement
+explains that the original page remains until the new scan succeeds; Back exits
+without sending a scan. Only the primary action submits, using the fetched
+revision, the existing request key lifecycle and either `insert_before_page_id`
+or `replace_page_id`. Normal next-page capture continues to omit both fields.
+The server owns ordering, successful replacement and failure/cancellation retention.
+
+`check-web-placement.cjs` exercises these flows with mocked owned documents,
+scanner metadata and job responses against freshly built Astro assets. It is also
+registered in the existing embedded-executable browser runner for subsequent
+candidate checks. A static browser check alone does not prove physical scanning,
+PDF import, real authorization or the embedded candidate.
