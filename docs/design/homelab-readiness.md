@@ -69,3 +69,9 @@ apiEnv:
 同じ配布候補から、実Pocket IDのTLS検証付きdiscoveryとログイン開始まで確認済み。登録済みcallback・client ID・PKCE S256・state/nonce・操作再試行の一致を確認した。実ユーザーの認証・token交換は未実施。検証用hostAliasを使ったため通常DNSの受入とは区別する。
 
 この環境でNetworkPolicyを絞る際は、Gateway VIPの443番だけでなく、Serviceが転送するTraefik Podのwebsecure **8443番** を対象selectorで許可する必要があった。これは検証Podだけで確認・修正した設定で、共有Gatewayや常用ルートは変更していない。
+
+### PDF job上限の読み方
+
+`SCANNER_JOB_MAX_BYTES` は、最終PDFのサイズだけではなく処理中の予約領域を制限する。現PDF組立では子プロセスの出力と公開用コピーが一時的に共存するため、200MiB設定時のPDF出力枠はmanifest分を除いた約100MiBとなる。入力画像が200MiB未満でも、lossless出力がこの枠に収まるとは限らない。
+
+現配布候補の600dpiカラーA5・2ページ（合成画像、出力約104MB）は、この本番と同じ予約計算で生成成功。子プロセス最大RSS約530MiB・28.4秒で、30秒制限までの余裕は小さい。実worker全体の1536MiB制限内をこの単体測定だけで保証しない。
