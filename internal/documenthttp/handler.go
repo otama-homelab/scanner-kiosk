@@ -26,11 +26,13 @@ type Handler struct {
 	transferTimeout time.Duration
 	renderService   RenderAdmission
 	scanService     ScanAdmission
+	importService   ImportAdmission
 }
 
-func New(store Records, sessions *websession.Handler, retention time.Duration, files *artifactread.Root, transferTimeout time.Duration, renderService RenderAdmission, scanService ScanAdmission) http.Handler {
-	h := &Handler{store: store, retention: retention, files: files, sessions: sessions, transferTimeout: transferTimeout, renderService: renderService, scanService: scanService}
+func New(store Records, sessions *websession.Handler, retention time.Duration, files *artifactread.Root, transferTimeout time.Duration, renderService RenderAdmission, scanService ScanAdmission, importService ImportAdmission) http.Handler {
+	h := &Handler{store: store, retention: retention, files: files, sessions: sessions, transferTimeout: transferTimeout, renderService: renderService, scanService: scanService, importService: importService}
 	mux := http.NewServeMux()
+	mux.Handle("POST /api/documents/import", sessions.RequirePrincipal(h.importPDF))
 	mux.Handle("POST /api/documents", sessions.RequirePrincipal(h.scan))
 	mux.Handle("POST /api/documents/{document_id}/scans", sessions.RequirePrincipal(h.scan))
 	mux.Handle("GET /api/documents", sessions.RequirePrincipal(h.list))

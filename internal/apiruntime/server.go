@@ -18,7 +18,7 @@ import (
 
 // bounded applies per-process rate/concurrency bounds without trusting client
 // address/forwarding headers. Health probes are independent from user traffic.
-func bounded(next http.Handler, maxInflight int, rate, burst float64, transferTimeout time.Duration) http.Handler {
+func bounded(next http.Handler, maxInflight int, rate, burst float64, transferTimeout time.Duration, maxImportBytes int64) http.Handler {
 	slots := make(chan struct{}, maxInflight)
 	var mu sync.Mutex
 	tokens := burst
@@ -60,7 +60,11 @@ func bounded(next http.Handler, maxInflight int, rate, burst float64, transferTi
 		ctx, cancel := context.WithTimeout(r.Context(), timeout)
 		defer cancel()
 		r = r.WithContext(ctx)
-		r.Body = http.MaxBytesReader(w, r.Body, 64<<10)
+		bodyLimit := int64(64 << 10)
+		if r.Method == "POST" && r.URL.Path == "/api/documents/import" {
+			bodyLimit = maxImportBytes
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, bodyLimit)
 		next.ServeHTTP(w, r)
 	})
 }

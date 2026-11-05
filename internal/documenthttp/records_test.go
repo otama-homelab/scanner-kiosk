@@ -167,7 +167,7 @@ func TestDocumentHTTPRecordsInjectionCommandsAndFileReauthorization(t *testing.T
 	expiry := time.Now().Add(time.Hour)
 	records := &memoryDocuments{projection: documents.Projection{ID: documentID, Revision: 7, Purpose: "document", State: "review", ExpiresAt: expiry, Pages: []documents.PageProjection{}}, reference: documents.ArtifactReference{Artifact: documents.ArtifactRecord{ID: "artifact_memory_001", RelativePath: "sealed.pdf", MediaType: "application/pdf", Size: int64(len(data)), SHA256: sha256.Sum256(data)}, ExpiresAtMS: expiry.UnixMilli()}}
 	scan, render := &scanFixture{}, &renderFixture{}
-	routes := documenthttp.New(records, sessions, time.Hour, files, time.Minute, render, scan)
+	routes := documenthttp.New(records, sessions, time.Hour, files, time.Minute, render, scan, nil)
 	mux := http.NewServeMux()
 	mux.Handle("/auth/", sessions)
 	mux.Handle("/api/session", sessions)

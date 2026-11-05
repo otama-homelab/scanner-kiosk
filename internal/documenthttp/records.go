@@ -2,6 +2,7 @@ package documenthttp
 
 import (
 	"context"
+	"io"
 	"time"
 
 	"scanner-kiosk/internal/documents"
@@ -31,3 +32,7 @@ type ScanAdmission interface {
 }
 
 var _ Records = (*documents.Store)(nil)
+
+type ImportAdmission interface {
+	Receive(context.Context, string, documents.ImportRequest, io.Reader) (documents.Admission, error)
+}

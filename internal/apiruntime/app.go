@@ -23,6 +23,7 @@ import (
 	"scanner-kiosk/internal/diskspace"
 	"scanner-kiosk/internal/documenthttp"
 	"scanner-kiosk/internal/documents"
+	"scanner-kiosk/internal/importupload"
 	"scanner-kiosk/internal/oidcattempt"
 	"scanner-kiosk/internal/oidcflow"
 	"scanner-kiosk/internal/oidcidentity"
@@ -51,6 +52,7 @@ type App struct {
 	once        sync.Once
 	meter       *diskspace.Meter
 	files       *artifactread.Root
+	imports     *importupload.Service
 }
 
 func New(ctx context.Context, c config.Config) (*App, error) {
@@ -162,7 +164,11 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	if err != nil {
 		return nil, ErrConfig
 	}
-	documentRoutes := documenthttp.New(documentStore, sessions, c.Durations["SCANNER_RECEIPT_RETENTION_SECONDS"], app.files, transferTimeout, renderService, scanService)
+	app.imports, err = importupload.New(c.DocumentDir, documentStore, documents.ImportLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], GlobalMaxBytes: c.Limits["SCANNER_GLOBAL_MAX_BYTES"], JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobTimeout: c.Durations["SCANNER_OCR_TIMEOUT_SECONDS"], ReceiptRetention: c.Durations["SCANNER_RECEIPT_RETENTION_SECONDS"]}, MaxDocuments: int(c.Limits["SCANNER_USER_MAX_DOCUMENTS"]), DocumentLifetime: c.Durations["SCANNER_RETENTION_SECONDS"]})
+	if err != nil {
+		return nil, ErrStorage
+	}
+	documentRoutes := documenthttp.New(documentStore, sessions, c.Durations["SCANNER_RECEIPT_RETENTION_SECONDS"], app.files, transferTimeout, renderService, scanService, app.imports)
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) { respond(w, 200, "ok") })
 	mux.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
@@ -204,7 +210,7 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 			json.NewEncoder(w).Encode(map[string]string{"code": "not_found", "message": "Not found"})
 		})
 	}
-	app.handler = bounded(mux, int(c.Limits["SCANNER_API_MAX_INFLIGHT"]), float64(c.Limits["SCANNER_API_REQUESTS_PER_MINUTE"])/60, float64(c.Limits["SCANNER_API_BURST"]), transferTimeout)
+	app.handler = bounded(mux, int(c.Limits["SCANNER_API_MAX_INFLIGHT"]), float64(c.Limits["SCANNER_API_REQUESTS_PER_MINUTE"])/60, float64(c.Limits["SCANNER_API_BURST"]), transferTimeout, min(c.Limits["SCANNER_JOB_MAX_BYTES"], 1<<30))
 	success = true
 	return app, nil
 }
@@ -215,6 +221,9 @@ func (a *App) Close() error {
 		a.closed.Store(true)
 		if a.meter != nil {
 			err = a.meter.Close()
+		}
+		if a.imports != nil {
+			err = errors.Join(err, a.imports.Close())
 		}
 		if a.files != nil {
 			err = errors.Join(err, a.files.Close())

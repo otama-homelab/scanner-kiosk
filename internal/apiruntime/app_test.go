@@ -3,11 +3,13 @@ package apiruntime
 import (
 	"context"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"scanner-kiosk/internal/config"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -83,7 +85,7 @@ func TestAPIFailsClosedWithoutOIDCOrPrivateRoots(t *testing.T) {
 }
 func TestRequestRateAndConcurrencyBounds(t *testing.T) {
 	t.Run("rate", func(t *testing.T) {
-		h := bounded(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200) }), 1, 1, 2, 5*time.Minute)
+		h := bounded(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(200) }), 1, 1, 2, 5*time.Minute, 1<<20)
 		for i := 0; i < 3; i++ {
 			w := httptest.NewRecorder()
 			h.ServeHTTP(w, httptest.NewRequest("GET", "https://scanner.example.test/api/session", nil))
@@ -108,7 +110,7 @@ func TestRequestRateAndConcurrencyBounds(t *testing.T) {
 			once.Do(func() { close(started) })
 			<-release
 			w.WriteHeader(200)
-		}), 1, 100, 10, 5*time.Minute)
+		}), 1, 100, 10, 5*time.Minute, 1<<20)
 		done := make(chan struct{})
 		go func() {
 			defer close(done)
@@ -143,14 +145,14 @@ func TestBinaryTransferContextHasSeparateDeadline(t *testing.T) {
 					t.Fatal("incorrect route duration", remaining)
 				}
 				w.WriteHeader(204)
-			}), 1, 100, 10, 5*time.Minute)
+			}), 1, 100, 10, 5*time.Minute, 1<<20)
 			h.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(test.method, "https://scanner.example.test"+test.path, nil))
 		})
 	}
 }
 
 func TestStaticAssetsDoNotConsumeAPIRateBudget(t *testing.T) {
-	h := bounded(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(204) }), 1, 1, 1, 5*time.Minute)
+	h := bounded(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(204) }), 1, 1, 1, 5*time.Minute, 1<<20)
 	for i := 0; i < 20; i++ {
 		w := httptest.NewRecorder()
 		h.ServeHTTP(w, httptest.NewRequest("GET", "https://scanner.example.test/style.css", nil))
@@ -167,6 +169,31 @@ func TestStaticAssetsDoNotConsumeAPIRateBudget(t *testing.T) {
 		}
 		if w.Code != expected {
 			t.Fatal("API rate budget not preserved", w.Code)
+		}
+	}
+}
+
+func TestUploadBodyLimitIsRouteSpecific(t *testing.T) {
+	handler := bounded(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, err := io.ReadAll(r.Body); err != nil {
+			w.WriteHeader(413)
+			return
+		}
+		w.WriteHeader(204)
+	}), 1, 100, 10, time.Minute, 80<<10)
+	for _, test := range []struct {
+		method, path string
+		size, want   int
+	}{
+		{"POST", "/api/documents/import", 70 << 10, 204},
+		{"POST", "/api/documents/import", 90 << 10, 413},
+		{"POST", "/api/documents", 70 << 10, 413},
+		{"GET", "/api/documents/import", 70 << 10, 413},
+	} {
+		response := httptest.NewRecorder()
+		handler.ServeHTTP(response, httptest.NewRequest(test.method, "https://scanner.example.test"+test.path, strings.NewReader(strings.Repeat("x", test.size))))
+		if response.Code != test.want {
+			t.Fatal("body limit", test, response.Code)
 		}
 	}
 }
