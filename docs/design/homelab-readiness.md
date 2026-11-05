@@ -63,3 +63,9 @@ apiEnv:
 ```
 
 登録・保存は完了したが、実候補からのdiscovery/start、実ユーザーのOIDC往復・二owner隔離・失効/再認証は別の未完項目。常用ルート・Deploymentは変更していない。
+
+### 実候補のPocket ID接続開始を確認
+
+同じ配布候補から、実Pocket IDのTLS検証付きdiscoveryとログイン開始まで確認済み。登録済みcallback・client ID・PKCE S256・state/nonce・操作再試行の一致を確認した。実ユーザーの認証・token交換は未実施。検証用hostAliasを使ったため通常DNSの受入とは区別する。
+
+この環境でNetworkPolicyを絞る際は、Gateway VIPの443番だけでなく、Serviceが転送するTraefik Podのwebsecure **8443番** を対象selectorで許可する必要があった。これは検証Podだけで確認・修正した設定で、共有Gatewayや常用ルートは変更していない。
