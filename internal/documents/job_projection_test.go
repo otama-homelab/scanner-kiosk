@@ -15,6 +15,10 @@ func TestJobProjectionOwnerExpiryAndSafeErrors(t *testing.T) {
 	if err != nil || job.ID != jobA || job.State != "queued" || job.ErrorCode == nil || *job.ErrorCode != "processing_failed" {
 		t.Fatal(job, err)
 	}
+	must(t, f.docs, "UPDATE jobs SET error_code='pdf_encrypted' WHERE id=?", jobA)
+	if job, err = f.store.ReadJob(ctx, alice, jobA); err != nil || job.ErrorCode == nil || *job.ErrorCode != "processing_failed" {
+		t.Fatal("PDF reason escaped import failure scope", job, err)
+	}
 	if _, err = f.store.ReadJob(ctx, bob, jobA); !errors.Is(err, ErrUnavailable) {
 		t.Fatal("cross-owner job", err)
 	}

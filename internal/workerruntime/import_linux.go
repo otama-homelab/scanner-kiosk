@@ -155,6 +155,18 @@ func executeImport(ctx context.Context, store *documents.Store, root, owner, job
 	if ctx.Err() != nil || errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 		outcome = "interrupted"
 	}
+	if outcome == "failed" {
+		switch {
+		case errors.Is(err, pdfimport.ErrEncrypted):
+			stop.ErrorCode = "pdf_encrypted"
+		case errors.Is(err, pdfimport.ErrUnsafe):
+			stop.ErrorCode = "pdf_unsupported"
+		case errors.Is(err, pdfimport.ErrLimit):
+			stop.ErrorCode = "pdf_limit"
+		case errors.Is(err, pdfimport.ErrInvalid):
+			stop.ErrorCode = "pdf_invalid"
+		}
+	}
 	finishErr := store.FinishStoppedImport(cleanup, owner, job, stop, outcome)
 	if finishErr == nil {
 		return nil

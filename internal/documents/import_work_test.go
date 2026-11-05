@@ -171,11 +171,15 @@ func TestRunningImportBlocksOtherHeavyWorkAndInvalidStop(t *testing.T) {
 	if err := f.store.PulseImport(ctx, alice, a.JobID, runner); err == nil {
 		t.Fatal("cancelled import remained authorized")
 	}
+	stop.ErrorCode = "pdf_encrypted"
 	if err := f.store.FinishStoppedImport(ctx, alice, a.JobID, stop, "failed"); err != nil {
 		t.Fatal(err)
 	}
 	if scalar(t, f.docs, "SELECT count(*) FROM jobs WHERE id=? AND state='cancelled'", a.JobID) != 1 {
 		t.Fatal("cancellation not terminalized")
+	}
+	if job, err := f.store.ReadJob(ctx, alice, a.JobID); err != nil || job.ErrorCode == nil || *job.ErrorCode != "cancelled" {
+		t.Fatal("parser reason overrode cancellation", job, err)
 	}
 	if recorded, err := f.store.ImportStoppedRecorded(ctx, alice, a.JobID, runner); err != nil || !recorded {
 		t.Fatal("stop acknowledgement not recorded", recorded, err)
@@ -185,5 +189,28 @@ func TestRunningImportBlocksOtherHeavyWorkAndInvalidStop(t *testing.T) {
 	}
 	if recorded, err := f.store.ImportStoppedRecorded(ctx, alice, a.JobID, "worker_different01"); err != nil || recorded {
 		t.Fatal("wrong runner accepted", recorded, err)
+	}
+}
+
+func TestImportFailureReasonIsBoundedAndProjected(t *testing.T) {
+	for _, code := range []string{"pdf_invalid", "pdf_encrypted", "pdf_unsupported", "pdf_limit", "private/path/token"} {
+		t.Run(code, func(t *testing.T) {
+			f, a, stop := claimedImport(t)
+			stop.ErrorCode = code
+			err := f.store.FinishStoppedImport(context.Background(), alice, a.JobID, stop, "failed")
+			if code == "private/path/token" {
+				if !errors.Is(err, ErrInvalid) {
+					t.Fatal("untrusted reason accepted", err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			job, err := f.store.ReadJob(context.Background(), alice, a.JobID)
+			if err != nil || job.ErrorCode == nil || *job.ErrorCode != code {
+				t.Fatal("reason lost", job, err)
+			}
+		})
 	}
 }

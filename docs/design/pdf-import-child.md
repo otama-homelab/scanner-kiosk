@@ -92,6 +92,7 @@ and process-group tests cover the shared limit/supervision code. Six related ful
 suites passed; hosted executable acceptance is still pending.
 
 Browser upload and prepared-page preview links are now connected (see
-`pdf-import-http.md`). Parser-specific error feedback, actual native browser PDF
+`pdf-import-http.md`). Typed parser failures now persist through the stopped-job
+transaction to allowlisted bilingual job messages. Actual native browser PDF
 viewing and hosted standalone candidate acceptance remain pending in plan 43-08. No new
 service, runtime image, upstream fork or dependency is introduced here.

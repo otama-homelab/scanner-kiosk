@@ -140,9 +140,12 @@ func TestOfflineRecoveryStopsImportProducersAndWorkers(t *testing.T) {
 		})
 	}
 }
-func importFixturePDF() []byte {
+func importFixturePDF(extra ...string) []byte {
 	content := []string{"BT /F1 12 Tf 20 30 Td (IMPORT_ALPHA) Tj ET\n0 0 1 rg 10 10 20 20 re f\n", "BT /F1 12 Tf 20 30 Td (IMPORT_BETA) Tj ET\n1 0 0 rg 10 10 20 20 re f\n"}
 	objects := []string{"<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>", "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 300] /Resources << /Font << /F1 7 0 R >> >> /Contents 4 0 R >>", fmt.Sprintf("<< /Length %d >>\nstream\n%sendstream", len(content[0]), content[0]), "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 400 250] /Resources << /Font << /F1 7 0 R >> >> /Contents 6 0 R >>", fmt.Sprintf("<< /Length %d >>\nstream\n%sendstream", len(content[1]), content[1]), "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"}
+	if len(extra) > 0 {
+		objects[0] = "<< /Type /Catalog " + extra[0] + " /Pages 2 0 R >>"
+	}
 	var out bytes.Buffer
 	out.WriteString("%PDF-1.7\n")
 	offsets := []int{0}
@@ -159,14 +162,32 @@ func importFixturePDF() []byte {
 	return out.Bytes()
 }
 func TestWorkerImportsPDFThroughBoundedChild(t *testing.T) {
-	for _, mode := range []string{"valid", "malformed", "corrupt-input", "insufficient-reservation"} {
+	for _, mode := range []string{"valid", "malformed", "encrypted", "unsupported", "page-limit", "corrupt-input", "insufficient-reservation"} {
 		t.Run(mode, func(t *testing.T) {
 			c, store, db, root := fixture(t)
 			raw := importFixturePDF()
 			if mode == "malformed" {
 				raw = []byte("not a PDF")
 			}
-			upload, err := importupload.New(root, store, documents.ImportLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: 2 << 20, GlobalMaxBytes: 4 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}, MaxDocuments: 20, DocumentLifetime: time.Hour})
+			if mode == "encrypted" {
+				conf := model.NewStatelessConfiguration()
+				conf.OwnerPW = "synthetic-owner"
+				conf.UserPW = "synthetic-user"
+				var out bytes.Buffer
+				if err := api.Encrypt(context.Background(), bytes.NewReader(raw), &out, conf); err != nil {
+					t.Fatal(err)
+				}
+				raw = out.Bytes()
+			}
+			if mode == "unsupported" {
+				raw = importFixturePDF("/OpenAction << /S /JavaScript /JS (forbidden) >>")
+			}
+			maxPages := 50
+			if mode == "page-limit" {
+				maxPages = 1
+			}
+
+			upload, err := importupload.New(root, store, documents.ImportLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: 2 << 20, GlobalMaxBytes: 4 << 20, JobMaxBytes: 1 << 20, MaxPages: maxPages, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}, MaxDocuments: 20, DocumentLifetime: time.Hour})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -211,6 +232,20 @@ func TestWorkerImportsPDFThroughBoundedChild(t *testing.T) {
 				t.Fatal("import reservation retained", count, err)
 			}
 			if mode != "valid" {
+				expected := "failed"
+				switch mode {
+				case "malformed":
+					expected = "pdf_invalid"
+				case "encrypted":
+					expected = "pdf_encrypted"
+				case "unsupported":
+					expected = "pdf_unsupported"
+				case "page-limit", "insufficient-reservation":
+					expected = "pdf_limit"
+				}
+				if job.ErrorCode == nil || *job.ErrorCode != expected {
+					t.Fatal("wrong failure reason", job, expected)
+				}
 				if job.State != "failed" || len(projection.Pages) != 0 {
 					t.Fatal("bad input not rejected", job, projection)
 				}

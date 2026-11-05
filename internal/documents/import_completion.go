@@ -15,7 +15,16 @@ type ImportedPage struct {
 // Prepared page files may remain sealed; unpublished scratch must be gone.
 type ImportStop struct {
 	RunnerID                                 string
+	ErrorCode                                string
 	ProcessStoppedAtMS, WorkspaceCleanedAtMS int64
+}
+
+func validImportFailure(code string) bool {
+	switch code {
+	case "pdf_invalid", "pdf_encrypted", "pdf_unsupported", "pdf_limit":
+		return true
+	}
+	return false
 }
 
 func validImportStop(stop ImportStop, started, now int64) bool {
@@ -23,7 +32,7 @@ func validImportStop(stop ImportStop, started, now int64) bool {
 }
 
 func (s *Store) CommitImportPages(ctx context.Context, owner, job string, stop ImportStop, pages []ImportedPage) error {
-	if !id(job) || !id(stop.RunnerID) || len(pages) < 1 || len(pages) > 10000 {
+	if !id(job) || !id(stop.RunnerID) || stop.ErrorCode != "" || len(pages) < 1 || len(pages) > 10000 {
 		return ErrInvalid
 	}
 	seenIDs, seenPaths := map[string]bool{}, map[string]bool{}
@@ -128,7 +137,7 @@ func (s *Store) ImportPagesRecorded(ctx context.Context, owner, job, runner stri
 	return true, nil
 }
 func (s *Store) FinishStoppedImport(ctx context.Context, owner, job string, stop ImportStop, outcome string) error {
-	if !id(owner) || !id(job) || !id(stop.RunnerID) || (outcome != "failed" && outcome != "interrupted") {
+	if !id(owner) || !id(job) || !id(stop.RunnerID) || (outcome != "failed" && outcome != "interrupted") || stop.ErrorCode != "" && (outcome != "failed" || !validImportFailure(stop.ErrorCode)) {
 		return ErrInvalid
 	}
 	tx, err := s.documents.BeginTx(ctx, nil)
@@ -152,7 +161,11 @@ func (s *Store) FinishStoppedImport(ctx context.Context, owner, job string, stop
 	if state == "cancelling" {
 		outcome = "cancelled"
 	}
-	if _, err = tx.ExecContext(ctx, "UPDATE jobs SET state=?,error_code=?,heartbeat_at_ms=? WHERE id=? AND owner_id=?", outcome, outcome, now, job, owner); err != nil {
+	code := outcome
+	if outcome == "failed" && stop.ErrorCode != "" {
+		code = stop.ErrorCode
+	}
+	if _, err = tx.ExecContext(ctx, "UPDATE jobs SET state=?,error_code=?,heartbeat_at_ms=? WHERE id=? AND owner_id=?", outcome, code, now, job, owner); err != nil {
 		return ErrStorage
 	}
 	if _, err = tx.ExecContext(ctx, "DELETE FROM reservations WHERE job_id=? AND owner_id=?", job, owner); err != nil {

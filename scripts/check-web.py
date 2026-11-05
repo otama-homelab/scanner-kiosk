@@ -10,7 +10,7 @@ args=p.parse_args()
 native_args=[args.fixture_python,args.tesseract_binary,args.tessdata,args.font]
 if any(native_args) and not all(native_args):p.error('native OCR verification requires all four fixture/tool options')
 root=Path(__file__).resolve().parents[1]
-files=sorted([*root.glob('cmd/**/*.go'),*root.glob('internal/**/*.go'),*root.glob('internal/**/*.sql'),*root.glob('pkg/**/*.go'),*root.glob('web/src/**/*.*'),*root.glob('web/public/*'),root/'web/package.json',root/'web/package-lock.json',root/'web/astro.config.mjs',root/'go.mod',root/'go.sum',root/'scripts/build-web.py',root/'scripts/check-web.py',root/'scripts/check-web.cjs',root/'scripts/check-web-ocr.cjs',root/'scripts/check-web-simple.cjs',root/'scripts/check-web-capture.cjs',root/'scripts/check-web-placement.cjs',root/'scripts/check-web-rate.cjs',root/'scripts/check-web-keyboard.cjs'])
+files=sorted([*root.glob('cmd/**/*.go'),*root.glob('internal/**/*.go'),*root.glob('internal/**/*.sql'),*root.glob('pkg/**/*.go'),*root.glob('web/src/**/*.*'),*root.glob('web/public/*'),root/'web/package.json',root/'web/package-lock.json',root/'web/astro.config.mjs',root/'go.mod',root/'go.sum',root/'scripts/build-web.py',root/'scripts/check-web.py',root/'scripts/check-web.cjs',root/'scripts/check-web-ocr.cjs',root/'scripts/check-web-simple.cjs',root/'scripts/check-web-capture.cjs',root/'scripts/check-web-placement.cjs',root/'scripts/check-web-import.cjs',root/'scripts/check-web-rate.cjs',root/'scripts/check-web-keyboard.cjs'])
 def hashes():return {str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files}
 before=hashes()
 with tempfile.TemporaryDirectory(prefix='scanner-product-web-') as temporary:

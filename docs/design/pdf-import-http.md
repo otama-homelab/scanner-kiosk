@@ -79,7 +79,10 @@ Selection stays locked, and “Check import request” repeats those same bytes 
 key. Expired intents require reload/history rather than silently creating a new
 key. Route disposal aborts owned reads/requests; already admitted server work may
 remain visible in History. The accepted import uses the existing job status and
-cancellation view. Parser-specific failure messages still need integration.
+cancellation view. Failed imports expose only the fixed `pdf_invalid`,
+`pdf_encrypted`, `pdf_unsupported` and `pdf_limit` reasons. Internal parser errors,
+paths and provider diagnostics stay private. Cancellation/interruption take
+precedence over a parser reason. Unknown codes use the existing generic failure.
 
 PDF pages retain their honest source type in review. Their “Open PDF page” link
 opens the browser's PDF viewer in a new tab with noopener/noreferrer. The existing
@@ -96,7 +99,7 @@ owner refusal and page deletion. Fresh Astro/Chromium tests with mocked APIs cov
 raw upload/hash vectors, uncertain replay identity, size bounds, PDF link safety,
 mixed review navigation and bilingual responsive layout. The existing placement
 browser fixture also passes. These are source checks; actual browser PDF-viewer
-rendering, parser-specific error feedback and the hosted upload -> edit -> export
+rendering and the hosted upload -> edit -> export
 hardware tracer remain pending. `check-web.py` registers the new browser fixture
 for future embedded-candidate checks.
 

@@ -37,7 +37,9 @@ func (s *Store) projectJob(ctx context.Context, tx *sql.Tx, owner, jobID string)
 		switch safe {
 		case "failed", "interrupted", "cancelled", "not_started":
 		default:
-			safe = "processing_failed"
+			if out.Kind != "import" || out.State != "failed" || !validImportFailure(safe) {
+				safe = "processing_failed"
+			}
 		}
 		out.ErrorCode = &safe
 	}
