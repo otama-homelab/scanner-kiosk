@@ -18,14 +18,16 @@ type Capture struct {
 	DPI   int    `json:"dpi"`
 }
 type ScanRequest struct {
-	DocumentID     string  `json:"document_id,omitempty"`
-	Revision       int64   `json:"revision,omitempty"`
-	Purpose        string  `json:"purpose,omitempty"`
-	PhotoFormat    string  `json:"photo_format,omitempty"`
-	DeviceID       string  `json:"device_id"`
-	Capture        Capture `json:"capture"`
-	IdempotencyKey string  `json:"-"`
-	ReserveBytes   int64   `json:"-"`
+	InsertBeforePageID string  `json:"insert_before_page_id,omitempty"`
+	ReplacePageID      string  `json:"replace_page_id,omitempty"`
+	DocumentID         string  `json:"document_id,omitempty"`
+	Revision           int64   `json:"revision,omitempty"`
+	Purpose            string  `json:"purpose,omitempty"`
+	PhotoFormat        string  `json:"photo_format,omitempty"`
+	DeviceID           string  `json:"device_id"`
+	Capture            Capture `json:"capture"`
+	IdempotencyKey     string  `json:"-"`
+	ReserveBytes       int64   `json:"-"`
 	// Supplied by trusted ready-worker coordination, never by a browser or a stable env setting.
 	WorkerBootID string `json:"-"`
 }
@@ -41,12 +43,14 @@ type ScanLimits struct {
 	DocumentLifetime time.Duration
 }
 type ScanSnapshot struct {
-	Version      int     `json:"version"`
-	DeviceID     string  `json:"device_id"`
-	WorkerBootID string  `json:"worker_boot_id"`
-	LeaseEpoch   int64   `json:"lease_epoch"`
-	Capture      Capture `json:"capture"`
-	PhotoFormat  string  `json:"photo_format,omitempty"`
+	InsertBeforePageID string  `json:"insert_before_page_id,omitempty"`
+	ReplacePageID      string  `json:"replace_page_id,omitempty"`
+	Version            int     `json:"version"`
+	DeviceID           string  `json:"device_id"`
+	WorkerBootID       string  `json:"worker_boot_id"`
+	LeaseEpoch         int64   `json:"lease_epoch"`
+	Capture            Capture `json:"capture"`
+	PhotoFormat        string  `json:"photo_format,omitempty"`
 	// Set only from same-transaction readiness, never from a browser request.
 	PhysicalID string `json:"physical_id,omitempty"`
 	HandoffID  string `json:"handoff_id,omitempty"`
@@ -200,8 +204,18 @@ func (s *Store) applyScan(ctx context.Context, owner string, command scanCommand
 			if err = tx.QueryRowContext(ctx, "SELECT count(*) FROM pages WHERE document_id=? AND owner_id=?", documentID, owner).Scan(&pages); err != nil {
 				return ErrStorage
 			}
-			if pages >= limits.MaxPages || (purpose == "photo" && pages >= 1) {
+			if (pages >= limits.MaxPages || (purpose == "photo" && pages >= 1)) && request.ReplacePageID == "" {
 				return ErrConflict
+			}
+			target := request.InsertBeforePageID
+			if request.ReplacePageID != "" {
+				target = request.ReplacePageID
+			}
+			if target != "" {
+				var present int
+				if err = tx.QueryRowContext(ctx, "SELECT 1 FROM pages WHERE id=? AND document_id=? AND owner_id=?", target, documentID, owner).Scan(&present); err != nil {
+					return readError(err)
+				}
 			}
 			if err = tx.QueryRowContext(ctx, "SELECT count(*) FROM jobs WHERE document_id=? AND owner_id=? AND kind!='cleanup' AND state IN ('queued','running','cancelling','reconciling')", documentID, owner).Scan(&active); err != nil {
 				return ErrStorage
@@ -255,7 +269,7 @@ func (s *Store) applyScan(ctx context.Context, owner string, command scanCommand
 			return ErrStorage
 		}
 		epoch := oldEpoch + 1
-		configuration, err := json.Marshal(ScanSnapshot{Version: 1, DeviceID: request.DeviceID, WorkerBootID: request.WorkerBootID, LeaseEpoch: epoch, Capture: request.Capture, PhotoFormat: photoFormat, PhysicalID: authority.physical, HandoffID: authority.handoff})
+		configuration, err := json.Marshal(ScanSnapshot{Version: 1, InsertBeforePageID: request.InsertBeforePageID, ReplacePageID: request.ReplacePageID, DeviceID: request.DeviceID, WorkerBootID: request.WorkerBootID, LeaseEpoch: epoch, Capture: request.Capture, PhotoFormat: photoFormat, PhysicalID: authority.physical, HandoffID: authority.handoff})
 		if err != nil {
 			return ErrStorage
 		}

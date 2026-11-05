@@ -61,7 +61,7 @@ func (s *Store) loadScanWork(ctx context.Context, tx *sql.Tx, owner, jobID, boot
 		return ScanWork{}, ErrInvalid
 	}
 	snapshot := out.Snapshot
-	if !validScanBinding(snapshot) || snapshot.Version != 1 || !id(snapshot.DeviceID) || snapshot.DeviceID != device || snapshot.WorkerBootID != boot || snapshot.LeaseEpoch < 1 || snapshot.LeaseEpoch != epoch || !validCapture(snapshot.Capture) {
+	if !validScanPlacement(snapshot.InsertBeforePageID, snapshot.ReplacePageID) || !validScanBinding(snapshot) || snapshot.Version != 1 || !id(snapshot.DeviceID) || snapshot.DeviceID != device || snapshot.WorkerBootID != boot || snapshot.LeaseEpoch < 1 || snapshot.LeaseEpoch != epoch || !validCapture(snapshot.Capture) {
 		return ScanWork{}, ErrConflict
 	}
 	if (purpose == "photo" && snapshot.PhotoFormat != "jpeg" && snapshot.PhotoFormat != "png") || (purpose == "document" && snapshot.PhotoFormat != "") || (purpose != "photo" && purpose != "document") {

@@ -48,6 +48,30 @@ photo append is `409`, and cross-owner documents are inaccessible. After an
 uncertain response, the server's durable receipt prevents a duplicate capture;
 clients still must not automatically replay physical commands.
 
+## Insert and replace a scanned page
+
+`POST /api/documents/{document_id}/scans` also accepts either
+`insert_before_page_id` or `replace_page_id`. Omitting both retains append behavior.
+The two fields are mutually exclusive, require an existing page in the same owned
+document, and are forbidden on document creation. The existing `If-Match`,
+Origin/session, request size and idempotency requirements apply. Placement is part
+of the command digest and immutable worker snapshot; changing the target while
+reusing a key is a conflict.
+
+Insertion shifts following pages and commits the new page in one transaction.
+Replacement leaves the target visible throughout capture and removes its page row
+only in the successful publication transaction. Failure, cancellation, stale
+completion or a rolled-back storage error preserves the target and its original
+artifact. Unaffected pages retain their IDs. The replacement gets a new page ID;
+its position is the old target's position. Existing artifact retention/cleanup
+still owns the displaced original; publication never deletes its file directly.
+A replacement is allowed at the final page-count ceiling, but still reserves and
+checks the complete capture byte budget. Admissions invalidate previous output
+at the new revision as they do for append scans.
+
+These are backend/API capabilities. The page insertion/replacement UI and hosted
+binary/browser acceptance are still pending in plan 43-08.
+
 ## Evidence
 
 Real API composition/session/repository tests exercise readiness refusal without

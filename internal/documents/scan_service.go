@@ -67,6 +67,9 @@ func prepareScan(request ScanRequest, limits ScanLimits) (scanCommand, error) {
 		return scanCommand{}, ErrInvalid
 	}
 	first := request.DocumentID == ""
+	if !validScanPlacement(request.InsertBeforePageID, request.ReplacePageID) || first && (request.InsertBeforePageID != "" || request.ReplacePageID != "") {
+		return scanCommand{}, ErrInvalid
+	}
 	if !id(request.IdempotencyKey) || !id(request.DeviceID) || !validAdmissionLimits(limits.AdmissionLimits) || limits.MaxDocuments < 1 || limits.DocumentLifetime < time.Millisecond || limits.DocumentLifetime > 365*24*time.Hour || !validCapture(request.Capture) {
 		return scanCommand{}, ErrInvalid
 	}

@@ -44,7 +44,7 @@ func (s *Store) RecoveryScans(ctx context.Context) ([]RecoveryScan, error) {
 			return nil, ErrStorage
 		}
 		snapshot := item.Snapshot
-		if snapshot.Version != 1 || snapshot.WorkerBootID != boot || snapshot.DeviceID != device || snapshot.LeaseEpoch != epoch || epoch < 1 || !validCapture(snapshot.Capture) || !validScanBinding(snapshot) {
+		if snapshot.Version != 1 || !validScanPlacement(snapshot.InsertBeforePageID, snapshot.ReplacePageID) || snapshot.WorkerBootID != boot || snapshot.DeviceID != device || snapshot.LeaseEpoch != epoch || epoch < 1 || !validCapture(snapshot.Capture) || !validScanBinding(snapshot) {
 			return nil, ErrStorage
 		}
 		if start.Valid {

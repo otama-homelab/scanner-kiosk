@@ -73,7 +73,7 @@ func (s *Store) CommitScanPageWithThumbnails(ctx context.Context, owner, jobID s
 			return ErrStorage
 		}
 		var snapshot ScanSnapshot
-		if json.Unmarshal([]byte(configuration), &snapshot) != nil || snapshot.Version != 1 || snapshot.DeviceID != stop.DeviceID || snapshot.WorkerBootID != stop.WorkerBootID || snapshot.LeaseEpoch != stop.LeaseEpoch || !validCapture(snapshot.Capture) {
+		if json.Unmarshal([]byte(configuration), &snapshot) != nil || snapshot.Version != 1 || !validScanPlacement(snapshot.InsertBeforePageID, snapshot.ReplacePageID) || snapshot.DeviceID != stop.DeviceID || snapshot.WorkerBootID != stop.WorkerBootID || snapshot.LeaseEpoch != stop.LeaseEpoch || !validCapture(snapshot.Capture) {
 			return ErrConflict
 		}
 		if !validStopTimes(stop, claimedAt, now) || total > reserved {
@@ -83,8 +83,12 @@ func (s *Store) CommitScanPageWithThumbnails(ctx context.Context, owner, jobID s
 		if err = tx.QueryRowContext(ctx, "SELECT count(*),COALESCE(MAX(ordinal),-1)+1 FROM pages WHERE document_id=? AND owner_id=?", document, owner).Scan(&count, &ordinal); err != nil {
 			return ErrStorage
 		}
-		if purpose == "photo" && count != 0 {
+		if purpose == "photo" && count != 0 && snapshot.ReplacePageID == "" {
 			return ErrConflict
+		}
+		ordinal, err = applyScanPlacement(ctx, tx, document, owner, snapshot, ordinal)
+		if err != nil {
+			return err
 		}
 		pageID, err := opaqueID("page_")
 		if err != nil {

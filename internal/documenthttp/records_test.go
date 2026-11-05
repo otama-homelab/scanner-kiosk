@@ -330,6 +330,20 @@ func TestDocumentHTTPRecordsInjectionCommandsAndFileReauthorization(t *testing.T
 	if status != 202 || scan.owner != records.owner || scan.request.DocumentID != documentID || scan.request.Revision != 7 || scan.request.ReserveBytes != 0 || scan.request.WorkerBootID != "" {
 		t.Fatal("scan policy port", status)
 	}
+	for _, field := range []string{"insert_before_page_id", "replace_page_id"} {
+		payload := `{"scanner_id":"scanner_memory_001","capture":{"size":"a4","color":"gray","dpi":300},"` + field + `":"` + pageID + `"}`
+		status, _, _ = call("POST", "/api/documents/"+documentID+"/scans", payload, alice, nil)
+		if status != 202 || field == "insert_before_page_id" && scan.request.InsertBeforePageID != pageID || field == "replace_page_id" && scan.request.ReplacePageID != pageID {
+			t.Fatal("placement forwarding", field, status)
+		}
+	}
+	for _, extra := range []string{`"insert_before_page_id":"x"`, `"replace_page_id":null`, `"replace_page_id":""`, `"insert_before_page_id":"` + pageID + `","replace_page_id":"` + pageID + `"`} {
+		payload := `{"scanner_id":"scanner_memory_001","capture":{"size":"a4","color":"gray","dpi":300},` + extra + `}`
+		status, _, _ = call("POST", "/api/documents/"+documentID+"/scans", payload, alice, nil)
+		if status != 400 {
+			t.Fatal("invalid placement accepted", extra, status)
+		}
+	}
 	status, _, _ = call("POST", "/api/documents/"+documentID+"/render", `{"format":"pdf","ocr":{"enabled":false}}`, alice, nil)
 	if status != 202 || render.owner != records.owner || render.request.DocumentID != documentID || render.request.Revision != 7 || render.request.ReserveBytes != 0 || render.request.Settings.Format != "pdf" {
 		t.Fatal("render policy port", status)

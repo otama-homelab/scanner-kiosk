@@ -86,16 +86,20 @@ func (h *Handler) scan(w http.ResponseWriter, r *http.Request, p websession.Prin
 	if document == "" {
 		allowed = append(allowed, "purpose", "photo_format")
 		required = append(required, "purpose")
+	} else {
+		allowed = append(allowed, "insert_before_page_id", "replace_page_id")
 	}
 	if err = exactObject(data, allowed, required); err != nil {
 		failure(w, err)
 		return
 	}
 	var input struct {
-		ScannerID   string          `json:"scanner_id"`
-		Capture     json.RawMessage `json:"capture"`
-		Purpose     string          `json:"purpose"`
-		PhotoFormat string          `json:"photo_format"`
+		ScannerID          string          `json:"scanner_id"`
+		Capture            json.RawMessage `json:"capture"`
+		Purpose            string          `json:"purpose"`
+		PhotoFormat        string          `json:"photo_format"`
+		InsertBeforePageID string          `json:"insert_before_page_id"`
+		ReplacePageID      string          `json:"replace_page_id"`
 	}
 	if err = json.Unmarshal(data, &input); err != nil {
 		failure(w, documents.ErrInvalid)
@@ -115,6 +119,21 @@ func (h *Handler) scan(w http.ResponseWriter, r *http.Request, p websession.Prin
 		failure(w, documents.ErrInvalid)
 		return
 	}
+	for _, field := range []string{"insert_before_page_id", "replace_page_id"} {
+		raw, present := fields[field]
+		if present {
+			var value string
+			if json.Unmarshal(raw, &value) != nil || !opaque(value) {
+				failure(w, documents.ErrInvalid)
+				return
+			}
+		}
+	}
+	if input.InsertBeforePageID != "" && input.ReplacePageID != "" {
+		failure(w, documents.ErrInvalid)
+		return
+	}
+	request.InsertBeforePageID, request.ReplacePageID = input.InsertBeforePageID, input.ReplacePageID
 	request.DeviceID, request.Purpose, request.PhotoFormat = input.ScannerID, input.Purpose, input.PhotoFormat
 	admission, err := h.scanService.Admit(r.Context(), p.ID, request)
 	if err != nil {
