@@ -402,7 +402,7 @@
     },
     "usr/libexec/scanner/sane-parameters": {
       "mode": 365,
-      "sha256": "55fda9d4cd4e64e702591b4add66cc6475ffbe1003641573482b6d05455cb810",
+      "sha256": "c4a357f263145565791690c243d7515c6d0a67e52c40a5543081a64cb87a8b8d",
       "size": 4924568
     },
     "usr/share/scanner-kiosk/ca-certificates.crt": {

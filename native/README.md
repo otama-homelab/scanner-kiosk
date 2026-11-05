@@ -108,6 +108,16 @@ onefile included the rebuilt helper, TLS-verifying backend and CA data; the newe
 b85a7dae candidate also includes the HTTPS downgrade guard.
 
 `helper-source.SHA256SUMS` now mirrors that first-party source inventory.
+The 2026-11-05 PDF worker change added file-backed stdin to the shared process
+supervisor, which is also a selected helper source. The same locked SDK rebuilt
+the helper as 4,924,568 bytes, SHA-256
+`c4a357f263145565791690c243d7515c6d0a67e52c40a5543081a64cb87a8b8d`.
+All 46 SDK package identities matched the lock. Only that helper entry changed;
+the other 294 current native entries and external libraries stayed identical.
+The updated manifest SHA-256 is
+`21bb815521d41b3ced50405e34605b54aa4720c9b45a20832fdc833115bf599a`.
+Source/SDK/manifest contract tests passed; this is not new real-device acceptance.
+
 `build-sane-parameters.sh SOURCE_DIRECTORY CHECKSUM_FILE` copies only the listed
 Go source/module files into fresh private scratch, rejects unsafe selection paths,
 then checks the copied hashes before compilation. Extra source files cannot enter

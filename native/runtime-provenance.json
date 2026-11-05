@@ -642,7 +642,7 @@
       "files": {
         "usr/libexec/scanner/sane-parameters": {
           "mode": 365,
-          "sha256": "55fda9d4cd4e64e702591b4add66cc6475ffbe1003641573482b6d05455cb810",
+          "sha256": "c4a357f263145565791690c243d7515c6d0a67e52c40a5543081a64cb87a8b8d",
           "size": 4924568
         }
       },
@@ -654,7 +654,7 @@
         "go.mod": "f81d68434f65bc4d5b1d2050e22f87413474e7bb0423361ebb99ee3729e52a14",
         "go.sum": "ad18f926bb18a6a0d5edc8c3833e30d8dde3d6c348374eb69111b7a83b86ccd9",
         "internal/captureimage/validate.go": "ee5a5e8760032de31561eb8e33b340969600e42526d28928e18b8cb1d1965822",
-        "internal/processrun/run_linux.go": "831240d4e7edff9b0c580914e576c76fa0a59e220dacbf9197b1cfc968f3241e",
+        "internal/processrun/run_linux.go": "e03a3435de3c2aa2f147b5db450bf5cf0f39510ff71893b55fe570b496d061e8",
         "internal/scanner/port.go": "d0ab898aa0187913e9f9af9e948c4fd2f36241cd288f20ef738cb1f2f3d0bb51",
         "internal/scanner/sane/capabilities.go": "89f55d02ac85180471b3abc3747bf28e84e6cba14f0b32d6fb9eeffdf2477e77",
         "internal/scanner/sane/capture_linux.go": "1c8ce1db9b32e0a5153fc3157e6e8343b20e23bc0bf30025be6d8bbe501a44b6",
@@ -1040,7 +1040,7 @@
     "usr/share/scanner-kiosk/notices/source-build/tesseract-5.5.4/source-receipt.json": "retained/source-build/tesseract-5.5.4/source-receipt.json"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "6aed76d75ca28d6b57de86d0cfeb08fe805be044850572091aebaf839334f449",
+  "runtime_manifest_sha256": "21bb815521d41b3ced50405e34605b54aa4720c9b45a20832fdc833115bf599a",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {
