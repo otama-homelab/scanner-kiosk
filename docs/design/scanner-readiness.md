@@ -1,33 +1,33 @@
 # Scanner readiness and transactional admission
 
-This stage implements the **repository boundary** for trusted worker readiness
-and atomic scan admission. It does not implement physical ownership handoff or a
-production evidence producer. The runtime does not call readiness publication,
-Authenticated scan HTTP commands now use this boundary, while scanner status now projects the trusted records and the worker still has
-no production readiness publisher.
-No existing service is stopped and no scanner becomes ready automatically.
+The runtime publishes readiness for the owner's selected scope: one application
+writer sharing the document root, with detection of another application's busy
+device. It does not fence LAN clients. See the accepted scope in
+[physical writer handoff](physical-writer-fencing.md#accepted-application-scope-2026-11-04-owner-decision).
 
-The [physical writer preflight](physical-writer-fencing.md) records actual
-deployment/network-policy gaps and an unapplied, partial legacy eSCL fence
-candidate. Its CRD/server dry-run validation is not readiness evidence.
+With acquisition enabled, the worker uses its existing guard and coordinator boot.
+Each per-device renewal withdraws old readiness, reads an advisory idle epoch,
+then serializes UUID/Idle/UUID observations with native activity. It publishes
+only against the same still-idle epoch and active guard. Missing/held/reconciling
+work is never cleared by a refresh. Failed observations keep the device
+unavailable; unresolved local termination or changed identity stops the worker.
+Renewal also runs after completed jobs, using the new idle epoch.
 
-Admitted work now persists the readiness physical/handoff IDs in its immutable
-snapshot. Production Session checks the advertised eSCL UUID at native and idle
-boundaries; this does not supply the missing ownership fence or readiness
-producer. See [identity binding](scanner-identity.md).
+Admitted work retains physical and guard IDs in its immutable snapshot. The
+production Session checks identity before native work and around Idle. External
+clients can race after an observation; actual native busy/error handling remains
+required. No option or browser input supplies readiness evidence.
 
 ## Trust and evidence
 
 `scannerreadiness.Evidence` is worker-internal: registered device ID, canonical
-verified physical ID, ongoing handoff/fence reference, expected idle lease epoch,
+verified physical ID, ongoing application guard reference, expected idle lease epoch,
 effective scan concurrency, and ownership-confirmed/local-stopped/physical-idle
 times. Epoch zero is an explicit request to initialize an absent device lease.
-Neither a browser field, environment flag, coordinator flock, native metadata nor
-Idle by itself establishes exclusive hardware control. The future reconciler must
-verify the hardware identity at the registered endpoint, that all legacy writers
-are fenced, that local processes are stopped, and that physical idle was observed
-subsequently. It must maintain that ownership through acquisition; timestamps or
-opaque IDs are not a substitute for mechanical fencing.
+The shared-root guard covers application writers only. The session must verify
+that local operations have joined and physical Idle follows that check. UUID
+identity is pinned for the session. Historical LAN fencing proposals are not
+claimed by this application scope.
 
 `workercatalog.PublishScannerReadiness` requires the current live document-root
 guard and exact coordinator boot/generation. It validates ID/time/epoch/capacity
@@ -79,7 +79,7 @@ wired directly to public scan HTTP because its coordinator checks are external.
 
 The readiness row's epoch is consumed by admission: advancing the device epoch
 makes the old row unusable. Completion returning the lease to idle does not restore
-readiness. The future worker reconciler must publish fresh post-scan evidence for
+readiness. The worker readiness loop publishes fresh post-scan evidence for
 the new epoch. Existing executor resolution still rechecks actual native settings
 and final captured geometry; readiness never permits automatic rescan.
 
@@ -95,12 +95,9 @@ post-scan renewal; and authority expiring during capacity probing. Migration tes
 upgrade a v7 database while preserving held lease/job/reservation rows and creating
 no readiness authority. Proofs and physical idle in these tests are fixtures.
 
-Still required: implement/accept real physical identity and exclusive-writer
-handoff evidence, startup recovery, recurring per-device readiness renewal and
-post-scan lifecycle, effective-capacity publication from actual runtime policy,
-capture UI and physical HTTP/worker/status acceptance, real scanner/mobile/OIDC,
-resource acceptance, release/deployment and legacy-service cutover. No deployment
-setting or test proof silently authorizes any of those actions.
+Still required: actual HTTP/browser/device acceptance of readiness renewal,
+cancel/recovery, mobile/OIDC, resource and deployment acceptance, release and
+legacy-service cutover. Unit tests and fresh Idle do not establish these outcomes.
 
 See [scan HTTP](scan-http.md) for the implemented strict command handling,
 server policy and fixture/compiled HTTP validation.

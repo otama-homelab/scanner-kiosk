@@ -178,3 +178,25 @@ legacy stop, policy change or durable readiness/lease mutation occurred.
 These observations supersede earlier connectivity failures only; they do not
 establish exclusive ownership. Prepared-original evidence is retained in the
 parent task `real-device-prepared-original-20261103/`.
+
+## Accepted application scope (2026-11-04 owner decision)
+
+The owner selected one application writer plus detection of another application's
+busy device. LAN-wide exclusion and the optional Cilium fence above are outside
+this acceptance scope. Printing and CUPS remain unchanged. The historical fence
+inventory is retained as evidence, not a required installation procedure.
+
+For this scope the existing shared-document-root worker guard, coordinator boot
+and transactional device epoch own application admission. A readiness refresh
+withdraws its previous advertisement before checking the idle lease, then the
+session serializes a fresh registered UUID/Idle/UUID observation with local native
+operations. The UUID is pinned for the session; changed identity or uncertain
+local termination cannot be repaired by polling Idle. Publication must still
+compare the observed idle epoch and the live guard/boot in its transaction.
+
+The guard covers this deployment sharing the same document root, not independent
+installations or LAN clients. External clients may start after an Idle observation;
+native busy/error handling remains necessary at actual acquisition. No readiness
+record claims prevention of those external races, revokes an external job, or
+releases a held/reconciling lease. A successor worker retains the existing startup
+reconciliation gate; clock expiry alone never authorizes a second scan.

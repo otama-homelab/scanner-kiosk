@@ -13,6 +13,7 @@ import (
 	"scanner-kiosk/internal/scanner"
 	"scanner-kiosk/internal/scanner/escl"
 	"scanner-kiosk/internal/scanner/sane"
+	"scanner-kiosk/internal/scannerreadiness"
 	"scanner-kiosk/internal/workeridentity"
 )
 
@@ -254,4 +255,49 @@ func (s *Session) InspectCapture(ctx context.Context, id string, capture scanner
 		return scanner.Profile{}, ErrConfiguration
 	}
 	return s.driver.InspectCapture(ctx, id, capture)
+}
+
+// ObserveApplicationReadiness covers this guarded deployment, not LAN writers.
+// The device gate proves local operations joined; it cannot clear uncertainty.
+func (s *Session) ObserveApplicationReadiness(ctx context.Context, id string, epoch int64, capacity int) (scannerreadiness.Evidence, error) {
+	var empty scannerreadiness.Evidence
+	if s.driver == nil || epoch < 0 || capacity < 1 || capacity > 32 {
+		return empty, ErrConfiguration
+	}
+	state := s.driver.devices[id]
+	if state == nil {
+		return empty, ErrInvalid
+	}
+	if err := state.acquire(ctx); err != nil {
+		return empty, err
+	}
+	defer state.release()
+	if err := s.driver.available(state); err != nil {
+		return empty, err
+	}
+	if err := s.before(ctx); err != nil {
+		return empty, err
+	}
+	owned := time.Now().UnixMilli()
+	identity, err := s.observeIdentity(ctx, id)
+	if err != nil {
+		return empty, err
+	}
+	if state.physical != "" && state.physical != identity.PhysicalID {
+		state.captureUnknown = true
+		return empty, scanner.ErrUnresolved
+	}
+	state.physical = identity.PhysicalID
+	stopped := time.Now().UnixMilli()
+	idle, err := s.identity.ObserveIdle(ctx, id, stopped)
+	if err != nil {
+		return empty, err
+	}
+	if err = s.driver.checkIdentity(ctx, state, id); err != nil {
+		return empty, err
+	}
+	if err = s.before(ctx); err != nil {
+		return empty, err
+	}
+	return scannerreadiness.Evidence{DeviceID: id, PhysicalID: identity.PhysicalID, HandoffID: s.boot, LeaseEpoch: epoch, ScanConcurrency: capacity, OwnershipConfirmedAtMS: owned, LocalStoppedAtMS: stopped, IdleObservedAtMS: idle}, nil
 }

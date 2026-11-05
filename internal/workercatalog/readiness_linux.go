@@ -12,7 +12,7 @@ import (
 )
 
 // PublishScannerReadiness trusts the supplied reconciler evidence, not metadata.
-// No production evidence producer is wired yet. This boundary never contacts or
+// This boundary never contacts or
 // stops a device, revokes another writer, or clears held/uncertain work.
 func (s *Store) PublishScannerReadiness(ctx context.Context, lease Lease, proof scannerreadiness.Evidence) (int64, error) {
 	if !scannermetadata.ValidID(proof.DeviceID) || !scannermetadata.ValidID(proof.HandoffID) || !scannermetadata.ValidID(proof.PhysicalID) || proof.LeaseEpoch < 0 || proof.ScanConcurrency < 1 || proof.ScanConcurrency > 32 {
@@ -64,6 +64,41 @@ func (s *Store) PublishScannerReadiness(ctx context.Context, lease Lease, proof 
 		return nil
 	})
 	if err != nil {
+		return 0, ErrUnavailable
+	}
+	return epoch, nil
+}
+
+// BeginScannerObservation withdraws the old advertisement before network IO.
+// It returns only an advisory idle epoch; publication must compare it again.
+func (p *sqlitePublisher) BeginScannerObservation(ctx context.Context, id string) (int64, error) {
+	if !scannermetadata.ValidID(id) {
+		return 0, ErrUnavailable
+	}
+	var epoch int64
+	var idle bool
+	err := p.store.write(ctx, p.lease, func(tx *sql.Tx, now int64) error {
+		var active int
+		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM processing_coordinator WHERE singleton=1 AND boot_id=? AND generation=? AND state='active' AND heartbeat_at_ms<=? AND valid_until_ms>?`, p.lease.boot, p.lease.generation, now, now).Scan(&active); err != nil || active != 1 {
+			return ErrUnavailable
+		}
+		if _, err := tx.ExecContext(ctx, "DELETE FROM scanner_readiness WHERE device_id=?", id); err != nil {
+			return err
+		}
+		var state string
+		var job sql.NullString
+		err := tx.QueryRowContext(ctx, "SELECT epoch,state,job_id FROM device_leases WHERE device_id=?", id).Scan(&epoch, &state, &job)
+		if errors.Is(err, sql.ErrNoRows) {
+			idle = true
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		idle = state == "idle" && !job.Valid
+		return nil
+	})
+	if err != nil || !idle {
 		return 0, ErrUnavailable
 	}
 	return epoch, nil

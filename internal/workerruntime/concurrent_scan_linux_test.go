@@ -18,7 +18,6 @@ import (
 
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/documents"
-	"scanner-kiosk/internal/scanner/escl"
 	"scanner-kiosk/internal/scannermetadata"
 	"scanner-kiosk/internal/workeridentity"
 )
@@ -119,23 +118,12 @@ sys.stdout.buffer.write(pathlib.Path(` + strconv.Quote(filepath.Join(root, "orig
 			})
 			var jobs []string
 			for i, device := range c.Scanners {
-				execute(t, db, "INSERT INTO device_leases(device_id,epoch,state) VALUES(?,1,'idle')", device.ID)
-				observer, err := escl.New([]escl.Device{{ID: device.ID, Endpoint: device.Endpoint}}, escl.Options{Timeout: 5 * time.Second, MaxResponseBytes: 4096})
-				if err != nil {
-					t.Fatal(err)
-				}
-				identity, err := observer.ObserveIdentity(ctx, device.ID)
-				if err != nil {
-					t.Fatal(err)
-				}
-				// Ownership/stop/idle timestamps below are explicit fixtures,
-				// while metadata, advertised identity and native IO are real.
-				now := time.Now().UnixMilli()
-				execute(t, db, `INSERT INTO scanner_readiness(device_id,boot_id,generation,lease_epoch,handoff_id,physical_id,scan_concurrency,ownership_confirmed_at_ms,local_stopped_at_ms,idle_observed_at_ms,published_at_ms,expires_at_ms) SELECT ?,boot_id,generation,1,'handoff_parallel_fixture',?,2,?,?,?,?,min(valid_until_ms,?) FROM processing_coordinator WHERE state='active'`, device.ID, identity.PhysicalID, now, now, now, now, now+30000)
-				a, err := store.AdmitReadyScan(ctx, owner, documents.ScanRequest{Purpose: "document", DeviceID: device.ID, Capture: documents.Capture{Size: "a4", Color: "gray", DPI: 300}, IdempotencyKey: fmt.Sprintf("request_parallel_%04d", i), ReserveBytes: 2 << 20}, documents.ScanLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: 8 << 20, GlobalMaxBytes: 16 << 20, JobMaxBytes: 2 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}, MaxDocuments: 20, MaxConcurrentScans: 2, MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"], RegisteredDevices: []string{device.ID}, DocumentLifetime: 24 * time.Hour})
-				if err != nil {
-					t.Fatal(err)
-				}
+				var a documents.ScanAdmission
+				var err error
+				wait(func() bool {
+					a, err = store.AdmitReadyScan(ctx, owner, documents.ScanRequest{Purpose: "document", DeviceID: device.ID, Capture: documents.Capture{Size: "a4", Color: "gray", DPI: 300}, IdempotencyKey: fmt.Sprintf("request_parallel_%04d", i), ReserveBytes: 2 << 20}, documents.ScanLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: 8 << 20, GlobalMaxBytes: 16 << 20, JobMaxBytes: 2 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}, MaxDocuments: 20, MaxConcurrentScans: 2, MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"], RegisteredDevices: []string{device.ID}, DocumentLifetime: 24 * time.Hour})
+					return err == nil
+				})
 				jobs = append(jobs, a.JobID)
 			}
 			// Both native processes must enter before either can finish. Serial execution

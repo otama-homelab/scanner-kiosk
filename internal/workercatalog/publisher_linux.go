@@ -7,6 +7,7 @@ import (
 
 	"scanner-kiosk/internal/renderadmission"
 	"scanner-kiosk/internal/scannermetadata"
+	"scanner-kiosk/internal/scannerreadiness"
 	"scanner-kiosk/internal/workeridentity"
 )
 
@@ -17,6 +18,8 @@ type Publisher interface {
 	Pulse(context.Context) error
 	Publish(context.Context, renderadmission.CatalogSnapshot) error
 	PublishScanners(context.Context, scannermetadata.Snapshot) error
+	BeginScannerObservation(context.Context, string) (int64, error)
+	PublishReadiness(context.Context, scannerreadiness.Evidence) error
 	Stop(context.Context) error
 }
 
@@ -41,3 +44,8 @@ func (p *sqlitePublisher) PublishScanners(ctx context.Context, snapshot scannerm
 	return p.store.PublishScanners(ctx, p.lease, snapshot)
 }
 func (p *sqlitePublisher) Stop(ctx context.Context) error { return p.store.Stop(ctx, p.lease) }
+
+func (p *sqlitePublisher) PublishReadiness(ctx context.Context, proof scannerreadiness.Evidence) error {
+	_, err := p.store.PublishScannerReadiness(ctx, p.lease, proof)
+	return err
+}

@@ -130,6 +130,7 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 			ids = append(ids, device.ID)
 		}
 		publisher.startScannerMetadata(scannerSession, ids, c.Durations["SCANNER_OCR_CATALOG_LEASE_SECONDS"])
+		publisher.startScannerReadiness(scannerSession, ids, c.EffectiveScanConcurrency(), c.Durations["SCANNER_OCR_CATALOG_LEASE_SECONDS"])
 	}
 	defer func() {
 		if err := publisher.close(); err != nil {

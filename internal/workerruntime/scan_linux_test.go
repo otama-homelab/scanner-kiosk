@@ -22,7 +22,6 @@ import (
 
 	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/internal/scanner"
-	"scanner-kiosk/internal/scanner/escl"
 	"scanner-kiosk/internal/scannermetadata"
 )
 
@@ -60,9 +59,12 @@ func TestRuntimeDispatchesAdmittedScanThroughSession(t *testing.T) {
 			}
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				if r.Method == "GET" && r.URL.Path == "/eSCL/ScannerCapabilities" {
-					n := identityCalls.Add(1)
+					identityCalls.Add(1)
+					var admittedJobs int
+					_ = docs.QueryRow("SELECT count(*) FROM jobs WHERE kind='scan'").Scan(&admittedJobs)
+					_, captured := os.Stat(marker)
 					uuid := "12abcdef-3456-789a-bcde-1234567890ab"
-					if mode == "identity-changed" && n > 1 || mode == "identity-postcapture" && n >= 4 {
+					if mode == "identity-changed" && admittedJobs > 0 || mode == "identity-postcapture" && captured == nil {
 						uuid = "abcdef12-3456-789a-bcde-1234567890ab"
 					}
 					fmt.Fprintf(w, `<s:ScannerCapabilities xmlns:s="http://schemas.hp.com/imaging/escl/2011/05/03" xmlns:p="http://www.pwg.org/schemas/2010/12/sm"><p:Version>2.0</p:Version><s:UUID>%s</s:UUID></s:ScannerCapabilities>`, uuid)
@@ -74,25 +76,13 @@ func TestRuntimeDispatchesAdmittedScanThroughSession(t *testing.T) {
 					return
 				}
 				state := "Idle"
-				if mode == "busy" {
+				if _, captured := os.Stat(marker); mode == "busy" && captured == nil {
 					state = "Processing"
 				}
 				fmt.Fprintf(w, `<scan:ScannerStatus xmlns:scan="http://schemas.hp.com/imaging/escl/2011/05/03" xmlns:pwg="http://www.pwg.org/schemas/2010/12/sm"><pwg:Version>2.0</pwg:Version><pwg:State>%s</pwg:State></scan:ScannerStatus>`, state)
 			}))
 			defer server.Close()
 			c.Scanners[0].Endpoint, c.ScannerTools.AcquisitionEnabled = server.URL+"/eSCL", true
-			var physical string
-			if bound {
-				observer, err := escl.New([]escl.Device{{ID: c.Scanners[0].ID, Endpoint: c.Scanners[0].Endpoint}}, escl.Options{Timeout: 5 * time.Second, MaxResponseBytes: 4096})
-				if err != nil {
-					t.Fatal(err)
-				}
-				observed, err := observer.ObserveIdentity(context.Background(), c.Scanners[0].ID)
-				if err != nil {
-					t.Fatal(err)
-				}
-				physical = observed.PhysicalID
-			}
 			c.Durations["SCANNER_PROCESS_STOP_GRACE_SECONDS"] = 100 * time.Millisecond
 			ctx, cancel := context.WithCancel(context.Background())
 			done := make(chan error, 1)
@@ -140,15 +130,12 @@ func TestRuntimeDispatchesAdmittedScanThroughSession(t *testing.T) {
 			wait(func() bool {
 				return docs.QueryRow("SELECT boot_id FROM processing_coordinator WHERE state='active'").Scan(&boot) == nil
 			})
-			// Deliberate fixture readiness: this is not a hardware fencing proof.
-			execute(t, docs, "INSERT INTO device_leases(device_id,epoch,state) VALUES(?,1,'idle')", c.Scanners[0].ID)
 			request := documents.ScanRequest{Purpose: "document", DeviceID: c.Scanners[0].ID, Capture: documents.Capture{Size: "a4", Color: "gray", DPI: 300}, WorkerBootID: boot, IdempotencyKey: "request_runtime_scan_01", ReserveBytes: reserve}
 			scanLimits := documents.ScanLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: 8 << 20, GlobalMaxBytes: 16 << 20, JobMaxBytes: 2 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}, MaxDocuments: 20, DocumentLifetime: 24 * time.Hour}
 			var a documents.ScanAdmission
 			var err error
 			if bound {
-				// Fixture-only readiness: real metadata/advertised UUID, but
-				// exclusive writer and stop/idle evidence are deliberately seeded.
+				// Readiness is produced by the runtime against the local eSCL fixture.
 				wait(func() bool {
 					var payload string
 					if docs.QueryRow("SELECT payload FROM scanner_metadata_snapshot WHERE boot_id=?", boot).Scan(&payload) != nil {
@@ -160,12 +147,13 @@ func TestRuntimeDispatchesAdmittedScanThroughSession(t *testing.T) {
 					}
 					return len(snapshot.Devices) == 1 && len(snapshot.Devices[0].Profiles) > 0
 				})
-				now := time.Now().UnixMilli()
-				execute(t, docs, `INSERT INTO scanner_readiness(device_id,boot_id,generation,lease_epoch,handoff_id,physical_id,scan_concurrency,ownership_confirmed_at_ms,local_stopped_at_ms,idle_observed_at_ms,published_at_ms,expires_at_ms) SELECT ?,boot_id,generation,1,'handoff_runtime_identity',?,1,?,?,?,?,min(valid_until_ms,?) FROM processing_coordinator WHERE state='active'`, c.Scanners[0].ID, physical, now, now, now, now, now+30000)
 				request.WorkerBootID = ""
 				scanLimits.MaxPagePixels = c.Limits["SCANNER_MAX_PAGE_PIXELS"]
 				scanLimits.RegisteredDevices = []string{c.Scanners[0].ID}
-				a, err = store.AdmitReadyScan(ctx, owner, request, scanLimits)
+				wait(func() bool {
+					a, err = store.AdmitReadyScan(ctx, owner, request, scanLimits)
+					return err == nil
+				})
 			}
 			if err != nil {
 				t.Fatal(err)
@@ -191,6 +179,13 @@ func TestRuntimeDispatchesAdmittedScanThroughSession(t *testing.T) {
 				})
 				if len(metadata.Devices) != 1 || metadata.Devices[0].ID != c.Scanners[0].ID || len(metadata.Devices[0].Profiles) != 1 || metadata.Devices[0].Profiles[0].Capture != (scanner.Capture{Size: "a4", Color: "gray", DPI: 300}) {
 					t.Fatal("worker published unverified setting tuples", metadata)
+				}
+
+				if mode == "identity-bound" {
+					wait(func() bool {
+						var epoch int64
+						return docs.QueryRow("SELECT lease_epoch FROM scanner_readiness WHERE device_id=? AND boot_id=? AND handoff_id=?", c.Scanners[0].ID, boot, boot).Scan(&epoch) == nil && epoch == a.LeaseEpoch
+					})
 				}
 				cancel()
 			}

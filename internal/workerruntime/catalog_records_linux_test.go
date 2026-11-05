@@ -12,6 +12,7 @@ import (
 
 	"scanner-kiosk/internal/renderadmission"
 	"scanner-kiosk/internal/scannermetadata"
+	"scanner-kiosk/internal/scannerreadiness"
 	"scanner-kiosk/internal/workercatalog"
 	"scanner-kiosk/internal/workeridentity"
 )
@@ -123,4 +124,11 @@ func TestCatalogPublisherAcceptsBackendOwnedAuthorityWithoutSQL(t *testing.T) {
 			}
 		})
 	}
+}
+
+func (s *catalogAuthoritySpy) BeginScannerObservation(context.Context, string) (int64, error) {
+	return 0, s.result("readiness")
+}
+func (s *catalogAuthoritySpy) PublishReadiness(context.Context, scannerreadiness.Evidence) error {
+	return s.result("readiness")
 }
