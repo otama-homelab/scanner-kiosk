@@ -29,6 +29,10 @@ packages. Their control identities, versions and sizes match the observed SDK.
 
 `tesseract-sdk.SHA256SUMS` and `alpine-sdk-keys.SHA256SUMS` are the checked
 installer inputs derived from that lock. Keep them consistent with the JSON.
+The build-only libarchive entry was refreshed to signed 3.8.11-r0 after the
+3.8.10-r0 archive disappeared upstream. Its per-package `index_sha256` records
+the replacement snapshot; the original snapshot hashes for unchanged SDK inputs
+remain intact. This package is not part of the product native runtime.
 To prepare a separate build context, copy `Dockerfile.tesseract-sdk` as
 `Dockerfile`, the two checksum lists, and exactly the 174 pinned APK files under
 `apks/`. Fetch only the recorded versions; verify publisher signatures and

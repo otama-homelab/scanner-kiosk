@@ -890,16 +890,17 @@
     },
     {
       "name": "libarchive",
-      "version": "3.8.10-r0",
+      "version": "3.8.11-r0",
       "archive_architecture": "x86_64",
       "repository_architecture": "x86_64",
-      "filename": "libarchive-3.8.10-r0.apk",
-      "bytes": 325236,
-      "sha256": "cbdf763a628f0c2cfbb77696ec08bc3c7e9e121c7bf9058a26b4045791c8af38",
-      "apk_control_checksum": "Q11EniCP2K5TvjpKNozKEV83EDJKM=",
+      "filename": "libarchive-3.8.11-r0.apk",
+      "bytes": 325544,
+      "sha256": "275ca3b65a540656c91f776a7e0f3ceee5240982218d16b6acba7d040f765599",
+      "apk_control_checksum": "Q1nqsRf5TqPjWNzOE/+daEyGvPB+o=",
       "repository": "main",
       "origin": "libarchive",
-      "source_commit": "de01a507aba7d724ecdd690d25748acd5fb9e644"
+      "source_commit": "931582d4d89b89606f5dbecc5d3824efcd2fb8a1",
+      "index_sha256": "2c9e3e2dcfaf73a6c58ad7d33733b64d33dff98b0b20e126a5122c594748347f"
     },
     {
       "name": "libatomic",

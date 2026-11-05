@@ -5,6 +5,6 @@
   "sha256": "445603ab1d0a63df552e193a600d9d5c4021aff36e144f3091af149e5efb381a",
   "bytes": 1971321,
   "sdk_lock": "tesseract-sdk.lock.json",
-  "sdk_lock_sha256": "b7bd5fee225d96cf76f82a6863e714f322e55879d90fb5136298fbd289446b8d",
+  "sdk_lock_sha256": "634d913119048cf3a4211330d8e9c5332a2ddd4e79a385cc79d96e86fa7d8357",
   "scope": "Unmodified upstream source input for offline build; not source delivery, security or license approval"
 }
