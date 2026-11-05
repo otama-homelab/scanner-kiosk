@@ -24,3 +24,5 @@
 軽量レビュー後にUID/GID設定を追加した。初回volumeの準備/確認手順は配備例へ追記済み。現在の優先残件は、実storageでの手順受入、対応可否とbackup除外の確認。既存データの一括chownや権限緩和は、このレビューでは実施していない。
 
 参照: [配備例](../../deploy/README.md)、[storage契約](state-storage.md)、[運用・release](operations-release.md)、[physical fencing](physical-writer-fencing.md)。
+
+600dpiカラーlosslessの高エントロピー試験では、PDF子process単体のRSSは約777MiBだった。768MiBは全負荷の上限として保証しない。組み立て用の固定profileはdata1280MiB/Go target768MiB（仮想AS3GiB）で、配備例のworker1536MiB limitは維持。実CSI/コンテナ全体の受入は別途必要。

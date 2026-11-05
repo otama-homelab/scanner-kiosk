@@ -126,7 +126,7 @@ func GenerateIsolated(ctx context.Context, rootPath string, scope *artifactscope
 	}
 	bounded, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
-	completed := processrun.Run(bounded, processrun.Spec{Path: executable, Args: []string{"__pdf-assemble", strconv.FormatInt(request.Options.MaxOutputBytes, 10)}, Dir: rootPath, Env: []string{"GOMAXPROCS=2", "GOMEMLIMIT=256MiB"}, Stdin: manifestFile, Stdout: output, Grace: 200 * time.Millisecond})
+	completed := processrun.Run(bounded, processrun.Spec{Path: executable, Args: []string{"__pdf-assemble", strconv.FormatInt(request.Options.MaxOutputBytes, 10)}, Dir: rootPath, Env: []string{"GOMAXPROCS=2", "GOMEMLIMIT=768MiB"}, Stdin: manifestFile, Stdout: output, Grace: 200 * time.Millisecond})
 	if !completed.GroupStopped {
 		unstopped = true
 		return "", ocrplugin.ErrReconciliation
@@ -167,7 +167,7 @@ func AssemblyChild(args []string, input, output *os.File) int {
 		return 10
 	}
 	maxOutput, err := strconv.ParseInt(args[0], 10, 64)
-	if err != nil || maxOutput < 1 || maxOutput > 1<<30 || processrun.ApplyPDFLimits(maxOutput) != nil {
+	if err != nil || maxOutput < 1 || maxOutput > 1<<30 || processrun.ApplyPDFLimits(maxOutput, processrun.PDFAssemblyMemory) != nil {
 		return 10
 	}
 	info, err := input.Stat()

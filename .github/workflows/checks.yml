@@ -126,6 +126,10 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_pack_standalone.py -v
       - name: Go contracts and race checks
         run: go test -race -count=1 ./...
+      - name: Release-profile large color PDF regression
+        env:
+          CGO_ENABLED: '0'
+        run: go test -count=1 -timeout=2m -run '^TestIsolatedLargeColorScan$' ./internal/pdfassemble
       - name: Compiled identity and document recovery
         run: python3 scripts/check-state-recovery.py --receipt "$RUNNER_TEMP/state-recovery.json"
       - name: Build embedded frontend

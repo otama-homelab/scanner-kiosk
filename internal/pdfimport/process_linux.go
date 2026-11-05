@@ -126,7 +126,7 @@ func Child(args []string, input, output *os.File) int {
 	if e1 != nil || e2 != nil || e3 != nil || !validOptions(options) {
 		return 10
 	}
-	if processrun.ApplyPDFLimits(frameLimit(options)) != nil {
+	if processrun.ApplyPDFLimits(frameLimit(options), processrun.PDFImportMemory) != nil {
 		return 14
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)

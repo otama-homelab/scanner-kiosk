@@ -60,8 +60,13 @@ connected to the existing maintenance and administrative recovery paths.
 ## PDF output child
 
 Plain and OCR PDF output now use the internal `__pdf-assemble` command of the same
-executable. It shares the parser resource profile in `processrun.ApplyPDFLimits`
-with import splitting. No service configuration is loaded by either command.
+executable. `processrun.ApplyPDFLimits` keeps import splitting at 512 MiB data,
+2 GiB virtual address space and a 256 MiB Go target. Assembly uses 1280 MiB data,
+3 GiB virtual address space and a 768 MiB Go target because admitted 600dpi color
+pages require simultaneous bitmap and PDF buffers. Virtual address space is not
+a resident RAM requirement. Both fixed profiles retain the 30-second CPU limit,
+16-thread limit, file/descriptor bounds and parent deadline. No service
+configuration is loaded by either command.
 The child starts in the private document root with an explicit credential-free
 environment. A private, bounded (16 MiB) file manifest contains the immutable
 ordered snapshot, relative input capabilities (path/size/SHA-256), output limits
