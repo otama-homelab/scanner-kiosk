@@ -22,7 +22,7 @@ func (b *scannerMetadataBuilder) catalog(ctx context.Context) (scannermetadata.S
 	if b.cached.Devices != nil && time.Since(b.checked) < time.Minute {
 		return b.cached, nil
 	}
-	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
 	out := scannermetadata.Snapshot{Devices: []scannermetadata.Device{}}
 	for _, id := range b.ids {

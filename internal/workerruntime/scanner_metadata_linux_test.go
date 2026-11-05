@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"testing/synctest"
 	"time"
 
 	"scanner-kiosk/internal/renderadmission"
@@ -121,4 +122,23 @@ func TestUnresolvedMetadataInspectionStopsPublicationAndKeepsNoPartialSnapshot(t
 	if err := db.QueryRow("SELECT count(*) FROM scanner_metadata_snapshot").Scan(&snapshots); err != nil || snapshots != 0 {
 		t.Fatal("partial unresolved metadata was published", err)
 	}
+}
+
+func TestScannerMetadataCompletesSlowVerifiedSettingsWithinFreshness(t *testing.T) {
+	synctest.Test(t, func(t *testing.T) {
+		calls := 0
+		builder := scannerMetadataBuilder{ids: []string{"scanner_slow_native_001"}, inspector: metadataInspectorFunc(func(ctx context.Context, _ string, capture scanner.Capture) (scanner.Profile, error) {
+			calls++
+			time.Sleep(600 * time.Millisecond)
+			return scanner.Profile{Capture: capture, Width: 2480, Height: 3508, CheckedAtMS: time.Now().UnixMilli()}, nil
+		})}
+		value, err := builder.catalog(context.Background())
+		if err != nil || calls != 60 || len(value.Devices) != 1 || len(value.Devices[0].Profiles) != 60 {
+			t.Fatal("verified settings discarded before bounded inspection completed", calls, err)
+		}
+		oldest := value.Devices[0].Profiles[0].CheckedAtMS
+		if time.Now().UnixMilli()-oldest >= scannermetadata.MaxAge.Milliseconds() {
+			t.Fatal("published stale settings")
+		}
+	})
 }
