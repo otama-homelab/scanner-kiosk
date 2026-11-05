@@ -74,14 +74,21 @@ and optional OCR-layer capabilities. The child opens only these confined inputs
 through `artifactread`, verifying the opened files before parsing. PDF paths and
 external references never become arbitrary filesystem/network open requests.
 
-The parent accounts for manifest bytes, bounded child output and the copied final
-artifact simultaneously against the remaining job reservation; originals and OCR
-layers are read in place rather than copied into another input spool. Preparation
-scratch is closed/removed and its parent synced before the final scope is sealed
-and published. Unknown child stop or cleanup retains job/files/reservation for
-administrative reconciliation. The parent copies bounded file bytes and does not
-parse the generated PDF. Existing job cancellation/revision/owner/publication
-guards remain in the coordinator.
+The parent accounts for manifest bytes and one scope-owned bounded output against
+its remaining job reservation. The child writes directly to that regular file;
+after the entire process group is confirmed stopped, the scope verifies its
+identity/size/hash, syncs/closes it and renames the same inode in place. There is
+no second PDF copy that halves the usable output capacity. Originals and OCR
+layers are read in place. The full output bound remains charged while production
+is active; unused credit is refunded only after verified finalization. Failed
+finalization retains its charge until confirmed removal.
+
+Preparation scratch is closed/removed and its parent synced before the final
+scope is sealed and published. Unknown child stop retains the output, manifest,
+job and reservation for administrative reconciliation; scope cleanup refuses a
+pending file-backed producer. The parent hashes bounded bytes without parsing
+the generated PDF. Existing job cancellation/revision/owner/publication guards
+remain in the coordinator.
 
 Imported pages retain their text/vector/geometry and rotation. OCR requests and
 image thumbnails include scanned images only; imported PDF-only output does not

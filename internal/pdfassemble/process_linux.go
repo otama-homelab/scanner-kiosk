@@ -42,7 +42,7 @@ func validProcessRequest(r ProcessRequest) bool {
 }
 
 // GenerateIsolated parses/merges only in the same executable's limited child.
-// available covers the manifest, child output and copied artifact simultaneously.
+// available covers the manifest and one scope-owned output file simultaneously.
 // The caller owns the scope and stops/reconciles its job; unknown cleanup or
 // child stop returns ErrReconciliation and must never trigger blind scope.Close.
 func GenerateIsolated(ctx context.Context, rootPath string, scope *artifactscope.Scope, request ProcessRequest, available int64) (reference string, result error) {
@@ -57,7 +57,7 @@ func GenerateIsolated(ctx context.Context, rootPath string, scope *artifactscope
 		return "", ErrLimit
 	}
 	// Re-encoding a smaller numeric bound cannot increase manifest length.
-	request.Options.MaxOutputBytes = min(request.Options.MaxOutputBytes, (available-int64(len(manifest)))/2)
+	request.Options.MaxOutputBytes = min(request.Options.MaxOutputBytes, available-int64(len(manifest)))
 	if request.Options.MaxOutputBytes < 1 {
 		return "", ErrLimit
 	}
@@ -82,15 +82,16 @@ func GenerateIsolated(ctx context.Context, rootPath string, scope *artifactscope
 	if err = root.Mkdir(dir, 0700); err != nil {
 		return "", errors.Join(ocrplugin.ErrReconciliation, err)
 	}
-	var manifestFile, output *os.File
+	var manifestFile *os.File
+	var output *artifactscope.FileArtifact
 	unstopped := false
 	defer func() {
 		var closeErr error
 		if manifestFile != nil {
 			closeErr = errors.Join(closeErr, manifestFile.Close())
 		}
-		if output != nil {
-			closeErr = errors.Join(closeErr, output.Close())
+		if output != nil && !unstopped {
+			closeErr = errors.Join(closeErr, output.CloseAfterStop())
 		}
 		if unstopped {
 			result = errors.Join(result, ocrplugin.ErrReconciliation, closeErr)
@@ -116,7 +117,7 @@ func GenerateIsolated(ctx context.Context, rootPath string, scope *artifactscope
 	if _, err = manifestFile.Seek(0, io.SeekStart); err != nil {
 		return "", err
 	}
-	output, err = root.OpenFile(dir+"/result", os.O_CREATE|os.O_EXCL|os.O_RDWR, 0600)
+	output, err = scope.CreateFileArtifact(ctx, artifactscope.PDF, request.Options.MaxOutputBytes)
 	if err != nil {
 		return "", err
 	}
@@ -126,7 +127,7 @@ func GenerateIsolated(ctx context.Context, rootPath string, scope *artifactscope
 	}
 	bounded, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
-	completed := processrun.Run(bounded, processrun.Spec{Path: executable, Args: []string{"__pdf-assemble", strconv.FormatInt(request.Options.MaxOutputBytes, 10)}, Dir: rootPath, Env: []string{"GOMAXPROCS=2", "GOMEMLIMIT=768MiB"}, Stdin: manifestFile, Stdout: output, Grace: 200 * time.Millisecond})
+	completed := processrun.Run(bounded, processrun.Spec{Path: executable, Args: []string{"__pdf-assemble", strconv.FormatInt(request.Options.MaxOutputBytes, 10)}, Dir: rootPath, Env: []string{"GOMAXPROCS=2", "GOMEMLIMIT=768MiB"}, Stdin: manifestFile, Stdout: output.File(), Grace: 200 * time.Millisecond})
 	if !completed.GroupStopped {
 		unstopped = true
 		return "", ocrplugin.ErrReconciliation
@@ -137,27 +138,15 @@ func GenerateIsolated(ctx context.Context, rootPath string, scope *artifactscope
 	if completed.Err != nil {
 		return "", ErrFailed
 	}
-	info, err := output.Stat()
+	info, err := output.File().Stat()
 	if err != nil || info.Size() < 5 || info.Size() > request.Options.MaxOutputBytes {
 		return "", ErrFailed
 	}
 	var prefix [5]byte
-	if _, err = output.ReadAt(prefix[:], 0); err != nil || string(prefix[:]) != "%PDF-" {
+	if _, err = output.File().ReadAt(prefix[:], 0); err != nil || string(prefix[:]) != "%PDF-" {
 		return "", ErrFailed
 	}
-	writer, err := scope.CreateArtifact(ctx, artifactscope.PDF)
-	if err != nil {
-		return "", err
-	}
-	n, copyErr := io.CopyBuffer(writer, io.NewSectionReader(output, 0, info.Size()), make([]byte, 64<<10))
-	closeErr := writer.Close()
-	if err = errors.Join(copyErr, closeErr); err != nil {
-		return "", err
-	}
-	if n != info.Size() {
-		return "", io.ErrUnexpectedEOF
-	}
-	return writer.Reference(), nil
+	return output.Reference(), nil
 }
 
 // AssemblyChild runs before service configuration. CWD is the private document

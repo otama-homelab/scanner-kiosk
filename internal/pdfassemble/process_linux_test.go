@@ -6,6 +6,8 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/json"
+	"io"
 	"os"
 	"path/filepath"
 	"testing"
@@ -108,5 +110,57 @@ func TestIsolatedMixedAssemblyAndFailureCleanup(t *testing.T) {
 				t.Fatal("scratch retained", len(entries), err)
 			}
 		})
+	}
+}
+
+// A single output must use its admitted bytes once, including above the old
+// staging-plus-copy half ceiling. The final file keeps its shared-budget charge.
+func TestIsolatedOutputUsesSingleReservation(t *testing.T) {
+	ctx := context.Background()
+	root := t.TempDir()
+	if err := os.Chmod(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	raw := importedTextPDF()
+	if err := os.WriteFile(filepath.Join(root, "input.pdf"), raw, 0600); err != nil {
+		t.Fatal(err)
+	}
+	expected, err := Build(ctx, []Page{{ID: "source", MediaType: "application/pdf", Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(raw)), nil }}}, "lossless", opts())
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := ProcessRequest{Encoding: "lossless", Options: opts(), Pages: []ProcessPage{{ID: "source", MediaType: "application/pdf", Input: artifactread.Input{RelativePath: "input.pdf", Size: int64(len(raw)), SHA256: sha256.Sum256(raw)}}}}
+	manifest, err := json.Marshal(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	available := int64(len(manifest) + len(expected) + 128)
+	budget, err := artifactscope.NewBudget(available)
+	if err != nil {
+		t.Fatal(err)
+	}
+	scope, err := artifactscope.NewWithBudget(root, nil, artifactscope.Limits{MaxInputBytes: 1 << 20, MaxOutputBytes: available, MaxTotalOutputBytes: available, MaxOutputs: 1}, budget)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer scope.Close()
+	ref, err := GenerateIsolated(ctx, root, scope, request, available)
+	if err != nil {
+		t.Fatal("output fitting one admitted reservation rejected", err)
+	}
+	sealed, err := scope.Seal(ctx)
+	if err != nil || len(sealed) != 1 || sealed[0].ID != ref {
+		t.Fatal("not sealed", sealed, err)
+	}
+	output := sealed[0]
+	if output.Size <= (available-int64(len(manifest)))/2 || output.Size > available || budget.Used() != output.Size {
+		t.Fatal("duplicate or invalid output charge", output.Size, budget.Used(), available)
+	}
+	data, err := os.ReadFile(filepath.Join(root, output.RelativePath))
+	if err != nil || sha256.Sum256(data) != output.SHA256 {
+		t.Fatal("invalid output hash", err)
+	}
+	if err = scope.Close(); err != nil || budget.Used() != 0 {
+		t.Fatal("output cleanup did not release actual charge", err, budget.Used())
 	}
 }

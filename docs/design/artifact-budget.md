@@ -8,6 +8,19 @@ Full write credit is reserved atomically before writing. Partial/unwritten bytes
 
 This accounts only for logical output bytes written through scope writers. It is not a filesystem/project quota, a filesystem-block/metadata bound, a durable reservation, memory accounting, or a native scratch bound. Native OCR now reserves planned staging bytes through a separate port; watchdog overshoot, physical disk probes/resource acceptance and executable-worker OCR wiring remain separate unfinished boundaries. A fresh in-process budget never authorizes reclaiming files or restarting jobs from a previous boot.
 
+## Supervised file-backed outputs
+
+`CreateFileArtifact` reserves its full validated output bound before handing a
+private regular-file descriptor to a trusted supervisor. The producer must apply
+its OS file-size bound. `CloseAfterStop` requires confirmed process-group stop,
+checks the pinned inode and private mode, hashes/syncs/closes the descriptor and
+renames it in place. It refunds only the unused bound after successful completion;
+a failed completion keeps the full charge until confirmed scope deletion. Seal
+rejects pending output, and Close cannot remove it while production is unproven.
+This preserves file-backed process supervision without pipe-wait hazards or a
+second full-size copy of the final PDF. The configured job reservation stays the
+same; the assembler also leaves room for its bounded manifest.
+
 ## Evidence
 
 Race-enabled tests share budgets across separate roots/stages and check retained sealed intermediate charges, combined-limit rejection, concurrent write contention, refund after confirmed deletion, failed-cleanup retention/retry, and charge retention after Release. A closed root descriptor injects cleanup failure without production hooks.

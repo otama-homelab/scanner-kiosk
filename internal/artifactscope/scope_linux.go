@@ -68,13 +68,14 @@ type reader struct {
 	closed bool
 }
 type writer struct {
-	scope    *Scope
-	file     *os.File
-	ctx      context.Context
-	metadata Artifact
-	hash     hash.Hash
-	done     bool
-	err      error
+	scope       *Scope
+	file        *os.File
+	ctx         context.Context
+	metadata    Artifact
+	hash        hash.Hash
+	done        bool
+	err         error
+	nativeLimit int64
 }
 
 func New(rootPath string, inputs map[string]Input, limits Limits) (*Scope, error) {
@@ -198,6 +199,13 @@ func (s *Scope) CreateArtifact(ctx context.Context, kind string) (ocrplugin.Arti
 func (s *Scope) create(ctx context.Context, kind string) (ocrplugin.ArtifactWriter, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	w, err := s.createLocked(ctx, kind, os.O_WRONLY)
+	if err != nil {
+		return nil, err
+	}
+	return w, nil
+}
+func (s *Scope) createLocked(ctx context.Context, kind string, access int) (*writer, error) {
 	if err := s.active(ctx); err != nil {
 		return nil, err
 	}
@@ -211,7 +219,7 @@ func (s *Scope) create(ctx context.Context, kind string) (ocrplugin.ArtifactWrit
 		return nil, ErrStorage
 	}
 	relative := path.Join(s.directory, id)
-	file, err := s.root.OpenFile(relative+".tmp", os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+	file, err := s.root.OpenFile(relative+".tmp", access|os.O_CREATE|os.O_EXCL, 0600)
 	if err != nil {
 		s.failure = ErrStorage
 		return nil, ErrStorage
@@ -220,6 +228,7 @@ func (s *Scope) create(ctx context.Context, kind string) (ocrplugin.ArtifactWrit
 	s.outputs = append(s.outputs, w)
 	return w, nil
 }
+
 func (s *Scope) active(ctx context.Context) error {
 	if err := ctx.Err(); err != nil {
 		return err
@@ -300,6 +309,10 @@ func (w *writer) Close() error {
 	s := w.scope
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	return w.closeLocked()
+}
+func (w *writer) closeLocked() error {
+	s := w.scope
 	if w.done {
 		return w.err
 	}
@@ -408,6 +421,11 @@ func (s *Scope) Close() error {
 	s.closed = true
 	if len(s.scratch) != 0 {
 		return ErrNotReady
+	}
+	for _, w := range s.outputs {
+		if w.nativeLimit > 0 && !w.done {
+			return ErrNotReady
+		}
 	}
 	for r := range s.readers {
 		r.file.Close()
