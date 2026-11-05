@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"syscall"
 	"testing"
 )
 
@@ -267,5 +268,18 @@ func TestCAEnvironmentSelectsBundleOrExplicitOverride(t *testing.T) {
 				t.Fatal("explicit application CA missing or duplicated")
 			}
 		}
+	}
+}
+
+func TestInstallWithPrivateUmask(t *testing.T) {
+	previous := syscall.Umask(0077)
+	defer syscall.Umask(previous)
+	data, m, base, exe := fixture(t, "app/scanner", []byte("synthetic app"), "")
+	root, err := install(base, exe, data, m)
+	if err != nil {
+		t.Fatal("private umask prevented installation", err)
+	}
+	if err = verify(root, m, digest([]byte("fixture launcher"))); err != nil {
+		t.Fatal(err)
 	}
 }

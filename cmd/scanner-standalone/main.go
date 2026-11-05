@@ -266,9 +266,10 @@ func install(base, executable string, data []byte, m manifest) (string, error) {
 	}
 	_, copyErr := io.Copy(runner, input)
 	inputErr := input.Close()
+	modeErr := runner.Chmod(0555)
 	syncErr := runner.Sync()
 	closeErr := runner.Close()
-	if copyErr != nil || inputErr != nil || syncErr != nil || closeErr != nil {
+	if copyErr != nil || inputErr != nil || modeErr != nil || syncErr != nil || closeErr != nil {
 		return "", errRuntime
 	}
 	for name := range tools {
@@ -308,7 +309,7 @@ func nativeEnvironment(root string, input []string) []string {
 }
 func applicationEnvironment(root string, args, input []string) []string {
 	defaults := map[string]string{
-		"SSL_CERT_FILE":                 filepath.Join(root, bundledCAFile),
+		"SSL_CERT_FILE":                  filepath.Join(root, bundledCAFile),
 		"SCANNER_SCANIMAGE_PATH":         filepath.Join(root, "tools/scanner-native-scanimage"),
 		"SCANNER_SANE_PARAMETERS_PATH":   filepath.Join(root, "tools/scanner-native-parameters"),
 		"SCANNER_OCR_TESSERACT_PATH":     filepath.Join(root, "tools/scanner-native-tesseract"),
