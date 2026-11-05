@@ -477,3 +477,32 @@ Older executables reject schema 0017 as newer than their known migrations. There
 is no automatic down migration: rollback requires the compatible pre-upgrade
 database/document backup and the old executable together. Source-model support
 does not yet provide PDF upload, safe preview or a bounded parsing-child runtime.
+
+## Import job kind and graph-safe replacement (migration 0018)
+
+PDF import has its own job kind, `import`, rather than masquerading as render or
+OCR. The existing active-job uniqueness, immutable snapshot/start, deadline,
+reservation, receipt and owner relationships apply. No additional job state is
+introduced: a future intake record must distinguish receiving from sealed input
+before a queued import can be claimed. No HTTP route admits import work yet.
+
+SQLite requires foreign-key actions to be disabled before a table-replacement
+transaction. The migration runner now owns a dedicated connection, temporarily
+disables those actions, runs the checksummed migrations in its existing IMMEDIATE
+transaction, and runs `foreign_key_check` before commit. It restores normal FK
+enforcement and rename behavior before returning the connection, including on
+rollback/cancellation. A failed restoration discards the connection and fails
+startup. Ordinary application connections still require FK enforcement.
+
+Migration 0018 copies all job columns into the widened table and restores its
+indexes and triggers. Child tables are retained in place; dropping the old jobs
+table cannot cascade reservations/job artifacts/cleanup manifests or null receipt
+result IDs. Upgrade tests retain a held scanner lease, reservation, receipt,
+produced-artifact link, cleanup manifest and execution attempt. They also verify
+normal RESTRICT/CASCADE behavior and immutable-start/snapshot checks afterward.
+An invalid existing reference graph rejects and rolls back the complete upgrade,
+leaving the old schema/data intact and restoring FK/rename settings on the failed
+connection. Existing migration checksums are unchanged.
+
+As with migration 0017, rollback to an older executable requires a compatible
+pre-upgrade database/document backup; no automatic schema downgrade is provided.

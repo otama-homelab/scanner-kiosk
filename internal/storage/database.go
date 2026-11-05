@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"database/sql"
+	"database/sql/driver"
 	"embed"
 	"errors"
 	"fmt"
@@ -106,8 +107,34 @@ func applyWithBusyRetry(ctx context.Context, db *sql.DB, kind Kind) error {
 	}
 }
 
-func apply(ctx context.Context, db *sql.DB, kind Kind) error {
-	tx, err := db.BeginTx(ctx, nil)
+func apply(ctx context.Context, db *sql.DB, kind Kind) (err error) {
+	conn, err := db.Conn(ctx)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+	// SQLite table replacement requires FK checks off before BEGIN; validate the
+	// entire graph before commit and restore enforcement before returning the connection.
+	defer func() {
+		restore, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		_, restoreErr := conn.ExecContext(restore, "PRAGMA legacy_alter_table=OFF; PRAGMA foreign_keys=ON")
+		var enabled int
+		if restoreErr == nil {
+			restoreErr = conn.QueryRowContext(restore, "PRAGMA foreign_keys").Scan(&enabled)
+		}
+		if restoreErr == nil && enabled != 1 {
+			restoreErr = errors.New("foreign-key enforcement could not be restored")
+		}
+		if restoreErr != nil {
+			err = errors.Join(err, restoreErr)
+			_ = conn.Raw(func(any) error { return driver.ErrBadConn })
+		}
+	}()
+	if _, err = conn.ExecContext(ctx, "PRAGMA foreign_keys=OFF"); err != nil {
+		return err
+	}
+	tx, err := conn.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
@@ -190,6 +217,19 @@ func apply(ctx context.Context, db *sql.DB, kind Kind) error {
 		if _, err = tx.ExecContext(ctx, "INSERT INTO schema_migrations(version,name,sha256,applied_at_ms) VALUES(?,?,?,?)", version, filepath.Base(name), fmt.Sprintf("%x", sha256.Sum256(body)), time.Now().UnixMilli()); err != nil {
 			return err
 		}
+	}
+	rows, err = tx.QueryContext(ctx, "PRAGMA foreign_key_check")
+	if err != nil {
+		return err
+	}
+	invalid := rows.Next()
+	checkErr := rows.Err()
+	closeErr := rows.Close()
+	if checkErr != nil || closeErr != nil {
+		return errors.Join(checkErr, closeErr)
+	}
+	if invalid {
+		return errors.New("migration would leave invalid foreign-key references")
 	}
 	return tx.Commit()
 }
