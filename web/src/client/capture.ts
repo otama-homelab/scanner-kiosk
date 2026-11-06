@@ -19,7 +19,7 @@ export function captureControls(options:Options){
  const action=(key:CaptureKey,fn:()=>void)=>{const b=document.createElement('button');b.type='button';b.textContent=t(key);b.addEventListener('click',fn);return b};
  const devicePanel=node('section');devicePanel.className='panel capture-device';devicePanel.append(node('h2',t('scanner')));
  const identity=node('p');identity.className='capture-identity';const state=node('p');state.className='capture-state';state.setAttribute('role','status');
- const choose=action('chooseScanner',()=>scannerDialog());const refresh=action('retry',()=>void read());
+ const choose=action('chooseScanner',()=>scannerDialog());const refresh=action('retry',()=>void read(true));
  devicePanel.append(identity,state,choose,refresh);
  const settings=node('section');settings.className='panel capture-settings';settings.append(node('h2',t('type')));
  const purposes=node('div');purposes.className='capture-purposes';purposes.setAttribute('role','group');purposes.setAttribute('aria-label',t('type'));let purpose=options.purpose||'document';
@@ -30,7 +30,7 @@ export function captureControls(options:Options){
  const history=action('history',options.history);history.hidden=true;
  const start=action(options.submitLabel||(options.purpose?'scanNext':'scan'),()=>void submit());start.className='primary';
  const reload=action('reloadView',options.reload);reload.hidden=true;settings.append(purposes,summary,edit,notice,start,history,reload);element.append(devicePanel,settings);
- let devices:Device[]=[],selected='',capture:Capture|null=null,format=options.photoFormat||'jpeg',loading=true,available=false,pending=false,uncertain=false,expired=false,disposed=false;
+ let devices:Device[]=[],selected='',capture:Capture|null=null,format=options.photoFormat||'jpeg',loading=true,available=false,pending=false,uncertain=false,expired=false,disposed=false,manualRefresh=false;
  let timer:ReturnType<typeof setTimeout>|undefined,readController:AbortController|null=null,submitController:AbortController|null=null,modal:HTMLDialogElement|null=null;
  let fingerprint='',key='';
  const setText=(e:HTMLElement,value:string)=>{if(e.textContent!==value)e.textContent=value};
@@ -39,19 +39,19 @@ export function captureControls(options:Options){
  const statusKey=(value:Device['state']):CaptureKey=>value==='idle'?'scannerIdle':value==='busy'?'scannerBusy':value==='unavailable'?'unavailable':'scannerUnknown';
  function update(){
   const current=device();setText(identity,current?.name||t(devices.length?'chooseScanner':'noScanners'));setText(state,t(loading?'loading':!available?'unavailable':current?statusKey(current.state):'scannerUnknown'));
-  choose.textContent=t(current?'changeScanner':'chooseScanner');choose.hidden=devices.length===1;choose.disabled=pending||!devices.length;refresh.disabled=pending||!!readController;
+  choose.textContent=t(current?'changeScanner':'chooseScanner');choose.hidden=devices.length===1;choose.disabled=pending||!devices.length;refresh.disabled=pending||loading||manualRefresh;
   for(let i=0;i<purposeButtons.length;i++){purposeButtons[i].setAttribute('aria-pressed',String(purpose===(i===0?'document':'photo')));purposeButtons[i].disabled=pending||!!options.purpose}
   summary.replaceChildren();for(const [label,value] of [['size',capture?t(capture.size as CaptureKey):'—'],['color',capture?t(capture.color as CaptureKey):'—'],['dpi',capture?String(capture.dpi):'—'],['outputFormat',purpose==='photo'?t(format as CaptureKey):'PDF']] as const){const field=node('div');field.append(node('dt',t(label)),node('dd',value));summary.append(field)}
   edit.disabled=pending||!current?.capture_options.length;start.disabled=pending||uncertain||expired||loading||!available||current?.state!=='idle'||!valid();setText(start,t(pending?'scanning':options.submitLabel||(options.purpose?'scanNext':'scan')));
   history.hidden=!uncertain;reload.hidden=!expired;
  }
  function select(id:string){const chosen=devices.find(d=>d.id===id);if(!chosen)return;selected=id;capture=chosen.default_capture?{...chosen.default_capture}:chosen.capture_options[0]?{...chosen.capture_options[0]}:null;notice.textContent='';update()}
- async function read(){
-  if(!active()||pending||document.hidden)return;
-  readController?.abort();const controller=new AbortController();readController=controller;const timeout=setTimeout(()=>controller.abort(),10000);loading=!available;update();
+ async function read(manual=false){
+  if(!active()||pending||document.hidden||readController)return;
+  const controller=new AbortController();readController=controller;manualRefresh=manual;const timeout=setTimeout(()=>controller.abort(),10000);loading=!available;update();
   try{const result=inventory(await options.read(controller.signal));if(!active()||controller.signal.aborted)return;devices=result;available=true;if(!selected&&devices.length===1)select(devices[0].id);if(selected&&!capture&&device()?.capture_options.length)capture={...(device()!.default_capture||device()!.capture_options[0])};if(!uncertain&&selected&&!valid()&&capture)notice.textContent=t('settingsChanged')}
   catch{if(active()&&readController===controller&&!pending&&!document.hidden)available=false}
-  finally{clearTimeout(timeout);if(active()&&readController===controller){loading=false;readController=null;update();if(timer)clearTimeout(timer);timer=setTimeout(()=>void read(),5000)}}
+  finally{clearTimeout(timeout);if(active()&&readController===controller){loading=false;manualRefresh=false;readController=null;update();if(timer)clearTimeout(timer);timer=setTimeout(()=>void read(),5000)}}
  }
  function dialog(title:CaptureKey){
   if(modal||pending)return null;const d=document.createElement('dialog');d.className='capture-dialog';const h=node('h2',t(title));h.id='capture-dialog-title';d.setAttribute('aria-labelledby',h.id);const body=node('div');body.className='capture-dialog-body';const actions=node('div');actions.className='capture-dialog-actions';actions.append(action('close',()=>d.close()));d.append(h,body,actions);element.append(d);modal=d;
