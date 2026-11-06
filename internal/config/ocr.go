@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"net/url"
 	"path/filepath"
 	"strings"
 )
@@ -19,7 +20,10 @@ type OCR struct {
 	DefaultPlugin    string
 	DefaultLanguages []string
 }
-type Tesseract struct{ Path, DataDir string }
+type Tesseract struct {
+	Path, DataDir, Endpoint, ProcessingDestination string
+	AllowInsecureHTTP                              bool
+}
 
 // LoadOCR retains explicit configuration order and never silently substitutes a
 // provider. Only loaders for enabled plugins are called. Underlying loader errors
@@ -91,6 +95,21 @@ func LoadTesseract(lookup Lookup) (any, error) {
 		return def
 	}
 	out := Tesseract{Path: get("SCANNER_OCR_TESSERACT_PATH", "/usr/bin/tesseract"), DataDir: get("SCANNER_OCR_TESSERACT_DATA_DIR", "/usr/share/tesseract-ocr/5/tessdata")}
+	out.Endpoint = get("SCANNER_OCR_TESSERACT_ENDPOINT", "")
+	if out.Endpoint != "" {
+		flag := get("SCANNER_OCR_TESSERACT_ALLOW_INSECURE_HTTP", "false")
+		out.AllowInsecureHTTP = flag == "true"
+		u, err := url.Parse(out.Endpoint)
+		if err != nil || (flag != "true" && flag != "false") || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || u.RawPath != "" || (u.Path != "" && u.Path != "/") || (u.Port() != "" && !validPort(u.Port())) || (u.Scheme != "https" && !(u.Scheme == "http" && out.AllowInsecureHTTP)) || strings.ContainsAny(out.Endpoint, "\x00\r\n") {
+			return nil, fmt.Errorf("invalid SCANNER_OCR_TESSERACT_ENDPOINT")
+		}
+		out.Endpoint = strings.TrimSuffix(out.Endpoint, "/")
+		out.ProcessingDestination = get("SCANNER_OCR_TESSERACT_DESTINATION", "Tesseract OCR service")
+		if !label(out.ProcessingDestination) {
+			return nil, fmt.Errorf("invalid SCANNER_OCR_TESSERACT_DESTINATION")
+		}
+		return out, nil
+	}
 	for key, path := range map[string]string{"SCANNER_OCR_TESSERACT_PATH": out.Path, "SCANNER_OCR_TESSERACT_DATA_DIR": out.DataDir} {
 		if !filepath.IsAbs(path) || filepath.Clean(path) != path || strings.ContainsAny(path, "\x00\r\n") {
 			return nil, fmt.Errorf("invalid %s", key)

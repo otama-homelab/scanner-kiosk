@@ -61,3 +61,33 @@ func TestOCRLoaderErrorRedaction(t *testing.T) {
 		t.Fatal("loader error leaked")
 	}
 }
+
+func TestTesseractRemoteConfigurationIsExplicitAndNonSecret(t *testing.T) {
+	values := map[string]string{"SCANNER_OCR_TESSERACT_ENDPOINT": "https://ocr.example", "SCANNER_OCR_TESSERACT_API_KEY": "must-not-be-read"}
+	lookup := func(key string) (string, bool) {
+		if key == "SCANNER_OCR_TESSERACT_API_KEY" {
+			t.Fatal("static loader read a credential")
+		}
+		v, ok := values[key]
+		return v, ok
+	}
+	v, err := LoadTesseract(lookup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := v.(Tesseract)
+	if c.Endpoint != "https://ocr.example" || c.ProcessingDestination == "" || c.AllowInsecureHTTP {
+		t.Fatal("incorrect remote metadata")
+	}
+	for _, endpoint := range []string{"http://ocr.example", "https://user:secret@ocr.example", "https://ocr.example?key=secret", "https://ocr.example/#fragment", "https://ocr.example/private", "file:///tmp/socket"} {
+		values["SCANNER_OCR_TESSERACT_ENDPOINT"] = endpoint
+		if _, err := LoadTesseract(lookup); err == nil {
+			t.Fatal("unsafe endpoint accepted")
+		}
+	}
+	values["SCANNER_OCR_TESSERACT_ENDPOINT"] = "http://ocr.example:8080"
+	values["SCANNER_OCR_TESSERACT_ALLOW_INSECURE_HTTP"] = "true"
+	if _, err := LoadTesseract(lookup); err != nil {
+		t.Fatal("explicit private HTTP rejected")
+	}
+}

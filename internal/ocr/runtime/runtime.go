@@ -36,8 +36,8 @@ func (r *Runtime) Defaults() Defaults {
 // Close releases provider clients after the worker has stopped owned jobs.
 func (r *Runtime) Close() { r.once.Do(r.close) }
 
-// Build constructs enabled providers only. Constructors may probe local installed
-// dependencies, but must not send document data or depend on remote model health.
+// Build constructs enabled providers only. Optional OCR initialization may obtain
+// bounded remote metadata, but must never send document data or perform recognition.
 // Failed construction closes prior instances and returns a payload-free error.
 func Build(ctx context.Context, settings config.OCR, factories map[string]Factory) (*Runtime, error) {
 	closers := []func(){}

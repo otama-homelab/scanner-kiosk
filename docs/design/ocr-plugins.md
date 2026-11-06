@@ -83,9 +83,10 @@ Base64 and JSON buffers still consume per-job memory; binary-size and peak-RSS
 differences have not been measured.
 
 The Docker-first deployment direction is to make the native Tesseract engine an
-optional API container, with its client adapter in the application. This split
-is planned, not implemented: current images still include the native engine.
-The LLM path does not require that container.
+optional API container, with its client adapter in the application. The HTTP
+adapter and terminal service command are described in [Tesseract API v1](tesseract-api.md).
+Image packaging is still being separated: current published images include the
+native engine. The LLM path does not require that container.
 
 `config.LoadLLM` loads the enabled provider's profiles from
 `SCANNER_OCR_LLM_PROFILES_JSON`. Each profile declares protocol, full endpoint URL,

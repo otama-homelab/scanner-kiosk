@@ -12,6 +12,7 @@ import (
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/ocr/llm"
 	"scanner-kiosk/internal/ocr/tesseract"
+	"scanner-kiosk/internal/ocr/tesseractapi"
 )
 
 // NewWorker is the initial composition root. The API role must not call it or
@@ -36,6 +37,14 @@ func NewWorker(ctx context.Context, core config.Config, lookup config.Lookup, wo
 			cfg, ok := value.(config.Tesseract)
 			if !ok {
 				return Instance{}, errors.New("invalid Tesseract configuration")
+			}
+			if cfg.Endpoint != "" {
+				key, _ := lookup("SCANNER_OCR_TESSERACT_API_KEY")
+				provider, err := tesseractapi.NewClient(ctx, tesseractapi.ClientOptions{Settings: cfg, APIKey: config.Secret(key), Limits: tesseractapi.Limits{MaxInputBytes: maxInput, MaxResultBytes: min(maxResult, 64<<20), MaxPagePixels: maxPixels, MaxPages: maxPages, Timeout: durations["SCANNER_OCR_TIMEOUT_SECONDS"]}})
+				if err != nil {
+					return Instance{}, err
+				}
+				return Instance{Provider: provider, Close: provider.Close}, nil
 			}
 			provider, err := tesseract.New(tesseract.Options{Binary: cfg.Path, DataDir: cfg.DataDir, WorkRoot: workRoot, MaxInputBytes: maxInput, MaxResultBytes: maxResult, MaxPagePixels: maxPixels, MaxPages: maxPages, Timeout: durations["SCANNER_OCR_TIMEOUT_SECONDS"], StopGrace: durations["SCANNER_PROCESS_STOP_GRACE_SECONDS"]})
 			return Instance{Provider: provider}, err

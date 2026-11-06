@@ -54,6 +54,49 @@ func TestWorkerComposesLLMWithoutOIDCOrRemoteProbe(t *testing.T) {
 		t.Fatal("missing key accepted or leaked")
 	}
 }
+
+func TestWorkerComposesRemoteTesseractWithoutLocalEngineOrRecognizing(t *testing.T) {
+	const key = "fixture-tesseract-key-00000000000000000000"
+	var calls atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls.Add(1)
+		if r.Method != "GET" || r.URL.Path != "/v1/capabilities" || r.Header.Get("Authorization") != "Bearer "+key {
+			t.Error("unexpected recognition or credential")
+		}
+		json.NewEncoder(w).Encode(ocrplugin.Capabilities{APIVersion: 1, ID: "tesseract", Name: "Tesseract", Version: "1", Models: []ocrplugin.Model{{ID: "installed", Name: "Installed", Version: "sha256-" + strings.Repeat("a", 64), Languages: []string{"ja", "en"}, QualityPresets: []string{"auto"}, Outputs: []ocrplugin.OutputKind{ocrplugin.PDFTextLayer}, MaxPages: 10000, MaxPagePixels: 40000000}}})
+	}))
+	defer server.Close()
+	values := map[string]string{"SCANNER_OCR_TESSERACT_ENDPOINT": server.URL, "SCANNER_OCR_TESSERACT_ALLOW_INSECURE_HTTP": "true", "SCANNER_OCR_TESSERACT_API_KEY": key, "SCANNER_OCR_TESSERACT_PATH": "/not-installed/tesseract"}
+	lookup := func(k string) (string, bool) {
+		if strings.HasPrefix(k, "SCANNER_OIDC_") {
+			t.Fatal("OCR worker read OIDC")
+		}
+		v, ok := values[k]
+		return v, ok
+	}
+	core, err := config.LoadWorker(lookup)
+	if err != nil {
+		t.Fatal(err)
+	}
+	runtime, err := NewWorker(context.Background(), core, lookup, t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer runtime.Close()
+	caps, _ := json.Marshal(runtime.Registry.Capabilities())
+	if calls.Load() != 1 || runtime.Defaults().PluginID != "tesseract" || strings.Contains(string(caps), key) || strings.Contains(string(caps), server.URL) {
+		t.Fatal("incorrect optional remote composition")
+	}
+	values["SCANNER_OCR_PLUGINS"] = ""
+	disabled, err := NewWorker(context.Background(), core, lookup, t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer disabled.Close()
+	if calls.Load() != 1 || len(disabled.Registry.Capabilities()) != 0 {
+		t.Fatal("disabled plugin contacted endpoint")
+	}
+}
 func TestWorkerUsesInstalledDictionaryDefaults(t *testing.T) {
 	root := t.TempDir()
 	binary := filepath.Join(root, "tesseract")
