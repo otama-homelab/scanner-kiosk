@@ -1,5 +1,7 @@
 # Scanner kiosk
 
+[Source repository](https://github.com/otama-homelab/scanner-kiosk) · Apache-2.0
+
 A browser-based scanner for phones and desktops. Scan documents, import PDFs,
 insert or replace pages, rotate/reorder/delete pages, and download PDF or image
 outputs. Documents belong to individual users and expire automatically.
