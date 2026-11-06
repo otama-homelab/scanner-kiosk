@@ -215,7 +215,8 @@ func (p *Provider) schema(kind ocrplugin.OutputKind) any {
 	object := func(properties map[string]any, required []string) any {
 		return map[string]any{"type": "object", "properties": properties, "required": required, "additionalProperties": false}
 	}
-	text := map[string]any{"type": "string", "maxLength": p.options.MaxTextBytes}
+	// Byte budgets are enforced locally; endpoint schema-length ceilings can differ.
+	text := map[string]any{"type": "string"}
 	if kind == ocrplugin.Text {
 		return object(map[string]any{"text": text}, []string{"text"})
 	}

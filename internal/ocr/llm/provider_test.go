@@ -338,3 +338,69 @@ func TestPositionedResponseBecomesPinnedTextLayer(t *testing.T) {
 		t.Fatal("unconfigured renderer advertised PDF capability")
 	}
 }
+
+func TestLargeLocalTextBudgetDoesNotRequireLargeSchemaStringLimit(t *testing.T) {
+	for _, kind := range []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PositionedText} {
+		t.Run(string(kind), func(t *testing.T) {
+			var calls atomic.Int32
+			p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
+				calls.Add(1)
+				var body map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+					t.Errorf("invalid request JSON: %v", err)
+					w.WriteHeader(http.StatusBadRequest)
+					return
+				}
+				schema := body["response_format"].(map[string]any)["json_schema"].(map[string]any)["schema"].(map[string]any)
+				properties := schema["properties"].(map[string]any)
+				if kind == ocrplugin.PositionedText {
+					properties = properties["spans"].(map[string]any)["items"].(map[string]any)["properties"].(map[string]any)
+				}
+				text := properties["text"].(map[string]any)
+				// Real endpoints may cap schema string lengths below the local artifact budget.
+				if maximum, exists := text["maxLength"]; exists && maximum.(float64) > 1<<20 {
+					http.Error(w, "schema string limit unsupported", http.StatusBadRequest)
+					return
+				}
+				var content any = map[string]any{"text": "日本語 English"}
+				if kind == ocrplugin.PositionedText {
+					content = map[string]any{"spans": []any{map[string]any{"text": "日本語 English", "box": map[string]any{"x": 1, "y": 2, "width": 60, "height": 10}}}}
+				}
+				json.NewEncoder(w).Encode(completion(content))
+			})
+			p.options.MaxTextBytes = 16 << 20
+			a := &access{input: fixture(t)}
+			if _, err := p.Run(context.Background(), request(p, kind), a); err != nil {
+				t.Fatal(err)
+			}
+			if calls.Load() != 1 || len(a.outputs) != 1 || !a.outputs[0].closed {
+				t.Fatal("missing output or unexpected retry")
+			}
+		})
+	}
+}
+
+func TestLocalTextByteLimitRemainsAuthoritative(t *testing.T) {
+	for _, kind := range []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PositionedText} {
+		t.Run(string(kind), func(t *testing.T) {
+			var calls atomic.Int32
+			p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
+				calls.Add(1)
+				var content any = map[string]any{"text": "日本語"}
+				if kind == ocrplugin.PositionedText {
+					content = map[string]any{"spans": []any{
+						map[string]any{"text": "日", "box": map[string]any{"x": 1, "y": 2, "width": 20, "height": 10}},
+						map[string]any{"text": "本", "box": map[string]any{"x": 21, "y": 2, "width": 20, "height": 10}},
+					}}
+				}
+				json.NewEncoder(w).Encode(completion(content))
+			})
+			p.options.MaxTextBytes = 4
+			a := &access{input: fixture(t)}
+			_, err := p.Run(context.Background(), request(p, kind), a)
+			if err == nil || len(a.outputs) != 0 || calls.Load() != 1 {
+				t.Fatal("oversized UTF-8 text accepted, partially published or retried")
+			}
+		})
+	}
+}

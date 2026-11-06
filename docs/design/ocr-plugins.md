@@ -94,6 +94,14 @@ The HTTP client uses no ambient proxy, cookies, retries or redirect following.
 Provider policy/retention and actual model accuracy require separate acceptance;
 the request fields and prompt cannot guarantee either.
 
+The request schema requires typed, closed result objects but does not derive a
+string `maxLength` from the local byte budget. Endpoint grammar-length ceilings
+can be smaller, and JSON character lengths are not UTF-8 byte counts. The adapter
+still bounds the HTTP response, validates returned text bytes and span counts,
+and enforces the separate text-layer artifact limit locally. This lets a
+Unicode font fit the configured PDF budget without requiring the endpoint to
+accept that budget as a schema string length.
+
 Responses have bounded bodies, a request-wide deadline and cancellation. The
 adapter requires one completed assistant result, the exact configured response
 model, no refusal and no tool/function calls. Structured content rejects unknown
