@@ -212,7 +212,7 @@ jobs:
           node-version: '24.22.2'
       - name: Build locked native payload from cold official inputs
         run: python3 scripts/build-native.py --output-dir "$RUNNER_TEMP/native" --retain-sources
-      - name: Build frontend, API, onefile and distroless candidate
+      - name: Build frontend, API, internal onefile and both runtime images
         run: |
           if [ "$GITHUB_EVENT_NAME" = push ]; then
             bash scripts/build-application.sh "$RUNNER_TEMP/native/native.tar" "$RUNNER_TEMP/candidate" "$GITHUB_REF" "$GITHUB_SHA"
@@ -234,16 +234,35 @@ jobs:
             ${{ runner.temp }}/candidate/native-sbom/
             ${{ runner.temp }}/candidate/onefile-sbom/
             ${{ runner.temp }}/candidate/image-sbom/
+            ${{ runner.temp }}/candidate/tesseract-image-sbom/
+            ${{ runner.temp }}/candidate/core-native-sbom/
+            ${{ runner.temp }}/candidate/tesseract-native-sbom/
             ${{ runner.temp }}/candidate/base-sources.tar
             ${{ runner.temp }}/candidate/base-inventory.json
             ${{ runner.temp }}/candidate/image.tar
             ${{ runner.temp }}/candidate/image.json
             ${{ runner.temp }}/candidate/image-binary.json
+            ${{ runner.temp }}/candidate/image-version.json
+            ${{ runner.temp }}/candidate/image-container.json
+            ${{ runner.temp }}/candidate/image-payload.json
+            ${{ runner.temp }}/candidate/tesseract-image.tar
+            ${{ runner.temp }}/candidate/tesseract-image.json
+            ${{ runner.temp }}/candidate/tesseract-image-binary.json
+            ${{ runner.temp }}/candidate/tesseract-image-version.json
+            ${{ runner.temp }}/candidate/tesseract-image-container.json
+            ${{ runner.temp }}/candidate/tesseract-image-payload.json
+            ${{ runner.temp }}/candidate/runtime-images/runtime-image-inputs.json
+            ${{ runner.temp }}/candidate/runtime-images/core/native-manifest.json
+            ${{ runner.temp }}/candidate/runtime-images/core/native-provenance.json
+            ${{ runner.temp }}/candidate/runtime-images/tesseract/native-manifest.json
+            ${{ runner.temp }}/candidate/runtime-images/tesseract/native-provenance.json
             ${{ runner.temp }}/candidate/native-build.json
             ${{ runner.temp }}/candidate/application-sources.tar
             ${{ runner.temp }}/candidate/application.json
             ${{ runner.temp }}/candidate/app-buildinfo.json
             ${{ runner.temp }}/candidate/launcher-buildinfo.json
+            ${{ runner.temp }}/candidate/service-buildinfo.json
+            ${{ runner.temp }}/candidate/service-version.json
             ${{ runner.temp }}/candidate/result.json
             ${{ runner.temp }}/candidate/candidate-checksums.json
       - name: Retain native corresponding-source inputs
@@ -274,7 +293,7 @@ jobs:
   candidate-advisories:
     needs: candidate-build
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     permissions:
       contents: read
       actions: read

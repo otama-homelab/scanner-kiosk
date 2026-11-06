@@ -117,27 +117,55 @@ class ApplicationBuildTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root=Path(temporary);source=root/'source';source.mkdir();cache=root/'modules';cache.mkdir()
             (source/'go.sum').write_text('example.test/module v1.0.0 h1:runtime\nexample.test/module v1.0.0/go.mod h1:mod\n')
+            with (source/'go.sum').open('a') as stream:
+                stream.write('example.test/service v1.0.0 h1:service\nexample.test/service v1.0.0/go.mod h1:mod\n')
             for name in ['app-buildinfo','launcher-buildinfo']:
                 (root/(name+'.json')).write_text(json.dumps({'Deps':[{'Path':'example.test/module','Version':'v1.0.0','Sum':'h1:runtime'}]}))
+            (root/'service-buildinfo.json').write_text(json.dumps({'Deps':[{'Path':'example.test/service','Version':'v1.0.0','Sum':'h1:service'}]}))
             for name in ['module.zip','module.mod']:(cache/name).write_bytes(b'source data')
             item={'Path':'example.test/module','Version':'v1.0.0','Sum':'h1:runtime','GoModSum':'h1:mod',
                   'Zip':str(cache/'module.zip'),'GoMod':str(cache/'module.mod')}
             def output(command,**kwargs):
                 self.assertEqual(kwargs['env']['GOPROXY'],'off')
                 if command[:3]==['git','archive','--format=tar']:return b'project source archive'
-                return json.dumps(item).encode()
+                return json.dumps({**item,'Path':'example.test/service','Sum':'h1:service'} if command[-1]=='example.test/service@v1.0.0' else item).encode()
             with patch.object(module,'WORK',root),patch.object(module.subprocess,'check_output',side_effect=output):
                 module.retain_sources('a'*40)
                 with tarfile.open(root/'application-sources.tar') as archive:
                     self.assertEqual(archive.extractfile('project.tar').read(),b'project source archive')
                     index=json.load(archive.extractfile('INDEX.json'))
                     self.assertEqual(index['source_revision'],'a'*40)
-                    self.assertEqual(len(index['modules']),1)
+                    self.assertEqual({m['path'] for m in index['modules']},{'example.test/module','example.test/service'})
                     self.assertFalse(index['publication_approved'])
                 (root/'application-sources.tar').unlink()
                 item['Sum']='h1:wrong'
                 with self.assertRaises(ValueError):module.retain_sources('a'*40)
                 self.assertFalse((root/'application-sources.tar').exists())
+
+    def test_both_runtime_recipes_must_use_the_locked_base(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            lock={'base_digest':'sha256:'+'a'*64}
+            for name in ['Dockerfile','Dockerfile.tesseract']:
+                (root/name).write_text('FROM example@'+lock['base_digest']+'\n')
+            module.verify_runtime_bases(root,lock)
+            (root/'Dockerfile.tesseract').write_text('FROM example:mutable\n')
+            with self.assertRaises(ValueError):module.verify_runtime_bases(root,lock)
+
+    def test_inventory_verifies_both_final_payloads_and_saved_images_offline(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);(root/'source').mkdir()
+            with patch.object(module,'WORK',root),patch.object(module,'run') as run,patch.object(module.subprocess,'run'):
+                module.inventory()
+            commands=[c.args[0] for c in run.call_args_list]
+            for role,prefix in [('core','image'),('tesseract','tesseract-image')]:
+                payload=next(c for c in commands if 'scripts/runtime-image-payload.py' in c and role in c)
+                self.assertEqual(payload[payload.index('--metadata')+1],'/'+prefix+'.json')
+                self.assertEqual(payload[payload.index('--rootfs')+1],'/'+prefix+'-rootfs.tar')
+                self.assertEqual(payload[payload.index('--container')+1],'/'+prefix+'-container.json')
+                saved=next(c for c in commands if 'scripts/saved-image-sbom.py' in c and '/'+prefix+'.tar' in c)
+                self.assertEqual(saved[saved.index('--output')+1],'/work/'+prefix+'-sbom')
+            self.assertTrue(all(c.args[1] is True for c in run.call_args_list))
 
     def test_build_refuses_changed_dependency_inputs_before_compiling(self):
         with tempfile.TemporaryDirectory() as temporary:

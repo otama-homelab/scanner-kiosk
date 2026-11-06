@@ -11,6 +11,10 @@ module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 
 
 class CandidateScanTests(unittest.TestCase):
+    def test_core_and_terminal_images_have_separate_scan_inputs(self):
+        self.assertEqual(module.INPUTS['image'],'image-sbom/image.syft.json')
+        self.assertEqual(module.INPUTS['tesseract-image'],'tesseract-image-sbom/image.syft.json')
+
     def test_findings_remain_failed_threshold_and_tool_errors_fail_collection(self):
         for code in [0,2,1]:
             with self.subTest(code=code),tempfile.TemporaryDirectory() as directory:

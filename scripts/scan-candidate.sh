@@ -27,9 +27,9 @@ cleanup() {
 trap cleanup EXIT
 timeout 300 docker build --platform linux/amd64 --network none --file "$root/native/Dockerfile.apk-fetch" --tag "$image" "$root/native" > "$out/bootstrap.log" 2>&1
 timeout 30 docker volume create --driver local --opt type=tmpfs --opt device=tmpfs --opt o=size=4g,uid=10001,gid=10001,mode=0700 "$volume" > "$out/volume.log"
-timeout 30 docker run --detach --name "$prefix-keeper" --network none --read-only --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges --memory 32m --memory-swap 32m --cpus 0.25 --pids-limit 8 --mount "type=volume,src=$volume,dst=/work,readonly" --entrypoint /bin/sleep "$image" 4200 > "$out/keeper.log"
+timeout 30 docker run --detach --name "$prefix-keeper" --network none --read-only --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges --memory 32m --memory-swap 32m --cpus 0.25 --pids-limit 8 --mount "type=volume,src=$volume,dst=/work,readonly" --entrypoint /bin/sleep "$image" 5400 > "$out/keeper.log"
 for phase in acquire scan; do
-    network=none; duration=2500
+    network=none; duration=3200
     if [ "$phase" = acquire ]; then network=bridge; duration=900; fi
     timeout "$duration" docker run --rm --name "$prefix-$phase" --network "$network" --read-only --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges --memory 6g --memory-swap 6g --cpus 2 --pids-limit 64 --ulimit nofile=256:256 --ulimit fsize=4294967296:4294967296 --tmpfs /tmp:rw,nosuid,nodev,size=256m,mode=1777 \
         --mount "type=volume,src=$volume,dst=/work" --mount "type=bind,src=$root,dst=/source,readonly" \

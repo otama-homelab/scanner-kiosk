@@ -133,6 +133,14 @@ def install_tool(source,name):
     return lock
 
 
+def verify_runtime_bases(source,base):
+    for name in ['Dockerfile','Dockerfile.tesseract']:
+        images=[line.split()[1] for line in (source/name).read_text().splitlines()
+                if line.strip() and line.split()[0].upper()=='FROM']
+        if len(images)!=1 or not images[0].endswith('@'+base['base_digest']):
+            raise ValueError('base source lock differs from runtime base')
+
+
 def acquire(revision,ref):
     for name in ['bin','home','tmp','cache','config','source']:(WORK/name).mkdir()
     for name in ['user.npmrc','global.npmrc']:(WORK/name).write_text('')
@@ -152,7 +160,7 @@ def acquire(revision,ref):
     tool=install_npm(source)
     install_tool(source,'syft')
     base=json.loads((source/'native/base-source.lock.json').read_text())
-    if '@'+base['base_digest'] not in (source/'Dockerfile').read_text():raise ValueError('base source lock differs from runtime base')
+    verify_runtime_bases(source,base)
     run(['python3','scripts/base-source.py','acquire','--lock','native/base-source.lock.json',
          '--output','/work/base-source-inputs'],False)
     if subprocess.check_output(['npm','--version'],env=environment(False),text=True).strip()!=tool['version']:
@@ -174,7 +182,7 @@ def retain_sources(revision):
     sums={(parts[0],parts[1]):parts[2] for line in (source/'go.sum').read_text().splitlines()
           if len(parts:=line.split())==3}
     dependencies={}
-    for name in ['app-buildinfo','launcher-buildinfo']:
+    for name in ['app-buildinfo','launcher-buildinfo','service-buildinfo']:
         for item in json.loads((WORK/(name+'.json')).read_text()).get('Deps',[]):
             if item.get('Replace'):raise ValueError('replaced module requires explicit source mapping')
             key=(item['Path'],item['Version'])
@@ -248,13 +256,34 @@ def build(revision,ref,sha):
                        '--ref',ref,'--sha',sha],cwd=source,env=environment(True),timeout=30)) if ref else {'version':'0.0.0-dev','source_sha':'unreleased'}
     if version['version']!=expected['version'] or version['revision']!=expected['source_sha']:
         raise ValueError('packaged executable has wrong source identity')
+    run(['python3','scripts/partition-native.py','--manifest','native/runtime-manifest.json',
+         '--provenance','native/runtime-provenance.json','--native-root','/work/native',
+         '--output','/work/runtime-roles'],True)
+    roles=json.loads((WORK/'runtime-roles/partition.json').read_text())
+    runtime_sha=roles['roles']['tesseract']['native_manifest_sha256']
+    flags='-s -w -X scanner-kiosk/internal/buildinfo.Version='+version['version']+' -X scanner-kiosk/internal/buildinfo.Revision='+version['revision']
+    flags+=' -X scanner-kiosk/internal/buildinfo.NativeRuntimeSHA256='+runtime_sha
+    run(['go','build','-trimpath','-buildvcs=false','-ldflags='+flags,'-o','/work/scanner-tesseract-api','./cmd/scanner-tesseract-api'],True)
+    service_version=json.loads(subprocess.check_output(['/work/scanner-tesseract-api','version'],env=environment(True),timeout=30))
+    if service_version!={**version,'native_runtime_sha256':runtime_sha}:raise ValueError('terminal OCR executable identity differs')
+    (WORK/'service-version.json').write_text(json.dumps(service_version,indent=2)+'\n')
+    run(['python3','scripts/prepare-runtime-images.py','--source','/work/source','--partitions','/work/runtime-roles',
+         '--app','/work/app-scanner','--service','/work/scanner-tesseract-api','--revision',revision,
+         '--output','/work/runtime-images'],True)
+    for role in ['core','tesseract']:
+        root='/work/runtime-images/'+role
+        run(['python3','scripts/native-sbom.py','--native-manifest',root+'/native-manifest.json',
+             '--provenance',root+'/native-provenance.json','--native-root',root+'/native',
+             '--output-dir','/work/'+role+'-native-sbom'],True)
     with Path('/native.tar').open('rb') as stream:native_sha=hashlib.file_digest(stream,'sha256').hexdigest()
-    for name,binary in [('app-buildinfo','/work/app-scanner'),('launcher-buildinfo','/work/package/scanner-onefile-linux-amd64')]:
+    for name,binary in [('app-buildinfo','/work/app-scanner'),('launcher-buildinfo','/work/package/scanner-onefile-linux-amd64'),
+                        ('service-buildinfo','/work/scanner-tesseract-api')]:
         info=subprocess.check_output(['go','version','-m','-json',binary],env=environment(True),timeout=30)
         (WORK/(name+'.json')).write_bytes(info)
     result={'passed':True,'source_revision':revision,'version':version,'locks':acquired['locks'],
             'native_archive_sha256':native_sha,'publication_approved':False,
             'npm_tool':acquired['npm_tool'],
+            'runtime_inputs_sha256':hashlib.sha256((WORK/'runtime-images/runtime-image-inputs.json').read_bytes()).hexdigest(),
             'assets':{p.relative_to(source/'web/dist').as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
                       for p in (source/'web/dist').rglob('*') if p.is_file()}}
     (WORK/'application.json').write_text(json.dumps(result,indent=2)+'\n')
@@ -264,6 +293,20 @@ def build(revision,ref,sha):
          '--build-receipt','/work/package/build.json','--packed-manifest','/work/package/manifest.json',
          '--native-manifest','native/runtime-manifest.json','--provenance','native/runtime-provenance.json',
          '--syft','/work/bin/syft','--output-dir','/work/onefile-sbom'],True)
+
+
+def inventory():
+    for role,prefix in [('core','image'),('tesseract','tesseract-image')]:
+        run(['python3','scripts/runtime-image-payload.py','--role',role,
+             '--rootfs','/'+prefix+'-rootfs.tar','--manifest','/runtime-images/'+role+'/native-manifest.json',
+             '--inputs','/runtime-images/runtime-image-inputs.json','--metadata','/'+prefix+'.json',
+             '--container','/'+prefix+'-container.json','--output','/work/'+prefix+'-payload.json'],True)
+        run(['python3','scripts/saved-image-sbom.py','--archive','/'+prefix+'.tar','--metadata','/'+prefix+'.json',
+             '--syft','/work/bin/syft','--output','/work/'+prefix+'-sbom'],True)
+    with (WORK/'base-inventory.json').open('wb') as receipt:
+        subprocess.run(['python3','scripts/base-source.py','pack','--lock','native/base-source.lock.json',
+            '--sources','/work/base-source-inputs','--image-files','/base-image','--image-metadata','/image.json',
+            '--output','/work/base-sources.tar'],cwd=WORK/'source',env=environment(True),check=True,timeout=60,stdout=receipt)
 
 
 if __name__=='__main__':
@@ -276,10 +319,4 @@ if __name__=='__main__':
         parser.error('revision and optional ref/SHA pair required')
     if args.phase=='acquire':acquire(args.revision,args.ref)
     elif args.phase=='build':build(args.revision,args.ref,args.sha)
-    else:
-        run(['python3','scripts/saved-image-sbom.py','--archive','/image.tar','--metadata','/image.json',
-             '--syft','/work/bin/syft','--output','/work/image-sbom'],True)
-        with (WORK/'base-inventory.json').open('wb') as receipt:
-            subprocess.run(['python3','scripts/base-source.py','pack','--lock','native/base-source.lock.json',
-                '--sources','/work/base-source-inputs','--image-files','/base-image','--image-metadata','/image.json',
-                '--output','/work/base-sources.tar'],cwd=WORK/'source',env=environment(True),check=True,timeout=60,stdout=receipt)
+    else:inventory()

@@ -9,6 +9,7 @@ import subprocess
 
 WORK=Path('/work')
 INPUTS={'image':'image-sbom/image.syft.json','onefile':'onefile-sbom/onefile.syft.json',
+        'tesseract-image':'tesseract-image-sbom/image.syft.json',
         'native':'native-sbom/native-origin.cdx.json','native-cpe':'native-sbom/native-origin.cdx.json'}
 
 
