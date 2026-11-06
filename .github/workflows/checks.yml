@@ -128,6 +128,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_build_application.py -v
       - name: Application pipeline failure and isolation contracts
         run: python3 -m unittest discover -s scripts -p test_application_pipeline.py -v
+      - name: Actual OCR image tracer input and HTTP safety contracts
+        run: python3 -m unittest discover -s scripts -p test_ocr_image_acceptance.py -v
       - name: Pinned standalone build input safety checks
         run: python3 -m unittest discover -s scripts -p test_build_standalone.py -v
       - name: Single-file packager and tagged launcher safety checks
@@ -267,6 +269,22 @@ jobs:
             ${{ runner.temp }}/candidate/service-version.json
             ${{ runner.temp }}/candidate/result.json
             ${{ runner.temp }}/candidate/candidate-checksums.json
+      - name: Trace actual core and terminal OCR containers to published PDFs
+        timeout-minutes: 10
+        run: python3 scripts/check-ocr-images.py --candidate "$RUNNER_TEMP/candidate" --output "$RUNNER_TEMP/ocr-acceptance"
+      - name: Retain synthetic actual-image OCR evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ocr-acceptance-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/ocr-acceptance/receipt.json
+            ${{ runner.temp }}/ocr-acceptance/full.json
+            ${{ runner.temp }}/ocr-acceptance/outage.json
+            ${{ runner.temp }}/ocr-acceptance/*.pdf
+            ${{ runner.temp }}/ocr-acceptance/*-failure.log
       - name: Retain native corresponding-source inputs
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

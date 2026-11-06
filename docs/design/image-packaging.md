@@ -40,3 +40,12 @@ for OCR-off, optional Tesseract and direct LLM configurations and migration.
 These are unreleased packaging candidates until actual image/native/storage and
 acceptance evidence exists. Source-level tests do not establish image size, RSS,
 OCR quality or physical scanner acceptance.
+
+`check-ocr-images.py` is a separate internal CI tracer. It uses the exact built
+image IDs on an internal Docker network with new private tmpfs stores. It checks
+the native SANE version, real API/worker PDF publication, terminal-service OCR on
+two synthetic Japanese/English pages, and ordinary PDF publication after stopping
+the OCR service. All containers are nonroot, read-only and bounded. Test keys and
+session cookies stay outside uploaded artifacts. The synthetic PDFs and receipt
+are retained for separate independent geometry/pixel/text inspection; the tracer
+does not relabel that inspection or real-device acceptance as passed.
