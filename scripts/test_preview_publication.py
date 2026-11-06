@@ -89,6 +89,19 @@ class PreviewPublicationTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.prepare()
 
+    def test_direct_core_module_review_does_not_accept_a_changed_version_or_severity(self):
+        row={'vulnerability':{'id':'GO-2026-5932','severity':'Unknown'},
+             'artifact':{'name':'golang.org/x/crypto','version':'v0.58.0'}}
+        self.reports['image']=[row]
+        with self.assertRaises(ValueError):self.prepare()
+        self.policy['matches']['image']=[{'id':'GO-2026-5932','severity':'Unknown',
+                                        'package':'golang.org/x/crypto','version':'v0.58.0'}]
+        self.review.write_text(json.dumps(self.policy));self.prepare()
+        row['artifact']['version']='v0.59.0'
+        with self.assertRaises(ValueError):self.prepare()
+        row['artifact']['version']='v0.58.0';row['vulnerability']['severity']='High'
+        with self.assertRaises(ValueError):self.prepare()
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -674,3 +674,25 @@ completed through the WSL-local path without relaxing validation. Failure and
 diagnostic logs remain alongside successful raw reports in parent evidence
 `candidate-review-20261104/current-evidence.json`. These results do not clear
 the remaining source/license/security, hosted CI or publication gates.
+
+
+## Direct core and terminal image scan (2026-11-07)
+
+The exact split-image candidate from source
+`0fc4e40507c8d55bea97f3cdd7309615cff3fde6` passed actual payload/inventory
+verification in CI run `42268017312`. Its direct core image now exposes the
+same `GO-2026-5932` / `golang.org/x/crypto v0.58.0` / `Unknown` module-level
+finding as the internal onefile. This is an additional inventory location of
+that reviewed OpenPGP module, not evidence of a reachable imported package.
+The exact source's embedded-frontend govulncheck reported zero affected imported
+packages and zero reachable vulnerabilities. The terminal Tesseract image had
+zero image-inventory matches; the native-origin scan had zero and the existing
+CPE supplement retained the same eight reviewed APK-data identity findings.
+
+The authenticated advisory artifact is `13527958552`, SHA256
+`e8aa5e9cf3f3a57bf3e00a63efaf0e4107c75f68661f4727f4821fe0210337c9`.
+The preview record adds only that exact core ID/severity/package/version. A new
+version, severity, finding or changed native manifest remains blocked; every
+push still requires fresh source govulncheck. The raw combined advisory threshold
+is still false. This review does not approve G5, formal release, physical OCR
+quality or production deployment.

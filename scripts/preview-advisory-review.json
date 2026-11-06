@@ -1,13 +1,21 @@
 {
-  "reviewed_source": "50f5b896175fb66f53d2643a4191fccd7da423bb",
+  "reviewed_source": "0fc4e40507c8d55bea97f3cdd7309615cff3fde6",
   "native_manifest_sha256": "21bb815521d41b3ced50405e34605b54aa4720c9b45a20832fdc833115bf599a",
   "rationale": {
     "native-cpe": "The exact reviewed native manifest uses rebuilt Tesseract 5.5.4 executables/libraries. The APK 5.5.2 identity applies only to retained read-only tessdata configs/fonts. This byte pin must be reviewed when the native payload changes.",
-    "onefile": "The x/crypto OpenPGP finding is not reachable in this application. The required source checks run govulncheck with embedded frontend before any preview push. Module version and severity remain pinned here."
+    "onefile": "The x/crypto OpenPGP finding is not reachable in this application. The required source checks run govulncheck with embedded frontend before any preview push. Module version and severity remain pinned here.",
+    "image": "The direct core binary now exposes the same unused x/crypto OpenPGP module record as the internal onefile. Exact source 0fc4e40507c8d55bea97f3cdd7309615cff3fde6 passed embedded-frontend govulncheck: zero affected imported packages and zero reachable vulnerabilities. Actual CI42268017312 advisory artifact13527958552 (SHA256 e8aa5e9cf3f3a57bf3e00a63efaf0e4107c75f68661f4727f4821fe0210337c9) contains exactly this ID/severity/package/version in core and onefile; terminal image has no matches. Each subsequent push still requires fresh source govulncheck and exact finding comparison; raw native high-threshold failures remain unpassed."
   },
   "matches": {
     "tesseract-image": [],
-    "image": [],
+    "image": [
+      {
+        "id": "GO-2026-5932",
+        "severity": "Unknown",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0"
+      }
+    ],
     "native": [],
     "native-cpe": [
       {
