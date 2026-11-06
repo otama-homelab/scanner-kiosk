@@ -141,9 +141,3 @@ volume is destroyed. This proves the two local state/document-root scenarios,
 not full infrastructure loss, scanner stop/fencing, configuration/secret restore,
 real IdP behavior or backup placement. The source CI candidate runs this check
 without accessing external services or uploading its synthetic recovery archive.
-
-The historical Debian checker `scripts/check-image.py` also exercises export/restore as UID/GID 10001 with a
-read-only root/network disabled, using a read-only backup mount and fresh state
-volume. It checks archive/DB ownership, private modes, integrity, empty session
-tables and overwrite refusal. These small fixture checks do not establish full
-volume-loss recovery, storage/backup retention policy or release acceptance.

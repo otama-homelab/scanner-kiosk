@@ -1,4 +1,5 @@
 # Review candidate only. Not referenced by Helm, Compose or homelab GitOps.
+# Replace the documentation-only CIDR with the intended scanner address.
 # Apply only during an accepted cutover: this intentionally disables legacy eSCL.
 # This covers one managed Pod path, not host/LAN writers or physical stop proof.
 apiVersion: cilium.io/v2

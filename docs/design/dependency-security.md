@@ -1,17 +1,14 @@
 # Dependency inventory and vulnerability evidence
 
 This workflow prepares local release materials. A complete inventory or scan is
-not a release pass. The project has no selected license, published source/tag,
-approved vulnerability exception policy or production deployment acceptance.
+not a release pass. The project uses Apache-2.0 for project-owned code. Publication, vulnerability
+disposition and production acceptance are separate release requirements.
 
 ## Inputs and outputs
 
-`scripts/image-sbom.py` catalogs an immutable local image as described in
-[historical Debian image packaging](debian-image-packaging.md). This Debian-oriented
-image workflow is not the complete inventory procedure for the current onefile
-inside distroless; see [current packaging](image-packaging.md). The runtime Syft JSON is the input to
-Grype, retaining Debian distro metadata and exact compiled Go module versions.
-The scanner never needs Docker credentials or production content.
+`scripts/image-sbom.py` catalogs an immutable local image. See
+[current packaging](image-packaging.md). Inventories and scans use artifact inputs,
+never production content or deployment credentials.
 
 For the current onefile, catalog both the immutable distroless image archive
 and the private cache produced by the integrity-checking launcher. An image
@@ -113,10 +110,8 @@ their extracted cache. It copies files named LICENSE/LICENCE/COPYING/NOTICE/
 COPYRIGHT/AUTHORS/PATENTS, including nested files, into an indexed notice bundle
 with content hashes. Go's own notices come from the pinned Go 1.27.3 toolchain.
 This is reproducible source evidence, not a classification of every license or
-an assertion that all distribution obligations are satisfied. The Docker build
-now independently collects the runtime Go notices and includes them in the
-candidate image. `check-image.py --go-notice-index ...` compares all file hashes
-with this source bundle. Review of obligations and any remaining required
+an assertion that all distribution obligations are satisfied. Native assembly and the onefile packager retain reviewed notices with
+manifest-bound content hashes. Review of obligations and any remaining required
 distribution material is still pending. No license is assigned
 to the two scanner-kiosk module records merely to eliminate unknown metadata.
 

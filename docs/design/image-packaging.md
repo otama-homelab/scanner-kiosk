@@ -35,10 +35,7 @@ ownership/modes separately; image ownership cannot repair an existing mount.
 See [deployment examples](../../deploy/README.md) and [standalone details](../standalone.md).
 
 `deploy/standalone/Dockerfile` and `.dockerignore` are compatibility symlinks to the
-root definitions. The previous source-building Debian candidate lives under
-`deploy/debian`; its [historical checks](debian-image-packaging.md) and
-`scripts/check-image.py` apply to that candidate only. Its scanner/OCR versions,
-SBOM and checks do not approve the current distroless payload.
+root definitions. The root recipe and candidate pipeline define the supported image.
 
 This is an unreleased packaging path. Complete native acquisition/rebuild/source
 and license obligations, exact-candidate security checks, hosted CI/publication,

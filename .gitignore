@@ -19,3 +19,6 @@ __pycache__/
 
 # Prepared standalone image input; never commit a generated executable.
 /scanner
+
+# Local project planning and environment-specific acceptance records.
+/.planning/

@@ -287,12 +287,10 @@ in dll.c after its 41-line leading comment. sane-airscan's Debian archive has no
 active quilt patches. This supports preserving these upstream notice regions;
 it is not an audit of every build transformation or a reproducible binary proof.
 
-The historical Debian checker `check-image.py` requires every reviewed notice and provenance file to enter the
-actual Docker build context, compares image bytes to the source-bound copies,
-checks the file hashes declared in provenance, and exercises missing-directory
-rejection. SANE exception scope, native transitive dependencies, build/source
-delivery, final project license choice and recipient access remain part of the
-open release review. A successfully packaged notice bundle does not clear them.
+Notice and provenance files are build inputs to the native assembly and onefile
+manifest checks. SANE exception scope, transitive dependencies, corresponding
+source and recipient access remain separate distribution obligations. Packaging
+a notice bundle does not approve a release.
 
 ## Offline API source rebuild
 

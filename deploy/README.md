@@ -89,7 +89,7 @@ Kubernetes標準のDeployment・Service・既存PVC・HTTP Probeを使用する�
 
 各containerはread-only rootと専用 `/tmp`（Helmは512Mi emptyDir、Composeは512MiBのexec可能tmpfs）を持ち、`XDG_CACHE_HOME=/tmp` で単一ファイルのnative runtimeを展開する。展開先には実行権限が必要。APIには最大約300秒のstartup probe猶予を設けるが、実環境の起動時間受入は別途必要。health probeはAPI/DB状態のみを示し、workerや実機scannerのreadiness証明には使わない。worker用の偽のHTTP probeは設けない。
 
-HelmとComposeの既定値は同梱scanner/OCRツールのパスを上書きしない。必要な場合のみHelmのworkerEnv、またはComposeを起動する環境／env-fileへ明示する。Composeの値なしenvironmentは未設定ならcontainer環境から除外し、明示した空文字はそのまま渡す（不正な設定は起動時に拒否）。`.env.example`のツールパスも任意のoverrideとしてコメント化している。単一ファイル＋distrolessを配布方針とする。root `Dockerfile` をcanonicalとし、`deploy/standalone` は同じ定義への互換symlink。旧Debian候補は `deploy/debian` へ隔離した。Alpineは試作native依存の取得元で、採用container baseではない。
+HelmとComposeの既定値は同梱scanner/OCRツールのパスを上書きしない。必要な場合のみHelmのworkerEnv、またはComposeを起動する環境／env-fileへ明示する。Composeの値なしenvironmentは未設定ならcontainer環境から除外し、明示した空文字はそのまま渡す（不正な設定は起動時に拒否）。`.env.example`のツールパスも任意のoverrideとしてコメント化している。単一ファイル＋distrolessを配布方針とする。root `Dockerfile` をcanonicalとし、`deploy/standalone` は同じ定義への互換symlink。旧Debian候補は配布対象から除外した。Alpineは試作native依存の取得元で、採用container baseではない。
 
 ローカルrender検証: `python3 scripts/test_helm_native.py`（HelmとPyYAML）、`python3 scripts/test_compose_native.py`（Docker Compose v2）。cluster／Docker daemon接続なし。
 
