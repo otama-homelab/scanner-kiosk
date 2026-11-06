@@ -113,6 +113,9 @@ if args[:1]==['run'] and '--name' in args and args[args.index('--name')+1].endsw
         self.assertEqual(len([c for c in calls if c[:1]==['export']]),2)
         inventory=next(c for c in calls if c[:1]==['run'] and '--name' in c and c[c.index('--name')+1].endswith('-inventory'))
         self.assertEqual(inventory[inventory.index('--network')+1],'none')
+        self.assertFalse(any(',dst=/runtime-images,' in a for a in inventory))
+        for name in ['runtime-inputs.json','core-native-manifest.json','tesseract-native-manifest.json']:
+            self.assertTrue(any(',dst=/'+name+',readonly' in a for a in inventory))
         for role in ['image','tesseract-image']:
             self.assertTrue(any(',dst=/'+role+'-rootfs.tar,readonly' in a for a in inventory))
         self.assertFalse(any('docker.sock' in a for a in inventory))

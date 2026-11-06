@@ -298,8 +298,8 @@ def build(revision,ref,sha):
 def inventory():
     for role,prefix in [('core','image'),('tesseract','tesseract-image')]:
         run(['python3','scripts/runtime-image-payload.py','--role',role,
-             '--rootfs','/'+prefix+'-rootfs.tar','--manifest','/runtime-images/'+role+'/native-manifest.json',
-             '--inputs','/runtime-images/runtime-image-inputs.json','--metadata','/'+prefix+'.json',
+             '--rootfs','/'+prefix+'-rootfs.tar','--manifest','/'+role+'-native-manifest.json',
+             '--inputs','/runtime-inputs.json','--metadata','/'+prefix+'.json',
              '--container','/'+prefix+'-container.json','--output','/work/'+prefix+'-payload.json'],True)
         run(['python3','scripts/saved-image-sbom.py','--archive','/'+prefix+'.tar','--metadata','/'+prefix+'.json',
              '--syft','/work/bin/syft','--output','/work/'+prefix+'-sbom'],True)

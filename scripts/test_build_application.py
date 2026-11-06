@@ -163,6 +163,8 @@ class ApplicationBuildTests(unittest.TestCase):
                 self.assertEqual(payload[payload.index('--metadata')+1],'/'+prefix+'.json')
                 self.assertEqual(payload[payload.index('--rootfs')+1],'/'+prefix+'-rootfs.tar')
                 self.assertEqual(payload[payload.index('--container')+1],'/'+prefix+'-container.json')
+                self.assertEqual(payload[payload.index('--manifest')+1],'/'+role+'-native-manifest.json')
+                self.assertEqual(payload[payload.index('--inputs')+1],'/runtime-inputs.json')
                 saved=next(c for c in commands if 'scripts/saved-image-sbom.py' in c and '/'+prefix+'.tar' in c)
                 self.assertEqual(saved[saved.index('--output')+1],'/work/'+prefix+'-sbom')
             self.assertTrue(all(c.args[1] is True for c in run.call_args_list))

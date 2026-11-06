@@ -80,7 +80,10 @@ stage() {
     if [ "$phase" = build ]; then inputs+=(--mount "type=bind,src=$out/native-input.tar,dst=/native.tar,readonly"); fi
     if [ "$phase" = inventory ]; then
         inputs+=(--mount "type=bind,src=$out/base-image,dst=/base-image,readonly"
-                 --mount "type=bind,src=$out/runtime-images,dst=/runtime-images,readonly")
+                 --mount "type=bind,src=$out/runtime-images/runtime-image-inputs.json,dst=/runtime-inputs.json,readonly")
+        for role in core tesseract; do
+            inputs+=(--mount "type=bind,src=$out/runtime-images/$role/native-manifest.json,dst=/$role-native-manifest.json,readonly")
+        done
         for runtime in image tesseract-image; do
             for suffix in .tar .json -rootfs.tar -container.json; do
                 inputs+=(--mount "type=bind,src=$out/$runtime$suffix,dst=/$runtime$suffix,readonly")
