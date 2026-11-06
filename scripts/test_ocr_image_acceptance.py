@@ -60,7 +60,7 @@ class OCRImageAcceptanceTest(unittest.TestCase):
         finally:server.shutdown();server.server_close();thread.join(timeout=2)
 
     def test_failure_keeps_proof_live_and_cleans_only_owned_resources_and_test_key(self):
-        for suffix in ['-worker','-full','-copy']:
+        for suffix in ['-worker','-full','-copy','-check-coreonly']:
             with self.subTest(suffix=suffix):self.check_start_failure(suffix)
 
     def check_start_failure(self,suffix):
@@ -87,6 +87,17 @@ class OCRImageAcceptanceTest(unittest.TestCase):
                     self.assertEqual(command[command.index('--user')+1],'10001:10001')
                     self.assertEqual(command[command.index('--cap-drop')+1],'ALL')
                     self.assertIn('no-new-privileges',command)
+                    name=command[command.index('--name')+1]
+                    if name.endswith('-keeper'):
+                        for role in ['state','documents','proof']:
+                            self.assertTrue(any('-'+role+',dst=/' in value and value.endswith(',readonly') for value in command),
+                                            'all tmpfs stores must survive stopping both core roles')
+                    if name.endswith(('-api-coreonly','-worker-coreonly')):
+                        self.assertNotIn('--env-file',command)
+                        self.assertFalse(any('SCANNER_OCR_' in value for value in command))
+                        stopped={c[-1] for c in calls if c[1:2]==['stop']}
+                        self.assertTrue(all(cid in stopped for cid,n in containers.items()
+                                            if n.endswith(('-api','-worker','-tesseract'))))
                     cid=format(len(containers)+1,'064x');containers[cid]=command[command.index('--name')+1];stdout=cid
                 elif command[0]=='inspect':
                     stdout=json.dumps([{'Id':command[-1],'Image':'sha256:'+'b'*64,
@@ -102,11 +113,12 @@ class OCRImageAcceptanceTest(unittest.TestCase):
                     self.assertEqual(kwargs['stderr'],subprocess.STDOUT)
                     stdout='synthetic helper stderr retained'
                 elif command[0]=='cp':
-                    self.assertEqual(suffix,'-copy')
                     cid,path=command[1].split(':',1)
                     self.assertTrue(containers[cid].endswith('-keeper'),'copy from the live proof mount')
-                    self.assertEqual(path,'/proof/plain.pdf')
-                    raise subprocess.CalledProcessError(17,args)
+                    if suffix=='-copy':
+                        self.assertEqual(path,'/proof/plain.pdf')
+                        raise subprocess.CalledProcessError(17,args)
+                    Path(command[-1]).write_text(json.dumps({'passed':True,'fixture_sha256':'fixture'}))
                 return subprocess.CompletedProcess(args,0,stdout,'')
             with patch.object(self.module.subprocess,'check_output',return_value=source),patch.object(self.module.subprocess,'run',side_effect=run):
                 with self.assertRaises(subprocess.CalledProcessError):self.module.trace(candidate,out)

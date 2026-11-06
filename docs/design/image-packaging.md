@@ -45,7 +45,13 @@ OCR quality or physical scanner acceptance.
 image IDs on an internal Docker network with new private tmpfs stores. It checks
 the native SANE version, real API/worker PDF publication, terminal-service OCR on
 two synthetic Japanese/English pages, and ordinary PDF publication after stopping
-the OCR service. All containers are nonroot, read-only and bounded. Test keys and
+the OCR service. It then restarts both core roles with OCR-off image defaults,
+without the OCR key/endpoint, on the same stores. The original session must still
+download all three identical PDFs, and a new ordinary PDF must succeed without
+advertising OCR. A read-only keeper pins all three synthetic tmpfs volumes across
+role stops; it is removed after proof collection. This is a same-image configuration
+restart check, not a bundled-image upgrade or CSI durability acceptance.
+All containers are nonroot, read-only and bounded. Test keys and
 session cookies stay outside uploaded artifacts. The synthetic PDFs and receipt
 are retained for separate independent geometry/pixel/text inspection; the tracer
 does not relabel that inspection or real-device acceptance as passed.

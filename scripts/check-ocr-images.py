@@ -125,7 +125,7 @@ def inside(phase):
     status={line.split(':',1)[0]:line.split(':',1)[1].strip() for line in Path('/proc/self/status').read_text().splitlines() if ':' in line}
     require(os.getuid()==10001 and status['NoNewPrivs']=='1'
             and all(int(status[k],16)==0 for k in ['CapEff','CapPrm','CapInh','CapBnd','CapAmb']),'tracer isolation failed')
-    raw=Path('/fixture.png').read_bytes();client=Client()
+    raw=Path('/fixture.png').read_bytes();client=Client('api-coreonly' if phase=='coreonly' else 'api')
     wait_for(lambda:client.request('GET','/health/ready')[0] is not None)
     if phase=='full':
         client.request('GET','/api/session');client.request('POST','/auth/guest')
@@ -142,9 +142,23 @@ def inside(phase):
             'model_id':model['id'],'languages':['ja','en'],'quality_preset':default['quality_preset']})
         require(results['ocr']['settings']['ocr']['model_version']==model['version'],'worker did not pin the advertised OCR model')
         results['model_version']=model['version'];results['destination']=model['processing_destination']
-    else:
+    elif phase=='outage':
         client.cookie=Path('/proof/session').read_text()
         results={'outage':render(client,'outage',raw,{'enabled':False})}
+    else:
+        client.cookie=Path('/proof/session').read_text()
+        data,_=client.request('GET','/api/capabilities');capabilities=json.loads(data)
+        require(not capabilities['ocr_plugins'] and capabilities['defaults']['ocr']['enabled'] is False,
+                'default core-only deployment advertises OCR')
+        retained={}
+        for name in ['plain','ocr','outage']:
+            pdf,_=client.request('GET','/api/documents/document_trace_'+name+'/download')
+            digest=hashlib.sha256(pdf).hexdigest()
+            require(digest==hashlib.sha256(Path('/proof/'+name+'.pdf').read_bytes()).hexdigest(),
+                    'existing session or published document did not survive core-only restart')
+            retained[name]=digest
+        results={'coreonly':render(client,'coreonly',raw,{'enabled':False}),
+                 'retained_pdf_sha256':retained,'ocr_plugins':capabilities.get('ocr_plugins',[])}
     Path('/proof/'+phase+'.json').write_text(json.dumps({'passed':True,'fixture_sha256':hashlib.sha256(raw).hexdigest(),
         'uid':os.getuid(),'caps_zero':True,'no_new_privileges':True,**results},indent=2)+'\n')
 
@@ -161,7 +175,7 @@ def trace(candidate,output):
     require(len(tool)==1,'missing pinned Python helper image');tool=tool[0]
     containers=[];volumes=[];network=None
     proof={**identity,'passed':False,'publication_approved':False,
-           'scope':'Actual separate core API/worker and terminal service, HTTP admission, atomic PDF publication and service outage; independent PDF inspection is separate',
+           'scope':'Actual separate core API/worker and terminal service, HTTP admission, atomic PDF publication, service outage and default core-only restart with retained session/documents; independent PDF inspection is separate',
            'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
            'fixture_sha256':hashlib.sha256((root/'scripts/fixtures/ocr-ja-en-300dpi.png').read_bytes()).hexdigest()}
     key=output/'test-key.env';key.write_text('SCANNER_OCR_TESSERACT_API_KEY='+secrets.token_hex(32)+'\n');key.chmod(0o600)
@@ -194,7 +208,8 @@ def trace(candidate,output):
         scratch=['--tmpfs','/tmp:rw,noexec,nosuid,nodev,size=512m,uid=10001,gid=10001,mode=0700']
         env=['-e','SCANNER_SCANNERS_JSON=[]','-e','SCANNER_OCR_PLUGINS=tesseract']
         # The local tmpfs volume disappears when its last running mount stops.
-        keeper=create('keeper',tool,'--mount','type=volume,src='+prefix+'-proof,dst=/proof,readonly',
+        keeper=create('keeper',tool,*[value+',readonly' if value.startswith('type=volume,') else value for value in mounts],
+                      '--mount','type=volume,src='+prefix+'-proof,dst=/proof,readonly',
                       '--entrypoint','/bin/sleep',memory='32m',command=['900'])
         docker('start',keeper)
         sane=create('sane-version',identity['images']['api'],'--entrypoint','/usr/bin/scanimage',
@@ -211,7 +226,7 @@ def trace(candidate,output):
         worker=create('worker',identity['images']['worker'],*worker_args,command=['worker'])
         for cid in [tess,api,worker]:docker('start',cid)
         def helper(phase):
-            cid=create(phase,tool,
+            cid=create('check-'+phase,tool,
                 *mounts,'--mount','type=volume,src='+prefix+'-proof,dst=/proof',
                 '--mount','type=bind,src='+str(Path(__file__).resolve())+',dst=/check.py,readonly',
                 '--mount','type=bind,src='+str(root/'scripts/fixtures/ocr-ja-en-300dpi.png')+',dst=/fixture.png,readonly',
@@ -232,10 +247,19 @@ def trace(candidate,output):
         helper('outage')
         for name in ['outage.pdf','outage.json']:docker('cp',keeper+':/proof/'+name,output/name)
         proof['core_stops']=[checked_stop(api),checked_stop(worker)]
-        proof['full']=read_json(output/'full.json');proof['outage']=read_json(output/'outage.json')
-        require(proof['full']['fixture_sha256']==proof['outage']['fixture_sha256']==proof['fixture_sha256'],
+        # Reuse the same stores/session with the image's OCR-off defaults and no key or endpoint.
+        core_env=['-e','SCANNER_SCANNERS_JSON=[]']
+        api_core=create('api-coreonly',identity['images']['api'],*mounts,*scratch,*core_env,'--network-alias','api-coreonly',
+                        '-e','SCANNER_PUBLIC_URL=https://scanner-ocr.invalid','-e','SCANNER_AUTH_MODE=guest',memory='512m')
+        worker_core=create('worker-coreonly',identity['images']['worker'],*mounts,*scratch,*core_env,command=['worker'])
+        for cid in [api_core,worker_core]:docker('start',cid)
+        helper('coreonly')
+        for name in ['coreonly.pdf','coreonly.json']:docker('cp',keeper+':/proof/'+name,output/name)
+        proof['coreonly_stops']=[checked_stop(api_core),checked_stop(worker_core)]
+        for phase in ['full','outage','coreonly']:proof[phase]=read_json(output/(phase+'.json'))
+        require(all(proof[phase]['fixture_sha256']==proof['fixture_sha256'] for phase in ['full','outage','coreonly']),
                 'actual image tracer used a different fixture')
-        proof['passed']=proof['full']['passed'] is True and proof['outage']['passed'] is True
+        proof['passed']=all(proof[phase]['passed'] is True for phase in ['full','outage','coreonly'])
         proof['independent_pdf_inspection_passed']=False
     finally:
         cleanup=[]
@@ -257,7 +281,7 @@ def trace(candidate,output):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--candidate',type=Path);parser.add_argument('--output',type=Path)
-    parser.add_argument('--inside',choices=['full','outage']);args=parser.parse_args()
+    parser.add_argument('--inside',choices=['full','outage','coreonly']);args=parser.parse_args()
     if args.inside:inside(args.inside)
     elif args.candidate and args.output:trace(args.candidate.resolve(strict=True),args.output.absolute())
     else:parser.error('provide --candidate and a new --output directory')

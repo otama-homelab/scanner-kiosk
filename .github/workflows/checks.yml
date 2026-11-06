@@ -283,6 +283,7 @@ jobs:
             ${{ runner.temp }}/ocr-acceptance/receipt.json
             ${{ runner.temp }}/ocr-acceptance/full.json
             ${{ runner.temp }}/ocr-acceptance/outage.json
+            ${{ runner.temp }}/ocr-acceptance/coreonly.json
             ${{ runner.temp }}/ocr-acceptance/*.pdf
             ${{ runner.temp }}/ocr-acceptance/*-failure.log
       - name: Retain native corresponding-source inputs
