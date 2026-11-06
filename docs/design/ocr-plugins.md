@@ -74,6 +74,19 @@ scanner, remote LLM, final PDF assembler or product acceptance is covered.
 
 ## LLM profile and runtime boundary
 
+The LLM adapter stays compiled into the application worker and connects directly
+to a configured Chat Completions endpoint such as LiteLLM. It uses Go's standard
+HTTP/JSON/image packages and the application's existing PDF text-layer module;
+it adds no model weights, inference runtime or separate LLM SDK. An additional
+adapter API container would duplicate this protocol boundary. Image decoding,
+Base64 and JSON buffers still consume per-job memory; binary-size and peak-RSS
+differences have not been measured.
+
+The Docker-first deployment direction is to make the native Tesseract engine an
+optional API container, with its client adapter in the application. This split
+is planned, not implemented: current images still include the native engine.
+The LLM path does not require that container.
+
 `config.LoadLLM` loads the enabled provider's profiles from
 `SCANNER_OCR_LLM_PROFILES_JSON`. Each profile declares protocol, full endpoint URL,
 request model, exact expected response model, deployment version, supported

@@ -456,7 +456,7 @@
     "/api/documents": {
       "get": {
         "operationId": "listDocuments",
-        "description": "Return only this principal’s unexpired projections. Cursor is opaque and never grants access.",
+        "description": "Return only this principal\u2019s unexpired projections. Cursor is opaque and never grants access.",
         "responses": {
           "200": {
             "description": "Success; caller authorization and retention are still enforced.",
@@ -2126,6 +2126,49 @@
           }
         }
       }
+    },
+    "/auth/session/reset": {
+      "post": {
+        "operationId": "resetAnonymousSession",
+        "description": "Clear an anonymous, stale or revoked browser cookie without revoking a login successor or removing documents. A valid authenticated session conflicts and is preserved. Origin and empty-body idempotency-key guards and login rate limits apply. Storage failure never clears the cookie.",
+        "security": [],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PublicOrigin"
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Cookie cleared; bootstrap may create a fresh anonymous session."
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/OriginDenied"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "description": "Login rate limit exceeded."
+          },
+          "503": {
+            "description": "Session storage unavailable; existing cookie remains untouched."
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2483,6 +2526,10 @@
               "guest"
             ],
             "description": "Configured type. guest is a legacy isolated-session mode; named none is not yet implemented."
+          },
+          "reset_required": {
+            "type": "boolean",
+            "description": "Stale or revoked cookie: recover using POST /auth/session/reset, then bootstrap once more. GET never overwrites that cookie."
           }
         },
         "required": [
@@ -3080,7 +3127,7 @@
         }
       },
       "NotFound": {
-        "description": "Missing or not owned; do not reveal another principal’s resource.",
+        "description": "Missing or not owned; do not reveal another principal\u2019s resource.",
         "content": {
           "application/json": {
             "schema": {

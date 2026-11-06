@@ -14,6 +14,15 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   await page.route('**/api/scanners',r=>reply(r,{scanners:[]}));
   await page.route('**/api/jobs/'+job.id,r=>reply(r,job));
   await page.route('**/api/documents/import',r=>{const request=r.request();posts.push({headers:request.headers(),body:request.postDataBuffer()});if(uncertain){uncertain=false;return r.abort('failed')}return reply(r,job,202)});
+  await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
+  const choosing=page.waitForEvent('filechooser');await page.getByRole('button',{name:'Import PDF',exact:true}).click();const chooser=await choosing;
+  assert(!page.url().endsWith('#/import'),'opening the native picker must not navigate to an import page');assert.equal(posts.length,0);
+  await chooser.setFiles({name:'direct.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\ndirect')});
+  await page.getByText('Queued',{exact:true}).waitFor();assert.equal(posts.length,1,'file selection submits once without another button');
+  await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,revision:1,purpose:'document',state:'review',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[]}));
+  job.state='succeeded';await page.getByRole('heading',{name:'Document',exact:true}).waitFor();
+  assert(page.url().endsWith('#/document/'+doc),'completed direct import opens the existing document editor');job.state='queued';
+  checks.push('Home opens native file picker; selection uploads once and completion opens document editor without an intermediate import page');
   const open=async()=>{await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/import');await page.getByRole('heading',{name:'Import PDF',exact:true}).waitFor();};
   await open();assert(await page.getByRole('button',{name:'Import PDF',exact:true}).isDisabled());
   for(const size of [1,55,56,63,64,65,262161]){

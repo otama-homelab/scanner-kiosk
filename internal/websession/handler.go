@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
@@ -46,6 +47,7 @@ type View struct {
 	PrincipalKind    string `json:"principal_kind"`
 	AuthenticateType string `json:"authenticate_type"`
 	CanAdminister    bool   `json:"can_administer"`
+	ResetRequired    bool   `json:"reset_required,omitempty"`
 }
 
 type response struct {
@@ -87,6 +89,7 @@ func NewWithRecords(records Records, options Options) (*Handler, error) {
 	mux.HandleFunc("POST /auth/oidc/start", h.oidcStart)
 	mux.HandleFunc("POST /auth/simple/login", h.passwordLogin)
 	mux.HandleFunc("POST /auth/logout", h.logout)
+	mux.HandleFunc("POST /auth/session/reset", h.resetAnonymous)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		h.write(w, response{404, map[string]string{"code": "not_found", "message": "Not found"}})
 	})
@@ -208,12 +211,12 @@ func (h *Handler) bootstrap(w http.ResponseWriter, r *http.Request) {
 	// A late request with a rotated/expired cookie must not overwrite a newer
 	// browser session with a newly issued anonymous cookie.
 	if _, cookieErr := r.Cookie(CookieName); cookieErr == nil && h.sessions.Token(r.Context()) == "" {
-		h.write(w, response{200, View{PrincipalKind: "none", AuthenticateType: h.mode}})
+		h.write(w, response{200, View{PrincipalKind: "none", AuthenticateType: h.mode, ResetRequired: true}})
 		return
 	}
 	principal, kind, err := h.principal(r.Context())
 	if errors.Is(err, ErrSession) {
-		h.write(w, response{200, View{PrincipalKind: "none", AuthenticateType: h.mode}})
+		h.write(w, response{200, View{PrincipalKind: "none", AuthenticateType: h.mode, ResetRequired: true}})
 		return
 	} else if err != nil {
 		h.failure(w, err)
@@ -239,6 +242,33 @@ func (h *Handler) mutation(w http.ResponseWriter, r *http.Request) (*http.Reques
 	}
 	return h.load(r)
 }
+
+// Unlike logout, stale-cookie recovery must not revoke a newer login successor.
+func (h *Handler) resetAnonymous(w http.ResponseWriter, r *http.Request) {
+	loaded, err := h.mutation(w, r)
+	if err != nil {
+		h.failure(w, err)
+		return
+	}
+	r = loaded
+	principal, _, err := h.principal(r.Context())
+	if err != nil && !errors.Is(err, ErrSession) {
+		h.failure(w, err)
+		return
+	}
+	if err == nil && principal != "" {
+		h.failure(w, ErrConflict)
+		return
+	}
+	if allowed, retry := h.loginLimit.allow(); !allowed {
+		w.Header().Set("Retry-After", strconv.Itoa(retry))
+		h.failure(w, authport.ErrLimit)
+		return
+	}
+	h.sessions.WriteSessionCookie(r.Context(), w, "", time.Time{})
+	h.write(w, response{202, nil})
+}
+
 func (h *Handler) guest(w http.ResponseWriter, r *http.Request) {
 	if h.mode != "guest" {
 		h.write(w, response{403, map[string]string{"code": "guest_disabled", "message": "Guest access disabled"}})

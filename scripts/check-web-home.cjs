@@ -3,13 +3,13 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,chromiumSandbox:true});
  const errors=[],checks=[];const context=await browser.newContext({ignoreHTTPSErrors:true});const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
- let authenticated=true,auth='oidc',reads=0,hold=false,release,entered,fail=false;
+ let authenticated=true,auth='oidc',reads=0,hold=false,release,entered,fail=false,resetRequired=false,resetStatus=202,resetCalls=0,sessionReads=0;
  const capture={size:'a4',color:'color',dpi:300};let scanners=[];
  try{
   await page.route('**/api/**',async route=>{
    const path=new URL(route.request().url()).pathname;
    assert.equal(route.request().method(),'GET','viewing and polling must never mutate');
-   if(path==='/api/session')return route.fulfill({headers:{date:new Date().toUTCString()},json:{authenticated,authenticate_type:auth,principal_kind:auth}});
+   if(path==='/api/session'){sessionReads++;return route.fulfill({headers:{date:new Date().toUTCString()},json:{authenticated,authenticate_type:auth,principal_kind:auth,reset_required:resetRequired}})}
    if(path==='/api/scanners'){
     reads++;if(hold){entered?.();await new Promise(resolve=>release=resolve)}
     if(fail)return route.fulfill({status:503,json:{code:'unavailable'}});
@@ -17,6 +17,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
    }
    return route.fulfill({json:{items:[],next_cursor:null}});
   });
+  await page.route('**/auth/session/reset',route=>{assert.equal(route.request().method(),'POST');assert.match(route.request().headers()['idempotency-key'],/^rq1_/);resetCalls++;if(resetStatus===202)resetRequired=false;if(resetStatus===409){resetRequired=false;authenticated=true}return route.fulfill({status:resetStatus,headers:{date:new Date().toUTCString()},body:resetStatus===202?'':JSON.stringify({code:resetStatus===409?'conflict':'session_unavailable'})})});
   await page.clock.install();await page.goto(process.env.SCANNER_TEST_ORIGIN);
   const refresh=page.getByRole('button',{name:'Try again',exact:true});
   await page.waitForFunction(()=>document.querySelector('.capture-state')?.textContent==='Not ready');
@@ -53,6 +54,10 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   }
   checks.push('Bilingual OIDC entry is centered, responsive and usable in both themes');
   auth='guest';await page.reload();await page.getByRole('button',{name:'利用を開始',exact:true}).waitFor();assert.equal(await page.locator('main h1').textContent(),'セッション');
+  auth='oidc';authenticated=false;resetRequired=true;const beforeRecovery=sessionReads;await page.reload();await page.getByRole('heading',{name:'ログイン',exact:true}).waitFor();assert.equal(resetCalls,1);assert.equal(sessionReads,beforeRecovery+2);
+  authenticated=false;resetRequired=true;resetStatus=409;await page.reload();await page.getByRole('heading',{name:'ホーム',exact:true}).waitFor();assert.equal(resetCalls,2);
+  authenticated=false;resetRequired=true;resetStatus=503;await page.reload();await page.getByText('操作を完了できませんでした。再度お試しください。',{exact:true}).waitFor();assert.equal(resetCalls,3);await page.clock.fastForward(1000);assert.equal(resetCalls,3,'failed recovery must not retry or replay a login');
+  checks.push('Stale cookie recovery is automatic and bounded; concurrent valid login survives, storage failure never loops');
   assert.deepEqual(errors,[]);console.log(JSON.stringify({passed:true,checks}));
  }finally{release?.();await context.close();await browser.close()}
 })().catch(error=>{console.error(error);process.exitCode=1});

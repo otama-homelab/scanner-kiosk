@@ -17,22 +17,24 @@ export function importControls(options:Options){
  const active=()=>!disposed&&options.current();
  const valid=()=>!!selected&&selected.size>0&&selected.size<=maximum&&(selected.type==='application/pdf'||selected.name.toLowerCase().endsWith('.pdf'));
  const update=()=>{file.disabled=pending||uncertain||expired;submit.disabled=pending||expired||!valid();submit.textContent=t(uncertain?'checkImport':'importPDF');element.setAttribute('aria-busy',String(pending));history.hidden=!uncertain&&!expired;reload.hidden=!expired};
- file.addEventListener('change',()=>{if(pending||uncertain||expired)return;selected=file.files?.[0]??null;key='';sha='';status.textContent=selected&&!valid()?t('importInvalid'):'';update()});
- element.addEventListener('submit',async event=>{
-  event.preventDefault();if(!active()||pending||expired||!valid())return;pending=true;status.textContent=t(sha?'importSending':'importPreparing');update();let sending=false;
+ const choose=(value:File|null)=>{selected=value;key='';sha='';status.textContent=selected&&!valid()?t('importInvalid'):'';update()};
+ file.addEventListener('change',()=>{if(!pending&&!uncertain&&!expired)choose(file.files?.[0]??null)});
+ element.addEventListener('submit',event=>{event.preventDefault();void send()});
+ async function send(){
+  if(!active()||pending||expired||!valid())return;pending=true;status.textContent=t(sha?'importSending':'importPreparing');update();let sending=false;
   try {
    if(!sha)sha=await fileSHA256(selected!,controller.signal);if(!active())return;
    if(!key)key=requestKey();status.textContent=t('importSending');sending=true;
    const upload=new AbortController();uploadController=upload;const timeout=setTimeout(()=>upload.abort(),60000);
    let job;try{job=await options.send(selected!,key,sha,upload.signal)}finally{clearTimeout(timeout);uploadController=null}
    if(!active())return;if(typeof job?.id!=='string'||!/^[A-Za-z0-9_-]{16,96}$/.test(job.id))throw new Error('Invalid import job');options.accepted(job);
-  }catch(error){if(!active())return;const kind=sending?options.classify(error):'rejected';
+  }catch(error){if(!active())return;delete element.dataset.automatic;const kind=sending?options.classify(error):'rejected';
    if(kind==='expired'){expired=true;status.textContent=t('requestExpired')}
    else if(kind==='rejected'&&!uncertain){key='';status.textContent=t('importRejected')}
    else{uncertain=true;status.textContent=t('importUncertain')}
   }finally{pending=false;if(active())update()}
- });
- async function start(){try{const result=await options.load(controller.signal);if(!active())return;const max=result?.limits?.job_max_bytes;if(!Number.isSafeInteger(max)||max<2)throw new Error('Invalid import limit');maximum=Math.min(max-1,1<<30);limit.textContent=t('importLimit').replace('{size}',new Intl.NumberFormat(document.documentElement.lang,{maximumFractionDigits:1}).format(maximum/(1024*1024)));status.textContent='';update()}catch{if(active()){status.textContent=t('failed');reload.hidden=false}}}
+ }
+ async function start(initialFile?:File){if(initialFile)element.dataset.automatic='true';try{const result=await options.load(controller.signal);if(!active())return;const max=result?.limits?.job_max_bytes;if(!Number.isSafeInteger(max)||max<2)throw new Error('Invalid import limit');maximum=Math.min(max-1,1<<30);limit.textContent=t('importLimit').replace('{size}',new Intl.NumberFormat(document.documentElement.lang,{maximumFractionDigits:1}).format(maximum/(1024*1024)));status.textContent='';update();if(initialFile){const chosen=new DataTransfer();chosen.items.add(initialFile);file.files=chosen.files;choose(initialFile);if(valid())await send();else delete element.dataset.automatic}}catch{if(active()){delete element.dataset.automatic;status.textContent=t('failed');reload.hidden=false}}}
  status.textContent=t('loading');update();
  return {element,start,dispose(){disposed=true;controller.abort();uploadController?.abort()}};
 }

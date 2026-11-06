@@ -1,13 +1,13 @@
 // Dialog-local OCR intent. Capability and admission authority remain on the server.
 export type OCRCommand={enabled:false}|{enabled:true;provider_id:string;model_id:string;languages:string[];quality_preset?:string};
-type Labels={model:string;languages:string;quality:string;chooseModel:string;chooseQuality:string;loading:string;unavailable:string;retry:string;external:string;presets:Record<string,string>};
+type Labels={enable:string;model:string;languages:string;quality:string;chooseModel:string;chooseQuality:string;loading:string;unavailable:string;retry:string;external:string;presets:Record<string,string>};
 type Model={processing_destination?:string;id:string;name:string;languages:string[];quality_presets:string[];default_quality_preset:string|null;available:boolean;outputs:string[]};
 type Entry={provider:string;name:string;external:boolean;model:Model};
 export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Labels,locale:string,changed:()=>void){
- const element=document.createElement('section');element.className='ocr-settings';
+ const element=document.createElement('section');element.className='ocr-settings';element.hidden=true;
  const toggleLabel=document.createElement('label');toggleLabel.className='ocr-toggle';
- const toggle=document.createElement('input');toggle.type='checkbox';toggle.id='ocr-enabled';toggle.setAttribute('role','switch');toggleLabel.append(document.createTextNode('OCR'),toggle);
- const fields=document.createElement('fieldset');fields.className='ocr-fields';
+ const toggle=document.createElement('input');toggle.type='checkbox';toggle.id='ocr-enabled';toggle.setAttribute('role','switch');toggleLabel.append(document.createTextNode(labels.enable),toggle);
+ const fields=document.createElement('fieldset');fields.className='ocr-fields';fields.hidden=true;
  const modelLabel=document.createElement('label');modelLabel.htmlFor='ocr-model';modelLabel.textContent=labels.model;
  const models=document.createElement('select');models.id='ocr-model';
  const languages=document.createElement('fieldset');languages.className='ocr-languages';const legend=document.createElement('legend');legend.textContent=labels.languages;languages.append(legend);
@@ -18,12 +18,12 @@ export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Label
  const state=document.createElement('p');state.className='ocr-state';state.setAttribute('role','status');
  const retry=document.createElement('button');retry.type='button';retry.textContent=labels.retry;
  fields.append(modelLabel,models,notice,languages,qualityLabel,quality);element.append(toggleLabel,fields,state,retry);
- let entries:Entry[]=[],ready=false,locked=false,disposed=false,controller:AbortController|null=null;
+ let entries:Entry[]=[],ready=false,configured=false,failed=false,locked=false,disposed=false,controller:AbortController|null=null;
  let request=0;
  const placeholder=(select:HTMLSelectElement,label:string)=>{select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=label;select.append(option)};
  placeholder(models,labels.chooseModel);placeholder(quality,labels.chooseQuality);
  const selected=()=>models.value===''?undefined:entries[Number(models.value)];
- const sync=()=>{toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
+ const sync=()=>{element.hidden=!configured&&!failed&&!toggle.checked;toggleLabel.hidden=!configured&&!toggle.checked;fields.hidden=!toggle.checked;toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
  function options(preferredLanguages:string[]=[],preset?:string){
   languageList.replaceChildren();placeholder(quality,labels.chooseQuality);
   const entry=selected();notice.textContent=entry?.external?labels.external.replace('{destination}',entry.model.processing_destination!):'';
@@ -45,6 +45,7 @@ export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Label
   try{
    const capabilities=await load(current.signal);if(disposed||version!==request)return;
    if(!Array.isArray(capabilities?.ocr_plugins))throw new Error('Invalid capabilities');
+   configured=capabilities.ocr_plugins.length>0;
    const next:Entry[]=[];
    for(const provider of capabilities.ocr_plugins){
     if(typeof provider.id!=='string'||typeof provider.name!=='string'||!Array.isArray(provider.models))throw new Error('Invalid provider');
@@ -54,14 +55,15 @@ export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Label
    for(const [index,entry] of entries.entries()){const option=document.createElement('option');option.value=String(index);option.textContent=`${entry.name} · ${entry.model.name}`;models.append(option)}
    const preferred=capabilities.defaults?.ocr;const index=entries.findIndex(entry=>entry.provider===(previous?.provider??preferred?.provider_id)&&entry.model.id===(previous?.model.id??preferred?.model_id));
    if(index>=0)models.value=String(index);
-   ready=entries.length>0;state.textContent=ready?'':labels.unavailable;retry.hidden=ready;
+   failed=false;ready=entries.length>0;state.textContent=ready||!configured?'':labels.unavailable;retry.hidden=ready||!configured;
    options(index>=0?(previous?previousLanguages:Array.isArray(preferred?.languages)?preferred.languages:[]):[],index>=0?(previous?previousPreset:preferred?.quality_preset):undefined);
-  }catch{if(!disposed&&version===request){state.textContent=labels.unavailable;retry.hidden=false;sync()}}
+  }catch{if(!disposed&&version===request){failed=true;state.textContent=labels.unavailable;retry.hidden=false;sync()}}
   finally{clearTimeout(timeout)}
  }
  retry.addEventListener('click',()=>void refresh());
  return {
   element,start:()=>void refresh(),lock:(value:boolean)=>{locked=value;sync()},
+  enabled:()=>toggle.checked,
   valid:()=>!toggle.checked||(ready&&!!selected()&&languageList.querySelectorAll('input:checked').length>0&&languageList.querySelectorAll('input:checked').length<=32&&(!selected()!.model.quality_presets.length||quality.value!=='')),
   command:():OCRCommand=>{if(!toggle.checked)return {enabled:false};const entry=selected();if(!ready||!entry)throw new Error('OCR unavailable');const selectedLanguages=Array.from(languageList.querySelectorAll<HTMLInputElement>('input:checked')).map(input=>input.value);if(!selectedLanguages.length||selectedLanguages.length>32||entry.model.quality_presets.length&&!quality.value)throw new Error('OCR selection incomplete');return {enabled:true,provider_id:entry.provider,model_id:entry.model.id,languages:selectedLanguages,...(quality.value?{quality_preset:quality.value}:{})}},
   dispose:()=>{disposed=true;controller?.abort()}

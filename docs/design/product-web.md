@@ -78,3 +78,34 @@ checks session, home and history in English/Japanese at widths 320 and 1440,
 including locale changes and continued Tab navigation inside session content.
 The shared `check-web.py` runner includes this check with mocked GET responses;
 this does not replace real screen-reader or mobile hardware acceptance.
+
+
+### Direct PDF import and stale-session recovery
+
+The home Import PDF action opens the native file picker in the original click
+handler. Cancel leaves the current view unchanged. A selected PDF uses the same
+bounded upload/digest/idempotency controller as the retained direct `/import`
+route, without a second submit action. Known rejection exposes the file/limit
+controls; an uncertain response keeps the original file, digest and request key
+for explicit reconciliation. The initiating import job opens the existing
+page editor after success; reopening other jobs never triggers that navigation.
+
+Session bootstrap marks unusable cookies with optional `reset_required:true`
+without replacing them in a late GET response. The frontend performs one
+same-origin `POST /auth/session/reset` and one fresh bootstrap. This clears only
+the browser cookie, never a principal, document, or a login successor. A valid
+concurrent login produces 409 and is loaded normally. Storage failure leaves the
+cookie untouched; recovery does not loop or replay a business mutation.
+
+
+### Optional OCR presentation
+
+The output dialog offers searchable PDF from the sanitized worker capability
+catalog. A successful empty plugin catalog hides OCR entirely; no OCR endpoint is
+called just to create an ordinary PDF. Local Tesseract is valid without a URL.
+Configured remote profiles disclose their processing destination before any
+explicit OCR admission. Model/language/quality controls appear only after the
+user enables searchable PDF. The dialog expands on that deliberate action and
+keeps its frame stable while those detailed settings change. Metadata failure
+explains that ordinary PDF remains selectable and offers an explicit retry;
+missing remote destination metadata still fails closed for OCR.
