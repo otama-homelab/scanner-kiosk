@@ -41,6 +41,7 @@ class PartitionNativeTest(unittest.TestCase):
             'lib/ld-musl-x86_64.so.1':elf(),
             'usr/share/scanner-kiosk/ca-certificates.crt':b'public certificates',
             'usr/share/scanner-kiosk/notices/LICENSE':b'fixture license',
+            'usr/share/scanner-kiosk/notices/tesseract/LICENSE':b'engine license notice',
             'usr/share/tessdata/eng.traineddata':b'eng',
             'usr/share/tessdata/jpn.traineddata':b'jpn',
             'usr/share/tessdata/osd.traineddata':b'osd',
@@ -87,9 +88,12 @@ class PartitionNativeTest(unittest.TestCase):
         core=json.loads((self.output/'core/native-manifest.json').read_text())['files']
         tess=json.loads((self.output/'tesseract/native-manifest.json').read_text())['files']
         self.assertIn('usr/lib/sane/libsane-airscan.so.1',core)
-        self.assertFalse(any('tesseract' in n or n.startswith('usr/share/tessdata/') for n in core))
+        self.assertNotIn('usr/bin/tesseract',core)
+        self.assertFalse(any(n.startswith(('usr/lib/libtesseract','usr/share/tessdata/')) for n in core))
+        self.assertIn('usr/share/scanner-kiosk/notices/tesseract/LICENSE',core)
         self.assertIn('usr/bin/tesseract',tess)
-        self.assertFalse(any('scanimage' in n or 'libsane' in n for n in tess))
+        self.assertNotIn('usr/bin/scanimage',tess)
+        self.assertFalse(any(n.startswith(('usr/lib/libsane','usr/lib/sane/','usr/libexec/scanner/')) for n in tess))
         self.assertEqual(proof['parent_manifest_sha256'],hashlib.sha256((self.root/'manifest.json').read_bytes()).hexdigest())
 
     def test_missing_or_ambiguous_dependency_fails_without_output(self):
