@@ -1,0 +1,35 @@
+# Optional terminal OCR service. Use together with compose.yaml.
+services:
+  api:
+    environment:
+      SCANNER_OCR_PLUGINS: ${SCANNER_OCR_PLUGINS:-tesseract}
+      SCANNER_OCR_DEFAULT_PLUGIN: ${SCANNER_OCR_DEFAULT_PLUGIN:-tesseract}
+  worker:
+    environment:
+      SCANNER_OCR_PLUGINS: ${SCANNER_OCR_PLUGINS:-tesseract}
+      SCANNER_OCR_DEFAULT_PLUGIN: ${SCANNER_OCR_DEFAULT_PLUGIN:-tesseract}
+      SCANNER_OCR_TESSERACT_ENDPOINT: http://tesseract:8090
+      SCANNER_OCR_TESSERACT_ALLOW_INSECURE_HTTP: "true"
+      SCANNER_OCR_TESSERACT_DESTINATION: ${SCANNER_OCR_TESSERACT_DESTINATION:-Tesseract OCR service}
+      SCANNER_OCR_TESSERACT_API_KEY: ${SCANNER_OCR_TESSERACT_API_KEY:?set a private shared OCR key}
+    networks: [default, ocr]
+  tesseract:
+    image: ${SCANNER_TESSERACT_IMAGE:?set the verified terminal OCR image digest}
+    command: [serve]
+    user: "${PUID:-10001}:${PGID:-10001}"
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=1g,mode=1777"]
+    environment:
+      SCANNER_OCR_TESSERACT_API_KEY: ${SCANNER_OCR_TESSERACT_API_KEY:?set a private shared OCR key}
+      GOMEMLIMIT: 512MiB
+    networks: [ocr]
+    mem_limit: 1536m
+    cpus: 2
+    pids_limit: 64
+    stop_grace_period: 180s
+networks:
+  ocr:
+    internal: true

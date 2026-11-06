@@ -1,43 +1,42 @@
-# Single-file distroless image packaging
+# Docker runtime image packaging
 
-The root `Dockerfile` is the canonical runtime image recipe. It copies the complete
-Linux amd64 onefile produced by `scripts/build-standalone.py`; frontend, application,
-SANE/airscan, Tesseract, language models and native notices belong inside that executable.
-The project LICENSE accompanies the standalone distribution and is copied into the
-image at `/usr/share/doc/scanner-kiosk/LICENSE`; it is not a runtime dependency.
-It does not build an API-only binary or install runtime packages. Alpine is a native
-build input, not the container runtime. The distroless base is pinned by digest.
+The canonical recipes are root `Dockerfile` (core `serve` / `worker`) and
+`Dockerfile.tesseract` (optional terminal OCR API). Both use the same digest-pinned
+distroless base, UID/GID 10001 and exec-form entrypoints. The core contains no
+Tesseract executable, libtesseract or dictionaries. The compiled LLM HTTP adapter
+remains in the core; models and inference run at the configured endpoint.
 
-Prepare a new, private build directory containing only the root `Dockerfile`, root
-`.dockerignore`, the packager's verified `LICENSE` and the onefile renamed `scanner`. Verify the packager's
-`SHA256SUMS` and provenance before copying. Do not put captured content or credentials
-in the context. The ignore file denies everything except those four inputs.
+`scripts/build-application.sh` owns the complete build. The verified native input
+is partitioned by ELF interpreter/library closure, including the SANE airscan
+dlopen backend. Both roots retain source provenance and the complete small notice
+set; a Tesseract license filename in the core is not an embedded OCR engine.
 
-```sh
-docker build --platform=linux/amd64 --network=none --pull=false \
-  --tag scanner-kiosk:local /path/to/prepared-context
-docker run --rm --network none --read-only --cap-drop ALL \
-  --security-opt no-new-privileges:true --memory=768m --pids-limit=128 \
-  --tmpfs=/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777 \
-  scanner-kiosk:local version
-```
+`prepare-runtime-images.py` creates allowlisted contexts from the ordinary Go app
+binary, separate service binary, role native roots, manifests, provenance, project
+LICENSE and source recipes. The internal compatibility onefile is built and tested
+separately; it is never copied into either runtime image. Do not use the repository
+or a home directory as an image build context.
 
-The pinned base must already be available locally for an offline build. Missing
-`scanner` or `LICENSE` fails the build; this recipe does not fetch or assemble native inputs.
-Only the complete reviewed packager output is a valid input. Do not substitute
-`build-web.py`'s inner application executable.
+The base uses `/lib -> usr/lib`; recipes copy logical `native/lib` files into
+`/usr/lib` and preserve the base symlink. After each version smoke, the pipeline
+exports that stopped container's final rootfs and verifies installed bytes, modes,
+owners and links against its assigned inputs. An offline inventory stage has no
+Docker socket. Saved-image layer/config hashes and SBOMs are verified separately.
+The service's build-linked native manifest digest must equal the actual payload;
+its model revision also includes implementation source identity.
 
-The image runs as UID/GID10001. Exec-form ENTRYPOINT owns `/usr/local/bin/scanner`;
-CMD defaults to `serve`, and `worker` is an argument replacement. Writable private
-state/document storage and an executable temporary cache are required. Compose and
-Helm supply the cache and preserve onefile tool-path defaults. Provision storage
-ownership/modes separately; image ownership cannot repair an existing mount.
-See [deployment examples](../../deploy/README.md) and [standalone details](../standalone.md).
+The material stager binds both image IDs, archives, versions, payload receipts,
+role manifests/provenance and inventories to the same source and verified parent
+native payload. Corresponding source/licenses precede registry publication. Both
+immutable image pushes are checked before moving development aliases. The latest
+source owning either preview variant prevents an older run rolling either back,
+including after a partial alias update. G5/formal/latest/cutover remain separate.
 
-`deploy/standalone/Dockerfile` and `.dockerignore` are compatibility symlinks to the
-root definitions. The root recipe and candidate pipeline define the supported image.
+Runtime images need no extraction cache. Keep private state/document storage and
+role scratch separate, preserve selected UID/GID across updates and never replace
+stores merely to update an image. See [deployment examples](../../deploy/README.md)
+for OCR-off, optional Tesseract and direct LLM configurations and migration.
 
-This is an unreleased packaging path. Complete native acquisition/rebuild/source
-and license obligations, exact-candidate security checks, hosted CI/publication,
-real service/storage/upgrade/rollback and physical scanner acceptance remain gates.
-See [release channels](release-channels.md). No registry or deployment is implied.
+These are unreleased packaging candidates until actual image/native/storage and
+acceptance evidence exists. Source-level tests do not establish image size, RSS,
+OCR quality or physical scanner acceptance.

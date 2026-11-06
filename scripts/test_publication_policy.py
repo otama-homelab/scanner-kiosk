@@ -39,6 +39,12 @@ class PublicationPolicyTest(unittest.TestCase):
         self.assertEqual(plan['aliases'], ['preview'])
         self.assertTrue(plan['prerelease'])
 
+    def test_terminal_alias_requires_its_source_owner_and_immutable_tag_is_reserved(self):
+        self.state['image_tags']=['tesseract-preview']
+        with self.assertRaises(ValueError):self.plan()
+        self.state['image_tags']=['tesseract-sha-'+self.sha]
+        with self.assertRaises(ValueError):self.plan()
+
     def test_cli_emits_a_plan_without_mutating_remote_state_or_git(self):
         state = self.repo/'remote-state.json'
         state.write_text(json.dumps(self.state))

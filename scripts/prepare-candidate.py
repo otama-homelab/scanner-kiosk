@@ -99,8 +99,9 @@ def prepare(inputs,work):
             'native-sbom':'native-sbom/native-origin.cdx.json','image-sbom':'image-sbom/image.syft.json',
             'image-inventory':'image-sbom/receipt.json','base-source':'base-sources.tar','base-inventory':'base-inventory.json',
             'application-inputs':'application-sources.tar'}.items():copy(role,candidate/name)
+    for role,name in stage.RUNTIME_FILES.items():copy(role,candidate/name)
     copy('source',native/'source.tar')
-    controls={};deployment=[]
+    controls={};deployment=[];runtime_controls={}
     with tarfile.open(native/'source.tar','r:') as archive:
         total=0;seen=set()
         for count,member in enumerate(archive,1):
@@ -109,6 +110,9 @@ def prepare(inputs,work):
             seen.add(member.name)
             if not member.isfile():continue
             name=member.name.removeprefix('source/')
+            if name in {'Dockerfile','Dockerfile.tesseract','.dockerignore'}:
+                if member.size>128<<10:raise ValueError('oversized runtime recipe')
+                runtime_controls[name]=hashlib.sha256(archive.extractfile(member).read()).hexdigest()
             required={'LICENSE':'license','THIRD-PARTY-NOTICES.md':'notices','CHANGELOG.md':'changelog',
                       'native/runtime-manifest.json':'native-manifest','native/runtime-provenance.json':'native-provenance'}
             if name in required:
@@ -117,7 +121,8 @@ def prepare(inputs,work):
             if name in {'native/source-inputs.lock.json','native/tesseract-source.lock.json'}:
                 if member.size>2<<20:raise ValueError('oversized source lock')
                 controls[name]=json.load(archive.extractfile(member))
-            if name.startswith('deploy/') or name in {'.env.example','docs/standalone.md','docs/design/native-replacement.md','docs/design/release-channels.md'}:
+            if name.startswith('deploy/') or name in {'.env.example','README.md','docs/standalone.md','docs/design/native-replacement.md',
+                    'docs/design/release-channels.md','docs/design/tesseract-api.md','docs/design/image-packaging.md'}:
                 if member.size>2<<20:raise ValueError('oversized deployment input')
                 deployment.append((name,archive.extractfile(member).read()))
     for role in ['license','notices','changelog','native-manifest','native-provenance']:
@@ -139,16 +144,26 @@ def prepare(inputs,work):
     with tarfile.open(materials/stage.NAMES['security-reports'],'x',format=tarfile.USTAR_FORMAT) as archive:
         for scope,scan in security['scans'].items():
             for name,digest in scan['artifacts_sha256'].items():
-                if not re.fullmatch(r'[A-Za-z0-9_.-]+',name) or scope not in {'image','onefile','native','native-cpe'}:
+                if not re.fullmatch(r'[A-Za-z0-9_.-]+',name) or scope not in {'image','tesseract-image','onefile','native','native-cpe'}:
                     raise ValueError('unsafe advisory member')
                 path=reports/scope/name;identity=record(path,allow_empty=True)
                 if identity['sha256']!=digest or identity['bytes']>16<<20:raise ValueError('advisory report changed')
                 tar_bytes(archive,scope+'/'+name,path.read_bytes())
     generated('security-reports')
     image=stage.read_json(candidate/'image.json')[0]['Id']
+    runtime_inputs=stage.read_json(candidate/'runtime-images/runtime-image-inputs.json')
+    runtime_images={}
+    for role,prefix in [('core','image'),('tesseract','tesseract-image')]:
+        expected=runtime_inputs['roles'][role]
+        runtime_images[role]={'image_id':stage.read_json(candidate/(prefix+'.json'))[0]['Id'],
+            'binary_sha256':expected['binary']['sha256'],
+            'native_manifest_sha256':expected['native_manifest_sha256'],
+            'native_provenance_sha256':expected['native_provenance_sha256']}
     write('source-bindings',{'application_source_commit':source_sha,'candidate_sha256':files['binary']['sha256'],
         'api_sha256':build['app_sha256'],'image_id':image,'version':app['version'],'assets':app['assets'],
         'native_manifest_sha256':files['native-manifest']['sha256'],'native_provenance_sha256':files['native-provenance']['sha256'],
+        'runtime_images':runtime_images,'runtime_recipes':{'core':runtime_controls['Dockerfile'],'tesseract':runtime_controls['Dockerfile.tesseract']},
+        'dockerignore_sha256':runtime_controls['.dockerignore'],
         'archives':{scope:{'bytes':files[role]['bytes'],'sha256':files[role]['sha256']} for scope,role in
                     [('native','native-source'),('base','base-source'),('application','application-inputs')]},'publication_approved':False})
     inventory=work/'inventory.json';inventory.write_text(json.dumps({'format':1,'source_sha':source_sha,'files':files})+'\n')

@@ -15,7 +15,7 @@ class PreviewPublicationTest(unittest.TestCase):
         self.module = self.f.module
         self.review = self.f.candidate.root/'preview-review.json'
         self.policy = {'native_manifest_sha256': self.f.candidate.files['native-manifest']['sha256'],
-                       'matches': {scope: [] for scope in ['image', 'native', 'native-cpe', 'onefile']}}
+                       'matches': {scope: [] for scope in ['image', 'tesseract-image', 'native', 'native-cpe', 'onefile']}}
         self.review.write_text(json.dumps(self.policy))
         self.reports = {scope: [] for scope in self.policy['matches']}
         self.counter = 0
@@ -48,6 +48,9 @@ class PreviewPublicationTest(unittest.TestCase):
         self.assertEqual(plan['aliases'], ['preview'])
         self.assertNotIn('scanner-onefile-linux-amd64', plan['uploads'])
         self.assertNotIn('scanner-image.tar', plan['uploads'])
+        self.assertNotIn('scanner-tesseract-image.tar', plan['uploads'])
+        self.assertEqual(plan['tesseract_image_id'],'sha256:'+'c'*64)
+        self.assertEqual(plan['tesseract_image_tag'],'tesseract-sha-'+self.f.git.sha)
         self.assertIn('scanner-native-sources.tar', plan['uploads'])
         self.assertIn('THIRD-PARTY-NOTICES.md', plan['uploads'])
         self.assertNotIn('approval_sha256', plan)

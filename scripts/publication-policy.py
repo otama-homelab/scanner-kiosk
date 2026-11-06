@@ -61,17 +61,18 @@ def _publication_plan(ref, identity, state, repository, *, development_preview=F
     if previous is not None and (not isinstance(previous, str)
                                 or not re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', previous)):
         raise ValueError('invalid preview source identity')
-    if 'preview' in images and previous is None:
+    if {'preview','tesseract-preview'} & set(images) and previous is None:
         raise ValueError('existing preview alias requires its verified source identity')
-    if 'latest' in images and not stable:
+    if {'latest','tesseract-latest'} & set(images) and not stable:
         raise ValueError('existing latest alias has no qualified stable release')
     commit = identity['source_sha']
     preview = identity['channel'] == 'preview'
     release_tag = ('preview-source-' if development_preview else 'preview-')+commit if preview else identity['version']
     image_tag = 'sha-'+commit if preview else identity['version']
-    if not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', image_tag):
+    tesseract_image_tag='tesseract-'+image_tag
+    if not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', tesseract_image_tag):
         raise ValueError('version exceeds registry tag constraints')
-    if release_tag in tags or image_tag in images:
+    if release_tag in tags or image_tag in images or tesseract_image_tag in images:
         raise ValueError('immutable version already exists; rerun must not overwrite it')
     aliases = []
     if preview:
@@ -92,6 +93,7 @@ def _publication_plan(ref, identity, state, repository, *, development_preview=F
         if not stable or version > max(stable):
             aliases = ['latest']
     return {**identity, 'release_tag': release_tag, 'image_tag': image_tag,
+            'tesseract_image_tag':tesseract_image_tag,
             'aliases': aliases, 'external_writes': False}
 
 
@@ -129,12 +131,13 @@ def prepare_publication(candidate, approval_path, approval_sha256, ref, sha, eve
     return {**plan, 'manifest_sha256': manifest_hash, 'approval_sha256': approval_sha256,
             'repository': approval['repository'], 'visibility': approval['visibility'],
             'image_id': manifest['image_id'], 'advisory_threshold_passed': manifest['advisory_threshold_passed'],
+            'tesseract_image_id':manifest['runtime_images']['tesseract']['image_id'],
             'uploads': upload_names(manifest)}
 
 
 def upload_names(manifest, development_preview=False):
     return sorted(record['file'] for role, record in manifest['files'].items()
-                  if not development_preview or role not in {'binary', 'image'}) + ['manifest.json', 'SHA256SUMS', 'receipt.json']
+                  if not development_preview or role not in {'binary', 'image', 'tesseract-image'}) + ['manifest.json', 'SHA256SUMS', 'receipt.json']
 
 
 def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')):
@@ -148,7 +151,7 @@ def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')
     require(manifest['files']['native-manifest']['sha256'] == review['native_manifest_sha256'],
             'native payload differs from the reviewed preview bytes')
     security = staging.read_json(candidate/staging.NAMES['security'])
-    scopes = {'image', 'native', 'native-cpe', 'onefile'}
+    scopes = {'image', 'tesseract-image', 'native', 'native-cpe', 'onefile'}
     require(set(review['matches']) == scopes, 'incomplete preview advisory review')
     seen = set()
     with tarfile.open(candidate/staging.NAMES['security-reports'], 'r:') as archive:
@@ -177,6 +180,7 @@ def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')
     return {**plan, 'development_preview': True, 'repository': 'otama-homelab/scanner-kiosk', 'visibility': 'public',
             'manifest_sha256': hashlib.sha256((candidate/'manifest.json').read_bytes()).hexdigest(),
             'policy_sha256': hashlib.sha256(PREVIEW_REVIEW.read_bytes()).hexdigest(), 'image_id': manifest['image_id'],
+            'tesseract_image_id':manifest['runtime_images']['tesseract']['image_id'],
             'advisory_threshold_passed': manifest['advisory_threshold_passed'], 'uploads': upload_names(manifest, True)}
 
 

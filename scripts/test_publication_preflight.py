@@ -29,6 +29,8 @@ class PublicationPreflightTest(unittest.TestCase):
         spec.loader.exec_module(self.module)
 
     def set_identity(self, version):
+        runtime=json.loads((self.candidate.inputs/'runtime-inputs').read_text())
+        runtime['source_revision']=self.git.sha;self.candidate.put('runtime-inputs',runtime)
         for role in ['application', 'onefile-inventory', 'source-bindings', 'native-source-index']:
             data = json.loads((self.candidate.inputs/role).read_text())
             if 'source_revision' in data:
@@ -37,7 +39,11 @@ class PublicationPreflightTest(unittest.TestCase):
                 data['application_source_commit'] = self.git.sha
             if 'version' in data:
                 data['version'] = version
+            if role=='application':data['runtime_inputs_sha256']=self.candidate.files['runtime-inputs']['sha256']
             self.candidate.put(role, data)
+        self.candidate.put('image-version',version)
+        self.candidate.put('tesseract-image-version',{**version,
+            'native_runtime_sha256':self.candidate.files['tesseract-native-manifest']['sha256']})
 
     def prepare(self, event='push', approval_hash=None):
         raw = (json.dumps(self.approval)+'\n').encode()

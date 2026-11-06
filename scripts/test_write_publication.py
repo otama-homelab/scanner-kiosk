@@ -33,6 +33,9 @@ class WritePublicationTest(unittest.TestCase):
         self.ref = 'refs/heads/main'
         self.image_id = self.plan['image_id']
         self.registry_digest = 'sha256:'+'d'*64
+        self.tesseract_image_id=self.plan['tesseract_image_id']
+        self.tesseract_digest='sha256:'+'e'*64
+        self.local_tags={};self.fail_tag=None
         self.env = {'GH_TOKEN': 'fixture-not-a-real-token', 'GITHUB_ACTOR': 'fixture',
             'GITHUB_ACTIONS': 'true', 'GITHUB_REPOSITORY': 'otama-homelab/scanner-kiosk',
             'GITHUB_EVENT_NAME': 'push', 'GITHUB_REF': 'refs/heads/main', 'GITHUB_SHA': self.sha,
@@ -84,11 +87,15 @@ class WritePublicationTest(unittest.TestCase):
         elif args[:2] == ['docker', 'push']:
             tag = args[-1].rsplit(':', 1)[1]
             self.events.append('push-'+tag)
-            if self.push_failed:
+            if self.push_failed or tag==self.fail_tag:
                 raise RuntimeError('fixture registry push failed')
-            self.tags[tag] = {'digest': self.registry_digest, 'image_id': self.image_id}
+            image_id=self.local_tags[args[-1]]
+            self.tags[tag] = {'digest': self.tesseract_digest if image_id==self.tesseract_image_id else self.registry_digest,
+                              'image_id':image_id}
         elif args[:3] == ['docker', 'image', 'inspect']:
-            return json.dumps([{'Id': self.image_id, 'Config': {'Labels': {'org.opencontainers.image.source': 'https://github.com/otama-homelab/scanner-kiosk'}}}]).encode()
+            return json.dumps([{'Id': args[-1], 'Config': {'Labels': {'org.opencontainers.image.source': 'https://github.com/otama-homelab/scanner-kiosk'}}}]).encode()
+        elif args[:2]==['docker','tag']:
+            self.local_tags[args[-1]]=args[-2]
         elif args[:2] == ['docker', 'load']:
             self.events.append('load-image')
         elif args[:2] not in [['docker', 'login'], ['docker', 'tag']]:
@@ -106,7 +113,7 @@ class WritePublicationTest(unittest.TestCase):
         self.plan.pop('approval_sha256')
         self.plan.update(development_preview=True, release_tag='preview-source-'+self.sha,
                          policy_sha256=hashlib.sha256(self.module.policy.PREVIEW_REVIEW.read_bytes()).hexdigest())
-        self.plan['uploads'] = [name for name in self.plan['uploads'] if name not in ['scanner-onefile-linux-amd64', 'scanner-image.tar']]
+        self.plan['uploads'] = [name for name in self.plan['uploads'] if name not in ['scanner-onefile-linux-amd64', 'scanner-image.tar','scanner-tesseract-image.tar']]
         self.visibility = self.plan['visibility'] = 'public'
         self.path.write_text(json.dumps(self.plan))
         self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
@@ -117,7 +124,7 @@ class WritePublicationTest(unittest.TestCase):
         self.package_missing = True
         result = self.run_writer(apply=True)
         self.assertTrue(result['published'])
-        self.assertEqual(set(self.tags), {self.plan['image_tag'], 'preview'})
+        self.assertEqual(set(self.tags), {self.plan['image_tag'], self.plan['tesseract_image_tag'],'preview','tesseract-preview'})
         self.assertEqual(self.releases[0]['tag_name'], 'preview-source-'+self.sha)
         self.assertTrue(self.releases[0]['prerelease'])
         self.assertIn('G5 acceptance remains incomplete', self.releases[0]['body'])
@@ -134,7 +141,7 @@ class WritePublicationTest(unittest.TestCase):
     def test_preview_alias_recognizes_its_source_only_prerelease_owner(self):
         self.development_preview()
         self.releases = [{'tag_name': 'preview-source-'+self.sha, 'draft': False, 'prerelease': True,
-                          'body': self.module.body_text(self.plan, self.registry_digest)}]
+                          'body': self.module.body_text(self.plan, self.registry_digest,self.tesseract_digest)}]
         self.tags['preview'] = {'digest': self.registry_digest, 'image_id': self.image_id}
         with patch.object(self.module, 'api', self.api), patch.object(self.module, 'registry_image', self.registry):
             state = self.module.fresh_state(self.plan, {})
@@ -173,7 +180,8 @@ class WritePublicationTest(unittest.TestCase):
         self.assertTrue(result['published'])
         self.assertLess(self.events.index('upload-assets'), self.events.index('publish-release'))
         self.assertLess(self.events.index('publish-release'), self.events.index('push-'+self.plan['image_tag']))
-        self.assertEqual(self.events[-1], 'push-preview')
+        self.assertEqual(self.events[-2:], ['push-preview','push-tesseract-preview'])
+        self.assertLess(self.events.index('push-'+self.plan['tesseract_image_tag']),self.events.index('push-preview'))
 
     def test_failed_upload_leaves_draft_and_no_image_or_alias(self):
         self.upload_failed = True
@@ -210,6 +218,54 @@ class WritePublicationTest(unittest.TestCase):
             self.run_writer(apply=True)
         self.assertEqual(self.events, [])
 
+    def test_existing_terminal_version_is_not_overwritten(self):
+        self.tags[self.plan['tesseract_image_tag']]={'digest':self.tesseract_digest,'image_id':self.tesseract_image_id}
+        with self.assertRaises(ValueError):self.run_writer(apply=True)
+        self.assertEqual(self.events,[])
+
+    def test_terminal_push_failure_keeps_sources_and_moves_neither_alias(self):
+        self.fail_tag=self.plan['tesseract_image_tag']
+        with self.assertRaises(RuntimeError):self.run_writer(apply=True)
+        self.assertFalse(self.releases[0]['draft'])
+        self.assertIn(self.plan['image_tag'],self.tags)
+        self.assertNotIn('preview',self.tags);self.assertNotIn('tesseract-preview',self.tags)
+        self.assertFalse(self.module.publication_metadata(self.releases[0])['tesseract_image_digest'])
+
+    def test_both_variants_keep_monotonic_aliases_after_a_partial_previous_update(self):
+        git=self.f.git
+        git.git('-c','user.name=Fixture','-c','user.email=fixture@example.test','commit','--allow-empty','-m','newer')
+        newer=git.git('rev-parse','HEAD');git.git('update-ref','refs/remotes/origin/main',newer)
+        git.git('checkout','--detach',self.sha);self.remote_head=newer
+        old={**self.plan,'release_tag':'preview-source-'+self.sha}
+        new={**self.plan,'source_sha':newer,'version':'preview-'+newer[:12],
+             'image_id':'sha256:'+'f'*64,'tesseract_image_id':'sha256:'+'9'*64}
+        old_images={'preview':{'image_id':self.image_id,'digest':self.registry_digest},
+                    'tesseract-preview':{'image_id':self.tesseract_image_id,'digest':self.tesseract_digest}}
+        new_images={'preview':{'image_id':new['image_id'],'digest':'sha256:'+'8'*64},
+                    'tesseract-preview':{'image_id':new['tesseract_image_id'],'digest':'sha256:'+'7'*64}}
+        self.releases=[{'tag_name':'preview-source-'+self.sha,'draft':False,'prerelease':True,
+                        'body':self.module.body_text(old,self.registry_digest,self.tesseract_digest)},
+                       {'tag_name':'preview-source-'+newer,'draft':False,'prerelease':True,
+                        'body':self.module.body_text(new,new_images['preview']['digest'],new_images['tesseract-preview']['digest'])}]
+        for advanced in ['preview','tesseract-preview']:
+            with self.subTest(advanced=advanced):
+                self.tags={**old_images,advanced:new_images[advanced]}
+                with patch.object(self.module,'api',self.api),patch.object(self.module,'registry_image',self.registry):
+                    state=self.module.fresh_state(self.plan,{},git.repo)
+                self.assertEqual(state['preview_source_sha'],newer)
+                current=self.module.policy.publication_plan('refs/heads/main',self.sha,'push',state,git.repo)
+                self.assertEqual(current['aliases'],[])
+
+    def test_legacy_core_preview_owner_can_be_migrated_without_a_terminal_alias(self):
+        metadata={'format':1,'source_sha':self.sha,'manifest_sha256':self.plan['manifest_sha256'],
+                  'image_id':self.image_id,'image_digest':self.registry_digest}
+        self.releases=[{'tag_name':'preview-source-'+self.sha,'draft':False,'prerelease':True,
+                        'body':self.module.MARKER+json.dumps(metadata)+' -->'}]
+        self.tags['preview']={'digest':self.registry_digest,'image_id':self.image_id}
+        with patch.object(self.module,'api',self.api),patch.object(self.module,'registry_image',self.registry):
+            state=self.module.fresh_state(self.plan,{},self.f.git.repo)
+        self.assertEqual(state['preview_source_sha'],self.sha)
+
     def test_fresh_service_state_prevents_late_old_preview_rollback(self):
         git = self.f.git
         git.git('-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test',
@@ -223,7 +279,7 @@ class WritePublicationTest(unittest.TestCase):
         owner = {'digest': 'sha256:'+'e'*64, 'image_id': owner_plan['image_id']}
         self.tags['preview'] = owner.copy()
         self.releases.append({'id': 101, 'tag_name': 'preview-'+newer, 'draft': False,
-                              'prerelease': True, 'body': self.module.body_text(owner_plan, owner['digest'])})
+                              'prerelease': True, 'body': self.module.body_text(owner_plan, owner['digest'],self.tesseract_digest)})
         self.assertEqual(self.plan['aliases'], ['preview'])
         result = self.run_writer(apply=True)
         self.assertEqual(result['aliases'], [])
@@ -277,7 +333,7 @@ class WritePublicationTest(unittest.TestCase):
         self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
         self.env['GITHUB_REF'] = self.ref
         self.run_writer(apply=True)
-        self.assertEqual(self.events[-2:], ['push-latest', 'finalize-release'])
+        self.assertEqual(self.events[-3:], ['push-latest','push-tesseract-latest', 'finalize-release'])
         self.assertEqual(self.releases[0]['make_latest'], 'true')
         self.assertFalse(self.releases[0]['prerelease'])
 

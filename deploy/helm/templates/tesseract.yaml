@@ -1,0 +1,103 @@
+{{- if .Values.tesseract.enabled -}}
+{{- $digest := required "tesseract.image.digest is required" .Values.tesseract.image.digest -}}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" $digest) -}}
+{{- fail "tesseract.image.digest must be an immutable sha256 digest" -}}
+{{- end -}}
+{{- $repository := default .Values.image.repository .Values.tesseract.image.repository -}}
+{{- $secret := required "tesseract.secretName is required" .Values.tesseract.secretName -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-tesseract
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}-tesseract
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}-tesseract
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 180
+      securityContext:
+        runAsUser: {{ .Values.runtimeIdentity.uid | int64 }}
+        runAsGroup: {{ .Values.runtimeIdentity.gid | int64 }}
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: tesseract
+          image: {{ printf "%s@%s" $repository $digest | quote }}
+          args: [serve]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          env:
+            - name: SCANNER_OCR_TESSERACT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret | quote }}
+                  key: SCANNER_OCR_TESSERACT_API_KEY
+            - name: GOMEMLIMIT
+              value: 512MiB
+          ports:
+            - name: http
+              containerPort: 8090
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            timeoutSeconds: 2
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "2"
+              memory: 1536Mi
+          volumeMounts:
+            - name: temporary
+              mountPath: /tmp
+      volumes:
+        - name: temporary
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-tesseract
+spec:
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}-tesseract
+  ports:
+    - name: http
+      port: 8090
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-tesseract
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}-tesseract
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: {{ .Release.Name }}
+      ports:
+        - protocol: TCP
+          port: 8090
+  egress: []
+{{- end }}

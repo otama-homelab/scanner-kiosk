@@ -6,10 +6,12 @@ A browser-based scanner for phones and desktops. Scan documents, import PDFs,
 insert or replace pages, rotate/reorder/delete pages, and download PDF or image
 outputs. Documents belong to individual users and expire automatically.
 
-Linux amd64 distribution includes the frontend, Go application, SANE/airscan,
-Tesseract, and Japanese/English OCR data in one executable. Native tools unpack
-into a private, integrity-checked executable cache; no host Node, SANE or
-Tesseract installation is required. The container uses distroless.
+Docker is the primary Linux amd64 deployment path. The distroless core image
+contains the frontend, Go application and SANE/airscan, with OCR disabled by
+default. Tesseract and Japanese/English dictionaries live in an optional terminal
+API container. The lightweight LLM OCR plugin is compiled into the core and
+connects directly to LiteLLM or a configured Chat Completions endpoint. No local
+model, inference SDK or extra LLM adapter service is required.
 
 **Status:** unreleased. Automated and device checks cover implemented workflows;
 real provider/mobile acceptance, final distribution review and production cutover
@@ -17,7 +19,7 @@ remain incomplete. This repository does not imply a production-ready release.
 
 ## Run and configure
 
-Use the same executable for both roles:
+The core image uses the same executable for both roles:
 
 ```sh
 scanner serve
@@ -29,7 +31,6 @@ scanning, OCR, PDF generation and cleanup. Both use the same private state and
 document stores and must run with matching OS identities. Configure environment
 variables explicitly; copying `.env.example` does not make the binary load it.
 
-- [Standalone packaging and build](docs/standalone.md)
 - [Compose and standard Kubernetes deployment](deploy/README.md)
 - [Environment settings](.env.example)
 - [Local user/password setup](docs/design/simple-authentication.md)
@@ -43,14 +44,22 @@ the document store from backups. Existing volume ownership is the operator's
 responsibility. Deployment examples default to UID/GID 10001, API 512 MiB and
 worker 1536 MiB; resource needs depend on scan size and encoding.
 
-Local OCR works without an external service. Optional LLM OCR sends document
-content to the configured provider; credentials stay on the worker. Paperless
+Without OCR configuration, ordinary PDF operations remain available and OCR
+controls stay hidden. Optional Tesseract OCR sends images to its configured API
+container; LLM OCR sends them directly to its configured provider. Credentials
+stay on the worker and the selected OCR service, outside the browser/API role. Paperless
 delivery is deferred; the initial workflow ends at downloading the output.
 
 ## Development container images
 
-Successful main pushes publish the already-tested distroless image to
-`ghcr.io/otama-homelab/scanner-kiosk:sha-<full-source-commit>` and update `:preview`.
+Successful main pushes publish two images in the same repository-linked package:
+
+| Image | Immutable tag | Moving development tag |
+| --- | --- | --- |
+| Core (`serve` / `worker`) | `sha-<full-source-commit>` | `preview` |
+| Optional Tesseract API | `tesseract-sha-<full-source-commit>` | `tesseract-preview` |
+
+Package: `ghcr.io/otama-homelab/scanner-kiosk`.
 The image is linked to this repository through its OCI source label and the
 repository's Actions token. These are development previews, not G5-accepted
 production releases. They never move `:latest` or open the version-tag release gate.
@@ -70,7 +79,7 @@ Before pushing the image, the publisher retains corresponding source, third-part
 notices, inventories and raw inspection reports in a source-only prerelease named
 `preview-source-<full-source-commit>`. Binary downloads and image tarballs remain
 CI artifacts until formal release acceptance. The source manifest and checksums
-also identify those two omitted CI artifacts. Native bytes must match the reviewed
+also identify the omitted internal binary and both image archives. Native bytes must match the reviewed
 manifest and every advisory finding must match the retained review; new findings
 or changed native payloads stop automatic publication. Raw advisory failures are
 retained, not relabeled as a passed production security review.
@@ -86,7 +95,8 @@ Go application. See [frontend build](docs/design/product-web.md),
 GOTOOLCHAIN=go1.27.3 go test -race ./...
 ```
 
-The CI workflow builds the native runtime, frontend, onefile and distroless image,
+The CI workflow builds the native runtime, frontend, internal compatibility onefile
+and both distroless images,
 and produces bound source, license, inventory and security materials. Main builds
 are development image previews; SemVer tags select G5-gated formal releases:
 [release channels](docs/design/release-channels.md).

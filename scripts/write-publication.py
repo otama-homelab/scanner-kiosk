@@ -118,37 +118,53 @@ def publication_metadata(release):
     return metadata
 
 
-def fresh_state(plan, env):
+def fresh_state(plan, env, repository=Path('.')):
     releases = pages_items(api('repos/'+REPOSITORY+'/releases?per_page=100', env, paginate=True))
     qualified = []
     for release in releases:
         metadata = publication_metadata(release)
         if metadata is not None:
-            complete = metadata.get('format') == 1 and all(
+            complete = metadata.get('format') in {1,2} and all(
                 isinstance(metadata.get(key), str) and re.fullmatch(pattern, metadata[key])
                 for key, pattern in [('source_sha', r'[0-9a-f]{40}'), ('manifest_sha256', r'[0-9a-f]{64}'),
                                      ('image_id', r'sha256:[0-9a-f]{64}'), ('image_digest', r'sha256:[0-9a-f]{64}')])
+            if metadata.get('format')==2:
+                complete=complete and all(isinstance(metadata.get(key),str) and re.fullmatch(r'sha256:[0-9a-f]{64}',metadata[key])
+                                         for key in ['tesseract_image_id','tesseract_image_digest'])
             release = {**release, 'publication_complete': bool(complete)}
         qualified.append(release)
     releases = qualified
-    images = {tag: registry_image(tag, env) for tag in [plan['image_tag'], 'preview', 'latest']}
+    images = {tag: registry_image(tag, env) for tag in [plan['image_tag'], plan['tesseract_image_tag'],
+                                                      'preview','tesseract-preview','latest','tesseract-latest']}
     previous = None
-    for alias in ['preview', 'latest']:
+    for alias in ['preview', 'tesseract-preview', 'latest', 'tesseract-latest']:
         if images[alias] is None:
             continue
         owners = []
+        prefix='tesseract_' if alias.startswith('tesseract-') else ''
         for release in releases:
             metadata = publication_metadata(release)
-            if (not release['draft'] and metadata and metadata.get('image_digest') == images[alias]['digest']
-                    and metadata.get('image_id') == images[alias]['image_id']):
+            if (not release['draft'] and release.get('publication_complete') and metadata
+                    and metadata.get(prefix+'image_digest') == images[alias]['digest']
+                    and metadata.get(prefix+'image_id') == images[alias]['image_id']):
                 owners.append((release, metadata))
         require(len(owners) == 1, 'existing alias has unknown/ambiguous publication owner')
         release, metadata = owners[0]
         source = metadata['source_sha']
         require(re.fullmatch(r'[0-9a-f]{40}', source), 'invalid alias source')
-        if alias == 'preview':
+        if alias in {'preview','tesseract-preview'}:
             require(release['tag_name'] in {'preview-'+source, 'preview-source-'+source} and release['prerelease'], 'invalid preview owner')
-            previous = source
+            if previous is None:previous=source
+            elif previous!=source:
+                # A partial alias update must never let an older run roll either variant back.
+                result=subprocess.run(['git','merge-base','--is-ancestor',previous,source],cwd=repository,
+                                      capture_output=True,timeout=10)
+                if result.returncode==0:previous=source
+                elif result.returncode==1:
+                    reverse=subprocess.run(['git','merge-base','--is-ancestor',source,previous],cwd=repository,
+                                           capture_output=True,timeout=10)
+                    require(reverse.returncode==0,'preview variants have unknown/diverged source ancestry')
+                else:raise ValueError('cannot establish preview variant ancestry')
         else:
             _, suffix = policy.refs.tag_parts(release['tag_name'])
             require(not suffix and not release['prerelease'], 'invalid latest owner')
@@ -156,9 +172,10 @@ def fresh_state(plan, env):
             'preview_source_sha': previous}
 
 
-def body_text(plan, image_digest=None):
-    metadata = {'format': 1, 'source_sha': plan['source_sha'], 'manifest_sha256': plan['manifest_sha256'],
-                'image_id': plan['image_id'], 'image_digest': image_digest}
+def body_text(plan, image_digest=None, tesseract_image_digest=None):
+    metadata = {'format': 2, 'source_sha': plan['source_sha'], 'manifest_sha256': plan['manifest_sha256'],
+                'image_id': plan['image_id'], 'image_digest': image_digest,
+                'tesseract_image_id':plan['tesseract_image_id'],'tesseract_image_digest':tesseract_image_digest}
     warning = ('Development image preview; not a production release. G5 acceptance remains incomplete.\n\n'
                'This release retains corresponding source, licenses and raw inspection reports.\n\n') if plan.get('development_preview') is True else ''
     return (warning+'Scanner '+plan['version']+'\n\nSource: '+plan['source_sha']+'\nManifest: '+plan['manifest_sha256']+
@@ -200,6 +217,7 @@ def transfer_inputs(candidate, plan_path, plan_sha256):
     expected = policy.upload_names(manifest, development)
     require(plan['uploads'] == expected and manifest['source_sha'] == plan['source_sha']
             and manifest['image_id'] == plan['image_id']
+            and manifest['runtime_images']['tesseract']['image_id']==plan['tesseract_image_id']
             and manifest['version']['revision'] == plan['source_sha']
             and manifest['version']['version'] == plan['version'], 'candidate/plan identity mismatch')
     checksums = staging.checksum_text(plan['manifest_sha256'], records).encode()
@@ -239,10 +257,11 @@ def publish(candidate, plan_path, plan_sha256, ref, sha, event, repository=Path(
             require((package.get('repository') or {}).get('full_name') == REPOSITORY, 'preview package belongs to another repository')
         remote_source(ref, plan['source_sha'], env)
         require_current_checks(plan['source_sha'], env)
-        current = policy.publication_plan(ref, sha, event, fresh_state(plan, env), repository, development_preview=development)
-        require(all(current[k] == plan[k] for k in ['source_sha', 'version', 'release_tag', 'image_tag', 'prerelease']), 'source/plan changed')
+        current = policy.publication_plan(ref, sha, event, fresh_state(plan, env,repository), repository, development_preview=development)
+        require(all(current[k] == plan[k] for k in ['source_sha', 'version', 'release_tag', 'image_tag', 'tesseract_image_tag', 'prerelease']), 'source/plan changed')
         result = {'published': False, 'source_sha': plan['source_sha'], 'manifest_sha256': plan['manifest_sha256'],
                   'release_tag': current['release_tag'], 'image_tag': current['image_tag'], 'aliases': current['aliases']}
+        result['tesseract_image_tag']=current['tesseract_image_tag']
         if not apply:
             return result
         release = api('repos/'+REPOSITORY+'/releases', env, body={'tag_name': current['release_tag'],
@@ -259,18 +278,22 @@ def publish(candidate, plan_path, plan_sha256, ref, sha, event, repository=Path(
         require_current_checks(plan['source_sha'], env)
         # Source assets must be accessible before a public registry image can appear.
         api(release_path, env, body={'draft': False, 'make_latest': 'false'})
-        command(['docker', 'load', '--input', str(candidate/staging.NAMES['image'])], env, timeout=120)
-        loaded = decode(command(['docker', 'image', 'inspect', plan['image_id']], env))
-        require(len(loaded) == 1 and loaded[0]['Id'] == plan['image_id'], 'loaded image differs from candidate')
-        if development:
-            require(loaded[0]['Config'].get('Labels', {}).get('org.opencontainers.image.source') == 'https://github.com/'+REPOSITORY,
-                    'preview image lacks its repository source label')
-        image_ref = REGISTRY+':'+current['image_tag']
-        command(['docker', 'tag', plan['image_id'], image_ref], env)
-        require(registry_image(current['image_tag'], env) is None, 'immutable image appeared during upload')
-        command(['docker', 'push', image_ref], env, timeout=600)
-        image = registry_image(current['image_tag'], env)
-        require(image is not None and image['image_id'] == plan['image_id'], 'pushed image identity mismatch')
+        images={}
+        for role,prefix in [('image',''),('tesseract-image','tesseract_')]:
+            image_id,tag=plan[prefix+'image_id'],current[prefix+'image_tag']
+            command(['docker','load','--input',str(candidate/staging.NAMES[role])],env,timeout=120)
+            loaded=decode(command(['docker','image','inspect',image_id],env))
+            require(len(loaded)==1 and loaded[0]['Id']==image_id,'loaded image differs from candidate')
+            if development:
+                require(loaded[0]['Config'].get('Labels',{}).get('org.opencontainers.image.source')=='https://github.com/'+REPOSITORY,
+                        'preview image lacks its repository source label')
+            image_ref=REGISTRY+':'+tag
+            command(['docker','tag',image_id,image_ref],env)
+            require(registry_image(tag,env) is None,'immutable image appeared during upload')
+            command(['docker','push',image_ref],env,timeout=600)
+            image=registry_image(tag,env)
+            require(image is not None and image['image_id']==image_id,'pushed image identity mismatch')
+            images[prefix]=image
         package = api(package_path, env)
         if development:
             require((package.get('repository') or {}).get('full_name') == REPOSITORY, 'pushed preview is not linked to its repository')
@@ -278,14 +301,17 @@ def publish(candidate, plan_path, plan_sha256, ref, sha, event, repository=Path(
             require(package['visibility'] == plan['visibility'], 'pushed package visibility mismatch')
         remote_source(ref, plan['source_sha'], env)
         require_current_checks(plan['source_sha'], env)
-        api(release_path, env, body={'body': body_text(plan, image['digest']), 'make_latest': 'false'})
+        api(release_path, env, body={'body': body_text(plan, images['']['digest'],images['tesseract_']['digest']), 'make_latest': 'false'})
         for alias in current['aliases']:
-            command(['docker', 'tag', plan['image_id'], REGISTRY+':'+alias], env)
-            command(['docker', 'push', REGISTRY+':'+alias], env, timeout=600)
-            require(registry_image(alias, env) == image, 'alias digest differs from immutable image')
+            for prefix in ['','tesseract_']:
+                tag=('tesseract-' if prefix else '')+alias
+                command(['docker', 'tag', plan[prefix+'image_id'], REGISTRY+':'+tag], env)
+                command(['docker', 'push', REGISTRY+':'+tag], env, timeout=600)
+                require(registry_image(tag, env) == images[prefix], 'alias digest differs from immutable image')
         if 'latest' in current['aliases']:
             api(release_path, env, body={'make_latest': 'true'})
-        return {**result, 'published': True, 'image_digest': image['digest'], 'package_visibility': package['visibility']}
+        return {**result, 'published': True, 'image_digest': images['']['digest'],
+                'tesseract_image_digest':images['tesseract_']['digest'],'package_visibility': package['visibility']}
 
 
 def main():

@@ -19,7 +19,7 @@ OCR = {
 }
 
 
-def render(**overrides):
+def render(tesseract=False,**overrides):
     compose = shutil.which('docker-compose')
     command = [compose] if compose else ['docker', 'compose']
     with tempfile.TemporaryDirectory() as scratch:
@@ -35,14 +35,39 @@ def render(**overrides):
             'UNRELATED_SECRET': 'dummy-unrelated-secret',
             **overrides,
         }
+        files=['-f',str(ROOT/'deploy/compose.yaml')]
+        if tesseract:files+=['-f',str(ROOT/'deploy/compose.tesseract.yaml')]
         result = subprocess.run(
             [*command, '--project-name', 'scanner-contract', '--env-file', '/dev/null',
-             '-f', str(ROOT/'deploy/compose.yaml'), 'config', '--format', 'json'],
+             *files, 'config', '--format', 'json'],
             env=env, capture_output=True, text=True, check=True, timeout=30)
         return json.loads(result.stdout)['services']
 
 
 class ComposeNativeTests(unittest.TestCase):
+    def test_remote_ocr_credentials_are_worker_only(self):
+        services=render(SCANNER_OCR_TESSERACT_ENDPOINT='https://ocr.example',
+                        SCANNER_OCR_TESSERACT_API_KEY='dummy-ocr-key-'+'x'*32)
+        for role,service in services.items():
+            for key in ['SCANNER_OCR_TESSERACT_ENDPOINT','SCANNER_OCR_TESSERACT_API_KEY']:
+                self.assertEqual(key in service['environment'],role=='worker')
+    def test_default_core_has_no_ocr_service_or_enabled_plugin(self):
+        services=render();self.assertEqual(set(services),{'api','worker'})
+        for service in services.values():self.assertEqual(service['environment']['SCANNER_OCR_PLUGINS'],'')
+
+    def test_optional_service_has_only_ocr_secret_and_private_scratch(self):
+        services=render(tesseract=True,SCANNER_TESSERACT_IMAGE='registry.example.test/scanner@sha256:'+'2'*64,
+                        SCANNER_OCR_TESSERACT_API_KEY='fixture-ocr-key-'+'x'*32)
+        service=services['tesseract'];worker=services['worker']['environment'];api=services['api']['environment']
+        self.assertEqual(worker['SCANNER_OCR_TESSERACT_ENDPOINT'],'http://tesseract:8090')
+        self.assertEqual(worker['SCANNER_OCR_TESSERACT_API_KEY'],service['environment']['SCANNER_OCR_TESSERACT_API_KEY'])
+        self.assertNotIn('SCANNER_OCR_TESSERACT_API_KEY',api)
+        self.assertEqual(api['SCANNER_OCR_PLUGINS'],'tesseract')
+        self.assertEqual(worker['SCANNER_OCR_PLUGINS'],'tesseract')
+        self.assertNotIn('SCANNER_OIDC_CLIENT_SECRET',service['environment'])
+        self.assertFalse(service.get('ports'));self.assertFalse(service.get('volumes'))
+        self.assertTrue(service['read_only']);self.assertEqual(service['cap_drop'],['ALL'])
+        self.assertEqual(set(service['networks']),{'ocr'})
     def test_defaults_preserve_bundled_paths(self):
         for service in render().values():
             for name in SCANNER | OCR:

@@ -6,6 +6,7 @@
     "onefile": "The x/crypto OpenPGP finding is not reachable in this application. The required source checks run govulncheck with embedded frontend before any preview push. Module version and severity remain pinned here."
   },
   "matches": {
+    "tesseract-image": [],
     "image": [],
     "native": [],
     "native-cpe": [

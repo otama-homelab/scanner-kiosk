@@ -1,6 +1,6 @@
-# 単一ファイル配布（試作・未リリース）
+# 単一ファイルの内部互換・検証用ビルド
 
-homelab向けの配布目標は、フロント・API/worker・SANE/airscan・Tesseract・英語/日本語OCRデータを含むLinux amd64実行ファイル1本。ホストへのNode/SANE/Tesseractインストールは不要とする。
+利用者向けの主経路は [Docker配置](../deploy/README.md)。以下のonefileは内部互換・検証用artifactとして保持する。通常のDocker imageはonefileを使わず、本体と任意のTesseract APIを分離する。ここは別のstandaloneインストール経路を提供する文書ではない。
 
 初回実行で `$XDG_CACHE_HOME/scanner-kiosk/native/`（未設定ならOSのユーザーキャッシュ）へ同梱ランタイムを展開する。キャッシュは所有ユーザー専用0700、ファイルとリンクはmanifestと照合し、変更を検出した場合は停止する。書込み可能かつ実行可能なキャッシュ領域が必要。単一ファイル配布は、展開不要・単一プロセスという意味ではない。
 
@@ -37,19 +37,4 @@ Go 1.27.3を使う既存build環境で実行する。入力appは事前に検証
 
 通知同梱候補では、展開先の `usr/share/scanner-kiosk/notices/` にGoと選択したnative依存の通知原文・出自・配布ファイル一覧を保持する。`--native` 入力にこのdirectoryを含めることで、通常のpackagerが同じmanifest検証対象として同梱する。初期の通知候補は64ファイルを持ち、現在の固定native入力はsource-build資料を含む80ファイルを持つが、native全依存の義務充足や配布承認を示すものではない。詳細は [配布とライセンスの境界](design/license-distribution.md#experimental-single-file-linux-amd64-package) を参照。
 
-## Kubernetesでの起動
-
-
-同じimageのENTRYPOINTを用い、APIは `args: [serve]`、workerは `args: [worker]` とする。Helmは各containerに専用の書込み・実行可能な `/tmp` emptyDirと `XDG_CACHE_HOME=/tmp` を用意し、同梱ツールの自動パス設定を維持する。永続state/documentsは別々の既存PVCを使用する。詳細と未受入条件は [deployment](../deploy/README.md) を参照。
-
-配布containerはdistrolessを目標とし、Alpineはnative資材の試作取得元としてのみ使用する。scratch検証成功はdistroless imageの動作検証を代替しない。
-
-専用imageの試作には root `Dockerfile` と `.dockerignore` を、空のbuild contextへコピーし、検証済みの同梱実行ファイルを `scanner` として配置し、同じ包装出力の `LICENSE` も置く。repo全体をcontextへ追加しない。
-
-```sh
-docker build --platform=linux/amd64 --network=none -t scanner-kiosk:experimental /path/to/prepared-context
-```
-
-公式 `gcr.io/distroless/static-debian13:nonroot` のindex digestを固定し、image内UID/GIDは既存PVC契約に合わせ10001とする。imageの既定CMDはserve、workerには引数workerだけを渡す。root Dockerfileもこの配布方式を既定とする。native更新・security/license gate前の公開や配備は行わない。対応するonefileは現在Linux amd64のみ。
-
-配布物は未リリース。実機・認証・端末・保存先・security/licenseの受入と公開gateは、buildやversion起動の成功とは別に確認する。個別候補の検証履歴は非公開の作業記録で管理する。
+Docker imageの生成は [image packaging](design/image-packaging.md) と `scripts/build-application.sh` を使用する。onefileをroot Dockerfileの入力へ代入しない。

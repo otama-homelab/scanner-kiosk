@@ -96,9 +96,10 @@ unconfigured under the private-repository plan restriction.
 
 `candidate-build` now connects the locked native builder with
 `build-application.sh`: a clean Git bundle and fresh module/npm cache produce
-frontend/API, the complete onefile and the same executable in distroless. Go,
+frontend/API, an internal compatibility onefile, and separate core/Tesseract
+distroless images with verified role-native dependency closures. Go,
 Node and npm versions are checked; only acquisition has an external network.
-The image is saved with its identity and checksum for later acceptance and
+Both images are saved with identities and checksums for later acceptance and
 publishing, rather than rebuilding an accepted image in a publisher.
 
 Source checks and the full candidate job remain read-only. Internal Actions
@@ -306,10 +307,14 @@ existing embedded-frontend govulncheck before `required-checks` succeeds.
 
 Corresponding source and raw evidence become accessible in a source-only
 `preview-source-<full-sha>` prerelease before the registry image. The standalone
-binary and image tar are excluded from those prerelease assets; their identities
+binary and both image tarballs are excluded from those prerelease assets; their identities
 remain in the staged manifest/checksums and the complete CI artifact. Image push
 uses the exact accepted image ID and its OCI repository label, then verifies the
-registry config/digest and package repository link. Only then may `preview` move.
+registry config/digest and package repository link for both variants. Only then may
+`preview` and `tesseract-preview` move. Both aliases share a monotonic source
+frontier, so a partial prior update cannot permit an older candidate to roll back
+either variant. Both immutable tags use the same package: `sha-<sha>` and
+`tesseract-sha-<sha>`.
 The raw advisory threshold remains recorded even when its byte-bound findings
 have the retained disposition; no G5 or stable security approval is fabricated.
 

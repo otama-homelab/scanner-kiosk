@@ -8,6 +8,10 @@
 {{- if eq $state $documents -}}
 {{- fail "state and document storage must be different claims" -}}
 {{- end -}}
+{{- $common := deepCopy .Values.commonEnv -}}
+{{- if and .Values.tesseract.enabled (empty (get $common "SCANNER_OCR_PLUGINS")) -}}
+{{- $_ := set $common "SCANNER_OCR_PLUGINS" "tesseract" -}}
+{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,9 +56,22 @@ spec:
                 name: {{ $secret | quote }}
           {{- end }}
           env:
-            {{- range $name, $value := $.Values.commonEnv }}
+            {{- range $name, $value := $common }}
             - name: {{ $name }}
               value: {{ $value | quote }}
+            {{- end }}
+            {{- if and $.Values.tesseract.enabled (eq $role "worker") }}
+            - name: SCANNER_OCR_TESSERACT_ENDPOINT
+              value: {{ printf "http://%s-tesseract:8090" $.Release.Name | quote }}
+            - name: SCANNER_OCR_TESSERACT_ALLOW_INSECURE_HTTP
+              value: "true"
+            - name: SCANNER_OCR_TESSERACT_DESTINATION
+              value: {{ $.Values.tesseract.destination | quote }}
+            - name: SCANNER_OCR_TESSERACT_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "tesseract.secretName is required" $.Values.tesseract.secretName | quote }}
+                  key: SCANNER_OCR_TESSERACT_API_KEY
             {{- end }}
             {{- $specific := $.Values.workerEnv }}
             {{- if eq $role "api" }}{{ $specific = $.Values.apiEnv }}{{ end }}

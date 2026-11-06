@@ -23,6 +23,7 @@ class PrepareCandidateTests(unittest.TestCase):
             'onefile-sbom':'onefile-sbom/onefile.syft.json','onefile-inventory':'onefile-sbom/receipt.json',
             'native-sbom':'native-sbom/native-origin.cdx.json','image-sbom':'image-sbom/image.syft.json',
             'image-inventory':'image-sbom/receipt.json','base-source':'base-sources.tar','base-inventory':'base-inventory.json'}
+        paths.update(module.stage.RUNTIME_FILES)
         for role,name in paths.items():
             path=candidate/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes((fixture.inputs/role).read_bytes())
         (candidate/'application-sources.tar').write_bytes(b'application sources')
@@ -31,6 +32,8 @@ class PrepareCandidateTests(unittest.TestCase):
         controls={'LICENSE':'license','THIRD-PARTY-NOTICES.md':'notices','CHANGELOG.md':'changelog',
                   'native/runtime-manifest.json':'native-manifest','native/runtime-provenance.json':'native-provenance'}
         with tarfile.open(native/'source.tar','w') as archive:
+            for name,payload in [('Dockerfile',b'core recipe'),('Dockerfile.tesseract',b'tesseract recipe'),('.dockerignore',b'ignore')]:
+                module.tar_bytes(archive,'source/'+name,payload)
             for name,role in controls.items():module.tar_bytes(archive,'source/'+name,(fixture.inputs/role).read_bytes())
             module.tar_bytes(archive,'source/native/source-inputs.lock.json',json.dumps(lock).encode())
             module.tar_bytes(archive,'source/native/tesseract-source.lock.json',json.dumps(tesseract).encode())

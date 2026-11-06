@@ -21,6 +21,40 @@ def render(*extra):
 
 
 class KubernetesNativeTests(unittest.TestCase):
+    def test_default_core_disables_ocr(self):
+        for container in render()['containers']:
+            env={e['name']:e.get('value') for e in container['env']}
+            self.assertEqual(env['SCANNER_OCR_PLUGINS'],'')
+
+    def test_optional_tesseract_has_no_application_storage_or_api_secret(self):
+        result=subprocess.run([*BASE,'--set','tesseract.enabled=true','--set-string',
+            'tesseract.image.digest=sha256:'+'2'*64,'--set-string','tesseract.secretName=ocr-only'],
+            cwd=ROOT,capture_output=True,text=True,check=True,timeout=30)
+        resources=list(yaml.safe_load_all(result.stdout))
+        deployment=next(r for r in resources if r['kind']=='Deployment' and r['metadata']['name']=='scanner-kiosk-tesseract')
+        pod=deployment['spec']['template']['spec'];container=pod['containers'][0]
+        self.assertFalse(pod['automountServiceAccountToken'])
+        self.assertTrue(container['securityContext']['readOnlyRootFilesystem'])
+        self.assertEqual(container['securityContext']['capabilities']['drop'],['ALL'])
+        self.assertNotIn('envFrom',container)
+        self.assertEqual([m['mountPath'] for m in container['volumeMounts']],['/tmp'])
+        self.assertEqual(pod['volumes'][0]['emptyDir']['medium'],'Memory')
+        key=next(e for e in container['env'] if e['name']=='SCANNER_OCR_TESSERACT_API_KEY')
+        self.assertEqual(key['valueFrom']['secretKeyRef'],{'name':'ocr-only','key':'SCANNER_OCR_TESSERACT_API_KEY'})
+        policy=next(r for r in resources if r['kind']=='NetworkPolicy')
+        self.assertEqual(policy['spec']['egress'],[])
+        self.assertEqual(policy['spec']['ingress'][0]['from'][0]['podSelector']['matchLabels'],{'app.kubernetes.io/instance':'scanner-kiosk'})
+        core=next(r for r in resources if r['kind']=='Deployment' and r['metadata']['name']=='scanner-kiosk')
+        for c in core['spec']['template']['spec']['containers']:
+            env={e['name']:e for e in c['env']}
+            self.assertEqual(env['SCANNER_OCR_PLUGINS']['value'],'tesseract')
+            self.assertEqual('SCANNER_OCR_TESSERACT_API_KEY' in env,c['name']=='worker')
+
+    def test_optional_tesseract_requires_immutable_image_and_its_own_secret(self):
+        for extra in [[],['--set-string','tesseract.image.digest=sha256:'+'2'*64],
+                ['--set-string','tesseract.image.digest=latest','--set-string','tesseract.secretName=ocr-only']]:
+            result=subprocess.run([*BASE,'--set','tesseract.enabled=true',*extra],cwd=ROOT,capture_output=True,text=True,timeout=30)
+            self.assertNotEqual(result.returncode,0)
     def test_chart_lints(self):
         result = subprocess.run(['helm', 'lint', 'deploy/helm', *BASE[4:]], cwd=ROOT,
                                 capture_output=True, text=True, timeout=30)

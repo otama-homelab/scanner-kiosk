@@ -35,6 +35,20 @@ NAMES = {
     'frontend-inputs': 'scanner-frontend-source-inputs.tar',
 }
 OPTIONAL = {'application-inputs', 'frontend-inputs'}
+RUNTIME_FILES = {'runtime-inputs':'runtime-images/runtime-image-inputs.json'}
+for _role in ['core','tesseract']:
+    for _kind in ['manifest','provenance']:
+        RUNTIME_FILES[_role+'-native-'+_kind]='runtime-images/'+_role+'/native-'+_kind+'.json'
+    RUNTIME_FILES[_role+'-native-sbom']=_role+'-native-sbom/native-origin.cdx.json'
+    RUNTIME_FILES[_role+'-native-inventory']=_role+'-native-sbom/receipt.json'
+for _prefix in ['image','tesseract-image']:
+    for _kind in ['payload','version','container']:
+        RUNTIME_FILES[_prefix+'-'+_kind]=_prefix+'-'+_kind+'.json'
+RUNTIME_FILES.update({'tesseract-image':'tesseract-image.tar','tesseract-image-config':'tesseract-image.json',
+    'tesseract-image-sbom':'tesseract-image-sbom/image.syft.json',
+    'tesseract-image-inventory':'tesseract-image-sbom/receipt.json'})
+NAMES.update({role:role+'.json' for role in RUNTIME_FILES})
+NAMES['tesseract-image']='scanner-tesseract-image.tar'
 MAX_ASSET, MAX_TOTAL = 1 << 30, 2 << 30
 
 
@@ -109,6 +123,64 @@ def verify_raw_reports(path, scans):
     require(seen == set(expected), 'missing raw report member')
 
 
+def bind_runtime_images(root,records,source_sha,app,build,native,sources):
+    def data(role):return read_json(root/NAMES[role])
+    def sha(role):return records[role]['sha256']
+    inputs=data('runtime-inputs')
+    require(inputs['source_revision']==source_sha and inputs['parent_manifest_sha256']==sha('native-manifest')
+            and app['runtime_inputs_sha256']==sha('runtime-inputs') and set(inputs['roles'])=={'core','tesseract'},
+            'runtime inputs/source mismatch')
+    images={}
+    for role,prefix,binary in [('core','image','scanner'),('tesseract','tesseract-image','scanner-tesseract-api')]:
+        expected=inputs['roles'][role];manifest=data(role+'-native-manifest')
+        provenance=data(role+'-native-provenance');inventory=data(role+'-native-inventory')
+        native_sha,origin_sha=sha(role+'-native-manifest'),sha(role+'-native-provenance')
+        require(expected['native_manifest_sha256']==native_sha and expected['native_provenance_sha256']==origin_sha
+                and expected['license_sha256']==sha('license')
+                and expected['dockerfile_sha256']==sources['runtime_recipes'][role]
+                and expected['dockerignore_sha256']==sources['dockerignore_sha256'], 'runtime controls mismatch')
+        require(manifest['files'] and all(native['files'].get(name)==entry for name,entry in manifest['files'].items())
+                and len(manifest['files'])==expected['native_entries']
+                and sum(f['size'] for f in manifest['files'].values())==expected['native_bytes'], 'native partition differs from parent')
+        require(provenance['runtime_manifest_sha256']==native_sha and provenance['partition']['role']==role
+                and provenance['partition']['parent_manifest_sha256']==sha('native-manifest')
+                and inventory['native_manifest_sha256']==native_sha and inventory['provenance_sha256']==origin_sha
+                and inventory['native_entries']==len(manifest['files']), 'native role provenance/inventory mismatch')
+        sbom=data(role+'-native-sbom');properties={p['name']:p['value'] for p in sbom['metadata']['properties']}
+        require(sbom['bomFormat']=='CycloneDX' and sbom['components']
+                and properties['scanner:native_manifest_sha256']==native_sha
+                and properties['scanner:provenance_sha256']==origin_sha, 'native role SBOM mismatch')
+        require(expected['binary']['path']==binary and re.fullmatch('[0-9a-f]{64}',expected['binary']['sha256'])
+                and type(expected['binary']['bytes']) is int and 0<expected['binary']['bytes']<=128<<20,
+                'invalid runtime binary input')
+        if role=='core':require(expected['binary']['sha256']==build['app_sha256'],'core image differs from compiled app')
+        info=data(prefix+'-config');require(len(info)==1,'expected one role image')
+        image_id=info[0]['Id'];config=info[0]['Config']
+        require(re.fullmatch('sha256:[0-9a-f]{64}',image_id) and config['Entrypoint']==['/usr/local/bin/'+binary]
+                and config['Cmd']==['serve'] and config['User']=='10001:10001','runtime image contract mismatch')
+        saved=data(prefix+'-inventory');sbom=data(prefix+'-sbom')
+        require(saved['passed'] is True and saved['all_layer_diff_ids_verified'] is True
+                and saved['image_id']==image_id and saved['image_archive_sha256']==sha(prefix)
+                and saved['artifacts_sha256']['image.syft.json']==sha(prefix+'-sbom')
+                and sbom['artifacts'] and sbom['source']['type']=='image'
+                and sbom['source']['metadata']['imageID']==image_id,'runtime saved image/SBOM mismatch')
+        version={**app['version'],**({'native_runtime_sha256':native_sha} if role=='tesseract' else {})}
+        require(data(prefix+'-version')==version,'runtime version or native revision mismatch')
+        container=data(prefix+'-container');payload=data(prefix+'-payload')
+        require(len(container)==1 and container[0]['Image']==image_id
+                and re.fullmatch('[0-9a-f]{64}',container[0]['Id']),'runtime smoke container/image mismatch')
+        state=container[0]['State']
+        require(state['Running'] is False and state['OOMKilled'] is False and state['ExitCode']==0
+                and payload['passed'] is True and payload['role']==role and payload['image_id']==image_id
+                and payload['container_id']==container[0]['Id'] and payload['native_manifest_sha256']==native_sha
+                and payload['binary_sha256']==expected['binary']['sha256']
+                and payload['native_paths']==len(manifest['files']),'runtime payload/smoke mismatch')
+        images[role]={'image_id':image_id,'binary_sha256':expected['binary']['sha256'],
+                      'native_manifest_sha256':native_sha,'native_provenance_sha256':origin_sha}
+    require(images==sources['runtime_images'],'runtime source bindings mismatch')
+    return images
+
+
 def bind_materials(root, records, source_sha):
     def data(role):
         return read_json(root/NAMES[role])
@@ -164,10 +236,11 @@ def bind_materials(root, records, source_sha):
     deployment = data('deployment-inventory')
     require(deployment['passed'] is True and deployment['source_archive_sha256'] == sha('source')
             and deployment['archive_sha256'] == sha('deployment'), 'deployment source mismatch')
+    runtime_images=bind_runtime_images(root,records,source_sha,app,build,native,sources)
     scans = security['scans']
-    require(set(scans) == {'image', 'onefile', 'native', 'native-cpe'}, 'missing advisory scan record')
+    require(set(scans) == {'image', 'tesseract-image', 'onefile', 'native', 'native-cpe'}, 'missing advisory scan record')
     for key, role in [('image', 'image-sbom'), ('onefile', 'onefile-sbom'),
-                      ('native', 'native-sbom'), ('native-cpe', 'native-sbom')]:
+                      ('tesseract-image','tesseract-image-sbom'), ('native', 'native-sbom'), ('native-cpe', 'native-sbom')]:
         scan = scans[key]
         require(scan['input_sha256'] == sha(role) and type(scan['scan_completed']) is bool,
                 'advisory scan input/status mismatch')
@@ -178,6 +251,7 @@ def bind_materials(root, records, source_sha):
     require(data('onefile-sbom')['artifacts'] and image_sbom['artifacts']
             and data('native-sbom')['bomFormat'] == 'CycloneDX' and data('native-sbom')['components'], 'empty/invalid SBOM')
     return {'source_sha': source_sha, 'version': version, 'image_id': image_id,
+            'runtime_images':runtime_images,
             'binary_sha256': sha('binary'), 'api_sha256': build['app_sha256'],
             'native_manifest_sha256': sha('native-manifest'), 'assets': app['assets'],
             'scans_completed': all(s['scan_completed'] for s in scans.values()),

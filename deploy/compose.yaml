@@ -4,8 +4,8 @@ x-common-env: &common-env
   SCANNER_STATE_DIR: /var/lib/scanner/state
   SCANNER_DOCUMENT_DIR: /var/lib/scanner/documents
   SCANNER_SCANNERS_JSON: ${SCANNER_SCANNERS_JSON:?configure registered scanners}
-  SCANNER_OCR_PLUGINS: ${SCANNER_OCR_PLUGINS:-tesseract}
-  SCANNER_OCR_DEFAULT_PLUGIN: ${SCANNER_OCR_DEFAULT_PLUGIN:-tesseract}
+  SCANNER_OCR_PLUGINS: ${SCANNER_OCR_PLUGINS:-}
+  SCANNER_OCR_DEFAULT_PLUGIN:
   SCANNER_OCR_DEFAULT_LANGUAGES: ${SCANNER_OCR_DEFAULT_LANGUAGES:-ja,en}
   SCANNER_OCR_LLM_PROFILES_JSON: ${SCANNER_OCR_LLM_PROFILES_JSON:-[]}
   SCANNER_OCR_LLM_TEXT_LAYER_FONT: ${SCANNER_OCR_LLM_TEXT_LAYER_FONT:-}
@@ -23,7 +23,7 @@ x-common-env: &common-env
   SCANNER_OCR_TIMEOUT_SECONDS: ${SCANNER_OCR_TIMEOUT_SECONDS:-600}
   SCANNER_PROCESS_STOP_GRACE_SECONDS: ${SCANNER_PROCESS_STOP_GRACE_SECONDS:-15}
   SCANNER_OCR_MAX_RESULT_BYTES: ${SCANNER_OCR_MAX_RESULT_BYTES:-16777216}
-  # Unset passthrough leaves the onefile bundled paths in charge.
+  # Optional explicit local-tool overrides; the default core image has no OCR engine.
   SCANNER_OCR_TESSERACT_PATH:
   SCANNER_OCR_TESSERACT_DATA_DIR:
   SCANNER_LOG_LEVEL: ${SCANNER_LOG_LEVEL:-info}
@@ -90,6 +90,10 @@ services:
       SCANNER_SCANIMAGE_PATH:
       SCANNER_SANE_PARAMETERS_PATH:
       SCANNER_SANE_LIBRARY_DIRS_JSON:
+      SCANNER_OCR_TESSERACT_ENDPOINT:
+      SCANNER_OCR_TESSERACT_API_KEY:
+      SCANNER_OCR_TESSERACT_DESTINATION:
+      SCANNER_OCR_TESSERACT_ALLOW_INSECURE_HTTP:
       # For a configured LLM profile, add only its named credential here.
       # Never forward the complete API environment or the OIDC client secret.
       # Go soft heap/runtime budget; the 1536m container limit still applies.

@@ -24,6 +24,14 @@
           "maximum": 4294967294
         }
       }
+    },
+    "tesseract": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }

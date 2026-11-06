@@ -51,7 +51,8 @@ class StageCandidateTest(unittest.TestCase):
             'artifacts_sha256': {'onefile.syft.json': self.files['onefile-sbom']['sha256'],
                                  'native/native-origin.cdx.json': self.files['native-sbom']['sha256']}})
         self.put('image-inventory', {'passed': True, 'image_id': self.image, 'all_layer_diff_ids_verified': True,
-                                     'image_archive_sha256': self.files['image']['sha256']})
+                                     'image_archive_sha256': self.files['image']['sha256'],
+                                     'artifacts_sha256':{'image.syft.json':self.files['image-sbom']['sha256']}})
         scans = {key: {'scan_completed': True, 'exit_code': 0, 'input_sha256': self.files[role]['sha256']}
                  for key, role in [('image', 'image-sbom'), ('onefile', 'onefile-sbom'),
                                    ('native', 'native-sbom'), ('native-cpe', 'native-sbom')]}
@@ -70,6 +71,9 @@ class StageCandidateTest(unittest.TestCase):
         self.put('base-inventory', {'passed': True, 'image_id': self.image, 'archive_sha256': self.files['base-source']['sha256']})
         self.put('deployment-inventory', {'passed': True, 'source_archive_sha256': self.files['source']['sha256'],
                                          'archive_sha256': self.files['deployment']['sha256']})
+        self.runtime_materials()
+        scans['tesseract-image']={'scan_completed':True,'exit_code':0,
+                                  'input_sha256':self.files['tesseract-image-sbom']['sha256']}
         raw = io.BytesIO()
         with tarfile.open(fileobj=raw, mode='w') as archive:
             for key in scans:
@@ -80,6 +84,53 @@ class StageCandidateTest(unittest.TestCase):
                 scans[key]['artifacts_sha256'] = {'grype.json': digest(payload)}
         self.put('security-reports', raw.getvalue())
         self.put('security', {'scans': scans})
+
+    def runtime_materials(self):
+        parent=self.files['native-manifest']['sha256'];roles={};images={}
+        recipes={'core':digest(b'core recipe'),'tesseract':digest(b'tesseract recipe')}
+        for role,prefix,binary,image_id in [('core','image','scanner',self.image),
+                ('tesseract','tesseract-image','scanner-tesseract-api','sha256:'+'c'*64)]:
+            if role=='tesseract':
+                self.put(prefix,b'tesseract image')
+                self.put(prefix+'-config',[{'Id':image_id,'Config':{'Entrypoint':['/usr/local/bin/'+binary],
+                         'Cmd':['serve'],'User':'10001:10001'}}])
+                self.put(prefix+'-inventory',{'passed':True,'all_layer_diff_ids_verified':True,
+                    'image_id':image_id,'image_archive_sha256':self.files[prefix]['sha256']})
+                self.put(prefix+'-sbom',{'artifacts':[{'name':'service','type':'go-module'}],
+                    'source':{'type':'image','metadata':{'imageID':image_id}}})
+                saved=json.loads((self.inputs/(prefix+'-inventory')).read_text())
+                saved['artifacts_sha256']={'image.syft.json':self.files[prefix+'-sbom']['sha256']}
+                self.put(prefix+'-inventory',saved)
+            native=json.loads((self.inputs/'native-manifest').read_text())
+            self.put(role+'-native-manifest',native)
+            manifest=self.files[role+'-native-manifest']['sha256']
+            self.put(role+'-native-provenance',{'runtime_manifest_sha256':manifest,
+                        'partition':{'role':role,'parent_manifest_sha256':parent}})
+            provenance=self.files[role+'-native-provenance']['sha256']
+            self.put(role+'-native-inventory',{'native_manifest_sha256':manifest,
+                    'provenance_sha256':provenance,'native_entries':len(native['files'])})
+            self.put(role+'-native-sbom',{'bomFormat':'CycloneDX','components':[{'name':'native'}],
+                'metadata':{'properties':[{'name':'scanner:native_manifest_sha256','value':manifest},
+                    {'name':'scanner:provenance_sha256','value':provenance}]}})
+            binary_sha=digest(b'api' if role=='core' else b'service')
+            roles[role]={'binary':{'path':binary,'sha256':binary_sha,'bytes':3 if role=='core' else 7},
+                'native_manifest_sha256':manifest,'native_provenance_sha256':provenance,
+                'license_sha256':self.files['license']['sha256'],'dockerfile_sha256':recipes[role],
+                'dockerignore_sha256':digest(b'ignore'),'native_entries':len(native['files']),
+                'native_bytes':sum(f['size'] for f in native['files'].values())}
+            self.put(prefix+'-version',{**self.version,**({'native_runtime_sha256':manifest} if role=='tesseract' else {})})
+            self.put(prefix+'-container',[{'Id':('d' if role=='core' else 'e')*64,'Image':image_id,
+                'State':{'Running':False,'OOMKilled':False,'ExitCode':0}}])
+            self.put(prefix+'-payload',{'passed':True,'image_id':image_id,'role':role,
+                'container_id':('d' if role=='core' else 'e')*64,'native_manifest_sha256':manifest,
+                'binary_sha256':binary_sha,'native_paths':len(native['files'])})
+            images[role]={'image_id':image_id,'binary_sha256':binary_sha,'native_manifest_sha256':manifest,
+                          'native_provenance_sha256':provenance}
+        self.put('runtime-inputs',{'source_revision':self.source,'parent_manifest_sha256':parent,'roles':roles})
+        app=json.loads((self.inputs/'application').read_text());app['runtime_inputs_sha256']=self.files['runtime-inputs']['sha256'];self.put('application',app)
+        sources=json.loads((self.inputs/'source-bindings').read_text())
+        sources.update(runtime_images=images,runtime_recipes=recipes,dockerignore_sha256=digest(b'ignore'))
+        self.put('source-bindings',sources)
 
     def put(self, role, value):
         raw = value if isinstance(value, bytes) else (json.dumps(value)+'\n').encode()
@@ -185,6 +236,23 @@ class StageCandidateTest(unittest.TestCase):
         self.put('image-inventory', data)
         with self.assertRaises(ValueError):
             self.run_stage()
+
+    def test_terminal_image_and_runtime_controls_are_bound_to_the_same_source(self):
+        self.run_stage()
+        manifest=self.module.verify_staged(self.output)
+        self.assertEqual(set(manifest['runtime_images']),{'core','tesseract'})
+        self.assertEqual(manifest['runtime_images']['tesseract']['image_id'],'sha256:'+'c'*64)
+
+    def test_changed_terminal_runtime_version_payload_or_source_cannot_be_sealed(self):
+        for role,key,value in [('tesseract-image-version','native_runtime_sha256','0'*64),
+                ('tesseract-image-payload','binary_sha256','0'*64),
+                ('tesseract-image-payload','container_id','0'*64),
+                ('runtime-inputs','source_revision','0'*40),
+                ('tesseract-image-inventory','image_archive_sha256','0'*64)]:
+            with self.subTest(role=role,key=key):
+                original=(self.inputs/role).read_bytes();data=json.loads(original);data[key]=value;self.put(role,data)
+                with self.assertRaises(ValueError):self.run_stage()
+                self.assertFalse(self.output.exists());self.put(role,original)
 
     def test_project_license_mismatch_is_rejected(self):
         self.put('license', b'another license')

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Catalog a saved onefile image offline, retaining the separate base inventory.
+"""Catalog a saved runtime image offline, retaining the separate base inventory.
 
 Run in a bounded sandbox with read-only image/tool inputs and no Docker socket.
 """
@@ -72,7 +72,7 @@ def catalog(archive, metadata, syft, output):
         with syft.open('rb') as stream:tool_digest=hashlib.file_digest(stream,'sha256').hexdigest()
         receipt={'passed':True,'image_id':info['Id'],'all_layer_diff_ids_verified':True,
                  'image_archive_sha256':digest,'image_package_types':types,'syft_sha256':tool_digest,
-                 'scope':'Saved image/base inventory; embedded API/native inventory remains separate',
+                 'scope':'Saved image and Go module inventory; native selected-origin inventory remains separate',
                  'publication_approved':False,'artifacts_sha256':{p.name:hashlib.sha256(p.read_bytes()).hexdigest()
                      for p in bundle.iterdir()}}
         (bundle/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')

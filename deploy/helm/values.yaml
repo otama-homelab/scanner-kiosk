@@ -10,12 +10,19 @@ documents:
   existingClaim: ""
 apiSecretName: ""
 workerSecretName: ""
+tesseract:
+  enabled: false
+  image:
+    # Empty repository uses the core image package; supply the terminal image digest.
+    repository: ""
+    digest: ""
+  secretName: ""
+  destination: Tesseract OCR service
 commonEnv:
   XDG_CACHE_HOME: /tmp
   SCANNER_STATE_DIR: /var/lib/scanner/state
   SCANNER_DOCUMENT_DIR: /var/lib/scanner/documents
-  SCANNER_OCR_PLUGINS: tesseract
-  SCANNER_OCR_DEFAULT_PLUGIN: tesseract
+  SCANNER_OCR_PLUGINS: ""
   SCANNER_OCR_DEFAULT_LANGUAGES: ja,en
   SCANNER_OCR_LLM_PROFILES_JSON: "[]"
   SCANNER_OCR_LLM_TEXT_LAYER_FONT: ""

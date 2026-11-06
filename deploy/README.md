@@ -22,7 +22,7 @@ use the same identity. Helm's schema requires integers in 1..4294967294;
 Compose forwards the selected user string to Docker, so supply positive numeric
 IDs there too. These Compose variables are not passed into the application and
 do not make the bare image or executable switch users. For direct `docker run`,
-use `--user UID:GID`; run the standalone binary as the chosen service account.
+use `--user UID:GID`.
 Existing volumes are not automatically chowned. Use the same identity for user
 administration and preserve it across upgrades/restores; changing the setting
 alone does not migrate existing ownership.
@@ -87,14 +87,13 @@ Optional positioned LLM PDF support uses `SCANNER_OCR_LLM_TEXT_LAYER_FONT`, an a
 
 Kubernetes標準のDeployment・Service・既存PVC・HTTP Probeを使用する（Knative Servingは不要）。実行ファイルはimageのexec形式 `ENTRYPOINT ["/usr/local/bin/scanner"]` に任せ、Helmは `args: [serve]` / `[worker]` のみ指定する。Composeの `command` もCMDの引数置換なのでENTRYPOINTは維持される。
 
-各containerはread-only rootと専用 `/tmp`（Helmは512Mi emptyDir、Composeは512MiBのexec可能tmpfs）を持ち、`XDG_CACHE_HOME=/tmp` で単一ファイルのnative runtimeを展開する。展開先には実行権限が必要。APIには最大約300秒のstartup probe猶予を設けるが、実環境の起動時間受入は別途必要。health probeはAPI/DB状態のみを示し、workerや実機scannerのreadiness証明には使わない。worker用の偽のHTTP probeは設けない。
+本体の各containerはread-only rootと専用 `/tmp`（Helmは512Mi emptyDir、Composeは512MiB tmpfs）を持つ。現在の本体imageはnative runtimeを直接配置し、onefile展開は行わない。APIには最大約300秒のstartup probe猶予を設けるが、実環境の起動時間受入は別途必要。health probeはAPI/DB状態のみを示し、workerや実機scannerのreadiness証明には使わない。worker用の偽のHTTP probeは設けない。
 
-HelmとComposeの既定値は同梱scanner/OCRツールのパスを上書きしない。必要な場合のみHelmのworkerEnv、またはComposeを起動する環境／env-fileへ明示する。Composeの値なしenvironmentは未設定ならcontainer環境から除外し、明示した空文字はそのまま渡す（不正な設定は起動時に拒否）。`.env.example`のツールパスも任意のoverrideとしてコメント化している。単一ファイル＋distrolessを配布方針とする。root `Dockerfile` をcanonicalとし、`deploy/standalone` は同じ定義への互換symlink。旧Debian候補は配布対象から除外した。Alpineは試作native依存の取得元で、採用container baseではない。
+HelmとComposeの既定値はOCR無効。本体imageにはSANE/airscanを直接配置し、Tesseractと辞書は含めない。`Dockerfile` は本体、`Dockerfile.tesseract` は任意の終端OCR API。LLM pluginは本体に組み込み、LiteLLMへ直接接続する。onefileは内部互換・検証用artifactのみ。scanner tool pathを上書きする場合はworkerだけに設定する。Alpineはnative依存の取得元で、container baseではない。
 
 ローカルrender検証: `python3 scripts/test_helm_native.py`（HelmとPyYAML）、`python3 scripts/test_compose_native.py`（Docker Compose v2）。cluster／Docker daemon接続なし。
 
-The earlier sane-airscan payload failed native TLS peer authentication. The current
-unreleased onefile includes a verifying fork and bundled CA roots, with isolated
+The earlier sane-airscan payload failed native TLS peer authentication. The selected native runtime includes a verifying fork and CA roots, with isolated
 wrapper tests, including 26 direct peer/trust and 14 redirect cases in the
 updated distroless candidate. HTTPS downgrade is refused; real certificate
 provisioning and deployment acceptance remain pending.
@@ -125,3 +124,84 @@ succeeded, then stopped normally. This verifies those fresh-store operations;
 it does not verify real PVC ownership, rootless ID maps, NAS ACLs, HTTP readiness
 or OCR at the alternate identity. Default identity and all private-store guards
 remain unchanged.
+
+
+## OCR modes
+
+The default Compose file and Helm values start only the core API/worker. OCR is
+disabled; PDF import/export needs no OCR container, model or API key. Configure
+both roles' public plugin metadata consistently; credentials belong only in the
+worker and the selected service. A URL alone never enables document processing.
+
+### Optional Tesseract container
+
+For Compose, select verified immutable digests for `SCANNER_IMAGE` (core) and
+`SCANNER_TESSERACT_IMAGE` (terminal variant from the same source). Put a random
+32–256 byte `SCANNER_OCR_TESSERACT_API_KEY` in your private deployment env file
+(mode 0600); for example generate it with `openssl rand -hex 32`. Then use:
+
+```sh
+docker compose --env-file /path/to/private.env \
+  -f deploy/compose.yaml -f deploy/compose.tesseract.yaml up -d
+```
+
+The override enables Tesseract metadata, sends the key only to the worker/service,
+and connects them over a private internal Docker network. It publishes no OCR
+port and mounts no application stores into the service. The API receives no OCR
+key. The explicit private-HTTP opt-in applies only to this container network;
+use HTTPS for services outside that boundary.
+
+For Helm, set `tesseract.enabled=true`, `tesseract.image.digest=sha256:…` and
+`tesseract.secretName` to a separately managed Secret containing only
+`SCANNER_OCR_TESSERACT_API_KEY`. The image repository defaults to the core package;
+it is the digest of the terminal variant, not the core image. The chart adds a
+separate Deployment, internal Service, RAM scratch and a NetworkPolicy allowing
+port 8090 from the core Pod and no service egress. The cluster must enforce
+NetworkPolicy. API/worker share a Pod network, but only the worker receives the
+OCR key. No existing PVC is mounted in the terminal service.
+
+The service accepts one request at a time and has a 1536 MiB hard memory limit
+with bounded scratch. These are starting limits, not measured job headroom.
+Give each independently scaled worker a suitable service capacity; contention
+returns an error and never silently retries or selects another model. See the
+[API contract](../docs/design/tesseract-api.md) for limits and cancellation.
+
+For a separately managed compatible terminal service, leave the chart service
+disabled and configure the worker endpoint/key via `workerEnv`/`workerSecretName`.
+Compose passes the four `SCANNER_OCR_TESSERACT_*` endpoint/key/destination/private
+HTTP settings only to the worker. Explicitly enable plugin/default `tesseract` in
+both roles. Do not expose the terminal API to browsers or the public internet.
+
+### Direct LLM OCR
+
+Use the core image alone. Set `SCANNER_OCR_PLUGINS=llm`,
+`SCANNER_OCR_DEFAULT_PLUGIN=llm`, and the reviewed profiles from `.env.example`.
+Pass each profile's named API key only through the worker's environment/Secret.
+There is no LLM adapter API container and no local inference dependency. The
+UI discloses the configured destination before sending document images. A
+missing/failed OCR service leaves ordinary PDF processing available.
+
+## Updating from the bundled preview
+
+1. Preserve both existing state/document mounts, identity, permissions and secrets.
+   Stop new work and let active processing finish or cancel with a confirmed stop;
+   keep the old immutable image digest and its configuration for rollback.
+2. Replace both core roles' image with the new core digest. To keep OCR off, set
+   plugin/default empty. To keep Tesseract, provision the optional service and key
+   first, and set worker endpoint/disclosure plus the plugin/default. The former
+   implicit local Tesseract default no longer works in the core image.
+3. Restart the worker after an engine/dictionary/service-source or endpoint change
+   so it refreshes pinned capabilities. Do not mutate dictionaries in place; old
+   queued model selections fail explicitly instead of using a different model.
+4. Check API readiness, worker catalogue and an ordinary PDF, then the intended OCR
+   path. Keep the stores in place throughout. An OCR-container problem is not a
+   reason to delete application state or recreate the document volume.
+5. Roll back both image digests and their matching OCR configuration together,
+   preserving volumes. Do not run old and new workers on the same stores at once.
+   This packaging change adds no database migration.
+
+An uncertain service process stop retains its workspace and makes health fail.
+Stop the complete owned service before resetting only its ephemeral scratch;
+never clear the application document store. With Kubernetes emptyDir, a container
+restart retains scratch, so unresolved work intentionally blocks reinitialization.
+Actual CSI durability, upgrade/rollback, physical scanners and G5 remain required.
