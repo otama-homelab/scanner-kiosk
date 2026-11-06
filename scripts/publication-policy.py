@@ -27,6 +27,10 @@ def publication_plan(ref, sha, event, state, repository=Path('.'), *, developmen
     if event != 'push':
         raise ValueError('only main/tag push events are publication inputs')
     identity = refs.release_ref(ref, sha, repository)
+    return _publication_plan(ref, identity, state, repository, development_preview=development_preview)
+
+
+def _publication_plan(ref, identity, state, repository, *, development_preview=False):
     if development_preview and (ref != 'refs/heads/main' or identity['channel'] != 'preview'):
         raise ValueError('development previews require a main push')
     if not isinstance(state, dict) or set(state) != {'releases', 'image_tags', 'preview_source_sha'}:
@@ -137,6 +141,7 @@ def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')
     """Source-backed experimental images; this never grants G5 or stable-release approval."""
     require = staging.require
     require(event == 'push' and ref == 'refs/heads/main', 'development previews require a main push')
+    require(isinstance(sha, str) and re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', sha), 'invalid preview source SHA')
     candidate = Path(candidate)
     manifest = staging.verify_staged(candidate)
     review = staging.read_json(PREVIEW_REVIEW)
@@ -163,8 +168,10 @@ def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')
                        'package': match['artifact']['name'], 'version': match['artifact']['version']}
                 require(row in review['matches'][scope], 'unreviewed preview advisory finding')
     require(seen == scopes and manifest['scans_completed'], 'incomplete preview scans')
-    plan = publication_plan(ref, sha, event, {'releases': [], 'image_tags': [], 'preview_source_sha': None},
-                            repository, development_preview=True)
+    # The archive tool has no Git. The writer rechecks checkout/ancestry before any write.
+    identity = {'channel': 'preview', 'version': 'preview-'+sha[:12], 'source_sha': sha, 'prerelease': True}
+    plan = _publication_plan(ref, identity, {'releases': [], 'image_tags': [], 'preview_source_sha': None},
+                             repository, development_preview=True)
     require(manifest['source_sha'] == plan['source_sha'] and manifest['version']['revision'] == plan['source_sha']
             and manifest['version']['version'] == plan['version'], 'preview source identity differs')
     return {**plan, 'development_preview': True, 'repository': 'otama-homelab/scanner-kiosk', 'visibility': 'public',

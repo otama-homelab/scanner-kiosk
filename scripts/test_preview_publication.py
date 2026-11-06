@@ -53,6 +53,12 @@ class PreviewPublicationTest(unittest.TestCase):
         self.assertNotIn('approval_sha256', plan)
         self.assertFalse(plan['external_writes'])
 
+    def test_offline_preview_preflight_does_not_need_git_in_the_archive_tool(self):
+        with patch.object(self.module.refs, 'release_ref', side_effect=FileNotFoundError('git')):
+            plan = self.prepare()
+        self.assertEqual(plan['source_sha'], self.f.git.sha)
+        self.assertEqual(plan['version'], 'preview-'+self.f.git.sha[:12])
+
     def test_pr_manual_and_version_tags_cannot_use_development_preview(self):
         for ref, event in [('refs/tags/v1.0.0', 'push'), ('refs/heads/main', 'pull_request'),
                            ('refs/heads/main', 'workflow_dispatch'), ('refs/heads/other', 'push')]:

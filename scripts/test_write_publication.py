@@ -124,6 +124,13 @@ class WritePublicationTest(unittest.TestCase):
         self.assertLess(self.events.index('publish-release'), self.events.index('push-'+self.plan['image_tag']))
         self.assertEqual(result['package_visibility'], 'private')
 
+    def test_preview_writer_requires_git_checkout_validation_before_writes(self):
+        self.development_preview()
+        with patch.object(self.module.policy.refs, 'release_ref', side_effect=FileNotFoundError('git')):
+            with self.assertRaises(FileNotFoundError):
+                self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+
     def test_preview_alias_recognizes_its_source_only_prerelease_owner(self):
         self.development_preview()
         self.releases = [{'tag_name': 'preview-source-'+self.sha, 'draft': False, 'prerelease': True,

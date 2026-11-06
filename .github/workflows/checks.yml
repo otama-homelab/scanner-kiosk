@@ -408,7 +408,6 @@ jobs:
             --mount "type=bind,src=$RUNNER_TEMP/publication/candidate,dst=/candidate,readonly" \
             --workdir /source --entrypoint /usr/bin/env "$tools" \
             -i PATH=/usr/local/bin:/usr/bin:/bin HOME=/tmp TMPDIR=/tmp PYTHONDONTWRITEBYTECODE=1 \
-            GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0=/source \
             python3 /source/scripts/publication-policy.py --development-preview --candidate /candidate \
             --ref "$GITHUB_REF" --sha "$GITHUB_SHA" --event "$GITHUB_EVENT_NAME" > "$RUNNER_TEMP/publication/preview-plan.json"
           chmod 444 "$RUNNER_TEMP/publication/preview-plan.json"
