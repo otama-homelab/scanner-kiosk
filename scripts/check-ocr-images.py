@@ -166,7 +166,8 @@ def trace(candidate,output):
            'fixture_sha256':hashlib.sha256((root/'scripts/fixtures/ocr-ja-en-300dpi.png').read_bytes()).hexdigest()}
     key=output/'test-key.env';key.write_text('SCANNER_OCR_TESSERACT_API_KEY='+secrets.token_hex(32)+'\n');key.chmod(0o600)
     def docker(*args,timeout=30):
-        return subprocess.run(['docker',*map(str,args)],check=True,capture_output=True,text=True,timeout=timeout).stdout.strip()
+        return subprocess.run(['docker',*map(str,args)],check=True,stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT if args[0]=='logs' else subprocess.PIPE,text=True,timeout=timeout).stdout.strip()
     common=['--pull=never','--read-only','--user','10001:10001','--cap-drop','ALL','--security-opt','no-new-privileges',
             '--cpus','2','--pids-limit','128','--ulimit','nofile=512:512','--ulimit','fsize=268435456:268435456',
             '--log-opt','max-size=1m','--log-opt','max-file=1']
@@ -192,6 +193,10 @@ def trace(candidate,output):
                 '--mount','type=volume,src='+prefix+'-documents,dst=/var/lib/scanner/documents']
         scratch=['--tmpfs','/tmp:rw,noexec,nosuid,nodev,size=512m,uid=10001,gid=10001,mode=0700']
         env=['-e','SCANNER_SCANNERS_JSON=[]','-e','SCANNER_OCR_PLUGINS=tesseract']
+        # The local tmpfs volume disappears when its last running mount stops.
+        keeper=create('keeper',tool,'--mount','type=volume,src='+prefix+'-proof,dst=/proof,readonly',
+                      '--entrypoint','/bin/sleep',memory='32m',command=['900'])
+        docker('start',keeper)
         sane=create('sane-version',identity['images']['api'],'--entrypoint','/usr/bin/scanimage',
                     memory='128m',command=['--version'])
         proof['sane_version']=docker('start','--attach',sane)
@@ -221,11 +226,11 @@ def trace(candidate,output):
             info=json.loads(docker('inspect',cid))[0]
             require(info['State']['ExitCode']==0 and not info['State']['OOMKilled'],'actual tracer helper failed')
             return cid
-        first=helper('full')
-        for name in ['plain.pdf','ocr.pdf','full.json']:docker('cp',first+':/proof/'+name,output/name)
+        helper('full')
+        for name in ['plain.pdf','ocr.pdf','full.json']:docker('cp',keeper+':/proof/'+name,output/name)
         proof['tesseract_stop']=checked_stop(tess)
-        last=helper('outage')
-        for name in ['outage.pdf','outage.json']:docker('cp',last+':/proof/'+name,output/name)
+        helper('outage')
+        for name in ['outage.pdf','outage.json']:docker('cp',keeper+':/proof/'+name,output/name)
         proof['core_stops']=[checked_stop(api),checked_stop(worker)]
         proof['full']=read_json(output/'full.json');proof['outage']=read_json(output/'outage.json')
         require(proof['full']['fixture_sha256']==proof['outage']['fixture_sha256']==proof['fixture_sha256'],

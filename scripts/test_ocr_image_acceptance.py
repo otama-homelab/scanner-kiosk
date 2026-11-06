@@ -59,7 +59,11 @@ class OCRImageAcceptanceTest(unittest.TestCase):
             self.assertEqual(len(seen),before+1,'a redirect must never cause a second request')
         finally:server.shutdown();server.server_close();thread.join(timeout=2)
 
-    def test_start_failure_removes_only_owned_resources_and_private_test_key(self):
+    def test_failure_keeps_proof_live_and_cleans_only_owned_resources_and_test_key(self):
+        for suffix in ['-worker','-full','-copy']:
+            with self.subTest(suffix=suffix):self.check_start_failure(suffix)
+
+    def check_start_failure(self,suffix):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);candidate=root/'candidate';candidate.mkdir();out=root/'proof';source='a'*40
             for name,value in {'application':{'passed':True,'source_revision':source,'version':{}},
@@ -88,8 +92,21 @@ class OCRImageAcceptanceTest(unittest.TestCase):
                     stdout=json.dumps([{'Id':command[-1],'Image':'sha256:'+'b'*64,
                                          'State':{'Running':False,'OOMKilled':False,'ExitCode':0}}])
                 elif command[0]=='start':
-                    if containers[command[-1]].endswith('-worker'):raise subprocess.CalledProcessError(17,args)
+                    if containers[command[-1]].endswith('-full'):
+                        keepers=[cid for cid,name in containers.items() if name.endswith('-keeper')]
+                        self.assertEqual(len(keepers),1,'tmpfs proof volume needs a live keeper across helper exits')
+                        self.assertTrue(any(c[1:]==['start',keepers[0]] for c in calls))
+                    if containers[command[-1]].endswith(suffix):raise subprocess.CalledProcessError(17,args)
                     stdout='scanimage fixture'
+                elif command[0]=='logs':
+                    self.assertEqual(kwargs['stderr'],subprocess.STDOUT)
+                    stdout='synthetic helper stderr retained'
+                elif command[0]=='cp':
+                    self.assertEqual(suffix,'-copy')
+                    cid,path=command[1].split(':',1)
+                    self.assertTrue(containers[cid].endswith('-keeper'),'copy from the live proof mount')
+                    self.assertEqual(path,'/proof/plain.pdf')
+                    raise subprocess.CalledProcessError(17,args)
                 return subprocess.CompletedProcess(args,0,stdout,'')
             with patch.object(self.module.subprocess,'check_output',return_value=source),patch.object(self.module.subprocess,'run',side_effect=run):
                 with self.assertRaises(subprocess.CalledProcessError):self.module.trace(candidate,out)
@@ -99,6 +116,10 @@ class OCRImageAcceptanceTest(unittest.TestCase):
             self.assertEqual({c[-1] for c in calls if c[1:3]==['rm','--force']},set(containers))
             self.assertEqual({c[-1] for c in calls if c[1:3]==['volume','rm']},set(volumes))
             self.assertEqual([c[-1] for c in calls if c[1:3]==['network','rm']],[network])
+            if suffix=='-full':
+                self.assertIn('helper stderr retained',(out/'full-failure.log').read_text())
+                removed=[c[-1] for c in calls if c[1:3]==['rm','--force']]
+                self.assertTrue(containers[removed[-1]].endswith('-keeper'))
 
 
 if __name__=='__main__':unittest.main()
