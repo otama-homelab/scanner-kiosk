@@ -52,7 +52,8 @@ class PartitionNativeTest(unittest.TestCase):
         self.output=self.root/'output'
 
     def put(self,name,data):
-        p=self.native/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data)
+        p=self.native/name;p.parent.mkdir(parents=True,exist_ok=True)
+        p.unlink(missing_ok=True);p.write_bytes(data)
         mode=0o555 if data.startswith(b'\x7fELF') else 0o444;p.chmod(mode)
         self.files[name]={'size':len(data),'mode':mode,'sha256':hashlib.sha256(data).hexdigest()}
 
