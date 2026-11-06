@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transfer an approved candidate; default is service-read-only dry run.
+"""Transfer a development preview or approved formal candidate; default is dry run.
 
 Call only under the single GitHub publisher concurrency group. Preflight and
 archive parsing happen separately without credentials. This process only hashes
@@ -147,7 +147,7 @@ def fresh_state(plan, env):
         source = metadata['source_sha']
         require(re.fullmatch(r'[0-9a-f]{40}', source), 'invalid alias source')
         if alias == 'preview':
-            require(release['tag_name'] == 'preview-'+source and release['prerelease'], 'invalid preview owner')
+            require(release['tag_name'] in {'preview-'+source, 'preview-source-'+source} and release['prerelease'], 'invalid preview owner')
             previous = source
         else:
             _, suffix = policy.refs.tag_parts(release['tag_name'])
@@ -159,7 +159,9 @@ def fresh_state(plan, env):
 def body_text(plan, image_digest=None):
     metadata = {'format': 1, 'source_sha': plan['source_sha'], 'manifest_sha256': plan['manifest_sha256'],
                 'image_id': plan['image_id'], 'image_digest': image_digest}
-    return ('Scanner '+plan['version']+'\n\nSource: '+plan['source_sha']+'\nManifest: '+plan['manifest_sha256']+
+    warning = ('Development image preview; not a production release. G5 acceptance remains incomplete.\n\n'
+               'This release retains corresponding source, licenses and raw inspection reports.\n\n') if plan.get('development_preview') is True else ''
+    return (warning+'Scanner '+plan['version']+'\n\nSource: '+plan['source_sha']+'\nManifest: '+plan['manifest_sha256']+
             '\n\n'+MARKER+json.dumps(metadata, sort_keys=True)+' -->')
 
 
@@ -177,8 +179,14 @@ def transfer_inputs(candidate, plan_path, plan_sha256):
     require(re.fullmatch(r'[0-9a-f]{64}', plan_sha256), 'invalid trusted plan hash')
     plan = staging.read_json(plan_path)
     staging.check_file(plan_path.parent, {'path': plan_path.name, 'bytes': plan_path.stat().st_size, 'sha256': plan_sha256})
-    require(plan['repository'] == REPOSITORY and plan['visibility'] in ['private', 'public']
-            and plan['external_writes'] is False and re.fullmatch(r'[0-9a-f]{64}', plan['approval_sha256']), 'invalid approved plan')
+    development = plan.get('development_preview') is True
+    require((plan.get('development_preview') is None or plan.get('development_preview') is True) and plan['repository'] == REPOSITORY
+            and plan['visibility'] in ['private', 'public'] and plan['external_writes'] is False, 'invalid publication plan')
+    if development:
+        require(plan['policy_sha256'] == hashlib.sha256(policy.PREVIEW_REVIEW.read_bytes()).hexdigest(),
+                'preview review changed after preflight')
+    else:
+        require(re.fullmatch(r'[0-9a-f]{64}', plan['approval_sha256']), 'invalid approved plan')
     manifest = staging.read_json(candidate/'manifest.json')
     staging.check_file(candidate, {'path': 'manifest.json', 'bytes': (candidate/'manifest.json').stat().st_size,
                                     'sha256': plan['manifest_sha256']})
@@ -189,7 +197,7 @@ def transfer_inputs(candidate, plan_path, plan_sha256):
     staging.validate_records(records)
     for record in records.values():
         staging.check_file(candidate, record)
-    expected = sorted(record['path'] for record in records.values())+['manifest.json', 'SHA256SUMS', 'receipt.json']
+    expected = policy.upload_names(manifest, development)
     require(plan['uploads'] == expected and manifest['source_sha'] == plan['source_sha']
             and manifest['image_id'] == plan['image_id']
             and manifest['version']['revision'] == plan['source_sha']
@@ -202,15 +210,17 @@ def transfer_inputs(candidate, plan_path, plan_sha256):
     return plan, {name: {'size': (candidate/name).stat().st_size,
                         'digest': 'sha256:'+hashlib.sha256((candidate/name).read_bytes()).hexdigest()}
                   for name in ['manifest.json', 'SHA256SUMS', 'receipt.json']} | {
-                      record['path']: {'size': record['bytes'], 'digest': 'sha256:'+record['sha256']} for record in records.values()}
+                      record['path']: {'size': record['bytes'], 'digest': 'sha256:'+record['sha256']} for record in records.values() if record['path'] in plan['uploads']}
 
 
 def publish(candidate, plan_path, plan_sha256, ref, sha, event, repository=Path('.'), apply=False):
     candidate, plan_path = Path(candidate).absolute(), Path(plan_path)
     plan, assets = transfer_inputs(candidate, plan_path, plan_sha256)
     require(event == 'push', 'only push events may publish')
+    development = plan.get('development_preview') is True
+    require(not development or ref == 'refs/heads/main', 'development previews require main')
     if apply:
-        require(os.environ.get('GITHUB_ACTIONS') == 'true' and os.environ.get('SCANNER_PUBLISH_ENABLED') == 'true'
+        require(os.environ.get('GITHUB_ACTIONS') == 'true' and (development or os.environ.get('SCANNER_PUBLISH_ENABLED') == 'true')
                 and os.environ.get('GITHUB_REPOSITORY') == REPOSITORY and os.environ.get('GITHUB_EVENT_NAME') == event
                 and os.environ.get('GITHUB_REF') == ref and os.environ.get('GITHUB_SHA') == sha, 'enabled push workflow required')
     actor, token = os.environ.get('GITHUB_ACTOR', ''), os.environ.get('GH_TOKEN', '')
@@ -222,11 +232,14 @@ def publish(candidate, plan_path, plan_sha256, ref, sha, event, repository=Path(
         require(api('repos/'+REPOSITORY, env)['visibility'] == plan['visibility'], 'repository visibility differs from approval')
         package_path = 'orgs/otama-homelab/packages/container/scanner-kiosk'
         package = api(package_path, env, missing=True)
-        require((package is None and plan['visibility'] == 'private')
-                or (package is not None and package['visibility'] == plan['visibility']), 'package visibility differs from approval')
+        if not development:
+            require((package is None and plan['visibility'] == 'private')
+                    or (package is not None and package['visibility'] == plan['visibility']), 'package visibility differs from approval')
+        elif package is not None:
+            require((package.get('repository') or {}).get('full_name') == REPOSITORY, 'preview package belongs to another repository')
         remote_source(ref, plan['source_sha'], env)
         require_current_checks(plan['source_sha'], env)
-        current = policy.publication_plan(ref, sha, event, fresh_state(plan, env), repository)
+        current = policy.publication_plan(ref, sha, event, fresh_state(plan, env), repository, development_preview=development)
         require(all(current[k] == plan[k] for k in ['source_sha', 'version', 'release_tag', 'image_tag', 'prerelease']), 'source/plan changed')
         result = {'published': False, 'source_sha': plan['source_sha'], 'manifest_sha256': plan['manifest_sha256'],
                   'release_tag': current['release_tag'], 'image_tag': current['image_tag'], 'aliases': current['aliases']}
@@ -249,13 +262,20 @@ def publish(candidate, plan_path, plan_sha256, ref, sha, event, repository=Path(
         command(['docker', 'load', '--input', str(candidate/staging.NAMES['image'])], env, timeout=120)
         loaded = decode(command(['docker', 'image', 'inspect', plan['image_id']], env))
         require(len(loaded) == 1 and loaded[0]['Id'] == plan['image_id'], 'loaded image differs from candidate')
+        if development:
+            require(loaded[0]['Config'].get('Labels', {}).get('org.opencontainers.image.source') == 'https://github.com/'+REPOSITORY,
+                    'preview image lacks its repository source label')
         image_ref = REGISTRY+':'+current['image_tag']
         command(['docker', 'tag', plan['image_id'], image_ref], env)
         require(registry_image(current['image_tag'], env) is None, 'immutable image appeared during upload')
         command(['docker', 'push', image_ref], env, timeout=600)
         image = registry_image(current['image_tag'], env)
         require(image is not None and image['image_id'] == plan['image_id'], 'pushed image identity mismatch')
-        require(api(package_path, env)['visibility'] == plan['visibility'], 'pushed package visibility mismatch')
+        package = api(package_path, env)
+        if development:
+            require((package.get('repository') or {}).get('full_name') == REPOSITORY, 'pushed preview is not linked to its repository')
+        else:
+            require(package['visibility'] == plan['visibility'], 'pushed package visibility mismatch')
         remote_source(ref, plan['source_sha'], env)
         require_current_checks(plan['source_sha'], env)
         api(release_path, env, body={'body': body_text(plan, image['digest']), 'make_latest': 'false'})
@@ -265,7 +285,7 @@ def publish(candidate, plan_path, plan_sha256, ref, sha, event, repository=Path(
             require(registry_image(alias, env) == image, 'alias digest differs from immutable image')
         if 'latest' in current['aliases']:
             api(release_path, env, body={'make_latest': 'true'})
-        return {**result, 'published': True, 'image_digest': image['digest']}
+        return {**result, 'published': True, 'image_digest': image['digest'], 'package_visibility': package['visibility']}
 
 
 def main():

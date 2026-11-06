@@ -12,16 +12,23 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import tarfile
 
 spec = importlib.util.spec_from_file_location('release_ref', Path(__file__).with_name('check-release-ref.py'))
 refs = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(refs)
+stage_spec = importlib.util.spec_from_file_location('stage_candidate', Path(__file__).with_name('stage-candidate.py'))
+staging = importlib.util.module_from_spec(stage_spec)
+stage_spec.loader.exec_module(staging)
+PREVIEW_REVIEW = Path(__file__).with_name('preview-advisory-review.json')
 
 
-def publication_plan(ref, sha, event, state, repository=Path('.')):
+def publication_plan(ref, sha, event, state, repository=Path('.'), *, development_preview=False):
     if event != 'push':
         raise ValueError('only main/tag push events are publication inputs')
     identity = refs.release_ref(ref, sha, repository)
+    if development_preview and (ref != 'refs/heads/main' or identity['channel'] != 'preview'):
+        raise ValueError('development previews require a main push')
     if not isinstance(state, dict) or set(state) != {'releases', 'image_tags', 'preview_source_sha'}:
         raise ValueError('complete release, image and preview state is required')
     releases, images, previous = state['releases'], state['image_tags'], state['preview_source_sha']
@@ -40,7 +47,7 @@ def publication_plan(ref, sha, event, state, repository=Path('.')):
         if tag in tags:
             raise ValueError('duplicate release tag')
         tags.add(tag)
-        if re.fullmatch(r'preview-(?:[0-9a-f]{40}|[0-9a-f]{64})', tag):
+        if re.fullmatch(r'preview-(?:source-)?(?:[0-9a-f]{40}|[0-9a-f]{64})', tag):
             if not release['prerelease']:
                 raise ValueError('preview must be a prerelease')
             continue
@@ -56,7 +63,7 @@ def publication_plan(ref, sha, event, state, repository=Path('.')):
         raise ValueError('existing latest alias has no qualified stable release')
     commit = identity['source_sha']
     preview = identity['channel'] == 'preview'
-    release_tag = 'preview-'+commit if preview else identity['version']
+    release_tag = ('preview-source-' if development_preview else 'preview-')+commit if preview else identity['version']
     image_tag = 'sha-'+commit if preview else identity['version']
     if not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', image_tag):
         raise ValueError('version exceeds registry tag constraints')
@@ -91,9 +98,6 @@ def prepare_publication(candidate, approval_path, approval_sha256, ref, sha, eve
     authenticates an explicit approval record, not its human review process.
     The writer still owns fresh service-state checks and the serialized lock.
     """
-    stage_spec = importlib.util.spec_from_file_location('stage_candidate', Path(__file__).with_name('stage-candidate.py'))
-    staging = importlib.util.module_from_spec(stage_spec)
-    stage_spec.loader.exec_module(staging)
     manifest = staging.verify_staged(candidate)
     require = staging.require
     require(isinstance(approval_sha256, str) and re.fullmatch(r'[0-9a-f]{64}', approval_sha256), 'invalid trusted approval hash')
@@ -121,8 +125,52 @@ def prepare_publication(candidate, approval_path, approval_sha256, ref, sha, eve
     return {**plan, 'manifest_sha256': manifest_hash, 'approval_sha256': approval_sha256,
             'repository': approval['repository'], 'visibility': approval['visibility'],
             'image_id': manifest['image_id'], 'advisory_threshold_passed': manifest['advisory_threshold_passed'],
-            'uploads': sorted(r['file'] for r in manifest['files'].values())+
-                       ['manifest.json', 'SHA256SUMS', 'receipt.json']}
+            'uploads': upload_names(manifest)}
+
+
+def upload_names(manifest, development_preview=False):
+    return sorted(record['file'] for role, record in manifest['files'].items()
+                  if not development_preview or role not in {'binary', 'image'}) + ['manifest.json', 'SHA256SUMS', 'receipt.json']
+
+
+def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')):
+    """Source-backed experimental images; this never grants G5 or stable-release approval."""
+    require = staging.require
+    require(event == 'push' and ref == 'refs/heads/main', 'development previews require a main push')
+    candidate = Path(candidate)
+    manifest = staging.verify_staged(candidate)
+    review = staging.read_json(PREVIEW_REVIEW)
+    require(manifest['files']['native-manifest']['sha256'] == review['native_manifest_sha256'],
+            'native payload differs from the reviewed preview bytes')
+    security = staging.read_json(candidate/staging.NAMES['security'])
+    scopes = {'image', 'native', 'native-cpe', 'onefile'}
+    require(set(review['matches']) == scopes, 'incomplete preview advisory review')
+    seen = set()
+    with tarfile.open(candidate/staging.NAMES['security-reports'], 'r:') as archive:
+        for member in archive:
+            if not member.name.endswith('/grype.json'):
+                continue
+            scope = member.name.split('/')[0]
+            require(scope in scopes and scope not in seen and member.isfile() and member.size <= 16 << 20,
+                    'invalid preview advisory report')
+            seen.add(scope)
+            with archive.extractfile(member) as stream:
+                report = json.load(stream, object_pairs_hook=staging.unique_object)
+            require(isinstance(report.get('matches'), list), 'missing preview matches')
+            require(security['scans'][scope]['match_count'] == len(report['matches']), 'preview match count differs')
+            for match in report['matches']:
+                row = {'id': match['vulnerability']['id'], 'severity': match['vulnerability']['severity'],
+                       'package': match['artifact']['name'], 'version': match['artifact']['version']}
+                require(row in review['matches'][scope], 'unreviewed preview advisory finding')
+    require(seen == scopes and manifest['scans_completed'], 'incomplete preview scans')
+    plan = publication_plan(ref, sha, event, {'releases': [], 'image_tags': [], 'preview_source_sha': None},
+                            repository, development_preview=True)
+    require(manifest['source_sha'] == plan['source_sha'] and manifest['version']['revision'] == plan['source_sha']
+            and manifest['version']['version'] == plan['version'], 'preview source identity differs')
+    return {**plan, 'development_preview': True, 'repository': 'otama-homelab/scanner-kiosk', 'visibility': 'public',
+            'manifest_sha256': hashlib.sha256((candidate/'manifest.json').read_bytes()).hexdigest(),
+            'policy_sha256': hashlib.sha256(PREVIEW_REVIEW.read_bytes()).hexdigest(), 'image_id': manifest['image_id'],
+            'advisory_threshold_passed': manifest['advisory_threshold_passed'], 'uploads': upload_names(manifest, True)}
 
 
 def main():
@@ -130,17 +178,25 @@ def main():
     parser.add_argument('--ref', required=True)
     parser.add_argument('--sha', required=True)
     parser.add_argument('--event', required=True)
-    parser.add_argument('--remote-state', type=Path, required=True)
+    parser.add_argument('--remote-state', type=Path)
+    parser.add_argument('--development-preview', action='store_true')
     parser.add_argument('--candidate', type=Path)
     parser.add_argument('--approval', type=Path)
     parser.add_argument('--approval-sha256')
     parser.add_argument('--artifact-id',type=int,help='Immutable staged artifact in the same push run')
     args = parser.parse_args()
-    if any([args.candidate, args.approval, args.approval_sha256]) and not all([args.candidate, args.approval, args.approval_sha256]):
+    if args.development_preview and (not args.candidate or args.approval or args.approval_sha256 or args.remote_state):
+        parser.error('development preview requires only the exact staged candidate and main source identity')
+    if not args.development_preview and any([args.candidate, args.approval, args.approval_sha256]) and not all([args.candidate, args.approval, args.approval_sha256]):
         parser.error('candidate preflight requires --candidate, --approval and --approval-sha256 together')
     if args.artifact_id is not None and (not args.candidate or not 0<args.artifact_id<1<<63):
         parser.error('artifact ID requires complete candidate preflight and a positive bounded ID')
     try:
+        if args.development_preview:
+            print(json.dumps(prepare_development_preview(args.candidate, args.ref, args.sha, args.event), sort_keys=True))
+            return
+        if args.remote_state is None:
+            raise ValueError('remote state is required')
         if args.remote_state.stat().st_size > 2 << 20:
             raise ValueError('remote state exceeds bound')
         state = json.loads(args.remote_state.read_text())

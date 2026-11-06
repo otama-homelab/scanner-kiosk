@@ -64,6 +64,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_publication_preflight.py -v
       - name: Protected publication plan and same-run artifact handoff
         run: python3 -m unittest discover -s scripts -p test_import_publication_plan.py -v
+      - name: Source-backed development preview and advisory policy
+        run: python3 -m unittest discover -s scripts -p test_preview_publication.py -v
       - name: Publication transfer ordering and failure contract
         run: python3 -m unittest discover -s scripts -p test_write_publication.py -v
       - name: Preserve vulnerability scan timeout evidence
@@ -353,7 +355,7 @@ jobs:
         run: sh scripts/check-required-jobs.sh
 
   publish:
-    if: github.event_name == 'push' && vars.SCANNER_PUBLISH_ENABLED == 'true'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || vars.SCANNER_PUBLISH_ENABLED == 'true')
     needs: required-checks
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -369,7 +371,59 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Download the same-run development preview candidate
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/publication"
+          gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?per_page=100" > "$RUNNER_TEMP/publication/artifacts.json"
+          artifact_name=$(python3 scripts/import-publication-plan.py \
+            --preview-run-id "$GITHUB_RUN_ID" --sha "$GITHUB_SHA" \
+            --metadata "$RUNNER_TEMP/publication/artifacts.json")
+          gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "$artifact_name" --dir "$RUNNER_TEMP/publication"
+      - name: Prepare the source-backed development image plan offline
+        if: github.ref == 'refs/heads/main'
+        run: |
+          set -Eeuo pipefail
+          umask 077
+          tools="scanner-preview-plan-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT:tools"
+          container="scanner-preview-plan-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+          cleanup() {
+            status=$?
+            trap - EXIT
+            docker rm --force "$container" >/dev/null 2>&1 || true
+            if ! timeout 60 docker image rm "$tools"; then test "$status" -ne 0 || status=1; fi
+            exit "$status"
+          }
+          trap cleanup EXIT
+          timeout 300 docker build --platform linux/amd64 --network none --file native/Dockerfile.apk-fetch --tag "$tools" native
+          timeout 180 docker run --rm --name "$container" --network none --read-only \
+            --user 10001:10001 --cap-drop ALL --security-opt no-new-privileges \
+            --memory 1g --memory-swap 1g --cpus 2 --pids-limit 64 \
+            --ulimit nofile=256:256 --ulimit fsize=16777216:16777216 \
+            --tmpfs /tmp:rw,nosuid,nodev,size=64m,uid=10001,gid=10001,mode=0700 \
+            --mount "type=bind,src=$GITHUB_WORKSPACE,dst=/source,readonly" \
+            --mount "type=bind,src=$RUNNER_TEMP/publication/candidate,dst=/candidate,readonly" \
+            --workdir /source --entrypoint /usr/bin/env "$tools" \
+            -i PATH=/usr/local/bin:/usr/bin:/bin HOME=/tmp TMPDIR=/tmp PYTHONDONTWRITEBYTECODE=1 \
+            GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0=/source \
+            python3 /source/scripts/publication-policy.py --development-preview --candidate /candidate \
+            --ref "$GITHUB_REF" --sha "$GITHUB_SHA" --event "$GITHUB_EVENT_NAME" > "$RUNNER_TEMP/publication/preview-plan.json"
+          chmod 444 "$RUNNER_TEMP/publication/preview-plan.json"
+      - name: Push the repository-linked development preview image
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          plan="$RUNNER_TEMP/publication/preview-plan.json"
+          plan_sha256=$(sha256sum "$plan" | cut -d ' ' -f 1)
+          python3 scripts/write-publication.py --candidate "$RUNNER_TEMP/publication/candidate" \
+            --plan "$plan" --plan-sha256 "$plan_sha256" \
+            --ref "$GITHUB_REF" --sha "$GITHUB_SHA" --event "$GITHUB_EVENT_NAME" --apply
       - name: Import the protected approved plan
+        if: github.ref != 'refs/heads/main'
         id: approved-plan
         env:
           PLAN_JSON: ${{ vars.SCANNER_PUBLICATION_PLAN_JSON }}
@@ -379,6 +433,7 @@ jobs:
             --plan "$RUNNER_TEMP/publication/publication-plan.json" --sha "$GITHUB_SHA")
           printf 'artifact_id=%s\n' "$artifact_id" >> "$GITHUB_OUTPUT"
       - name: Download the approved staged handoff from this push run
+        if: github.ref != 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           ARTIFACT_ID: ${{ steps.approved-plan.outputs.artifact_id }}
@@ -390,6 +445,7 @@ jobs:
           gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" \
             --name "$artifact_name" --dir "$RUNNER_TEMP/publication"
       - name: Publish the approved sealed candidate
+        if: github.ref != 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           SCANNER_PUBLISH_ENABLED: ${{ vars.SCANNER_PUBLISH_ENABLED }}

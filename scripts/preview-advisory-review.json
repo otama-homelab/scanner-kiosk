@@ -1,0 +1,70 @@
+{
+  "reviewed_source": "50f5b896175fb66f53d2643a4191fccd7da423bb",
+  "native_manifest_sha256": "21bb815521d41b3ced50405e34605b54aa4720c9b45a20832fdc833115bf599a",
+  "rationale": {
+    "native-cpe": "The exact reviewed native manifest uses rebuilt Tesseract 5.5.4 executables/libraries. The APK 5.5.2 identity applies only to retained read-only tessdata configs/fonts. This byte pin must be reviewed when the native payload changes.",
+    "onefile": "The x/crypto OpenPGP finding is not reachable in this application. The required source checks run govulncheck with embedded frontend before any preview push. Module version and severity remain pinned here."
+  },
+  "matches": {
+    "image": [],
+    "native": [],
+    "native-cpe": [
+      {
+        "id": "CVE-2026-88052",
+        "severity": "High",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      },
+      {
+        "id": "CVE-2026-88053",
+        "severity": "High",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      },
+      {
+        "id": "CVE-2026-88051",
+        "severity": "High",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      },
+      {
+        "id": "CVE-2026-88048",
+        "severity": "High",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      },
+      {
+        "id": "CVE-2026-88049",
+        "severity": "Medium",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      },
+      {
+        "id": "CVE-2026-88047",
+        "severity": "High",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      },
+      {
+        "id": "CVE-2026-88054",
+        "severity": "Medium",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      },
+      {
+        "id": "CVE-2026-88050",
+        "severity": "Medium",
+        "package": "tesseract-ocr",
+        "version": "5.5.2-r0"
+      }
+    ],
+    "onefile": [
+      {
+        "id": "GO-2026-5932",
+        "severity": "Unknown",
+        "package": "golang.org/x/crypto",
+        "version": "v0.58.0"
+      }
+    ]
+  }
+}

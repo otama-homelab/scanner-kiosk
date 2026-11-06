@@ -47,6 +47,34 @@ Local OCR works without an external service. Optional LLM OCR sends document
 content to the configured provider; credentials stay on the worker. Paperless
 delivery is deferred; the initial workflow ends at downloading the output.
 
+## Development container images
+
+Successful main pushes publish the already-tested distroless image to
+`ghcr.io/otama-homelab/scanner-kiosk:sha-<full-source-commit>` and update `:preview`.
+The image is linked to this repository through its OCI source label and the
+repository's Actions token. These are development previews, not G5-accepted
+production releases. They never move `:latest` or open the version-tag release gate.
+
+```sh
+docker pull ghcr.io/otama-homelab/scanner-kiosk:preview
+docker run --rm ghcr.io/otama-homelab/scanner-kiosk:preview version
+```
+
+GHCR controls package visibility separately from repository visibility. A newly
+created package starts private; authenticated pulls are required until its owner
+makes it public in package settings. The workflow does not change that access
+policy or billing settings. Production deployments should pin the verified image
+digest, rather than a moving preview tag.
+
+Before pushing the image, the publisher retains corresponding source, third-party
+notices, inventories and raw inspection reports in a source-only prerelease named
+`preview-source-<full-source-commit>`. Binary downloads and image tarballs remain
+CI artifacts until formal release acceptance. The source manifest and checksums
+also identify those two omitted CI artifacts. Native bytes must match the reviewed
+manifest and every advisory finding must match the retained review; new findings
+or changed native payloads stop automatic publication. Raw advisory failures are
+retained, not relabeled as a passed production security review.
+
 ## Develop
 
 The application uses Go and Astro. Astro produces static assets embedded in the
@@ -60,7 +88,7 @@ GOTOOLCHAIN=go1.27.3 go test -race ./...
 
 The CI workflow builds the native runtime, frontend, onefile and distroless image,
 and produces bound source, license, inventory and security materials. Main builds
-are previews; SemVer tags select releases. Publication is separately gated:
+are development image previews; SemVer tags select G5-gated formal releases:
 [release channels](docs/design/release-channels.md).
 
 ## Module ownership

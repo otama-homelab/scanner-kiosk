@@ -37,4 +37,21 @@ class ImportPlanTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):module.load(raw,hashlib.sha256(raw).hexdigest(),sha,plan)
 
 
+    def test_preview_selects_latest_valid_same_run_attempt_without_trusting_other_artifacts(self):
+        sha='a'*40
+        row={'id':42,'expired':False,'name':'staged-candidate-'+sha+'-1','size_in_bytes':100,
+             'workflow_run':{'id':99,'head_sha':sha,'repository_id':7,'head_repository_id':7}}
+        newer=copy.deepcopy(row);newer.update(id=44,name='staged-candidate-'+sha+'-2')
+        pages=[{'artifacts':[row,{'name':'other-artifact'}]},{'artifacts':[newer]}]
+        self.assertEqual(module.preview_artifact(pages,sha,99),newer['name'])
+        for key,value in [('head_sha','b'*40),('head_repository_id',8),('id',100)]:
+            broken=copy.deepcopy(newer);broken['workflow_run'][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError):
+                module.preview_artifact([{'artifacts':[broken]}],sha,99)
+        invalid_id=copy.deepcopy(row);invalid_id['id']=True
+        with self.assertRaises(ValueError):module.preview_artifact([{'artifacts':[invalid_id]}],sha,99)
+        for rows in [[],[row,row]]:
+            with self.assertRaises(ValueError):module.preview_artifact([{'artifacts':rows}],sha,99)
+
+
 if __name__=='__main__':unittest.main()

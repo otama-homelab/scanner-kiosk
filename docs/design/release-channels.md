@@ -285,3 +285,35 @@ No approved plan or external publication was created while implementing this
 handoff. Actual recipient access, visibility/protection, tag promotion and service
 writes remain 43-06.1 work after G5. The stage manifest's original advisory and
 approval fields are never rewritten by importing a plan.
+
+
+## Automatic development image previews
+
+Main pushes now publish source-backed development images after all required
+checks. This is separate from formal version-tag approval: G5 remains incomplete
+until its real acceptance evidence exists. No development preview changes
+`latest`. The publisher still uses the single serialized lock, fresh remote
+ancestry/check state, immutable SHA tags, upload digest checks and alias-last
+ordering. PRs and manual source checks cannot enter this publication path.
+
+The same-run staged artifact is selected by source/run/repository identity,
+including a valid earlier run attempt. Credential-free, nonroot, network-disabled
+preflight revalidates the staged materials, the reviewed native manifest and the
+exact advisory ID/severity/package/version records in
+`scripts/preview-advisory-review.json`. Changed native bytes and unreviewed
+findings require a new review. The current Go source also has to pass the
+existing embedded-frontend govulncheck before `required-checks` succeeds.
+
+Corresponding source and raw evidence become accessible in a source-only
+`preview-source-<full-sha>` prerelease before the registry image. The standalone
+binary and image tar are excluded from those prerelease assets; their identities
+remain in the staged manifest/checksums and the complete CI artifact. Image push
+uses the exact accepted image ID and its OCI repository label, then verifies the
+registry config/digest and package repository link. Only then may `preview` move.
+The raw advisory threshold remains recorded even when its byte-bound findings
+have the retained disposition; no G5 or stable security approval is fabricated.
+
+GHCR initially creates a private package. Its owner controls public visibility
+separately in package settings. Automatic publication preserves that policy and
+reports actual package visibility. Formal version publishing retains its existing
+protected plan and G5/security/license/access gates.

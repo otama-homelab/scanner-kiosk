@@ -23,6 +23,8 @@ class WritePublicationTest(unittest.TestCase):
         spec.loader.exec_module(self.module)
         self.events, self.releases, self.tags = [], [], {}
         self.visibility, self.package_visibility = 'private', 'private'
+        self.package_repository = 'otama-homelab/scanner-kiosk'
+        self.package_missing = False
         self.upload_failed, self.check_result = False, 'success'
         self.asset_mismatch, self.push_failed, self.source_removed = False, False, False
         self.fail_checks_after_upload = False
@@ -50,7 +52,9 @@ class WritePublicationTest(unittest.TestCase):
                 'status': 'completed', 'conclusion': ('failure' if self.fail_checks_after_upload and 'upload-assets' in self.events else self.check_result),
                 'app': {'slug': 'github-actions'}}]}]
         if '/packages/container/' in path:
-            return {'visibility': self.package_visibility}
+            if self.package_missing and not self.tags:
+                return None
+            return {'visibility': self.package_visibility, 'repository': {'full_name': self.package_repository}}
         if '/releases?' in path:
             return [self.releases]
         if path.endswith('/releases') and body is not None:
@@ -84,7 +88,7 @@ class WritePublicationTest(unittest.TestCase):
                 raise RuntimeError('fixture registry push failed')
             self.tags[tag] = {'digest': self.registry_digest, 'image_id': self.image_id}
         elif args[:3] == ['docker', 'image', 'inspect']:
-            return json.dumps([{'Id': self.image_id}]).encode()
+            return json.dumps([{'Id': self.image_id, 'Config': {'Labels': {'org.opencontainers.image.source': 'https://github.com/otama-homelab/scanner-kiosk'}}}]).encode()
         elif args[:2] == ['docker', 'load']:
             self.events.append('load-image')
         elif args[:2] not in [['docker', 'login'], ['docker', 'tag']]:
@@ -97,6 +101,60 @@ class WritePublicationTest(unittest.TestCase):
                 patch.object(self.module, 'command', self.command):
             return self.module.publish(self.candidate, self.path, self.plan_hash,
                 self.ref, self.sha, 'push', self.f.git.repo, apply=apply)
+
+    def development_preview(self):
+        self.plan.pop('approval_sha256')
+        self.plan.update(development_preview=True, release_tag='preview-source-'+self.sha,
+                         policy_sha256=hashlib.sha256(self.module.policy.PREVIEW_REVIEW.read_bytes()).hexdigest())
+        self.plan['uploads'] = [name for name in self.plan['uploads'] if name not in ['scanner-onefile-linux-amd64', 'scanner-image.tar']]
+        self.visibility = self.plan['visibility'] = 'public'
+        self.path.write_text(json.dumps(self.plan))
+        self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        self.env['SCANNER_PUBLISH_ENABLED'] = 'false'
+
+    def test_main_preview_keeps_sources_and_never_pushes_latest(self):
+        self.development_preview()
+        self.package_missing = True
+        result = self.run_writer(apply=True)
+        self.assertTrue(result['published'])
+        self.assertEqual(set(self.tags), {self.plan['image_tag'], 'preview'})
+        self.assertEqual(self.releases[0]['tag_name'], 'preview-source-'+self.sha)
+        self.assertTrue(self.releases[0]['prerelease'])
+        self.assertIn('G5 acceptance remains incomplete', self.releases[0]['body'])
+        self.assertLess(self.events.index('publish-release'), self.events.index('push-'+self.plan['image_tag']))
+        self.assertEqual(result['package_visibility'], 'private')
+
+    def test_preview_alias_recognizes_its_source_only_prerelease_owner(self):
+        self.development_preview()
+        self.releases = [{'tag_name': 'preview-source-'+self.sha, 'draft': False, 'prerelease': True,
+                          'body': self.module.body_text(self.plan, self.registry_digest)}]
+        self.tags['preview'] = {'digest': self.registry_digest, 'image_id': self.image_id}
+        with patch.object(self.module, 'api', self.api), patch.object(self.module, 'registry_image', self.registry):
+            state = self.module.fresh_state(self.plan, {})
+        self.assertEqual(state['preview_source_sha'], self.sha)
+
+    def test_preview_never_opens_the_version_tag_release_gate(self):
+        self.development_preview()
+        self.ref = self.env['GITHUB_REF'] = 'refs/tags/v1.0.0'
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+
+    def test_preview_requires_the_same_reviewed_policy_and_repository_link(self):
+        self.development_preview()
+        self.plan['policy_sha256'] = '0'*64
+        self.path.write_text(json.dumps(self.plan))
+        self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
+        self.plan['policy_sha256'] = hashlib.sha256(self.module.policy.PREVIEW_REVIEW.read_bytes()).hexdigest()
+        self.path.write_text(json.dumps(self.plan))
+        self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        self.package_repository = 'another/repository'
+        with self.assertRaises(ValueError):
+            self.run_writer(apply=True)
+        self.assertEqual(self.events, [])
 
     def test_dry_run_performs_no_release_or_registry_writes(self):
         result = self.run_writer()
