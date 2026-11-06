@@ -9,6 +9,10 @@ import "runtime"
 var Version = "0.0.0-dev"
 var Revision = "unreleased"
 
+// NativeRuntimeSHA256 is linked only into the terminal OCR image. The main
+// executable's public version shape remains independent of optional runtimes.
+var NativeRuntimeSHA256 = ""
+
 type Info struct {
 	Version      string `json:"version"`
 	Revision     string `json:"revision"`

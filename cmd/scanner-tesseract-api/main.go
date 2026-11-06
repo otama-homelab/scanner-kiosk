@@ -16,7 +16,11 @@ import (
 
 func main() {
 	if len(os.Args) == 2 && os.Args[1] == "version" {
-		if json.NewEncoder(os.Stdout).Encode(buildinfo.Current()) != nil {
+		version := struct {
+			buildinfo.Info
+			NativeRuntimeSHA256 string `json:"native_runtime_sha256,omitempty"`
+		}{buildinfo.Current(), buildinfo.NativeRuntimeSHA256}
+		if json.NewEncoder(os.Stdout).Encode(version) != nil {
 			os.Exit(1)
 		}
 		return

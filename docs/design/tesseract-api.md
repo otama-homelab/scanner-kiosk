@@ -31,6 +31,14 @@ revision for the worker's lifetime. Updating dictionaries requires restarting th
 worker to refresh that selection; mismatched in-flight revisions fail explicitly.
 Do not mutate dictionaries inside a running image.
 
+Service image builds must link the verified native partition manifest digest into
+`buildinfo.NativeRuntimeSHA256`. The provider combines a linked digest with the service
+source revision before fingerprinting the executable and dictionaries. A shared
+library or service-only rebuild therefore invalidates an old selection too. The
+service's `version` command exposes the linked `native_runtime_sha256`; source-only
+development without that linked value retains the legacy local fingerprint. The
+container builder must verify the linked digest against the actual image payload.
+
 The application's model revision additionally hashes the endpoint and destination
 label, following the LLM adapter's configuration-pinning pattern. A queued job
 cannot move to a newly configured service or disclosure label. Key rotation alone

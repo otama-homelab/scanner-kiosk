@@ -98,6 +98,10 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_assemble_native.py -v
       - name: Native selected-origin SBOM safety checks
         run: python3 -m unittest discover -s scripts -p test_native_sbom.py -v
+      - name: Native runtime role dependency closures
+        run: python3 -m unittest discover -s scripts -p test_partition_native.py -v
+      - name: Allowlisted role image build contexts
+        run: python3 -m unittest discover -s scripts -p test_prepare_runtime_images.py -v
       - name: Onefile inventory input binding and output safety
         run: python3 -m unittest discover -s scripts -p test_onefile_sbom.py -v
       - name: Saved image configuration and layer identity contract

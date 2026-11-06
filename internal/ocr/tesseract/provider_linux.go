@@ -27,6 +27,8 @@ var ErrReconciliation = ocrplugin.ErrReconciliation
 
 type Options struct {
 	Binary, DataDir, WorkRoot string
+	// RuntimeRevision pins a distributed image's shared libraries and implementation.
+	RuntimeRevision string
 	// LanguageFiles maps public language IDs to installed dictionary basenames.
 	LanguageFiles                                map[string]string
 	MaxInputBytes, MaxResultBytes, MaxPagePixels int64
@@ -50,11 +52,19 @@ func New(options Options) (*Provider, error) {
 	if options.MaxInputBytes < 1 || options.MaxInputBytes > 1<<40 || options.MaxResultBytes < 1 || options.MaxResultBytes > 1<<40 || options.MaxPagePixels < 1 || options.MaxPages < 1 || options.Timeout <= 0 || options.StopGrace <= 0 {
 		return nil, errors.New("invalid Tesseract limits")
 	}
+	if options.RuntimeRevision != "" {
+		if _, err := hex.DecodeString(options.RuntimeRevision); err != nil || len(options.RuntimeRevision) != 64 {
+			return nil, errors.New("invalid Tesseract runtime revision")
+		}
+	}
 	if len(options.LanguageFiles) == 0 {
 		options.LanguageFiles = map[string]string{"en": "eng", "ja": "jpn"}
 	}
 	p := &Provider{options: options, dictionaries: map[string]string{}}
 	hash := sha256.New()
+	if options.RuntimeRevision != "" {
+		_, _ = io.WriteString(hash, "runtime\x00"+options.RuntimeRevision+"\x00")
+	}
 	fingerprint := func(path string) error {
 		file, err := os.Open(path)
 		if err != nil {

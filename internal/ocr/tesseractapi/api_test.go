@@ -517,6 +517,25 @@ func TestSelectionPinsEndpointAndDisclosureButAllowsKeyRotation(t *testing.T) {
 	}
 }
 
+func TestDistributedRuntimeRevisionBindsNativeFilesAndServiceSource(t *testing.T) {
+	one, err := runtimeRevision(strings.Repeat("a", 64), strings.Repeat("b", 40))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, pair := range [][2]string{{strings.Repeat("c", 64), strings.Repeat("b", 40)}, {strings.Repeat("a", 64), strings.Repeat("c", 40)}} {
+		next, err := runtimeRevision(pair[0], pair[1])
+		if err != nil || next == one {
+			t.Fatal("native-library or service-only rebuild retained model identity")
+		}
+	}
+	if _, err := runtimeRevision("invalid", "unreleased"); err == nil {
+		t.Fatal("invalid linked runtime digest accepted")
+	}
+	if legacy, err := runtimeRevision("", "unreleased"); err != nil || legacy != "" {
+		t.Fatal("legacy fingerprint unexpectedly changed")
+	}
+}
+
 func TestServiceConfigurationIsBoundedAndSecretRedacted(t *testing.T) {
 	values := map[string]string{"SCANNER_OCR_TESSERACT_API_KEY": key}
 	lookup := func(k string) (string, bool) {

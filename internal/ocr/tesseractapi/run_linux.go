@@ -4,6 +4,8 @@ package tesseractapi
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"io"
 	"log"
@@ -15,6 +17,7 @@ import (
 	"strings"
 	"time"
 
+	"scanner-kiosk/internal/buildinfo"
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/ocr/tesseract"
 )
@@ -25,6 +28,17 @@ type serviceConfig struct {
 	root, address string
 	limits        Limits
 	stopGrace     time.Duration
+}
+
+func runtimeRevision(native, implementation string) (string, error) {
+	if native == "" {
+		return "", nil
+	} // Source-only development keeps the legacy fingerprint.
+	if _, err := hex.DecodeString(native); err != nil || len(native) != 64 || implementation == "" || len(implementation) > 128 || strings.ContainsAny(implementation, "\x00\r\n") {
+		return "", errService
+	}
+	sum := sha256.Sum256([]byte("tesseract-container-v1\x00" + native + "\x00" + implementation))
+	return hex.EncodeToString(sum[:]), nil
 }
 
 func loadService(lookup config.Lookup) (serviceConfig, error) {
@@ -79,6 +93,10 @@ func Run(ctx context.Context, lookup config.Lookup) error {
 	if ctx.Err() != nil {
 		return ctx.Err()
 	}
+	revision, err := runtimeRevision(buildinfo.NativeRuntimeSHA256, buildinfo.Revision)
+	if err != nil {
+		return err
+	}
 	for _, path := range []string{c.root, filepath.Join(c.root, "native"), filepath.Join(c.root, "requests")} {
 		if err = os.MkdirAll(path, 0700); err != nil {
 			return errService
@@ -92,7 +110,7 @@ func Run(ctx context.Context, lookup config.Lookup) error {
 	if err != nil || len(entries) != 0 {
 		return errService
 	}
-	provider, err := tesseract.New(tesseract.Options{Binary: c.native.Path, DataDir: c.native.DataDir, WorkRoot: filepath.Join(c.root, "native"), MaxInputBytes: c.limits.MaxInputBytes, MaxResultBytes: c.limits.MaxResultBytes, MaxPagePixels: c.limits.MaxPagePixels, MaxPages: c.limits.MaxPages, Timeout: c.limits.Timeout, StopGrace: c.stopGrace})
+	provider, err := tesseract.New(tesseract.Options{Binary: c.native.Path, DataDir: c.native.DataDir, WorkRoot: filepath.Join(c.root, "native"), RuntimeRevision: revision, MaxInputBytes: c.limits.MaxInputBytes, MaxResultBytes: c.limits.MaxResultBytes, MaxPagePixels: c.limits.MaxPagePixels, MaxPages: c.limits.MaxPages, Timeout: c.limits.Timeout, StopGrace: c.stopGrace})
 	if err != nil {
 		return errService
 	}

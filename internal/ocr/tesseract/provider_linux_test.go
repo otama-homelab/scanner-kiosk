@@ -159,6 +159,27 @@ func TestDictionaryFingerprintAndCapabilitiesIsolation(t *testing.T) {
 	}
 }
 
+func TestRuntimeRevisionPinsContainerLibrariesAndImplementation(t *testing.T) {
+	opts := options(t)
+	opts.RuntimeRevision = strings.Repeat("a", 64)
+	before, err := New(opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	opts.RuntimeRevision = strings.Repeat("b", 64)
+	after, err := New(opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if before.caps.Models[0].Version == after.caps.Models[0].Version {
+		t.Fatal("runtime-only rebuild did not change model revision")
+	}
+	opts.RuntimeRevision = "not-a-digest"
+	if _, err := New(opts); err == nil {
+		t.Fatal("invalid runtime digest accepted")
+	}
+}
+
 func TestOrientationModelIsRequiredAndVersioned(t *testing.T) {
 	t.Run("missing", func(t *testing.T) {
 		opts := options(t)
