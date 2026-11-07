@@ -322,3 +322,12 @@ GHCR initially creates a private package. Its owner controls public visibility
 separately in package settings. Automatic publication preserves that policy and
 reports actual package visibility. Formal version publishing retains its existing
 protected plan and G5/security/license/access gates.
+
+## Docker-first formal uploads
+
+Formal releases upload the core and Tesseract image archives with their source,
+notices, inventories and raw inspection reports. The compatibility onefile is
+validated inside the CI candidate but is never a user-facing download, including
+on formal tags. The sealed candidate manifest and SHA256SUMS still describe all
+CI inputs; check the entries corresponding to downloaded files. Publication
+continues to verify every internal candidate file before any transfer.

@@ -83,9 +83,10 @@ digest, rather than a moving preview tag.
 
 Before pushing the image, the publisher retains corresponding source, third-party
 notices, inventories and raw inspection reports in a source-only prerelease named
-`preview-source-<full-source-commit>`. Binary downloads and image tarballs remain
-CI artifacts until formal release acceptance. The source manifest and checksums
-also identify the omitted internal binary and both image archives. Native bytes must match the reviewed
+`preview-source-<full-source-commit>`. Image tarballs remain CI artifacts until
+formal release acceptance. The compatibility onefile stays internal in every
+channel. The manifest and checksums cover the complete CI candidate, including
+omitted artifacts; verify the entries for the files you download. Native bytes must match the reviewed
 manifest and every advisory finding must match the retained review; new findings
 or changed native payloads stop automatic publication. Raw advisory failures are
 retained, not relabeled as a passed production security review.

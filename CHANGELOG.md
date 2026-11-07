@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.1
+## 0.1.2
 
 - Docker-first Linux amd64 deployment with separate API and worker roles, Compose examples and a Helm chart.
 - Browser scanning through the unmodified sane-airscan backend, with bounded IPv4 Bonjour discovery, manual configuration and explicit scanner selection.

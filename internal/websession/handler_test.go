@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"scanner-kiosk/internal/buildinfo"
 	"scanner-kiosk/internal/documents"
@@ -22,6 +23,44 @@ import (
 )
 
 const publicURL = "https://scanner.example.test"
+
+func TestSessionPublicContractMatchesResponse(t *testing.T) {
+	raw, err := os.ReadFile("../../api/openapi.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var contract map[string]any
+	if err = json.Unmarshal(raw, &contract); err != nil {
+		t.Fatal(err)
+	}
+	schema := contract["components"].(map[string]any)["schemas"].(map[string]any)["Session"].(map[string]any)
+	properties := schema["properties"].(map[string]any)
+	h, _, _ := fixture(t)
+	response := request(t, h, "GET", "/api/session", nil, "")
+	view(t, response)
+	var body map[string]any
+	if err = json.Unmarshal(response.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	for field := range body {
+		if _, exists := properties[field]; !exists {
+			t.Fatalf("response field %q is absent from the closed public schema", field)
+		}
+	}
+	if properties["version"].(map[string]any)["type"] != "string" {
+		t.Fatal("version schema does not match the running response")
+	}
+	allowed := properties["authenticate_type"].(map[string]any)["enum"].([]any)
+	for _, mode := range []string{"guest", "none", "simple", "oidc"} {
+		found := false
+		for _, value := range allowed {
+			found = found || value == mode
+		}
+		if !found {
+			t.Fatalf("supported mode %q is absent from the public schema", mode)
+		}
+	}
+}
 
 func TestSessionViewReportsRunningVersion(t *testing.T) {
 	h, _, _ := fixture(t)

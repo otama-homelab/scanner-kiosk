@@ -136,8 +136,9 @@ def prepare_publication(candidate, approval_path, approval_sha256, ref, sha, eve
 
 
 def upload_names(manifest, development_preview=False):
+    # The compatibility onefile remains a CI input for Docker-first releases.
     return sorted(record['file'] for role, record in manifest['files'].items()
-                  if not development_preview or role not in {'binary', 'image', 'tesseract-image'}) + ['manifest.json', 'SHA256SUMS', 'receipt.json']
+                  if role != 'binary' and (not development_preview or role not in {'image', 'tesseract-image'})) + ['manifest.json', 'SHA256SUMS', 'receipt.json']
 
 
 def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')):

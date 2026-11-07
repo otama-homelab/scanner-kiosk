@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Scanner kiosk API design",
+    "title": "Scanner kiosk API",
     "version": "0.1.0",
-    "description": "Full API contract for the Go/Astro scanner, including endpoints still being implemented. Runtime supports authenticated sessions, document history/page edits/preview/download, jobs/render and readiness-gated new/next scan admission. Physical handoff/readiness production, remaining cleanup/thumbnail UI and deployment acceptance are unfinished. No Paperless settings or delivery. Cookie mutations require exact public Origin; ownership, revision and retention are enforced server-side."
+    "description": "API contract for the Go/Astro scanner. Runtime supports private sessions, document import and page review, preview/download, render jobs and readiness-gated scan admission. Optional OCR providers are independent of ordinary PDF saving. Scanner advertisements are discovery candidates, not acquisition permission. Cookie mutations require the exact public Origin; ownership, revisions and retention are enforced server-side. Paperless settings and delivery remain deferred."
   },
   "servers": [
     {
@@ -456,7 +456,7 @@
     "/api/documents": {
       "get": {
         "operationId": "listDocuments",
-        "description": "Return only this principal\u2019s unexpired projections. Cursor is opaque and never grants access.",
+        "description": "Return only this principal’s unexpired projections. Cursor is opaque and never grants access.",
         "responses": {
           "200": {
             "description": "Success; caller authorization and retention are still enforced.",
@@ -2523,20 +2523,27 @@
             "enum": [
               "oidc",
               "simple",
-              "guest"
+              "guest",
+              "none"
             ],
-            "description": "Configured type. guest is a legacy isolated-session mode; named none is not yet implemented."
+            "description": "Configured authentication mode. none automatically starts a private isolated browser session; guest retains the legacy explicit session entry."
           },
           "reset_required": {
             "type": "boolean",
             "description": "Stale or revoked cookie: recover using POST /auth/session/reset, then bootstrap once more. GET never overwrites that cookie."
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Public application version of the running API executable, also reported by the version command."
           }
         },
         "required": [
           "authenticated",
           "principal_kind",
           "authenticate_type",
-          "can_administer"
+          "can_administer",
+          "version"
         ],
         "additionalProperties": false
       },
@@ -3127,7 +3134,7 @@
         }
       },
       "NotFound": {
-        "description": "Missing or not owned; do not reveal another principal\u2019s resource.",
+        "description": "Missing or not owned; do not reveal another principal’s resource.",
         "content": {
           "application/json": {
             "schema": {

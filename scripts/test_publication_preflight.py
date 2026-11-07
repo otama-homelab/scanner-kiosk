@@ -62,6 +62,15 @@ class PublicationPreflightTest(unittest.TestCase):
         self.assertIn('manifest.json', result['uploads'])
         self.assertEqual(before, (self.candidate.output/'manifest.json').read_bytes())
 
+    def test_formal_uploads_keep_compatibility_binary_internal(self):
+        result = self.prepare()
+        self.assertNotIn('scanner-onefile-linux-amd64', result['uploads'])
+        for name in ['scanner-image.tar', 'scanner-tesseract-image.tar',
+                     'scanner-native-sources.tar', 'THIRD-PARTY-NOTICES.md', 'security-reports.tar']:
+            self.assertIn(name, result['uploads'])
+        self.assertTrue((self.candidate.output/'scanner-onefile-linux-amd64').is_file())
+        self.assertIn('binary', json.loads((self.candidate.output/'manifest.json').read_text())['files'])
+
     def test_every_existing_acceptance_gate_is_required(self):
         for gate in self.approval['gates']:
             with self.subTest(gate=gate), self.assertRaises(ValueError):
