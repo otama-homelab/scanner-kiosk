@@ -14,6 +14,7 @@ import (
 	"unicode/utf8"
 
 	"scanner-kiosk/internal/authport"
+	"scanner-kiosk/internal/buildinfo"
 )
 
 func validLoginKind(kind string, version int64) bool {
@@ -161,5 +162,5 @@ func (h *Handler) passwordLogin(w http.ResponseWriter, r *http.Request) {
 		h.failure(w, err)
 		return
 	}
-	h.finish(w, r, response{200, View{Authenticated: true, PrincipalKind: "simple", AuthenticateType: h.mode}})
+	h.finish(w, r, response{200, View{Version: buildinfo.Version, Authenticated: true, PrincipalKind: "simple", AuthenticateType: h.mode}})
 }

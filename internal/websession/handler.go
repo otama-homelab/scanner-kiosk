@@ -14,6 +14,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"scanner-kiosk/internal/authport"
+	"scanner-kiosk/internal/buildinfo"
 )
 
 var (
@@ -43,6 +44,7 @@ type Handler struct {
 	loginLimit      *loginLimiter
 }
 type View struct {
+	Version          string `json:"version"`
 	Authenticated    bool   `json:"authenticated"`
 	PrincipalKind    string `json:"principal_kind"`
 	AuthenticateType string `json:"authenticate_type"`
@@ -211,12 +213,12 @@ func (h *Handler) bootstrap(w http.ResponseWriter, r *http.Request) {
 	// A late request with a rotated/expired cookie must not overwrite a newer
 	// browser session with a newly issued anonymous cookie.
 	if _, cookieErr := r.Cookie(CookieName); cookieErr == nil && h.sessions.Token(r.Context()) == "" {
-		h.write(w, response{200, View{PrincipalKind: "none", AuthenticateType: h.mode, ResetRequired: true}})
+		h.write(w, response{200, View{Version: buildinfo.Version, PrincipalKind: "none", AuthenticateType: h.mode, ResetRequired: true}})
 		return
 	}
 	principal, kind, err := h.principal(r.Context())
 	if errors.Is(err, ErrSession) {
-		h.write(w, response{200, View{PrincipalKind: "none", AuthenticateType: h.mode, ResetRequired: true}})
+		h.write(w, response{200, View{Version: buildinfo.Version, PrincipalKind: "none", AuthenticateType: h.mode, ResetRequired: true}})
 		return
 	} else if err != nil {
 		h.failure(w, err)
@@ -230,7 +232,7 @@ func (h *Handler) bootstrap(w http.ResponseWriter, r *http.Request) {
 		}
 		h.sessions.Put(r.Context(), "browser_binding", binding)
 	}
-	h.finish(w, r, response{200, View{Authenticated: principal != "", PrincipalKind: kind, AuthenticateType: h.mode, CanAdminister: kind == "oidc" && h.sessions.GetBool(r.Context(), "can_administer")}})
+	h.finish(w, r, response{200, View{Version: buildinfo.Version, Authenticated: principal != "", PrincipalKind: kind, AuthenticateType: h.mode, CanAdminister: kind == "oidc" && h.sessions.GetBool(r.Context(), "can_administer")}})
 }
 func (h *Handler) mutation(w http.ResponseWriter, r *http.Request) (*http.Request, error) {
 	if !validID(r.Header.Get("Idempotency-Key")) || len(r.Header.Values("Idempotency-Key")) != 1 {
@@ -302,7 +304,7 @@ func (h *Handler) guest(w http.ResponseWriter, r *http.Request) {
 		}
 		h.sessions.Put(r.Context(), "principal", principal)
 	}
-	h.finish(w, r, response{200, View{Authenticated: true, PrincipalKind: "guest", AuthenticateType: h.mode}})
+	h.finish(w, r, response{200, View{Version: buildinfo.Version, Authenticated: true, PrincipalKind: "guest", AuthenticateType: h.mode}})
 }
 func (h *Handler) endGuest(w http.ResponseWriter, r *http.Request) {
 	if h.mode != "guest" && h.mode != "none" {

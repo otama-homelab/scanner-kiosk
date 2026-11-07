@@ -11,6 +11,7 @@ import (
 	"net/http/cookiejar"
 	"net/http/httptest"
 	"path/filepath"
+	"scanner-kiosk/internal/buildinfo"
 	"scanner-kiosk/internal/documents"
 	"strings"
 	"sync"
@@ -21,6 +22,27 @@ import (
 )
 
 const publicURL = "https://scanner.example.test"
+
+func TestSessionViewReportsRunningVersion(t *testing.T) {
+	h, _, _ := fixture(t)
+	check := func(w *httptest.ResponseRecorder) {
+		t.Helper()
+		view(t, w)
+		var body map[string]any
+		if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
+			t.Fatal(err)
+		}
+		if body["version"] != buildinfo.Version {
+			t.Fatalf("session version %v differs from running version %q", body["version"], buildinfo.Version)
+		}
+	}
+	first := request(t, h, "GET", "/api/session", nil, "")
+	check(first)
+	check(request(t, h, "GET", "/api/session", &http.Cookie{Name: CookieName, Value: strings.Repeat("a", 43)}, ""))
+	guest := request(t, h, "POST", "/auth/guest", cookie(t, first), "request_version_0001")
+	check(guest)
+	check(request(t, h, "GET", "/api/session", cookie(t, guest), ""))
+}
 
 func options() Options {
 	return Options{PublicURL: publicURL, AuthenticateType: "guest", Lifetime: time.Hour, IdleTimeout: 30 * time.Minute, ReceiptLifetime: 72 * time.Hour}

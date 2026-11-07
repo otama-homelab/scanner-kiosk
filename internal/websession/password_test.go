@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"scanner-kiosk/internal/authport"
+	"scanner-kiosk/internal/buildinfo"
 	"scanner-kiosk/internal/simpleauth"
 )
 
@@ -78,7 +79,7 @@ func simpleLogin(t *testing.T, h *Handler, name string) *http.Cookie {
 	t.Helper()
 	browser := cookie(t, request(t, h, "GET", "/api/session", nil, ""))
 	result := simpleRequest(t, h, browser, name, simplePassword)
-	if value := view(t, result); !value.Authenticated || value.PrincipalKind != "simple" || value.AuthenticateType != "simple" || value.CanAdminister {
+	if value := view(t, result); !value.Authenticated || value.PrincipalKind != "simple" || value.AuthenticateType != "simple" || value.CanAdminister || value.Version != buildinfo.Version {
 		t.Fatal("wrong simple session", value)
 	}
 	current := cookie(t, result)
