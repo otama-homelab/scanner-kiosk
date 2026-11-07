@@ -132,3 +132,7 @@ func (s *catalogAuthoritySpy) BeginScannerObservation(context.Context, string) (
 func (s *catalogAuthoritySpy) PublishReadiness(context.Context, scannerreadiness.Evidence) error {
 	return s.result("readiness")
 }
+
+func (s *catalogAuthoritySpy) WithdrawReadiness(context.Context, string) error {
+	return s.result("readiness")
+}

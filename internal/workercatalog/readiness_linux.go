@@ -69,7 +69,7 @@ func (s *Store) PublishScannerReadiness(ctx context.Context, lease Lease, proof 
 	return epoch, nil
 }
 
-// BeginScannerObservation withdraws the old advertisement before network IO.
+// BeginScannerObservation retains unexpired evidence while renewing an idle device.
 // It returns only an advisory idle epoch; publication must compare it again.
 func (p *sqlitePublisher) BeginScannerObservation(ctx context.Context, id string) (int64, error) {
 	if !scannermetadata.ValidID(id) {
@@ -82,9 +82,6 @@ func (p *sqlitePublisher) BeginScannerObservation(ctx context.Context, id string
 		if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM processing_coordinator WHERE singleton=1 AND boot_id=? AND generation=? AND state='active' AND heartbeat_at_ms<=? AND valid_until_ms>?`, p.lease.boot, p.lease.generation, now, now).Scan(&active); err != nil || active != 1 {
 			return ErrUnavailable
 		}
-		if _, err := tx.ExecContext(ctx, "DELETE FROM scanner_readiness WHERE device_id=?", id); err != nil {
-			return err
-		}
 		var state string
 		var job sql.NullString
 		err := tx.QueryRowContext(ctx, "SELECT epoch,state,job_id FROM device_leases WHERE device_id=?", id).Scan(&epoch, &state, &job)
@@ -96,10 +93,24 @@ func (p *sqlitePublisher) BeginScannerObservation(ctx context.Context, id string
 			return err
 		}
 		idle = state == "idle" && !job.Valid
-		return nil
+		if !idle {
+			_, err = tx.ExecContext(ctx, "DELETE FROM scanner_readiness WHERE device_id=?", id)
+		}
+		return err
 	})
 	if err != nil || !idle {
 		return 0, ErrUnavailable
 	}
 	return epoch, nil
+}
+
+// A failed observation revokes only this publisher's device advertisement.
+func (p *sqlitePublisher) WithdrawReadiness(ctx context.Context, id string) error {
+	if !scannermetadata.ValidID(id) {
+		return ErrUnavailable
+	}
+	return p.store.write(ctx, p.lease, func(tx *sql.Tx, _ int64) error {
+		_, err := tx.ExecContext(ctx, "DELETE FROM scanner_readiness WHERE device_id=? AND boot_id=? AND generation=?", id, p.lease.boot, p.lease.generation)
+		return err
+	})
 }

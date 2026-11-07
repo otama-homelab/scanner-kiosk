@@ -58,6 +58,15 @@ func (p *catalogPublisher) startScannerReadinessDevice(observer applicationReadi
 				}
 			}
 			cancel()
+			if err != nil && p.ctx.Err() == nil {
+				ctx, cancel := context.WithTimeout(p.ctx, 5*time.Second)
+				withdrawErr := p.store.WithdrawReadiness(ctx, id)
+				cancel()
+				if withdrawErr != nil {
+					p.fail(ErrCatalog)
+					return
+				}
+			}
 			if errors.Is(err, scanner.ErrUnresolved) && p.ctx.Err() == nil {
 				p.fail(ErrReconciliation)
 				return

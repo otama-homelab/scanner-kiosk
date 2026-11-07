@@ -20,6 +20,7 @@ type Publisher interface {
 	PublishScanners(context.Context, scannermetadata.Snapshot) error
 	BeginScannerObservation(context.Context, string) (int64, error)
 	PublishReadiness(context.Context, scannerreadiness.Evidence) error
+	WithdrawReadiness(context.Context, string) error
 	Stop(context.Context) error
 }
 
