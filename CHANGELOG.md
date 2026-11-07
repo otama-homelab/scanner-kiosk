@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.2
+## 0.1.3
 
 - Docker-first Linux amd64 deployment with separate API and worker roles, Compose examples and a Helm chart.
 - Separate `scanner-kiosk` and `scanner-kiosk-tesseract` image packages, each with its own version and preview tags.
