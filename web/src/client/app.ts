@@ -42,6 +42,7 @@ let saveJob='';
 let saveDocument='';
 let disposePreviews:(()=>void)[]=[];
 let nextNotice:Key|undefined;
+let immediateScan:string|null=null;
 let historyLayout:'list'|'grid'='list';try{if(localStorage.getItem('scanner.history.layout')==='grid')historyLayout='grid'}catch{}
 let jobTimer:ReturnType<typeof setTimeout>|undefined;
 let jobAbort:AbortController|null=null;
@@ -68,7 +69,7 @@ async function bootstrap(){
  })().finally(()=>boot=null);return boot;
 }
 async function render(){
- const hash=location.hash;if(saveJob&&hash!=='#/document/'+saveDocument&&hash!=='#/job/'+saveJob)saveJob='';const moveFocus=renderedHash!==null&&renderedHash!==hash;const focused=document.activeElement;
+ const requestedScan=immediateScan;immediateScan=null;const hash=location.hash;if(saveJob&&hash!=='#/document/'+saveDocument&&hash!=='#/job/'+saveJob)saveJob='';const moveFocus=renderedHash!==null&&renderedHash!==hash;const focused=document.activeElement;
  for(const dispose of disposePreviews)dispose();disposePreviews=[];disposeImport?.();disposeImport=null;disposeCapture?.();disposeCapture=null;disposeDialog?.();disposeDialog=null;disposeLogin?.();disposeLogin=null;stopJob();jobViewKey='';const version=++generation;status.textContent=nextNotice?t(nextNotice):'';nextNotice=undefined;main.replaceChildren(text('p',t('loading')));main.setAttribute('aria-busy','true');
  try{
   const current=await bootstrap();if(version!==generation)return;if(!['guest','oidc','simple'].includes(current?.authenticate_type))throw new Error('Invalid authentication type');session=current;document.querySelector<HTMLElement>('#history')!.hidden=!session?.authenticated;document.querySelector<HTMLElement>('#logout')!.hidden=!session?.authenticated;localize();main.replaceChildren();
@@ -97,10 +98,9 @@ async function render(){
    const active=activeJob(doc);if(active){navigate('#/job/'+active);return}
    if(!Number.isSafeInteger(doc.revision)||!Array.isArray(doc.pages)||!['review','ready','failed'].includes(doc.state)||target&&!doc.pages.some((page:any)=>page.id===target)||doc.purpose==='photo'&&doc.pages.length&&mode!=='replace')throw new Error('Invalid scan state');
    const placement=mode==='before'?{insert_before_page_id:target}:mode==='replace'?{replace_page_id:target}:undefined;
-   heading(mode==='before'?'insertScan':mode==='replace'?'replaceScan':'scanNext');
-   main.append(button('back',()=>navigate('#/document/'+id)));
+   const header=document.createElement('div');header.className='capture-header';const back=button('back',()=>navigate('#/document/'+id));back.className='back-link';header.append(back);heading(mode==='before'?'insertScan':mode==='replace'?'replaceScan':'scanNext',header);main.append(header);
    if(mode==='replace')main.append(text('p',t('replacementNotice')));
-   mountCapture(version,doc,placement);return
+   mountCapture(version,doc,placement,requestedScan===id&&!placement);return
   }
   if(route.startsWith('/document/')){const id=route.slice('/document/'.length);if(!opaque(id))throw new Error('Invalid document');const value=await api('/api/documents/'+id);if(version!==generation)return;showDocument(value);return}
   if(route==='/history'){const header=document.createElement('div');header.className='history-header';heading('history',header);const views=document.createElement('div');views.className='history-layout';views.setAttribute('role','group');views.setAttribute('aria-label',t('historyView'));const list=document.createElement('div');list.className='document-list';list.dataset.layout=historyLayout;for(const layout of ['list','grid'] as const){const key=layout==='list'?'listView':'gridView';const control=iconButton(button(key,()=>{historyLayout=layout;list.dataset.layout=layout;for(const b of Array.from(views.querySelectorAll('button')))b.setAttribute('aria-pressed',String(b.dataset.layout===layout));try{localStorage.setItem('scanner.history.layout',layout)}catch{}}),key);control.dataset.layout=layout;control.setAttribute('aria-pressed',String(layout===historyLayout));views.append(control)}header.append(views);main.append(header,list);await history(list,null,version);return}
@@ -109,7 +109,7 @@ async function render(){
   if(version===generation){main.setAttribute('aria-busy','false');if(location.hash===hash){renderedHash=hash;if(moveFocus&&(document.activeElement===document.body||document.activeElement===focused&&focused instanceof Element&&focused.closest('nav,.brand')))focusHeading()}}
  }
 }
-function mountCapture(view:number,doc?:any,placement?:{insert_before_page_id?:string;replace_page_id?:string}){const controls=captureControls({t,current:()=>view===generation,read:signal=>api('/api/scanners','GET',undefined,undefined,undefined,signal),submitLabel:placement?.replace_page_id?'replaceScan':placement?.insert_before_page_id?'insertScan':undefined,submit:(body,key,signal)=>api(doc?'/api/documents/'+doc.id+'/scans':'/api/documents','POST',placement?{...(body as object),...placement}:body,key,doc?.revision,signal),accepted:job=>navigate('#/job/'+job.id),history:()=>navigate('#/history'),expired:err=>err instanceof APIError&&err.status===410,reload:()=>void render(),rejected:err=>err instanceof APIError&&(err.status>=400&&err.status<500||err.status===503&&err.code==='scanner_unavailable'),purpose:doc?.purpose,photoFormat:doc?.photo_format==='png'?'png':'jpeg'});main.append(controls.element);disposeCapture=controls.dispose;controls.start()}
+function mountCapture(view:number,doc?:any,placement?:{insert_before_page_id?:string;replace_page_id?:string},immediate=false){const controls=captureControls({t,current:()=>view===generation,read:signal=>api('/api/scanners','GET',undefined,undefined,undefined,signal),submitLabel:placement?.replace_page_id?'replaceScan':placement?.insert_before_page_id?'insertScan':undefined,submit:(body,key,signal)=>api(doc?'/api/documents/'+doc.id+'/scans':'/api/documents','POST',placement?{...(body as object),...placement}:body,key,doc?.revision,signal),accepted:job=>navigate('#/job/'+job.id),history:()=>navigate('#/history'),expired:err=>err instanceof APIError&&err.status===410,reload:()=>void render(),rejected:err=>err instanceof APIError&&(err.status>=400&&err.status<500||err.status===503&&err.code==='scanner_unavailable'),purpose:doc?.purpose,initialCapture:doc?.pages?.findLast((page:any)=>page.capture)?.capture,photoFormat:doc?.photo_format==='png'?'png':'jpeg'});main.append(controls.element);disposeCapture=controls.dispose;if(immediate){controls.element.hidden=true;status.textContent=t('loading')}void controls.start(immediate).catch(err=>{if(view===generation)error(err)}).finally(()=>{if(view===generation){controls.element.hidden=false;if(immediate&&status.textContent===t('loading'))status.textContent=''}})}
 
 function mountImport(view:number,file?:File){const controls=importControls({t,current:()=>view===generation,load:signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),send:(file,key,sha,signal)=>responseDataFromUpload(file,key,sha,signal),accepted:job=>navigate('#/job/'+job.id),history:()=>navigate('#/history'),reload:()=>void render(),classify:err=>err instanceof APIError&&err.status===410?'expired':err instanceof APIError&&err.status>=400&&err.status<500&&![401,404].includes(err.status)?'rejected':'uncertain'});main.append(controls.element);disposeImport=controls.dispose;void controls.start(file)}
 
@@ -188,7 +188,7 @@ function pdfPreview(documentID:string,page:any,index:number,thumbnail=false){
 }
 
 function showDocument(doc:any){
- if(!opaque(doc.id)||!Number.isSafeInteger(doc.revision)||!Array.isArray(doc.pages))throw new Error('Invalid document');const active=activeJob(doc);const header=document.createElement('div');header.className='document-header';const title=document.createElement('div');const name=text('h1',documentName(doc));name.dataset.documentTitle=doc.id;title.append(name);document.title=documentName(doc)+' · Scanner';title.append(text('p',`${t('expires')}: ${new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeStyle:'short'}).format(new Date(doc.expires_at))}`));header.append(iconButton(button('back',()=>navigate('#/history')),'back'),title);main.append(header);const toolbar=document.createElement('div');toolbar.className='document-toolbar';main.append(toolbar);const secondary=document.createElement('details');secondary.className='document-more';secondary.append(text('summary',t('documentOptions')));const other=document.createElement('div');other.className='document-more-actions';other.append(documentDeleteButton(doc));secondary.append(other);
+ if(!opaque(doc.id)||!Number.isSafeInteger(doc.revision)||!Array.isArray(doc.pages))throw new Error('Invalid document');const active=activeJob(doc);const header=document.createElement('div');header.className='document-header';const title=document.createElement('div');const name=text('h1',documentName(doc));name.dataset.documentTitle=doc.id;title.append(name);document.title=documentName(doc)+' · Scanner';title.append(text('p',`${t('expires')}: ${new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeStyle:'short'}).format(new Date(doc.expires_at))}`));header.append(title);main.append(header);const toolbar=document.createElement('div');toolbar.className='document-toolbar';main.append(toolbar);const secondary=document.createElement('details');secondary.className='document-more';secondary.append(text('summary',t('documentOptions')));const other=document.createElement('div');other.className='document-more-actions';other.append(documentDeleteButton(doc));secondary.append(other);
  if(active){const save=button(doc.purpose==='photo'?'saveImage':'savePDF',()=>{});save.disabled=true;save.className='primary';toolbar.append(save);const progress=text('p',t('preparingFile'));progress.id='document-progress';progress.dataset.jobId=active;progress.setAttribute('role','status');toolbar.append(progress);const cancel=button('cancel',()=>void mutation(cancel,async()=>{await api('/api/jobs/'+active+'/cancel','POST',undefined,requestKey());await render()}));cancel.dataset.jobCancel='true';toolbar.append(cancel);void loadJob(active,generation,0,true)}
  if(doc.output?.revision===doc.revision){const link=document.createElement('a');link.href='/api/documents/'+doc.id+'/download';link.className='download-link';link.textContent=t(doc.purpose==='photo'?'saveImage':'savePDF');toolbar.append(link)}
  if(!active&&doc.pages.length&&['review','ready','failed'].includes(doc.state)&&doc.output?.revision!==doc.revision){
@@ -198,7 +198,7 @@ function showDocument(doc:any){
   }));create.className='primary';toolbar.append(create)
  }
  if(!active&&doc.pages.length&&['review','ready','failed'].includes(doc.state)){const settings=button('outputSettings',()=>outputDialog(doc));other.prepend(settings)}
- if(!active&&['review','ready','failed'].includes(doc.state)&&(doc.purpose==='document'||!doc.pages.length))toolbar.append(button('scanNext',()=>navigate('#/document/'+doc.id+'/scan')));
+ if(!active&&['review','ready','failed'].includes(doc.state)&&(doc.purpose==='document'||!doc.pages.length)){const next=button('scanNext',()=>{next.disabled=true;immediateScan=doc.id;navigate('#/document/'+doc.id+'/scan')});toolbar.append(next)}
  toolbar.append(secondary);
  const grid=document.createElement('div');grid.className='preview-grid';
  const editable=!active&&['review','ready','failed'].includes(doc.state);
@@ -219,8 +219,6 @@ function showDocument(doc:any){
   const image=document.createElement('img');image.dataset.preview='/api/documents/'+doc.id+'/pages/'+page.id+'/preview';image.dataset.thumbnail='/api/documents/'+doc.id+'/pages/'+page.id+'/thumbnail';image.src=image.dataset.thumbnail;image.addEventListener('error',()=>{if(image.getAttribute('src')!==image.dataset.preview)image.src=image.dataset.preview!});image.alt=`${t(doc.purpose==='photo'?'photo':'document')} ${new Intl.NumberFormat(locale).format(index+1)}`;image.loading='lazy';image.style.transform=`rotate(${page.rotation}deg)`;preview=image;}
   const actions=document.createElement('div');actions.className='page-actions';const number=text('span',`${t('page')} ${index+1}`);number.className='page-number';actions.append(number);
   const add=(label:Key,action:()=>void,unavailable=false)=>{const control=button(label,action);control.dataset.pageAction=label;control.disabled=!editable||unavailable;control.dataset.unavailable=String(control.disabled);controls.push(control);actions.append(iconButton(control,label));return control};
-  if(doc.purpose==='document')add('insertScan',()=>navigate('#/document/'+doc.id+'/scan?before='+page.id));
-  add('replaceScan',()=>navigate('#/document/'+doc.id+'/scan?replace='+page.id));
   const rotateKey=requestKey();add('rotate',()=>void edit(page.id,'rotate',async()=>{await api('/api/documents/'+doc.id+'/pages/'+page.id,'PATCH',{rotation:(page.rotation+90)%360},rotateKey,doc.revision)}));
   for(const delta of [-1,1]){const order=doc.pages.map((item:any)=>item.id);const target=index+delta;if(target>=0&&target<order.length)[order[index],order[target]]=[order[target],order[index]];const key=requestKey();add(delta<0?'moveEarlier':'moveLater',()=>void edit(page.id,delta<0?'moveEarlier':'moveLater',async()=>{await api('/api/documents/'+doc.id+'/pages/order','PUT',{page_ids:order},key,doc.revision)}),target<0||target>=order.length)}
   const deleteKey=requestKey();add('deletePage',()=>{
@@ -270,3 +268,6 @@ window.addEventListener('hashchange',()=>void render());void render();
 window.addEventListener('pageshow',event=>{if(event.persisted)void render()});
 
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopJob();else if(location.hash.startsWith('#/job/'))void render();else{const job=main.querySelector<HTMLElement>('#document-progress')?.dataset.jobId;if(job&&opaque(job))void loadJob(job,generation,0,true)}});
+
+document.addEventListener('click',event=>{if(!(event.target instanceof Node))return;for(const menu of document.querySelectorAll<HTMLDetailsElement>('details[open]')){if(!menu.contains(event.target)||event.target instanceof Element&&event.target.closest('.document-more-actions button'))menu.open=false}});
+document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const menu=(event.target instanceof Element?event.target.closest<HTMLDetailsElement>('details[open]'):null)||document.querySelector<HTMLDetailsElement>('.document-more[open]');if(menu){event.preventDefault();menu.open=false;menu.querySelector('summary')?.focus()}});

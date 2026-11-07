@@ -2,7 +2,8 @@ import {requestKey} from './request-key';
 type Capture={size:string;color:string;dpi:number};
 type Device={id:string;name:string;state:'idle'|'busy'|'unknown'|'unavailable';capture_options:Capture[];default_capture:Capture|null};
 export type CaptureKey='insertScan'|'replaceScan'|'requestExpired'|'reloadView'|'scanner'|'type'|'document'|'photo'|'chooseScanner'|'changeScanner'|'searchScanners'|'noScanners'|'noMatches'|'scannerIdle'|'scannerBusy'|'scannerUnknown'|'unavailable'|'scanSettings'|'size'|'color'|'gray'|'dpi'|'advanced'|'format'|'outputFormat'|'jpeg'|'png'|'close'|'apply'|'scan'|'scanNext'|'loading'|'retry'|'history'|'settingsChanged'|'scanRejected'|'scanUncertain'|'scanning'|'a4'|'a5'|'a6'|'letter'|'photo10x15';
-type Options={submitLabel?:'insertScan'|'replaceScan';t:(key:CaptureKey)=>string;current:()=>boolean;read:(signal:AbortSignal)=>Promise<unknown>;submit:(body:unknown,key:string,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;history:()=>void;rejected:(error:unknown)=>boolean;expired:(error:unknown)=>boolean;reload:()=>void;purpose?:'document'|'photo';photoFormat?:'jpeg'|'png'};
+let previousCapture:{scannerID:string;capture:Capture}|null=null;
+type Options={initialCapture?:Capture;submitLabel?:'insertScan'|'replaceScan';t:(key:CaptureKey)=>string;current:()=>boolean;read:(signal:AbortSignal)=>Promise<unknown>;submit:(body:unknown,key:string,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;history:()=>void;rejected:(error:unknown)=>boolean;expired:(error:unknown)=>boolean;reload:()=>void;purpose?:'document'|'photo';photoFormat?:'jpeg'|'png'};
 const same=(a:Capture|null,b:Capture|null)=>!!a&&!!b&&a.size===b.size&&a.color===b.color&&a.dpi===b.dpi;
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
 function inventory(raw:any):Device[]{
@@ -75,11 +76,11 @@ export function captureControls(options:Options){
   if(start.disabled||!active()||!capture||modal)return;
   const command=options.purpose?{scanner_id:selected,capture:{...capture}}:{scanner_id:selected,purpose,capture:{...capture},...(purpose==='photo'?{photo_format:format}:{})};const digest=JSON.stringify(command);if(fingerprint!==digest){fingerprint=digest;key=requestKey()}
   pending=true;readController?.abort();if(timer)clearTimeout(timer);notice.textContent='';update();const controller=new AbortController();submitController=controller;const timeout=setTimeout(()=>controller.abort(),15000);
-  try{const job=await options.submit(command,key,controller.signal);if(!opaque(job?.id)||!opaque(job?.document_id)||job.kind!=='scan')throw new Error('Invalid admission');if(active()&&!controller.signal.aborted)options.accepted(job)}
+  try{const job=await options.submit(command,key,controller.signal);if(!opaque(job?.id)||!opaque(job?.document_id)||job.kind!=='scan')throw new Error('Invalid admission');if(active()&&!controller.signal.aborted){previousCapture={scannerID:selected,capture:{...capture}};options.accepted(job)}}
   catch(err){if(active()){expired=options.expired(err);uncertain=!expired&&!options.rejected(err);notice.textContent=t(expired?'requestExpired':uncertain?'scanUncertain':'scanRejected')}}
   finally{clearTimeout(timeout);pending=false;submitController=null;if(active()){update();if(!uncertain)void read()}}
  }
  const visibility=()=>{if(document.hidden){available=false;readController?.abort();if(timer)clearTimeout(timer);update()}else void read()};document.addEventListener('visibilitychange',visibility);
  update();
- return {element,start:()=>void read(),dispose:()=>{disposed=true;readController?.abort();submitController?.abort();if(timer)clearTimeout(timer);modal?.remove();modal=null;document.removeEventListener('visibilitychange',visibility)}};
+ return {element,start:async(immediate=false)=>{if(immediate&&previousCapture){selected=previousCapture.scannerID;capture={...previousCapture.capture}}await read();if(immediate&&active()){if(options.initialCapture&&device()){capture={...options.initialCapture};if(!valid())notice.textContent=t('settingsChanged');update()}await submit()}},dispose:()=>{disposed=true;readController?.abort();submitController?.abort();if(timer)clearTimeout(timer);modal?.remove();modal=null;document.removeEventListener('visibilitychange',visibility)}};
 }
