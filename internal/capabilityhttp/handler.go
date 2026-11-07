@@ -22,6 +22,7 @@ type Scanner struct {
 	Name string `json:"name"`
 }
 type Limits struct {
+	DiscoverScanners bool  `json:"-"`
 	RetentionSeconds int64 `json:"retention_seconds"`
 	MaxDocuments     int64 `json:"max_documents"`
 	UserMaxBytes     int64 `json:"user_max_bytes"`
@@ -113,9 +114,27 @@ func New(source renderadmission.CatalogSource, scannerSource scannermetadata.Sou
 			out := response{Scanners: []scannerView{}, OCRPlugins: []pluginView{}, Defaults: defaultsView{Capture: capture}, Limits: limits}
 			metadata := scannermetadata.Snapshot{}
 			status := scannerreadiness.Snapshot{}
+			registered := append([]Scanner(nil), configured...)
+			if scannerSource != nil {
+				if value, err := scannerSource.ReadScannerMetadata(r.Context()); err == nil && scannermetadata.Validate(value, now()) == nil {
+					metadata = value
+				}
+			}
+			if limits.DiscoverScanners {
+				seen := map[string]bool{}
+				for _, device := range registered {
+					seen[device.ID] = true
+				}
+				for _, device := range metadata.Devices {
+					if !seen[device.ID] && device.Name != "" {
+						registered = append(registered, Scanner{ID: device.ID, Name: device.Name})
+						seen[device.ID] = true
+					}
+				}
+			}
 			if readinessSource != nil {
-				ids := make([]string, 0, len(configured))
-				for _, device := range configured {
+				ids := make([]string, 0, len(registered))
+				for _, device := range registered {
 					ids = append(ids, device.ID)
 				}
 				if value, err := readinessSource.ReadScannerReadiness(r.Context(), principal.ID, ids, limits.MaxPagePixels); err == nil && scannermetadata.Validate(value.Metadata, now()) == nil {
@@ -123,13 +142,8 @@ func New(source renderadmission.CatalogSource, scannerSource scannermetadata.Sou
 					metadata = value.Metadata
 				}
 			}
-			if metadata.Devices == nil && scannerSource != nil {
-				if value, err := scannerSource.ReadScannerMetadata(r.Context()); err == nil && scannermetadata.Validate(value, now()) == nil {
-					metadata = value
-				}
-			}
 
-			for _, device := range configured {
+			for _, device := range registered {
 				view := scannerView{Scanner: device, State: "unknown", Sources: []string{}, Sizes: []string{}, Colors: []string{}, DPIOptions: []int{}, CaptureOptions: []scanner.Capture{}}
 				for _, entry := range metadata.Devices {
 					if entry.ID == device.ID {

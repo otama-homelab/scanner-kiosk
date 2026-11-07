@@ -54,7 +54,7 @@ type Options struct {
 }
 
 // deviceState owns native serialization and unresolved evidence for one device.
-// Device registration is immutable after construction; gates never protect IO on
+// Published devices retain their gates for the worker lifetime; gates never protect IO on
 // a different scanner. Job-use fencing remains shared across the whole driver.
 type deviceState struct {
 	backend        Backend
@@ -65,6 +65,7 @@ type deviceState struct {
 }
 type Driver struct {
 	boot                string
+	registryMu          sync.RWMutex
 	devices             map[string]*deviceState
 	deviceIDs           []string
 	observer            IdleObserver
@@ -88,7 +89,7 @@ func validID(value string) bool {
 	return true
 }
 func New(options Options) (*Driver, error) {
-	if !validID(options.BootID) || options.Observer == nil || len(options.Devices) == 0 || len(options.Devices) > 32 || options.MaxBytes < 256<<10 || options.MaxBytes > 1<<40 || options.MaxPixels < 1 || options.MaxPixels > 1<<60 {
+	if !validID(options.BootID) || options.Observer == nil || len(options.Devices) > 32 || options.MaxBytes < 256<<10 || options.MaxBytes > 1<<40 || options.MaxPixels < 1 || options.MaxPixels > 1<<60 {
 		return nil, ErrInvalid
 	}
 	d := &Driver{boot: options.BootID, devices: map[string]*deviceState{}, observer: options.Observer, identity: options.IdentityVerifier, maxBytes: options.MaxBytes, maxPixels: options.MaxPixels, closeGate: make(chan struct{}, 1), used: map[string]int64{}}
@@ -154,7 +155,7 @@ func (d *Driver) Resolve(ctx context.Context, work documents.ScanWork) (scanner.
 	}
 	execution, cancel := context.WithDeadline(ctx, time.UnixMilli(work.Job.DeadlineAtMS))
 	defer cancel()
-	state := d.devices[work.Snapshot.DeviceID]
+	state := d.device(work.Snapshot.DeviceID)
 	if state == nil {
 		return nil, empty, ErrUnavailable
 	}
@@ -186,10 +187,10 @@ func (d *Driver) Resolve(ctx context.Context, work documents.ScanWork) (scanner.
 	return &capturer{driver: d, state: state, backend: backend, plan: plan, deadline: work.Job.DeadlineAtMS}, plan, nil
 }
 func (d *Driver) ObserveIdle(ctx context.Context, id string, after int64) (int64, error) {
-	if d.devices[id] == nil || after <= 0 || after > time.Now().UnixMilli() {
+	if d.device(id) == nil || after <= 0 || after > time.Now().UnixMilli() {
 		return 0, ErrInvalid
 	}
-	state := d.devices[id]
+	state := d.device(id)
 	if err := state.acquire(ctx); err != nil {
 		return 0, err
 	}
@@ -247,10 +248,12 @@ func (d *Driver) Close(ctx context.Context) error {
 	}
 	defer func() { d.closeGate <- struct{}{} }()
 	// Refuse new operations on every device before joining any one device.
+	d.registryMu.Lock()
 	d.closed.Store(true)
+	d.registryMu.Unlock()
 	var result error
-	for _, id := range d.deviceIDs {
-		state := d.devices[id]
+	for _, id := range d.IDs() {
+		state := d.device(id)
 		if err := state.acquire(ctx); err != nil {
 			result = errors.Join(result, err)
 			continue
@@ -347,7 +350,7 @@ func (d *Driver) InspectCapture(ctx context.Context, id string, capture scanner.
 	if _, _, err := selection.AreaMM(); err != nil {
 		return scanner.Profile{}, ErrInvalid
 	}
-	state := d.devices[id]
+	state := d.device(id)
 	if state == nil {
 		return scanner.Profile{}, ErrUnavailable
 	}
@@ -391,4 +394,27 @@ func (d *Driver) inspectCapture(ctx context.Context, state *deviceState, selecti
 		return scanner.Profile{}, err
 	}
 	return scanner.Profile{Capture: scanner.Capture{Size: selection.Size, Color: selection.Color, DPI: selection.DPI}, Width: params.Width, Height: params.Height, CheckedAtMS: time.Now().UnixMilli()}, nil
+}
+
+func (d *Driver) device(id string) *deviceState {
+	d.registryMu.RLock()
+	defer d.registryMu.RUnlock()
+	return d.devices[id]
+}
+func (d *Driver) IDs() []string {
+	d.registryMu.RLock()
+	defer d.registryMu.RUnlock()
+	return append([]string(nil), d.deviceIDs...)
+}
+func (d *Driver) register(device Device, physical string) error {
+	d.registryMu.Lock()
+	defer d.registryMu.Unlock()
+	if d.closed.Load() || !validID(device.ID) || device.Backend == nil || device.Backend.DeviceID() != device.ID || d.devices[device.ID] != nil || len(d.devices) >= 32 {
+		return ErrInvalid
+	}
+	state := &deviceState{backend: device.Backend, gate: make(chan struct{}, 1), physical: physical}
+	state.gate <- struct{}{}
+	d.devices[device.ID] = state
+	d.deviceIDs = append(d.deviceIDs, device.ID)
+	return nil
 }

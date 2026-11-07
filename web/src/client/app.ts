@@ -60,6 +60,7 @@ async function bootstrap(){
    try{await api('/auth/session/reset','POST',undefined,requestKey())}catch(err){if(!(err instanceof APIError&&err.status===409))throw err}
    current=await api('/api/session');if(current?.reset_required===true)throw new Error('Session recovery incomplete');
   }
+  if(current?.authenticate_type==='none'&&!current.authenticated)current=await api('/auth/guest','POST',undefined,requestKey());
   return current;
  })().finally(()=>boot=null);return boot;
 }
@@ -67,7 +68,7 @@ async function render(){
  const requestedScan=immediateScan;immediateScan=null;const hash=location.hash;if(saveJob&&hash!=='#/document/'+saveDocument&&hash!=='#/job/'+saveJob)saveJob='';const moveFocus=renderedHash!==null&&renderedHash!==hash;const focused=document.activeElement;
  for(const dispose of disposePreviews)dispose();disposePreviews=[];disposeImport?.();disposeImport=null;disposeCapture?.();disposeCapture=null;disposeDialog?.();disposeDialog=null;disposeLogin?.();disposeLogin=null;stopJob();jobViewKey='';const version=++generation;status.textContent=nextNotice?t(nextNotice):'';nextNotice=undefined;main.replaceChildren(text('p',t('loading')));main.setAttribute('aria-busy','true');
  try{
-  const current=await bootstrap();if(version!==generation)return;if(!['guest','oidc','simple'].includes(current?.authenticate_type))throw new Error('Invalid authentication type');session=current;document.querySelector<HTMLElement>('#history')!.hidden=!session?.authenticated;document.querySelector<HTMLElement>('#logout')!.hidden=!session?.authenticated;localize();main.replaceChildren();
+  const current=await bootstrap();if(version!==generation)return;if(!['guest','oidc','simple','none'].includes(current?.authenticate_type))throw new Error('Invalid authentication type');session=current;document.querySelector<HTMLElement>('#history')!.hidden=!session?.authenticated;document.querySelector<HTMLElement>('#logout')!.hidden=!session?.authenticated;localize();main.replaceChildren();
   if(!session?.authenticated&&session?.authenticate_type==='simple'){
    document.title=`${t('signin')} · Scanner`;
    disposeLogin=passwordLogin({root:main,t,current:()=>version===generation,status:key=>status.textContent=key?t(key):'',

@@ -193,12 +193,12 @@ func TestCatalogLeaseIsWorkerOnlyAndBounded(t *testing.T) {
 }
 
 func TestCanonicalAuthenticateTypeAndLegacyConflict(t *testing.T) {
-	for _, kind := range []string{"oidc", "simple"} {
+	for _, kind := range []string{"oidc", "simple", "none"} {
 		values := base()
 		delete(values, "SCANNER_AUTH_MODE")
 		values["SCANNER_AUTHENTICATE_TYPE"] = kind
 		c, err := Load(func(key string) (string, bool) {
-			if kind == "simple" && strings.HasPrefix(key, "SCANNER_OIDC_") {
+			if kind != "oidc" && strings.HasPrefix(key, "SCANNER_OIDC_") {
 				t.Fatal("simple mode accessed OIDC setting", key)
 			}
 			value, ok := values[key]
@@ -214,7 +214,7 @@ func TestCanonicalAuthenticateTypeAndLegacyConflict(t *testing.T) {
 	if _, err := Load(env(values)); err == nil || !strings.Contains(err.Error(), "SCANNER_AUTHENTICATE_TYPE") {
 		t.Fatal("ambiguous auth keys accepted", err)
 	}
-	for _, kind := range []string{"none", "guest", "automatic", ""} {
+	for _, kind := range []string{"guest", "automatic", ""} {
 		values := base()
 		delete(values, "SCANNER_AUTH_MODE")
 		values["SCANNER_AUTHENTICATE_TYPE"] = kind
@@ -248,5 +248,24 @@ func TestCleanupTimeoutIsWorkerOnlyAndBounded(t *testing.T) {
 	c, err := Load(env(v))
 	if err != nil || c.Durations["SCANNER_CLEANUP_TIMEOUT_SECONDS"] != 0 {
 		t.Fatal("API consumed worker GC setting", err)
+	}
+}
+
+func TestScannerDiscoveryDefaultsAndStrictOptOut(t *testing.T) {
+	for _, value := range []string{"true", "false", "yes", ""} {
+		values := base()
+		values["SCANNER_DISCOVERY_ENABLED"] = value
+		c, err := Load(env(values))
+		if value == "true" || value == "false" {
+			if err != nil || c.ScannerDiscovery != (value == "true") {
+				t.Fatal(value, err)
+			}
+		} else if err == nil {
+			t.Fatal("invalid discovery accepted")
+		}
+	}
+	c, err := Load(env(base()))
+	if err != nil || !c.ScannerDiscovery {
+		t.Fatal("discovery not default", err)
 	}
 }

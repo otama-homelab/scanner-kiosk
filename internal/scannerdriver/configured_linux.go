@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"sync"
 	"time"
 
 	"scanner-kiosk/internal/config"
@@ -24,7 +25,10 @@ var ErrConfigCleanup = errors.New("owned scanner configuration requires cleanup"
 // Construction creates private config only, never native/status/device IO.
 // A nonnil result must be retained/closed even when construction fails.
 type Session struct {
+	mu                 sync.RWMutex
 	driver             *Driver
+	config             config.Config
+	devices            []config.Scanner
 	guard              *workeridentity.Guard
 	boot, documentRoot string
 	workspace          *configWorkspace
@@ -36,7 +40,7 @@ func Configure(ctx context.Context, c config.Config, guard *workeridentity.Guard
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if c.Role != config.Worker || guard == nil || !guard.MatchesRoot(c.DocumentDir) || len(c.Scanners) == 0 || len(c.Scanners) > 32 || strings.Contains(c.DocumentDir, ":") {
+	if c.Role != config.Worker || guard == nil || !guard.MatchesRoot(c.DocumentDir) || (!c.ScannerDiscovery && len(c.Scanners) == 0) || len(c.Scanners) > 32 || strings.Contains(c.DocumentDir, ":") {
 		return nil, ErrConfiguration
 	}
 	// Validate every endpoint/native syntax before creating any files.
@@ -56,7 +60,7 @@ func Configure(ctx context.Context, c config.Config, guard *workeridentity.Guard
 	if c.Limits["SCANNER_JOB_MAX_BYTES"] < 256<<10 || c.Limits["SCANNER_JOB_MAX_BYTES"] > 1<<40 || c.Limits["SCANNER_MAX_PAGE_PIXELS"] < 1 || c.Limits["SCANNER_MAX_PAGE_PIXELS"] > 1<<60 || c.Durations["SCANNER_SCAN_TIMEOUT_SECONDS"] <= 0 || c.Durations["SCANNER_PROCESS_STOP_GRACE_SECONDS"] <= 0 {
 		return nil, ErrConfiguration
 	}
-	session := &Session{guard: guard, boot: guard.ID(), documentRoot: c.DocumentDir, closeGate: make(chan struct{}, 1)}
+	session := &Session{config: c, devices: append([]config.Scanner(nil), c.Scanners...), guard: guard, boot: guard.ID(), documentRoot: c.DocumentDir, closeGate: make(chan struct{}, 1)}
 	session.closeGate <- struct{}{}
 	workspace, err := newConfigWorkspace(c.DocumentDir)
 	session.workspace = workspace
@@ -69,25 +73,12 @@ func Configure(ctx context.Context, c config.Config, guard *workeridentity.Guard
 		if err = ctx.Err(); err != nil {
 			return session, err
 		}
-		directory, writeErr := sane.WriteConfigAt(workspace.root, device.ID, device.Endpoint)
-		if directory != "" {
-			if err = workspace.remember(directory); err != nil {
-				return session, ErrConfiguration
-			}
+		native, idle, configureErr := session.configureDevice(device)
+		if configureErr != nil {
+			return session, configureErr
 		}
-		if writeErr != nil {
-			return session, ErrConfiguration
-		}
-		adapter, err := sane.New(sane.Options{Binary: c.ScannerTools.ScanimagePath, ParametersBinary: c.ScannerTools.ParametersPath, CAFile: c.ScannerTools.CAFile, ConfigDir: directory, WorkRoot: c.DocumentDir, DeviceID: device.ID, DeviceName: "airscan:e0:" + device.ID, LibraryDirs: c.ScannerTools.LibraryDirs, MaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"], Timeout: c.Durations["SCANNER_SCAN_TIMEOUT_SECONDS"], StopGrace: c.Durations["SCANNER_PROCESS_STOP_GRACE_SECONDS"]})
-		if err != nil || c.ScannerTools.ParametersPath == "" {
-			return session, ErrConfiguration
-		}
-		backend, err := Native(adapter)
-		if err != nil {
-			return session, ErrConfiguration
-		}
-		nativeDevices = append(nativeDevices, Device{ID: device.ID, Backend: &sessionBackend{session: session, backend: backend}})
-		idleDevices = append(idleDevices, escl.Device{ID: device.ID, Endpoint: device.Endpoint})
+		nativeDevices = append(nativeDevices, native)
+		idleDevices = append(idleDevices, idle)
 	}
 	observer, err := escl.New(idleDevices, escl.Options{Timeout: min(5*time.Second, c.Durations["SCANNER_SCAN_TIMEOUT_SECONDS"]), MaxResponseBytes: 256 << 10})
 	if err != nil {
@@ -104,6 +95,11 @@ func Configure(ctx context.Context, c config.Config, guard *workeridentity.Guard
 	return session, nil
 }
 func (s *Session) before(ctx context.Context) error {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.beforeLocked(ctx)
+}
+func (s *Session) beforeLocked(ctx context.Context) error {
 	if err := ctx.Err(); err != nil {
 		return err
 	}
@@ -138,7 +134,7 @@ func (s *Session) ObserveIdentity(ctx context.Context, id string) (escl.Identity
 	if s.driver == nil {
 		return escl.IdentityObservation{}, ErrConfiguration
 	}
-	state := s.driver.devices[id]
+	state := s.driver.device(id)
 	if state == nil {
 		return escl.IdentityObservation{}, ErrInvalid
 	}
@@ -198,6 +194,8 @@ func (s *Session) Close(ctx context.Context) error {
 			return err
 		}
 	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if s.workspace != nil {
 		return s.workspace.close(ctx)
 	}
@@ -264,7 +262,7 @@ func (s *Session) ObserveApplicationReadiness(ctx context.Context, id string, ep
 	if s.driver == nil || epoch < 0 || capacity < 1 || capacity > 32 {
 		return empty, ErrConfiguration
 	}
-	state := s.driver.devices[id]
+	state := s.driver.device(id)
 	if state == nil {
 		return empty, ErrInvalid
 	}
@@ -300,4 +298,27 @@ func (s *Session) ObserveApplicationReadiness(ctx context.Context, id string, ep
 		return empty, err
 	}
 	return scannerreadiness.Evidence{DeviceID: id, PhysicalID: identity.PhysicalID, HandoffID: s.boot, LeaseEpoch: epoch, ScanConcurrency: capacity, OwnershipConfirmedAtMS: owned, LocalStoppedAtMS: stopped, IdleObservedAtMS: idle}, nil
+}
+
+func (session *Session) configureDevice(device config.Scanner) (Device, escl.Device, error) {
+	c := session.config
+	var err error
+	directory, writeErr := sane.WriteConfigAt(session.workspace.root, device.ID, device.Endpoint)
+	if directory != "" {
+		if err = session.workspace.remember(directory); err != nil {
+			return Device{}, escl.Device{}, ErrConfiguration
+		}
+	}
+	if writeErr != nil {
+		return Device{}, escl.Device{}, ErrConfiguration
+	}
+	adapter, err := sane.New(sane.Options{Binary: c.ScannerTools.ScanimagePath, ParametersBinary: c.ScannerTools.ParametersPath, CAFile: c.ScannerTools.CAFile, ConfigDir: directory, WorkRoot: c.DocumentDir, DeviceID: device.ID, DeviceName: "airscan:e0:" + device.ID, LibraryDirs: c.ScannerTools.LibraryDirs, MaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"], Timeout: c.Durations["SCANNER_SCAN_TIMEOUT_SECONDS"], StopGrace: c.Durations["SCANNER_PROCESS_STOP_GRACE_SECONDS"]})
+	if err != nil || c.ScannerTools.ParametersPath == "" {
+		return Device{}, escl.Device{}, ErrConfiguration
+	}
+	backend, err := Native(adapter)
+	if err != nil {
+		return Device{}, escl.Device{}, ErrConfiguration
+	}
+	return Device{ID: device.ID, Backend: &sessionBackend{session: session, backend: backend}}, escl.Device{ID: device.ID, Endpoint: device.Endpoint}, nil
 }

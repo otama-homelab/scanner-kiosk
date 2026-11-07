@@ -5,6 +5,8 @@ package workerruntime
 import (
 	"context"
 	"errors"
+	"scanner-kiosk/internal/config"
+	"sync"
 	"testing"
 	"testing/synctest"
 	"time"
@@ -149,5 +151,52 @@ func completeMetadataCycle(builder *scannerMetadataBuilder) (scannermetadata.Sna
 		if err != nil || builder.cursor == 0 {
 			return value, err
 		}
+	}
+}
+
+type dynamicMetadataInspector struct {
+	mu      sync.Mutex
+	devices []config.Scanner
+}
+
+func (d *dynamicMetadataInspector) IDs() []string {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	ids := []string{}
+	for _, device := range d.devices {
+		ids = append(ids, device.ID)
+	}
+	return ids
+}
+func (d *dynamicMetadataInspector) Devices() []config.Scanner {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return append([]config.Scanner(nil), d.devices...)
+}
+func (*dynamicMetadataInspector) InspectCapture(ctx context.Context, id string, c scanner.Capture) (scanner.Profile, error) {
+	return scanner.Profile{Capture: c, Width: 80, Height: 100, CheckedAtMS: time.Now().UnixMilli()}, nil
+}
+func TestMetadataPublishesDevicesAddedAfterEmptyStartup(t *testing.T) {
+	p, db := metadataPublisherFixture(t)
+	defer p.close()
+	inspector := &dynamicMetadataInspector{}
+	p.startScannerMetadata(inspector, nil, time.Second)
+	inspector.mu.Lock()
+	inspector.devices = []config.Scanner{{ID: "scanner_added_later_001", Name: "Later scanner"}}
+	inspector.mu.Unlock()
+	reader, err := workercatalog.NewReader(db, time.Now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	deadline := time.Now().Add(3 * time.Second)
+	for {
+		snapshot, err := reader.ReadScannerMetadata(context.Background())
+		if err == nil && len(snapshot.Devices) == 1 && snapshot.Devices[0].Name == "Later scanner" && len(snapshot.Devices[0].Profiles) == 60 {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("hotplug metadata missing", snapshot, err)
+		}
+		time.Sleep(10 * time.Millisecond)
 	}
 }

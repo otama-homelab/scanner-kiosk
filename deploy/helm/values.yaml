@@ -19,6 +19,7 @@ tesseract:
   secretName: ""
   destination: Tesseract OCR service
 commonEnv:
+  SCANNER_DISCOVERY_ENABLED: "true"
   XDG_CACHE_HOME: /tmp
   SCANNER_STATE_DIR: /var/lib/scanner/state
   SCANNER_DOCUMENT_DIR: /var/lib/scanner/documents

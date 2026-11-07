@@ -1,0 +1,9 @@
+# Apply last when combining compose.discovery.yaml and compose.tesseract.yaml.
+# Requires Compose 2.24+ for !reset; OCR stays reachable only through host loopback.
+services:
+  worker:
+    networks: !reset []
+    environment:
+      SCANNER_OCR_TESSERACT_ENDPOINT: http://127.0.0.1:8090
+  tesseract:
+    ports: ["127.0.0.1:8090:8090"]

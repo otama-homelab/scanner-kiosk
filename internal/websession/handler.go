@@ -57,7 +57,7 @@ type response struct {
 
 func NewWithRecords(records Records, options Options) (*Handler, error) {
 	u, err := url.Parse(options.PublicURL)
-	if records == nil || err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || (u.Path != "" && u.Path != "/") || (options.AuthenticateType != "guest" && options.AuthenticateType != "oidc" && options.AuthenticateType != "simple") || (options.AuthenticateType == "simple" && options.Password == nil) || options.Lifetime < time.Second || options.Lifetime > 365*24*time.Hour || options.IdleTimeout < time.Second || options.IdleTimeout > options.Lifetime || options.ReceiptLifetime < time.Second || options.ReceiptLifetime > 365*24*time.Hour {
+	if records == nil || err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || (u.Path != "" && u.Path != "/") || (options.AuthenticateType != "guest" && options.AuthenticateType != "oidc" && options.AuthenticateType != "simple" && options.AuthenticateType != "none") || (options.AuthenticateType == "simple" && options.Password == nil) || options.Lifetime < time.Second || options.Lifetime > 365*24*time.Hour || options.IdleTimeout < time.Second || options.IdleTimeout > options.Lifetime || options.ReceiptLifetime < time.Second || options.ReceiptLifetime > 365*24*time.Hour {
 		return nil, ErrSession
 	}
 	if options.LoginRequestsPerMinute == 0 {
@@ -188,7 +188,7 @@ func (h *Handler) principal(ctx context.Context) (string, string, error) {
 		return "", "none", nil
 	}
 	kind, err := h.records.PrincipalKind(ctx, principal)
-	if errors.Is(err, ErrSession) || err == nil && kind != h.mode {
+	if errors.Is(err, ErrSession) || err == nil && kind != h.mode && !(h.mode == "none" && kind == "guest") {
 		return "", "none", ErrSession
 	}
 	if err != nil {
@@ -270,7 +270,7 @@ func (h *Handler) resetAnonymous(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) guest(w http.ResponseWriter, r *http.Request) {
-	if h.mode != "guest" {
+	if h.mode != "guest" && h.mode != "none" {
 		h.write(w, response{403, map[string]string{"code": "guest_disabled", "message": "Guest access disabled"}})
 		return
 	}
@@ -305,7 +305,7 @@ func (h *Handler) guest(w http.ResponseWriter, r *http.Request) {
 	h.finish(w, r, response{200, View{Authenticated: true, PrincipalKind: "guest", AuthenticateType: h.mode}})
 }
 func (h *Handler) endGuest(w http.ResponseWriter, r *http.Request) {
-	if h.mode != "guest" {
+	if h.mode != "guest" && h.mode != "none" {
 		h.write(w, response{403, map[string]string{"code": "guest_disabled", "message": "Guest access disabled"}})
 		return
 	}

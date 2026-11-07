@@ -1,0 +1,7 @@
+# Linux Docker: let the worker send/receive LAN mDNS without an Avahi daemon.
+# Stop other scanner writers before enabling acquisition; printing can stay running.
+services:
+  worker:
+    network_mode: host
+    environment:
+      SCANNER_ACQUISITION_ENABLED: "true"

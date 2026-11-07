@@ -40,6 +40,7 @@ type scanHTTPSetup struct {
 func scanHTTPFixture(t *testing.T) *scanHTTPSetup {
 	t.Helper()
 	f := &scanHTTPSetup{c: fixture(t)}
+	f.c.ScannerDiscovery = false
 	f.c.Scanners = []config.Scanner{{ID: "scanner_http_00001", Name: "First", Driver: "sane-airscan", Endpoint: "http://192.0.2.10/eSCL"}, {ID: "scanner_http_00002", Name: "Second", Driver: "sane-airscan", Endpoint: "http://192.0.2.11/eSCL"}}
 	var err error
 	f.app, err = New(context.Background(), f.c)

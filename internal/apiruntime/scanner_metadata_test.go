@@ -102,3 +102,41 @@ func TestScannerMetadataProjectsCoupledSettingsWithoutReadiness(t *testing.T) {
 		t.Fatal("capability publication initialized readiness", err)
 	}
 }
+
+func TestDiscoveredScannerAppearsAndAdmitsOnlyWithFreshReadiness(t *testing.T) {
+	f := scanHTTPFixture(t)
+	c := f.c
+	c.Scanners = nil
+	c.ScannerDiscovery = true
+	app, err := New(context.Background(), c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer app.Close()
+	metadata := scannermetadata.Snapshot{Devices: []scannermetadata.Device{{ID: f.c.Scanners[0].ID, Name: "Discovered Canon", Profiles: []scanner.Profile{{Capture: scanner.Capture{Size: "a4", Color: "color", DPI: 300}, Width: 80, Height: 100, CheckedAtMS: time.Now().UnixMilli()}}}}}
+	if err := f.catalog.PublishScanners(context.Background(), f.lease, metadata); err != nil {
+		t.Fatal(err)
+	}
+	body := previewRequest(app, "GET", "/api/scanners", f.cookie)
+	if body.Code != 200 || !strings.Contains(body.Body.String(), "Discovered Canon") || strings.Contains(body.Body.String(), "192.0.2.") {
+		t.Fatal(body.Code, body.Body.String())
+	}
+	if w := scanHTTPCall(app, f.cookie, "/api/documents", scanBody, "request_discovered_001", "", nil); w.Code != 503 {
+		t.Fatal("discovery alone admitted", w.Code)
+	}
+	f.ready(t, 0)
+	scanHTTPJob(t, scanHTTPCall(app, f.cookie, "/api/documents", scanBody, "request_discovered_001", "", nil))
+	c.ScannerDiscovery = false
+	disabled, err := New(context.Background(), c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer disabled.Close()
+	body = previewRequest(disabled, "GET", "/api/scanners", f.cookie)
+	if body.Code != 200 || strings.Contains(body.Body.String(), "Discovered Canon") {
+		t.Fatal("disabled discovery displayed", body.Body.String())
+	}
+	if w := scanHTTPCall(disabled, f.cookie, "/api/documents", scanBody, "request_discovered_002", "", nil); w.Code != 422 {
+		t.Fatal("disabled discovery admitted", w.Code)
+	}
+}

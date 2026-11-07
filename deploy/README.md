@@ -65,7 +65,7 @@ Both examples use a single application replica and separate API/worker process r
 Native scanner settings in workerEnv/Compose worker environment now map to the worker-only tool loader and guarded Session constructor: SCANNER_SCANIMAGE_PATH, SCANNER_SANE_PARAMETERS_PATH and SCANNER_SANE_LIBRARY_DIRS_JSON. Loading settings performs no native/device IO. The constructor owns private per-device files. Worker startup invokes it only with SCANNER_ACQUISITION_ENABLED=true (strict true/false, default false); startup recovery still runs first. Enable only after the previous scanner writer has been stopped. The flag is not hardware fencing or readiness, and worker dispatch is connected for boot-pinned admitted jobs, while trusted physical readiness production and physical acceptance remain pending. Shutdown drains/closes the session before releasing the boot guard. The helper executable and official libsane/airscan still require final image packaging/acceptance. These examples do not advertise a ready scanner or provide deployment evidence.
 
 
-The canonical API selector is SCANNER_AUTHENTICATE_TYPE=oidc|simple. Do not also supply legacy SCANNER_AUTH_MODE; simultaneous keys fail startup. The examples pass the selector and separate login rate/burst bounds only to the API. Simple mode ignores OIDC settings and requires operator-provisioned local credentials; user commands must run as the application OS user. Canonical none is not enabled yet; legacy guest retains its original isolation only through the legacy key. See docs/design/simple-authentication.md.
+The canonical API selector is SCANNER_AUTHENTICATE_TYPE=oidc|simple|none. Do not also supply legacy SCANNER_AUTH_MODE; simultaneous keys fail startup. The examples pass the selector and separate login rate/burst bounds only to the API. Simple mode ignores OIDC settings and requires operator-provisioned local credentials; user commands must run as the application OS user. Explicit none opens Home automatically using a private browser-scoped guest owner; ending the session retires that owner and opens a fresh empty session. HTTPS, origin checks, quotas, expiry and ownership checks still apply. OIDC remains the default, with no guest fallback after login failures. Legacy guest keeps its explicit Start session screen through the legacy key. See docs/design/simple-authentication.md.
 
 `SCANNER_SCAN_CONCURRENCY` is worker-only (default 1, range 1–32). Effective native
 scan tasks are capped by registered device count and the global/job reservation
@@ -205,3 +205,55 @@ Stop the complete owned service before resetting only its ephemeral scratch;
 never clear the application document store. With Kubernetes emptyDir, a container
 restart retains scratch, so unresolved work intentionally blocks reinitialization.
 Actual CSI durability, upgrade/rollback, physical scanners and G5 remain required.
+
+
+## Scanner discovery
+
+Linux Docker LAN setup, after choosing the image, private directories and HTTPS/auth settings:
+
+```sh
+docker compose -f deploy/compose.yaml -f deploy/compose.discovery.yaml up -d
+```
+
+This overlay enables acquisition and gives only the worker host networking so IPv4
+Bonjour/mDNS replies reach it. Stop any previous scanner writer first; CUPS printing
+can remain running. The worker has no HTTP listener, daemon, host mount, extra Linux
+capability or Avahi socket. Host networking does widen its network reach; use this
+only on the intended trusted scanner LAN. Ordinary Docker bridge NAT and Kubernetes
+NetworkPolicy do not automatically carry LAN multicast. The base Compose and Helm
+examples retain their network isolation and acquisition opt-in. Kubernetes operators
+must provide a LAN-capable worker network or keep manual registration; enabling the
+environment flag alone does not change CNI or NetworkPolicy. The existing acceptance
+portal is not recreated or switched to host networking by this feature.
+
+`SCANNER_DISCOVERY_ENABLED` defaults to true in both roles; false keeps only manual
+`SCANNER_SCANNERS_JSON` entries. The worker browses `_uscan._tcp.local` and
+`_uscans._tcp.local` about every 15 seconds when acquisition is enabled. It accepts
+bounded IPv4 advertisements only from an on-link sender, requires the advertised
+address to match that sender, and verifies eSCL UUID capabilities before adding a
+stable device ID. No HTTP proxy, redirects, TLS bypass, arbitrary DNS lookup, subnet
+sweep or automatic scan is used. Discovery is not authenticated hardware identity:
+a malicious host on the trusted LAN can advertise a scanner. Existing native
+capability, physical identity, job fencing, readiness, ownership and admission checks
+still apply. A missing/offline scanner cannot authorize capture.
+
+One scanner is selected automatically; Home offers selection when several exist.
+Manual names and IDs take precedence for a matching physical UUID. Repeated
+advertisements do not create extra devices. Registration is bounded to 32 devices
+per worker boot and retains gates and identity pins while jobs may reference them.
+Endpoint bindings do not change during a worker boot: restart the worker after a
+scanner changes IP. IPv6-only, WS-Discovery-only and USB devices are outside this
+Bonjour eSCL discovery path; manual supported eSCL URLs remain the fallback.
+
+
+When combining discovery with the optional Tesseract service, use Compose 2.24+
+and add its compatibility overlay last:
+
+```sh
+docker compose -f deploy/compose.yaml -f deploy/compose.tesseract.yaml -f deploy/compose.discovery.yaml -f deploy/compose.discovery-tesseract.yaml up -d
+```
+
+The final overlay removes the worker's Docker bridge attachments and connects it
+to the OCR service through `127.0.0.1:8090`. Only that combination publishes the OCR
+port, bound to host loopback; its API key remains required. The OCR container keeps
+its internal network and has no application state/document mounts.

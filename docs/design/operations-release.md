@@ -229,7 +229,7 @@ The existing portal/scanservjs/Stirling and printing remain unchanged during dev
 OIDC client settings, registered scanners, storage paths, retention/timeouts and
 resource limits through an injected environment lookup. Missing required values
 and invalid values return a key-only error. There is no automatic guest fallback.
-The default is OIDC, and a public HTTPS origin is mandatory for the API. Canonical selectors are oidc/simple; named none remains pending, and legacy guest requires the legacy selector.
+The default is OIDC, and a public HTTPS origin is mandatory for the API. Canonical selectors are oidc/simple/none. Explicit none automatically starts a private browser-scoped guest session; ending it retires that owner and opens a new empty session. It does not share History across browsers. HTTPS, origin checks, quotas and session expiry still apply. Legacy guest retains its explicit Start session screen and requires the legacy selector.
 The two storage paths must be absolute, clean and non-overlapping. Filesystem
 symlinks/mount identity must additionally be checked when opening the stores.
 Scan concurrency is independently bounded to 1–32, registered device count and reservation capacity; render processing concurrency remains one.

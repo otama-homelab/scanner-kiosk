@@ -97,6 +97,9 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 		for _, device := range c.Scanners {
 			ids = append(ids, device.ID)
 		}
+		if c.ScannerDiscovery {
+			publisher.startScannerDiscovery(scannerSession)
+		}
 		publisher.startScannerMetadata(scannerSession, ids, c.Durations["SCANNER_OCR_CATALOG_LEASE_SECONDS"])
 		publisher.startScannerReadiness(scannerSession, ids, c.EffectiveScanConcurrency(), c.Durations["SCANNER_OCR_CATALOG_LEASE_SECONDS"])
 	}
@@ -206,6 +209,9 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 			}
 			imported, importErr := store.ClaimNextImport(ctx, guard.ID())
 			if importErr != nil && !errors.Is(importErr, documents.ErrNoWork) {
+				if importErr == ctx.Err() {
+					return importErr
+				}
 				return errors.Join(importErr, ctx.Err())
 			}
 			if importErr == nil {

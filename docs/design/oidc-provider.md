@@ -106,4 +106,4 @@ and checks stable mapping, hashed binding, redaction, malformed ID rejection and
 no principal on uncertainty/cancellation. Existing SQLite/TLS/browser lifecycle
 tests continue to cover revocation, disabled identities and concurrent mapping.
 These ports do not implement a second production backend or isolate the entire
-document/job database. Named `none` mode remains a separate pending contract.
+document/job database. Explicit `SCANNER_AUTHENTICATE_TYPE=none` uses private browser-scoped guest sessions and opens Home without a login step. It never acts as fallback for failed OIDC authentication.

@@ -61,8 +61,8 @@ func LoadScannerTools(lookup Lookup) (ScannerTools, error) {
 	return out, nil
 }
 
-// EffectiveScanConcurrency caps native tasks by registered devices and the
-// shared logical reservation budget. It is not an RSS/headroom measurement.
+// EffectiveScanConcurrency caps native tasks by the device bound and the
+// shared logical reservation budget. Discovery may add devices after startup. It is not an RSS/headroom measurement.
 func (c Config) EffectiveScanConcurrency() int {
 	slots := c.ScannerTools.Concurrency
 	if slots == 0 {
@@ -71,7 +71,11 @@ func (c Config) EffectiveScanConcurrency() int {
 	if slots < 1 || slots > 32 {
 		return 0
 	}
-	slots = min(slots, max(1, len(c.Scanners)))
+	devices := max(1, len(c.Scanners))
+	if c.ScannerDiscovery {
+		devices = 32
+	}
+	slots = min(slots, devices)
 	if job := c.Limits["SCANNER_JOB_MAX_BYTES"]; job > 0 {
 		slots = min(slots, int(c.Limits["SCANNER_GLOBAL_MAX_BYTES"]/job))
 	}

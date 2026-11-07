@@ -56,7 +56,7 @@ type App struct {
 }
 
 func New(ctx context.Context, c config.Config) (*App, error) {
-	if c.Role != config.API || c.AuthenticateType != "guest" && c.AuthenticateType != "oidc" && c.AuthenticateType != "simple" {
+	if c.Role != config.API || c.AuthenticateType != "guest" && c.AuthenticateType != "oidc" && c.AuthenticateType != "simple" && c.AuthenticateType != "none" {
 		return nil, ErrConfig
 	}
 	for _, key := range []string{"SCANNER_API_MAX_INFLIGHT", "SCANNER_API_REQUESTS_PER_MINUTE", "SCANNER_API_BURST"} {
@@ -160,7 +160,7 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	for _, device := range c.Scanners {
 		scannerIDs = append(scannerIDs, device.ID)
 	}
-	scanService, err := scanadmission.New(documentStore, scannerIDs, documents.ScanLimits{AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], GlobalMaxBytes: c.Limits["SCANNER_GLOBAL_MAX_BYTES"], JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobTimeout: c.Durations["SCANNER_SCAN_TIMEOUT_SECONDS"], ReceiptRetention: c.Durations["SCANNER_RECEIPT_RETENTION_SECONDS"]}, MaxDocuments: int(c.Limits["SCANNER_USER_MAX_DOCUMENTS"]), MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"], DocumentLifetime: c.Durations["SCANNER_RETENTION_SECONDS"]})
+	scanService, err := scanadmission.New(documentStore, scannerIDs, documents.ScanLimits{DiscoverScanners: c.ScannerDiscovery, AdmissionLimits: documents.AdmissionLimits{UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], GlobalMaxBytes: c.Limits["SCANNER_GLOBAL_MAX_BYTES"], JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobTimeout: c.Durations["SCANNER_SCAN_TIMEOUT_SECONDS"], ReceiptRetention: c.Durations["SCANNER_RECEIPT_RETENTION_SECONDS"]}, MaxDocuments: int(c.Limits["SCANNER_USER_MAX_DOCUMENTS"]), MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"], DocumentLifetime: c.Durations["SCANNER_RETENTION_SECONDS"]})
 	if err != nil {
 		return nil, ErrConfig
 	}
@@ -188,7 +188,7 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	for _, device := range c.Scanners {
 		scanners = append(scanners, capabilityhttp.Scanner{ID: device.ID, Name: device.Name})
 	}
-	capabilityRoutes := capabilityhttp.New(catalogReader, catalogReader, documentStore, sessions, scanners, capabilityhttp.Limits{RetentionSeconds: int64(c.Durations["SCANNER_RETENTION_SECONDS"] / time.Second), MaxDocuments: c.Limits["SCANNER_USER_MAX_DOCUMENTS"], UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], JobMaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"]}, time.Now)
+	capabilityRoutes := capabilityhttp.New(catalogReader, catalogReader, documentStore, sessions, scanners, capabilityhttp.Limits{DiscoverScanners: c.ScannerDiscovery, RetentionSeconds: int64(c.Durations["SCANNER_RETENTION_SECONDS"] / time.Second), MaxDocuments: c.Limits["SCANNER_USER_MAX_DOCUMENTS"], UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], JobMaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"]}, time.Now)
 	mux.Handle("/api/capabilities", capabilityRoutes)
 	mux.Handle("/api/scanners", capabilityRoutes)
 	mux.Handle("/api/session", sessions)

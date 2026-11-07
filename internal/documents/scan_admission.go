@@ -38,6 +38,7 @@ type ScanLimits struct {
 	MaxConcurrentScans int
 	// Non-nil constrains new admissions; receipt replay precedes this policy.
 	RegisteredDevices []string
+	DiscoverScanners  bool
 	// Required by AdmitReadyScan; bounds native geometry in the admission transaction.
 	MaxPagePixels    int64
 	DocumentLifetime time.Duration
@@ -126,7 +127,7 @@ func (s *Store) applyScan(ctx context.Context, owner string, command scanCommand
 		if err != nil {
 			return err
 		}
-		if ready && limits.RegisteredDevices != nil {
+		if ready && !limits.DiscoverScanners && limits.RegisteredDevices != nil {
 			allowed := false
 			for _, device := range limits.RegisteredDevices {
 				allowed = allowed || device == request.DeviceID

@@ -12,6 +12,7 @@ func TestScannerNameBoundary(t *testing.T) {
 		valid       bool
 	}{
 		{"empty", "", false},
+		{"control", "Scanner\n", false},
 		{"one", "J", true},
 		{"ascii_limit", strings.Repeat("a", 256), true},
 		{"ascii_over", strings.Repeat("a", 257), false},

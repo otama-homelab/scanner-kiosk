@@ -68,6 +68,7 @@ func TestScanConcurrencyBoundsAndEffectiveCapacity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	c.ScannerDiscovery = false
 	c.Scanners = make([]Scanner, 3)
 	if c.EffectiveScanConcurrency() != 3 {
 		t.Fatal("device cap ignored")
@@ -75,6 +76,11 @@ func TestScanConcurrencyBoundsAndEffectiveCapacity(t *testing.T) {
 	c.Limits["SCANNER_GLOBAL_MAX_BYTES"] = c.Limits["SCANNER_JOB_MAX_BYTES"] * 2
 	if c.EffectiveScanConcurrency() != 2 {
 		t.Fatal("shared reservation cap ignored")
+	}
+	c.ScannerDiscovery = true
+	c.Scanners = nil
+	if c.EffectiveScanConcurrency() != 2 {
+		t.Fatal("discovered devices cannot use bounded configured capacity")
 	}
 	c.ScannerTools.Concurrency = 1
 	if c.EffectiveScanConcurrency() != 1 {

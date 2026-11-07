@@ -38,11 +38,17 @@ variables explicitly; copying `.env.example` does not make the binary load it.
 - [UID/GID, storage, backups and resource requirements](docs/design/homelab-readiness.md)
 - [Identity recovery](docs/design/state-recovery.md)
 
-Use HTTPS for browser access. Configure either OIDC or local username/password
-authentication. State and temporary documents use separate directories; exclude
+Use HTTPS for browser access. Choose OIDC, local username/password, or explicit
+`SCANNER_AUTHENTICATE_TYPE=none` for private browser sessions without a login screen. State and temporary documents use separate directories; exclude
 the document store from backups. Existing volume ownership is the operator's
 responsibility. Deployment examples default to UID/GID 10001, API 512 MiB and
 worker 1536 MiB; resource needs depend on scan size and encoding.
+
+For LAN plug and play on Linux Docker, use `deploy/compose.discovery.yaml` alongside
+`deploy/compose.yaml`. The worker discovers IPv4 Bonjour eSCL scanners on its LAN,
+including devices switched on after startup. One device is selected automatically;
+multiple devices can be selected in Home. Manual registrations remain supported.
+See [discovery networking and limits](deploy/README.md#scanner-discovery).
 
 Without OCR configuration, ordinary PDF operations remain available and OCR
 controls stay hidden. Optional Tesseract OCR sends images to its configured API

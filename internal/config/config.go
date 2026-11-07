@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -44,6 +45,7 @@ type Config struct {
 	PublicURL, ListenAddr, AuthenticateType, StateDir, DocumentDir, LogLevel string
 	OIDC                                                                     OIDC
 	Scanners                                                                 []Scanner
+	ScannerDiscovery                                                         bool
 	ScannerTools                                                             ScannerTools
 	// Duration and limit keys use their full environment names. Only the listed,
 	// validated values are exposed; plugins have independent configuration loaders.
@@ -86,7 +88,7 @@ func load(lookup Lookup, role Role) (Config, error) {
 		} else if old {
 			c.AuthenticateType = legacy
 		}
-		if c.AuthenticateType != "oidc" && c.AuthenticateType != "simple" && !(old && c.AuthenticateType == "guest") {
+		if c.AuthenticateType != "oidc" && c.AuthenticateType != "simple" && !(canonical && c.AuthenticateType == "none") && !(old && c.AuthenticateType == "guest") {
 			if canonical {
 				return invalid("SCANNER_AUTHENTICATE_TYPE")
 			}
@@ -154,10 +156,17 @@ func load(lookup Lookup, role Role) (Config, error) {
 	}
 	seen := map[string]bool{}
 	for _, s := range c.Scanners {
-		if !validID(s.ID) || s.Name == "" || utf8.RuneCountInString(s.Name) > 256 || seen[s.ID] || s.Driver != "sane-airscan" || !scannerURL(s.Endpoint) {
+		if !validID(s.ID) || s.Name == "" || strings.ContainsFunc(s.Name, unicode.IsControl) || utf8.RuneCountInString(s.Name) > 256 || seen[s.ID] || s.Driver != "sane-airscan" || !scannerURL(s.Endpoint) {
 			return invalid("SCANNER_SCANNERS_JSON")
 		}
 		seen[s.ID] = true
+	}
+	switch get("SCANNER_DISCOVERY_ENABLED", "true") {
+	case "true":
+		c.ScannerDiscovery = true
+	case "false":
+	default:
+		return invalid("SCANNER_DISCOVERY_ENABLED")
 	}
 	c.Durations = map[string]time.Duration{}
 	for key, def := range map[string]int64{"SCANNER_SESSION_LIFETIME_SECONDS": 28800, "SCANNER_SESSION_IDLE_SECONDS": 1800, "SCANNER_RETENTION_SECONDS": 86400, "SCANNER_RECEIPT_RETENTION_SECONDS": 259200, "SCANNER_SCAN_TIMEOUT_SECONDS": 120, "SCANNER_OCR_TIMEOUT_SECONDS": 600, "SCANNER_PROCESS_STOP_GRACE_SECONDS": 15} {

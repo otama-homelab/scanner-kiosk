@@ -26,7 +26,7 @@ func (IdentityObservation) MarshalJSON() ([]byte, error) { return []byte(`"[reda
 // ObserveIdentity performs one bounded noncached GET of ScannerCapabilities.
 // No discovery, scan creation, response URI or serial fallback is used.
 func (o *Observer) ObserveIdentity(ctx context.Context, deviceID string) (IdentityObservation, error) {
-	endpoint, ok := o.devices[deviceID]
+	endpoint, ok := o.lookup(deviceID)
 	if !ok {
 		return IdentityObservation{}, ErrInvalid
 	}

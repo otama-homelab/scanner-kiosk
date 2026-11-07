@@ -35,6 +35,12 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   fail=true;release();hold=false;await page.getByText('Scanning unavailable',{exact:true}).waitFor();assert(await scan.isDisabled(),'failed refresh must fail closed');
   hold=true;waiting=new Promise(resolve=>entered=resolve);await page.clock.fastForward(5000);await waiting;assert(await refresh.isVisible()&&await refresh.isEnabled(),'unavailable background recovery keeps retry visible and enabled');const failedPoll=page.waitForResponse('**/api/scanners');release();hold=false;await failedPoll;
   fail=false;scanners=scanners.map(device=>({...device,state:'idle'}));await refresh.click();await page.waitForFunction(()=>!document.querySelector('.capture-settings>.primary')?.disabled);checks.push('Explicit refresh is bounded, failure blocks scan and successful retry recovers');
+  scanners=[{...scanners[0],id:'scanner_hotplug_0001',name:'New scanner'}];await page.clock.fastForward(5000);
+  await page.getByRole('button',{name:'Select scanner',exact:true}).waitFor();assert(await scan.isDisabled(),'a disappeared selection must never silently move to different hardware');
+  await page.getByRole('button',{name:'Select scanner',exact:true}).click();await page.getByRole('button',{name:/New scanner/}).click();assert(await scan.isEnabled());
+  scanners.push({...scanners[0],id:'scanner_hotplug_0002',name:'Second scanner'});await page.clock.fastForward(5000);
+  await page.getByRole('button',{name:'Change scanner',exact:true}).waitFor();assert(await scan.isEnabled(),'new devices preserve the current selection');
+  checks.push('Hotplug preserves selection, allows selecting one remaining device and never silently redirects acquisition');
   for(const locale of ['en','ja'])for(const width of [320,768,1440]){
    await page.setViewportSize({width,height:900});await page.selectOption('#locale',locale);await page.locator('main[aria-busy=false] h1').waitFor();
    const entry=page.getByRole('button',{name:locale==='en'?'Import PDF':'PDFを取り込む',exact:true});

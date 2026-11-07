@@ -5,6 +5,7 @@ package workerruntime
 import (
 	"context"
 	"errors"
+	"scanner-kiosk/internal/config"
 	"time"
 
 	"scanner-kiosk/internal/scanner"
@@ -83,17 +84,20 @@ type metadataResult struct {
 // Native inspection uses a bounded pool. Publication/heartbeat do not wait for
 // a slow device; the driver's per-device gate still serializes capture and probe.
 func (p *catalogPublisher) startScannerMetadata(inspector scannermetadata.Inspector, ids []string, lifetime time.Duration) {
-	if inspector == nil || len(ids) == 0 {
+	if inspector == nil {
 		return
 	}
 	ids = append([]string(nil), ids...)
-	jobs := make(chan string, len(ids))
-	results := make(chan metadataResult, len(ids))
+	jobs := make(chan *scannerMetadataBuilder, 32)
+	results := make(chan metadataResult, 32)
 	builders := make(map[string]*scannerMetadataBuilder, len(ids))
 	for _, id := range ids {
 		builders[id] = &scannerMetadataBuilder{inspector: inspector, ids: []string{id}}
 	}
-	workers := min(4, len(ids))
+	workers := min(4, max(1, len(ids)))
+	if _, ok := inspector.(interface{ IDs() []string }); ok {
+		workers = 4
+	}
 	p.wg.Add(workers + 1)
 	for range workers {
 		go func() {
@@ -102,11 +106,11 @@ func (p *catalogPublisher) startScannerMetadata(inspector scannermetadata.Inspec
 				select {
 				case <-p.ctx.Done():
 					return
-				case id := <-jobs:
+				case builder := <-jobs:
 					if p.ctx.Err() != nil {
 						return
 					}
-					builder := builders[id]
+					id := builder.ids[0]
 					snapshot, err := builder.catalog(p.ctx)
 					// Retain failures discovered during shutdown before reporting completion.
 					if errors.Is(err, scanner.ErrUnresolved) {
@@ -127,15 +131,32 @@ func (p *catalogPublisher) startScannerMetadata(inspector scannermetadata.Inspec
 		defer ticker.Stop()
 		var published time.Time
 		schedule := func(now time.Time) {
+			if inventory, ok := inspector.(interface{ IDs() []string }); ok {
+				ids = inventory.IDs()
+			}
 			for _, id := range ids {
 				if !pending[id] && !now.Before(next[id]) {
 					pending[id] = true
-					jobs <- id
+					builder := builders[id]
+					if builder == nil {
+						builder = &scannerMetadataBuilder{inspector: inspector, ids: []string{id}}
+						builders[id] = builder
+					}
+					jobs <- builder
 				}
 			}
 		}
 		publish := func(now time.Time) error {
 			out := scannerMetadataSnapshot(ids, cached, now, interval+2*time.Second)
+			if inventory, ok := inspector.(interface{ Devices() []config.Scanner }); ok {
+				for _, device := range inventory.Devices() {
+					for index := range out.Devices {
+						if out.Devices[index].ID == device.ID {
+							out.Devices[index].Name = device.Name
+						}
+					}
+				}
+			}
 			if err := p.store.PublishScanners(p.ctx, out); err != nil {
 				return err
 			}

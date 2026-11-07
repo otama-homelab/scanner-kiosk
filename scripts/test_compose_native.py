@@ -19,7 +19,7 @@ OCR = {
 }
 
 
-def render(tesseract=False,**overrides):
+def render(tesseract=False,discovery=False,**overrides):
     compose = shutil.which('docker-compose')
     command = [compose] if compose else ['docker', 'compose']
     with tempfile.TemporaryDirectory() as scratch:
@@ -37,6 +37,9 @@ def render(tesseract=False,**overrides):
         }
         files=['-f',str(ROOT/'deploy/compose.yaml')]
         if tesseract:files+=['-f',str(ROOT/'deploy/compose.tesseract.yaml')]
+        if discovery:
+            files+=['-f',str(ROOT/'deploy/compose.discovery.yaml')]
+            if tesseract:files+=['-f',str(ROOT/'deploy/compose.discovery-tesseract.yaml')]
         result = subprocess.run(
             [*command, '--project-name', 'scanner-contract', '--env-file', '/dev/null',
              *files, 'config', '--format', 'json'],
@@ -45,6 +48,25 @@ def render(tesseract=False,**overrides):
 
 
 class ComposeNativeTests(unittest.TestCase):
+    def test_discovery_only_worker_uses_host_network(self):
+        services=render(discovery=True)
+        self.assertEqual(services['worker']['network_mode'],'host')
+        self.assertEqual(services['worker']['environment']['SCANNER_ACQUISITION_ENABLED'],'true')
+        self.assertNotIn('network_mode',services['api'])
+        self.assertEqual(set(services),{'api','worker'})
+
+    def test_discovery_with_private_ocr_loopback(self):
+        services=render(discovery=True,tesseract=True,
+                        SCANNER_TESSERACT_IMAGE='registry.example.test/scanner@sha256:'+'2'*64,
+                        SCANNER_OCR_TESSERACT_API_KEY='fixture-ocr-key-'+'x'*32)
+        worker=services['worker'];ocr=services['tesseract']
+        self.assertEqual(worker['network_mode'],'host')
+        self.assertFalse(worker.get('networks'))
+        self.assertEqual(worker['environment']['SCANNER_OCR_TESSERACT_ENDPOINT'],'http://127.0.0.1:8090')
+        self.assertEqual(ocr['ports'][0]['host_ip'],'127.0.0.1')
+        self.assertEqual(set(ocr['networks']),{'ocr'})
+        self.assertFalse(ocr.get('volumes'))
+
     def test_remote_ocr_credentials_are_worker_only(self):
         services=render(SCANNER_OCR_TESSERACT_ENDPOINT='https://ocr.example',
                         SCANNER_OCR_TESSERACT_API_KEY='dummy-ocr-key-'+'x'*32)

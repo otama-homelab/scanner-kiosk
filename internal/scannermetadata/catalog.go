@@ -5,7 +5,10 @@ package scannermetadata
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"scanner-kiosk/internal/scanner"
 )
@@ -16,6 +19,7 @@ var ErrUnavailable = errors.New("scanner metadata unavailable")
 
 type Device struct {
 	ID       string            `json:"id"`
+	Name     string            `json:"name,omitempty"`
 	Profiles []scanner.Profile `json:"profiles"`
 }
 type Snapshot struct {
@@ -63,7 +67,7 @@ func Validate(s Snapshot, now time.Time) error {
 	}
 	seen := map[string]bool{}
 	for _, device := range s.Devices {
-		if !ValidID(device.ID) || seen[device.ID] || len(device.Profiles) < 1 || len(device.Profiles) > 60 {
+		if !utf8.ValidString(device.Name) || utf8.RuneCountInString(device.Name) > 256 || strings.ContainsFunc(device.Name, unicode.IsControl) || !ValidID(device.ID) || seen[device.ID] || len(device.Profiles) < 1 || len(device.Profiles) > 60 {
 			return ErrUnavailable
 		}
 		seen[device.ID] = true

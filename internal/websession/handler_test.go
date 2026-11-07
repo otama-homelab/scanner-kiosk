@@ -459,3 +459,39 @@ func TestOIDCModeNeverAcceptsGuestSession(t *testing.T) {
 		t.Fatal("OIDC mode enabled guest creation")
 	}
 }
+
+func TestNoneUsesIsolatedGuestLifecycle(t *testing.T) {
+	_, db, _ := fixture(t)
+	o := options()
+	o.AuthenticateType = "none"
+	h, err := New(db, o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := request(t, h, "GET", "/api/session", nil, "")
+	if v := view(t, a); v.Authenticated || v.AuthenticateType != "none" {
+		t.Fatal(v)
+	}
+	first := request(t, h, "POST", "/auth/guest", cookie(t, a), "request_none_first")
+	if v := view(t, first); !v.Authenticated || v.PrincipalKind != "guest" || v.AuthenticateType != "none" || v.CanAdminister {
+		t.Fatal(v)
+	}
+	firstCookie := cookie(t, first)
+	b := request(t, h, "GET", "/api/session", nil, "")
+	second := cookie(t, request(t, h, "POST", "/auth/guest", cookie(t, b), "request_none_second"))
+	if scalar(t, db, "SELECT count(*) FROM principals WHERE kind='guest'") != 2 {
+		t.Fatal("shared anonymous owner")
+	}
+	if !view(t, request(t, h, "GET", "/api/session", firstCookie, "")).Authenticated {
+		t.Fatal("reload lost session")
+	}
+	if w := request(t, h, "POST", "/auth/guest/end", firstCookie, "request_none_end"); w.Code != 202 {
+		t.Fatal(w.Code)
+	}
+	if !view(t, request(t, h, "GET", "/api/session", second, "")).Authenticated {
+		t.Fatal("end affected other browser")
+	}
+	if view(t, request(t, h, "GET", "/api/session", firstCookie, "")).Authenticated {
+		t.Fatal("ended session recovered")
+	}
+}

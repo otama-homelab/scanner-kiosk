@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unicode"
 )
@@ -26,6 +27,7 @@ type Options struct {
 	MaxResponseBytes int64
 }
 type Observer struct {
+	mu       sync.RWMutex
 	devices  map[string]string
 	client   *http.Client
 	maxBytes int64
@@ -35,7 +37,7 @@ type Observer struct {
 // redirects, implicit retries, TLS bypass and inherited credentials are absent.
 // A status response never fences another scanner writer or proves local stop.
 func New(devices []Device, options Options) (*Observer, error) {
-	if len(devices) == 0 || len(devices) > 32 || options.Timeout < time.Millisecond || options.Timeout > 30*time.Second || options.MaxResponseBytes < 1024 || options.MaxResponseBytes > 1<<20 {
+	if len(devices) > 32 || options.Timeout < time.Millisecond || options.Timeout > 30*time.Second || options.MaxResponseBytes < 1024 || options.MaxResponseBytes > 1<<20 {
 		return nil, ErrInvalid
 	}
 	endpoints := make(map[string]string, len(devices))
@@ -55,7 +57,7 @@ func New(devices []Device, options Options) (*Observer, error) {
 // Successful observations are bound to the requested registered device ID and
 // this call's time; callers must still hold the exact lease and exclusive writer.
 func (o *Observer) ObserveIdle(ctx context.Context, deviceID string, stoppedAtMS int64) (int64, error) {
-	endpoint, ok := o.devices[deviceID]
+	endpoint, ok := o.lookup(deviceID)
 	began := time.Now().UnixMilli()
 	if !ok || stoppedAtMS <= 0 || stoppedAtMS > began {
 		return 0, ErrInvalid
@@ -130,4 +132,25 @@ func endpoint(raw string) bool {
 		}
 	}
 	return true
+}
+
+func (o *Observer) lookup(id string) (string, bool) {
+	o.mu.RLock()
+	defer o.mu.RUnlock()
+	endpoint, ok := o.devices[id]
+	return endpoint, ok
+}
+
+// Register publishes a validated endpoint once; existing identity bindings never move.
+func (o *Observer) Register(device Device) error {
+	if !opaque(device.ID) || !endpoint(device.Endpoint) {
+		return ErrInvalid
+	}
+	o.mu.Lock()
+	defer o.mu.Unlock()
+	if len(o.devices) >= 32 || o.devices[device.ID] != "" {
+		return ErrInvalid
+	}
+	o.devices[device.ID] = strings.TrimRight(device.Endpoint, "/") + "/ScannerStatus"
+	return nil
 }
