@@ -581,3 +581,15 @@ The CI `candidate-build` job connects both commands and retains the internal
 candidate for seven days, separately from bounded failure diagnostics. These
 artifacts are not a preview/tag registry publication or source/license/security
 approval. Source/security freeze, publisher and operator acceptance remain open.
+
+## 2026-11-07 discovery dependency notice refresh
+
+The bounded DNS-SD implementation adds `golang.org/x/net v0.60.0`. Its exact
+module/archive checksums and source LICENSE/PATENTS are retained in the Go notice
+index. The native inventory grows from295 to297 entries only through these two
+read-only notice files and the refreshed index; every existing non-notice native
+entry keeps its bytes, links and mode. The first-party helper selection now pins
+the current go.mod/go.sum. Its expected executable remains c4a357f2… and the
+candidate pipeline must rebuild it using the unchanged locked SDK before native
+assembly/publication. The library versions and exact advisory tuples are unchanged;
+this notice refresh does not approve new vulnerabilities or formal release gates.

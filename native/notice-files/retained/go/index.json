@@ -226,6 +226,24 @@
       ]
     },
     {
+      "module": "golang.org/x/net",
+      "version": "v0.60.0",
+      "sum": "h1:79p50tfZlm0J9YfoDsSi639qSXNGVwEzOPLCxM2FsYU=",
+      "go_mod_sum": "h1:2DA/G1UfVbCpQPeWTmMPGY7Cs2PkBkwu743bVX5PIVg=",
+      "files": [
+        {
+          "source_relative_path": "LICENSE",
+          "bundled_path": "modules/15c710684eedf3d4/LICENSE",
+          "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad"
+        },
+        {
+          "source_relative_path": "PATENTS",
+          "bundled_path": "modules/15c710684eedf3d4/PATENTS",
+          "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc"
+        }
+      ]
+    },
+    {
       "module": "golang.org/x/oauth2",
       "version": "v0.37.0",
       "sum": "h1:JUlcxA8oAtauLfiH8FX2/FkAWHAdi0QtGCGc+hofE98=",

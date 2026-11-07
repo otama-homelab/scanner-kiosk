@@ -437,8 +437,8 @@
     },
     "usr/share/scanner-kiosk/notices/go/index.json": {
       "mode": 292,
-      "sha256": "d9d4e43412e6153dbffa083c1aea49ba784f8e3e2807937ffe79791968962e5e",
-      "size": 16277
+      "sha256": "222b06fced05ea4ae4a7139f5bc49cb7cedb34ed38246cba8e2224324348ffc1",
+      "size": 16943
     },
     "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/AUTHORS": {
       "mode": 292,
@@ -499,6 +499,16 @@
       "mode": 292,
       "sha256": "dd26a7abddd02e2d0aba97805b31f248ef7835d9e10da289b22e3b8ab78b324d",
       "size": 1479
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/15c710684eedf3d4/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/15c710684eedf3d4/PATENTS": {
+      "mode": 292,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "size": 1303
     },
     "usr/share/scanner-kiosk/notices/go/modules/1e7b1aaf85f9116b/LICENSE": {
       "mode": 292,
