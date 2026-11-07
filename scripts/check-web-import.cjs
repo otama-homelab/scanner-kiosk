@@ -3,7 +3,7 @@ const {createHash}=require('node:crypto');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,chromiumSandbox:true,timeout:15000});
- const context=await browser.newContext();const page=await context.newPage();page.setDefaultTimeout(10000);
+ const context=await browser.newContext({ignoreHTTPSErrors:true});const page=await context.newPage();page.setDefaultTimeout(10000);
  const errors=[],posts=[],checks=[];page.on('pageerror',e=>errors.push(e.message));let uncertain=false;
  const doc='document_import_ui1',pdf='page_import_ui0001',scan='page_import_scan01';
  const job={id:'job_import_ui00001',document_id:doc,kind:'import',state:'queued',input_revision:1,error_code:null};
@@ -18,7 +18,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   const choosing=page.waitForEvent('filechooser');await page.getByRole('button',{name:'Import PDF',exact:true}).click();const chooser=await choosing;
   assert(!page.url().endsWith('#/import'),'opening the native picker must not navigate to an import page');assert.equal(posts.length,0);
   await chooser.setFiles({name:'direct.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\ndirect')});
-  await page.getByText('Queued',{exact:true}).waitFor();assert.equal(posts.length,1,'file selection submits once without another button');
+  await page.getByText('Importing PDF…',{exact:true}).waitFor();assert.equal(posts.length,1,'file selection submits once without another button');
   await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,revision:1,purpose:'document',state:'review',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[]}));
   job.state='succeeded';await page.getByRole('heading',{name:'Document',exact:true}).waitFor();
   assert(page.url().endsWith('#/document/'+doc),'completed direct import opens the existing document editor');job.state='queued';
@@ -29,13 +29,13 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
    await open();const data=Buffer.alloc(size);for(let i=0;i<size;i++)data[i]=(i*17+size)%256;
    await page.getByLabel('PDF file',{exact:true}).setInputFiles({name:'日本語-😀-'+('long'.repeat(20))+'.pdf',mimeType:'application/pdf',buffer:data});
    if(size===262161&&process.env.SCANNER_TEST_IMPORT_SCREENSHOT){await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:process.env.SCANNER_TEST_IMPORT_SCREENSHOT.replace('.png','-upload.png'),fullPage:true});}
-   await page.getByRole('button',{name:'Import PDF',exact:true}).click();await page.getByText('Queued',{exact:true}).waitFor();
+   await page.getByRole('button',{name:'Import PDF',exact:true}).click();await page.getByText('Importing PDF…',{exact:true}).waitFor();
    const post=posts.at(-1);assert.equal(post.headers['x-content-sha256'],createHash('sha256').update(data).digest('hex'));assert.equal(post.headers['content-type'],'application/pdf');assert.equal(post.body.length,size);assert.deepEqual(post.body,data);assert.match(post.headers['idempotency-key'],/^rq1_/);
   }
   checks.push('Explicit bounded raw upload and SHA-256 match independent Node crypto across padding and streaming chunk boundaries');
   await open();const data=Buffer.from('%PDF-1.7\nretry');await page.getByLabel('PDF file',{exact:true}).setInputFiles({name:'retry.pdf',mimeType:'application/pdf',buffer:data});uncertain=true;
   await page.getByRole('button',{name:'Import PDF',exact:true}).click();await page.getByRole('button',{name:'Check import request',exact:true}).waitFor();assert(await page.getByLabel('PDF file',{exact:true}).isDisabled());
-  await page.getByRole('button',{name:'Check import request',exact:true}).click();await page.getByText('Queued',{exact:true}).waitFor();assert.deepEqual(posts.at(-1),posts.at(-2));
+  await page.getByRole('button',{name:'Check import request',exact:true}).click();await page.getByText('Importing PDF…',{exact:true}).waitFor();assert.deepEqual(posts.at(-1),posts.at(-2));
   checks.push('Unknown response locks file selection and repeats the same intent key, digest and bytes');
   for(const [code,message] of [['pdf_invalid','This PDF is damaged or could not be read.'],['pdf_encrypted','Password-protected PDFs cannot be imported. Save an unencrypted copy first.'],['pdf_unsupported','This PDF contains features that cannot be imported.'],['pdf_limit','This PDF exceeds the page or processing limits.']]){
    job.state='failed';job.error_code=code;await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/job/'+job.id);await page.reload();await page.getByText(message,{exact:true}).waitFor();

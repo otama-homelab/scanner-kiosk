@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"path"
 	"strconv"
+	"strings"
 )
 
 func New(publicURL string) (http.Handler, error) {
@@ -37,7 +38,8 @@ func fromFS(publicURL string, assets fs.FS) (http.Handler, error) {
 			return nil
 		}
 		ext := path.Ext(name)
-		if ext != ".js" && ext != ".css" && ext != ".svg" && name != "index.html" {
+		pdfAsset := strings.HasPrefix(name, "pdfjs/") && (ext == ".bcmap" || ext == ".pfb" || ext == ".ttf" || ext == ".wasm" || name == "pdfjs/NOTICE.txt")
+		if ext != ".js" && ext != ".mjs" && ext != ".css" && ext != ".svg" && name != "index.html" && !pdfAsset {
 			return errors.New("unsupported public asset")
 		}
 		data, err := fs.ReadFile(assets, name)
@@ -52,7 +54,11 @@ func fromFS(publicURL string, assets fs.FS) (http.Handler, error) {
 		if name == "index.html" {
 			route = "/"
 		}
-		files[route] = asset{data, mime.TypeByExtension(ext)}
+		media := mime.TypeByExtension(ext)
+		if media == "" {
+			media = "application/octet-stream"
+		}
+		files[route] = asset{data, media}
 		return nil
 	})
 	if err != nil {

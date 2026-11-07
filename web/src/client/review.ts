@@ -17,7 +17,7 @@ export function reviewViews(grid:HTMLElement,labels:{overview:string;pageView:st
 
  for(const [index,card] of cards.entries()){
   const image=card.querySelector('img');
-  if(!image){const thumbnail=make('PDF '+(index+1),()=>{selected=index;update(true)});thumbnail.setAttribute('aria-label',card.dataset.pageLabel||labels.page+' '+(index+1));choices.push(thumbnail);thumbnails.append(thumbnail);continue}
+  if(!image){const thumbnail=make('PDF '+(index+1),()=>{selected=index;update(true)});thumbnail.setAttribute('aria-label',card.dataset.pageLabel||labels.page+' '+(index+1));choices.push(thumbnail);thumbnails.append(thumbnail);const canvas=card.querySelector('canvas');if(canvas){const open=make('',()=>{selected=index;update(true);detail.focus()});open.className='preview-open';open.setAttribute('aria-label',labels.page+' '+(index+1));canvas.replaceWith(open);open.append(canvas)}continue}
   fallback(image);
   const open=make('',()=>{selected=index;update(true);detail.focus()});open.className='preview-open';open.setAttribute('aria-label',image.alt);image.replaceWith(open);open.append(image);
   const thumbnail=make('',()=>{selected=index;update(true)});thumbnail.setAttribute('aria-label',image.alt);const small=image.cloneNode(true) as HTMLImageElement;small.alt='';small.loading='lazy';fallback(small);source(small,false);thumbnail.append(small);choices.push(thumbnail);thumbnails.append(thumbnail)

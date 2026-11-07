@@ -57,6 +57,29 @@ class BuildWebIdentityTests(unittest.TestCase):
             with self.subTest(ref=ref), self.assertRaises(subprocess.CalledProcessError):
                 module.identity_flags(ref, sha, self.repo)
 
+    def test_pdf_preview_assets_follow_public_boundary(self):
+        for name, accepted in [('pdfjs/cmaps/Japan.bcmap', True),
+                               ('pdfjs/standard_fonts/font.ttf', True),
+                               ('pdfjs/standard_fonts/font.pfb', True),
+                               ('pdfjs/wasm/openjpeg.wasm', True),
+                               ('pdfjs/NOTICE.txt', True),
+                               ('_astro/pdf.worker.mjs', True),
+                               ('private.ttf', False), ('pdfjs/secret.env', False)]:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                asset = root / 'web/dist' / name
+                asset.parent.mkdir(parents=True)
+                asset.write_bytes(b'asset')
+                (root / 'web/dist/index.html').write_text('ok')
+                (root / 'internal/webui').mkdir(parents=True)
+                with patch.object(module, 'ROOT', root), patch.object(module.subprocess, 'run'):
+                    if accepted:
+                        module.main(['--output', str(root / 'scanner')])
+                        self.assertEqual((root / 'internal/webui/dist' / name).read_bytes(), b'asset')
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, 'unreviewed'):
+                            module.main(['--output', str(root / 'scanner')])
+
 
 if __name__ == '__main__':
     unittest.main()

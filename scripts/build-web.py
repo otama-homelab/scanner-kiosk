@@ -37,11 +37,13 @@ def main(argv=None):
     subprocess.run(['npm', 'ci', '--ignore-scripts', '--no-audit', '--no-fund'], cwd=ROOT / 'web', check=True)
     subprocess.run(['npm', 'run', 'build'], cwd=ROOT / 'web', check=True)
     for asset in (ROOT / 'web/dist').rglob('*'):
+        relative = asset.relative_to(ROOT / 'web/dist').as_posix()
+        pdf_asset = relative.startswith('pdfjs/') and (asset.suffix in ['.bcmap', '.pfb', '.ttf', '.wasm'] or relative == 'pdfjs/NOTICE.txt')
         if asset.is_symlink():
             raise RuntimeError('symlink in built assets')
         if asset.is_file() and (any(part.startswith('.') for part in asset.relative_to(ROOT / 'web/dist').parts)
-                                or (asset.suffix not in ['.js', '.css', '.svg']
-                                    and asset.relative_to(ROOT / 'web/dist').as_posix() != 'index.html')):
+                                or (asset.suffix not in ['.js', '.mjs', '.css', '.svg']
+                                    and relative != 'index.html' and not pdf_asset)):
             raise RuntimeError('unreviewed built asset type')
     destination = ROOT / 'internal/webui/dist'
     if destination.is_symlink():

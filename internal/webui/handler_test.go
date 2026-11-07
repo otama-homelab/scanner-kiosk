@@ -33,3 +33,23 @@ func TestStaticAssetBoundary(t *testing.T) {
 		t.Fatal("unreviewed public asset accepted")
 	}
 }
+
+func TestPDFPreviewAssetsKeepStaticBoundary(t *testing.T) {
+	for _, name := range []string{"_astro/pdf.worker.mjs", "pdfjs/cmaps/Japan.bcmap", "pdfjs/standard_fonts/Foxit.pfb", "pdfjs/standard_fonts/font.ttf", "pdfjs/wasm/openjpeg.wasm", "pdfjs/NOTICE.txt"} {
+		handler, err := fromFS("https://scanner.example.test", fstest.MapFS{"index.html": {Data: []byte("ok")}, name: {Data: []byte("asset")}})
+		if err != nil {
+			t.Fatal(name, err)
+		}
+		request := httptest.NewRequest("GET", "https://scanner.example.test/"+name, nil)
+		response := httptest.NewRecorder()
+		handler.ServeHTTP(response, request)
+		if response.Code != 200 || response.Header().Get("Content-Type") == "" || response.Header().Get("X-Content-Type-Options") != "nosniff" {
+			t.Fatal(name, response.Code, response.Header())
+		}
+	}
+	for _, name := range []string{"private.ttf", "pdfjs/secret.env", "pdfjs/arbitrary.txt"} {
+		if _, err := fromFS("https://scanner.example.test", fstest.MapFS{"index.html": {Data: []byte("ok")}, name: {Data: []byte("private")}}); err == nil {
+			t.Fatal("unreviewed asset type accepted", name)
+		}
+	}
+}

@@ -1,1 +1,1 @@
-{"name":"scanner-kiosk-web","private":true,"type":"module","scripts":{"build":"astro build"},"dependencies":{"astro":"7.4.4"},"license":"Apache-2.0"}
+{"name":"scanner-kiosk-web","private":true,"type":"module","scripts":{"build":"astro build"},"dependencies":{"astro":"7.4.4","pdfjs-dist":"6.5.438"},"license":"Apache-2.0"}

@@ -109,3 +109,11 @@ user enables searchable PDF. The dialog expands on that deliberate action and
 keeps its frame stable while those detailed settings change. Metadata failure
 explains that ordinary PDF remains selectable and offers an explicit retry;
 missing remote destination metadata still fails closed for OCR.
+
+## Preview and save flow
+
+The document editor keeps one primary “Save PDF”/“Save image” action visible. It admits the existing revision-bound render intent only when a current output is absent; after successful processing it downloads that output without a separate Create/Open/Download sequence. A current output uses the same save label and skips rendering. Processing stays beside the existing preview; queued/running share a task description. Cancellation, uncertain requests, failed processing and explicit retry retain the original server job and idempotency rules.
+
+Rotation stays beside each page. Insert, replace, reorder and confirmed page deletion live in that page's disclosure; output options and confirmed document deletion share the document menu. History can expand a first-page preview without leaving the list.
+
+Prepared, authorized PDF pages render to canvas with PDF.js, loaded on demand. One worker decodes one visible/nearby page at a time; navigation destroys the page task. Fonts, CMaps, codecs and their notices are served from this origin, with no CDN or document upload to another service. The Node canvas package is optional tooling and is not a browser/runtime native dependency. The original prepared-PDF link remains available when rendering fails. Existing owner/expiry checks, raw-intake isolation, PDF output and server resource limits are unchanged. Public asset type checks now also cover the worker and narrowly scoped PDF support files, under the existing file/count/total-size bounds.
