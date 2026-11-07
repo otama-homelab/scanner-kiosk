@@ -76,7 +76,7 @@ func (i *metadataInspector) InspectCapture(_ context.Context, _ string, capture 
 func TestScannerMetadataBuilderEnumeratesOnlyVerifiedTuplesAndCaches(t *testing.T) {
 	inspector := &metadataInspector{}
 	builder := scannerMetadataBuilder{inspector: inspector, ids: []string{"scanner_metadata_001"}}
-	value, err := builder.catalog(context.Background())
+	value, err := completeMetadataCycle(&builder)
 	if err != nil || inspector.calls != 60 || len(value.Devices) != 1 || len(value.Devices[0].Profiles) != 1 {
 		t.Fatal(value, inspector.calls, err)
 	}
@@ -84,7 +84,7 @@ func TestScannerMetadataBuilderEnumeratesOnlyVerifiedTuplesAndCaches(t *testing.
 		t.Fatal("lease refresh repeated native probes", inspector.calls, err)
 	}
 	builder.checked = time.Now().Add(-2 * time.Minute)
-	if _, err := builder.catalog(context.Background()); err != nil || inspector.calls != 120 {
+	if _, err := completeMetadataCycle(&builder); err != nil || inspector.calls != 120 {
 		t.Fatal("expired inspection cache was not refreshed", inspector.calls, err)
 	}
 }
@@ -129,10 +129,10 @@ func TestScannerMetadataCompletesSlowVerifiedSettingsWithinFreshness(t *testing.
 		calls := 0
 		builder := scannerMetadataBuilder{ids: []string{"scanner_slow_native_001"}, inspector: metadataInspectorFunc(func(ctx context.Context, _ string, capture scanner.Capture) (scanner.Profile, error) {
 			calls++
-			time.Sleep(600 * time.Millisecond)
+			time.Sleep(1500 * time.Millisecond)
 			return scanner.Profile{Capture: capture, Width: 2480, Height: 3508, CheckedAtMS: time.Now().UnixMilli()}, nil
 		})}
-		value, err := builder.catalog(context.Background())
+		value, err := completeMetadataCycle(&builder)
 		if err != nil || calls != 60 || len(value.Devices) != 1 || len(value.Devices[0].Profiles) != 60 {
 			t.Fatal("verified settings discarded before bounded inspection completed", calls, err)
 		}
@@ -141,4 +141,13 @@ func TestScannerMetadataCompletesSlowVerifiedSettingsWithinFreshness(t *testing.
 			t.Fatal("published stale settings")
 		}
 	})
+}
+
+func completeMetadataCycle(builder *scannerMetadataBuilder) (scannermetadata.Snapshot, error) {
+	for {
+		value, err := builder.catalog(context.Background())
+		if err != nil || builder.cursor == 0 {
+			return value, err
+		}
+	}
 }

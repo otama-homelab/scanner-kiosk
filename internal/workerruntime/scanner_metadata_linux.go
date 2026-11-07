@@ -16,50 +16,66 @@ type scannerMetadataBuilder struct {
 	ids       []string
 	cached    scannermetadata.Snapshot
 	checked   time.Time
+	cursor    int
 }
 
 func (b *scannerMetadataBuilder) catalog(ctx context.Context) (scannermetadata.Snapshot, error) {
-	if b.cached.Devices != nil && time.Since(b.checked) < time.Minute {
+	if b.cursor == 0 && b.cached.Devices != nil && time.Since(b.checked) < time.Minute {
 		return b.cached, nil
 	}
 	ctx, cancel := context.WithTimeout(ctx, time.Minute)
 	defer cancel()
+	const perDevice = 60
+	index := b.cursor
+	id := b.ids[index/perDevice]
+	tuple := index % perDevice
+	capture := scanner.Capture{
+		Size:  []string{"a4", "a5", "a6", "letter", "photo10x15"}[tuple/12],
+		Color: []string{"color", "gray"}[tuple/6%2],
+		DPI:   []int{300, 600, 200, 150, 100, 75}[tuple%6],
+	}
+	profile, err := b.inspector.InspectCapture(ctx, id, capture)
+	if errors.Is(err, scanner.ErrUnresolved) {
+		return scannermetadata.Snapshot{}, err
+	}
+	if ctx.Err() != nil {
+		return scannermetadata.Snapshot{}, ctx.Err()
+	}
+	if err == nil && profile.Capture != capture {
+		return scannermetadata.Snapshot{}, scannermetadata.ErrUnavailable
+	}
+	// Copy before updating: the publisher may still be reading the previous result.
 	out := scannermetadata.Snapshot{Devices: []scannermetadata.Device{}}
-	for _, id := range b.ids {
-		device := scannermetadata.Device{ID: id, Profiles: []scanner.Profile{}}
-		for _, size := range []string{"a4", "a5", "a6", "letter", "photo10x15"} {
-			for _, color := range []string{"color", "gray"} {
-				for _, dpi := range []int{300, 600, 200, 150, 100, 75} {
-					capture := scanner.Capture{Size: size, Color: color, DPI: dpi}
-					profile, err := b.inspector.InspectCapture(ctx, id, capture)
-					if errors.Is(err, scanner.ErrUnresolved) {
-						return scannermetadata.Snapshot{}, err
-					}
-					if ctx.Err() != nil {
-						return scannermetadata.Snapshot{}, ctx.Err()
-					}
-					if err != nil {
-						continue
-					} // This tuple is not advertised; never infer others.
-					if profile.Capture != capture {
-						return scannermetadata.Snapshot{}, scannermetadata.ErrUnavailable
-					}
-					device.Profiles = append(device.Profiles, profile)
-				}
+	device := scannermetadata.Device{ID: id, Profiles: []scanner.Profile{}}
+	for _, old := range b.cached.Devices {
+		if old.ID != id {
+			out.Devices = append(out.Devices, old)
+			continue
+		}
+		for _, previous := range old.Profiles {
+			if previous.Capture != capture {
+				device.Profiles = append(device.Profiles, previous)
 			}
 		}
-		if len(device.Profiles) > 0 {
-			out.Devices = append(out.Devices, device)
-		}
 	}
-	b.cached, b.checked = out, time.Now()
+	if err == nil {
+		device.Profiles = append(device.Profiles, profile)
+	}
+	if len(device.Profiles) > 0 {
+		out.Devices = append(out.Devices, device)
+	}
+	b.cursor = (index + 1) % (len(b.ids) * perDevice)
+	if b.cursor == 0 {
+		b.checked = time.Now()
+	}
+	b.cached = out
 	return out, nil
 }
 
-// metadataResult contains only a completed per-device inspection; unfinished
-// batches never replace verified data for a different device.
+// metadataResult carries verified progress for one device.
 type metadataResult struct {
 	id       string
+	complete bool
 	snapshot scannermetadata.Snapshot
 	err      error
 }
@@ -73,6 +89,10 @@ func (p *catalogPublisher) startScannerMetadata(inspector scannermetadata.Inspec
 	ids = append([]string(nil), ids...)
 	jobs := make(chan string, len(ids))
 	results := make(chan metadataResult, len(ids))
+	builders := make(map[string]*scannerMetadataBuilder, len(ids))
+	for _, id := range ids {
+		builders[id] = &scannerMetadataBuilder{inspector: inspector, ids: []string{id}}
+	}
 	workers := min(4, len(ids))
 	p.wg.Add(workers + 1)
 	for range workers {
@@ -86,13 +106,13 @@ func (p *catalogPublisher) startScannerMetadata(inspector scannermetadata.Inspec
 					if p.ctx.Err() != nil {
 						return
 					}
-					builder := scannerMetadataBuilder{inspector: inspector, ids: []string{id}}
+					builder := builders[id]
 					snapshot, err := builder.catalog(p.ctx)
 					// Retain failures discovered during shutdown before reporting completion.
 					if errors.Is(err, scanner.ErrUnresolved) {
 						p.fail(errors.Join(ErrReconciliation, err))
 					}
-					results <- metadataResult{id, snapshot, err}
+					results <- metadataResult{id: id, complete: builder.cursor == 0, snapshot: snapshot, err: err}
 				}
 			}
 		}()
@@ -142,7 +162,10 @@ func (p *catalogPublisher) startScannerMetadata(inspector scannermetadata.Inspec
 					if len(result.snapshot.Devices) == 1 {
 						cached[result.id] = result.snapshot.Devices[0]
 					}
-					next[result.id] = now.Add(time.Minute)
+					next[result.id] = now
+					if result.complete {
+						next[result.id] = now.Add(time.Minute)
+					}
 				}
 				if err := publish(now); err != nil {
 					if p.ctx.Err() == nil {
