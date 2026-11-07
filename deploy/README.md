@@ -1,6 +1,11 @@
 # Deployment design examples
 
-These are G3 configuration/rendering examples, not a released image or successful deployment. The `scanner serve` / `scanner worker` roles, health endpoints and environment loader are implemented locally; an unreleased image packaging candidate is under validation. See [packaging scope](../docs/design/image-packaging.md). Do not point the examples at the old scanservjs output volume.
+These are configuration/rendering examples. The `scanner serve` /
+`scanner worker` roles, health endpoints and environment loader are implemented,
+and `v0.1.4` is a formally released image pair. Applying an example is still an
+operator deployment, not automatic migration. See [packaging scope](../docs/design/image-packaging.md)
+and [release channels](../docs/design/release-channels.md). Do not point the
+examples at the old scanservjs output volume.
 
 Compose requires an explicitly selected released image digest, public origin, scanner registry and two pre-created directories. It binds the API to loopback for a separate HTTPS reverse proxy and never automatically creates missing bind directories. Named LLM credentials must be passed only to the worker; the API OIDC secret is not forwarded to it.
 

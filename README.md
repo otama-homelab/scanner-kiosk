@@ -13,9 +13,10 @@ API container. The lightweight LLM OCR plugin is compiled into the core and
 connects directly to LiteLLM or a configured Chat Completions endpoint. No local
 model, inference SDK or extra LLM adapter service is required.
 
-**Status:** unreleased. Automated and device checks cover implemented workflows;
-real provider/mobile acceptance, final distribution review and production cutover
-remain incomplete. This repository does not imply a production-ready release.
+**Status:** `v0.1.4` is the current stable release. Automated checks, the G5
+acceptance matrix, formal release assets, public source materials and anonymous
+image starts have been verified. Household cutover/rollback observation and
+retirement of the legacy runtime remain operator-specific migration work.
 
 ## Run and configure
 
@@ -56,18 +57,28 @@ container; LLM OCR sends them directly to its configured provider. Credentials
 stay on the worker and the selected OCR service, outside the browser/API role. Paperless
 delivery is deferred; the initial workflow ends at downloading the output.
 
-## Development container images
+## Container images and releases
 
-Successful main pushes publish two repository-linked image packages, one per responsibility:
+Successful main pushes publish two repository-linked development image packages,
+one per responsibility. Stable SemVer tags also publish immutable version tags,
+public GitHub Release assets and `latest`:
 
-| Image | Package | Immutable tag | Development tag |
+| Image | Package | Stable/release tag | Development tags |
 | --- | --- | --- | --- |
-| Core (`serve` / `worker`) | `ghcr.io/otama-homelab/scanner-kiosk` | `sha-<full-source-commit>` | `preview` |
-| Optional Tesseract API | `ghcr.io/otama-homelab/scanner-kiosk-tesseract` | `sha-<full-source-commit>` | `preview` |
+| Core (`serve` / `worker`) | `ghcr.io/otama-homelab/scanner-kiosk` | `v0.1.4` / `latest` | `sha-<full-source-commit>` / `preview` |
+| Optional Tesseract API | `ghcr.io/otama-homelab/scanner-kiosk-tesseract` | `v0.1.4` / `latest` | `sha-<full-source-commit>` / `preview` |
 
 The image is linked to this repository through its OCI source label and the
-repository's Actions token. These are development previews, not G5-accepted
-production releases. They never move `:latest` or open the version-tag release gate.
+repository's Actions token. Preview aliases are development inputs; stable tags
+only advance after the release gates pass. The formal `v0.1.4` images resolve to:
+
+- Core: `ghcr.io/otama-homelab/scanner-kiosk@sha256:328ca1c8e4c9869ee4a463893e1f4a37c4d40e3f67206a416e62e5a65e6ffcb7`
+- Tesseract API: `ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:dd245059ef1092390dca592822dbda4540ffe68414dddc3e7b7112058c965a10`
+
+The [v0.1.4 release](https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.1.4)
+contains the image archives, corresponding source, notices, SBOMs, raw security
+reports and `SHA256SUMS` tied to source
+`c2c5435a672957c90303cda5c88f1b53a34f6b1d`.
 
 ```sh
 docker pull ghcr.io/otama-homelab/scanner-kiosk:preview
@@ -82,15 +93,16 @@ makes it public in each package’s settings. The workflow does not change that 
 policy or billing settings. Production deployments should pin the verified image
 digest, rather than a moving preview tag.
 
-Before pushing the image, the publisher retains corresponding source, third-party
-notices, inventories and raw inspection reports in a source-only prerelease named
-`preview-source-<full-source-commit>`. Image tarballs remain CI artifacts until
-formal release acceptance. The compatibility onefile stays internal in every
-channel. The manifest and checksums cover the complete CI candidate, including
-omitted artifacts; verify the entries for the files you download. Native bytes must match the reviewed
-manifest and every advisory finding must match the retained review; new findings
-or changed native payloads stop automatic publication. Raw advisory failures are
-retained, not relabeled as a passed production security review.
+Before pushing a preview image, the publisher retains corresponding source,
+third-party notices, inventories and raw inspection reports in a source-only
+prerelease named `preview-source-<full-source-commit>`. Formal tags publish the
+same material with both image archives. The compatibility onefile stays internal
+in every channel. The manifest and checksums cover the complete CI candidate,
+including omitted artifacts; verify the entries for the files you download.
+Native bytes must match the reviewed manifest and every advisory finding must
+match the retained review; new findings or changed native payloads stop
+automatic publication. Raw advisory failures are retained, not relabeled as a
+passed production security review.
 
 ## Develop
 

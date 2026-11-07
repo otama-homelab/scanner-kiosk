@@ -335,3 +335,28 @@ validated inside the CI candidate but is never a user-facing download, including
 on formal tags. The sealed candidate manifest and SHA256SUMS still describe all
 CI inputs; check the entries corresponding to downloaded files. Publication
 continues to verify every internal candidate file before any transfer.
+
+## v0.1.4 formal release
+
+`v0.1.4` is the first stable tagged release. Source
+`c2c5435a672957c90303cda5c88f1b53a34f6b1d` passed the
+[tag run](https://github.com/otama-homelab/scanner-kiosk/actions/runs/42384930946)
+and was published by the protected serialized writer as
+[GitHub Release v0.1.4](https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.1.4).
+The public release has48 assets whose digests match the sealed
+`SHA256SUMS`; the internal compatibility onefile is intentionally excluded.
+The source tag, README and source archives are anonymously accessible.
+
+The two stable image manifests are:
+
+| Image | Tag | Manifest digest | Config digest |
+| --- | --- | --- | --- |
+| Core | `v0.1.4` / `latest` | `sha256:328ca1c8e4c9869ee4a463893e1f4a37c4d40e3f67206a416e62e5a65e6ffcb7` | `sha256:8792e172663a51023d714fda4518114ba2fc390d023c3f3163faf5e0514c6150` |
+| Tesseract API | `v0.1.4` / `latest` | `sha256:dd245059ef1092390dca592822dbda4540ffe68414dddc3e7b7112058c965a10` | `sha256:524dbec37e77266d47f59cfb90ca4b3ba6c5e65d4895f9c1a603a6e7e983b5e7` |
+
+Both manifests and their version runs were fetched anonymously and started as
+bounded nonroot Pods without image pull credentials. The core binary reported
+`v0.1.4`, the exact source revision and the expected native manifest identity.
+This closes formal distribution verification only; deployment cutover,
+household-opportunity observation and legacy retirement remain separate
+operational gates.
