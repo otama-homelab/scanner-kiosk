@@ -1,0 +1,53 @@
+{
+  "component": "Liberation Sans",
+  "version": "1.07.4",
+  "license": "GPL-2.0-only with the Liberation font exception",
+  "modified": false,
+  "archive": {
+    "file": "source.tar.gz",
+    "bytes": 2937949,
+    "sha256": "ad98b7498dc2992f7f0868f79b65ce4a720a3acdb63ab3f1f1cb6881117a5406",
+    "contents": "Unmodified upstream SFD source, build scripts, Makefile, authors and licenses"
+  },
+  "retrieved_from": "https://mirrors.edge.kernel.org/sourceware/cygwin/noarch/release/liberation-fonts/liberation-fonts-1.07.4-1-src.tar.xz",
+  "container_sha256": "96938a0437a73e215898e0475a0c00ea9e251547f7e69cd76012163bb16c7375",
+  "font_identity_authority": "https://github.com/mozilla/pdf.js/blob/0a4153349dc473ba950fc17941c5ca7eda43c1de/external/standard_fonts/README.md",
+  "runtime_fonts": {
+    "LiberationSans-Regular.ttf": {
+      "bytes": 139512,
+      "sha256": "f8ace1f892b2bd9dc1792ba7f097fa7588f84fed48321480e04de5390828221f",
+      "version_records": [
+        "Version 1.07.4",
+        "Version 1.07.4"
+      ],
+      "preferred_source": "src/LiberationSans-Regular.sfd"
+    },
+    "LiberationSans-Bold.ttf": {
+      "bytes": 137052,
+      "sha256": "361c61b82d575c5c35fd9157fda8b0194bcfcd0d88ea8521a4fb5dd53d33dddc",
+      "version_records": [
+        "Version 1.07.4",
+        "Version 1.07.4"
+      ],
+      "preferred_source": "src/LiberationSans-Bold.sfd"
+    },
+    "LiberationSans-Italic.ttf": {
+      "bytes": 162036,
+      "sha256": "832b4406dbef23628800d3aaad21048534ac84d7e3ad955be83b8172ed8ef512",
+      "version_records": [
+        "Version 1.07.4",
+        "Version 1.07.4"
+      ],
+      "preferred_source": "src/LiberationSans-Italic.sfd"
+    },
+    "LiberationSans-BoldItalic.ttf": {
+      "bytes": 135124,
+      "sha256": "a224075ac17495ad0a3af3bc0a419ac0704a8b3fd1095456201fb9b095fc281d",
+      "version_records": [
+        "Version 1.07.4",
+        "Version 1.07.4"
+      ],
+      "preferred_source": "src/LiberationSans-BoldItalic.sfd"
+    }
+  }
+}
