@@ -437,7 +437,7 @@
     },
     "usr/share/scanner-kiosk/notices/go/index.json": {
       "mode": 292,
-      "sha256": "222b06fced05ea4ae4a7139f5bc49cb7cedb34ed38246cba8e2224324348ffc1",
+      "sha256": "ef7d957e9a6f8651dbff17b34d7b2d1a44e8bd786efd59ad5c7cafd4f55a3eb3",
       "size": 16943
     },
     "usr/share/scanner-kiosk/notices/go/modules/090a936f6b69a25a/AUTHORS": {
@@ -499,16 +499,6 @@
       "mode": 292,
       "sha256": "dd26a7abddd02e2d0aba97805b31f248ef7835d9e10da289b22e3b8ab78b324d",
       "size": 1479
-    },
-    "usr/share/scanner-kiosk/notices/go/modules/15c710684eedf3d4/LICENSE": {
-      "mode": 292,
-      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
-      "size": 1453
-    },
-    "usr/share/scanner-kiosk/notices/go/modules/15c710684eedf3d4/PATENTS": {
-      "mode": 292,
-      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
-      "size": 1303
     },
     "usr/share/scanner-kiosk/notices/go/modules/1e7b1aaf85f9116b/LICENSE": {
       "mode": 292,
@@ -594,6 +584,16 @@
       "mode": 292,
       "sha256": "dccd26c6fd9c296daf44d0bc56bb4efc566edd4880381b3331c9a63e6e471338",
       "size": 126
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/90f4b461a2365224/LICENSE": {
+      "mode": 292,
+      "sha256": "911f8f5782931320f5b8d1160a76365b83aea6447ee6c04fa6d5591467db9dad",
+      "size": 1453
+    },
+    "usr/share/scanner-kiosk/notices/go/modules/90f4b461a2365224/PATENTS": {
+      "mode": 292,
+      "sha256": "96f408bfae65bf137fc2525d3ecb030271c50c1e90799f87abf8846d8dd505cc",
+      "size": 1303
     },
     "usr/share/scanner-kiosk/notices/go/modules/baa659b49de75956/AUTHORS": {
       "mode": 292,

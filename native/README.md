@@ -584,7 +584,7 @@ approval. Source/security freeze, publisher and operator acceptance remain open.
 
 ## 2026-11-07 discovery dependency notice refresh
 
-The bounded DNS-SD implementation adds `golang.org/x/net v0.60.0`. Its exact
+The bounded DNS-SD implementation adds `golang.org/x/net v0.62.0`. Its exact
 module/archive checksums and source LICENSE/PATENTS are retained in the Go notice
 index. The native inventory grows from295 to297 entries only through these two
 read-only notice files and the refreshed index; every existing non-notice native
