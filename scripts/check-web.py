@@ -233,6 +233,10 @@ print(json.dumps(checks))
   with sqlite3.connect(work/'simple-documents/documents.sqlite3') as db:
    db.execute('INSERT INTO owners(id) VALUES(?)',(owner,))
    db.execute("INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES('document_simple_001',?,'document','review',?,?)",(owner,now,now+3600000))
+   original=(work/'documents/original.png').read_bytes()
+   source=work/'simple-documents/original.png';source.write_bytes(original);source.chmod(0o600)
+   db.execute("INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('original_simple_001','document_simple_001',?,'original','ready','original.png','image/png',?,?,1,?)",(owner,len(original),hashlib.sha256(original).digest(),now))
+   db.execute("INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,pixel_width,pixel_height) VALUES('page_simple_00001','document_simple_001',?,0,'original_simple_001','a4','color',300,32,16)",(owner,))
   with socket.socket() as sock:sock.bind(('127.0.0.1',0));backend=sock.getsockname()[1]
   simple_env['SCANNER_LISTEN_ADDR']='127.0.0.1:'+str(backend)
   simple_process=subprocess.Popen([str(binary),'serve'],env=simple_env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)

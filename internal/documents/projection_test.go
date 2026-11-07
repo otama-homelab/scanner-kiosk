@@ -36,6 +36,7 @@ func TestHistoryPaginationOwnerExpiryAndDisable(t *testing.T) {
 	f := setup(t)
 	ctx := context.Background()
 	must(t, f.docs, `INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES('document_alice_002',?,'photo','review',1000,10000)`, alice)
+	seedPage(t, f, "document_alice_002", alice, "original_history_page2", "page_history_second02")
 	values, next, err := f.store.ReadHistory(ctx, alice, 1, nil)
 	if err != nil || len(values) != 1 || values[0].ID != docA || next == nil {
 		t.Fatal("first history page", values, next, err)

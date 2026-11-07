@@ -221,3 +221,46 @@ func TestAutomaticCleanupDiscardsFailedEmptyDocumentsButKeepsPages(t *testing.T)
 		t.Fatal("duplicate cleanup", count, err)
 	}
 }
+
+func TestAutomaticCleanupDiscardsIdleEmptyDocumentsButKeepsActiveAcquisition(t *testing.T) {
+	f := thumbnailFixture(t)
+	ctx := context.Background()
+	for _, state := range []string{"review", "ready"} {
+		document := "document_empty_" + state
+		must(t, f.docs, "INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES(?,?,'document',?,1000,10000)", document, alice, state)
+	}
+	const active = "document_empty_active_01"
+	must(t, f.docs, "INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES(?,?,'document','review',1000,10000)", active, alice)
+	must(t, f.docs, "INSERT INTO jobs(id,document_id,owner_id,kind,state,input_revision,configuration_json,created_at_ms,deadline_at_ms) VALUES('job_empty_active_001',?,?,'scan','queued',1,'{}',1000,10000)", active, alice)
+	listed, err := f.store.List(ctx, alice, 20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range listed {
+		if item.ID == "document_empty_review" || item.ID == "document_empty_ready" {
+			t.Fatal("idle empty document shown in legacy list")
+		}
+	}
+
+	history, _, err := f.store.ReadHistory(ctx, alice, 20, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	seenActive := false
+	for _, item := range history {
+		if item.ID == "document_empty_review" || item.ID == "document_empty_ready" {
+			t.Fatal("idle empty document shown in history")
+		}
+		seenActive = seenActive || item.ID == active
+	}
+	if !seenActive {
+		t.Fatal("active acquisition disappeared")
+	}
+	count, err := f.store.QueueExpiredCleanup(ctx, 20, time.Hour)
+	if err != nil || count != 2 {
+		t.Fatal("idle empty documents not discarded", count, err)
+	}
+	if scalar(t, f.docs, "SELECT count(*) FROM jobs WHERE document_id=? AND kind='cleanup'", active) != 0 {
+		t.Fatal("active acquisition discarded")
+	}
+}

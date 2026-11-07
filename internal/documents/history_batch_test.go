@@ -16,6 +16,7 @@ func TestHistoryProjectionQueryCountIsIndependentOfDocumentCount(t *testing.T) {
 			f := setup(t)
 			for i := 1; i < count; i++ {
 				must(t, f.docs, "INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES(?,?,'photo','review',1000,10000)", fmt.Sprintf("document_history_%04d", i), alice)
+				seedPage(t, f, fmt.Sprintf("document_history_%04d", i), alice, fmt.Sprintf("original_history_%04d", i), fmt.Sprintf("page_history_%04d", i))
 			}
 			var calls atomic.Int64
 			name := fmt.Sprintf("history_projection_count_%d", statusDriverSequence.Add(1))

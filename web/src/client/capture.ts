@@ -3,7 +3,7 @@ type Capture={size:string;color:string;dpi:number};
 type Device={id:string;name:string;state:'idle'|'busy'|'unknown'|'unavailable';capture_options:Capture[];default_capture:Capture|null};
 export type CaptureKey='insertScan'|'replaceScan'|'requestExpired'|'reloadView'|'scanner'|'type'|'document'|'photo'|'chooseScanner'|'changeScanner'|'searchScanners'|'noScanners'|'noMatches'|'scannerIdle'|'scannerBusy'|'scannerUnknown'|'unavailable'|'scanSettings'|'size'|'color'|'gray'|'dpi'|'advanced'|'format'|'outputFormat'|'jpeg'|'png'|'close'|'apply'|'scan'|'scanNext'|'loading'|'retry'|'history'|'settingsChanged'|'scanRejected'|'scanUncertain'|'scanning'|'a4'|'a5'|'a6'|'letter'|'photo10x15';
 let previousCapture:{scannerID:string;capture:Capture}|null=null;
-type Options={initialCapture?:Capture;submitLabel?:'insertScan'|'replaceScan';t:(key:CaptureKey)=>string;current:()=>boolean;read:(signal:AbortSignal)=>Promise<unknown>;submit:(body:unknown,key:string,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;history:()=>void;rejected:(error:unknown)=>boolean;expired:(error:unknown)=>boolean;reload:()=>void;purpose?:'document'|'photo';photoFormat?:'jpeg'|'png'};
+type Options={initialCapture?:Capture;submitLabel?:'insertScan'|'replaceScan'|'scan';t:(key:CaptureKey)=>string;current:()=>boolean;read:(signal:AbortSignal)=>Promise<unknown>;submit:(body:unknown,key:string,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;history:()=>void;rejected:(error:unknown)=>boolean;expired:(error:unknown)=>boolean;reload:()=>void;purpose?:'document'|'photo';photoFormat?:'jpeg'|'png'};
 const same=(a:Capture|null,b:Capture|null)=>!!a&&!!b&&a.size===b.size&&a.color===b.color&&a.dpi===b.dpi;
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
 function inventory(raw:any):Device[]{
@@ -31,7 +31,7 @@ export function captureControls(options:Options){
  const history=action('history',options.history);history.hidden=true;
  const start=action(options.submitLabel||(options.purpose?'scanNext':'scan'),()=>void submit());start.className='primary';
  const reload=action('reloadView',options.reload);reload.hidden=true;settings.append(purposes,summary,edit,notice,start,history,reload);element.append(devicePanel,settings);
- let devices:Device[]=[],selected='',capture:Capture|null=null,format=options.photoFormat||'jpeg',loading=true,available=false,pending=false,uncertain=false,expired=false,disposed=false,manualRefresh=false;
+ let devices:Device[]=[],selected='',capture:Capture|null=null,format=options.photoFormat||'jpeg',loading=true,loaded=false,available=false,pending=false,uncertain=false,expired=false,disposed=false,manualRefresh=false;
  let timer:ReturnType<typeof setTimeout>|undefined,readController:AbortController|null=null,submitController:AbortController|null=null,modal:HTMLDialogElement|null=null;
  let fingerprint='',key='';
  const setText=(e:HTMLElement,value:string)=>{if(e.textContent!==value)e.textContent=value};
@@ -40,7 +40,7 @@ export function captureControls(options:Options){
  const statusKey=(value:Device['state']):CaptureKey=>value==='idle'?'scannerIdle':value==='busy'?'scannerBusy':value==='unavailable'?'unavailable':'scannerUnknown';
  function update(){
   const current=device();setText(identity,current?.name||t(devices.length?'chooseScanner':'noScanners'));setText(state,t(loading?'loading':!available?'unavailable':current?statusKey(current.state):'scannerUnknown'));
-  choose.textContent=t(current?'changeScanner':'chooseScanner');choose.hidden=devices.length===1;choose.disabled=pending||!devices.length;refresh.disabled=pending||loading||manualRefresh;
+  choose.textContent=t(current?'changeScanner':'chooseScanner');choose.hidden=devices.length<2;choose.disabled=pending||!devices.length;refresh.disabled=pending||!loaded||manualRefresh;refresh.hidden=!loaded||available&&devices.length>0&&(!current||current.state==='idle'||current.state==='busy');
   for(let i=0;i<purposeButtons.length;i++){purposeButtons[i].setAttribute('aria-pressed',String(purpose===(i===0?'document':'photo')));purposeButtons[i].disabled=pending||!!options.purpose}
   summary.replaceChildren();for(const [label,value] of [['size',capture?t(capture.size as CaptureKey):'—'],['color',capture?t(capture.color as CaptureKey):'—'],['dpi',capture?String(capture.dpi):'—'],['outputFormat',purpose==='photo'?t(format as CaptureKey):'PDF']] as const){const field=node('div');field.append(node('dt',t(label)),node('dd',value));summary.append(field)}
   edit.disabled=pending||!current?.capture_options.length;start.disabled=pending||uncertain||expired||loading||!available||current?.state!=='idle'||!valid();setText(start,t(pending?'scanning':options.submitLabel||(options.purpose?'scanNext':'scan')));
@@ -52,7 +52,7 @@ export function captureControls(options:Options){
   const controller=new AbortController();readController=controller;manualRefresh=manual;const timeout=setTimeout(()=>controller.abort(),10000);loading=!available;update();
   try{const result=inventory(await options.read(controller.signal));if(!active()||controller.signal.aborted)return;devices=result;available=true;if(!selected&&devices.length===1)select(devices[0].id);if(selected&&!capture&&device()?.capture_options.length)capture={...(device()!.default_capture||device()!.capture_options[0])};if(!uncertain&&selected&&!valid()&&capture)notice.textContent=t('settingsChanged')}
   catch{if(active()&&readController===controller&&!pending&&!document.hidden)available=false}
-  finally{clearTimeout(timeout);if(active()&&readController===controller){loading=false;manualRefresh=false;readController=null;update();if(timer)clearTimeout(timer);timer=setTimeout(()=>void read(),5000)}}
+  finally{clearTimeout(timeout);if(active()&&readController===controller){loaded=true;loading=false;manualRefresh=false;readController=null;update();if(timer)clearTimeout(timer);timer=setTimeout(()=>void read(),5000)}}
  }
  function dialog(title:CaptureKey){
   if(modal||pending)return null;const d=document.createElement('dialog');d.className='capture-dialog';const h=node('h2',t(title));h.id='capture-dialog-title';d.setAttribute('aria-labelledby',h.id);const body=node('div');body.className='capture-dialog-body';const actions=node('div');actions.className='capture-dialog-actions';actions.append(action('close',()=>d.close()));d.append(h,body,actions);element.append(d);modal=d;

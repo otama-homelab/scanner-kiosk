@@ -29,10 +29,12 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   await page.evaluate(()=>window.__refreshObserver.disconnect());checks.push('Empty scanner background polling preserves button state');
   scanners=[{id:'scanner_home_00001',name:'Office',state:'idle',capture_options:[capture],default_capture:capture}];
   await page.clock.fastForward(5000);const scan=page.getByRole('button',{name:'Scan',exact:true});await scan.waitFor();await page.waitForFunction(()=>!document.querySelector('.capture-settings>.primary')?.disabled);
+  assert.equal(await refresh.isVisible(),false,'healthy scanner has no retry control');scanners=scanners.map(device=>({...device,state:'unknown'}));await page.clock.fastForward(5000);await refresh.waitFor();
   hold=true;waiting=new Promise(resolve=>entered=resolve);await refresh.click();await waiting;assert(await refresh.isDisabled(),'explicit refresh shows pending state');
   const before=reads;await refresh.evaluate(button=>button.click());assert.equal(reads,before,'duplicate refresh must not start another request');
   fail=true;release();hold=false;await page.getByText('Scanning unavailable',{exact:true}).waitFor();assert(await scan.isDisabled(),'failed refresh must fail closed');
-  fail=false;await refresh.click();await page.waitForFunction(()=>!document.querySelector('.capture-settings>.primary')?.disabled);checks.push('Explicit refresh is bounded, failure blocks scan and successful retry recovers');
+  hold=true;waiting=new Promise(resolve=>entered=resolve);await page.clock.fastForward(5000);await waiting;assert(await refresh.isVisible()&&await refresh.isEnabled(),'unavailable background recovery keeps retry visible and enabled');const failedPoll=page.waitForResponse('**/api/scanners');release();hold=false;await failedPoll;
+  fail=false;scanners=scanners.map(device=>({...device,state:'idle'}));await refresh.click();await page.waitForFunction(()=>!document.querySelector('.capture-settings>.primary')?.disabled);checks.push('Explicit refresh is bounded, failure blocks scan and successful retry recovers');
   for(const locale of ['en','ja'])for(const width of [320,768,1440]){
    await page.setViewportSize({width,height:900});await page.selectOption('#locale',locale);await page.locator('main[aria-busy=false] h1').waitFor();
    const entry=page.getByRole('button',{name:locale==='en'?'Import PDF':'PDFを取り込む',exact:true});

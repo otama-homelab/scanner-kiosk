@@ -25,12 +25,13 @@ function fixturePDF(){
   await page.locator('h1[data-document-title]').waitFor();
   await page.getByRole('button',{name:'Try again',exact:true}).click();await page.waitForFunction(()=>[...document.querySelectorAll('.pdf-page canvas')].every(c=>!c.hidden&&c.width>0));
   assert.equal(await page.locator('.preview-grid canvas').count(),2,'PDF pages preview inline in the overview');
-  assert.equal(await page.locator('.page-more').count(),0);assert.equal(await page.getByRole('button',{name:'Replace with scan',exact:true}).count(),0);assert.equal(await page.getByRole('button',{name:'Insert scan before',exact:true}).count(),0);assert.equal(await page.locator('.page-actions button').count(),8,'four simple actions per page');
+  assert.equal(await page.locator('.page-more').count(),0);assert.equal(await page.getByRole('button',{name:'Replace with scan',exact:true}).count(),0);assert.equal(await page.getByRole('button',{name:'Insert scan before',exact:true}).count(),0);assert.equal(await page.locator('.page-actions button').count(),8,'four simple actions per page');const toolbarBox=await page.locator('.document-toolbar').boundingBox(),gridBox=await page.locator('.preview-grid').boundingBox();assert(gridBox.y>=toolbarBox.y+toolbarBox.height+20,'page blocks stay clear of the divider');
   assert.equal(await page.locator('.document-header button').count(),0,'document navigation uses the existing History header');
   const menu=page.locator('.document-more');await menu.locator('summary').click();assert(await menu.evaluate(e=>e.open));await menu.locator('.document-more-actions').click({position:{x:2,y:2}});assert(await menu.evaluate(e=>e.open),'inside menu clicks do not close it');await page.locator('h1[data-document-title]').click();assert(!(await menu.evaluate(e=>e.open)),'outside tap closes options');await menu.locator('summary').click();await page.keyboard.press('Escape');assert(!(await menu.evaluate(e=>e.open)));assert.equal(await page.evaluate(()=>document.activeElement.tagName),'SUMMARY');
   await menu.locator('summary').click();await page.getByRole('button',{name:'Output settings',exact:true}).click();await page.getByRole('dialog').waitFor();assert(!(await menu.evaluate(e=>e.open)),'selecting an option closes the menu');await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Save PDF',exact:true}).click();
   await page.getByText('Preparing download…',{exact:true}).waitFor();
+  const gauge=page.getByRole('progressbar');await gauge.waitFor();assert.equal(await gauge.getAttribute('value'),null);assert.equal(await gauge.getAttribute('aria-labelledby'),'document-progress');
   assert.ok(page.url().endsWith('/document/'+id),'saving stays with the preview');assert(await page.getByRole('button',{name:'Save PDF',exact:true}).isDisabled());
   assert.equal(await page.locator('.preview-grid canvas').count(),2);
   assert.equal(await page.getByText('Queued',{exact:true}).count(),0);
@@ -39,22 +40,40 @@ function fixturePDF(){
   const download=page.waitForEvent('download');doc.active_job_id=null;doc.output={revision:doc.revision};doc.state='ready';state='succeeded';
   await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,value:false});Object.defineProperty(document,'visibilityState',{configurable:true,value:'visible'});document.dispatchEvent(new Event('visibilitychange'))});
   assert.equal((await download).suggestedFilename(),'scan.pdf','one save operation prepares and downloads');
-  await page.getByRole('link',{name:'Save PDF',exact:true}).waitFor();
+  await page.getByRole('link',{name:'Save PDF',exact:true}).waitFor();assert.equal(await page.getByRole('progressbar').count(),0,'completed jobs remove the gauge');
   const second=page.waitForEvent('download');await page.getByRole('link',{name:'Save PDF',exact:true}).click();await second;assert.equal(renders.length,1,'fresh output downloads without another render');
   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/history');await page.getByRole('heading',{name:'History',exact:true}).waitFor();
   await page.locator('.document-row canvas').waitFor().catch(async error=>{console.error(JSON.stringify({stage:'history thumbnail',url:page.url(),body:await page.locator('body').innerText(),previews:await page.locator('.pdf-page').evaluateAll(elements=>elements.map(e=>({status:e.textContent,canvasHidden:e.querySelector('canvas')?.hidden,bounds:e.getBoundingClientRect().toJSON()})))}));throw error});await page.waitForFunction(()=>{const c=document.querySelector('.document-row canvas');return c&&!c.hidden&&c.width>0});assert((await page.locator('.history-thumb').boundingBox()).height<=112);assert((await page.locator('.history-thumb canvas').boundingBox()).height<=112,'the complete PDF preview fits its thumbnail');assert.equal(await page.locator('.document-row .document-more').count(),0);assert((await page.locator('.history-title').innerText()).includes('2026'));await page.getByRole('button',{name:'Grid',exact:true}).click();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'grid');await page.reload();await page.getByRole('heading',{name:'History',exact:true}).waitFor();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'grid');await page.getByRole('button',{name:'List',exact:true}).click();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'list');
   await page.waitForFunction(()=>{const c=document.querySelector('.document-row canvas');return c&&!c.hidden&&c.width>0});
+  doc.active_job_id=jobID;state='running';await page.reload();await page.getByRole('heading',{name:'History',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'View processing status',exact:true}).count(),0);await page.getByRole('link',{name:'View processing status',exact:true}).waitFor();await page.getByRole('progressbar').waitFor();
   for(const layout of ['grid','list'])for(const width of [320,390,1440]){
    await page.setViewportSize({width,height:844});await page.getByRole('button',{name:layout==='grid'?'Grid':'List',exact:true}).click();
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'history does not overflow');
    if(process.env.SCANNER_TEST_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOT.replace('.png',`-history-${layout}-${width}.png`),fullPage:true});
   }
+  doc.active_job_id=null;state='succeeded';
   for(const locale of ['en','ja'])for(const theme of ['light','dark'])for(const width of [320,390,1440]){
-   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);await page.selectOption('#locale',locale);await page.locator('h1[data-document-title]').waitFor();
+   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);await page.selectOption('#locale',locale);await page.locator('h1[data-document-title]').waitFor();await page.waitForFunction(()=>{const canvases=[...document.querySelectorAll('.preview-grid canvas')];return canvases.length===2&&canvases.every(canvas=>!canvas.hidden&&canvas.width>0)});
    await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);await page.setViewportSize({width,height:844});
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');
    if(width<=600){const cards=await page.locator('.preview-grid>.preview-card').all();const a=await cards[0].boundingBox(),b=await cards[1].boundingBox();assert(Math.abs(a.y-b.y)<1&&b.x>a.x,'phone overview places pages side by side');assert((await page.locator('.preview-grid canvas').first().boundingBox()).height<=190);for(const button of await page.locator('.page-actions button').all()){const box=await button.boundingBox();assert(box.width>=44&&box.height>=44,'page icons keep touch targets');}}
    if(process.env.SCANNER_TEST_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOT.replace('.png',`-${locale}-${theme}-${width}.png`),fullPage:true});
+  }
+  await page.selectOption('#locale','en');
+  let deleted=false;const deletes=[];
+  await page.route('**/api/documents/'+id,route=>{if(route.request().method()!=='DELETE')return reply(route,doc);deletes.push(route.request().headers());deleted=true;return reply(route,{id:'job_cleanup_editor_01',document_id:id,kind:'cleanup',state:'queued'},202)});
+  await page.route('**/api/documents?*',route=>reply(route,{items:deleted?[]:[{...doc,page_count:doc.pages.length}],next_cursor:null}));
+  await page.route('**/api/documents/'+id+'/pages/*/thumbnail',route=>route.fulfill({status:200,contentType:'image/png',body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aNFEAAAAASUVORK5CYII=','base64')}));
+  for(const purpose of ['photo','document']){
+   doc.purpose=purpose;doc.pages=[{...doc.pages[0],source_type:purpose==='photo'?'scan':'pdf'}];doc.active_job_id=null;doc.output=null;doc.state='review';deleted=false;
+   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);await page.locator('h1[data-document-title]').waitFor();
+   if(purpose==='photo'){assert.equal(await page.locator('.photo-review').count(),1);assert.equal(await page.locator('.page-actions button').count(),2);assert.equal(await page.locator('.page-number').count(),0);assert.equal(await page.getByRole('button',{name:'Scan next page',exact:true}).count(),0)}
+   if(process.env.SCANNER_TEST_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOT.replace('.png','-last-'+purpose+'.png'),fullPage:true});
+   const label=purpose==='photo'?'Delete photo':'Delete page';await page.locator('.page-actions').getByRole('button',{name:label,exact:true}).click();
+   await page.getByRole('dialog').getByRole('button',{name:'Cancel',exact:true}).click();assert.equal(deleted,false);
+   await page.locator('.page-actions').getByRole('button',{name:label,exact:true}).click();await page.getByRole('dialog').getByRole('button',{name:label,exact:true}).click();
+   await page.getByRole('heading',{name:'History',exact:true}).waitFor();assert.equal(await page.locator('.document-row').count(),0,'last image/page removes the document from History');
+   assert.equal(deletes.at(-1)['if-match'],'"2"');assert.match(deletes.at(-1)['idempotency-key'],/^rq1_/);
   }
   assert.deepEqual(errors,[]);assert.deepEqual(await page.evaluate(()=>window.__csp||[]),[]);console.log(JSON.stringify({passed:true,checks:['inline PDF overview and history, explicit preview error recovery','always visible page action icons and persisted history grid/list','single save intent, revision and idempotency guards','preview remains while processing; visibility resume observes the same job without reposting','automatic download and fresh-output reuse','EN/JA light/dark 320/390/1440']}));
  }finally{await context.close();await browser.close()}
