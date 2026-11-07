@@ -56,6 +56,16 @@ func TestAuthenticatedDocumentHTTPIsolationAndPagination(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+
+	if _, err := app.docs.Exec(`INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('original_http_0002','document_http_0002',?,'original','ready','http-page.png','image/png',20,zeroblob(32),1,?)`, owner, now); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := app.docs.Exec(`INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi) VALUES('page_http_0000002','document_http_0002',?,0,'original_http_0002','a4','color',300)`, owner); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := app.docs.Exec(`INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES('document_http_empty01',?,'document','review',?,?)`, owner, now, now+3600000); err != nil {
+		t.Fatal(err)
+	}
 	type history struct {
 		Items []documents.Projection `json:"items"`
 		Next  *string                `json:"next_cursor"`
