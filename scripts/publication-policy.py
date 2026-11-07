@@ -37,9 +37,10 @@ def _publication_plan(ref, identity, state, repository, *, development_preview=F
         raise ValueError('complete release, image and preview state is required')
     releases, images, previous = state['releases'], state['image_tags'], state['preview_source_sha']
     if (not isinstance(releases, list) or len(releases) > 512
-            or not isinstance(images, list) or len(images) > 512
-            or any(not isinstance(t, str) or not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', t) for t in images)
-            or len(set(images)) != len(images)):
+            or not isinstance(images, dict) or set(images) != {'core', 'tesseract'}
+            or any(not isinstance(tags, list) or len(tags) > 512
+                   or any(not isinstance(t, str) or not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', t) for t in tags)
+                   or len(set(tags)) != len(tags) for tags in images.values())):
         raise ValueError('invalid or oversized remote state')
     tags, stable = set(), []
     for release in releases:
@@ -61,18 +62,18 @@ def _publication_plan(ref, identity, state, repository, *, development_preview=F
     if previous is not None and (not isinstance(previous, str)
                                 or not re.fullmatch(r'(?:[0-9a-f]{40}|[0-9a-f]{64})', previous)):
         raise ValueError('invalid preview source identity')
-    if {'preview','tesseract-preview'} & set(images) and previous is None:
+    if any('preview' in tags for tags in images.values()) and previous is None:
         raise ValueError('existing preview alias requires its verified source identity')
-    if {'latest','tesseract-latest'} & set(images) and not stable:
+    if any('latest' in tags for tags in images.values()) and not stable:
         raise ValueError('existing latest alias has no qualified stable release')
     commit = identity['source_sha']
     preview = identity['channel'] == 'preview'
     release_tag = ('preview-source-' if development_preview else 'preview-')+commit if preview else identity['version']
     image_tag = 'sha-'+commit if preview else identity['version']
-    tesseract_image_tag='tesseract-'+image_tag
+    tesseract_image_tag=image_tag
     if not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}', tesseract_image_tag):
         raise ValueError('version exceeds registry tag constraints')
-    if release_tag in tags or image_tag in images or tesseract_image_tag in images:
+    if release_tag in tags or image_tag in images['core'] or tesseract_image_tag in images['tesseract']:
         raise ValueError('immutable version already exists; rerun must not overwrite it')
     aliases = []
     if preview:
@@ -174,7 +175,7 @@ def prepare_development_preview(candidate, ref, sha, event, repository=Path('.')
     require(seen == scopes and manifest['scans_completed'], 'incomplete preview scans')
     # The archive tool has no Git. The writer rechecks checkout/ancestry before any write.
     identity = {'channel': 'preview', 'version': 'preview-'+sha[:12], 'source_sha': sha, 'prerelease': True}
-    plan = _publication_plan(ref, identity, {'releases': [], 'image_tags': [], 'preview_source_sha': None},
+    plan = _publication_plan(ref, identity, {'releases': [], 'image_tags': {'core': [], 'tesseract': []}, 'preview_source_sha': None},
                              repository, development_preview=True)
     require(manifest['source_sha'] == plan['source_sha'] and manifest['version']['revision'] == plan['source_sha']
             and manifest['version']['version'] == plan['version'], 'preview source identity differs')

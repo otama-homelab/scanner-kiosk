@@ -136,7 +136,8 @@ worker and the selected service. A URL alone never enables document processing.
 ### Optional Tesseract container
 
 For Compose, select verified immutable digests for `SCANNER_IMAGE` (core) and
-`SCANNER_TESSERACT_IMAGE` (terminal variant from the same source). Put a random
+`SCANNER_TESSERACT_IMAGE` (`ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:…`,
+from the same source as the core image). Put a random
 32–256 byte `SCANNER_OCR_TESSERACT_API_KEY` in your private deployment env file
 (mode 0600); for example generate it with `openssl rand -hex 32`. Then use:
 

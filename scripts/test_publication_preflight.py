@@ -50,7 +50,7 @@ class PublicationPreflightTest(unittest.TestCase):
         self.approval_path.write_bytes(raw)
         return self.module.prepare_publication(self.candidate.output, self.approval_path,
             approval_hash or hashlib.sha256(raw).hexdigest(), 'refs/heads/main', self.git.sha,
-            event, {'releases': [], 'image_tags': [], 'preview_source_sha': None}, self.git.repo)
+            event, {'releases': [], 'image_tags': {'core': [], 'tesseract': []}, 'preview_source_sha': None}, self.git.repo)
 
     def test_preflight_returns_exact_upload_inventory_without_writes(self):
         before = (self.candidate.output/'manifest.json').read_bytes()

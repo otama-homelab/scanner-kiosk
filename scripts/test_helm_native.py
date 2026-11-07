@@ -33,6 +33,7 @@ class KubernetesNativeTests(unittest.TestCase):
         resources=list(yaml.safe_load_all(result.stdout))
         deployment=next(r for r in resources if r['kind']=='Deployment' and r['metadata']['name']=='scanner-kiosk-tesseract')
         pod=deployment['spec']['template']['spec'];container=pod['containers'][0]
+        self.assertEqual(container['image'],'ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:'+'2'*64)
         self.assertFalse(pod['automountServiceAccountToken'])
         self.assertTrue(container['securityContext']['readOnlyRootFilesystem'])
         self.assertEqual(container['securityContext']['capabilities']['drop'],['ALL'])

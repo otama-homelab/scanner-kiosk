@@ -3,7 +3,7 @@
 {{- if not (regexMatch "^sha256:[a-f0-9]{64}$" $digest) -}}
 {{- fail "tesseract.image.digest must be an immutable sha256 digest" -}}
 {{- end -}}
-{{- $repository := default .Values.image.repository .Values.tesseract.image.repository -}}
+{{- $repository := required "tesseract.image.repository is required" .Values.tesseract.image.repository -}}
 {{- $secret := required "tesseract.secretName is required" .Values.tesseract.secretName -}}
 apiVersion: apps/v1
 kind: Deployment

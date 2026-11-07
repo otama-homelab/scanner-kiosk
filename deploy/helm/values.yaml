@@ -13,8 +13,8 @@ workerSecretName: ""
 tesseract:
   enabled: false
   image:
-    # Empty repository uses the core image package; supply the terminal image digest.
-    repository: ""
+    # Independent OCR API image; pin its own verified digest.
+    repository: ghcr.io/otama-homelab/scanner-kiosk-tesseract
     digest: ""
   secretName: ""
   destination: Tesseract OCR service

@@ -24,6 +24,8 @@ class WritePublicationTest(unittest.TestCase):
         self.events, self.releases, self.tags = [], [], {}
         self.visibility, self.package_visibility = 'private', 'private'
         self.package_repository = 'otama-homelab/scanner-kiosk'
+        self.tesseract_package_visibility = None
+        self.tesseract_package_repository = None
         self.package_missing = False
         self.upload_failed, self.check_result = False, 'success'
         self.asset_mismatch, self.push_failed, self.source_removed = False, False, False
@@ -57,7 +59,9 @@ class WritePublicationTest(unittest.TestCase):
         if '/packages/container/' in path:
             if self.package_missing and not self.tags:
                 return None
-            return {'visibility': self.package_visibility, 'repository': {'full_name': self.package_repository}}
+            terminal=path.endswith('/scanner-kiosk-tesseract')
+            return {'visibility': (self.tesseract_package_visibility if terminal and self.tesseract_package_visibility is not None else self.package_visibility),
+                    'repository': {'full_name': (self.tesseract_package_repository if terminal and self.tesseract_package_repository is not None else self.package_repository)}}
         if '/releases?' in path:
             return [self.releases]
         if path.endswith('/releases') and body is not None:
@@ -76,8 +80,9 @@ class WritePublicationTest(unittest.TestCase):
             return release
         raise AssertionError(('unexpected API request', path, body))
 
-    def registry(self, tag, env):
-        return self.tags.get(tag)
+    def registry(self, tag, env, registry='ghcr.io/otama-homelab/scanner-kiosk'):
+        key=('tesseract-' if registry.endswith('-tesseract') else '')+tag
+        return self.tags.get(key)
 
     def command(self, args, env, input_data=None, timeout=60, allow_failure=False):
         if args[:2] == ['gh', 'release']:
@@ -85,7 +90,7 @@ class WritePublicationTest(unittest.TestCase):
             if self.upload_failed:
                 raise RuntimeError('fixture upload failed')
         elif args[:2] == ['docker', 'push']:
-            tag = args[-1].rsplit(':', 1)[1]
+            tag = ('tesseract-' if args[-1].split(':',1)[0].endswith('-tesseract') else '')+args[-1].rsplit(':', 1)[1]
             self.events.append('push-'+tag)
             if self.push_failed or tag==self.fail_tag:
                 raise RuntimeError('fixture registry push failed')
@@ -119,12 +124,35 @@ class WritePublicationTest(unittest.TestCase):
         self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
         self.env['SCANNER_PUBLISH_ENABLED'] = 'false'
 
+    def test_both_packages_are_checked_before_any_writes(self):
+        for field, value in [('tesseract_package_visibility', 'public'),
+                             ('tesseract_package_repository', 'another/repository')]:
+            with self.subTest(field=field):
+                setattr(self, field, value)
+                with self.assertRaises(ValueError):
+                    self.run_writer(apply=True)
+                self.assertEqual(self.events, [])
+                setattr(self, field, None)
+
+    def test_published_references_separate_core_and_ocr_images(self):
+        self.run_writer(apply=True)
+        for role, image_id in [('core', self.image_id), ('tesseract', self.tesseract_image_id)]:
+            registry = self.module.REGISTRIES[role]
+            self.assertEqual(self.local_tags[registry+':'+self.plan['image_tag']], image_id)
+            self.assertEqual(self.local_tags[registry+':preview'], image_id)
+
+    def test_runtime_images_have_separate_registry_packages(self):
+        self.assertEqual(self.module.REGISTRIES, {
+            'core': 'ghcr.io/otama-homelab/scanner-kiosk',
+            'tesseract': 'ghcr.io/otama-homelab/scanner-kiosk-tesseract'})
+        self.assertEqual(self.plan['image_tag'], self.plan['tesseract_image_tag'])
+
     def test_main_preview_keeps_sources_and_never_pushes_latest(self):
         self.development_preview()
         self.package_missing = True
         result = self.run_writer(apply=True)
         self.assertTrue(result['published'])
-        self.assertEqual(set(self.tags), {self.plan['image_tag'], self.plan['tesseract_image_tag'],'preview','tesseract-preview'})
+        self.assertEqual(set(self.tags), {self.plan['image_tag'], 'tesseract-'+self.plan['tesseract_image_tag'],'preview','tesseract-preview'})
         self.assertEqual(self.releases[0]['tag_name'], 'preview-source-'+self.sha)
         self.assertTrue(self.releases[0]['prerelease'])
         self.assertIn('G5 acceptance remains incomplete', self.releases[0]['body'])
@@ -181,7 +209,7 @@ class WritePublicationTest(unittest.TestCase):
         self.assertLess(self.events.index('upload-assets'), self.events.index('publish-release'))
         self.assertLess(self.events.index('publish-release'), self.events.index('push-'+self.plan['image_tag']))
         self.assertEqual(self.events[-2:], ['push-preview','push-tesseract-preview'])
-        self.assertLess(self.events.index('push-'+self.plan['tesseract_image_tag']),self.events.index('push-preview'))
+        self.assertLess(self.events.index('push-tesseract-'+self.plan['tesseract_image_tag']),self.events.index('push-preview'))
 
     def test_failed_upload_leaves_draft_and_no_image_or_alias(self):
         self.upload_failed = True
@@ -219,12 +247,12 @@ class WritePublicationTest(unittest.TestCase):
         self.assertEqual(self.events, [])
 
     def test_existing_terminal_version_is_not_overwritten(self):
-        self.tags[self.plan['tesseract_image_tag']]={'digest':self.tesseract_digest,'image_id':self.tesseract_image_id}
+        self.tags['tesseract-'+self.plan['tesseract_image_tag']]={'digest':self.tesseract_digest,'image_id':self.tesseract_image_id}
         with self.assertRaises(ValueError):self.run_writer(apply=True)
         self.assertEqual(self.events,[])
 
     def test_terminal_push_failure_keeps_sources_and_moves_neither_alias(self):
-        self.fail_tag=self.plan['tesseract_image_tag']
+        self.fail_tag='tesseract-'+self.plan['tesseract_image_tag']
         with self.assertRaises(RuntimeError):self.run_writer(apply=True)
         self.assertFalse(self.releases[0]['draft'])
         self.assertIn(self.plan['image_tag'],self.tags)
@@ -328,7 +356,7 @@ class WritePublicationTest(unittest.TestCase):
         self.f.approval_path.write_bytes(raw)
         self.plan = self.f.module.prepare_publication(self.candidate, self.f.approval_path,
             hashlib.sha256(raw).hexdigest(), self.ref, self.sha, 'push',
-            {'releases': [], 'image_tags': [], 'preview_source_sha': None}, self.f.git.repo)
+            {'releases': [], 'image_tags': {'core': [], 'tesseract': []}, 'preview_source_sha': None}, self.f.git.repo)
         self.path.write_text(json.dumps(self.plan))
         self.plan_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
         self.env['GITHUB_REF'] = self.ref

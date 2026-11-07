@@ -50,7 +50,7 @@ class PreviewPublicationTest(unittest.TestCase):
         self.assertNotIn('scanner-image.tar', plan['uploads'])
         self.assertNotIn('scanner-tesseract-image.tar', plan['uploads'])
         self.assertEqual(plan['tesseract_image_id'],'sha256:'+'c'*64)
-        self.assertEqual(plan['tesseract_image_tag'],'tesseract-sha-'+self.f.git.sha)
+        self.assertEqual(plan['tesseract_image_tag'],'sha-'+self.f.git.sha)
         self.assertIn('scanner-native-sources.tar', plan['uploads'])
         self.assertIn('THIRD-PARTY-NOTICES.md', plan['uploads'])
         self.assertNotIn('approval_sha256', plan)

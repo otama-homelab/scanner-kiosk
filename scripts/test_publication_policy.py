@@ -13,7 +13,7 @@ class PublicationPolicyTest(unittest.TestCase):
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.repo, self.sha = self.fixture.repo, self.fixture.sha
-        self.state = {'releases': [], 'image_tags': [], 'preview_source_sha': None}
+        self.state = {'releases': [], 'image_tags': {'core': [], 'tesseract': []}, 'preview_source_sha': None}
 
     def plan(self, ref='refs/heads/main', event='push'):
         spec = importlib.util.spec_from_file_location(
@@ -40,9 +40,9 @@ class PublicationPolicyTest(unittest.TestCase):
         self.assertTrue(plan['prerelease'])
 
     def test_terminal_alias_requires_its_source_owner_and_immutable_tag_is_reserved(self):
-        self.state['image_tags']=['tesseract-preview']
+        self.state['image_tags']['tesseract']=['preview']
         with self.assertRaises(ValueError):self.plan()
-        self.state['image_tags']=['tesseract-sha-'+self.sha]
+        self.state['image_tags']['tesseract']=['sha-'+self.sha]
         with self.assertRaises(ValueError):self.plan()
 
     def test_cli_emits_a_plan_without_mutating_remote_state_or_git(self):
@@ -112,10 +112,10 @@ class PublicationPolicyTest(unittest.TestCase):
                          ('image_tags', 'sha-'+self.sha)]:
             with self.subTest(key=key):
                 self.state[key] = ([{'tag_name': tag, 'draft': False, 'prerelease': True}]
-                                   if key == 'releases' else [tag])
+                                   if key == 'releases' else {'core': [tag], 'tesseract': []})
                 with self.assertRaises(ValueError):
                     self.plan()
-                self.state[key] = []
+                self.state[key] = [] if key == 'releases' else {'core': [], 'tesseract': []}
 
     def test_existing_stable_version_is_immutable(self):
         self.fixture.git('tag', 'v1.2.3')
@@ -137,7 +137,7 @@ class PublicationPolicyTest(unittest.TestCase):
     def test_existing_alias_with_unknown_owner_is_not_reset(self):
         for alias in ['preview', 'latest']:
             with self.subTest(alias=alias), self.assertRaises(ValueError):
-                self.state['image_tags'] = [alias]
+                self.state['image_tags']['core'] = [alias]
                 self.plan()
 
     def test_invalid_remote_values_are_rejected(self):

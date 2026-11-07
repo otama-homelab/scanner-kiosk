@@ -119,7 +119,7 @@ single publisher lock; an old saved snapshot is not sufficient for writes.
 
 The remote-state input has three required fields: `releases` contains GitHub
 release records (`tag_name`, boolean `draft` and `prerelease`), `image_tags`
-contains all relevant existing registry tags, and `preview_source_sha` is the
+contains separate `core` and `tesseract` lists of relevant existing registry tags, and `preview_source_sha` is the
 verified source commit of the current preview alias (or null if absent). Missing
 state is rejected rather than treated as an empty registry. Existing aliases
 with unknown ownership must not be reset.
@@ -311,10 +311,14 @@ binary and both image tarballs are excluded from those prerelease assets; their 
 remain in the staged manifest/checksums and the complete CI artifact. Image push
 uses the exact accepted image ID and its OCI repository label, then verifies the
 registry config/digest and package repository link for both variants. Only then may
-`preview` and `tesseract-preview` move. Both aliases share a monotonic source
+the `preview` tag in each package moves. Both aliases share a monotonic source
 frontier, so a partial prior update cannot permit an older candidate to roll back
-either variant. Both immutable tags use the same package: `sha-<sha>` and
-`tesseract-sha-<sha>`.
+either image. The core package is `ghcr.io/otama-homelab/scanner-kiosk`; the OCR
+API package is `ghcr.io/otama-homelab/scanner-kiosk-tesseract`. Both use
+`sha-<sha>`, `preview`, exact version tags and `latest` within their own package.
+Old `tesseract-*` tags in the core package are retained as historical artifacts
+and are no longer updated. New release metadata records both package names;
+legacy core preview metadata remains valid during migration.
 The raw advisory threshold remains recorded even when its byte-bound findings
 have the retained disposition; no G5 or stable security approval is fabricated.
 

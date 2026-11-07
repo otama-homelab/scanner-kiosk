@@ -58,26 +58,27 @@ delivery is deferred; the initial workflow ends at downloading the output.
 
 ## Development container images
 
-Successful main pushes publish two images in the same repository-linked package:
+Successful main pushes publish two repository-linked image packages, one per responsibility:
 
-| Image | Immutable tag | Moving development tag |
-| --- | --- | --- |
-| Core (`serve` / `worker`) | `sha-<full-source-commit>` | `preview` |
-| Optional Tesseract API | `tesseract-sha-<full-source-commit>` | `tesseract-preview` |
+| Image | Package | Immutable tag | Development tag |
+| --- | --- | --- | --- |
+| Core (`serve` / `worker`) | `ghcr.io/otama-homelab/scanner-kiosk` | `sha-<full-source-commit>` | `preview` |
+| Optional Tesseract API | `ghcr.io/otama-homelab/scanner-kiosk-tesseract` | `sha-<full-source-commit>` | `preview` |
 
-Package: `ghcr.io/otama-homelab/scanner-kiosk`.
 The image is linked to this repository through its OCI source label and the
 repository's Actions token. These are development previews, not G5-accepted
 production releases. They never move `:latest` or open the version-tag release gate.
 
 ```sh
 docker pull ghcr.io/otama-homelab/scanner-kiosk:preview
+# Optional OCR API, deployed as a separate container:
+docker pull ghcr.io/otama-homelab/scanner-kiosk-tesseract:preview
 docker run --rm ghcr.io/otama-homelab/scanner-kiosk:preview version
 ```
 
 GHCR controls package visibility separately from repository visibility. A newly
 created package starts private; authenticated pulls are required until its owner
-makes it public in package settings. The workflow does not change that access
+makes it public in each package’s settings. The workflow does not change that access
 policy or billing settings. Production deployments should pin the verified image
 digest, rather than a moving preview tag.
 
