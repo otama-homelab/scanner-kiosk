@@ -9,7 +9,7 @@ function fixturePDF(){
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,chromiumSandbox:true});
  const context=await browser.newContext({ignoreHTTPSErrors:true});const page=await context.newPage();page.setDefaultTimeout(10000);
  const id='document_editor_0001',jobID='job_editor_0000001',errors=[],renders=[];
- let state='queued',previewFailure=true;
+ let state='queued',previewFailure=true,holdNextPreview=false,previewEntered,releasePreview;const previewBlocked=new Promise(resolve=>previewEntered=resolve);
  const doc={id,revision:2,purpose:'document',state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:new Date(Date.now()+3600000).toISOString(),active_job_id:null,output:null,pages:[1,2].map(n=>({id:'page_editor_00000'+n,ordinal:n-1,rotation:0,source_type:'pdf'}))};
  const reply=(r,json,status=200)=>r.fulfill({status,headers:{Date:new Date().toUTCString()},json});
  try{
@@ -17,7 +17,7 @@ function fixturePDF(){
   await page.route('**/api/session',r=>reply(r,{authenticated:true,authenticate_type:'guest',principal_kind:'guest'}));
   await page.route('**/api/documents?*',r=>reply(r,{items:[{...doc,page_count:2}],next_cursor:null}));
   await page.route('**/api/documents/'+id,r=>reply(r,doc));
-  await page.route('**/api/documents/'+id+'/pages/*/preview',r=>{if(previewFailure){previewFailure=false;return r.fulfill({status:503,body:'Unavailable'})}return r.fulfill({status:200,contentType:'application/pdf',headers:{'Content-Security-Policy':"default-src 'none'; frame-ancestors 'none'"},body:fixturePDF()})});
+  await page.route('**/api/documents/'+id+'/pages/*/preview',async r=>{if(previewFailure){previewFailure=false;return r.fulfill({status:503,body:'Unavailable'})}if(holdNextPreview){holdNextPreview=false;previewEntered();await new Promise(resolve=>releasePreview=resolve);return r.fulfill({status:200,contentType:'application/pdf',body:fixturePDF()}).catch(()=>{})}return r.fulfill({status:200,contentType:'application/pdf',headers:{'Content-Security-Policy':"default-src 'none'; frame-ancestors 'none'"},body:fixturePDF()})});
   await page.route('**/api/documents/'+id+'/render',r=>{renders.push({body:r.request().postDataJSON(),headers:r.request().headers()});doc.active_job_id=jobID;return reply(r,{id:jobID,document_id:id,kind:'render',state:'queued'},202)});
   await page.route('**/api/jobs/'+jobID,r=>reply(r,{id:jobID,document_id:id,kind:'render',state}));
   await page.route('**/api/documents/'+id+'/download',r=>r.fulfill({status:200,contentType:'application/pdf',headers:{'Content-Disposition':'attachment; filename="scan.pdf"'},body:Buffer.from('%PDF-1.4\n% download fixture\n')}));
@@ -29,7 +29,8 @@ function fixturePDF(){
   assert.equal(await page.locator('.document-header button').count(),0,'document navigation uses the existing History header');
   const menu=page.locator('.document-more');await menu.locator('summary').click();assert(await menu.evaluate(e=>e.open));await menu.locator('.document-more-actions').click({position:{x:2,y:2}});assert(await menu.evaluate(e=>e.open),'inside menu clicks do not close it');await page.locator('h1[data-document-title]').click();assert(!(await menu.evaluate(e=>e.open)),'outside tap closes options');await menu.locator('summary').click();await page.keyboard.press('Escape');assert(!(await menu.evaluate(e=>e.open)));assert.equal(await page.evaluate(()=>document.activeElement.tagName),'SUMMARY');
   await menu.locator('summary').click();await page.getByRole('button',{name:'Output settings',exact:true}).click();await page.getByRole('dialog').waitFor();assert(!(await menu.evaluate(e=>e.open)),'selecting an option closes the menu');await page.keyboard.press('Escape');
-  await page.getByRole('button',{name:'Save PDF',exact:true}).click();
+  holdNextPreview=true;await page.getByRole('button',{name:'Save PDF',exact:true}).click();
+  await previewBlocked;
   await page.getByText('Preparing download…',{exact:true}).waitFor();
   const gauge=page.getByRole('progressbar');await gauge.waitFor();assert.equal(await gauge.getAttribute('value'),null);assert.equal(await gauge.getAttribute('aria-labelledby'),'document-progress');
   assert.ok(page.url().endsWith('/document/'+id),'saving stays with the preview');assert(await page.getByRole('button',{name:'Save PDF',exact:true}).isDisabled());
@@ -43,6 +44,7 @@ function fixturePDF(){
   await page.getByRole('link',{name:'Save PDF',exact:true}).waitFor();assert.equal(await page.getByRole('progressbar').count(),0,'completed jobs remove the gauge');
   const second=page.waitForEvent('download');await page.getByRole('link',{name:'Save PDF',exact:true}).click();await second;assert.equal(renders.length,1,'fresh output downloads without another render');
   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/history');await page.getByRole('heading',{name:'History',exact:true}).waitFor();
+  releasePreview();
   await page.locator('.document-row canvas').waitFor().catch(async error=>{console.error(JSON.stringify({stage:'history thumbnail',url:page.url(),body:await page.locator('body').innerText(),previews:await page.locator('.pdf-page').evaluateAll(elements=>elements.map(e=>({status:e.textContent,canvasHidden:e.querySelector('canvas')?.hidden,bounds:e.getBoundingClientRect().toJSON()})))}));throw error});await page.waitForFunction(()=>{const c=document.querySelector('.document-row canvas');return c&&!c.hidden&&c.width>0});assert((await page.locator('.history-thumb').boundingBox()).height<=112);assert((await page.locator('.history-thumb canvas').boundingBox()).height<=112,'the complete PDF preview fits its thumbnail');assert.equal(await page.locator('.document-row .document-more').count(),0);assert((await page.locator('.history-title').innerText()).includes('2026'));await page.getByRole('button',{name:'Grid',exact:true}).click();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'grid');await page.reload();await page.getByRole('heading',{name:'History',exact:true}).waitFor();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'grid');await page.getByRole('button',{name:'List',exact:true}).click();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'list');
   await page.waitForFunction(()=>{const c=document.querySelector('.document-row canvas');return c&&!c.hidden&&c.width>0});
   doc.active_job_id=jobID;state='running';await page.reload();await page.getByRole('heading',{name:'History',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'View processing status',exact:true}).count(),0);await page.getByRole('link',{name:'View processing status',exact:true}).waitFor();await page.getByRole('progressbar').waitFor();
@@ -75,6 +77,6 @@ function fixturePDF(){
    await page.getByRole('heading',{name:'History',exact:true}).waitFor();assert.equal(await page.locator('.document-row').count(),0,'last image/page removes the document from History');
    assert.equal(deletes.at(-1)['if-match'],'"2"');assert.match(deletes.at(-1)['idempotency-key'],/^rq1_/);
   }
-  assert.deepEqual(errors,[]);assert.deepEqual(await page.evaluate(()=>window.__csp||[]),[]);console.log(JSON.stringify({passed:true,checks:['inline PDF overview and history, explicit preview error recovery','always visible page action icons and persisted history grid/list','single save intent, revision and idempotency guards','preview remains while processing; visibility resume observes the same job without reposting','automatic download and fresh-output reuse','EN/JA light/dark 320/390/1440']}));
+  assert.deepEqual(errors,[]);assert.deepEqual(await page.evaluate(()=>window.__csp||[]),[]);console.log(JSON.stringify({passed:true,checks:['inline PDF overview and history, explicit preview error recovery and cancellation of a blocked prior preview','always visible page action icons and persisted history grid/list','single save intent, revision and idempotency guards','preview remains while processing; visibility resume observes the same job without reposting','automatic download and fresh-output reuse','EN/JA light/dark 320/390/1440']}));
  }finally{await context.close();await browser.close()}
 })().catch(e=>{console.error(e.stack||e.message);process.exit(1)});
