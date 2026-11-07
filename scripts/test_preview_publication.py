@@ -103,5 +103,26 @@ class PreviewPublicationTest(unittest.TestCase):
         with self.assertRaises(ValueError):self.prepare()
 
 
+    def test_zlib_optional_contrib_review_accepts_only_the_exact_finding(self):
+        finding = {'id': 'CVE-2026-4738', 'severity': 'Critical',
+                   'package': 'zlib', 'version': '1.3.2-r1'}
+        reviewed = self.module.staging.read_json(self.module.PREVIEW_REVIEW)
+        for scope in ['native', 'native-cpe']:
+            self.assertIn(finding, reviewed['matches'][scope])
+            self.policy['matches'][scope] = [dict(finding)]
+            self.reports[scope] = [{'vulnerability': {'id': finding['id'], 'severity': finding['severity']},
+                                    'artifact': {'name': finding['package'], 'version': finding['version']}}]
+        self.review.write_text(json.dumps(self.policy))
+        plan = self.prepare()
+        self.assertIn('security-reports.tar', plan['uploads'])
+        self.reports['native'][0]['artifact']['version'] = '1.3.2-r2'
+        with self.assertRaises(ValueError):
+            self.prepare()
+        self.reports['native'][0]['artifact']['version'] = '1.3.2-r1'
+        self.reports['native'][0]['vulnerability']['id'] = 'CVE-unreviewed'
+        with self.assertRaises(ValueError):
+            self.prepare()
+
+
 if __name__ == '__main__':
     unittest.main()
