@@ -1,6 +1,11 @@
 # Deployment, resource and release contract
 
-Status: local implementation and an unreleased image candidate are under validation. Container fixture evidence exists; production storage, Helm deployment and release acceptance remain pending. See [packaging](image-packaging.md) and [dependency security](dependency-security.md).
+Status: `v0.1.4` is formally released with public source, assets and image
+manifests. Production storage, physical-device, G5 and release acceptance are
+recorded at their scoped evidence; household cutover/rollback observation and
+legacy-runtime retirement remain pending. See [packaging](image-packaging.md),
+[dependency security](dependency-security.md) and
+[release channels](release-channels.md).
 
 ## Process and deployment shape
 
@@ -112,7 +117,7 @@ Logs record stable request/job/internal-principal IDs, stage, result, error code
 
 ## Release and rollback
 
-The selected channel policy is [trunk previews and tagged releases](release-channels.md): `main` pushes are preview inputs and `v*` tags are release inputs. Source validation is wired; actual publication remains gated on the complete native distribution and release evidence.
+The selected channel policy is [trunk previews and tagged releases](release-channels.md): `main` pushes are preview inputs and stable `v*` tags are release inputs after all gates pass. `v0.1.4` has been published; deployment and observation remain separate from publication.
 
 A release needs: pinned Go/Node/dependency versions and image digest; upstream license notices/SBOM; dependency/container checks; reproducible static/build tests; Compose and Helm examples; OIDC examples; configuration backup/restore; schema-version checks; and upgrade/rollback instructions. No nonexistent image or unexecuted CI is a successful release.
 
