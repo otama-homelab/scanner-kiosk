@@ -79,7 +79,8 @@ Selection stays locked, and “Check import request” repeats those same bytes 
 key. Expired intents require reload/history rather than silently creating a new
 key. Route disposal aborts owned reads/requests; already admitted server work may
 remain visible in History. The accepted import uses the existing job status and
-cancellation view. Failed imports expose only the fixed `pdf_invalid`,
+cancellation view. Failed imports return home and empty failures are excluded from
+History and queued for ordinary document cleanup. Notices expose only the fixed `pdf_invalid`,
 `pdf_encrypted`, `pdf_unsupported` and `pdf_limit` reasons. Internal parser errors,
 paths and provider diagnostics stay private. Cancellation/interruption take
 precedence over a parser reason. Unknown codes use the existing generic failure.

@@ -19,8 +19,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   assert(!page.url().endsWith('#/import'),'opening the native picker must not navigate to an import page');assert.equal(posts.length,0);
   await chooser.setFiles({name:'direct.pdf',mimeType:'application/pdf',buffer:Buffer.from('%PDF-1.7\ndirect')});
   await page.getByText('Importing PDF…',{exact:true}).waitFor();assert.equal(posts.length,1,'file selection submits once without another button');
-  await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,revision:1,purpose:'document',state:'review',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[]}));
-  job.state='succeeded';await page.getByRole('heading',{name:'Document',exact:true}).waitFor();
+  await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,revision:1,purpose:'document',state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[]}));
+  job.state='succeeded';await page.locator('h1[data-document-title]').waitFor();
   assert(page.url().endsWith('#/document/'+doc),'completed direct import opens the existing document editor');job.state='queued';
   checks.push('Home opens native file picker; selection uploads once and completion opens document editor without an intermediate import page');
   const open=async()=>{await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/import');await page.getByRole('heading',{name:'Import PDF',exact:true}).waitFor();};
@@ -38,16 +38,16 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   await page.getByRole('button',{name:'Check import request',exact:true}).click();await page.getByText('Importing PDF…',{exact:true}).waitFor();assert.deepEqual(posts.at(-1),posts.at(-2));
   checks.push('Unknown response locks file selection and repeats the same intent key, digest and bytes');
   for(const [code,message] of [['pdf_invalid','This PDF is damaged or could not be read.'],['pdf_encrypted','Password-protected PDFs cannot be imported. Save an unencrypted copy first.'],['pdf_unsupported','This PDF contains features that cannot be imported.'],['pdf_limit','This PDF exceeds the page or processing limits.']]){
-   job.state='failed';job.error_code=code;await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/job/'+job.id);await page.reload();await page.getByText(message,{exact:true}).waitFor();
+   job.state='failed';job.error_code=code;await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/job/'+job.id);await page.reload();await page.getByText(message,{exact:true}).waitFor();assert.equal(new URL(page.url()).hash,'','failed import returns home');await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
   }
-  for(const code of ['private-provider-path-token','__proto__','constructor']){job.error_code=code;await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/job/'+job.id);await page.reload();await page.getByText('Failed',{exact:true}).waitFor();assert(!(await page.locator('body').innerText()).includes(code))}job.state='queued';job.error_code=null;
-  checks.push('Only allowlisted import failure reasons reach the job view; private unknown errors stay hidden');
+  for(const code of ['private-provider-path-token','__proto__','constructor']){job.error_code=code;await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/job/'+job.id);await page.reload();await page.getByText('The request could not be completed. Try again.',{exact:true}).waitFor();assert(!(await page.locator('body').innerText()).includes(code))}job.state='queued';job.error_code=null;
+  checks.push('Failed imports return home with allowlisted reasons; private unknown errors stay hidden');
   await open();const before=posts.length;await page.getByLabel('PDF file',{exact:true}).setInputFiles({name:'large.pdf',mimeType:'application/pdf',buffer:Buffer.alloc(1048576)});assert(await page.getByRole('button',{name:'Import PDF',exact:true}).isDisabled());assert.equal(posts.length,before);
-  await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,revision:1,purpose:'document',state:'review',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[{id:pdf,source_type:'pdf',rotation:90,capture:null,pdf:{width_points:200,height_points:300}},{id:scan,source_type:'scan',rotation:0,capture:{size:'a4',color:'gray',dpi:300}}]}));
+  await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,revision:1,purpose:'document',state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[{id:pdf,source_type:'pdf',rotation:90,capture:null,pdf:{width_points:200,height_points:300}},{id:scan,source_type:'scan',rotation:0,capture:{size:'a4',color:'gray',dpi:300}}]}));
   await page.route('**/pages/'+scan+'/preview',r=>r.fulfill({status:200,contentType:'image/png',body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6l2kAAAAASUVORK5CYII=','base64')}));
-  await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+doc);await page.getByRole('heading',{name:'Document',exact:true}).waitFor();
+  await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+doc);await page.locator('h1[data-document-title]').waitFor();
   const link=page.getByRole('link',{name:'Open PDF page',exact:true});assert((await link.getAttribute('href')).endsWith('/'+pdf+'/preview'));assert.equal(await link.getAttribute('target'),'_blank');assert.match(await link.getAttribute('rel'),/noopener/);assert.equal(await page.locator(`[data-page-id="${pdf}"] img`).count(),0);
-  await page.getByRole('button',{name:'Page view',exact:true}).click();await page.getByRole('button',{name:'Next page',exact:true}).click();assert.equal(await page.locator('.preview-card:visible').getAttribute('data-page-id'),scan);await page.getByRole('button',{name:'Previous page',exact:true}).click();assert.equal(await page.locator('.preview-card:visible').getAttribute('data-page-id'),pdf);
+  assert.equal(await page.locator('.review-view-switch').count(),0);assert.equal(await page.locator('.preview-card:visible').count(),2);
   for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))}
   if(process.env.SCANNER_TEST_IMPORT_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_IMPORT_SCREENSHOT,fullPage:true});
   await page.selectOption('#locale','ja');await page.getByRole('link',{name:'PDFページを開く',exact:true}).waitFor();

@@ -116,6 +116,7 @@ func markForCleanup(ctx context.Context, tx *sql.Tx, owner, document, state stri
 // QueueExpiredCleanup is worker-internal bounded discovery. Expired and disabled
 // principals require no browser session to expire their content. The principal
 // snapshot keeps the same state→documents lock order as public operations.
+// Failed empty documents retire through the same stop barrier.
 func (s *Store) QueueExpiredCleanup(ctx context.Context, limit int, retention time.Duration) (int, error) {
 	if limit < 1 || limit > 100 || retention < time.Second || retention > 365*24*time.Hour {
 		return 0, ErrInvalid
@@ -127,18 +128,19 @@ func (s *Store) QueueExpiredCleanup(ctx context.Context, limit int, retention ti
 		if now < 0 || !ok {
 			return ErrInvalid
 		}
-		rows, err := tx.QueryContext(ctx, `SELECT d.id,d.owner_id,d.revision FROM documents d WHERE d.expires_at_ms<=? AND NOT EXISTS(SELECT 1 FROM jobs j WHERE j.document_id=d.id AND j.kind='cleanup') ORDER BY d.expires_at_ms,d.id LIMIT ?`, now, limit)
+		rows, err := tx.QueryContext(ctx, `SELECT d.id,d.owner_id,d.revision,CASE WHEN d.expires_at_ms<=? THEN 'expired' ELSE 'deleting' END FROM documents d WHERE (d.expires_at_ms<=? OR (d.state='failed' AND NOT EXISTS(SELECT 1 FROM pages p WHERE p.document_id=d.id AND p.owner_id=d.owner_id))) AND NOT EXISTS(SELECT 1 FROM jobs j WHERE j.document_id=d.id AND j.kind='cleanup') ORDER BY d.expires_at_ms,d.id LIMIT ?`, now, now, limit)
 		if err != nil {
 			return storageOperationError(err)
 		}
 		type candidate struct {
+			state           string
 			document, owner string
 			revision        int64
 		}
 		var candidates []candidate
 		for rows.Next() {
 			var c candidate
-			if err = rows.Scan(&c.document, &c.owner, &c.revision); err != nil {
+			if err = rows.Scan(&c.document, &c.owner, &c.revision, &c.state); err != nil {
 				rows.Close()
 				return storageOperationError(err)
 			}
@@ -156,7 +158,7 @@ func (s *Store) QueueExpiredCleanup(ctx context.Context, limit int, retention ti
 			return storageOperationError(closeErr)
 		}
 		for _, c := range candidates {
-			if _, err = enqueueCleanup(ctx, tx, c.owner, c.document, c.revision, now, deadline, "expired"); err != nil {
+			if _, err = enqueueCleanup(ctx, tx, c.owner, c.document, c.revision, now, deadline, c.state); err != nil {
 				return err
 			}
 			count++

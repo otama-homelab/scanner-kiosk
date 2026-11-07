@@ -102,7 +102,7 @@ func (s *Store) ReadHistory(ctx context.Context, owner string, limit int, after 
 		if after != nil {
 			expiry, last = after.ExpiresAtMS, after.ID
 		}
-		rows, err := tx.QueryContext(ctx, `SELECT `+projectionColumns+` FROM documents d WHERE d.owner_id=? AND d.expires_at_ms>? AND d.state NOT IN ('expired','deleting') AND (d.expires_at_ms>? OR (d.expires_at_ms=? AND d.id>?)) ORDER BY d.expires_at_ms,d.id LIMIT ?`, owner, s.now().UnixMilli(), expiry, expiry, last, limit+1)
+		rows, err := tx.QueryContext(ctx, `SELECT `+projectionColumns+` FROM documents d WHERE d.owner_id=? AND d.expires_at_ms>? AND d.state NOT IN ('expired','deleting') AND NOT (d.state='failed' AND NOT EXISTS(SELECT 1 FROM pages p WHERE p.document_id=d.id AND p.owner_id=d.owner_id)) AND (d.expires_at_ms>? OR (d.expires_at_ms=? AND d.id>?)) ORDER BY d.expires_at_ms,d.id LIMIT ?`, owner, s.now().UnixMilli(), expiry, expiry, last, limit+1)
 		if err != nil {
 			return ErrStorage
 		}

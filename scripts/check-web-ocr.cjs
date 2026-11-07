@@ -12,7 +12,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   assert.equal((await page.request.post(origin+'/__fixture/native-seed')).status(),200);
   const metadata=await (await page.request.get(origin+'/api/capabilities')).json();assert.equal(metadata.defaults.ocr.provider_id,'tesseract');assert.deepEqual(metadata.defaults.ocr.languages,['ja','en']);
   const plugin=metadata.ocr_plugins.find(plugin=>plugin.id==='tesseract');assert.ok(plugin);const model=plugin.models.find(model=>model.id===metadata.defaults.ocr.model_id);assert.ok(model);
-  await page.goto(origin+'/#/document/document_native_001');await page.getByRole('heading',{name:'Document',exact:true}).waitFor();
+  await page.goto(origin+'/#/document/document_native_001');await page.locator('h1[data-document-title]').waitFor();
   await (await reveal(page.getByRole('button',{name:'Output settings',exact:true,includeHidden:true}))).click();await page.waitForFunction(()=>document.querySelector('#ocr-model')?.value==='0');
   assert.equal(await page.locator('#ocr-enabled').isChecked(),false);await page.locator('#ocr-enabled').check();assert.equal(await page.locator('.ocr-languages input:checked').count(),2);
   assert.equal(await page.locator('#ocr-quality').inputValue(),metadata.defaults.ocr.quality_preset);await page.selectOption('#output-choice','lossless');

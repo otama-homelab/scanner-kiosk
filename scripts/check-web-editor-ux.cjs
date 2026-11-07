@@ -10,7 +10,7 @@ function fixturePDF(){
  const context=await browser.newContext({ignoreHTTPSErrors:true});const page=await context.newPage();page.setDefaultTimeout(10000);
  const id='document_editor_0001',jobID='job_editor_0000001',errors=[],renders=[];
  let state='queued',previewFailure=true;
- const doc={id,revision:2,purpose:'document',state:'review',expires_at:new Date(Date.now()+3600000).toISOString(),active_job_id:null,output:null,pages:[1,2].map(n=>({id:'page_editor_00000'+n,ordinal:n-1,rotation:0,source_type:'pdf'}))};
+ const doc={id,revision:2,purpose:'document',state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:new Date(Date.now()+3600000).toISOString(),active_job_id:null,output:null,pages:[1,2].map(n=>({id:'page_editor_00000'+n,ordinal:n-1,rotation:0,source_type:'pdf'}))};
  const reply=(r,json,status=200)=>r.fulfill({status,headers:{Date:new Date().toUTCString()},json});
  try{
   page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>document.addEventListener('securitypolicyviolation',e=>window.__csp=(window.__csp||[]).concat(e.violatedDirective)));
@@ -22,12 +22,10 @@ function fixturePDF(){
   await page.route('**/api/jobs/'+jobID,r=>reply(r,{id:jobID,document_id:id,kind:'render',state}));
   await page.route('**/api/documents/'+id+'/download',r=>r.fulfill({status:200,contentType:'application/pdf',headers:{'Content-Disposition':'attachment; filename="scan.pdf"'},body:Buffer.from('%PDF-1.4\n% download fixture\n')}));
   await page.setViewportSize({width:390,height:844});await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);
-  await page.getByRole('heading',{name:'Document',exact:true}).waitFor();
+  await page.locator('h1[data-document-title]').waitFor();
   await page.getByRole('button',{name:'Try again',exact:true}).click();await page.waitForFunction(()=>[...document.querySelectorAll('.pdf-page canvas')].every(c=>!c.hidden&&c.width>0));
   assert.equal(await page.locator('.preview-grid canvas').count(),2,'PDF pages preview inline in the overview');
-  assert.equal(await page.getByRole('button',{name:'Replace with scan',exact:true}).count(),0,'secondary page operations start collapsed');
-  await page.locator('.page-more summary').first().click();await page.getByRole('button',{name:'Replace with scan',exact:true}).waitFor();
-  await page.locator('.page-more summary').first().click();
+  assert.equal(await page.locator('.page-more').count(),0);assert.equal(await page.getByRole('button',{name:'Replace with scan',exact:true}).count(),2,'page icons always visible');
   await page.getByRole('button',{name:'Save PDF',exact:true}).click();
   await page.getByText('Preparing download…',{exact:true}).waitFor();
   assert.ok(page.url().endsWith('/document/'+id),'saving stays with the preview');assert(await page.getByRole('button',{name:'Save PDF',exact:true}).isDisabled());
@@ -41,13 +39,19 @@ function fixturePDF(){
   await page.getByRole('link',{name:'Save PDF',exact:true}).waitFor();
   const second=page.waitForEvent('download');await page.getByRole('link',{name:'Save PDF',exact:true}).click();await second;assert.equal(renders.length,1,'fresh output downloads without another render');
   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/history');await page.getByRole('heading',{name:'History',exact:true}).waitFor();
-  await page.locator('.document-row').getByText('Preview',{exact:true}).click();await page.locator('.document-row canvas').waitFor();
+  await page.locator('.document-row canvas').waitFor();await page.waitForFunction(()=>{const c=document.querySelector('.document-row canvas');return c&&!c.hidden&&c.width>0});assert((await page.locator('.history-thumb').boundingBox()).height<=112);assert((await page.locator('.history-thumb canvas').boundingBox()).height<=112,'the complete PDF preview fits its thumbnail');assert.equal(await page.locator('.document-row .document-more').count(),0);assert((await page.locator('.history-title').innerText()).includes('2026'));await page.getByRole('button',{name:'Grid',exact:true}).click();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'grid');await page.reload();await page.getByRole('heading',{name:'History',exact:true}).waitFor();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'grid');await page.getByRole('button',{name:'List',exact:true}).click();assert.equal(await page.locator('.document-list').getAttribute('data-layout'),'list');
+  await page.waitForFunction(()=>{const c=document.querySelector('.document-row canvas');return c&&!c.hidden&&c.width>0});
+  for(const layout of ['grid','list'])for(const width of [320,390,1440]){
+   await page.setViewportSize({width,height:844});await page.getByRole('button',{name:layout==='grid'?'Grid':'List',exact:true}).click();
+   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'history does not overflow');
+   if(process.env.SCANNER_TEST_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOT.replace('.png',`-history-${layout}-${width}.png`),fullPage:true});
+  }
   for(const locale of ['en','ja'])for(const theme of ['light','dark'])for(const width of [320,390,1440]){
-   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);await page.selectOption('#locale',locale);await page.getByRole('heading',{name:locale==='ja'?'書類':'Document',exact:true}).waitFor();
+   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);await page.selectOption('#locale',locale);await page.locator('h1[data-document-title]').waitFor();
    await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);await page.setViewportSize({width,height:844});
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');
    if(process.env.SCANNER_TEST_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOT.replace('.png',`-${locale}-${theme}-${width}.png`),fullPage:true});
   }
-  assert.deepEqual(errors,[]);assert.deepEqual(await page.evaluate(()=>window.__csp||[]),[]);console.log(JSON.stringify({passed:true,checks:['inline PDF overview and history, explicit preview error recovery','collapsed secondary page actions','single save intent, revision and idempotency guards','preview remains while processing; visibility resume observes the same job without reposting','automatic download and fresh-output reuse','EN/JA light/dark 320/390/1440']}));
+  assert.deepEqual(errors,[]);assert.deepEqual(await page.evaluate(()=>window.__csp||[]),[]);console.log(JSON.stringify({passed:true,checks:['inline PDF overview and history, explicit preview error recovery','always visible page action icons and persisted history grid/list','single save intent, revision and idempotency guards','preview remains while processing; visibility resume observes the same job without reposting','automatic download and fresh-output reuse','EN/JA light/dark 320/390/1440']}));
  }finally{await context.close();await browser.close()}
 })().catch(e=>{console.error(e.stack||e.message);process.exit(1)});

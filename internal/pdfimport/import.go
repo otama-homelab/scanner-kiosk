@@ -7,7 +7,9 @@ import (
 	"context"
 	"errors"
 	"math"
+	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/filter"
@@ -63,6 +65,7 @@ func Split(ctx context.Context, input []byte, options Options) ([]Page, error) {
 	}
 	configuration := model.NewStatelessConfiguration()
 	configuration.Optimize = false
+	configuration.ValidateLinks = false
 	configuration.Limits = model.ResourceLimits{MaxInputBytes: options.MaxInputBytes, MaxObjectBytes: 4 << 20, MaxStreamBytes: min(options.MaxInputBytes, 64<<20), MaxDecodeBytes: 16 << 20, MaxImagePixels: 64 << 20, MaxImageBytes: 128 << 20, MaxObjectCount: 100000, MaxObjectStreamCount: 20000, MaxObjectStreamFirst: 4 << 20, MaxXRefEntries: 100000, MaxRecursionDepth: 64}
 	parsed, err := api.ReadContext(ctx, bytes.NewReader(input), configuration)
 	if err != nil {
@@ -70,6 +73,17 @@ func Split(ctx context.Context, input []byte, options Options) ([]Page, error) {
 	}
 	if parsed.Encrypt != nil {
 		return nil, ErrEncrypted
+	}
+	sanitized := false
+	for _, entry := range parsed.Table {
+		if entry == nil || entry.Free {
+			continue
+		}
+		changed, err := removeScriptLinks(ctx, parsed.XRefTable, entry.Object, 0)
+		if err != nil {
+			return nil, err
+		}
+		sanitized = sanitized || changed
 	}
 	catalog, err := parsed.Catalog()
 	if err != nil {
@@ -87,6 +101,13 @@ func Split(ctx context.Context, input []byte, options Options) ([]Page, error) {
 	}
 	if err = api.ValidateContext(ctx, parsed); err != nil {
 		return nil, normalize(ctx, err)
+	}
+	if sanitized {
+		buffer := &boundedBuffer{remaining: options.MaxOutputBytes}
+		if err = api.WriteContext(ctx, parsed, buffer); err != nil {
+			return nil, normalize(ctx, err)
+		}
+		input = buffer.data.Bytes()
 	}
 	if parsed.PageCount < 1 || parsed.PageCount > options.MaxPages {
 		return nil, ErrLimit
@@ -168,7 +189,11 @@ func checkObject(ctx context.Context, xref *model.XRefTable, object types.Object
 					nameValue := decodedName(string(name))
 					if key == "S" {
 						switch nameValue {
-						case "JavaScript", "Launch", "GoToR", "GoToE", "URI", "SubmitForm", "ImportData", "Rendition", "Movie", "Sound":
+						case "URI":
+							if err := checkWebURI(ctx, xref, value); err != nil {
+								return err
+							}
+						case "JavaScript", "Launch", "GoToR", "GoToE", "SubmitForm", "ImportData", "Rendition", "Movie", "Sound":
 							return ErrUnsafe
 						}
 					}
@@ -210,4 +235,77 @@ func checkObject(ctx context.Context, xref *model.XRefTable, object types.Object
 
 func validOptions(options Options) bool {
 	return !(options.MaxInputBytes < 1 || options.MaxInputBytes > 1<<30 || options.MaxOutputBytes < 1 || options.MaxOutputBytes > 1<<30 || options.MaxPages < 1 || options.MaxPages > 10000)
+}
+
+// Web links require an explicit click; validation must never fetch their targets.
+func checkWebURI(ctx context.Context, xref *model.XRefTable, action types.Dict) error {
+	var target types.Object
+	found := false
+	for key, value := range action {
+		if decodedName(key) == "URI" {
+			if found {
+				return ErrUnsafe
+			}
+			found, target = true, value
+		}
+	}
+	raw, err := xref.DereferenceStringOrHexLiteral(target, model.V10, nil)
+	if err != nil {
+		return normalize(ctx, err)
+	}
+	destination, err := url.Parse(raw)
+	if !found || err != nil || destination.Hostname() == "" || destination.User != nil || destination.Opaque != "" || (strings.ToLower(destination.Scheme) != "http" && strings.ToLower(destination.Scheme) != "https") {
+		return ErrUnsafe
+	}
+	return nil
+}
+
+// Browser-printed documents may contain inert javascript: navigation links.
+// Drop their click action, retaining page content; real scripts remain rejected.
+func removeScriptLinks(ctx context.Context, xref *model.XRefTable, object types.Object, depth int) (bool, error) {
+	if depth > 64 {
+		return false, ErrLimit
+	}
+	changed := false
+	switch value := object.(type) {
+	case types.Dict:
+		if subtype := value.NameEntry("Subtype"); subtype != nil && *subtype == "Link" {
+			action, err := xref.DereferenceDict(value["A"])
+			if err != nil {
+				return false, normalize(ctx, err)
+			}
+			if kind := action.NameEntry("S"); kind != nil && *kind == "URI" {
+				raw, err := xref.DereferenceStringOrHexLiteral(action["URI"], model.V10, nil)
+				if err != nil {
+					return false, normalize(ctx, err)
+				}
+				target, err := url.Parse(raw)
+				if err == nil && strings.EqualFold(target.Scheme, "javascript") {
+					delete(action, "S")
+					delete(action, "URI")
+					if err := checkObject(ctx, xref, action, 0); err != nil {
+						return false, err
+					}
+					delete(value, "A")
+					changed = true
+				}
+			}
+		}
+		for _, child := range value {
+			removed, err := removeScriptLinks(ctx, xref, child, depth+1)
+			if err != nil {
+				return false, err
+			}
+			changed = changed || removed
+		}
+	case types.Array:
+		for _, child := range value {
+			removed, err := removeScriptLinks(ctx, xref, child, depth+1)
+			if err != nil {
+				return false, err
+			}
+			changed = changed || removed
+		}
+	}
+	return changed, nil
 }

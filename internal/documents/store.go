@@ -124,7 +124,7 @@ func (s *Store) List(ctx context.Context, owner string, limit int) ([]Document, 
 	}
 	out := []Document{}
 	err := s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
-		rows, err := tx.QueryContext(ctx, `SELECT id,purpose,state,revision,created_at_ms,expires_at_ms FROM documents WHERE owner_id=? AND expires_at_ms>? AND state NOT IN ('expired','deleting') ORDER BY expires_at_ms,id LIMIT ?`, owner, s.now().UnixMilli(), limit)
+		rows, err := tx.QueryContext(ctx, `SELECT id,purpose,state,revision,created_at_ms,expires_at_ms FROM documents WHERE owner_id=? AND expires_at_ms>? AND state NOT IN ('expired','deleting') AND NOT (state='failed' AND NOT EXISTS(SELECT 1 FROM pages p WHERE p.document_id=documents.id AND p.owner_id=documents.owner_id)) ORDER BY expires_at_ms,id LIMIT ?`, owner, s.now().UnixMilli(), limit)
 		if err != nil {
 			return ErrStorage
 		}

@@ -17,17 +17,19 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 )
 
-func fixturePDF(extra string) []byte {
+func fixturePDF(extra string) []byte { return fixtureWithAnnotations(extra, "", nil) }
+func fixtureWithAnnotations(extra, pageExtra string, additional []string) []byte {
 	streams := []string{"BT /F1 12 Tf 20 30 Td (IMPORT_ALPHA) Tj ET\n0 0 1 rg 10 10 30 40 re f\n", "BT /F1 12 Tf 20 30 Td (IMPORT_BETA) Tj ET\n1 0 0 rg 30 40 20 10 re f\n"}
 	objects := []string{
 		"<< /Type /Catalog /Pages 2 0 R " + extra + " >>",
 		"<< /Type /Pages /Kids [3 0 R 5 0 R] /Count 2 >>",
-		"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 300] /Resources << /Font << /F1 7 0 R >> >> /Contents 4 0 R >>",
+		"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 300] /Resources << /Font << /F1 7 0 R >> >> /Contents 4 0 R " + pageExtra + " >>",
 		fmt.Sprintf("<< /Length %d >>\nstream\n%sendstream", len(streams[0]), streams[0]),
 		"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 400 250] /Resources << /Font << /F1 7 0 R >> >> /Contents 6 0 R >>",
 		fmt.Sprintf("<< /Length %d >>\nstream\n%sendstream", len(streams[1]), streams[1]),
 		"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
 	}
+	objects = append(objects, additional...)
 	var out bytes.Buffer
 	out.WriteString("%PDF-1.7\n")
 	offsets := []int{0}
@@ -106,7 +108,7 @@ func TestSplitRejectsInvalidLimitedCancelledAndActivePDFs(t *testing.T) {
 				input = fixturePDF("/OpenAction << /S /JavaScript /JS (app.alert\\(1\\)) >>")
 				want = ErrUnsafe
 			case "external-action":
-				input = fixturePDF("/Example << /S /U#52I /URI (https://example.invalid/) >>")
+				input = fixturePDF("/Example << /S /U#52I /URI (file:///outside.pdf) >>")
 				want = ErrUnsafe
 			case "external-reference":
 				input = fixturePDF("/Ref << /F (outside.pdf) /Page 0 >>")
@@ -196,6 +198,66 @@ func TestSplitMatchesIndependentTextAndRasterReaders(t *testing.T) {
 		actual := run(rasterTool, "-f", "1", "-l", "1", "-singlefile", "-scale-to", "256", "-png", name)
 		if !bytes.Equal(expected, actual) {
 			t.Fatal("rendered text/vector appearance changed", i+1)
+		}
+	}
+}
+
+func TestSplitAllowsOrdinaryWebLinksWithoutNetworkAccess(t *testing.T) {
+	for _, raw := range []string{"http://example.invalid/order", "https://example.invalid/order?item=1"} {
+		input := fixtureWithAnnotations("", "/Annots [8 0 R]", []string{fmt.Sprintf("<< /Type /Annot /Subtype /Link /Rect [10 10 80 40] /Border [0 0 0] /A << /S /URI /URI (%s) >> >>", raw)})
+		before := sha256.Sum256(input)
+		pages, err := Split(context.Background(), input, options())
+		if err != nil || len(pages) != 2 {
+			t.Fatal("ordinary web link rejected", len(pages), err)
+		}
+		if sha256.Sum256(input) != before {
+			t.Fatal("original mutated")
+		}
+	}
+}
+
+func TestSplitStillRejectsUnsafeLinkActions(t *testing.T) {
+	for _, raw := range []string{"data:text/plain,hello", "file:///secret", "../outside", "https://user:pass@example.invalid/", "https:///missing-host"} {
+		input := fixtureWithAnnotations("", "/Annots [8 0 R]", []string{fmt.Sprintf("<< /Type /Annot /Subtype /Link /Rect [10 10 80 40] /A << /S /URI /URI (%s) >> >>", raw)})
+		if pages, err := Split(context.Background(), input, options()); !errors.Is(err, ErrUnsafe) || len(pages) != 0 {
+			t.Fatal("unsafe link accepted", raw, err)
+		}
+	}
+	input := fixtureWithAnnotations("", "/Annots [8 0 R]", []string{"<< /Type /Annot /Subtype /Link /Rect [10 10 80 40] /A << /S /URI /URI (https://example.invalid/) /Next << /S /JavaScript /JS (bad) >> >> >>"})
+	if pages, err := Split(context.Background(), input, options()); !errors.Is(err, ErrUnsafe) || len(pages) != 0 {
+		t.Fatal("chained active action accepted", err)
+	}
+}
+
+func TestSplitDropsScriptNavigationLinksWithoutChangingPageContent(t *testing.T) {
+	for _, indirect := range []bool{false, true} {
+		action := "<< /S /URI /URI (javascript:void) >>"
+		objects := []string{"<< /Type /Annot /Subtype /Link /Rect [10 10 80 40] /Border [0 0 0] /A " + action + " >>"}
+		if indirect {
+			objects = []string{"<< /Type /Annot /Subtype /Link /Rect [10 10 80 40] /Border [0 0 0] /A 9 0 R >>", action}
+		}
+		input := fixtureWithAnnotations("", "/Annots [8 0 R]", objects)
+		original := sha256.Sum256(input)
+		pages, err := Split(context.Background(), input, options())
+		if err != nil || len(pages) != 2 {
+			t.Fatal("printed navigation link rejected", err)
+		}
+		if sha256.Sum256(input) != original {
+			t.Fatal("original mutated")
+		}
+		for _, page := range pages {
+			if bytes.Contains(page.PDF, []byte("javascript:")) {
+				t.Fatal("script link retained")
+			}
+		}
+	}
+}
+
+func TestScriptLinkSanitizationDoesNotHideActiveActions(t *testing.T) {
+	for _, extra := range []string{"/Next << /S /JavaScript /JS (bad) >>", "/Next << /S /Launch /F (bad) >>"} {
+		input := fixtureWithAnnotations("", "/Annots [8 0 R]", []string{fmt.Sprintf("<< /Type /Annot /Subtype /Link /Rect [10 10 80 40] /A << /S /URI /URI (javascript:void) %s >> >>", extra)})
+		if _, err := Split(context.Background(), input, options()); !errors.Is(err, ErrUnsafe) {
+			t.Fatal("sanitized link hid active action", err)
 		}
 	}
 }

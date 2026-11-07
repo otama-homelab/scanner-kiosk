@@ -50,7 +50,7 @@ read it. Missing derivatives return 404 with no original fallback or decoding in
 the HTTP process. The HTTP route uses the existing hash-verified private file
 stream and repeated owner/session/expiry checks, with no-store and HEAD support.
 
-The client overview and image strip use the small derivative; selecting Page view
+The client overview and History use the small derivative; opening the original
 uses the original preview. A failed thumbnail request falls back to the authorized
 original once per mounted image. Thus retained or newly captured pages without a
 derivative remain usable. No background hardware request or browser image cache

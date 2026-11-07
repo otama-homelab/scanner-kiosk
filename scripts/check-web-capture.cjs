@@ -47,7 +47,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   checks.push('Locale/view disposal aborts pending capture without replay or late navigation');
   await page.selectOption('#locale','en');await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
   let retryPurpose='document';
-  await page.route('**/api/documents/document_capture_001',route=>route.fulfill({json:{id:'document_capture_001',revision:5,purpose:retryPurpose,photo_format:'png',state:'review',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[],output:null}}));
+  await page.route('**/api/documents/document_capture_001',route=>route.fulfill({json:{id:'document_capture_001',revision:5,purpose:retryPurpose,photo_format:'png',state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[],output:null}}));
   let next=null;await page.route('**/api/documents/document_capture_001/scans',route=>{next={body:route.request().postDataJSON(),revision:route.request().headers()['if-match']};return route.fulfill({status:202,json:job})});
   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/document_capture_001/scan');await page.getByRole('heading',{name:'Scan next page',exact:true}).waitFor();await page.getByRole('button',{name:'Select scanner',exact:true}).click();await page.getByRole('button',{name:/Office/}).click();await page.getByRole('button',{name:'Scan next page',exact:true}).click();await page.getByText('Reading original…',{exact:true}).waitFor();assert.equal(next.revision,'"5"');assert.deepEqual(next.body,{scanner_id:'scanner_capture_001',capture});
   checks.push('Next-page command uses server document revision and excludes original type/output fields');

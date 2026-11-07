@@ -10,6 +10,11 @@ The caller supplies a sealed regular input file and a distinct, empty private
 scratch output file under its existing storage reservation. Preparation never
 truncates either file. The parser runs only in the child. The child rejects
 unsupported active/encrypted/external PDF content through `pdfimport.Split`.
+Ordinary absolute HTTP(S) hyperlinks are preserved for explicit user clicks;
+validation never fetches their targets. Browser-printed `javascript:` Link
+annotation click actions are discarded without changing page content. File/data
+URLs, URL credentials, automatic actions and dangerous chained actions remain
+rejected. Actual JavaScript actions are never admitted.
 
 Before reading untrusted input the child installs Linux limits: 512 MiB data
 segment/mapped anonymous allocation, 2 GiB virtual address space, 30 seconds CPU
@@ -49,7 +54,10 @@ sealed page must match the child's size and SHA-256 before atomic publication.
 The remaining reservation covers both the framed scratch result and page copies:
 payload is at most half the reservation after framing overhead. Scratch is removed
 and its directory synced before publication. A known failed execution removes only
-its unpublished output; the uploaded source remains. Unknown child stop, filesystem
+its unpublished output. Failed empty documents are hidden from History immediately
+and queued for automatic document cleanup through the existing producer-stop
+barrier, which also removes the uploaded source. A failed operation on a document
+with existing pages preserves those pages. Unknown child stop, filesystem
 or commit outcomes retain the reservation for reconciliation. Publication and failed
 stop acknowledgements have exact job/owner/runner read-back checks. The startup
 recovery file bound now matches the existing 10,000-output scope/page cap.

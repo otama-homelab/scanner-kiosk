@@ -181,3 +181,43 @@ func TestExpiredCleanupBoundedDisabledOwnersAndReplay(t *testing.T) {
 		t.Fatal("TTL cleanup changed reserved resources")
 	}
 }
+
+func TestAutomaticCleanupDiscardsFailedEmptyDocumentsButKeepsPages(t *testing.T) {
+	f := thumbnailFixture(t)
+	ctx := context.Background()
+	const empty = "document_failed_empty_01"
+	must(t, f.docs, "INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES(?,?,'document','failed',1000,10000)", empty, alice)
+	must(t, f.docs, "UPDATE documents SET state='failed' WHERE id=?", docA)
+	history, err := f.store.List(ctx, alice, 20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range history {
+		if item.ID == empty {
+			t.Fatal("empty failure shown in history")
+		}
+	}
+	projected, _, err := f.store.ReadHistory(ctx, alice, 20, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, item := range projected {
+		if item.ID == empty {
+			t.Fatal("failed empty document projected into history")
+		}
+	}
+	count, err := f.store.QueueExpiredCleanup(ctx, 20, time.Hour)
+	if err != nil || count != 1 {
+		t.Fatal("failed empty document not discarded", count, err)
+	}
+	if scalar(t, f.docs, "SELECT count(*) FROM jobs WHERE document_id=? AND kind='cleanup'", empty) != 1 {
+		t.Fatal("cleanup missing")
+	}
+	if scalar(t, f.docs, "SELECT count(*) FROM pages WHERE document_id=?", docA) == 0 || scalar(t, f.docs, "SELECT count(*) FROM jobs WHERE document_id=? AND kind='cleanup'", docA) != 0 {
+		t.Fatal("existing pages discarded")
+	}
+	count, err = f.store.QueueExpiredCleanup(ctx, 20, time.Hour)
+	if err != nil || count != 0 {
+		t.Fatal("duplicate cleanup", count, err)
+	}
+}

@@ -12,12 +12,12 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
  try{
   await page.route('**/api/session',r=>reply(r,{authenticated:true,principal_kind:'guest',authenticate_type:'guest'}));
   await page.route('**/api/capabilities',r=>{capabilityReads++;return reply(r,mode==='offline'?{code:'provider_unavailable'}:metadata(),mode==='offline'?503:200)});
-  await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,active_job_id:active,revision:1,purpose:'document',state:'review',expires_at:'2099-01-01T00:00:00Z',pages:[{id:'page_ocr_ui000001',ordinal:0,rotation:0,capture:{size:'a4',color:'gray',dpi:300}}]}));
+  await page.route('**/api/documents/'+doc,r=>reply(r,{id:doc,active_job_id:active,revision:1,purpose:'document',state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:'2099-01-01T00:00:00Z',pages:[{id:'page_ocr_ui000001',ordinal:0,rotation:0,capture:{size:'a4',color:'gray',dpi:300}}]}));
   await page.route('**/pages/*/preview',r=>r.fulfill({status:200,contentType:'image/png',body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6l2kAAAAASUVORK5CYII=','base64')}));
   const job={id:'job_ocr_ui0000001',document_id:doc,kind:'render',state:'queued',input_revision:1,error_code:null};
   await page.route('**/api/documents/'+doc+'/render',r=>{posts.push(r.request().postDataJSON());active=job.id;return reply(r,job,202)});
   await page.route('**/api/jobs/'+job.id,r=>reply(r,job));
-  const open=async()=>{await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+doc);await page.getByRole('heading',{name:'Document',exact:true}).waitFor();const loaded=page.waitForResponse('**/api/capabilities');await (await reveal(page.getByRole('button',{name:'Output settings',exact:true,includeHidden:true}))).click();await loaded;};
+  const open=async()=>{await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+doc);await page.locator('h1[data-document-title]').waitFor();const loaded=page.waitForResponse('**/api/capabilities');await (await reveal(page.getByRole('button',{name:'Output settings',exact:true,includeHidden:true}))).click();await loaded;};
   await open();
   await page.waitForFunction(()=>document.querySelector('.ocr-settings')?.hidden===true);
   assert.equal(await page.getByRole('switch').count(),0,'unconfigured OCR must not be offered');
