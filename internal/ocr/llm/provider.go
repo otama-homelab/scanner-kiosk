@@ -79,7 +79,7 @@ func New(options Options) (*Provider, error) {
 		}
 	}
 	options.Credentials = keys
-	transport := &http.Transport{DialContext: (&net.Dialer{Timeout: 10 * time.Second, KeepAlive: 30 * time.Second}).DialContext, TLSHandshakeTimeout: 10 * time.Second, ResponseHeaderTimeout: 30 * time.Second, MaxIdleConns: 4, IdleConnTimeout: 60 * time.Second, ForceAttemptHTTP2: true}
+	transport := &http.Transport{DialContext: (&net.Dialer{Timeout: 10 * time.Second, KeepAlive: 30 * time.Second}).DialContext, TLSHandshakeTimeout: 10 * time.Second, ResponseHeaderTimeout: options.Timeout, MaxIdleConns: 4, IdleConnTimeout: 60 * time.Second, ForceAttemptHTTP2: true}
 	p := &Provider{options: options, profiles: map[string]config.LLMProfile{}, client: &http.Client{Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}
 	p.caps = ocrplugin.Capabilities{APIVersion: ocrplugin.APIVersion, ID: "llm", Name: "LLM OCR", Version: "1", ExternalProcessing: true}
 	for _, profile := range options.Settings.Profiles {

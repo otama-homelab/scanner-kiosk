@@ -1,9 +1,10 @@
 # Changelog
 
-## 0.1.3
+## 0.1.4
 
 - Docker-first Linux amd64 deployment with separate API and worker roles, Compose examples and a Helm chart.
 - Separate `scanner-kiosk` and `scanner-kiosk-tesseract` image packages, each with its own version and preview tags.
+- LLM OCR uses the configured processing timeout while waiting for slow responses.
 - Browser scanning through the unmodified sane-airscan backend, with bounded IPv4 Bonjour discovery, manual configuration and explicit scanner selection.
 - Document and single-photo workflows, compact page previews, rotation, page ordering, deletion and PDF/image downloads.
 - PDF import with existing text and vector content preserved, and resumable document editing after interrupted work.

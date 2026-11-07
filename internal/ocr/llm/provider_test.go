@@ -112,6 +112,31 @@ func TestVisionWireAndPositionedResult(t *testing.T) {
 		t.Fatal("incorrect normalized geometry")
 	}
 }
+func TestConfiguredTimeoutAllowsSlowResponseHeaders(t *testing.T) {
+	t.Parallel()
+	template, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
+		select {
+		case <-time.After(31 * time.Second):
+			json.NewEncoder(w).Encode(completion(map[string]any{"text": "complete"}))
+		case <-r.Context().Done():
+		}
+	})
+	options := template.options
+	options.Timeout = 45 * time.Second
+	provider, err := New(options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(provider.Close)
+	output := &access{input: fixture(t)}
+	if _, err = provider.Run(context.Background(), request(provider, ocrplugin.Text), output); err != nil {
+		t.Fatalf("valid response within the configured OCR timeout was rejected: %v", err)
+	}
+	if len(output.outputs) != 1 || output.outputs[0].String() != "complete" {
+		t.Fatal("slow response was not saved")
+	}
+}
+
 func TestPlainTranscription(t *testing.T) {
 	p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(completion(map[string]any{"text": "日本語\nEnglish"}))
