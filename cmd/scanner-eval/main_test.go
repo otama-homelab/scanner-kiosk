@@ -314,7 +314,7 @@ func TestRunCommandReturnsNormalizedCatalog(t *testing.T) {
 	}
 	var artifactCatalog struct {
 		Status   string `json:"status"`
-		Original struct {
+		Original *struct {
 			SHA256 string `json:"sha256"`
 		} `json:"original"`
 		Artifacts []struct {
@@ -324,7 +324,8 @@ func TestRunCommandReturnsNormalizedCatalog(t *testing.T) {
 	if err := json.Unmarshal([]byte(result.stdout), &artifactCatalog); err != nil {
 		t.Fatalf("invalid catalog: %v: %s", err, result.stdout)
 	}
-	if artifactCatalog.Status != "incomplete" || artifactCatalog.Original.SHA256 == "" ||
+	if artifactCatalog.Status != "incomplete" || artifactCatalog.Original == nil ||
+		artifactCatalog.Original.SHA256 == "" ||
 		len(artifactCatalog.Artifacts) != 1 || artifactCatalog.Artifacts[0].Role != "ocr-text" {
 		t.Fatalf("unexpected catalog: %+v", artifactCatalog)
 	}

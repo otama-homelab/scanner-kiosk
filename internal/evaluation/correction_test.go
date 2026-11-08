@@ -2,6 +2,7 @@ package evaluation
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
@@ -79,6 +80,29 @@ func TestCorrectionCandidateUnavailable(t *testing.T) {
 	}
 }
 
+func TestCorrectionAnalysisRejectsExpectedFailureCatalog(t *testing.T) {
+	oracles, err := LoadCorrectionOracles(filepath.Join(
+		"..", "..", "scripts", "fixtures", "evaluation", "correction-oracles.json",
+	))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, status := range []string{"expected-failure", "incomplete"} {
+		t.Run(status, func(t *testing.T) {
+			path := writeCorrectionCatalogWithoutOriginal(t, status)
+			comparison, err := AnalyzeCorrectionCatalogs([]string{path}, oracles)
+			if err != nil || comparison.Status != "incomplete" || len(comparison.Rows) != 1 {
+				t.Fatalf("nil-original catalog was not rejected: %+v %v", comparison, err)
+			}
+			row := comparison.Rows[0]
+			if row.Status != "failed" || row.MeasurementStatus != "incomplete" ||
+				row.FailureClass != "artifact-catalog" || row.OriginalSHA256 != "" {
+				t.Fatalf("nil-original catalog produced evidence: %+v", row)
+			}
+		})
+	}
+}
+
 func TestCorrectionFourArmIdentity(t *testing.T) {
 	body, err := os.ReadFile(filepath.Join("..", "..", "scripts", "eval", "correction", "README.md"))
 	if err != nil {
@@ -123,6 +147,36 @@ func correctionCatalogForTest(t *testing.T, mode string) (string, CorrectionOrac
 		t.Fatal(err)
 	}
 	return filepath.Join(output, "artifact-catalog.json"), oracles
+}
+
+func writeCorrectionCatalogWithoutOriginal(t *testing.T, status string) string {
+	t.Helper()
+	body, err := json.Marshal(ArtifactCatalog{
+		Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion,
+		RunID: "run_correction_without_original", FixtureID: "fixture_card_001",
+		FixtureSHA256: repeatTestHash("a"), Status: status,
+		Artifacts: []Artifact{{
+			ID: "artifact_correction_without_original", Role: RoleCorrection,
+			MediaType: "image/png", SHA256: repeatTestHash("b"), Bytes: 1,
+			SourcePages: []string{"page_card_001"},
+			Parents:     []string{"artifact_original_missing"}, Algorithm: "test", AlgorithmVersion: "1",
+		}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(body, &raw); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok := raw["original"]; ok {
+		t.Fatal("nil original was serialized as a zero-value artifact")
+	}
+	path := filepath.Join(t.TempDir(), "artifact-catalog.json")
+	if err := os.WriteFile(path, body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
 }
 
 func loadFixtureCatalogForTest(t *testing.T) Catalog {
