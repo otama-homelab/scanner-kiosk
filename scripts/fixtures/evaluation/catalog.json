@@ -1,0 +1,23 @@
+{
+  "format": "scanner-eval-fixtures",
+  "version": 1,
+  "fixtures": [
+    {
+      "id": "fixture_a4_ja_en_001",
+      "source_class": "public_synthetic",
+      "privacy": "public-synthetic",
+      "media_type": "image/png",
+      "page_ids": ["page_a4_ja_en_001"],
+      "languages": ["ja", "en"],
+      "document_type": "a4-text",
+      "expected_outputs": ["ocr-text", "positioned-text", "pdf"],
+      "sha256": "e2a8b58d65452c9a7e4b471481e2149c9d14502cc75b1c48120ceef9bc860e08",
+      "bytes": 69624,
+      "expected_text": ["日本語の書類", "Scanner OCR 2026", "テスト文書 300 dpi"],
+      "recipe": {
+        "kind": "copy",
+        "source": "ocr-ja-en-300dpi.png"
+      }
+    }
+  ]
+}
