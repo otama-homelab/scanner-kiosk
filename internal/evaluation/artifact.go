@@ -9,7 +9,7 @@ import (
 	"os"
 	"path"
 	"sort"
-	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -142,7 +142,7 @@ func validateCandidateResult(result CandidateResult, candidateID string, fixture
 	return nil
 }
 
-func normalizeCandidateArtifacts(source *os.Root, destination *os.Root, result CandidateResult, fixture FixtureDefinition, original Artifact) ([]Artifact, error) {
+func normalizeCandidateArtifacts(source *os.Root, destination *os.Root, result CandidateResult) ([]Artifact, error) {
 	normalized := make([]Artifact, 0, len(result.Artifacts))
 	var total int64
 	for _, candidate := range result.Artifacts {
@@ -293,11 +293,18 @@ func copyParameters(parameters map[string]string) map[string]string {
 }
 
 func boundedText(value string, max int) bool {
-	return value != "" && len(value) <= max && utf8.ValidString(value) &&
-		!strings.ContainsAny(value, "\x00\r\n")
+	return value != "" && len(value) <= max && utf8.ValidString(value) && noControl(value)
 }
 
 func boundedOptionalText(value string, max int) bool {
-	return value == "" || len(value) <= max && utf8.ValidString(value) &&
-		!strings.ContainsAny(value, "\x00\r\n")
+	return value == "" || len(value) <= max && utf8.ValidString(value) && noControl(value)
+}
+
+func noControl(value string) bool {
+	for _, r := range value {
+		if unicode.IsControl(r) {
+			return false
+		}
+	}
+	return true
 }

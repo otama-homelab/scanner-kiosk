@@ -27,6 +27,14 @@ func TestCandidateHelper(t *testing.T) {
 		os.Exit(9)
 	}
 	mode := os.Getenv("EVAL_CANDIDATE_MODE")
+	if mode == "mutate" {
+		if err := os.Chmod(input, 0o600); err != nil {
+			os.Exit(11)
+		}
+		if err := os.WriteFile(input, []byte("mutated"), 0o600); err != nil {
+			os.Exit(11)
+		}
+	}
 	if err := os.MkdirAll(filepath.Join(output, "texts"), 0o700); err != nil {
 		os.Exit(10)
 	}
@@ -38,20 +46,29 @@ func TestCandidateHelper(t *testing.T) {
 	} else if err := os.WriteFile(textPath, []byte("synthetic candidate text\n"), 0o600); err != nil {
 		os.Exit(10)
 	}
+	if mode == "empty_text" {
+		if err := os.WriteFile(textPath, nil, 0o600); err != nil {
+			os.Exit(10)
+		}
+	}
 	artifactPath := "texts/ocr.txt"
 	if mode == "traversal" {
 		artifactPath = "../escape.txt"
+	}
+	artifact := map[string]any{
+		"id": "artifact_candidate_ocr_001", "role": "ocr-text", "path": artifactPath,
+		"media_type": "text/plain; charset=utf-8", "source_pages": pages,
+		"parents": []string{originalID}, "algorithm": "fixture-helper", "algorithm_version": "1",
+		"parameters": map[string]string{"mode": "synthetic"},
+	}
+	if mode == "bad_hash" {
+		artifact["sha256"] = strings.Repeat("0", 64)
 	}
 	result := map[string]any{
 		"format":       "scanner-eval-candidate-result",
 		"version":      1,
 		"candidate_id": "candidate_helper_001",
-		"artifacts": []any{map[string]any{
-			"id": "artifact_candidate_ocr_001", "role": "ocr-text", "path": artifactPath,
-			"media_type": "text/plain; charset=utf-8", "source_pages": pages,
-			"parents": []string{originalID}, "algorithm": "fixture-helper", "algorithm_version": "1",
-			"parameters": map[string]string{"mode": "synthetic"},
-		}},
+		"artifacts":    []any{artifact},
 	}
 	body, err := json.Marshal(result)
 	if err != nil {
@@ -120,6 +137,160 @@ func TestCandidateEnvironmentIsolated(t *testing.T) {
 	})
 	if errors.Is(err, ErrUnavailable) && catalog.Status == "" {
 		t.Fatalf("candidate inherited the injected secret: %v", err)
+	}
+}
+
+func TestArtifactRoleCoverage(t *testing.T) {
+	fixture := fixtureForArtifactTest()
+	roles := map[ArtifactRole]string{
+		RoleCorrection:     "image/png",
+		RoleOCRText:        "text/plain; charset=utf-8",
+		RolePositionedText: "application/json",
+		RoleStructure:      "application/json",
+		RoleGenerated:      "application/json",
+		RolePDF:            "application/pdf",
+	}
+	for role, mediaType := range roles {
+		t.Run(string(role), func(t *testing.T) {
+			result := CandidateResult{
+				Format: CandidateResultFormat, Version: CandidateResultVersion, CandidateID: "candidate_role_001",
+				Artifacts: []CandidateArtifact{artifactForTest(role, mediaType)},
+			}
+			if err := validateCandidateResult(result, result.CandidateID, fixture, "artifact_original_test"); err != nil {
+				t.Fatal(err)
+			}
+			if validRoleMediaType(role, "application/octet-stream") {
+				t.Fatalf("role %s accepted the wrong media type", role)
+			}
+		})
+	}
+}
+
+func TestArtifactProvenance(t *testing.T) {
+	fixture := fixtureForArtifactTest()
+	base := func() CandidateResult {
+		return CandidateResult{
+			Format: CandidateResultFormat, Version: CandidateResultVersion, CandidateID: "candidate_role_001",
+			Artifacts: []CandidateArtifact{artifactForTest(RoleOCRText, "text/plain; charset=utf-8")},
+		}
+	}
+	tests := []struct {
+		name   string
+		mutate func(*CandidateResult)
+	}{
+		{"missing page", func(result *CandidateResult) { result.Artifacts[0].SourcePages = nil }},
+		{"invalid page", func(result *CandidateResult) { result.Artifacts[0].SourcePages[0] = "page_other_001" }},
+		{"missing parent", func(result *CandidateResult) { result.Artifacts[0].Parents = []string{"artifact_missing_parent"} }},
+		{"duplicate id", func(result *CandidateResult) {
+			result.Artifacts = append(result.Artifacts, result.Artifacts[0])
+			result.Artifacts[1].Path = "other.txt"
+		}},
+		{"duplicate path", func(result *CandidateResult) {
+			other := artifactForTest(RoleGenerated, "application/json")
+			other.Path = result.Artifacts[0].Path
+			result.Artifacts = append(result.Artifacts, other)
+		}},
+		{"control characters", func(result *CandidateResult) { result.Artifacts[0].Algorithm = "bad\x01algorithm" }},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			result := base()
+			test.mutate(&result)
+			if err := validateCandidateResult(result, result.CandidateID, fixture, "artifact_original_test"); !errors.Is(err, ErrInvalid) {
+				t.Fatalf("invalid provenance accepted: %v", err)
+			}
+		})
+	}
+
+	cycle := base()
+	cycle.Artifacts = []CandidateArtifact{
+		artifactForTest(RoleOCRText, "text/plain; charset=utf-8"),
+		artifactForTest(RoleGenerated, "application/json"),
+	}
+	cycle.Artifacts[0].Parents = []string{cycle.Artifacts[1].ID}
+	cycle.Artifacts[1].Parents = []string{cycle.Artifacts[0].ID}
+	if err := validateCandidateResult(cycle, cycle.CandidateID, fixture, "artifact_original_test"); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("parent cycle accepted: %v", err)
+	}
+}
+
+func TestGeneratedCannotSatisfyTranscription(t *testing.T) {
+	fixture := fixtureForArtifactTest()
+	result := CandidateResult{
+		Format: CandidateResultFormat, Version: CandidateResultVersion, CandidateID: "candidate_role_001",
+		Artifacts: []CandidateArtifact{artifactForTest(RoleGenerated, "application/json")},
+	}
+	if err := validateCandidateResult(result, result.CandidateID, fixture, "artifact_original_test"); err != nil {
+		t.Fatal(err)
+	}
+	artifacts := []Artifact{{
+		ID: result.Artifacts[0].ID, Role: RoleGenerated, MediaType: result.Artifacts[0].MediaType,
+		SourcePages: result.Artifacts[0].SourcePages, Parents: result.Artifacts[0].Parents,
+		Algorithm: result.Artifacts[0].Algorithm, AlgorithmVersion: result.Artifacts[0].AlgorithmVersion,
+	}}
+	missing := missingOutputs(fixture, artifacts)
+	if len(missing) != 2 || missing[0] != RoleOCRText || missing[1] != RolePDF {
+		t.Fatalf("generated content satisfied transcription or PDF: %v", missing)
+	}
+}
+
+func TestEmptyOCROutputIsPresent(t *testing.T) {
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	configPath := writeCandidateConfig(t, output, "empty_text")
+	catalog, err := RunCandidate(context.Background(), CandidateRunRequest{
+		CatalogPath: catalogPath, CandidatePath: configPath,
+		FixtureID: "fixture_a4_ja_en_001", OutputDir: output,
+	})
+	if !errors.Is(err, ErrUnavailable) || len(catalog.Artifacts) != 1 ||
+		catalog.Artifacts[0].Role != RoleOCRText || catalog.Artifacts[0].Bytes != 0 {
+		t.Fatalf("zero-byte OCR artifact was not preserved: catalog=%+v err=%v", catalog, err)
+	}
+}
+
+func TestCandidateDeclaredHashMismatchFailsClosed(t *testing.T) {
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	configPath := writeCandidateConfig(t, output, "bad_hash")
+	if _, err := RunCandidate(context.Background(), CandidateRunRequest{
+		CatalogPath: catalogPath, CandidatePath: configPath,
+		FixtureID: "fixture_a4_ja_en_001", OutputDir: output,
+	}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("candidate-declared hash mismatch accepted: %v", err)
+	}
+}
+
+func TestOriginalRemainsImmutable(t *testing.T) {
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	configPath := writeCandidateConfig(t, output, "mutate")
+	if _, err := RunCandidate(context.Background(), CandidateRunRequest{
+		CatalogPath: catalogPath, CandidatePath: configPath,
+		FixtureID: "fixture_a4_ja_en_001", OutputDir: output,
+	}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("mutated original was accepted: %v", err)
+	}
+}
+
+func fixtureForArtifactTest() FixtureDefinition {
+	return FixtureDefinition{
+		ID: "fixture_artifact_001", MediaType: "image/png", PageIDs: []string{"page_artifact_001"},
+		DocumentType: "a4-text", ExpectedOutputs: []ArtifactRole{RoleOCRText, RolePDF},
+	}
+}
+
+func artifactForTest(role ArtifactRole, mediaType string) CandidateArtifact {
+	id := "artifact_candidate_ocr_001"
+	if role == RoleGenerated {
+		id = "artifact_candidate_generated_001"
+	}
+	return CandidateArtifact{
+		ID: id, Role: role, Path: "outputs/" + string(role), MediaType: mediaType,
+		SourcePages: []string{"page_artifact_001"}, Parents: []string{"artifact_original_test"},
+		Algorithm: "test", AlgorithmVersion: "1",
 	}
 }
 

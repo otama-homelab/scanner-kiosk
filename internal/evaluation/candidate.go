@@ -255,7 +255,7 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	if err := writePrivateFile(destination, filepath.Join("artifacts", originalID), fixtureBody); err != nil {
 		return ArtifactCatalog{}, err
 	}
-	artifacts, err := normalizeCandidateArtifacts(root, destination, result, fixture, original)
+	artifacts, err := normalizeCandidateArtifacts(root, destination, result)
 	if err != nil {
 		return ArtifactCatalog{}, fmt.Errorf("artifact normalization: %w", err)
 	}
