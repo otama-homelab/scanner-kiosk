@@ -525,8 +525,33 @@ func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
 			t.Fatalf("failed sample was not preserved: %+v", sample)
 		}
 	}
+	expectedDir := filepath.Join(work, "benchmark-expected-failure")
+	expectedResult := runHelper(t, "benchmark", "--catalog", catalog, "--candidate", configPath,
+		"--fixture", "fixture_invalid_input_001", "--output", expectedDir, "--cold", "1", "--warm", "1",
+		"--timeout-seconds", "20", "--max-rss-mib", "2048", "--max-temp-disk-mib", "1024")
+	if expectedResult.code != 0 {
+		t.Fatalf("expected-failure benchmark exit=%d stderr=%s", expectedResult.code, expectedResult.stderr)
+	}
+	var expectedSummary struct {
+		Status               string                       `json:"status"`
+		FixtureID            string                       `json:"fixture_id"`
+		FixtureSHA256        string                       `json:"fixture_sha256"`
+		Settings             evaluation.BenchmarkSettings `json:"settings"`
+		ExpectedFailureClass string                       `json:"expected_failure_class"`
+		ObservedFailureClass string                       `json:"observed_failure_class"`
+		FailureMatch         *bool                        `json:"failure_match"`
+		Samples              []any                        `json:"samples"`
+	}
+	if err := json.Unmarshal([]byte(expectedResult.stdout), &expectedSummary); err != nil {
+		t.Fatal(err)
+	}
+	if expectedSummary.Status != "expected-failure" || expectedSummary.ExpectedFailureClass != "invalid-input" ||
+		expectedSummary.ObservedFailureClass != "invalid-input" || expectedSummary.FailureMatch == nil ||
+		!*expectedSummary.FailureMatch || len(expectedSummary.Samples) != 0 {
+		t.Fatalf("unexpected expected-failure benchmark: %+v", expectedSummary)
+	}
 	comparisonPath := filepath.Join(work, "comparison.json")
-	compare := runHelper(t, "compare", "--receipt", runDir, "--output", comparisonPath)
+	compare := runHelper(t, "compare", "--receipt", runDir, "--receipt", expectedDir, "--output", comparisonPath)
 	if compare.code != 0 {
 		t.Fatalf("compare failed: %s", compare.stderr)
 	}
@@ -539,29 +564,62 @@ func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
 	}
 	var comparison struct {
 		Groups []struct {
-			FixtureID     string                       `json:"fixture_id"`
-			FixtureSHA256 string                       `json:"fixture_sha256"`
-			Settings      evaluation.BenchmarkSettings `json:"settings"`
-			Entries       []struct {
-				Mode           string   `json:"mode"`
-				FailureClasses []string `json:"failure_classes"`
+			FixtureID            string                       `json:"fixture_id"`
+			FixtureSHA256        string                       `json:"fixture_sha256"`
+			Settings             evaluation.BenchmarkSettings `json:"settings"`
+			ExpectedFailureClass string                       `json:"expected_failure_class"`
+			ObservedFailureClass string                       `json:"observed_failure_class"`
+			FailureMatch         *bool                        `json:"failure_match"`
+			Entries              []struct {
+				Mode                 string   `json:"mode"`
+				Status               string   `json:"status"`
+				Samples              int      `json:"samples"`
+				P50Millis            *int64   `json:"p50_millis"`
+				P95Millis            *int64   `json:"p95_millis"`
+				PeakRSSBytes         int64    `json:"peak_rss_bytes"`
+				SampledTempDiskBytes int64    `json:"sampled_temp_disk_bytes"`
+				FailureClasses       []string `json:"failure_classes"`
 			} `json:"entries"`
 		} `json:"groups"`
 	}
 	if err := json.Unmarshal(body, &comparison); err != nil {
 		t.Fatal(err)
 	}
-	if len(comparison.Groups) != 1 ||
-		comparison.Groups[0].FixtureID != summary.FixtureID ||
-		comparison.Groups[0].FixtureSHA256 != summary.FixtureSHA256 ||
-		comparison.Groups[0].Settings != summary.Settings ||
-		len(comparison.Groups[0].Entries) != 2 {
-		t.Fatalf("comparison lost condition identity: %+v", comparison)
+	if len(comparison.Groups) != 2 {
+		t.Fatalf("comparison group count=%d, want 2: %+v", len(comparison.Groups), comparison)
 	}
-	for _, entry := range comparison.Groups[0].Entries {
-		if entry.Mode != "cold" && entry.Mode != "warm" || len(entry.FailureClasses) == 0 {
-			t.Fatalf("comparison merged a mode or failure: %+v", entry)
+	var foundOrdinary, foundExpected bool
+	for _, group := range comparison.Groups {
+		if group.FixtureID == summary.FixtureID {
+			foundOrdinary = true
+			if group.FixtureSHA256 != summary.FixtureSHA256 || group.Settings != summary.Settings ||
+				len(group.Entries) != 2 {
+				t.Fatalf("comparison lost ordinary condition identity: %+v", group)
+			}
+			for _, entry := range group.Entries {
+				if entry.Mode != "cold" && entry.Mode != "warm" || len(entry.FailureClasses) == 0 {
+					t.Fatalf("comparison merged an ordinary mode or failure: %+v", entry)
+				}
+			}
 		}
+		if group.FixtureID == expectedSummary.FixtureID {
+			foundExpected = true
+			if group.FixtureSHA256 != expectedSummary.FixtureSHA256 || group.Settings != expectedSummary.Settings ||
+				group.ExpectedFailureClass != expectedSummary.ExpectedFailureClass ||
+				group.ObservedFailureClass != expectedSummary.ObservedFailureClass ||
+				group.FailureMatch == nil || !*group.FailureMatch || len(group.Entries) != 2 {
+				t.Fatalf("comparison lost expected-failure identity: %+v", group)
+			}
+			for _, entry := range group.Entries {
+				if entry.Samples != 0 || entry.P50Millis != nil || entry.P95Millis != nil ||
+					entry.PeakRSSBytes != 0 || entry.SampledTempDiskBytes != 0 {
+					t.Fatalf("comparison fabricated expected-failure metrics: %+v", entry)
+				}
+			}
+		}
+	}
+	if !foundOrdinary || !foundExpected {
+		t.Fatalf("comparison omitted an ordinary or expected-failure group: %+v", comparison)
 	}
 }
 

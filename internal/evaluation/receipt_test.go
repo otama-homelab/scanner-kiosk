@@ -177,19 +177,94 @@ func TestComparisonKeepsModesAndFailuresPerGroup(t *testing.T) {
 	}
 }
 
+func TestComparisonPreservesExpectedFailureSummary(t *testing.T) {
+	expected, expectedPath := benchmarkForReceiptTest(t, "", "fixture_invalid_input_001")
+	if expected.Status != "expected-failure" || expected.FailureMatch == nil || !*expected.FailureMatch {
+		t.Fatalf("unexpected expected-failure summary: %+v", expected)
+	}
+
+	normal, _ := benchmarkForReceiptTest(t, "complete", "fixture_photo_001")
+	normal.RunID = "benchmark_synthetic_normal"
+	normal.FixtureID = expected.FixtureID
+	normal.FixtureSHA256 = expected.FixtureSHA256
+	for index := range normal.Samples {
+		normal.Samples[index].FixtureID = normal.FixtureID
+		normal.Samples[index].FixtureSHA256 = normal.FixtureSHA256
+	}
+	normalPath := writeReceiptSummary(t, normal)
+
+	comparison, err := CompareBenchmarkReceipts([]string{normalPath, expectedPath})
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded := marshalComparison(t, comparison)
+	if len(decoded.Groups) != 2 {
+		t.Fatalf("expected-failure collided with a normal group: %+v", decoded.Groups)
+	}
+	var failureGroup *decodedComparisonGroup
+	for index := range decoded.Groups {
+		if decoded.Groups[index].FailureMatch != nil {
+			failureGroup = &decoded.Groups[index]
+		}
+	}
+	if failureGroup == nil || failureGroup.ExpectedFailureClass != expected.ExpectedFailureClass ||
+		failureGroup.ObservedFailureClass != expected.ObservedFailureClass ||
+		!*failureGroup.FailureMatch || failureGroup.FixtureID != expected.FixtureID ||
+		failureGroup.FixtureSHA256 != expected.FixtureSHA256 ||
+		failureGroup.Settings != expected.Settings {
+		t.Fatalf("expected-failure group identity was lost: %+v", decoded.Groups)
+	}
+	for _, entry := range failureGroup.Entries {
+		if entry.Samples != 0 || entry.P50Millis != nil || entry.P95Millis != nil ||
+			entry.PeakRSSBytes != 0 || entry.SampledTempDiskBytes != 0 {
+			t.Fatalf("expected failure fabricated sample metrics: %+v", entry)
+		}
+	}
+
+	mismatch := expected
+	mismatch.RunID = "benchmark_synthetic_mismatch"
+	matched := false
+	mismatch.FailureMatch = &matched
+	mismatchPath := writeReceiptSummary(t, mismatch)
+	if _, err := CompareBenchmarkReceipts([]string{mismatchPath}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("mismatched expected failure was accepted: %v", err)
+	}
+
+	incomplete := expected
+	incomplete.RunID = "benchmark_synthetic_zero"
+	incomplete.Status = "incomplete"
+	incomplete.ExpectedFailureClass = ""
+	incomplete.ObservedFailureClass = ""
+	incomplete.FailureMatch = nil
+	incompletePath := writeReceiptSummary(t, incomplete)
+	if _, err := CompareBenchmarkReceipts([]string{incompletePath}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("zero-sample summary without expected-failure evidence was accepted: %v", err)
+	}
+}
+
 type decodedComparison struct {
-	Groups []struct {
-		FixtureID     string            `json:"fixture_id"`
-		FixtureSHA256 string            `json:"fixture_sha256"`
-		Settings      BenchmarkSettings `json:"settings"`
-		Entries       []struct {
-			CandidateID      string   `json:"candidate_id"`
-			CandidateVersion string   `json:"candidate_version"`
-			Mode             string   `json:"mode"`
-			Status           string   `json:"status"`
-			FailureClasses   []string `json:"failure_classes"`
-		} `json:"entries"`
-	} `json:"groups"`
+	Groups []decodedComparisonGroup `json:"groups"`
+}
+
+type decodedComparisonGroup struct {
+	FixtureID            string            `json:"fixture_id"`
+	FixtureSHA256        string            `json:"fixture_sha256"`
+	Settings             BenchmarkSettings `json:"settings"`
+	ExpectedFailureClass string            `json:"expected_failure_class"`
+	ObservedFailureClass string            `json:"observed_failure_class"`
+	FailureMatch         *bool             `json:"failure_match"`
+	Entries              []struct {
+		CandidateID          string   `json:"candidate_id"`
+		CandidateVersion     string   `json:"candidate_version"`
+		Mode                 string   `json:"mode"`
+		Status               string   `json:"status"`
+		Samples              int      `json:"samples"`
+		P50Millis            *int64   `json:"p50_millis"`
+		P95Millis            *int64   `json:"p95_millis"`
+		PeakRSSBytes         int64    `json:"peak_rss_bytes"`
+		SampledTempDiskBytes int64    `json:"sampled_temp_disk_bytes"`
+		FailureClasses       []string `json:"failure_classes"`
+	} `json:"entries"`
 }
 
 func marshalComparison(t *testing.T, comparison Comparison) decodedComparison {
