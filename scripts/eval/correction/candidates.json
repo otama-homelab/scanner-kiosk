@@ -1,0 +1,15 @@
+{
+  "format": "scanner-correction-candidate-survey",
+  "version": 1,
+  "surveyed_at": "2026-11-09",
+  "prototype_policy": {
+    "max_non_heavy": 2,
+    "max_heavy": 1,
+    "protocols": [
+      "scanner-eval run",
+      "scanner-eval benchmark"
+    ]
+  },
+  "prototype_selection": [],
+  "candidates": []
+}
