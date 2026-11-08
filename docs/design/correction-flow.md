@@ -44,7 +44,7 @@ Replaying the exact intent returns the stored projection. A different body under
 
 ## Fallback
 
-Apply is disabled when risk flags include `edge-risk`, `low-confidence` or `fallback`. The full original remains available. A failed or unavailable preview and a correction capability outage never disable ordinary image/PDF save, OCR on the original, rotation, reorder or deletion.
+`page_corrections.risk_flags` is the authoritative policy source. The document store rejects apply whenever that list is non-empty, including `edge-risk`, `low-confidence`, `fallback` and unknown future values; UI state cannot override the rejection. Malformed or oversized risk evidence also fails closed. The full original remains available. A failed or unavailable preview and a correction capability outage never disable ordinary image/PDF save, OCR on the original, rotation, reorder or deletion.
 
 After undo the projection may expose another suggested correction. Applying that new suggestion is the reprocess path; it does not rescan the physical page.
 

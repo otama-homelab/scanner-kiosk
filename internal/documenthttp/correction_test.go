@@ -68,6 +68,32 @@ func TestCorrectionStale(t *testing.T) {
 	}
 }
 
+func TestCorrectionRiskConflictHTTP(t *testing.T) {
+	records := correctionMemory(t)
+	records.failure = documents.ErrConflict
+	handler := &Handler{store: records, retention: time.Hour}
+	request := httptest.NewRequest("POST",
+		"https://scanner.example.test/api/documents/"+correctionDocumentID+"/pages/"+correctionPageID+"/correction",
+		strings.NewReader(`{"suggestion_id":"suggestion_memory_001","source_sha256":"`+strings.Repeat("a", 64)+`"}`))
+	request.SetPathValue("document_id", correctionDocumentID)
+	request.SetPathValue("page_id", correctionPageID)
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Idempotency-Key", correctionRequestKey)
+	request.Header.Set("If-Match", `"7"`)
+	response := httptest.NewRecorder()
+	handler.applyCorrection(response, request, websession.Principal{ID: records.owner})
+
+	if response.Code != 409 || records.calls != 1 {
+		t.Fatalf("risk correction status=%d calls=%d body=%s", response.Code, records.calls, response.Body.String())
+	}
+	if body := response.Body.String(); body != "{\"code\":\"conflict\",\"message\":\"Conflict\"}\n" {
+		t.Fatalf("risk correction leaked or changed response shape: %s", body)
+	}
+	if records.projection.Revision != 7 || records.correction.SuggestionID != "suggestion_memory_001" {
+		t.Fatalf("risk conflict mutated handler state: projection=%+v request=%+v", records.projection, records.correction)
+	}
+}
+
 func TestCorrectionUnknown(t *testing.T) {
 	records := correctionMemory(t)
 	records.failure = errors.New("unknown result")
