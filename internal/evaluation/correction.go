@@ -87,13 +87,31 @@ type CorrectionComparisonRow struct {
 	FailureClass      string              `json:"failure_class,omitempty"`
 	Transform         CorrectionTransform `json:"transform"`
 	Quality           CorrectionQuality   `json:"quality"`
+	Resources         CorrectionResources `json:"resources"`
+}
+
+type CorrectionResources struct {
+	Status                string           `json:"status"`
+	FailureClass          string           `json:"failure_class,omitempty"`
+	BenchmarkRunID        string           `json:"benchmark_run_id,omitempty"`
+	CandidateID           string           `json:"candidate_id,omitempty"`
+	CandidateVersion      string           `json:"candidate_version,omitempty"`
+	ExecutableSHA256      string           `json:"executable_sha256,omitempty"`
+	CandidateConfigSHA256 string           `json:"candidate_config_sha256,omitempty"`
+	OriginalSHA256        string           `json:"original_sha256,omitempty"`
+	CorrectionSHA256      string           `json:"correction_sha256,omitempty"`
+	Metrics               BenchmarkMetrics `json:"metrics"`
+	Sources               []CandidatePin   `json:"sources,omitempty"`
+	Dependencies          []CandidatePin   `json:"dependencies,omitempty"`
+	OperatorSteps         []string         `json:"operator_steps,omitempty"`
 }
 
 type CorrectionComparison struct {
-	Format  string                    `json:"format"`
-	Version int                       `json:"version"`
-	Status  string                    `json:"status"`
-	Rows    []CorrectionComparisonRow `json:"rows"`
+	Format                    string                    `json:"format"`
+	Version                   int                       `json:"version"`
+	Status                    string                    `json:"status"`
+	UnmatchedBenchmarkSamples int                       `json:"unmatched_benchmark_samples,omitempty"`
+	Rows                      []CorrectionComparisonRow `json:"rows"`
 }
 
 var RequiredCorrectionOracleFixtures = []string{
@@ -203,8 +221,28 @@ func AnalyzeCorrectionCatalogs(paths []string, oracles CorrectionOracleFile) (Co
 	return comparison, nil
 }
 
+func AnalyzeCorrectionCatalogsWithBenchmarks(artifactPaths, benchmarkPaths []string,
+	oracles CorrectionOracleFile) (CorrectionComparison, error) {
+	comparison, err := AnalyzeCorrectionCatalogs(artifactPaths, oracles)
+	if err != nil {
+		return CorrectionComparison{}, err
+	}
+	for index := range comparison.Rows {
+		comparison.Rows[index].Resources.Status = "unavailable"
+		comparison.Rows[index].Resources.FailureClass = "resource-unavailable"
+		comparison.Rows[index].Status = "failed"
+	}
+	if len(benchmarkPaths) == 0 {
+		return comparison, nil
+	}
+	return comparison, nil
+}
+
 func analyzeCorrectionCatalog(path string, oracles CorrectionOracleFile) CorrectionComparisonRow {
-	row := CorrectionComparisonRow{MeasurementStatus: "incomplete", Status: "failed"}
+	row := CorrectionComparisonRow{
+		MeasurementStatus: "incomplete", Status: "failed",
+		Resources: CorrectionResources{Status: "unavailable", FailureClass: "resource-unavailable"},
+	}
 	catalog, err := loadArtifactCatalog(path)
 	if err != nil {
 		row.FailureClass = "artifact-catalog"

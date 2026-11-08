@@ -11,6 +11,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"testing"
@@ -191,6 +192,133 @@ func TestCorrectionComparison(t *testing.T) {
 	}
 }
 
+func TestCorrectionBenchmarkIdentity(t *testing.T) {
+	path, oracles := writeCorrectionSurvivalFixture(t, whiteImageWithContent(t), whiteImageWithContent(t),
+		image.Rect(10, 10, 20, 11), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+	benchmarkPath := writeCorrectionBenchmark(t, path)
+
+	comparison, err := AnalyzeCorrectionCatalogsWithBenchmarks([]string{path}, []string{benchmarkPath}, oracles)
+	if err != nil || len(comparison.Rows) != 1 {
+		t.Fatalf("identity-matched analysis failed: %+v %v", comparison, err)
+	}
+	row := comparison.Rows[0]
+	resources := row.Resources
+	if row.Status != "passed" || resources.Status != "complete" ||
+		resources.BenchmarkRunID == "" || resources.CandidateConfigSHA256 != strings.Repeat("c", 64) ||
+		resources.Metrics.Cold.P50Millis == nil || resources.Metrics.Warm.P95Millis == nil ||
+		len(resources.Sources) != 1 || resources.Sources[0].License != "test-only" ||
+		len(resources.OperatorSteps) != 1 || resources.OperatorSteps[0] != "run the fixture helper" {
+		t.Fatalf("benchmark evidence was not attached separately: %+v", row)
+	}
+}
+
+func TestCorrectionRejectsMismatchedResources(t *testing.T) {
+	for _, test := range []struct {
+		name   string
+		mutate func(*BenchmarkSummary)
+	}{
+		{name: "fixture", mutate: func(summary *BenchmarkSummary) {
+			summary.FixtureID = "fixture_other_001"
+		}},
+		{name: "candidate version", mutate: func(summary *BenchmarkSummary) {
+			summary.Candidate.Version = "2"
+		}},
+		{name: "executable hash", mutate: func(summary *BenchmarkSummary) {
+			summary.Candidate.ExecutableSHA256 = repeatTestHash("f")
+		}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			path, oracles := writeCorrectionSurvivalFixture(t, whiteImageWithContent(t), whiteImageWithContent(t),
+				image.Rect(10, 10, 20, 11), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+			benchmarkPath := writeCorrectionBenchmark(t, path)
+			body, err := os.ReadFile(benchmarkPath)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var summary BenchmarkSummary
+			if err := json.Unmarshal(body, &summary); err != nil {
+				t.Fatal(err)
+			}
+			test.mutate(&summary)
+			for index := range summary.Samples {
+				summary.Samples[index].FixtureID = summary.FixtureID
+				summary.Samples[index].Candidate = summary.Candidate
+			}
+			encoded, err := json.Marshal(summary)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(benchmarkPath, encoded, 0o600); err != nil {
+				t.Fatal(err)
+			}
+
+			comparison, err := AnalyzeCorrectionCatalogsWithBenchmarks([]string{path}, []string{benchmarkPath}, oracles)
+			if err != nil || len(comparison.Rows) != 1 {
+				t.Fatal(err)
+			}
+			row := comparison.Rows[0]
+			if row.Status != "failed" || comparison.Status != "incomplete" ||
+				row.Quality.Status != "passed" || row.Resources.Status != "invalid" ||
+				row.Resources.FailureClass != "resource-identity-mismatch" {
+				t.Fatalf("mismatched identity became resource evidence: %+v", row)
+			}
+		})
+	}
+}
+
+func TestCorrectionFourArmClosure(t *testing.T) {
+	cleanPath, oracles := writeCorrectionSurvivalFixtureCandidate(t, "candidate_clean_001",
+		whiteImageWithContent(t), whiteImageWithContent(t), image.Rect(10, 10, 20, 11))
+	cleanBenchmark := writeCorrectionBenchmark(t, cleanPath)
+	destructivePath, oracles := writeCorrectionSurvivalFixtureCandidate(t, "candidate_destructive_001",
+		whiteImageWithContent(t), whiteTestImage(100, 50), image.Rect(10, 10, 20, 11))
+	destructiveBenchmark := writeCorrectionBenchmark(t, destructivePath)
+	validPath, oracles := writeCorrectionSurvivalFixtureCandidate(t, "candidate_valid_001",
+		whiteImageWithContent(t), whiteImageWithContent(t), image.Rect(10, 10, 20, 11))
+	validBenchmark := writeCorrectionBenchmark(t, validPath)
+	unavailablePath, _ := writeCorrectionSurvivalFixtureCandidate(t, "candidate_survival_001",
+		whiteImageWithContent(t), whiteImageWithContent(t), image.Rect(10, 10, 20, 11))
+	if err := os.Remove(filepath.Join(filepath.Dir(unavailablePath), "artifacts", "artifact_correction_survival_001")); err != nil {
+		t.Fatal(err)
+	}
+
+	artifacts := []string{cleanPath, unavailablePath, destructivePath, validPath}
+	benchmarks := []string{validBenchmark, destructiveBenchmark, cleanBenchmark}
+	comparison, err := AnalyzeCorrectionCatalogsWithBenchmarks(artifacts, benchmarks, oracles)
+	if err != nil || len(comparison.Rows) != 4 {
+		t.Fatalf("four-arm comparison failed: %+v %v", comparison, err)
+	}
+	var clean, unavailable, destructive, valid bool
+	for _, row := range comparison.Rows {
+		switch row.CandidateID {
+		case "candidate_clean_001":
+			clean = row.Quality.Status == "passed" && row.Resources.Status == "complete"
+		case "candidate_destructive_001":
+			destructive = row.Quality.Status == "failed" && row.Resources.Status == "complete"
+		case "candidate_valid_001":
+			valid = row.Quality.Status == "passed" && row.Resources.Status == "complete"
+		case "candidate_survival_001":
+			unavailable = row.Quality.Status == "failed" && row.Resources.Status == "unavailable"
+		}
+	}
+	if !clean || !unavailable || !destructive || !valid || comparison.Status != "incomplete" {
+		t.Fatalf("four arms were collapsed or fabricated: %+v", comparison)
+	}
+
+	reverseArtifacts := append([]string(nil), artifacts...)
+	for left, right := 0, len(reverseArtifacts)-1; left < right; left, right = left+1, right-1 {
+		reverseArtifacts[left], reverseArtifacts[right] = reverseArtifacts[right], reverseArtifacts[left]
+	}
+	reverseBenchmarks := append([]string(nil), benchmarks...)
+	for left, right := 0, len(reverseBenchmarks)-1; left < right; left, right = left+1, right-1 {
+		reverseBenchmarks[left], reverseBenchmarks[right] = reverseBenchmarks[right], reverseBenchmarks[left]
+	}
+	reversed, err := AnalyzeCorrectionCatalogsWithBenchmarks(reverseArtifacts, reverseBenchmarks, oracles)
+	if err != nil || !reflect.DeepEqual(comparison, reversed) {
+		t.Fatalf("comparison depends on receipt order: %+v != %+v (%v)", comparison, reversed, err)
+	}
+}
+
 func correctionCatalogForTest(t *testing.T, mode string) (string, CorrectionOracleFile) {
 	t.Helper()
 	root := filepath.Join("..", "..")
@@ -214,10 +342,23 @@ func correctionCatalogForTest(t *testing.T, mode string) (string, CorrectionOrac
 
 func writeCorrectionSurvivalFixture(t *testing.T, original, corrected *image.RGBA, region image.Rectangle,
 	quad string, width, height int, rotation int) (string, CorrectionOracleFile) {
+	return writeCorrectionSurvivalFixtureWithTransform(t, "candidate_survival_001", original, corrected,
+		region, quad, width, height, rotation)
+}
+
+func writeCorrectionSurvivalFixtureCandidate(t *testing.T, candidateID string, original, corrected *image.RGBA,
+	region image.Rectangle) (string, CorrectionOracleFile) {
+	return writeCorrectionSurvivalFixtureWithTransform(t, candidateID, original, corrected, region,
+		"[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+}
+
+func writeCorrectionSurvivalFixtureWithTransform(t *testing.T, candidateID string, original, corrected *image.RGBA,
+	region image.Rectangle, quad string, width, height int, rotation int) (string, CorrectionOracleFile) {
 	t.Helper()
 	root := t.TempDir()
-	artifacts := filepath.Join(root, "artifacts")
-	if err := os.Mkdir(artifacts, 0o700); err != nil {
+	runRoot := filepath.Join(root, "run")
+	artifacts := filepath.Join(runRoot, "artifacts")
+	if err := os.MkdirAll(artifacts, 0o700); err != nil {
 		t.Fatal(err)
 	}
 	writePNG := func(id string, value image.Image) string {
@@ -239,9 +380,10 @@ func writeCorrectionSurvivalFixture(t *testing.T, original, corrected *image.RGB
 		RunID: "run_correction_survival_001", FixtureID: "fixture_card_001",
 		FixtureSHA256: "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
 		Candidate: CandidateReceipt{
-			ID: "candidate_survival_001", Version: "1", ExecutableSHA256: repeatTestHash("a"),
-			Sources:    []CandidatePin{{Name: "fixture", Version: "1", License: "test-only"}},
-			Parameters: map[string]string{},
+			ID: candidateID, Version: "1", ExecutableSHA256: repeatTestHash("a"),
+			Sources:       []CandidatePin{{Name: "fixture", Version: "1", License: "test-only"}},
+			OperatorSteps: []string{"run the fixture helper"},
+			Parameters:    map[string]string{},
 		},
 		Status: "complete",
 		Original: &Artifact{
@@ -263,7 +405,7 @@ func writeCorrectionSurvivalFixture(t *testing.T, original, corrected *image.RGB
 	if err != nil {
 		t.Fatal(err)
 	}
-	path := filepath.Join(root, "artifact-catalog.json")
+	path := filepath.Join(runRoot, "artifact-catalog.json")
 	if err := os.WriteFile(path, body, 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -278,6 +420,76 @@ func writeCorrectionSurvivalFixture(t *testing.T, original, corrected *image.RGB
 			}},
 		}},
 	}
+}
+
+func whiteImageWithContent(t *testing.T) *image.RGBA {
+	t.Helper()
+	bitmap := whiteTestImage(100, 50)
+	for x := 10; x < 20; x++ {
+		bitmap.SetRGBA(x, 10, color.RGBA{R: 20, G: 30, B: 40, A: 255})
+	}
+	return bitmap
+}
+
+func writeCorrectionBenchmark(t *testing.T, catalogPath string) string {
+	t.Helper()
+	body, err := os.ReadFile(catalogPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var catalog ArtifactCatalog
+	if err := json.Unmarshal(body, &catalog); err != nil {
+		t.Fatal(err)
+	}
+	configSHA := strings.Repeat("c", 64)
+	relative, err := filepath.Rel(filepath.Dir(catalogPath), catalogPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	summary := BenchmarkSummary{
+		Format: BenchmarkFormat, Version: BenchmarkVersion, RunID: "benchmark_" + catalog.Candidate.ID,
+		Status: "complete", StartedAt: "2026-11-09T00:00:00Z", FinishedAt: "2026-11-09T00:00:03Z",
+		FixtureID: catalog.FixtureID, FixtureSHA256: catalog.FixtureSHA256,
+		Candidate: catalog.Candidate, CandidateConfigSHA256: configSHA,
+		Parameters:         copyParameters(catalog.Candidate.Parameters),
+		InvocationTemplate: []string{"/usr/bin/time", "{candidate}"},
+		Observer: ObserverEvidence{Path: "/usr/bin/time", SHA256: repeatTestHash("d"),
+			Version: "time", License: "GPL-3.0-or-later"},
+		Settings: BenchmarkSettings{ColdRepetitions: 1, WarmRepetitions: 2, TimeoutSeconds: 900,
+			MaxRSSBytes: 1 << 30, MaxTempDiskBytes: 1 << 30},
+		Metrics: BenchmarkMetrics{
+			Cold: ModeMetrics{Samples: 1, P50Millis: int64TestPointer(100), P95Millis: int64TestPointer(100),
+				PeakRSSBytes: 1000},
+			Warm: ModeMetrics{Samples: 2, P50Millis: int64TestPointer(80), P95Millis: int64TestPointer(90),
+				PeakRSSBytes: 900},
+		},
+	}
+	for index, mode := range []string{"cold", "warm", "warm"} {
+		summary.Samples = append(summary.Samples, BenchmarkSample{
+			SampleID: summary.RunID + "_" + strconv.Itoa(index+1), Mode: mode, Sequence: index + 1,
+			StartedAt: "2026-11-09T00:00:00Z", FinishedAt: "2026-11-09T00:00:01Z",
+			FixtureID: summary.FixtureID, FixtureSHA256: summary.FixtureSHA256,
+			Candidate: summary.Candidate, CandidateConfigSHA256: configSHA,
+			Parameters: summary.Parameters, WallMillis: 100, PeakRSSBytes: 1000,
+			Status: "complete", ValidationStatus: "passed",
+			ArtifactCatalog: relative, ReceiptPath: "receipts/" + strconv.Itoa(index+1) + ".json",
+			SourceHashesBefore: map[string]string{"fixture": summary.FixtureSHA256},
+			SourceHashesAfter:  map[string]string{"fixture": summary.FixtureSHA256},
+		})
+	}
+	benchmarkPath := filepath.Join(filepath.Dir(catalogPath), "benchmark.json")
+	encoded, err := json.Marshal(summary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(benchmarkPath, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return benchmarkPath
+}
+
+func int64TestPointer(value int64) *int64 {
+	return &value
 }
 
 func whiteTestImage(width, height int) *image.RGBA {
