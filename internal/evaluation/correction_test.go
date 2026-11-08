@@ -68,7 +68,7 @@ func TestCorrectionPixelSurvival(t *testing.T) {
 	}
 	corrected := whiteTestImage(50, 25)
 	corrected.SetRGBA(5, 5, color.RGBA{R: 20, G: 30, B: 40, A: 255})
-	path, oracles := writeCorrectionSurvivalFixture(t, original, corrected, image.Rect(10, 10, 12, 1),
+	path, oracles := writeCorrectionSurvivalFixture(t, original, corrected, image.Rect(10, 10, 12, 11),
 		"[[0,0],[100,0],[100,50],[0,50]]", 50, 25, 0)
 
 	comparison, err := AnalyzeCorrectionCatalogs([]string{path}, oracles)
@@ -91,7 +91,7 @@ func TestCorrectionErasedContentFails(t *testing.T) {
 	for x := 10; x < 30; x++ {
 		original.SetRGBA(x, 10, color.RGBA{R: 20, G: 30, B: 40, A: 255})
 	}
-	path, oracles := writeCorrectionSurvivalFixture(t, original, whiteTestImage(100, 50), image.Rect(10, 10, 20, 1),
+	path, oracles := writeCorrectionSurvivalFixture(t, original, whiteTestImage(100, 50), image.Rect(10, 10, 30, 11),
 		"[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
 
 	comparison, err := AnalyzeCorrectionCatalogs([]string{path}, oracles)
@@ -108,7 +108,7 @@ func TestCorrectionErasedContentFails(t *testing.T) {
 
 func TestCorrectionRejectsEmptyOracleRegion(t *testing.T) {
 	path, oracles := writeCorrectionSurvivalFixture(t, whiteTestImage(100, 50), whiteTestImage(100, 50),
-		image.Rect(10, 10, 20, 1), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+		image.Rect(10, 10, 30, 11), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
 	comparison, err := AnalyzeCorrectionCatalogs([]string{path}, oracles)
 	if err != nil || len(comparison.Rows) != 1 {
 		t.Fatal(err)

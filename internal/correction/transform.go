@@ -135,8 +135,55 @@ func ValidQuad(quad [4]Point) bool {
 }
 
 // MapSourcePoint maps a source point through the crop and output rotation.
+// Crop corners [TL,TR,BR,BL] map to [(0,0),(W,0),(W,H),(0,H)]. Pixel sampling
+// is rounded down; positive rotation is counter-clockwise with y increasing down.
 func MapSourcePoint(source Point, transform Transform) (Point, bool) {
-	return Point{}, false
+	if !finite(source.X) || !finite(source.Y) || !finite(transform.RotationDegrees) ||
+		transform.OutputWidth < 1 || transform.OutputHeight < 1 || !ValidQuad(transform.CropQuad) {
+		return Point{}, false
+	}
+	p0, p1, p2, p3 := transform.CropQuad[0], transform.CropQuad[1], transform.CropQuad[2], transform.CropQuad[3]
+	bx, by := p1.X-p0.X, p1.Y-p0.Y
+	cx, cy := p3.X-p0.X, p3.Y-p0.Y
+	dx, dy := p2.X-p1.X-p3.X+p0.X, p2.Y-p1.Y-p3.Y+p0.Y
+	u, v := 0.5, 0.5
+	for range 32 {
+		qx := p0.X + u*bx + v*cx + u*v*dx
+		qy := p0.Y + u*by + v*cy + u*v*dy
+		fx, fy := source.X-qx, source.Y-qy
+		j11, j12 := bx+v*dx, cx+u*dx
+		j21, j22 := by+v*dy, cy+u*dy
+		determinant := j11*j22 - j12*j21
+		if math.Abs(determinant) < 1e-12 {
+			return Point{}, false
+		}
+		du := (fx*j22 - fy*j12) / determinant
+		dv := (fy*j11 - fx*j21) / determinant
+		u += du
+		v += dv
+		if math.Abs(du)+math.Abs(dv) < 1e-10 {
+			break
+		}
+	}
+	const epsilon = 1e-7
+	if !finite(u) || !finite(v) || u < -epsilon || u > 1+epsilon || v < -epsilon || v > 1+epsilon {
+		return Point{}, false
+	}
+	u = math.Max(0, math.Min(1, u))
+	v = math.Max(0, math.Min(1, v))
+	x, y := u*float64(transform.OutputWidth), v*float64(transform.OutputHeight)
+	if transform.RotationDegrees != 0 {
+		centerX, centerY := float64(transform.OutputWidth)/2, float64(transform.OutputHeight)/2
+		radians := transform.RotationDegrees * math.Pi / 180
+		cosine, sine := math.Cos(radians), math.Sin(radians)
+		relativeX, relativeY := x-centerX, y-centerY
+		x = centerX + cosine*relativeX + sine*relativeY
+		y = centerY - sine*relativeX + cosine*relativeY
+	}
+	if x < 0 || y < 0 || x > float64(transform.OutputWidth) || y > float64(transform.OutputHeight) {
+		return Point{}, false
+	}
+	return Point{X: x, Y: y}, true
 }
 
 func finite(value float64) bool {

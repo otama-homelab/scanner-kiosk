@@ -1078,6 +1078,11 @@ func makeCorrectionPNG(t *testing.T) []byte {
 			bitmap.SetRGBA(x, y, color.RGBA{40, 90, 140, 255})
 		}
 	}
+	for y := 120; y < 140; y++ {
+		for x := 120; x < 300; x++ {
+			bitmap.SetRGBA(x, y, color.RGBA{40, 90, 140, 255})
+		}
+	}
 	var encoded bytes.Buffer
 	if err := png.Encode(&encoded, bitmap); err != nil {
 		t.Fatal(err)

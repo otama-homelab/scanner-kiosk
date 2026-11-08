@@ -52,7 +52,7 @@ func TestCorrectionCanonicalMapping(t *testing.T) {
 	} {
 		got, ok := MapSourcePoint(source, transform)
 		if !ok || math.Abs(got.X-want.X) > 1e-6 || math.Abs(got.Y-want.Y) > 1e-6 {
-			t.Fatalf("map %+v = %+v, %v; want %+v", source, got, ok, want)
+			t.Fatalf("map %+v = %+v, %v; want %+v; transform=%+v valid=%v", source, got, ok, want, transform, ValidQuad(transform.CropQuad))
 		}
 	}
 
@@ -70,8 +70,8 @@ func TestCorrectionCanonicalMapping(t *testing.T) {
 		rotation float64
 		want     Point
 	}{
-		{name: "positive counter-clockwise", rotation: 45, want: Point{X: 50, Y: 110}},
-		{name: "negative clockwise", rotation: -45, want: Point{X: 50, Y: 90}},
+		{name: "positive counter-clockwise", rotation: 45, want: Point{X: 50 - 10/math.Sqrt2, Y: 50 + 10/math.Sqrt2}},
+		{name: "negative clockwise", rotation: -45, want: Point{X: 50 - 10/math.Sqrt2, Y: 50 - 10/math.Sqrt2}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			rotated := Transform{

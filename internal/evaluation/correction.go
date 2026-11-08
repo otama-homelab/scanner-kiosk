@@ -2,7 +2,9 @@ package evaluation
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"image"
 	"image/png"
 	"io"
@@ -18,6 +20,7 @@ const (
 	CorrectionOracleFormat  = "scanner-eval-correction-oracles"
 	CorrectionCompareFormat = "scanner-eval-correction-comparison"
 	CorrectionFormatVersion = 1
+	maxCorrectionPixels     = 80_000_000
 )
 
 type CorrectionPoint = correction.Point
@@ -251,12 +254,17 @@ func analyzeCorrectionCatalog(path string, oracles CorrectionOracleFile) Correct
 		row.FailureClass = "correction-unavailable"
 		return row
 	}
-	originalImage, err := png.Decode(bytes.NewReader(originalBytes))
+	if fmt.Sprintf("%x", sha256.Sum256(originalBytes)) != catalog.Original.SHA256 ||
+		fmt.Sprintf("%x", sha256.Sum256(correctionBytes)) != correction.SHA256 {
+		row.FailureClass = "artifact-hash"
+		return row
+	}
+	originalImage, err := decodeCorrectionPNG(originalBytes)
 	if err != nil {
 		row.FailureClass = "original-image"
 		return row
 	}
-	correctedImage, err := png.Decode(bytes.NewReader(correctionBytes))
+	correctedImage, err := decodeCorrectionPNG(correctionBytes)
 	if err != nil {
 		row.FailureClass = "correction-image"
 		return row
@@ -273,14 +281,27 @@ func analyzeCorrectionCatalog(path string, oracles CorrectionOracleFile) Correct
 		CorrectionWidth: correctedImage.Bounds().Dx(), CorrectionHeight: correctedImage.Bounds().Dy(),
 		EdgeRegions: len(oracle.EdgeRegions), ContentRegions: len(oracle.ContentRegions),
 	}
-	for _, region := range oracle.EdgeRegions {
-		if regionCenterInside(region, transform.CropQuad) {
+	var regionFailure string
+	quality.EdgeMeasurements, regionFailure = measureCorrectionRegions(
+		oracle.EdgeRegions, originalImage, correctedImage, transform, oracle.BackgroundRGB,
+	)
+	for _, measurement := range quality.EdgeMeasurements {
+		if measurement.RetainedForeground > 0 {
 			quality.EdgeRegionsRetained++
 		}
+		if measurement.OriginalForeground == 0 {
+			regionFailure = "empty-oracle-region"
+		}
 	}
-	for _, region := range oracle.ContentRegions {
-		if regionCenterInside(region, transform.CropQuad) {
+	quality.ContentMeasurements, regionFailure = measureCorrectionRegions(
+		oracle.ContentRegions, originalImage, correctedImage, transform, oracle.BackgroundRGB,
+	)
+	for _, measurement := range quality.ContentMeasurements {
+		if measurement.RetainedForeground > 0 {
 			quality.ContentRegionsRetained++
+		}
+		if measurement.OriginalForeground == 0 {
+			regionFailure = "empty-oracle-region"
 		}
 	}
 	quality.OriginalForeground = foregroundPixels(originalImage, oracle.BackgroundRGB)
@@ -292,6 +313,10 @@ func analyzeCorrectionCatalog(path string, oracles CorrectionOracleFile) Correct
 		quality.CorrectionForeground == 0 {
 		quality.Status = "failed"
 		row.FailureClass = "edge-or-content-loss"
+	}
+	if regionFailure != "" {
+		quality.Status = "failed"
+		row.FailureClass = regionFailure
 	}
 	row.Quality = quality
 	if row.MeasurementStatus == "complete" && quality.Status == "passed" {
@@ -318,29 +343,74 @@ func loadArtifactCatalog(path string) (ArtifactCatalog, error) {
 	return catalog, nil
 }
 
-func regionCenterInside(region CorrectionRegion, quad [4]CorrectionPoint) bool {
-	point := CorrectionPoint{
-		X: float64(region.X) + float64(region.Width)/2,
-		Y: float64(region.Y) + float64(region.Height)/2,
+func decodeCorrectionPNG(body []byte) (image.Image, error) {
+	config, err := png.DecodeConfig(bytes.NewReader(body))
+	if err != nil || config.Width < 1 || config.Height < 1 ||
+		config.Width > maxCorrectionPixels/config.Height {
+		return nil, ErrInvalid
 	}
-	inside := false
-	for i, j := 0, 3; i < 4; j, i = i, i+1 {
-		a, b := quad[i], quad[j]
-		if (a.Y > point.Y) != (b.Y > point.Y) &&
-			point.X < (b.X-a.X)*(point.Y-a.Y)/(b.Y-a.Y)+a.X {
-			inside = !inside
+	bitmap, err := png.Decode(bytes.NewReader(body))
+	if err != nil || bitmap.Bounds().Dx() != config.Width || bitmap.Bounds().Dy() != config.Height {
+		return nil, ErrInvalid
+	}
+	return bitmap, nil
+}
+
+func measureCorrectionRegions(regions []CorrectionRegion, original, corrected image.Image,
+	transform CorrectionTransform, background [3]uint8) ([]CorrectionRegionQuality, string) {
+	measurements := make([]CorrectionRegionQuality, 0, len(regions))
+	for _, region := range regions {
+		if region.Width < 1 || region.Height < 1 ||
+			region.X < original.Bounds().Min.X || region.Y < original.Bounds().Min.Y ||
+			region.X+region.Width > original.Bounds().Max.X ||
+			region.Y+region.Height > original.Bounds().Max.Y {
+			return measurements, "invalid-oracle-region"
 		}
+		measurement := CorrectionRegionQuality{
+			X: region.X, Y: region.Y, Width: region.Width, Height: region.Height,
+		}
+		for y := region.Y; y < region.Y+region.Height; y++ {
+			for x := region.X; x < region.X+region.Width; x++ {
+				if !isForeground(original, x, y, background) {
+					continue
+				}
+				measurement.OriginalForeground++
+				mapped, ok := correction.MapSourcePoint(
+					CorrectionPoint{X: float64(x) + 0.5, Y: float64(y) + 0.5}, transform,
+				)
+				if !ok {
+					continue
+				}
+				measurement.MappedForeground++
+				if isForeground(corrected, int(math.Floor(mapped.X)), int(math.Floor(mapped.Y)), background) {
+					measurement.RetainedForeground++
+				}
+			}
+		}
+		if measurement.OriginalForeground > 0 {
+			measurement.RetentionRatio = float64(measurement.RetainedForeground) /
+				float64(measurement.OriginalForeground)
+		}
+		measurements = append(measurements, measurement)
 	}
-	return inside
+	return measurements, ""
+}
+
+func isForeground(imageValue image.Image, x, y int, background [3]uint8) bool {
+	if !image.Pt(x, y).In(imageValue.Bounds()) {
+		return false
+	}
+	r, g, b, _ := imageValue.At(x, y).RGBA()
+	return distance(uint8(r>>8), background[0])+
+		distance(uint8(g>>8), background[1])+
+		distance(uint8(b>>8), background[2]) > 24
 }
 
 func foregroundPixels(imageValue image.Image, background [3]uint8) int64 {
 	var count int64
 	for y := imageValue.Bounds().Min.Y; y < imageValue.Bounds().Max.Y; y++ {
 		for x := imageValue.Bounds().Min.X; x < imageValue.Bounds().Max.X; x++ {
-			r, g, b, _ := imageValue.At(x, y).RGBA()
-			r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
-			if distance(r8, background[0])+distance(g8, background[1])+distance(b8, background[2]) > 24 {
+			if isForeground(imageValue, x, y, background) {
 				count++
 			}
 		}
