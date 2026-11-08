@@ -117,6 +117,43 @@ func TestCorrectionRejectsEmptyOracleRegion(t *testing.T) {
 	if comparison.Rows[0].Quality.Status != "failed" || comparison.Rows[0].FailureClass != "empty-oracle-region" {
 		t.Fatalf("empty oracle region passed: %+v", comparison.Rows[0])
 	}
+
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	published, err := LoadCorrectionOracles(
+		filepath.Join(root, "scripts", "fixtures", "evaluation", "correction-oracles.json"),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, fixtureBody, err := ResolveFixture(catalogPath, "", "", "fixture_white_on_white_001")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fixtureImage, err := png.Decode(bytes.NewReader(fixtureBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, entry := range published.Entries {
+		if entry.FixtureID != "fixture_white_on_white_001" {
+			continue
+		}
+		for _, region := range entry.ContentRegions {
+			foreground := 0
+			for y := region.Y; y < region.Y+region.Height; y++ {
+				for x := region.X; x < region.X+region.Width; x++ {
+					if isForeground(fixtureImage, x, y, entry.BackgroundRGB) {
+						foreground++
+					}
+				}
+			}
+			if foreground == 0 {
+				t.Fatalf("white-on-white content oracle has no measurable foreground: %+v", region)
+			}
+		}
+		return
+	}
+	t.Fatal("white-on-white oracle entry is missing")
 }
 
 func TestCorrectionOracleCoverage(t *testing.T) {
