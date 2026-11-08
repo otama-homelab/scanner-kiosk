@@ -3,8 +3,10 @@ package evaluation
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"image"
 	"image/color"
 	"image/png"
@@ -154,6 +156,31 @@ func TestCorrectionRejectsEmptyOracleRegion(t *testing.T) {
 		return
 	}
 	t.Fatal("white-on-white oracle entry is missing")
+}
+
+func TestWhiteOnWhiteFixtureIdentity(t *testing.T) {
+	catalog := loadFixtureCatalogForTest(t)
+	for _, fixture := range catalog.Fixtures {
+		if fixture.ID != "fixture_white_on_white_001" {
+			continue
+		}
+		bitmap, err := renderPattern(fixture.Recipe.Variant, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var body bytes.Buffer
+		encoder := png.Encoder{CompressionLevel: png.BestSpeed}
+		if err := encoder.Encode(&body, bitmap); err != nil {
+			t.Fatal(err)
+		}
+		sum := sha256.Sum256(body.Bytes())
+		actual := fmt.Sprintf("sha256=%x bytes=%d", sum, body.Len())
+		if fixture.SHA256 != fmt.Sprintf("%x", sum) || fixture.Bytes != int64(body.Len()) {
+			t.Fatalf("white-on-white fixture identity: %s", actual)
+		}
+		return
+	}
+	t.Fatal("white-on-white fixture definition is missing")
 }
 
 func TestCorrectionOracleCoverage(t *testing.T) {

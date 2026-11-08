@@ -890,6 +890,10 @@ func patternCanvas(width, height int, variant string) image.Image {
 	}
 	if variant == "white-on-white" {
 		draw.Draw(img, image.Rect(width/6, height/5, width*5/6, height*4/5), &image.Uniform{C: color.RGBA{248, 248, 248, 255}}, image.Point{}, draw.Src)
+		lowInk := color.RGBA{R: 246, G: 246, B: 246, A: 255}
+		for y := height / 4; y < height*3/4; y += height / 16 {
+			draw.Draw(img, image.Rect(width/4, y, width*3/4, y+4), &image.Uniform{C: lowInk}, image.Point{}, draw.Src)
+		}
 	}
 	if variant == "card" || variant == "photo" || variant == "receipt" {
 		border := color.RGBA{R: 40, G: 90, B: 140, A: 255}

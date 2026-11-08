@@ -131,8 +131,8 @@
       "languages": ["ja", "en"],
       "document_type": "white-on-white",
       "expected_outputs": ["ocr-text", "positioned-text", "pdf"],
-      "sha256": "3b3183628305abd483f099df717725745b6de9e8c2db033eb05e5791d7940b66",
-      "bytes": 35971,
+      "sha256": "efa08e798aaf183bdd21a626c0acf23ff2b3d8e19bbb4e997eadc0dd115c74fe",
+      "bytes": 36640,
       "recipe": {"kind": "pattern", "variant": "white-on-white"}
     },
     {

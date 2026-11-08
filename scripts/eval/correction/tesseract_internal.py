@@ -7,21 +7,31 @@ from PIL import Image
 
 from common import write_result
 
-loader = os.environ["EVAL_TESSERACT_LOADER"]
-binary = os.environ["EVAL_TESSERACT_BINARY"]
-runtime_lib = os.environ["EVAL_TESSERACT_LIB"]
 source = os.environ["SCANNER_EVAL_INPUT"]
 output = Path(os.environ["SCANNER_EVAL_OUTPUT"])
-subprocess.run([
-    loader,
-    f"--library-path={runtime_lib}",
-    binary,
-    source,
-    "stdout",
-    "-l", "jpn+eng",
-    "--psm", "1",
-    "-c", "tessedit_write_images=1",
-], cwd=output, check=True, timeout=90, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+onefile = os.environ.get("EVAL_TESSERACT_ONEFILE")
+if onefile:
+    command = [
+        onefile,
+        source,
+        "stdout",
+        "--tessdata-dir", os.environ["EVAL_TESSERACT_TESSDATA"],
+        "-l", "jpn+eng",
+        "--psm", "1",
+        "-c", "tessedit_write_images=1",
+    ]
+else:
+    command = [
+        os.environ["EVAL_TESSERACT_LOADER"],
+        f"--library-path={os.environ['EVAL_TESSERACT_LIB']}",
+        os.environ["EVAL_TESSERACT_BINARY"],
+        source,
+        "stdout",
+        "-l", "jpn+eng",
+        "--psm", "1",
+        "-c", "tessedit_write_images=1",
+    ]
+subprocess.run(command, cwd=output, check=True, timeout=90, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 internal_files = list(output.glob("*.processed.tif"))
 if len(internal_files) != 1:
     raise SystemExit("tesseract internal image unavailable")

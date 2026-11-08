@@ -58,13 +58,13 @@ scripts/eval/correction/prepare_catalog.py \
   --output /private/eval/correction/scripts/fixtures/evaluation/correction-catalog.json
 ```
 
-Create candidate configs. Pass the already materialized Tesseract 5.5.4 runtime when it is available; without `--tesseract-runtime`, the script emits only the three locally buildable arms and does not fabricate the unavailable arm:
+Create candidate configs. Pass the already materialized Tesseract 5.5.4 runtime when it is available; `--tesseract-runtime` accepts either an extracted runtime root or the executable `tools/scanner-native-tesseract` from a verified onefile cache. A onefile must report a version beginning with `tesseract 5.5.4` before it is used. Without `--tesseract-runtime`, the script emits only the three locally buildable arms and does not fabricate the unavailable arm:
 
 ```sh
 # Include the runtime flag only when the pinned Tesseract 5.5.4 runtime exists.
 scripts/eval/correction/prepare_candidates.py \
   --root /private/eval/correction \
-  --tesseract-runtime /absolute/pinned/tesseract-5.5.4 \
+  --tesseract-runtime /absolute/pinned/runtime/tools/scanner-native-tesseract \
   --output /private/eval/correction/candidates
 ```
 

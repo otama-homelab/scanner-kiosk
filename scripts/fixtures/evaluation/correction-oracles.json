@@ -31,7 +31,7 @@
     },
     {
       "fixture_id": "fixture_white_on_white_001",
-      "fixture_sha256": "3b3183628305abd483f099df717725745b6de9e8c2db033eb05e5791d7940b66",
+      "fixture_sha256": "efa08e798aaf183bdd21a626c0acf23ff2b3d8e19bbb4e997eadc0dd115c74fe",
       "background_rgb": [255, 255, 255],
       "edge_regions": [{"x": 120, "y": 160, "width": 960, "height": 2}],
       "content_regions": [{"x": 200, "y": 300, "width": 400, "height": 400}]
