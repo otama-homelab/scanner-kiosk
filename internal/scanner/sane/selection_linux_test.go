@@ -42,6 +42,22 @@ cat "$SANE_CONFIG_DIR/options.txt"`)
 		t.Fatal("probe retained scratch", err)
 	}
 }
+
+func TestNoScanIntentAndFixedAreaDefault(t *testing.T) {
+	args, err := selectionArguments(Selection{Size: "a4", Color: "color", DPI: 300})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "--source=Flatbed --mode=Color --resolution=300 -l 0 -t 0 -x 210 -y 297"
+	if got := strings.Join(args, " "); got != want {
+		t.Fatalf("fixed-area selection changed: %s", got)
+	}
+	for _, arg := range args {
+		if strings.Contains(strings.ToLower(arg), "intent") {
+			t.Fatalf("production selection contains unsupported intent: %s", arg)
+		}
+	}
+}
 func TestSelectedProbeRejectsAdjustedOrUnsupportedSettings(t *testing.T) {
 	cases := map[string]string{
 		"mode":                  strings.ReplaceAll(selectedListing(), "Gray|Color [Gray]", "Gray|Color [Color]"),
