@@ -56,10 +56,15 @@ func TestGenerateAndListA4FixtureEndToEnd(t *testing.T) {
 	if err := json.Unmarshal(body, &generated); err != nil {
 		t.Fatal(err)
 	}
-	if len(generated.Fixtures) != 1 || generated.Fixtures[0].ID != "fixture_a4_ja_en_001" ||
-		generated.Fixtures[0].SHA256 != "e2a8b58d65452c9a7e4b471481e2149c9d14502cc75b1c48120ceef9bc860e08" ||
-		generated.Fixtures[0].Availability != "available" {
-		t.Fatalf("unexpected manifest: %+v", generated.Fixtures)
+	var a4 bool
+	for _, fixture := range generated.Fixtures {
+		if fixture.ID == "fixture_a4_ja_en_001" && fixture.SHA256 == "e2a8b58d65452c9a7e4b471481e2149c9d14502cc75b1c48120ceef9bc860e08" &&
+			fixture.Availability == "available" && len(fixture.ExpectedText) == 3 {
+			a4 = true
+		}
+	}
+	if !a4 {
+		t.Fatalf("A4 fixture missing: %+v", generated.Fixtures)
 	}
 	if _, err := os.Stat(filepath.Join(output, "fixture_a4_ja_en_001.png")); err != nil {
 		t.Fatal(err)
@@ -80,9 +85,14 @@ func TestGenerateAndListA4FixtureEndToEnd(t *testing.T) {
 	if err := json.Unmarshal([]byte(result.stdout), &listed); err != nil {
 		t.Fatal(err)
 	}
-	if len(listed.Fixtures) != 1 || listed.Fixtures[0].ID != "fixture_a4_ja_en_001" ||
-		listed.Fixtures[0].Available != "available" || len(listed.Fixtures[0].ExpectedTx) != 3 {
-		t.Fatalf("unexpected list: %s", result.stdout)
+	a4 = false
+	for _, fixture := range listed.Fixtures {
+		if fixture.ID == "fixture_a4_ja_en_001" && fixture.Available == "available" && len(fixture.ExpectedTx) == 3 {
+			a4 = true
+		}
+	}
+	if !a4 {
+		t.Fatalf("A4 fixture missing from list: %s", result.stdout)
 	}
 
 	cmd := exec.Command("go", "list", "-deps", "./cmd/scanner-eval")

@@ -43,11 +43,13 @@ func run(_ context.Context, args []string, stdout, stderr io.Writer) int {
 		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
 		flags.SetOutput(io.Discard)
 		catalog := flags.String("catalog", "", "")
+		privateCatalog := flags.String("private-catalog", "", "")
+		privateRoot := flags.String("private-root", "", "")
 		if flags.Parse(args[1:]) != nil || *catalog == "" || len(flags.Args()) != 0 {
 			fmt.Fprintln(stderr, "scanner-eval: invalid input")
 			return 2
 		}
-		manifest, err := evaluation.List(*catalog)
+		manifest, err := evaluation.ListWithPrivate(*catalog, *privateCatalog, *privateRoot)
 		if err != nil {
 			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
 			return 1

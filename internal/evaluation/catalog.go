@@ -55,6 +55,51 @@ func LoadCatalog(path string) (Catalog, error) {
 	return catalog, nil
 }
 
+func LoadPrivateCatalog(path string) (PrivateCatalog, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return PrivateCatalog{}, ErrInvalid
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(io.LimitReader(file, 4<<20))
+	decoder.DisallowUnknownFields()
+	var catalog PrivateCatalog
+	if err := decoder.Decode(&catalog); err != nil || decoder.Decode(&struct{}{}) != io.EOF {
+		return PrivateCatalog{}, ErrInvalid
+	}
+	if err := catalog.Validate(); err != nil {
+		return PrivateCatalog{}, err
+	}
+	return catalog, nil
+}
+
+func (c PrivateCatalog) Validate() error {
+	if c.Format != CatalogFormat || c.Version != CatalogVersion || len(c.Fixtures) == 0 || len(c.Fixtures) > maxFixtures {
+		return ErrInvalid
+	}
+	seen := map[string]bool{}
+	for index, fixture := range c.Fixtures {
+		if !ValidID(fixture.ID) || seen[fixture.ID] || fixture.Privacy != PrivacyOwnerPrivate ||
+			fixture.MediaType != "image/png" || len(fixture.PageIDs) == 0 || len(fixture.PageIDs) > 256 ||
+			!boundedToken(fixture.DocumentType, 64) || len(fixture.ExpectedOutputs) > 6 ||
+			len(fixture.ExpectedOutputs) == 0 && fixture.ExpectedFailureClass == "" ||
+			!boundedOptionalToken(fixture.ExpectedFailureClass, 64) || !safeRelative(fixture.RelativePath) ||
+			!validHash(fixture.SHA256) || fixture.Bytes <= 0 || fixture.Bytes > maxFixtureBytes ||
+			!validStrings(fixture.Languages, 8, 16) {
+			return fmt.Errorf("%w: private fixture %d", ErrInvalid, index)
+		}
+		seen[fixture.ID] = true
+		roles := map[ArtifactRole]bool{}
+		for _, role := range fixture.ExpectedOutputs {
+			if !ValidRole(role) || roles[role] {
+				return fmt.Errorf("%w: private fixture %d", ErrInvalid, index)
+			}
+			roles[role] = true
+		}
+	}
+	return nil
+}
+
 func (c Catalog) Validate() error {
 	if c.Format != CatalogFormat || c.Version != CatalogVersion || len(c.Fixtures) == 0 || len(c.Fixtures) > maxFixtures {
 		return ErrInvalid
@@ -170,16 +215,20 @@ func List(catalogPath string) (GeneratedManifest, error) {
 	manifest := GeneratedManifest{Format: CatalogFormat, Version: CatalogVersion, ToolVersion: ToolVersion}
 	for _, fixture := range fixtures {
 		availability := "available"
-		body, readErr := generateFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
-		if readErr != nil || fixture.SHA256 != "" && !matchesFixture(fixture, body) {
-			availability = "unavailable"
-		}
 		sha := fixture.SHA256
 		size := fixture.Bytes
-		if readErr == nil {
-			sum := sha256.Sum256(body)
-			sha = hex.EncodeToString(sum[:])
-			size = int64(len(body))
+		if fixture.Recipe.Kind == "copy" {
+			source, readErr := resolveRecipeSource(filepath.Dir(filepath.Dir(catalogPath)), fixture.Recipe.Source)
+			if readErr != nil {
+				availability = "unavailable"
+			} else {
+				body, readErr := readBoundedFile(source, maxFixtureBytes)
+				if readErr != nil || !matchesFixture(fixture, body) {
+					availability = "unavailable"
+				}
+			}
+		} else if sha == "" || size == 0 {
+			availability = "unavailable"
 		}
 		manifest.Fixtures = append(manifest.Fixtures, GeneratedFixture{
 			ID: fixture.ID, Privacy: fixture.Privacy, MediaType: fixture.MediaType,
@@ -188,6 +237,64 @@ func List(catalogPath string) (GeneratedManifest, error) {
 			SHA256: sha, Bytes: size, ExpectedText: fixture.ExpectedText, Availability: availability,
 		})
 	}
+	return manifest, nil
+}
+
+func ListWithPrivate(catalogPath, privateCatalogPath, privateRoot string) (GeneratedManifest, error) {
+	manifest, err := List(catalogPath)
+	if err != nil {
+		return GeneratedManifest{}, err
+	}
+	if privateCatalogPath == "" && privateRoot == "" {
+		return manifest, nil
+	}
+	if privateCatalogPath == "" || privateRoot == "" || !filepath.IsAbs(privateRoot) {
+		return GeneratedManifest{}, ErrInvalid
+	}
+	public, err := LoadCatalog(catalogPath)
+	if err != nil {
+		return GeneratedManifest{}, err
+	}
+	private, err := LoadPrivateCatalog(privateCatalogPath)
+	if err != nil {
+		return GeneratedManifest{}, err
+	}
+	publicIDs := map[string]bool{}
+	for _, fixture := range public.Fixtures {
+		publicIDs[fixture.ID] = true
+	}
+	root, err := os.OpenRoot(privateRoot)
+	if err != nil {
+		return GeneratedManifest{}, ErrInvalid
+	}
+	defer root.Close()
+	for _, fixture := range private.Fixtures {
+		if publicIDs[fixture.ID] {
+			return GeneratedManifest{}, ErrInvalid
+		}
+		generated := GeneratedFixture{
+			ID: fixture.ID, Privacy: fixture.Privacy, MediaType: fixture.MediaType,
+			PageIDs: fixture.PageIDs, Languages: fixture.Languages, DocumentType: fixture.DocumentType,
+			ExpectedOutputs: fixture.ExpectedOutputs, ExpectedFailureClass: fixture.ExpectedFailureClass,
+			SHA256: fixture.SHA256, Bytes: fixture.Bytes, Availability: "unavailable",
+		}
+		info, err := root.Lstat(fixture.RelativePath)
+		if err == nil && info.Mode().IsRegular() && info.Mode().Perm()&0o077 == 0 {
+			file, openErr := root.Open(fixture.RelativePath)
+			if openErr == nil {
+				body, readErr := io.ReadAll(io.LimitReader(file, maxFixtureBytes+1))
+				file.Close()
+				if readErr == nil && int64(len(body)) == fixture.Bytes {
+					sum := sha256.Sum256(body)
+					if hex.EncodeToString(sum[:]) == fixture.SHA256 {
+						generated.Availability = "available"
+					}
+				}
+			}
+		}
+		manifest.Fixtures = append(manifest.Fixtures, generated)
+	}
+	sort.Slice(manifest.Fixtures, func(i, j int) bool { return manifest.Fixtures[i].ID < manifest.Fixtures[j].ID })
 	return manifest, nil
 }
 

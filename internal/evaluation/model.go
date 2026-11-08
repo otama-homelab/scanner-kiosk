@@ -60,6 +60,26 @@ type Catalog struct {
 	Fixtures []FixtureDefinition `json:"fixtures"`
 }
 
+type PrivateCatalog struct {
+	Format   string           `json:"format"`
+	Version  int              `json:"version"`
+	Fixtures []PrivateFixture `json:"fixtures"`
+}
+
+type PrivateFixture struct {
+	ID                   string         `json:"id"`
+	Privacy              string         `json:"privacy"`
+	MediaType            string         `json:"media_type"`
+	PageIDs              []string       `json:"page_ids"`
+	Languages            []string       `json:"languages,omitempty"`
+	DocumentType         string         `json:"document_type"`
+	ExpectedOutputs      []ArtifactRole `json:"expected_outputs"`
+	ExpectedFailureClass string         `json:"expected_failure_class,omitempty"`
+	RelativePath         string         `json:"relative_path"`
+	SHA256               string         `json:"sha256"`
+	Bytes                int64          `json:"bytes"`
+}
+
 type GeneratedFixture struct {
 	ID                   string         `json:"id"`
 	Privacy              string         `json:"privacy"`

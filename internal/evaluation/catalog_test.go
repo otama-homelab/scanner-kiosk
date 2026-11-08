@@ -1,9 +1,12 @@
 package evaluation
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -134,6 +137,96 @@ func TestCatalogRejectsIncompleteCorpus(t *testing.T) {
 	}
 }
 
+func TestPrivateFixture(t *testing.T) {
+	public, privateCatalog, root := privateFixtureSet(t, "PRIVATE_CANARY_DO_NOT_EMIT", 0o600)
+	manifest, err := ListWithPrivate(public, privateCatalog, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(manifest.Fixtures) != len(RequiredDocumentTypes)+1 {
+		t.Fatalf("got %d fixtures", len(manifest.Fixtures))
+	}
+	private := findGenerated(t, manifest, "fixture_owner_private_001")
+	if private.Availability != "available" {
+		t.Fatalf("private fixture unavailable: %+v", private)
+	}
+}
+
+func TestPrivateCanary(t *testing.T) {
+	canary := "PRIVATE_CANARY_DO_NOT_EMIT"
+	public, privateCatalog, root := privateFixtureSet(t, canary, 0o600)
+	manifest, err := ListWithPrivate(public, privateCatalog, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body, err := json.Marshal(manifest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, secret := range []string{canary, root, "owner-private.png"} {
+		if strings.Contains(string(body), secret) {
+			t.Fatalf("private value leaked: %s", secret)
+		}
+	}
+}
+
+func TestMissingPrivateFixture(t *testing.T) {
+	public, privateCatalog, root := privateFixtureSet(t, "PRIVATE_CANARY_DO_NOT_EMIT", 0o600)
+	if err := os.Remove(filepath.Join(root, "owner", "private.png")); err != nil {
+		t.Fatal(err)
+	}
+	manifest, err := ListWithPrivate(public, privateCatalog, root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if findGenerated(t, manifest, "fixture_owner_private_001").Availability != "unavailable" {
+		t.Fatal("missing private fixture was not unavailable")
+	}
+}
+
+func TestPrivateRejectsUnsafeFiles(t *testing.T) {
+	for name, mutate := range map[string]func(t *testing.T, path string){
+		"public": func(t *testing.T, path string) {
+			if err := os.Chmod(path, 0o644); err != nil {
+				t.Fatal(err)
+			}
+		},
+		"symlink": func(t *testing.T, path string) {
+			real := path + ".real"
+			body, err := os.ReadFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(real, body, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.Remove(path); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.Symlink(real, path); err != nil {
+				t.Skip("symlinks unavailable")
+			}
+		},
+		"hash": func(t *testing.T, path string) {
+			if err := os.WriteFile(path, []byte("different"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			public, privateCatalog, root := privateFixtureSet(t, "PRIVATE_CANARY_DO_NOT_EMIT", 0o600)
+			mutate(t, filepath.Join(root, "owner", "private.png"))
+			manifest, err := ListWithPrivate(public, privateCatalog, root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if findGenerated(t, manifest, "fixture_owner_private_001").Availability != "unavailable" {
+				t.Fatal("unsafe private fixture accepted")
+			}
+		})
+	}
+}
+
 func loadRepositoryCatalog(t *testing.T) Catalog {
 	t.Helper()
 	catalog, err := LoadCatalog(filepath.Join(repositoryRoot(t), "scripts", "fixtures", "evaluation", "catalog.json"))
@@ -150,6 +243,61 @@ func repositoryRoot(t *testing.T) string {
 		t.Fatal(err)
 	}
 	return root
+}
+
+func privateFixtureSet(t *testing.T, canary string, mode os.FileMode) (string, string, string) {
+	t.Helper()
+	root := t.TempDir()
+	public := filepath.Join(repositoryRoot(t), "scripts", "fixtures", "evaluation", "catalog.json")
+	privateDir := filepath.Join(root, "owner")
+	if err := os.Mkdir(privateDir, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(privateDir, "private.png")
+	if err := os.WriteFile(path, []byte(canary), mode); err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256Hex([]byte(canary))
+	privateCatalog := filepath.Join(root, "private-catalog.json")
+	body, err := json.Marshal(PrivateCatalog{
+		Format:  CatalogFormat,
+		Version: CatalogVersion,
+		Fixtures: []PrivateFixture{{
+			ID:              "fixture_owner_private_001",
+			Privacy:         PrivacyOwnerPrivate,
+			MediaType:       "image/png",
+			PageIDs:         []string{"page_owner_private_001"},
+			Languages:       []string{"ja"},
+			DocumentType:    "owner-text",
+			ExpectedOutputs: []ArtifactRole{RoleOCRText, RolePDF},
+			RelativePath:    "owner/private.png",
+			SHA256:          sum,
+			Bytes:           int64(len(canary)),
+		}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(privateCatalog, body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return public, privateCatalog, root
+}
+
+func sha256Hex(body []byte) string {
+	sum := sha256.Sum256(body)
+	return hex.EncodeToString(sum[:])
+}
+
+func findGenerated(t *testing.T, manifest GeneratedManifest, id string) GeneratedFixture {
+	t.Helper()
+	for _, fixture := range manifest.Fixtures {
+		if fixture.ID == id {
+			return fixture
+		}
+	}
+	t.Fatalf("fixture %s missing", id)
+	return GeneratedFixture{}
 }
 
 func testFixture(id string) FixtureDefinition {
