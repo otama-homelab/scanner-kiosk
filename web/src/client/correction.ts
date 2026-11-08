@@ -37,15 +37,14 @@ type Options={
   transform:string;
   confidence:string;
   unavailable:string;
+  previewUnavailable:string;
  };
 };
-
-const png='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl2n1cAAAAASUVORK5CYII=';
 
 export function correctionControl(options:Options){
  const button=document.createElement('button');button.type='button';button.textContent=options.labels.compare;button.dataset.pageAction='correction';
  let dialog:HTMLDialogElement|null=null,controller:AbortController|null=null,pending=false;
- const unsafe=options.correction.risk_flags.some(flag=>flag==='edge-risk'||flag==='low-confidence'||flag==='fallback');
+ const unsafe=options.correction.risk_flags.length>0;
  const close=()=>{if(!pending)dialog?.close()};
  const open=()=>{
   if(dialog||!options.current())return;
@@ -53,10 +52,7 @@ export function correctionControl(options:Options){
   dialog=document.createElement('dialog');dialog.className='correction-dialog';dialog.setAttribute('aria-labelledby','correction-title');
   const title=document.createElement('h2');title.id='correction-title';title.textContent=options.labels.title;
   const compare=document.createElement('div');compare.className='correction-compare';
-  for(const [label,url] of [[options.labels.original,options.originalURL],[options.labels.suggested,options.correction.preview_url]] as const){
-   const figure=document.createElement('figure');const caption=document.createElement('figcaption');caption.textContent=label;
-   const image=document.createElement('img');image.alt=label;image.src=url||png;image.addEventListener('error',()=>{image.src=png},{once:true});figure.append(caption,image);compare.append(figure);
-  }
+  let originalState:'pending'|'loaded'|'failed'='pending',correctionState:'pending'|'loaded'|'failed'='pending';
   const details=document.createElement('dl');details.className='correction-details';
   const values=[
    [options.labels.transform,`${options.correction.transform.output_width}×${options.correction.transform.output_height}, ${options.correction.transform.rotation_degrees}°`],
@@ -67,10 +63,25 @@ export function correctionControl(options:Options){
   const actions=document.createElement('div');actions.className='correction-actions';
   const keep=document.createElement('button');keep.type='button';keep.textContent=options.labels.keep;keep.addEventListener('click',close);
   const apply=document.createElement('button');apply.type='button';apply.className='primary';apply.textContent=options.labels.apply;
-  apply.disabled=unsafe||options.correction.state==='applied';
+  const refreshApply=()=>{apply.disabled=pending||unsafe||options.correction.state==='applied'||originalState!=='loaded'||correctionState!=='loaded'};
+  const text=(tag:string,value:string)=>{const element=document.createElement(tag);element.textContent=value;return element};
+  const previewUnavailable=(figure:HTMLElement)=>{
+   figure.querySelector('img')?.remove();
+   const unavailable=text('p',options.labels.previewUnavailable);unavailable.className='correction-preview-unavailable';unavailable.setAttribute('role','status');figure.append(unavailable);
+   notice.textContent=options.labels.previewUnavailable;
+  };
+  for(const [kind,label,url] of [['original',options.labels.original,options.originalURL],['correction',options.labels.suggested,options.correction.preview_url]] as const){
+   const figure=document.createElement('figure');const caption=document.createElement('figcaption');caption.textContent=label;
+   const image=document.createElement('img');image.alt=label;figure.append(caption,image);compare.append(figure);
+   const loaded=()=>{if(kind==='original')originalState='loaded';else correctionState='loaded';refreshApply()};
+   const failed=()=>{if(kind==='original')originalState='failed';else correctionState='failed';previewUnavailable(figure);refreshApply()};
+   image.addEventListener('load',loaded,{once:true});image.addEventListener('error',failed,{once:true});
+   if(url)image.src=url;else failed();
+  }
+  refreshApply();
   const run=async(action:(signal:AbortSignal)=>Promise<{revision:number}>)=>{
-   if(pending||!options.current())return;pending=true;apply.disabled=true;keep.disabled=true;controller=new AbortController();
-   try{const result=await action(controller.signal);if(options.current()){dialog?.close();options.changed(result.revision)}}catch(error){const result=options.classify(error);notice.textContent=result.message;if(result.unknown){apply.disabled=true;keep.disabled=false}else{apply.disabled=unsafe||options.correction.state==='applied'}}finally{controller=null;pending=false;if(dialog?.open)keep.disabled=false}
+   if(pending||!options.current())return;pending=true;refreshApply();keep.disabled=true;controller=new AbortController();
+   try{const result=await action(controller.signal);if(options.current()){dialog?.close();options.changed(result.revision)}}catch(error){const result=options.classify(error);notice.textContent=result.message;if(result.unknown){apply.disabled=true;keep.disabled=false}else{refreshApply()}}finally{controller=null;pending=false;if(dialog?.open)keep.disabled=false}
   };
   apply.addEventListener('click',()=>void run(signal=>options.apply(options.correction.suggestion_id,options.correction.source_sha256,key,signal)));
   actions.append(keep,apply);

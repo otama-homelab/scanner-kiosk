@@ -48,10 +48,14 @@ Replaying the exact intent returns the stored projection. A different body under
 
 After undo the projection may expose another suggested correction. Applying that new suggestion is the reprocess path; it does not rescan the physical page.
 
+## Unavailable preview
+
+The comparison remains unavailable until both the full original and suggested correction images have loaded. A failed image load replaces that figure with localized text; it never displays a placeholder or generated image as comparison evidence. Either failure keeps **Keep full original** available, disables apply, and sends no processing request.
+
 ## Verification
 
 - Go store tests prove owner/revision/source binding, one applied row, undo and reprocess without changing the original.
 - document HTTP tests prove explicit commands, conflict mapping and content-free unknown errors.
-- `scripts/check-web-correction.cjs` proves no request on view/dialog open, two-image comparison, apply/undo/reprocess, unknown-result lock, bilingual labels and responsive widths.
+- `scripts/check-web-correction.cjs` proves no request on view/dialog open, pending/loaded preview gating, failed-preview fallback without substitute pixels, apply/undo/reprocess, unknown-result lock, bilingual labels and responsive widths.
 
 These checks prove the optional correction workflow contract only. They do not measure or accept a correction algorithm, household-document quality, scanner input behavior or production resource budgets.
