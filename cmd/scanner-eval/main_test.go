@@ -231,6 +231,78 @@ func TestRunCommandReturnsNormalizedCatalog(t *testing.T) {
 	}
 }
 
+func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	work := t.TempDir()
+	runDir := filepath.Join(work, "benchmark")
+	configPath := writeCLICandidateConfig(t, work)
+	result := runHelper(t, "benchmark", "--catalog", catalog, "--candidate", configPath,
+		"--fixture", "fixture_a4_ja_en_001", "--output", runDir, "--cold", "1", "--warm", "1",
+		"--timeout-seconds", "20", "--max-rss-mib", "2048", "--max-temp-disk-mib", "1024")
+	if result.code != 1 {
+		t.Fatalf("benchmark failure exit=%d stderr=%s", result.code, result.stderr)
+	}
+	var summary struct {
+		Status  string `json:"status"`
+		Samples []struct {
+			Status       string `json:"status"`
+			FailureClass string `json:"failure_class"`
+		} `json:"samples"`
+	}
+	if err := json.Unmarshal([]byte(result.stdout), &summary); err != nil {
+		t.Fatal(err)
+	}
+	if summary.Status == "complete" || len(summary.Samples) != 2 {
+		t.Fatalf("unexpected benchmark summary: %+v", summary)
+	}
+	for _, sample := range summary.Samples {
+		if sample.Status == "complete" || sample.FailureClass == "" {
+			t.Fatalf("failed sample was not preserved: %+v", sample)
+		}
+	}
+	comparisonPath := filepath.Join(work, "comparison.json")
+	compare := runHelper(t, "compare", "--receipt", runDir, "--output", comparisonPath)
+	if compare.code != 0 {
+		t.Fatalf("compare failed: %s", compare.stderr)
+	}
+	if _, err := os.Stat(comparisonPath); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func writeCLICandidateConfig(t *testing.T, work string) string {
+	t.Helper()
+	executable, err := filepath.Abs(os.Args[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	body, err := os.ReadFile(executable)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(body)
+	config := map[string]any{
+		"format": "scanner-eval-candidate", "version": 1,
+		"candidate_id": "candidate_cli_helper_001", "executable": executable,
+		"executable_sha256": hex.EncodeToString(sum[:]), "argv": []string{"-test.run=^TestCandidateCLIHelper$"},
+		"environment": []string{"EVAL_CANDIDATE_CLI_HELPER=1"}, "candidate_version": "1",
+		"sources": []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
+	}
+	encoded, err := json.Marshal(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(work, "candidate-cli.json")
+	if err := os.WriteFile(path, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
 type cliResult struct {
 	stdout, stderr string
 	code           int

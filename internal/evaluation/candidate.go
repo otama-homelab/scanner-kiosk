@@ -7,11 +7,15 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"scanner-kiosk/internal/processrun"
@@ -32,33 +36,53 @@ type CandidatePin struct {
 }
 
 type CandidateConfig struct {
-	Format           string         `json:"format"`
-	Version          int            `json:"version"`
-	CandidateID      string         `json:"candidate_id"`
-	Executable       string         `json:"executable"`
-	ExecutableSHA256 string         `json:"executable_sha256"`
-	Argv             []string       `json:"argv"`
-	Environment      []string       `json:"environment,omitempty"`
-	CandidateVersion string         `json:"candidate_version"`
-	Sources          []CandidatePin `json:"sources"`
-	Dependencies     []CandidatePin `json:"dependencies,omitempty"`
-	OperatorSteps    []string       `json:"operator_steps,omitempty"`
+	Format           string            `json:"format"`
+	Version          int               `json:"version"`
+	CandidateID      string            `json:"candidate_id"`
+	Executable       string            `json:"executable"`
+	ExecutableSHA256 string            `json:"executable_sha256"`
+	Argv             []string          `json:"argv"`
+	Environment      []string          `json:"environment,omitempty"`
+	CandidateVersion string            `json:"candidate_version"`
+	Sources          []CandidatePin    `json:"sources"`
+	Dependencies     []CandidatePin    `json:"dependencies,omitempty"`
+	OperatorSteps    []string          `json:"operator_steps,omitempty"`
+	Parameters       map[string]string `json:"parameters,omitempty"`
 }
 
 type CandidateReceipt struct {
-	ID               string         `json:"id"`
-	Version          string         `json:"version"`
-	ExecutableSHA256 string         `json:"executable_sha256"`
-	Sources          []CandidatePin `json:"sources"`
-	Dependencies     []CandidatePin `json:"dependencies,omitempty"`
-	OperatorSteps    []string       `json:"operator_steps,omitempty"`
+	ID               string            `json:"id"`
+	Version          string            `json:"version"`
+	ExecutableSHA256 string            `json:"executable_sha256"`
+	Sources          []CandidatePin    `json:"sources"`
+	Dependencies     []CandidatePin    `json:"dependencies,omitempty"`
+	OperatorSteps    []string          `json:"operator_steps,omitempty"`
+	Parameters       map[string]string `json:"parameters"`
 }
 
 type CandidateRunRequest struct {
-	CatalogPath   string
-	CandidatePath string
-	FixtureID     string
-	OutputDir     string
+	CatalogPath      string
+	CandidatePath    string
+	FixtureID        string
+	OutputDir        string
+	TimePath         string
+	TimeUsagePath    string
+	Timeout          time.Duration
+	MaxRSSBytes      int64
+	MaxTempDiskBytes int64
+	Metrics          *CandidateMetrics
+}
+
+type CandidateMetrics struct {
+	WallMillis           int64
+	UserCPUSeconds       float64
+	SystemCPUSeconds     float64
+	PeakRSSBytes         int64
+	ExitCode             int
+	SampledTempDiskBytes int64
+	TempDiskSampled      bool
+	TimedOut             bool
+	ResourceFailure      string
 }
 
 func LoadCandidateConfig(path string) (CandidateConfig, error) {
@@ -98,7 +122,7 @@ func (c CandidateConfig) Validate() error {
 		seenEnv[key] = true
 	}
 	if !validPins(c.Sources) || !validPins(c.Dependencies) ||
-		!validOptionalStrings(c.OperatorSteps, 64, 256) {
+		!validOptionalStrings(c.OperatorSteps, 64, 256) || !validParameters(c.Parameters) {
 		return ErrInvalid
 	}
 	for _, arg := range c.Argv {
@@ -118,7 +142,10 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 		return ArtifactCatalog{}, fmt.Errorf("candidate config: %w", err)
 	}
 	if request.FixtureID == "" || !filepath.IsAbs(request.OutputDir) ||
-		filepath.Clean(request.OutputDir) != request.OutputDir {
+		filepath.Clean(request.OutputDir) != request.OutputDir ||
+		request.Timeout < 0 || request.Timeout > 900*time.Second ||
+		request.MaxRSSBytes < 0 || request.MaxTempDiskBytes < 0 ||
+		(request.TimePath == "") != (request.TimeUsagePath == "") {
 		return ArtifactCatalog{}, fmt.Errorf("candidate request: %w", ErrInvalid)
 	}
 	if err := verifyExecutable(config.Executable, config.ExecutableSHA256); err != nil {
@@ -168,6 +195,31 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	if err := writePrivateFile(root, "input/original.png", fixtureBody); err != nil {
 		return ArtifactCatalog{}, err
 	}
+	timeout := candidateTimeout
+	if request.Timeout > 0 {
+		timeout = request.Timeout
+	}
+	runCtx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+	commandPath := config.Executable
+	commandArgs := append([]string(nil), config.Argv...)
+	if request.TimePath != "" {
+		if err := verifyExecutableFile(request.TimePath); err != nil {
+			return ArtifactCatalog{}, ErrUnavailable
+		}
+		if !filepath.IsAbs(request.TimeUsagePath) || filepath.Clean(request.TimeUsagePath) != request.TimeUsagePath {
+			return ArtifactCatalog{}, ErrInvalid
+		}
+		usage, err := os.OpenFile(request.TimeUsagePath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+		if err != nil {
+			return ArtifactCatalog{}, ErrInvalid
+		}
+		if err := usage.Close(); err != nil {
+			return ArtifactCatalog{}, ErrUnavailable
+		}
+		commandPath = request.TimePath
+		commandArgs = append([]string{"-f", "%e %U %S %M", "-o", request.TimeUsagePath, "--", config.Executable}, config.Argv...)
+	}
 	originalID, err := newRunID("artifact_original_")
 	if err != nil {
 		return ArtifactCatalog{}, ErrUnavailable
@@ -198,18 +250,53 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	}
 	stdoutCapture := newCapture(stdoutRead)
 	stderrCapture := newCapture(stderrRead)
-	runCtx, cancel := context.WithTimeout(ctx, candidateTimeout)
-	defer cancel()
+	started := time.Now()
+	stopSampler := startDiskSampler(runRoot, request.MaxTempDiskBytes, cancel)
 	process := processrun.Run(runCtx, processrun.Spec{
-		Path: config.Executable, Args: append([]string(nil), config.Argv...),
+		Path: commandPath, Args: commandArgs,
 		Env: environment, Dir: runRoot, Stdout: stdoutWrite, Stderr: stderrWrite,
 		Grace: candidateStopGrace,
 	})
+	wallMillis := time.Since(started).Milliseconds()
 	stdoutWrite.Close()
 	stderrWrite.Close()
 	stdoutCapture.wait()
 	stderrCapture.wait()
+	sampledDisk := stopSampler()
+	metrics := CandidateMetrics{
+		WallMillis: wallMillis, ExitCode: processExitCode(process.Err),
+		SampledTempDiskBytes: sampledDisk, TempDiskSampled: true,
+		TimedOut: runCtx.Err() == context.DeadlineExceeded,
+	}
+	if request.TimePath != "" {
+		usage, err := parseTimeUsage(request.TimeUsagePath)
+		if err != nil {
+			if request.Metrics != nil {
+				*request.Metrics = metrics
+			}
+			return ArtifactCatalog{}, ErrUnavailable
+		}
+		metrics.UserCPUSeconds = usage.UserCPUSeconds
+		metrics.SystemCPUSeconds = usage.SystemCPUSeconds
+		metrics.PeakRSSBytes = usage.PeakRSSBytes
+	}
+	if request.MaxTempDiskBytes > 0 && sampledDisk > request.MaxTempDiskBytes {
+		metrics.ResourceFailure = "temp-disk"
+	}
+	if request.MaxRSSBytes > 0 && metrics.PeakRSSBytes > request.MaxRSSBytes {
+		if metrics.ResourceFailure == "" {
+			metrics.ResourceFailure = "rss"
+		} else {
+			metrics.ResourceFailure += ",rss"
+		}
+	}
+	if request.Metrics != nil {
+		*request.Metrics = metrics
+	}
 	if process.Err != nil || !process.GroupStopped {
+		return ArtifactCatalog{}, ErrUnavailable
+	}
+	if metrics.ResourceFailure != "" {
 		return ArtifactCatalog{}, ErrUnavailable
 	}
 	if err := verifyFile(filepath.Join(runRoot, "input", "original.png"), fixtureSHA); err != nil {
@@ -300,6 +387,7 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 			Sources:       append([]CandidatePin(nil), config.Sources...),
 			Dependencies:  append([]CandidatePin(nil), config.Dependencies...),
 			OperatorSteps: append([]string(nil), config.OperatorSteps...),
+			Parameters:    copyStringMap(config.Parameters),
 		},
 		FixtureID: fixture.ID, FixtureSHA256: fixtureSHA, Status: status, MissingOutputs: missing,
 		Original: original, Artifacts: artifacts, Validation: validation,
@@ -344,11 +432,18 @@ func verifyFile(path, want string) error {
 }
 
 func verifyExecutable(path, want string) error {
+	if err := verifyExecutableFile(path); err != nil {
+		return err
+	}
+	return verifyFile(path, want)
+}
+
+func verifyExecutableFile(path string) error {
 	info, err := os.Lstat(path)
 	if err != nil || !info.Mode().IsRegular() || info.Mode().Perm()&0o111 == 0 {
 		return ErrUnavailable
 	}
-	return verifyFile(path, want)
+	return nil
 }
 
 func writePrivateFile(root *os.Root, name string, body []byte) error {
@@ -428,7 +523,7 @@ func validEnvironmentName(value string) bool {
 func validPins(values []CandidatePin) bool {
 	for _, pin := range values {
 		if !boundedText(pin.Name, 96) || !boundedText(pin.Version, 64) ||
-			!boundedOptionalText(pin.License, 96) ||
+			!boundedText(pin.License, 96) ||
 			pin.SHA256 != "" && !validHash(pin.SHA256) {
 			return false
 		}
@@ -446,6 +541,117 @@ func validOptionalStrings(values []string, maxItems, maxLen int) bool {
 		}
 	}
 	return true
+}
+
+func copyStringMap(values map[string]string) map[string]string {
+	out := make(map[string]string, len(values))
+	for key, value := range values {
+		out[key] = value
+	}
+	return out
+}
+
+type timeUsage struct {
+	UserCPUSeconds   float64
+	SystemCPUSeconds float64
+	PeakRSSBytes     int64
+}
+
+func parseTimeUsage(path string) (timeUsage, error) {
+	body, err := readRootFileValue(path, 4096)
+	if err != nil {
+		return timeUsage{}, ErrUnavailable
+	}
+	fields := strings.Fields(string(body))
+	if len(fields) != 4 {
+		return timeUsage{}, ErrUnavailable
+	}
+	user, err := strconv.ParseFloat(fields[1], 64)
+	if err != nil {
+		return timeUsage{}, ErrUnavailable
+	}
+	system, err := strconv.ParseFloat(fields[2], 64)
+	if err != nil {
+		return timeUsage{}, ErrUnavailable
+	}
+	kilobytes, err := strconv.ParseInt(fields[3], 10, 64)
+	if err != nil || kilobytes < 0 {
+		return timeUsage{}, ErrUnavailable
+	}
+	return timeUsage{UserCPUSeconds: user, SystemCPUSeconds: system, PeakRSSBytes: kilobytes * 1024}, nil
+}
+
+func readRootFileValue(name string, limit int64) ([]byte, error) {
+	info, err := os.Lstat(name)
+	if err != nil || !info.Mode().IsRegular() || info.Size() > limit {
+		return nil, ErrUnavailable
+	}
+	file, err := os.Open(name)
+	if err != nil {
+		return nil, ErrUnavailable
+	}
+	defer file.Close()
+	body, err := io.ReadAll(io.LimitReader(file, limit+1))
+	if err != nil || int64(len(body)) > limit {
+		return nil, ErrUnavailable
+	}
+	return body, nil
+}
+
+func processExitCode(err error) int {
+	if err == nil {
+		return 0
+	}
+	var exit *exec.ExitError
+	if errors.As(err, &exit) {
+		return exit.ExitCode()
+	}
+	return -1
+}
+
+func startDiskSampler(rootPath string, limit int64, cancel context.CancelFunc) func() int64 {
+	var peak atomic.Int64
+	stop := make(chan struct{})
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		ticker := time.NewTicker(20 * time.Millisecond)
+		defer ticker.Stop()
+		for {
+			size := directoryBytes(rootPath)
+			if size > peak.Load() {
+				peak.Store(size)
+			}
+			if limit > 0 && size > limit {
+				cancel()
+			}
+			select {
+			case <-stop:
+				return
+			case <-ticker.C:
+			}
+		}
+	}()
+	return func() int64 {
+		close(stop)
+		<-done
+		return peak.Load()
+	}
+}
+
+func directoryBytes(rootPath string) int64 {
+	var total int64
+	_ = filepath.WalkDir(rootPath, func(_ string, entry os.DirEntry, err error) error {
+		if err != nil || entry.IsDir() {
+			return nil
+		}
+		info, err := entry.Info()
+		if err == nil && info.Mode().IsRegular() {
+			total += info.Size()
+		}
+		return nil
+	})
+	return total
 }
 
 type capture struct {

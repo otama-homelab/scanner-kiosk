@@ -9,7 +9,9 @@ import (
 	"os"
 	"os/signal"
 	"scanner-kiosk/internal/evaluation"
+	"strings"
 	"syscall"
+	"time"
 )
 
 func main() {
@@ -84,8 +86,78 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 			return 1
 		}
 		return 0
+	case "benchmark":
+		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
+		flags.SetOutput(io.Discard)
+		catalog := flags.String("catalog", "", "")
+		candidate := flags.String("candidate", "", "")
+		fixture := flags.String("fixture", "", "")
+		output := flags.String("output", "", "")
+		cold := flags.Int("cold", 0, "")
+		warm := flags.Int("warm", 0, "")
+		timeout := flags.Int("timeout-seconds", 900, "")
+		maxRSS := flags.Int64("max-rss-mib", 2048, "")
+		maxDisk := flags.Int64("max-temp-disk-mib", 1024, "")
+		if flags.Parse(args[1:]) != nil || *catalog == "" || *candidate == "" || *fixture == "" || *output == "" ||
+			*timeout < 1 || *timeout > 900 || *maxRSS < 1 || *maxDisk < 1 || len(flags.Args()) != 0 {
+			fmt.Fprintln(stderr, "scanner-eval: invalid input")
+			return 2
+		}
+		result, err := evaluation.RunBenchmark(ctx, evaluation.BenchmarkRequest{
+			CatalogPath: *catalog, CandidatePath: *candidate, FixtureID: *fixture, RunDir: *output,
+			Cold: *cold, Warm: *warm, Timeout: time.Duration(*timeout) * time.Second,
+			MaxRSSBytes: *maxRSS << 20, MaxTempDiskBytes: *maxDisk << 20,
+		})
+		if result.RunID != "" {
+			if encodeErr := json.NewEncoder(stdout).Encode(result); encodeErr != nil {
+				fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+				return 1
+			}
+		}
+		if err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
+			return 1
+		}
+		return 0
+	case "compare":
+		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
+		flags.SetOutput(io.Discard)
+		var receipts stringList
+		flags.Var(&receipts, "receipt", "")
+		output := flags.String("output", "", "")
+		if flags.Parse(args[1:]) != nil || len(receipts) == 0 || len(flags.Args()) != 0 {
+			fmt.Fprintln(stderr, "scanner-eval: invalid input")
+			return 2
+		}
+		comparison, err := evaluation.CompareBenchmarkReceipts(receipts)
+		if err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
+			return 1
+		}
+		if *output != "" {
+			if err := evaluation.WriteComparison(*output, comparison); err != nil {
+				fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+				return 1
+			}
+		}
+		if err := json.NewEncoder(stdout).Encode(comparison); err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+			return 1
+		}
+		return 0
 	default:
 		fmt.Fprintln(stderr, "scanner-eval: invalid input")
 		return 2
 	}
+}
+
+type stringList []string
+
+func (values *stringList) String() string {
+	return strings.Join(*values, ",")
+}
+
+func (values *stringList) Set(value string) error {
+	*values = append(*values, value)
+	return nil
 }

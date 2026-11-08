@@ -1,15 +1,21 @@
 package evaluation
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"image"
+	_ "image/png"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"scanner-kiosk/internal/pdfassemble"
 )
 
 func TestCandidateHelper(t *testing.T) {
@@ -22,11 +28,56 @@ func TestCandidateHelper(t *testing.T) {
 	input := os.Getenv("SCANNER_EVAL_INPUT")
 	output := os.Getenv("SCANNER_EVAL_OUTPUT")
 	originalID := os.Getenv("SCANNER_EVAL_ORIGINAL_ID")
+	candidateID := os.Getenv("EVAL_CANDIDATE_ID")
+	if candidateID == "" {
+		candidateID = "candidate_helper_001"
+	}
 	pages := strings.Split(os.Getenv("SCANNER_EVAL_SOURCE_PAGES"), ",")
 	if input == "" || output == "" || originalID == "" || len(pages) == 0 {
 		os.Exit(9)
 	}
 	mode := os.Getenv("EVAL_CANDIDATE_MODE")
+	if mode == "complete" {
+		raw, err := os.ReadFile(input)
+		if err != nil {
+			os.Exit(12)
+		}
+		config, _, err := image.DecodeConfig(bytes.NewReader(raw))
+		if err != nil {
+			os.Exit(12)
+		}
+		pdf, err := pdfassemble.Build(context.Background(), []pdfassemble.Page{{
+			ID: pages[0], Size: "a4", Color: "color", Width: config.Width, Height: config.Height,
+			Open: func(context.Context) (io.ReadCloser, error) {
+				return io.NopCloser(bytes.NewReader(raw)), nil
+			},
+		}}, "lossless", pdfassemble.Options{
+			MaxInputBytes: 64 << 20, MaxOutputBytes: 64 << 20, MaxPagePixels: 80_000_000,
+			MaxPages: 8, JPEGQuality: 92,
+		})
+		if err != nil {
+			os.Exit(12)
+		}
+		if err := os.WriteFile(filepath.Join(output, "candidate.pdf"), pdf, 0o600); err != nil {
+			os.Exit(12)
+		}
+		result := map[string]any{
+			"format": "scanner-eval-candidate-result", "version": 1, "candidate_id": candidateID,
+			"artifacts": []any{map[string]any{
+				"id": "artifact_candidate_pdf_001", "role": "pdf", "path": "candidate.pdf",
+				"media_type": "application/pdf", "source_pages": pages,
+				"parents": []string{originalID}, "algorithm": "fixture-assembler", "algorithm_version": "1",
+			}},
+		}
+		body, err := json.Marshal(result)
+		if err != nil {
+			os.Exit(12)
+		}
+		if err := os.WriteFile(filepath.Join(output, "result.json"), body, 0o600); err != nil {
+			os.Exit(12)
+		}
+		os.Exit(0)
+	}
 	if mode == "mutate" {
 		if err := os.Chmod(input, 0o600); err != nil {
 			os.Exit(11)
@@ -87,7 +138,7 @@ func TestCandidateHelper(t *testing.T) {
 	result := map[string]any{
 		"format":       "scanner-eval-candidate-result",
 		"version":      1,
-		"candidate_id": "candidate_helper_001",
+		"candidate_id": candidateID,
 		"artifacts":    artifacts,
 	}
 	body, err := json.Marshal(result)
@@ -341,13 +392,17 @@ func writeCandidateConfig(t *testing.T, output, mode string) string {
 		t.Fatal(err)
 	}
 	sum := sha256.Sum256(body)
-	environment := []string{"EVAL_CANDIDATE_HELPER=1"}
+	candidateID := "candidate_helper_text_001"
+	if mode == "complete" {
+		candidateID = "candidate_helper_complete_001"
+	}
+	environment := []string{"EVAL_CANDIDATE_HELPER=1", "EVAL_CANDIDATE_ID=" + candidateID}
 	if mode != "" {
 		environment = append(environment, "EVAL_CANDIDATE_MODE="+mode)
 	}
 	config := map[string]any{
 		"format": "scanner-eval-candidate", "version": 1,
-		"candidate_id": "candidate_helper_001", "executable": executable,
+		"candidate_id": candidateID, "executable": executable,
 		"executable_sha256": hex.EncodeToString(sum[:]), "argv": []string{"-test.run=^TestCandidateHelper$"},
 		"environment": environment, "candidate_version": "1",
 		"sources":        []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
