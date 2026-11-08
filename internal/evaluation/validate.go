@@ -89,7 +89,10 @@ func validatePDF(ctx context.Context, pdfPath string, pageIDs, expectedText []st
 	}
 	if !filepath.IsAbs(pdfPath) || filepath.Clean(pdfPath) != pdfPath ||
 		len(pageIDs) == 0 || len(pageIDs) > 256 || !validStringSet(pageIDs, 96) ||
-		!validStrings(expectedText, 256, 1024) {
+		!validStrings(expectedText, 256, 1024) ||
+		(options.OriginalImagePath == "") != !options.ExpectLossless ||
+		options.OriginalImagePath != "" && (!filepath.IsAbs(options.OriginalImagePath) ||
+			filepath.Clean(options.OriginalImagePath) != options.OriginalImagePath) {
 		receipt.FailureClass = "invalid-input"
 		return receipt, ErrInvalid
 	}
@@ -368,12 +371,11 @@ func compareExtractedImage(ctx context.Context, pdfimages, pdfPath string, pageN
 }
 
 func decodeImageFile(filePath string) (image.Image, error) {
-	file, err := os.Open(filePath)
+	body, err := readRootFileValue(filePath, maxArtifactBytes)
 	if err != nil {
 		return nil, ErrInvalid
 	}
-	defer file.Close()
-	decoded, _, err := image.Decode(file)
+	decoded, _, err := image.Decode(bytes.NewReader(body))
 	if err != nil {
 		return nil, ErrInvalid
 	}

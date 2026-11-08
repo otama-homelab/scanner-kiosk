@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"image"
+	"image/color"
 	"image/png"
 	"io"
 	"os"
@@ -93,7 +94,7 @@ func TestCandidateHelper(t *testing.T) {
 		}
 		os.Exit(0)
 	}
-	if mode == "complete" {
+	if mode == "complete" || mode == "replacement_image" {
 		raw, err := os.ReadFile(input)
 		if err != nil {
 			os.Exit(12)
@@ -102,10 +103,26 @@ func TestCandidateHelper(t *testing.T) {
 		if err != nil {
 			os.Exit(12)
 		}
+		pdfBody := raw
+		algorithm := "fixture-assembler"
+		if mode == "replacement_image" {
+			replacement := image.NewRGBA(image.Rect(0, 0, config.Width, config.Height))
+			for y := 0; y < config.Height; y++ {
+				for x := 0; x < config.Width; x++ {
+					replacement.SetRGBA(x, y, color.RGBA{uint8(x * 7), uint8(y * 11), 173, 255})
+				}
+			}
+			var encoded bytes.Buffer
+			if err := png.Encode(&encoded, replacement); err != nil {
+				os.Exit(12)
+			}
+			pdfBody = encoded.Bytes()
+			algorithm = "fixture-assembler-replacement"
+		}
 		pdf, err := pdfassemble.Build(context.Background(), []pdfassemble.Page{{
 			ID: pages[0], Size: "a4", Color: "color", Width: config.Width, Height: config.Height,
 			Open: func(context.Context) (io.ReadCloser, error) {
-				return io.NopCloser(bytes.NewReader(raw)), nil
+				return io.NopCloser(bytes.NewReader(pdfBody)), nil
 			},
 		}}, "lossless", pdfassemble.Options{
 			MaxInputBytes: 64 << 20, MaxOutputBytes: 64 << 20, MaxPagePixels: 80_000_000,
@@ -122,7 +139,7 @@ func TestCandidateHelper(t *testing.T) {
 			"artifacts": []any{map[string]any{
 				"id": "artifact_candidate_pdf_001", "role": "pdf", "path": "candidate.pdf",
 				"media_type": "application/pdf", "source_pages": pages,
-				"parents": []string{originalID}, "algorithm": "fixture-assembler", "algorithm_version": "1",
+				"parents": []string{originalID}, "algorithm": algorithm, "algorithm_version": "1",
 			}},
 		}
 		body, err := json.Marshal(result)
@@ -232,6 +249,50 @@ func TestCandidateRunEndToEnd(t *testing.T) {
 	if strings.Contains(string(body), os.TempDir()) || strings.Contains(string(body), "ocr.txt") {
 		t.Fatalf("catalog leaked local paths: %s", body)
 	}
+}
+
+func TestCandidateRunRequiresOriginalPixelRetention(t *testing.T) {
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	configPath := writeCandidateConfig(t, output, "complete")
+
+	catalog, err := RunCandidate(context.Background(), CandidateRunRequest{
+		CatalogPath: catalogPath, CandidatePath: configPath,
+		FixtureID: "fixture_photo_001", OutputDir: output,
+	})
+	if err != nil || catalog.Status != "complete" || catalog.Validation == nil ||
+		catalog.Validation.Status != "passed" {
+		t.Fatalf("expected a complete PDF run: catalog=%+v err=%v", catalog, err)
+	}
+	for _, check := range catalog.Validation.Checks {
+		if check.Name == "lossless-original-pixels" && check.Status == "pass" {
+			return
+		}
+	}
+	t.Fatalf("run-path validation omitted original-pixel retention: %+v", catalog.Validation)
+}
+
+func TestCandidateRunRejectsReplacementPDFImage(t *testing.T) {
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	configPath := writeCandidateConfig(t, output, "replacement_image")
+
+	catalog, err := RunCandidate(context.Background(), CandidateRunRequest{
+		CatalogPath: catalogPath, CandidatePath: configPath,
+		FixtureID: "fixture_photo_001", OutputDir: output,
+	})
+	if !errors.Is(err, ErrUnavailable) || catalog.Status != "incomplete" ||
+		catalog.Validation == nil || catalog.Validation.FailureClass != "pixel-mismatch" {
+		t.Fatalf("replacement-image PDF was not rejected: catalog=%+v err=%v", catalog, err)
+	}
+	for _, check := range catalog.Validation.Checks {
+		if check.Name == "lossless-original-pixels" && check.Status == "fail" {
+			return
+		}
+	}
+	t.Fatalf("replacement-image receipt omitted the failed pixel check: %+v", catalog.Validation)
 }
 
 func TestCandidateRejectsUnsafeOutput(t *testing.T) {
