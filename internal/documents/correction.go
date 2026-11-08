@@ -126,10 +126,10 @@ func (s *Store) mutateCorrection(ctx context.Context, owner string, request Corr
 			return ErrInvalid
 		}
 		if operation == "apply_correction" {
-			var originalID, correctionID, transformJSON string
+			var originalID, correctionID, transformJSON, riskJSON string
 			var originalSHA, correctionSHA []byte
 			var width, height int
-			err = tx.QueryRowContext(ctx, `SELECT pc.original_artifact_id,pc.correction_artifact_id,pc.source_sha256,pc.correction_sha256,pc.transform_json,p.pixel_width,p.pixel_height
+			err = tx.QueryRowContext(ctx, `SELECT pc.original_artifact_id,pc.correction_artifact_id,pc.source_sha256,pc.correction_sha256,pc.transform_json,pc.risk_flags,p.pixel_width,p.pixel_height
  FROM page_corrections pc JOIN pages p ON p.id=pc.page_id AND p.document_id=pc.document_id AND p.owner_id=pc.owner_id
  JOIN artifacts original ON original.id=pc.original_artifact_id AND original.document_id=pc.document_id AND original.owner_id=pc.owner_id
  JOIN artifacts corrected ON corrected.id=pc.correction_artifact_id AND corrected.document_id=pc.document_id AND corrected.owner_id=pc.owner_id
@@ -137,12 +137,15 @@ func (s *Store) mutateCorrection(ctx context.Context, owner string, request Corr
  AND p.original_artifact_id=pc.original_artifact_id AND p.source_type='scan'
  AND original.kind='original' AND original.state='ready'
  AND corrected.kind='intermediate' AND corrected.state='ready' AND corrected.media_type='image/png'`,
-				owner, request.DocumentID, request.PageID, request.SuggestionID).Scan(&originalID, &correctionID, &originalSHA, &correctionSHA, &transformJSON, &width, &height)
+				owner, request.DocumentID, request.PageID, request.SuggestionID).Scan(&originalID, &correctionID, &originalSHA, &correctionSHA, &transformJSON, &riskJSON, &width, &height)
 			if errors.Is(err, sql.ErrNoRows) {
 				return ErrConflict
 			}
 			if err != nil {
 				return ErrStorage
+			}
+			if !riskFreeCorrection(riskJSON) {
+				return ErrConflict
 			}
 			if len(originalSHA) != 32 || len(correctionSHA) != 32 || !sameHash(originalSHA, source) || width < 1 || height < 1 {
 				return ErrConflict
@@ -196,6 +199,14 @@ func (s *Store) mutateCorrection(ctx context.Context, owner string, request Corr
 		return Projection{}, err
 	}
 	return out, nil
+}
+
+func riskFreeCorrection(raw string) bool {
+	if len(raw) > 4<<10 {
+		return false
+	}
+	var flags []string
+	return json.Unmarshal([]byte(raw), &flags) == nil && flags != nil && len(flags) == 0
 }
 
 func (s *Store) ReadCorrectionArtifact(ctx context.Context, owner, documentID, pageID string) (ArtifactReference, error) {
