@@ -692,6 +692,187 @@ func TestPrivateFixtureBenchmarkMissingIsUnavailable(t *testing.T) {
 	}
 }
 
+func TestNegativeFixtureRunReconcilesExpectedFailure(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	catalog, err := evaluation.LoadCatalog(catalogPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := map[string]string{
+		"fixture_invalid_input_001":      "invalid-input",
+		"fixture_oversized_input_001":    "oversized-input",
+		"fixture_dependency_failure_001": "dependency-unavailable",
+	}
+	for fixtureID, class := range expected {
+		t.Run(fixtureID, func(t *testing.T) {
+			var wantSHA string
+			for _, fixture := range catalog.Fixtures {
+				if fixture.ID == fixtureID {
+					wantSHA = fixture.SHA256
+				}
+			}
+			work := t.TempDir()
+			output := filepath.Join(work, "result")
+			marker := filepath.Join(work, "candidate-launched")
+			result := runHelper(t, "run", "--catalog", catalogPath,
+				"--candidate", writeMarkerCandidateConfig(t, work, marker),
+				"--fixture", fixtureID, "--output", output)
+			if result.code != 0 {
+				t.Fatalf("expected failure exit=%d stderr=%s", result.code, result.stderr)
+			}
+			var receipt struct {
+				Status               string `json:"status"`
+				FixtureID            string `json:"fixture_id"`
+				FixtureSHA256        string `json:"fixture_sha256"`
+				ExpectedFailureClass string `json:"expected_failure_class"`
+				ObservedFailureClass string `json:"observed_failure_class"`
+				FailureMatch         *bool  `json:"failure_match"`
+				Artifacts            []any  `json:"artifacts"`
+			}
+			if err := json.Unmarshal([]byte(result.stdout), &receipt); err != nil {
+				t.Fatalf("invalid expected-failure receipt: %v: %s", err, result.stdout)
+			}
+			if receipt.Status != "expected-failure" || receipt.FixtureID != fixtureID ||
+				receipt.FixtureSHA256 != wantSHA || receipt.ExpectedFailureClass != class ||
+				receipt.ObservedFailureClass != class || receipt.FailureMatch == nil || !*receipt.FailureMatch ||
+				len(receipt.Artifacts) != 0 {
+				t.Fatalf("unexpected expected-failure receipt: %+v", receipt)
+			}
+			var raw map[string]json.RawMessage
+			if err := json.Unmarshal([]byte(result.stdout), &raw); err != nil {
+				t.Fatal(err)
+			}
+			if _, ok := raw["original"]; ok {
+				t.Fatalf("expected-failure receipt fabricated an original: %s", result.stdout)
+			}
+			if _, err := os.Stat(marker); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("candidate process was launched: %v", err)
+			}
+			body, err := os.ReadFile(filepath.Join(output, "artifact-catalog.json"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(body) != result.stdout {
+				t.Fatalf("persisted receipt differs from stdout:\nstdout=%s\nfile=%s", result.stdout, body)
+			}
+		})
+	}
+}
+
+func TestNegativeFixtureBenchmarkReconcilesExpectedFailure(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	expected := map[string]string{
+		"fixture_invalid_input_001":      "invalid-input",
+		"fixture_oversized_input_001":    "oversized-input",
+		"fixture_dependency_failure_001": "dependency-unavailable",
+	}
+	for fixtureID, class := range expected {
+		t.Run(fixtureID, func(t *testing.T) {
+			work := t.TempDir()
+			runDir := filepath.Join(work, "benchmark")
+			marker := filepath.Join(work, "candidate-launched")
+			result := runHelper(t, "benchmark", "--catalog", catalogPath,
+				"--candidate", writeMarkerCandidateConfig(t, work, marker),
+				"--fixture", fixtureID, "--output", runDir, "--cold", "1", "--warm", "1",
+				"--timeout-seconds", "20", "--max-rss-mib", "2048", "--max-temp-disk-mib", "1024")
+			if result.code != 0 {
+				t.Fatalf("expected-failure benchmark exit=%d stderr=%s", result.code, result.stderr)
+			}
+			var summary struct {
+				Status               string `json:"status"`
+				FixtureID            string `json:"fixture_id"`
+				ExpectedFailureClass string `json:"expected_failure_class"`
+				ObservedFailureClass string `json:"observed_failure_class"`
+				FailureMatch         *bool  `json:"failure_match"`
+				Samples              []any  `json:"samples"`
+				Metrics              struct {
+					Cold struct {
+						Samples int `json:"samples"`
+					} `json:"cold"`
+					Warm struct {
+						Samples int `json:"samples"`
+					} `json:"warm"`
+				} `json:"metrics"`
+			}
+			if err := json.Unmarshal([]byte(result.stdout), &summary); err != nil {
+				t.Fatalf("invalid expected-failure summary: %v: %s", err, result.stdout)
+			}
+			if summary.Status != "expected-failure" || summary.FixtureID != fixtureID ||
+				summary.ExpectedFailureClass != class || summary.ObservedFailureClass != class ||
+				summary.FailureMatch == nil || !*summary.FailureMatch || len(summary.Samples) != 0 ||
+				summary.Metrics.Cold.Samples != 0 || summary.Metrics.Warm.Samples != 0 {
+				t.Fatalf("unexpected expected-failure summary: %+v", summary)
+			}
+			if _, err := os.Stat(marker); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("candidate process was launched: %v", err)
+			}
+			if _, err := os.Stat(filepath.Join(runDir, "repetitions")); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("candidate repetitions were created: %v", err)
+			}
+		})
+	}
+}
+
+func TestNegativeFixtureFailureMismatchFailsClosed(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	publicCatalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	work := t.TempDir()
+	privateCatalog, privateRoot, _, digest := writePrivateCLIFixtureForOutputs(
+		t, work, "fixture_owner_private_mismatch_001", "private.png", nil,
+	)
+	rewritePrivateCLICatalog(t, privateCatalog, func(catalog *evaluation.PrivateCatalog) {
+		catalog.Fixtures[0].ExpectedFailureClass = "invalid-input"
+	})
+	output := filepath.Join(work, "result")
+	marker := filepath.Join(work, "candidate-launched")
+	result := runHelper(t, "run", "--catalog", publicCatalog,
+		"--candidate", writeMarkerCandidateConfig(t, work, marker),
+		"--fixture", "fixture_owner_private_mismatch_001", "--output", output,
+		"--private-catalog", privateCatalog, "--private-root", privateRoot)
+	if result.code != 1 {
+		t.Fatalf("mismatched expected failure exit=%d stderr=%s", result.code, result.stderr)
+	}
+	var receipt struct {
+		Status               string `json:"status"`
+		FixtureID            string `json:"fixture_id"`
+		FixtureSHA256        string `json:"fixture_sha256"`
+		ExpectedFailureClass string `json:"expected_failure_class"`
+		ObservedFailureClass string `json:"observed_failure_class"`
+		FailureMatch         *bool  `json:"failure_match"`
+		Artifacts            []any  `json:"artifacts"`
+	}
+	if err := json.Unmarshal([]byte(result.stdout), &receipt); err != nil {
+		t.Fatalf("invalid mismatch receipt: %v: %s", err, result.stdout)
+	}
+	if receipt.Status == "expected-failure" || receipt.FixtureID != "fixture_owner_private_mismatch_001" ||
+		receipt.FixtureSHA256 != digest || receipt.ExpectedFailureClass != "invalid-input" ||
+		receipt.ObservedFailureClass != "expected-class-mismatch" ||
+		receipt.FailureMatch == nil || *receipt.FailureMatch || len(receipt.Artifacts) != 0 {
+		t.Fatalf("unexpected mismatch receipt: %+v", receipt)
+	}
+	if _, err := os.Stat(marker); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("candidate process was launched: %v", err)
+	}
+	body, err := os.ReadFile(filepath.Join(output, "artifact-catalog.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(body) != result.stdout {
+		t.Fatalf("persisted mismatch receipt differs from stdout:\nstdout=%s\nfile=%s", result.stdout, body)
+	}
+}
+
 func TestAnalyzeCorrectionsCommand(t *testing.T) {
 	root, err := filepath.Abs(filepath.Join("..", ".."))
 	if err != nil {
@@ -919,6 +1100,34 @@ func writeCLICandidateConfigMode(t *testing.T, work, mode string) string {
 		t.Fatal(err)
 	}
 	path := filepath.Join(work, "candidate-cli.json")
+	if err := os.WriteFile(path, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
+func writeMarkerCandidateConfig(t *testing.T, work, marker string) string {
+	t.Helper()
+	executable := "/bin/sh"
+	body, err := os.ReadFile(executable)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(body)
+	config := map[string]any{
+		"format": "scanner-eval-candidate", "version": 1,
+		"candidate_id": "candidate_marker_001", "executable": executable,
+		"executable_sha256": hex.EncodeToString(sum[:]), "argv": []string{"-c", "touch " + marker},
+		"environment": []string{}, "candidate_version": "1",
+		"sources":        []any{map[string]string{"name": "shell", "version": "test", "license": "test-only"}},
+		"dependencies":   []any{},
+		"operator_steps": []string{},
+	}
+	encoded, err := json.Marshal(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(work, "candidate-marker.json")
 	if err := os.WriteFile(path, encoded, 0o600); err != nil {
 		t.Fatal(err)
 	}
