@@ -1,9 +1,12 @@
 package evaluation
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"image"
+	"image/png"
 	"os"
 	"path/filepath"
 	"strings"
@@ -137,6 +140,81 @@ func TestCatalogRejectsIncompleteCorpus(t *testing.T) {
 	}
 }
 
+func TestNegativeFixturesExerciseDeclaredFailures(t *testing.T) {
+	catalog, _, manifest := generateRepositoryCorpus(t)
+	expected := map[string]string{
+		"fixture_invalid_input_001":      "invalid-input",
+		"fixture_oversized_input_001":    "oversized-input",
+		"fixture_dependency_failure_001": "dependency-unavailable",
+	}
+	for _, fixture := range manifest.Fixtures {
+		if class, ok := expected[fixture.ID]; ok {
+			if fixture.Availability != "expected-failure" || fixture.ExpectedFailureClass != class {
+				t.Fatalf("%s availability=%s class=%s", fixture.ID, fixture.Availability, fixture.ExpectedFailureClass)
+			}
+			delete(expected, fixture.ID)
+		}
+	}
+	if len(expected) != 0 {
+		t.Fatalf("negative fixtures missing: %v", expected)
+	}
+
+	listed, err := List(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, fixture := range listed.Fixtures {
+		if fixture.ExpectedFailureClass != "" && fixture.Availability != "expected-failure" {
+			t.Fatalf("%s listed as %s", fixture.ID, fixture.Availability)
+		}
+	}
+}
+
+func TestOversizedFixtureFailsBoundedRead(t *testing.T) {
+	_, output, manifest := generateRepositoryCorpus(t)
+	fixture := findGenerated(t, manifest, "fixture_oversized_input_001")
+	if fixture.Bytes != maxFixtureBytes+1 {
+		t.Fatalf("oversized fixture bytes=%d, want %d", fixture.Bytes, maxFixtureBytes+1)
+	}
+	path := filepath.Join(output, "fixture_oversized_input_001.png")
+	info, err := os.Lstat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !info.Mode().IsRegular() || info.Size() != maxFixtureBytes+1 {
+		t.Fatalf("materialized oversized fixture mode=%s bytes=%d", info.Mode(), info.Size())
+	}
+	if _, err := readBoundedFile(path, maxFixtureBytes); err == nil {
+		t.Fatal("bounded read accepted the oversized fixture")
+	}
+}
+
+func TestCardAndPhotoHaveDistinctContent(t *testing.T) {
+	_, output, _ := generateRepositoryCorpus(t)
+	cardBody, err := os.ReadFile(filepath.Join(output, "fixture_card_001.png"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	photoBody, err := os.ReadFile(filepath.Join(output, "fixture_photo_001.png"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Equal(cardBody, photoBody) || sha256Hex(cardBody) == sha256Hex(photoBody) {
+		t.Fatal("card and photo share fixture bytes")
+	}
+	card, err := png.Decode(bytes.NewReader(cardBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	photo, err := png.Decode(bytes.NewReader(photoBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if differentPixels(card, photo) < 1000 {
+		t.Fatal("card and photo do not have substantive image differences")
+	}
+}
+
 func TestPrivateFixture(t *testing.T) {
 	public, privateCatalog, root := privateFixtureSet(t, "PRIVATE_CANARY_DO_NOT_EMIT", 0o600)
 	manifest, err := ListWithPrivate(public, privateCatalog, root)
@@ -234,6 +312,41 @@ func loadRepositoryCatalog(t *testing.T) Catalog {
 		t.Fatal(err)
 	}
 	return catalog
+}
+
+func generateRepositoryCorpus(t *testing.T) (string, string, GeneratedManifest) {
+	t.Helper()
+	catalog := filepath.Join(repositoryRoot(t), "scripts", "fixtures", "evaluation", "catalog.json")
+	work := t.TempDir()
+	output := filepath.Join(work, "fixtures")
+	manifestPath := filepath.Join(work, "manifest.json")
+	if err := Generate(catalog, output, manifestPath); err != nil {
+		t.Fatal(err)
+	}
+	body, err := os.ReadFile(manifestPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest GeneratedManifest
+	if err := json.Unmarshal(body, &manifest); err != nil {
+		t.Fatal(err)
+	}
+	return catalog, output, manifest
+}
+
+func differentPixels(first, second image.Image) int {
+	if first.Bounds() != second.Bounds() {
+		return 0
+	}
+	different := 0
+	for y := first.Bounds().Min.Y; y < first.Bounds().Max.Y; y++ {
+		for x := first.Bounds().Min.X; x < first.Bounds().Max.X; x++ {
+			if first.At(x, y) != second.At(x, y) {
+				different++
+			}
+		}
+	}
+	return different
 }
 
 func repositoryRoot(t *testing.T) string {

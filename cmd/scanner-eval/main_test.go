@@ -88,23 +88,31 @@ func TestGenerateAndListA4FixtureEndToEnd(t *testing.T) {
 	}
 	var generated struct {
 		Fixtures []struct {
-			ID           string   `json:"id"`
-			SHA256       string   `json:"sha256"`
-			ExpectedText []string `json:"expected_text"`
-			Availability string   `json:"availability"`
+			ID                   string   `json:"id"`
+			SHA256               string   `json:"sha256"`
+			ExpectedText         []string `json:"expected_text"`
+			ExpectedFailureClass string   `json:"expected_failure_class"`
+			Availability         string   `json:"availability"`
 		} `json:"fixtures"`
 	}
 	if err := json.Unmarshal(body, &generated); err != nil {
 		t.Fatal(err)
 	}
 	var a4 bool
+	var expectedFailures int
 	for _, fixture := range generated.Fixtures {
 		if fixture.ID == "fixture_a4_ja_en_001" && fixture.SHA256 == "e2a8b58d65452c9a7e4b471481e2149c9d14502cc75b1c48120ceef9bc860e08" &&
 			fixture.Availability == "available" && len(fixture.ExpectedText) == 3 {
 			a4 = true
 		}
+		if fixture.ExpectedFailureClass != "" {
+			expectedFailures++
+			if fixture.Availability != "expected-failure" {
+				t.Fatalf("%s generated as %s", fixture.ID, fixture.Availability)
+			}
+		}
 	}
-	if !a4 {
+	if !a4 || expectedFailures != 3 {
 		t.Fatalf("A4 fixture missing: %+v", generated.Fixtures)
 	}
 	if _, err := os.Stat(filepath.Join(output, "fixture_a4_ja_en_001.png")); err != nil {
@@ -117,22 +125,30 @@ func TestGenerateAndListA4FixtureEndToEnd(t *testing.T) {
 	}
 	var listed struct {
 		Fixtures []struct {
-			ID         string   `json:"id"`
-			Roles      []string `json:"expected_outputs"`
-			Available  string   `json:"availability"`
-			ExpectedTx []string `json:"expected_text"`
+			ID                   string   `json:"id"`
+			Roles                []string `json:"expected_outputs"`
+			Available            string   `json:"availability"`
+			ExpectedTx           []string `json:"expected_text"`
+			ExpectedFailureClass string   `json:"expected_failure_class"`
 		} `json:"fixtures"`
 	}
 	if err := json.Unmarshal([]byte(result.stdout), &listed); err != nil {
 		t.Fatal(err)
 	}
 	a4 = false
+	expectedFailures = 0
 	for _, fixture := range listed.Fixtures {
 		if fixture.ID == "fixture_a4_ja_en_001" && fixture.Available == "available" && len(fixture.ExpectedTx) == 3 {
 			a4 = true
 		}
+		if fixture.ExpectedFailureClass != "" {
+			expectedFailures++
+			if fixture.Available != "expected-failure" {
+				t.Fatalf("%s listed as %s", fixture.ID, fixture.Available)
+			}
+		}
 	}
-	if !a4 {
+	if !a4 || expectedFailures != 3 {
 		t.Fatalf("A4 fixture missing from list: %s", result.stdout)
 	}
 
