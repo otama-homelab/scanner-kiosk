@@ -175,6 +175,9 @@ func Generate(catalogPath, output, manifestPath string) error {
 	if err != nil {
 		return err
 	}
+	if err := ValidateRequiredCoverage(catalog); err != nil {
+		return err
+	}
 	if err := ensureEmptyDirectory(output); err != nil {
 		return err
 	}
@@ -208,6 +211,9 @@ func Generate(catalogPath, output, manifestPath string) error {
 func List(catalogPath string) (GeneratedManifest, error) {
 	catalog, err := LoadCatalog(catalogPath)
 	if err != nil {
+		return GeneratedManifest{}, err
+	}
+	if err := ValidateRequiredCoverage(catalog); err != nil {
 		return GeneratedManifest{}, err
 	}
 	fixtures := append([]FixtureDefinition(nil), catalog.Fixtures...)
