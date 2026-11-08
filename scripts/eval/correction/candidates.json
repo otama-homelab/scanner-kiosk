@@ -56,9 +56,52 @@
       "resource_status": "measured",
       "prototype": {
         "protocol": "scanner-eval benchmark",
-        "execution_status": "not-run",
+        "execution_status": "measured",
         "command": "go run ./cmd/scanner-eval benchmark --catalog \"$CORRECTION_CATALOG\" --candidate \"$OPENCV_CANDIDATE_CONFIG\" --fixture fixture_skew_001 --output \"$RUN_ROOT/opencv-skew\" --cold 1 --warm 2",
-        "evidence": null
+        "evidence": {
+          "harness_protocol": "scanner-eval benchmark + analyze-corrections",
+          "harness_command": "go run ./cmd/scanner-eval benchmark --catalog \"$CORRECTION_CATALOG\" --candidate \"$OPENCV_CANDIDATE_CONFIG\" --fixture fixture_skew_001 --output \"$RUN_ROOT/opencv-skew\" --cold 1 --warm 2",
+          "measured_at": "2026-11-08T16:30:33Z",
+          "fixture": "fixture_skew_001",
+          "quality_status": "passed",
+          "resource_status": "complete",
+          "report": ".planning/phases/45-scan/45-CORRECTION-CANDIDATES.md",
+          "benchmark_run_id": "benchmark_f0172b6d152849abebdd96d58a7d077c",
+          "fixture_sha256": "20705301d62ea5cf995d0fe4246476705d9de438c79821d5f4db59e934b99262",
+          "original_sha256": "20705301d62ea5cf995d0fe4246476705d9de438c79821d5f4db59e934b99262",
+          "correction_sha256": "3c5eb3890ff0d6260fb52138e8a8d12cab99445c3e34c0191d94b337034d7028",
+          "candidate_config_sha256": "fd96cd225e1caf1f9e1bf6654031f39155eee37d3c7a35f5d3df3580f08b83dc",
+          "binary_bytes": 28664,
+          "licenses": [
+            "OpenCV 4.6.0: Apache-2.0",
+            "host OpenCV runtime 4.6.0+dfsg-13.1ubuntu1: Apache-2.0"
+          ],
+          "operator_steps": [
+            "use the installed OpenCV 4.6.0 libraries and headers"
+          ],
+          "failure_class": null,
+          "cold": {
+            "samples": 1,
+            "p50_millis": 2498,
+            "p95_millis": 2498,
+            "peak_rss_bytes": 102817792,
+            "sampled_temp_disk_bytes": 257012
+          },
+          "warm": {
+            "samples": 2,
+            "p50_millis": 122,
+            "p95_millis": 144,
+            "peak_rss_bytes": 102842368,
+            "sampled_temp_disk_bytes": 257012
+          },
+          "quality": {
+            "edge_regions_retained": "0/0",
+            "content_regions_retained": "1/1",
+            "foreground_retention_ratio": 1,
+            "correction_width": 757,
+            "correction_height": 489
+          }
+        }
       }
     },
     {
@@ -143,9 +186,21 @@
       "resource_note": "upstream does not state peak RAM or temporary disk; this host has Python PyTorch but no ONNX Runtime or capybara_docsaid package",
       "prototype": {
         "protocol": "scanner-eval benchmark",
-        "execution_status": "not-run",
+        "execution_status": "unavailable",
         "command": "go run ./cmd/scanner-eval benchmark --catalog \"$CORRECTION_CATALOG\" --candidate \"$DOCALIGNER_CANDIDATE_CONFIG\" --fixture fixture_skew_001 --output \"$RUN_ROOT/docaligner-skew\" --cold 1 --warm 2",
-        "evidence": null
+        "missing_dependencies": [
+          "Python package onnxruntime",
+          "Python package capybara_docsaid",
+          "browser package onnxruntime-web"
+        ],
+        "reason": "the pinned ONNX asset exists but no ONNX Runtime provider or browser package is installed in this workspace",
+        "runtime_probe": {
+          "checked_at": "2026-11-09",
+          "onnxruntime": false,
+          "capybara": false,
+          "onnxruntime-web": false,
+          "torch": true
+        }
       }
     },
     {
@@ -231,9 +286,14 @@
       "resource_note": "the model files, parameter counts, RAM, disk and latency are not published in the repository",
       "prototype": {
         "protocol": "scanner-eval benchmark",
-        "execution_status": "not-run",
+        "execution_status": "unavailable",
         "command": "go run ./cmd/scanner-eval benchmark --catalog \"$CORRECTION_CATALOG\" --candidate \"$DEWARPNET_CANDIDATE_CONFIG\" --fixture fixture_skew_001 --output \"$RUN_ROOT/dewarpnet-skew\" --cold 1 --warm 2",
-        "evidence": null
+        "missing_dependencies": [
+          "immutable SHA-256 for final Google Drive weights",
+          "explicit final-weight license and redistribution terms",
+          "opencv-python and matplotlib needed by the upstream inference script"
+        ],
+        "reason": "the candidate cannot be fetched reproducibly or licensed as a prototype model artifact"
       }
     },
     {

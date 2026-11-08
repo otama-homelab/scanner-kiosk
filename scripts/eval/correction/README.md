@@ -71,3 +71,42 @@ scripts/eval/correction/prepare_candidates.py \
 The generated configs contain hashes and local absolute paths; do not commit them. Run cold 1/warm 2 `benchmark` for every available candidate/fixture. Retain each run's `artifact-catalog.json`, repetition receipts and `benchmark.json` under the private root, then pass one cold artifact catalog and every `benchmark.json` to `analyze-corrections`. Do not copy private catalog/config/run paths into source receipts.
 
 The former geometry-only 40/40 result is superseded. The decoded-pixel run and explicit unavailable arm are recorded in `.planning/phases/45-scan/45-CORRECTION-COMPARISON.md`. No private household corpus or OCR improvement comparison exists, so this evidence does not adopt a production correction engine.
+
+## Algorithm expansion survey
+
+Phase 45-09 adds a source-pinned survey for classical, lightweight AI,
+browser/WASM/WebGPU and optional heavyweight sidecar candidates:
+
+- `candidates.json` is the machine-readable matrix.
+- `test_candidate_survey.py` rejects missing source/license/weight/resource
+  evidence, public-ineligible prototype paths and more than two non-heavy or one
+  heavy selected prototype.
+- `docs/design/correction-algorithm-candidates.md` records primary sources and
+  proof limits.
+- `.planning/phases/45-scan/45-CORRECTION-CANDIDATES.md` records the bounded
+  prototype result.
+
+The selected OpenCV arm is rerun through the existing benchmark and analyzer:
+
+```sh
+go run ./cmd/scanner-eval benchmark \
+  --catalog "$CORRECTION_CATALOG" \
+  --candidate "$OPENCV_CANDIDATE_CONFIG" \
+  --fixture fixture_skew_001 \
+  --output "$RUN_ROOT/opencv-skew" \
+  --cold 1 \
+  --warm 2
+
+go run ./cmd/scanner-eval analyze-corrections \
+  --catalog "$CORRECTION_CATALOG" \
+  --oracles scripts/fixtures/evaluation/correction-oracles.json \
+  --artifacts "$RUN_ROOT/opencv-skew/repetitions/001-cold/artifact-catalog.json" \
+  --benchmark "$RUN_ROOT/opencv-skew/benchmark.json"
+```
+
+DocAligner is not run in this workspace because `onnxruntime`,
+`capybara_docsaid` and the `onnxruntime-web` browser package are absent.
+DewarpNet is not run because its final weights have no immutable hash or explicit
+weight redistribution terms. DocTr is rejected by its non-commercial license.
+Record these as unavailable/rejected; do not install a package, substitute a
+similarly named model or invent measurements.
