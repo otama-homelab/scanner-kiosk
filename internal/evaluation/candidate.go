@@ -366,7 +366,10 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 			continue
 		}
 		pdfPath := filepath.Join(staging, "artifacts", artifact.ID)
-		receipt, validationErr := ValidatePDF(ctx, pdfPath, fixture.PageIDs, fixture.ExpectedText, PDFValidationOptions{})
+		receipt, validationErr := ValidatePDF(ctx, pdfPath, fixture.PageIDs, fixture.ExpectedText, PDFValidationOptions{
+			OriginalImagePath: filepath.Join(runRoot, "input", "original.png"),
+			ExpectLossless:    true,
+		})
 		if validation != nil {
 			receipt.Status = "failed"
 			if receipt.FailureClass == "" {
