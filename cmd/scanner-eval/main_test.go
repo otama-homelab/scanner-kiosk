@@ -1050,6 +1050,14 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 		comparison.Rows[0].Resources.Metrics.Warm.Samples != 1 {
 		t.Fatalf("unexpected correction comparison: %+v", comparison)
 	}
+
+	withoutBenchmark := runHelper(t, "analyze-corrections",
+		"--catalog", filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json"),
+		"--oracles", filepath.Join(root, "scripts", "fixtures", "evaluation", "correction-oracles.json"),
+		"--artifacts", artifactPath)
+	if withoutBenchmark.code == 0 || withoutBenchmark.stdout != "" {
+		t.Fatalf("quality-only CLI run passed: code=%d stdout=%s", withoutBenchmark.code, withoutBenchmark.stdout)
+	}
 }
 
 func writeCorrectionCLIBenchmark(t *testing.T, root string, catalog evaluation.ArtifactCatalog) string {

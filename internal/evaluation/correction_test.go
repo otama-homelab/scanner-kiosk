@@ -212,6 +212,52 @@ func TestCorrectionBenchmarkIdentity(t *testing.T) {
 	}
 }
 
+func TestCorrectionRejectsConfigMismatch(t *testing.T) {
+	qualityPath, oracles := writeCorrectionSurvivalFixture(t, whiteImageWithContent(t), whiteImageWithContent(t),
+		image.Rect(10, 10, 20, 11), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+	rewriteCorrectionCatalogConfig(t, qualityPath, strings.Repeat("c", 64))
+	benchmarkCatalogPath, _ := writeCorrectionSurvivalFixture(t, whiteImageWithContent(t), whiteImageWithContent(t),
+		image.Rect(10, 10, 20, 11), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+	rewriteCorrectionCatalogConfig(t, benchmarkCatalogPath, strings.Repeat("f", 64))
+	benchmarkPath := writeCorrectionBenchmark(t, benchmarkCatalogPath)
+	rewriteCorrectionBenchmark(t, benchmarkPath, func(summary *BenchmarkSummary) {
+		summary.CandidateConfigSHA256 = strings.Repeat("f", 64)
+		for index := range summary.Samples {
+			summary.Samples[index].CandidateConfigSHA256 = summary.CandidateConfigSHA256
+			summary.Samples[index].SourceHashesBefore["candidate_config"] = summary.CandidateConfigSHA256
+			summary.Samples[index].SourceHashesAfter["candidate_config"] = summary.CandidateConfigSHA256
+		}
+	})
+
+	comparison, err := AnalyzeCorrectionCatalogsWithBenchmarks(
+		[]string{qualityPath}, []string{benchmarkPath}, oracles,
+	)
+	if err != nil || len(comparison.Rows) != 1 {
+		t.Fatal(err)
+	}
+	row := comparison.Rows[0]
+	if comparison.Status != "incomplete" || row.Status != "failed" ||
+		row.Quality.Status != "passed" || row.Resources.Status != "invalid" ||
+		row.Resources.FailureClass != "resource-identity-mismatch" {
+		t.Fatalf("config-only mismatch attached resources: %+v", comparison)
+	}
+}
+
+func TestCorrectionRequiresBenchmarkEvidence(t *testing.T) {
+	path, oracles := writeCorrectionSurvivalFixture(t, whiteImageWithContent(t), whiteImageWithContent(t),
+		image.Rect(10, 10, 20, 11), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+	comparison, err := AnalyzeCorrectionCatalogsWithBenchmarks([]string{path}, nil, oracles)
+	if err != nil || len(comparison.Rows) != 1 {
+		t.Fatal(err)
+	}
+	row := comparison.Rows[0]
+	if comparison.Status != "incomplete" || row.Status != "failed" ||
+		row.Quality.Status != "passed" || row.Resources.Status != "unavailable" ||
+		row.Resources.FailureClass != "resource-unavailable" {
+		t.Fatalf("quality-only analysis passed without benchmark evidence: %+v", comparison)
+	}
+}
+
 func TestCorrectionRejectsMismatchedResources(t *testing.T) {
 	for _, test := range []struct {
 		name   string
@@ -347,6 +393,26 @@ func rewriteCorrectionBenchmark(t *testing.T, path string, mutate func(*Benchmar
 	}
 	mutate(&summary)
 	encoded, err := json.Marshal(summary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func rewriteCorrectionCatalogConfig(t *testing.T, path, configSHA string) {
+	t.Helper()
+	body, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var catalog map[string]json.RawMessage
+	if err := json.Unmarshal(body, &catalog); err != nil {
+		t.Fatal(err)
+	}
+	catalog["candidate_config_sha256"] = json.RawMessage(strconv.Quote(configSHA))
+	encoded, err := json.Marshal(catalog)
 	if err != nil {
 		t.Fatal(err)
 	}
