@@ -10,6 +10,272 @@
       "scanner-eval benchmark"
     ]
   },
-  "prototype_selection": [],
-  "candidates": []
+  "prototype_selection": [
+    "opencv_perspective_4_6",
+    "docaligner_lcnet100_1_1_1",
+    "dewarpnet_doc3d"
+  ],
+  "candidates": [
+    {
+      "id": "opencv_perspective_4_6",
+      "family": "classical",
+      "task": "detect a four-point document boundary and apply a perspective crop",
+      "source_url": "https://github.com/opencv/opencv/tree/4.6.0",
+      "source_revision": "b0dc474160e389b9c9045da5db49d03ae17c6a6b",
+      "source_license": "Apache-2.0",
+      "weights_url": "none",
+      "weights_sha256": "none",
+      "weights_license": "none",
+      "framework": "C++17, OpenCV 4.6.0",
+      "input_contract": "8-bit RGB PNG; candidates receive the immutable full-bed original",
+      "output_contract": "8-bit RGB PNG with crop_quad, zero rotation and output dimensions",
+      "model_bytes": 0,
+      "parameter_count": 0,
+      "deployment_modes": [
+        "cgo"
+      ],
+      "cpu_requirement": "x86_64 CPU; measured with the pinned external candidate",
+      "gpu_requirement": "none",
+      "min_ram_bytes": 268435456,
+      "min_disk_bytes": 1048576,
+      "offline": true,
+      "determinism": "deterministic for the pinned OpenCV build and input bytes",
+      "failure_modes": [
+        "no contour",
+        "ambiguous contour",
+        "content outside the predicted boundary",
+        "non-convex or invalid four-point result"
+      ],
+      "integration_cost": {
+        "go": "requires CGO and a pinned native library unless reimplemented",
+        "packaging": "adds OpenCV runtime size and platform-specific libraries",
+        "wasm": "not verified"
+      },
+      "prototype_status": "eligible",
+      "reason": "the existing Phase 45 harness already measured a pinned OpenCV external candidate",
+      "resource_status": "measured",
+      "prototype": {
+        "protocol": "scanner-eval benchmark",
+        "execution_status": "not-run",
+        "command": "go run ./cmd/scanner-eval benchmark --catalog \"$CORRECTION_CATALOG\" --candidate \"$OPENCV_CANDIDATE_CONFIG\" --fixture fixture_skew_001 --output \"$RUN_ROOT/opencv-skew\" --cold 1 --warm 2",
+        "evidence": null
+      }
+    },
+    {
+      "id": "leptonica_deskew_1_87",
+      "family": "classical",
+      "task": "estimate skew and normalize uneven background illumination",
+      "source_url": "https://github.com/DanBloomberg/leptonica/tree/1.87.0",
+      "source_revision": "13275a278eb55b5746e33f95fbf5a2c8f604b3ab",
+      "source_license": "BSD-2-Clause",
+      "weights_url": "none",
+      "weights_sha256": "none",
+      "weights_license": "none",
+      "framework": "C, Leptonica 1.87.0",
+      "input_contract": "8-bit RGB PNG; full image is retained as the source",
+      "output_contract": "8-bit RGB PNG with full-frame crop_quad and measured rotation",
+      "model_bytes": 0,
+      "parameter_count": 0,
+      "deployment_modes": [
+        "cgo"
+      ],
+      "cpu_requirement": "x86_64 CPU; measured with the pinned external candidate",
+      "gpu_requirement": "none",
+      "min_ram_bytes": 134217728,
+      "min_disk_bytes": 1048576,
+      "offline": true,
+      "determinism": "deterministic for the pinned Leptonica build and input bytes",
+      "failure_modes": [
+        "insufficient foreground for skew estimation",
+        "over-correction of designed rotation",
+        "background texture removal",
+        "invalid output dimensions"
+      ],
+      "integration_cost": {
+        "go": "requires CGO and a pinned native library",
+        "packaging": "smaller than OpenCV but still platform-specific",
+        "wasm": "not verified"
+      },
+      "prototype_status": "eligible",
+      "reason": "the existing Phase 45 harness already measured a pinned Leptonica external candidate",
+      "resource_status": "measured"
+    },
+    {
+      "id": "docaligner_lcnet100_1_1_1",
+      "family": "lightweight-ai",
+      "task": "predict four document corners before a caller-owned perspective warp",
+      "source_url": "https://github.com/DocsaidLab/DocAligner/tree/1.1.1",
+      "source_revision": "3275b0f07f8e99d8c01cb0774dea2549be1416b6",
+      "source_license": "Apache-2.0",
+      "weights_url": "https://github.com/DocsaidLab/DocAligner/releases/download/1.1.1/lcnet100_h_e_bifpn_256_fp32.onnx",
+      "weights_sha256": "f4117b786e3a18470f3865c93f3c2bd69d9b998edd60f385574a5c665e79594e",
+      "weights_license": "Apache-2.0",
+      "framework": "ONNX Runtime; optional onnxruntime-web",
+      "input_contract": "256x256 RGB tensor normalized to [0,1]",
+      "output_contract": "four heatmaps reduced to four image-space corners; perspective warp is caller-owned",
+      "model_bytes": 4767987,
+      "parameter_count": null,
+      "deployment_modes": [
+        "onnx-runtime",
+        "wasm-webgpu"
+      ],
+      "cpu_requirement": "CPU provider is supported by the upstream ONNX design",
+      "gpu_requirement": "optional ONNX runtime provider",
+      "min_ram_bytes": null,
+      "min_disk_bytes": null,
+      "offline": true,
+      "determinism": "deterministic for fixed weights and backend; cross-device float output is not assumed byte-identical",
+      "failure_modes": [
+        "no document detected",
+        "incorrect corner ordering",
+        "small-object corner drift",
+        "browser operator unsupported",
+        "WebGPU unavailable"
+      ],
+      "integration_cost": {
+        "go": "requires ONNX Runtime bindings or a bounded sidecar",
+        "browser": "requires onnxruntime-web packaging and WebGPU/WASM fallback testing",
+        "warp": "requires a separate validated perspective implementation"
+      },
+      "prototype_status": "eligible",
+      "reason": "small pinned ONNX asset with an Apache-2.0 release and CPU/GPU deployment path",
+      "resource_status": "unavailable",
+      "resource_note": "upstream does not state peak RAM or temporary disk; this host has Python PyTorch but no ONNX Runtime or capybara_docsaid package",
+      "prototype": {
+        "protocol": "scanner-eval benchmark",
+        "execution_status": "not-run",
+        "command": "go run ./cmd/scanner-eval benchmark --catalog \"$CORRECTION_CATALOG\" --candidate \"$DOCALIGNER_CANDIDATE_CONFIG\" --fixture fixture_skew_001 --output \"$RUN_ROOT/docaligner-skew\" --cold 1 --warm 2",
+        "evidence": null
+      }
+    },
+    {
+      "id": "uvdoc_grid_2023",
+      "family": "lightweight-ai",
+      "task": "predict a dense 2D sampling grid and unwarp the full document image",
+      "source_url": "https://github.com/tanguymagne/UVDoc/tree/4c9b82b537057aff2526e6dd118a847cdd072e82",
+      "source_revision": "4c9b82b537057aff2526e6dd118a847cdd072e82",
+      "source_license": "MIT",
+      "weights_url": "https://github.com/tanguymagne/UVDoc/raw/4c9b82b537057aff2526e6dd118a847cdd072e82/model/best_model.pkl",
+      "weights_sha256": "7e90861b8a516eb4bc51f84bd889cb77275743d2d1d3ca8091951ec9f2b7da23",
+      "weights_license": "MIT",
+      "framework": "PyTorch 1.x compatible checkpoint",
+      "input_contract": "RGB image resized to 488x712 for network inference",
+      "output_contract": "31x45 2D grid upsampled and applied with grid_sample to the original image size",
+      "model_bytes": 32158393,
+      "parameter_count": 8011956,
+      "deployment_modes": [
+        "sidecar-container"
+      ],
+      "cpu_requirement": "PyTorch CPU is supported by the model topology; no CPU resource bound is published",
+      "gpu_requirement": "optional CUDA through PyTorch",
+      "min_ram_bytes": null,
+      "min_disk_bytes": null,
+      "offline": true,
+      "determinism": "deterministic for fixed weights and backend; CUDA/CPU numerical output is not assumed byte-identical",
+      "failure_modes": [
+        "grid folds or tears content",
+        "small-object distortion",
+        "CPU latency",
+        "CUDA memory pressure",
+        "nonlinear transform cannot use the current crop-quad analyzer"
+      ],
+      "integration_cost": {
+        "go": "requires a Python/PyTorch sidecar",
+        "packaging": "adds a runtime and model to an optional service",
+        "contract": "requires a nonlinear-grid artifact schema before comparable analysis"
+      },
+      "prototype_status": "eligible",
+      "reason": "weights and eight-million-parameter model are committed under an MIT repository",
+      "resource_status": "unavailable",
+      "resource_note": "upstream does not publish peak RAM, model download size limit, CPU latency, or temporary disk requirements"
+    },
+    {
+      "id": "dewarpnet_doc3d",
+      "family": "heavyweight-ai",
+      "task": "predict 3D surface coordinates and a 2D backward map with two neural networks",
+      "source_url": "https://github.com/cvlab-stonybrook/DewarpNet/tree/5f9e216535f048d98ca44bbfb5f6ea55f8cdfe13",
+      "source_revision": "5f9e216535f048d98ca44bbfb5f6ea55f8cdfe13",
+      "source_license": "MIT",
+      "weights_url": "https://drive.google.com/drive/folders/1yFiYBIkrY61IuRniiV4MLF3jyrNeVd2I",
+      "weights_sha256": null,
+      "weights_license": "unavailable",
+      "framework": "PyTorch, two-model inference pipeline",
+      "input_contract": "RGB input resized to 256x256 for shape prediction and 128x128 for the backward map",
+      "output_contract": "2D sampling map applied to the full original; nonlinear and not expressible as crop_quad",
+      "model_bytes": null,
+      "parameter_count": null,
+      "deployment_modes": [
+        "sidecar-container"
+      ],
+      "cpu_requirement": "PyTorch CPU path exists but no resource bound is stated",
+      "gpu_requirement": "optional CUDA through PyTorch",
+      "min_ram_bytes": null,
+      "min_disk_bytes": null,
+      "offline": true,
+      "determinism": "unknown until both model files and backend versions are pinned",
+      "failure_modes": [
+        "unpinned Google Drive weights",
+        "unclear weight redistribution terms",
+        "two-model failure propagation",
+        "CPU latency and peak memory",
+        "nonlinear transform contract mismatch"
+      ],
+      "integration_cost": {
+        "go": "optional bounded Python/PyTorch sidecar only",
+        "packaging": "two model files plus Python, PyTorch, OpenCV and related runtime",
+        "contract": "requires a nonlinear-grid artifact schema"
+      },
+      "prototype_status": "unavailable",
+      "reason": "the upstream README links final weights only through Google Drive and publishes neither immutable file hashes nor explicit weight redistribution terms",
+      "resource_status": "unavailable",
+      "resource_note": "the model files, parameter counts, RAM, disk and latency are not published in the repository",
+      "prototype": {
+        "protocol": "scanner-eval benchmark",
+        "execution_status": "not-run",
+        "command": "go run ./cmd/scanner-eval benchmark --catalog \"$CORRECTION_CATALOG\" --candidate \"$DEWARPNET_CANDIDATE_CONFIG\" --fixture fixture_skew_001 --output \"$RUN_ROOT/dewarpnet-skew\" --cold 1 --warm 2",
+        "evidence": null
+      }
+    },
+    {
+      "id": "doctr_geotr_2021",
+      "family": "heavyweight-ai",
+      "task": "predict a document sampling grid with a geometric transformer and optional illumination correction",
+      "source_url": "https://github.com/fh2019ustc/DocTr/tree/044648919b6b28f2cb1b288db6d8fd97749db537",
+      "source_revision": "044648919b6b28f2cb1b288db6d8fd97749db537",
+      "source_license": "LicenseRef-DocTr-NonCommercial-1.0",
+      "weights_url": "https://drive.google.com/drive/folders/1eZRxnRVpf5iy3VJakJNTKWw5Zk9g-F_0",
+      "weights_sha256": null,
+      "weights_license": "unavailable",
+      "framework": "PyTorch with CUDA-only upstream inference",
+      "input_contract": "RGB input resized to 288x288 for the upstream geometric model",
+      "output_contract": "2D sampling grid applied to the full image; illumination correction is a separate transformer",
+      "model_bytes": null,
+      "parameter_count": null,
+      "deployment_modes": [
+        "sidecar-container"
+      ],
+      "cpu_requirement": "upstream inference calls CUDA unconditionally",
+      "gpu_requirement": "CUDA GPU",
+      "min_ram_bytes": null,
+      "min_disk_bytes": null,
+      "offline": true,
+      "determinism": "unknown until weights, CUDA, PyTorch and segmentation assets are pinned",
+      "failure_modes": [
+        "non-commercial license",
+        "unpinned Google Drive weights",
+        "CUDA-only upstream path",
+        "segmentation and geometric transforms can each fail",
+        "nonlinear transform contract mismatch"
+      ],
+      "integration_cost": {
+        "go": "bounded Python/PyTorch sidecar only",
+        "packaging": "multiple model files plus CUDA-capable image",
+        "contract": "requires a nonlinear-grid artifact schema"
+      },
+      "prototype_status": "rejected",
+      "reason": "the upstream custom license forbids commercial use without written permission and the pretrained weights lack immutable hashes",
+      "resource_status": "unavailable",
+      "resource_note": "the repository publishes no model sizes, parameter counts, RSS, disk or latency bounds"
+    }
+  ]
 }

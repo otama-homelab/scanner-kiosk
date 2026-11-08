@@ -57,7 +57,8 @@ class CandidateSurveyTest(unittest.TestCase):
         self.assertEqual(len(self.by_id), len(self.candidates))
         for candidate in self.candidates:
             with self.subTest(candidate=candidate.get("id")):
-                self.assertEqual(set(candidate), REQUIRED)
+                self.assertLessEqual(set(candidate), REQUIRED | {"prototype", "resource_note"})
+                self.assertLessEqual(REQUIRED, set(candidate))
                 self.assertRegex(candidate["id"], ID)
                 self.assertIn(candidate["family"], FAMILIES)
                 self.assertIn(candidate["prototype_status"], STATUSES)
