@@ -84,11 +84,13 @@ go run ./cmd/scanner-eval list-fixtures \
   --private-root /private/eval/documents
 ```
 
-The private root must be absolute. Resolution is confined beneath that root;
-symlinks, non-regular files, public permissions, size/hash mismatches and missing
-files remain `unavailable`. Source files are not copied into the repository.
-Private paths, bytes and recognized text are not written to list output, errors,
-artifact catalogs or benchmark receipts.
+The private root must be absolute. The catalog and referenced fixture must be
+owner-only (`0600`); a group- or world-readable catalog or fixture is rejected.
+Resolution is confined beneath that root. Symlinks, non-regular files, public
+permissions, size/hash mismatches and missing files never fall back to a public
+fixture or become a completed sample. Source files are not copied into the
+repository. Private paths, bytes and recognized text are not written to command
+output, errors, artifact catalogs, sample receipts or benchmark summaries.
 
 ## Candidate protocol
 
@@ -199,9 +201,24 @@ go run ./cmd/scanner-eval run \
   --output /private/eval/runs/run-001
 ```
 
+For an owner-private fixture, pass the same `--private-catalog` and
+`--private-root` pair used by `list-fixtures`. Supplying only one flag is invalid:
+
+```sh
+go run ./cmd/scanner-eval run \
+  --catalog scripts/fixtures/evaluation/catalog.json \
+  --private-catalog /private/eval/private-catalog.json \
+  --private-root /private/eval/documents \
+  --candidate /private/eval/candidate.json \
+  --fixture private_household_form_001 \
+  --output /private/eval/runs/private-001
+```
+
 The output directory must not already exist. `artifact-catalog.json` records the
 original, derived artifacts, missing requested outputs and validation state.
-Incomplete or failed runs exit non-zero while retaining machine-readable evidence.
+The original artifact hash is the hash observed from the exact validated private
+bytes. Incomplete or failed runs exit non-zero while retaining machine-readable
+evidence.
 
 ## Independent PDF checks
 
@@ -236,6 +253,20 @@ go run ./cmd/scanner-eval benchmark \
   --max-temp-disk-mib 1024
 ```
 
+Private fixtures use the same flag pair before repetition setup:
+
+```sh
+go run ./cmd/scanner-eval benchmark \
+  --catalog scripts/fixtures/evaluation/catalog.json \
+  --private-catalog /private/eval/private-catalog.json \
+  --private-root /private/eval/documents \
+  --candidate /private/eval/candidate.json \
+  --fixture private_household_form_001 \
+  --output /private/eval/benchmarks/private-001 \
+  --cold 1 \
+  --warm 5
+```
+
 Defaults are 1 cold and 5 warm repetitions, a 900-second ceiling, 2GiB peak-RSS
 ceiling and 1GiB sampled-temporary-disk ceiling. At least one repetition is
 required and the total is capped at 100.
@@ -260,6 +291,9 @@ pXX  = sorted_wall_millis[rank - 1]
 
 No percentile is emitted for a mode with zero completed samples. Failed samples
 remain in sequence order and are not mixed into cold/warm timing populations.
+If private resolution fails, the summary is `unavailable` with
+`failure_class: fixture-unavailable`, zero completed samples and no candidate
+repetition.
 
 ## Receipts and comparison
 
@@ -341,8 +375,8 @@ All five subcommands emit machine-readable JSON on stdout unless noted.
 | --- | --- | --- |
 | `generate-fixtures` | `--catalog`, `--output`, `--manifest` | none |
 | `list-fixtures` | `--catalog` | `--private-catalog` and `--private-root` together |
-| `run` | `--catalog`, `--candidate`, `--fixture`, `--output` | none |
-| `benchmark` | `--catalog`, `--candidate`, `--fixture`, `--output` | `--cold`, `--warm`, `--timeout-seconds`, `--max-rss-mib`, `--max-temp-disk-mib` |
+| `run` | `--catalog`, `--candidate`, `--fixture`, `--output` | `--private-catalog` and `--private-root` together |
+| `benchmark` | `--catalog`, `--candidate`, `--fixture`, `--output` | `--private-catalog` and `--private-root` together; `--cold`, `--warm`, `--timeout-seconds`, `--max-rss-mib`, `--max-temp-disk-mib` |
 | `compare` | one or more `--receipt` | `--output` |
 
 Benchmark defaults are cold 1, warm 5, timeout 900 seconds, peak RSS 2048 MiB

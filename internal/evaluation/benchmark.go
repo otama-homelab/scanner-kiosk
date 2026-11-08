@@ -21,15 +21,17 @@ const (
 )
 
 type BenchmarkRequest struct {
-	CatalogPath      string
-	CandidatePath    string
-	FixtureID        string
-	RunDir           string
-	Cold             int
-	Warm             int
-	Timeout          time.Duration
-	MaxRSSBytes      int64
-	MaxTempDiskBytes int64
+	CatalogPath        string
+	PrivateCatalogPath string
+	PrivateRoot        string
+	CandidatePath      string
+	FixtureID          string
+	RunDir             string
+	Cold               int
+	Warm               int
+	Timeout            time.Duration
+	MaxRSSBytes        int64
+	MaxTempDiskBytes   int64
 }
 
 func RunBenchmark(ctx context.Context, request BenchmarkRequest) (BenchmarkSummary, error) {
@@ -107,6 +109,15 @@ func RunBenchmark(ctx context.Context, request BenchmarkRequest) (BenchmarkSumma
 	summary.Candidate = candidate
 	summary.CandidateConfigSHA256 = configSHA
 	summary.Parameters = copyStringMap(config.Parameters)
+	resolvedFixture, _, err := ResolveFixture(
+		request.CatalogPath, request.PrivateCatalogPath, request.PrivateRoot, request.FixtureID,
+	)
+	if err != nil {
+		summary.Status = "unavailable"
+		summary.FailureClass = "fixture-unavailable"
+		return finish(ErrUnavailable)
+	}
+	summary.FixtureSHA256 = resolvedFixture.SHA256
 	summary.Observer = observer
 	for _, entry := range config.Environment {
 		name, _, _ := strings.Cut(entry, "=")
@@ -122,24 +133,6 @@ func RunBenchmark(ctx context.Context, request BenchmarkRequest) (BenchmarkSumma
 		summary.FailureClass = "storage-unavailable"
 		return finish(ErrUnavailable)
 	}
-	manifest, err := List(request.CatalogPath)
-	if err != nil {
-		summary.FailureClass = "fixture-unavailable"
-		return finish(ErrUnavailable)
-	}
-	var fixture *GeneratedFixture
-	for index := range manifest.Fixtures {
-		if manifest.Fixtures[index].ID == request.FixtureID {
-			fixture = &manifest.Fixtures[index]
-			break
-		}
-	}
-	if fixture == nil || fixture.Availability != "available" {
-		summary.Status = "unavailable"
-		summary.FailureClass = "fixture-unavailable"
-		return finish(ErrUnavailable)
-	}
-	summary.FixtureSHA256 = fixture.SHA256
 	sequence := 0
 	for _, mode := range []struct {
 		name  string
@@ -186,7 +179,8 @@ func runBenchmarkSample(ctx context.Context, request BenchmarkRequest, config Ca
 	}
 	var metrics CandidateMetrics
 	artifactCatalog, runErr := RunCandidate(ctx, CandidateRunRequest{
-		CatalogPath: request.CatalogPath, CandidatePath: request.CandidatePath,
+		CatalogPath: request.CatalogPath, PrivateCatalogPath: request.PrivateCatalogPath,
+		PrivateRoot: request.PrivateRoot, CandidatePath: request.CandidatePath,
 		FixtureID: request.FixtureID, OutputDir: outputPath,
 		TimePath: benchmarkTimePath, TimeUsagePath: usagePath,
 		Timeout: request.Timeout, MaxRSSBytes: request.MaxRSSBytes,

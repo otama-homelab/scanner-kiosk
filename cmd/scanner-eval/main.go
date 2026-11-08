@@ -94,6 +94,8 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
 		flags.SetOutput(io.Discard)
 		catalog := flags.String("catalog", "", "")
+		privateCatalog := flags.String("private-catalog", "", "")
+		privateRoot := flags.String("private-root", "", "")
 		candidate := flags.String("candidate", "", "")
 		fixture := flags.String("fixture", "", "")
 		output := flags.String("output", "", "")
@@ -103,12 +105,14 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		maxRSS := flags.Int64("max-rss-mib", 2048, "")
 		maxDisk := flags.Int64("max-temp-disk-mib", 1024, "")
 		if flags.Parse(args[1:]) != nil || *catalog == "" || *candidate == "" || *fixture == "" || *output == "" ||
+			(*privateCatalog == "") != (*privateRoot == "") ||
 			*timeout < 1 || *timeout > 900 || *maxRSS < 1 || *maxDisk < 1 || len(flags.Args()) != 0 {
 			fmt.Fprintln(stderr, "scanner-eval: invalid input")
 			return 2
 		}
 		result, err := evaluation.RunBenchmark(ctx, evaluation.BenchmarkRequest{
-			CatalogPath: *catalog, CandidatePath: *candidate, FixtureID: *fixture, RunDir: *output,
+			CatalogPath: *catalog, PrivateCatalogPath: *privateCatalog, PrivateRoot: *privateRoot,
+			CandidatePath: *candidate, FixtureID: *fixture, RunDir: *output,
 			Cold: *cold, Warm: *warm, Timeout: time.Duration(*timeout) * time.Second,
 			MaxRSSBytes: *maxRSS << 20, MaxTempDiskBytes: *maxDisk << 20,
 		})
