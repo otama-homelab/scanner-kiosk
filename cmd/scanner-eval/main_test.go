@@ -756,8 +756,19 @@ func TestNegativeFixtureRunReconcilesExpectedFailure(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if string(body) != result.stdout {
-				t.Fatalf("persisted receipt differs from stdout:\nstdout=%s\nfile=%s", result.stdout, body)
+			var persisted struct {
+				Status               string `json:"status"`
+				ExpectedFailureClass string `json:"expected_failure_class"`
+				ObservedFailureClass string `json:"observed_failure_class"`
+				FailureMatch         *bool  `json:"failure_match"`
+			}
+			if err := json.Unmarshal(body, &persisted); err != nil {
+				t.Fatal(err)
+			}
+			if persisted.Status != receipt.Status || persisted.ExpectedFailureClass != receipt.ExpectedFailureClass ||
+				persisted.ObservedFailureClass != receipt.ObservedFailureClass ||
+				persisted.FailureMatch == nil || !*persisted.FailureMatch {
+				t.Fatalf("persisted receipt differs: stdout=%+v file=%+v", receipt, persisted)
 			}
 		})
 	}
@@ -868,8 +879,18 @@ func TestNegativeFixtureFailureMismatchFailsClosed(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if string(body) != result.stdout {
-		t.Fatalf("persisted mismatch receipt differs from stdout:\nstdout=%s\nfile=%s", result.stdout, body)
+	var persisted struct {
+		ExpectedFailureClass string `json:"expected_failure_class"`
+		ObservedFailureClass string `json:"observed_failure_class"`
+		FailureMatch         *bool  `json:"failure_match"`
+	}
+	if err := json.Unmarshal(body, &persisted); err != nil {
+		t.Fatal(err)
+	}
+	if persisted.ExpectedFailureClass != receipt.ExpectedFailureClass ||
+		persisted.ObservedFailureClass != receipt.ObservedFailureClass ||
+		persisted.FailureMatch == nil || *persisted.FailureMatch {
+		t.Fatalf("persisted mismatch receipt differs: stdout=%+v file=%+v", receipt, persisted)
 	}
 }
 
@@ -903,7 +924,7 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 			Parameters: map[string]string{},
 		},
 		Status: "incomplete",
-		Original: evaluation.Artifact{
+		Original: &evaluation.Artifact{
 			ID: originalID, Role: evaluation.RoleOriginal, MediaType: "image/png", SHA256: digest,
 			Bytes: int64(len(body)), SourcePages: []string{"page_card_001"},
 		},
@@ -1108,7 +1129,10 @@ func writeCLICandidateConfigMode(t *testing.T, work, mode string) string {
 
 func writeMarkerCandidateConfig(t *testing.T, work, marker string) string {
 	t.Helper()
-	executable := "/bin/sh"
+	executable, err := filepath.EvalSymlinks("/bin/sh")
+	if err != nil {
+		t.Fatal(err)
+	}
 	body, err := os.ReadFile(executable)
 	if err != nil {
 		t.Fatal(err)

@@ -157,6 +157,32 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 		request.CatalogPath, request.PrivateCatalogPath, request.PrivateRoot, request.FixtureID,
 	)
 	if err != nil {
+		var failure *FixtureFailure
+		if errors.As(err, &failure) {
+			runID, idErr := newRunID("run_")
+			if idErr != nil {
+				return ArtifactCatalog{}, ErrUnavailable
+			}
+			status := "invalid"
+			if failure.Match {
+				status = "expected-failure"
+			}
+			match := failure.Match
+			receipt := ArtifactCatalog{
+				Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion, RunID: runID,
+				Candidate: candidateReceipt(config), FixtureID: failure.FixtureID,
+				FixtureSHA256: failure.FixtureSHA256, Status: status, Artifacts: []Artifact{},
+				ExpectedFailureClass: failure.ExpectedClass, ObservedFailureClass: failure.ObservedClass,
+				FailureMatch: &match,
+			}
+			if writeErr := writePreflightArtifactCatalog(request.OutputDir, receipt); writeErr != nil {
+				return ArtifactCatalog{}, writeErr
+			}
+			if failure.Match {
+				return receipt, nil
+			}
+			return receipt, fmt.Errorf("fixture failure: %w", ErrInvalid)
+		}
 		return ArtifactCatalog{}, fmt.Errorf("fixture resolution: %w", err)
 	}
 	fixtureSum := sha256.Sum256(fixtureBody)
@@ -375,15 +401,9 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	}
 	receipt := ArtifactCatalog{
 		Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion, RunID: runID,
-		Candidate: CandidateReceipt{
-			ID: config.CandidateID, Version: config.CandidateVersion, ExecutableSHA256: config.ExecutableSHA256,
-			Sources:       append([]CandidatePin(nil), config.Sources...),
-			Dependencies:  append([]CandidatePin(nil), config.Dependencies...),
-			OperatorSteps: append([]string{}, config.OperatorSteps...),
-			Parameters:    copyStringMap(config.Parameters),
-		},
+		Candidate: candidateReceipt(config),
 		FixtureID: fixture.ID, FixtureSHA256: fixtureSHA, Status: status, MissingOutputs: missing,
-		Original: original, Artifacts: artifacts, Validation: validation,
+		Original: &original, Artifacts: artifacts, Validation: validation,
 	}
 	if err := writeJSONExclusiveInRoot(destination, "artifact-catalog.json", receipt); err != nil {
 		return ArtifactCatalog{}, err
@@ -402,6 +422,55 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 		return receipt, ErrUnavailable
 	}
 	return receipt, nil
+}
+
+func candidateReceipt(config CandidateConfig) CandidateReceipt {
+	return CandidateReceipt{
+		ID: config.CandidateID, Version: config.CandidateVersion, ExecutableSHA256: config.ExecutableSHA256,
+		Sources:       append([]CandidatePin(nil), config.Sources...),
+		Dependencies:  append([]CandidatePin(nil), config.Dependencies...),
+		OperatorSteps: append([]string{}, config.OperatorSteps...),
+		Parameters:    copyStringMap(config.Parameters),
+	}
+}
+
+func writePreflightArtifactCatalog(outputDir string, receipt ArtifactCatalog) error {
+	parent := filepath.Dir(outputDir)
+	if info, err := os.Lstat(parent); err != nil || !info.IsDir() {
+		return ErrInvalid
+	}
+	if _, err := os.Lstat(outputDir); !os.IsNotExist(err) {
+		return ErrInvalid
+	}
+	staging, err := os.MkdirTemp(parent, ".scanner-eval-output-")
+	if err != nil {
+		return ErrUnavailable
+	}
+	committed := false
+	defer func() {
+		if !committed {
+			os.RemoveAll(staging)
+		}
+	}()
+	if err := os.Chmod(staging, 0o700); err != nil {
+		return ErrUnavailable
+	}
+	root, err := os.OpenRoot(staging)
+	if err != nil {
+		return ErrUnavailable
+	}
+	defer root.Close()
+	if err := writeJSONExclusiveInRoot(root, "artifact-catalog.json", receipt); err != nil {
+		return err
+	}
+	if err := syncRoot(root); err != nil {
+		return err
+	}
+	if err := os.Rename(staging, outputDir); err != nil {
+		return ErrUnavailable
+	}
+	committed = true
+	return nil
 }
 
 func verifyFile(path, want string) error {

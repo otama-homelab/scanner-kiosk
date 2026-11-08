@@ -220,6 +220,20 @@ The original artifact hash is the hash observed from the exact validated private
 bytes. Incomplete or failed runs exit non-zero while retaining machine-readable
 evidence.
 
+Fixtures with a declared `expected_failure_class` are reconciled before candidate
+staging. The harness independently observes the closed invalid, oversized or
+missing-dependency condition and requires it to match the declaration:
+
+- a match writes `status: expected-failure`, the opaque fixture ID/hash,
+  `expected_failure_class`, `observed_failure_class` and `failure_match: true`;
+  it omits `original` and candidate artifacts, launches no candidate process and
+  exits successfully because the negative contract was verified;
+- an unexpected success writes `status: invalid` with `failure_match: false` and
+  `observed_failure_class: expected-class-mismatch`, launches no candidate and
+  exits non-zero;
+- missing or unsafe private inputs remain unavailable and are not represented as
+  an expected failure.
+
 ## Independent PDF checks
 
 When a PDF artifact is present, the harness uses fixed trusted paths for all four
@@ -294,6 +308,12 @@ remain in sequence order and are not mixed into cold/warm timing populations.
 If private resolution fails, the summary is `unavailable` with
 `failure_class: fixture-unavailable`, zero completed samples and no candidate
 repetition.
+
+For a declared negative fixture, a matching benchmark summary uses
+`status: expected-failure`, carries the same expected/observed class and
+`failure_match: true`, and records zero cold/warm samples. A mismatch exits
+non-zero with `failure_match: false`. Neither case launches a candidate process
+or records a quality sample.
 
 ## Receipts and comparison
 

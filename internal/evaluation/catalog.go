@@ -91,11 +91,7 @@ func ResolveFixture(catalogPath, privateCatalogPath, privateRoot, fixtureID stri
 	if privateCatalogPath == "" {
 		for _, fixture := range public.Fixtures {
 			if fixture.ID == fixtureID {
-				body, err := generateFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
-				if err != nil || fixture.SHA256 != "" && !matchesFixture(fixture, body) {
-					return FixtureDefinition{}, nil, ErrInvalid
-				}
-				return fixture, body, nil
+				return resolvePublicFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
 			}
 		}
 		return FixtureDefinition{}, nil, ErrInvalid
@@ -125,26 +121,145 @@ func ResolveFixture(catalogPath, privateCatalogPath, privateRoot, fixtureID stri
 			if err != nil {
 				return FixtureDefinition{}, nil, ErrUnavailable
 			}
-			return FixtureDefinition{
-				ID: fixture.ID, SourceClass: "owner-private", Privacy: fixture.Privacy,
-				MediaType: fixture.MediaType, PageIDs: append([]string(nil), fixture.PageIDs...),
-				Languages: append([]string(nil), fixture.Languages...), DocumentType: fixture.DocumentType,
-				ExpectedOutputs:      append([]ArtifactRole(nil), fixture.ExpectedOutputs...),
-				ExpectedFailureClass: fixture.ExpectedFailureClass,
-				SHA256:               fixture.SHA256, Bytes: fixture.Bytes,
-			}, body, nil
+			resolved := privateFixtureDefinition(fixture)
+			if failure := classifyPrivateFailure(fixture, body); failure != nil {
+				return resolved, nil, failure
+			}
+			return resolved, body, nil
 		}
 	}
 	for _, fixture := range public.Fixtures {
 		if fixture.ID == fixtureID {
-			body, err := generateFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
-			if err != nil || fixture.SHA256 != "" && !matchesFixture(fixture, body) {
-				return FixtureDefinition{}, nil, ErrInvalid
-			}
-			return fixture, body, nil
+			return resolvePublicFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
 		}
 	}
 	return FixtureDefinition{}, nil, ErrInvalid
+}
+
+type FixtureFailure struct {
+	FixtureID     string
+	FixtureSHA256 string
+	ExpectedClass string
+	ObservedClass string
+	Match         bool
+}
+
+func (failure *FixtureFailure) Error() string {
+	if failure.Match {
+		return "expected fixture failure"
+	}
+	return "fixture failure mismatch"
+}
+
+func (failure *FixtureFailure) Unwrap() error {
+	if failure.Match {
+		return nil
+	}
+	return ErrInvalid
+}
+
+func resolvePublicFixture(base string, fixture FixtureDefinition) (FixtureDefinition, []byte, error) {
+	if fixture.ExpectedFailureClass != "" {
+		sha, observed, err := observePublicFailure(base, fixture)
+		if err != nil || fixture.SHA256 != "" && sha != fixture.SHA256 {
+			return FixtureDefinition{}, nil, ErrInvalid
+		}
+		return fixture, nil, &FixtureFailure{
+			FixtureID: fixture.ID, FixtureSHA256: sha,
+			ExpectedClass: fixture.ExpectedFailureClass, ObservedClass: observed,
+			Match: observed == fixture.ExpectedFailureClass,
+		}
+	}
+	body, err := generateFixture(base, fixture)
+	if err != nil || fixture.SHA256 != "" && !matchesFixture(fixture, body) {
+		return FixtureDefinition{}, nil, ErrInvalid
+	}
+	return fixture, body, nil
+}
+
+func observePublicFailure(base string, fixture FixtureDefinition) (string, string, error) {
+	switch fixture.Recipe.Variant {
+	case "invalid":
+		body, err := generateFixture(base, fixture)
+		if err != nil {
+			return "", "", err
+		}
+		observed := "expected-class-mismatch"
+		if _, _, err := image.Decode(bytes.NewReader(body)); err != nil {
+			observed = "invalid-input"
+		}
+		return hexSHA256(body), observed, nil
+	case "oversized":
+		sha, err := hashZeroFixture(fixture.Recipe.Size)
+		return sha, "oversized-input", err
+	case "dependency-failure":
+		body, err := generateFixture(base, fixture)
+		if err != nil {
+			return "", "", err
+		}
+		missing, err := dependencyMissing(base, fixture.Recipe.Dependency)
+		if err != nil {
+			return "", "", err
+		}
+		observed := "expected-class-mismatch"
+		if missing {
+			observed = "dependency-unavailable"
+		}
+		return hexSHA256(body), observed, nil
+	default:
+		return "", "expected-class-mismatch", nil
+	}
+}
+
+func privateFixtureDefinition(fixture PrivateFixture) FixtureDefinition {
+	return FixtureDefinition{
+		ID: fixture.ID, SourceClass: "owner-private", Privacy: fixture.Privacy,
+		MediaType: fixture.MediaType, PageIDs: append([]string(nil), fixture.PageIDs...),
+		Languages: append([]string(nil), fixture.Languages...), DocumentType: fixture.DocumentType,
+		ExpectedOutputs:      append([]ArtifactRole(nil), fixture.ExpectedOutputs...),
+		ExpectedFailureClass: fixture.ExpectedFailureClass,
+		SHA256:               fixture.SHA256, Bytes: fixture.Bytes,
+	}
+}
+
+func classifyPrivateFailure(fixture PrivateFixture, body []byte) *FixtureFailure {
+	if fixture.ExpectedFailureClass == "" {
+		return nil
+	}
+	observed := "expected-class-mismatch"
+	if fixture.ExpectedFailureClass == "invalid-input" {
+		if _, _, err := image.Decode(bytes.NewReader(body)); err != nil {
+			observed = "invalid-input"
+		}
+	}
+	return &FixtureFailure{
+		FixtureID: fixture.ID, FixtureSHA256: fixture.SHA256,
+		ExpectedClass: fixture.ExpectedFailureClass, ObservedClass: observed,
+		Match: observed == fixture.ExpectedFailureClass,
+	}
+}
+
+func hashZeroFixture(size int64) (string, error) {
+	if size < 0 {
+		return "", ErrInvalid
+	}
+	hasher := sha256.New()
+	if _, err := io.CopyN(hasher, zeroReader{}, size); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(hasher.Sum(nil)), nil
+}
+
+type zeroReader struct{}
+
+func (zeroReader) Read(buffer []byte) (int, error) {
+	clear(buffer)
+	return len(buffer), nil
+}
+
+func hexSHA256(body []byte) string {
+	sum := sha256.Sum256(body)
+	return hex.EncodeToString(sum[:])
 }
 
 func readPrivateFixture(root *os.Root, fixture PrivateFixture) ([]byte, error) {

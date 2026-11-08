@@ -93,6 +93,9 @@ type BenchmarkSummary struct {
 	Settings              BenchmarkSettings `json:"settings"`
 	Samples               []BenchmarkSample `json:"samples"`
 	Metrics               BenchmarkMetrics  `json:"metrics"`
+	ExpectedFailureClass  string            `json:"expected_failure_class,omitempty"`
+	ObservedFailureClass  string            `json:"observed_failure_class,omitempty"`
+	FailureMatch          *bool             `json:"failure_match,omitempty"`
 }
 
 type ComparisonEntry struct {

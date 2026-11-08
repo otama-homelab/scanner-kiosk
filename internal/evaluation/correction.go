@@ -298,6 +298,7 @@ func loadArtifactCatalog(path string) (ArtifactCatalog, error) {
 	var catalog ArtifactCatalog
 	if err := decoder.Decode(&catalog); err != nil || decoder.Decode(&struct{}{}) != io.EOF ||
 		catalog.Format != ArtifactCatalogFormat || catalog.Version != ArtifactCatalogVersion ||
+		catalog.Status == "expected-failure" || catalog.Original == nil ||
 		!validHash(catalog.Original.SHA256) || !validHash(catalog.FixtureSHA256) {
 		return ArtifactCatalog{}, ErrInvalid
 	}

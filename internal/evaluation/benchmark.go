@@ -109,16 +109,32 @@ func RunBenchmark(ctx context.Context, request BenchmarkRequest) (BenchmarkSumma
 	summary.Candidate = candidate
 	summary.CandidateConfigSHA256 = configSHA
 	summary.Parameters = copyStringMap(config.Parameters)
+	summary.Observer = observer
 	resolvedFixture, _, err := ResolveFixture(
 		request.CatalogPath, request.PrivateCatalogPath, request.PrivateRoot, request.FixtureID,
 	)
 	if err != nil {
+		var failure *FixtureFailure
+		if errors.As(err, &failure) {
+			match := failure.Match
+			summary.Status = "invalid"
+			if failure.Match {
+				summary.Status = "expected-failure"
+			}
+			summary.FixtureSHA256 = failure.FixtureSHA256
+			summary.ExpectedFailureClass = failure.ExpectedClass
+			summary.ObservedFailureClass = failure.ObservedClass
+			summary.FailureMatch = &match
+			if failure.Match {
+				return finish(nil)
+			}
+			return finish(ErrInvalid)
+		}
 		summary.Status = "unavailable"
 		summary.FailureClass = "fixture-unavailable"
 		return finish(ErrUnavailable)
 	}
 	summary.FixtureSHA256 = resolvedFixture.SHA256
-	summary.Observer = observer
 	for _, entry := range config.Environment {
 		name, _, _ := strings.Cut(entry, "=")
 		summary.EnvironmentNames = append(summary.EnvironmentNames, name)

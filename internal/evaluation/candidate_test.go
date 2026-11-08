@@ -237,7 +237,8 @@ func TestCandidateRunEndToEnd(t *testing.T) {
 	if !errors.Is(err, ErrUnavailable) || catalog.Status != "incomplete" {
 		t.Fatalf("expected an incomplete text-only run: catalog=%+v err=%v", catalog, err)
 	}
-	if catalog.Original.SHA256 != "e2a8b58d65452c9a7e4b471481e2149c9d14502cc75b1c48120ceef9bc860e08" ||
+	if catalog.Original == nil ||
+		catalog.Original.SHA256 != "e2a8b58d65452c9a7e4b471481e2149c9d14502cc75b1c48120ceef9bc860e08" ||
 		len(catalog.Artifacts) != 1 || catalog.Artifacts[0].Role != RoleOCRText ||
 		catalog.Artifacts[0].SHA256 == "" || catalog.Artifacts[0].Bytes == 0 {
 		t.Fatalf("unexpected normalized catalog: %+v", catalog)
