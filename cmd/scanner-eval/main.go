@@ -65,15 +65,19 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
 		flags.SetOutput(io.Discard)
 		catalog := flags.String("catalog", "", "")
+		privateCatalog := flags.String("private-catalog", "", "")
+		privateRoot := flags.String("private-root", "", "")
 		candidate := flags.String("candidate", "", "")
 		fixture := flags.String("fixture", "", "")
 		output := flags.String("output", "", "")
-		if flags.Parse(args[1:]) != nil || *catalog == "" || *candidate == "" || *fixture == "" || *output == "" || len(flags.Args()) != 0 {
+		if flags.Parse(args[1:]) != nil || *catalog == "" || *candidate == "" || *fixture == "" || *output == "" ||
+			(*privateCatalog == "") != (*privateRoot == "") || len(flags.Args()) != 0 {
 			fmt.Fprintln(stderr, "scanner-eval: invalid input")
 			return 2
 		}
 		result, err := evaluation.RunCandidate(ctx, evaluation.CandidateRunRequest{
-			CatalogPath: *catalog, CandidatePath: *candidate, FixtureID: *fixture, OutputDir: *output,
+			CatalogPath: *catalog, PrivateCatalogPath: *privateCatalog, PrivateRoot: *privateRoot,
+			CandidatePath: *candidate, FixtureID: *fixture, OutputDir: *output,
 		})
 		if result.RunID != "" {
 			if encodeErr := json.NewEncoder(stdout).Encode(result); encodeErr != nil {

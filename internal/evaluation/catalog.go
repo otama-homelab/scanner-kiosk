@@ -57,6 +57,10 @@ func LoadCatalog(path string) (Catalog, error) {
 }
 
 func LoadPrivateCatalog(path string) (PrivateCatalog, error) {
+	info, err := os.Lstat(path)
+	if err != nil || !info.Mode().IsRegular() || info.Mode().Perm()&0o077 != 0 {
+		return PrivateCatalog{}, ErrInvalid
+	}
 	file, err := os.Open(path)
 	if err != nil {
 		return PrivateCatalog{}, ErrInvalid
@@ -72,6 +76,99 @@ func LoadPrivateCatalog(path string) (PrivateCatalog, error) {
 		return PrivateCatalog{}, err
 	}
 	return catalog, nil
+}
+
+func ResolveFixture(catalogPath, privateCatalogPath, privateRoot, fixtureID string) (FixtureDefinition, []byte, error) {
+	if (privateCatalogPath == "") != (privateRoot == "") ||
+		privateRoot != "" && (!filepath.IsAbs(privateRoot) || filepath.Clean(privateRoot) != privateRoot) ||
+		fixtureID == "" {
+		return FixtureDefinition{}, nil, ErrInvalid
+	}
+	public, err := LoadCatalog(catalogPath)
+	if err != nil {
+		return FixtureDefinition{}, nil, err
+	}
+	if privateCatalogPath == "" {
+		for _, fixture := range public.Fixtures {
+			if fixture.ID == fixtureID {
+				body, err := generateFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
+				if err != nil || fixture.SHA256 != "" && !matchesFixture(fixture, body) {
+					return FixtureDefinition{}, nil, ErrInvalid
+				}
+				return fixture, body, nil
+			}
+		}
+		return FixtureDefinition{}, nil, ErrInvalid
+	}
+
+	private, err := LoadPrivateCatalog(privateCatalogPath)
+	if err != nil {
+		return FixtureDefinition{}, nil, err
+	}
+	publicIDs := make(map[string]bool, len(public.Fixtures))
+	for _, fixture := range public.Fixtures {
+		publicIDs[fixture.ID] = true
+	}
+	for _, fixture := range private.Fixtures {
+		if publicIDs[fixture.ID] {
+			return FixtureDefinition{}, nil, ErrInvalid
+		}
+	}
+	for _, fixture := range private.Fixtures {
+		if fixture.ID == fixtureID {
+			root, err := os.OpenRoot(privateRoot)
+			if err != nil {
+				return FixtureDefinition{}, nil, ErrUnavailable
+			}
+			defer root.Close()
+			body, err := readPrivateFixture(root, fixture)
+			if err != nil {
+				return FixtureDefinition{}, nil, ErrUnavailable
+			}
+			return FixtureDefinition{
+				ID: fixture.ID, SourceClass: "owner-private", Privacy: fixture.Privacy,
+				MediaType: fixture.MediaType, PageIDs: append([]string(nil), fixture.PageIDs...),
+				Languages: append([]string(nil), fixture.Languages...), DocumentType: fixture.DocumentType,
+				ExpectedOutputs:      append([]ArtifactRole(nil), fixture.ExpectedOutputs...),
+				ExpectedFailureClass: fixture.ExpectedFailureClass,
+				SHA256:               fixture.SHA256, Bytes: fixture.Bytes,
+			}, body, nil
+		}
+	}
+	for _, fixture := range public.Fixtures {
+		if fixture.ID == fixtureID {
+			body, err := generateFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
+			if err != nil || fixture.SHA256 != "" && !matchesFixture(fixture, body) {
+				return FixtureDefinition{}, nil, ErrInvalid
+			}
+			return fixture, body, nil
+		}
+	}
+	return FixtureDefinition{}, nil, ErrInvalid
+}
+
+func readPrivateFixture(root *os.Root, fixture PrivateFixture) ([]byte, error) {
+	info, err := root.Lstat(fixture.RelativePath)
+	if err != nil || !info.Mode().IsRegular() || info.Mode().Perm()&0o077 != 0 ||
+		info.Size() != fixture.Bytes || info.Size() > maxFixtureBytes {
+		return nil, ErrUnavailable
+	}
+	file, err := root.Open(fixture.RelativePath)
+	if err != nil {
+		return nil, ErrUnavailable
+	}
+	defer file.Close()
+	opened, err := file.Stat()
+	if err != nil || !opened.Mode().IsRegular() || !os.SameFile(info, opened) {
+		return nil, ErrUnavailable
+	}
+	body, err := io.ReadAll(io.LimitReader(file, maxFixtureBytes+1))
+	if err != nil || int64(len(body)) != fixture.Bytes || !matchesFixture(FixtureDefinition{
+		SHA256: fixture.SHA256, Bytes: fixture.Bytes,
+	}, body) {
+		return nil, ErrUnavailable
+	}
+	return body, nil
 }
 
 func (c PrivateCatalog) Validate() error {

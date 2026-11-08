@@ -61,16 +61,18 @@ type CandidateReceipt struct {
 }
 
 type CandidateRunRequest struct {
-	CatalogPath      string
-	CandidatePath    string
-	FixtureID        string
-	OutputDir        string
-	TimePath         string
-	TimeUsagePath    string
-	Timeout          time.Duration
-	MaxRSSBytes      int64
-	MaxTempDiskBytes int64
-	Metrics          *CandidateMetrics
+	CatalogPath        string
+	PrivateCatalogPath string
+	PrivateRoot        string
+	CandidatePath      string
+	FixtureID          string
+	OutputDir          string
+	TimePath           string
+	TimeUsagePath      string
+	Timeout            time.Duration
+	MaxRSSBytes        int64
+	MaxTempDiskBytes   int64
+	Metrics            *CandidateMetrics
 }
 
 type CandidateMetrics struct {
@@ -151,23 +153,11 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	if err := verifyExecutable(config.Executable, config.ExecutableSHA256); err != nil {
 		return ArtifactCatalog{}, fmt.Errorf("candidate executable: %w", err)
 	}
-	catalog, err := LoadCatalog(request.CatalogPath)
+	fixture, fixtureBody, err := ResolveFixture(
+		request.CatalogPath, request.PrivateCatalogPath, request.PrivateRoot, request.FixtureID,
+	)
 	if err != nil {
-		return ArtifactCatalog{}, fmt.Errorf("fixture catalog: %w", err)
-	}
-	var fixture FixtureDefinition
-	for _, candidate := range catalog.Fixtures {
-		if candidate.ID == request.FixtureID {
-			fixture = candidate
-			break
-		}
-	}
-	if fixture.ID == "" {
-		return ArtifactCatalog{}, fmt.Errorf("fixture id: %w", ErrInvalid)
-	}
-	fixtureBody, err := generateFixture(filepath.Dir(filepath.Dir(request.CatalogPath)), fixture)
-	if err != nil {
-		return ArtifactCatalog{}, fmt.Errorf("fixture generation: %w", err)
+		return ArtifactCatalog{}, fmt.Errorf("fixture resolution: %w", err)
 	}
 	fixtureSum := sha256.Sum256(fixtureBody)
 	fixtureSHA := hex.EncodeToString(fixtureSum[:])
