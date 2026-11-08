@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"strings"
 	"testing"
 	"time"
 
@@ -15,6 +16,10 @@ import (
 const correctionPage = "page_correction_0001"
 
 func correctionFixture(t *testing.T) (*fixture, CorrectionRequest, string) {
+	return correctionFixtureWithRisk(t, "[]")
+}
+
+func correctionFixtureWithRisk(t *testing.T, riskFlags string) (*fixture, CorrectionRequest, string) {
 	t.Helper()
 	f := setup(t)
 	must(t, f.docs, "DELETE FROM reservations")
@@ -24,15 +29,15 @@ func correctionFixture(t *testing.T) (*fixture, CorrectionRequest, string) {
 	source := hex.EncodeToString(original[:])
 	must(t, f.docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('artifact_correction_original','document_alice_001',?,'original','ready','correction-original.png','image/png',20,?,1,1000)`, alice, original[:])
 	must(t, f.docs, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,pixel_width,pixel_height) VALUES(?,'document_alice_001',?,0,'artifact_correction_original','a4','color',300,960,640)`, correctionPage, alice)
-	insertCorrectionSuggestion(t, f, "suggestion_correction_001", "artifact_correction_one", source)
-	insertCorrectionSuggestion(t, f, "suggestion_correction_002", "artifact_correction_two", source)
+	insertCorrectionSuggestion(t, f, "suggestion_correction_001", "artifact_correction_one", source, riskFlags)
+	insertCorrectionSuggestion(t, f, "suggestion_correction_002", "artifact_correction_two", source, "[]")
 	return f, CorrectionRequest{
 		DocumentID: docA, PageID: correctionPage, SuggestionID: "suggestion_correction_001",
 		SourceSHA256: source, Revision: 1, IdempotencyKey: "request_correction_apply_001",
 	}, source
 }
 
-func insertCorrectionSuggestion(t *testing.T, f *fixture, suggestion, artifact, source string) {
+func insertCorrectionSuggestion(t *testing.T, f *fixture, suggestion, artifact, source, riskFlags string) {
 	t.Helper()
 	digest := sha256.Sum256([]byte(artifact))
 	must(t, f.docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,'document_alice_001',?,'intermediate','ready',?,'image/png',20,?,1,1000)`, artifact, alice, artifact+".png", digest[:])
@@ -44,7 +49,7 @@ func insertCorrectionSuggestion(t *testing.T, f *fixture, suggestion, artifact, 
 	if err != nil {
 		t.Fatal(err)
 	}
-	must(t, f.docs, `INSERT INTO page_corrections(suggestion_id,document_id,owner_id,page_id,original_artifact_id,correction_artifact_id,source_sha256,correction_sha256,transform_json,confidence_kind,confidence_value,risk_flags,state,created_at_ms) VALUES(?,'document_alice_001',?,?,'artifact_correction_original',?,?,?,?,'unavailable',NULL,'[]','suggested',1500)`, suggestion, alice, correctionPage, artifact, mustHash(t, source), digest[:], string(body))
+	must(t, f.docs, `INSERT INTO page_corrections(suggestion_id,document_id,owner_id,page_id,original_artifact_id,correction_artifact_id,source_sha256,correction_sha256,transform_json,confidence_kind,confidence_value,risk_flags,state,created_at_ms) VALUES(?,'document_alice_001',?,?,'artifact_correction_original',?,?,?,?,'unavailable',NULL,?,'suggested',1500)`, suggestion, alice, correctionPage, artifact, mustHash(t, source), digest[:], string(body), riskFlags)
 }
 
 func mustHash(t *testing.T, value string) []byte {
@@ -102,6 +107,53 @@ func TestCorrectionRejectsStaleOrForeign(t *testing.T) {
 	wrongSource.SourceSHA256 = hex.EncodeToString(make([]byte, 32))
 	if _, err := f.store.ApplyCorrection(ctx, alice, wrongSource, time.Hour); !errors.Is(err, ErrConflict) {
 		t.Fatalf("wrong source accepted: %v", err)
+	}
+}
+
+func TestCorrectionRejectsRiskFlags(t *testing.T) {
+	cases := []struct {
+		name string
+		risk string
+	}{
+		{name: "edge-risk", risk: `["edge-risk"]`},
+		{name: "low-confidence", risk: `["low-confidence"]`},
+		{name: "fallback", risk: `["fallback"]`},
+		{name: "white-on-white", risk: `["white-on-white"]`},
+		{name: "multiple-small-object", risk: `["multiple-small-object"]`},
+		{name: "candidate-failure", risk: `["candidate-failure"]`},
+		{name: "unknown", risk: `["future-risk"]`},
+		{name: "malformed-array-member", risk: `[1]`},
+		{name: "oversized", risk: `["` + strings.Repeat("x", 4096) + `"]`},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			f, request, _ := correctionFixtureWithRisk(t, tc.risk)
+			outputDigest := sha256.Sum256([]byte("published"))
+			must(t, f.docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('artifact_correction_output_01','document_alice_001',?,'output','ready','correction-output.pdf','application/pdf',20,?,1,1000)`, alice, outputDigest[:])
+			must(t, f.docs, `INSERT INTO published_outputs(document_id,owner_id,revision,artifact_id) VALUES('document_alice_001',?,1,'artifact_correction_output_01')`, alice)
+
+			_, err := f.store.ApplyCorrection(context.Background(), alice, request, time.Hour)
+			if !errors.Is(err, ErrConflict) {
+				t.Fatalf("risk policy rejected with %v, want conflict", err)
+			}
+			if scalar(t, f.docs, "SELECT count(*) FROM page_corrections WHERE suggestion_id=? AND state='suggested' AND applied_at_ms IS NULL", request.SuggestionID) != 1 ||
+				scalar(t, f.docs, "SELECT count(*) FROM page_corrections WHERE state='applied'") != 0 {
+				t.Fatal("risk rejection changed correction state")
+			}
+			if scalar(t, f.docs, "SELECT revision FROM documents WHERE id=?", docA) != 1 {
+				t.Fatal("risk rejection changed document revision")
+			}
+			if scalar(t, f.docs, "SELECT count(*) FROM pages WHERE id=? AND original_artifact_id='artifact_correction_original'", correctionPage) != 1 {
+				t.Fatal("risk rejection changed the original")
+			}
+			if scalar(t, f.docs, "SELECT count(*) FROM published_outputs WHERE document_id=? AND revision=1 AND artifact_id='artifact_correction_output_01'", docA) != 1 {
+				t.Fatal("risk rejection changed published output")
+			}
+			if scalar(t, f.docs, "SELECT count(*) FROM request_receipts WHERE operation='apply_correction'") != 0 ||
+				scalar(t, f.docs, "SELECT count(*) FROM edit_results") != 0 {
+				t.Fatal("risk rejection wrote a receipt")
+			}
+		})
 	}
 }
 
