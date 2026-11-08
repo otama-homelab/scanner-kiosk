@@ -45,17 +45,30 @@ type CorrectionOracleFile struct {
 }
 
 type CorrectionQuality struct {
-	Status                 string  `json:"status"`
-	TransformValid         bool    `json:"transform_valid"`
-	EdgeRegions            int     `json:"edge_regions"`
-	EdgeRegionsRetained    int     `json:"edge_regions_retained"`
-	ContentRegions         int     `json:"content_regions"`
-	ContentRegionsRetained int     `json:"content_regions_retained"`
-	OriginalForeground     int64   `json:"original_foreground_pixels"`
-	CorrectionForeground   int64   `json:"correction_foreground_pixels"`
-	ForegroundRetention    float64 `json:"foreground_retention_ratio"`
-	CorrectionWidth        int     `json:"correction_width"`
-	CorrectionHeight       int     `json:"correction_height"`
+	Status                 string                    `json:"status"`
+	TransformValid         bool                      `json:"transform_valid"`
+	EdgeRegions            int                       `json:"edge_regions"`
+	EdgeRegionsRetained    int                       `json:"edge_regions_retained"`
+	ContentRegions         int                       `json:"content_regions"`
+	ContentRegionsRetained int                       `json:"content_regions_retained"`
+	OriginalForeground     int64                     `json:"original_foreground_pixels"`
+	CorrectionForeground   int64                     `json:"correction_foreground_pixels"`
+	ForegroundRetention    float64                   `json:"foreground_retention_ratio"`
+	CorrectionWidth        int                       `json:"correction_width"`
+	CorrectionHeight       int                       `json:"correction_height"`
+	EdgeMeasurements       []CorrectionRegionQuality `json:"edge_measurements"`
+	ContentMeasurements    []CorrectionRegionQuality `json:"content_measurements"`
+}
+
+type CorrectionRegionQuality struct {
+	X                  int     `json:"x"`
+	Y                  int     `json:"y"`
+	Width              int     `json:"width"`
+	Height             int     `json:"height"`
+	OriginalForeground int     `json:"original_foreground_pixels"`
+	MappedForeground   int     `json:"mapped_foreground_pixels"`
+	RetainedForeground int     `json:"retained_foreground_pixels"`
+	RetentionRatio     float64 `json:"retention_ratio"`
 }
 
 type CorrectionComparisonRow struct {

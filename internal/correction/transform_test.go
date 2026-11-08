@@ -3,6 +3,7 @@ package correction
 import (
 	"encoding/json"
 	"image"
+	"math"
 	"testing"
 )
 
@@ -36,5 +37,55 @@ func TestCorrectionTransform(t *testing.T) {
 				t.Fatal("invalid transform accepted")
 			}
 		})
+	}
+}
+
+func TestCorrectionCanonicalMapping(t *testing.T) {
+	quad := [4]Point{{X: 10, Y: 20}, {X: 110, Y: 20}, {X: 110, Y: 220}, {X: 10, Y: 220}}
+	transform := Transform{CropQuad: quad, OutputWidth: 100, OutputHeight: 200}
+	for source, want := range map[Point]Point{
+		{X: 10, Y: 20}:   {X: 0, Y: 0},
+		{X: 110, Y: 20}:  {X: 100, Y: 0},
+		{X: 110, Y: 220}: {X: 100, Y: 200},
+		{X: 10, Y: 220}:  {X: 0, Y: 200},
+		{X: 60, Y: 120}:  {X: 50, Y: 100},
+	} {
+		got, ok := MapSourcePoint(source, transform)
+		if !ok || math.Abs(got.X-want.X) > 1e-6 || math.Abs(got.Y-want.Y) > 1e-6 {
+			t.Fatalf("map %+v = %+v, %v; want %+v", source, got, ok, want)
+		}
+	}
+
+	perspective := Transform{
+		CropQuad:    [4]Point{{X: 10, Y: 20}, {X: 120, Y: 30}, {X: 100, Y: 230}, {X: 0, Y: 200}},
+		OutputWidth: 100, OutputHeight: 200,
+	}
+	got, ok := MapSourcePoint(Point{X: 57.5, Y: 120}, perspective)
+	if !ok || math.Abs(got.X-50) > 1e-6 || math.Abs(got.Y-100) > 1e-6 {
+		t.Fatalf("perspective center mapped to %+v, %v", got, ok)
+	}
+
+	for _, test := range []struct {
+		name     string
+		rotation float64
+		want     Point
+	}{
+		{name: "positive counter-clockwise", rotation: 45, want: Point{X: 50, Y: 110}},
+		{name: "negative clockwise", rotation: -45, want: Point{X: 50, Y: 90}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			rotated := Transform{
+				CropQuad:    [4]Point{{X: 0, Y: 0}, {X: 100, Y: 0}, {X: 100, Y: 100}, {X: 0, Y: 100}},
+				OutputWidth: 100, OutputHeight: 100, RotationDegrees: test.rotation,
+			}
+			got, ok := MapSourcePoint(Point{X: 40, Y: 50}, rotated)
+			if !ok || math.Abs(got.X-test.want.X) > 1e-6 || math.Abs(got.Y-test.want.Y) > 1e-6 {
+				t.Fatalf("rotated point mapped to %+v, %v; want %+v", got, ok, test.want)
+			}
+		})
+	}
+
+	if _, ok := MapSourcePoint(Point{X: 5, Y: 20}, transform); ok {
+		t.Fatal("point outside the crop quad mapped successfully")
 	}
 }

@@ -1016,14 +1016,23 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 		Status string `json:"status"`
 		Rows   []struct {
 			Quality struct {
-				Status string `json:"status"`
+				Status              string `json:"status"`
+				ContentMeasurements []struct {
+					OriginalForeground int `json:"original_foreground_pixels"`
+					MappedForeground   int `json:"mapped_foreground_pixels"`
+					RetainedForeground int `json:"retained_foreground_pixels"`
+				} `json:"content_measurements"`
 			} `json:"quality"`
 		} `json:"rows"`
 	}
 	if err := json.Unmarshal([]byte(result.stdout), &comparison); err != nil {
 		t.Fatal(err)
 	}
-	if comparison.Status != "incomplete" || len(comparison.Rows) != 1 || comparison.Rows[0].Quality.Status != "passed" {
+	if comparison.Status != "incomplete" || len(comparison.Rows) != 1 || comparison.Rows[0].Quality.Status != "passed" ||
+		len(comparison.Rows[0].Quality.ContentMeasurements) != 1 ||
+		comparison.Rows[0].Quality.ContentMeasurements[0].OriginalForeground == 0 ||
+		comparison.Rows[0].Quality.ContentMeasurements[0].MappedForeground !=
+			comparison.Rows[0].Quality.ContentMeasurements[0].RetainedForeground {
 		t.Fatalf("unexpected correction comparison: %+v", comparison)
 	}
 }

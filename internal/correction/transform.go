@@ -134,6 +134,11 @@ func ValidQuad(quad [4]Point) bool {
 	return sign > 0
 }
 
+// MapSourcePoint maps a source point through the crop and output rotation.
+func MapSourcePoint(source Point, transform Transform) (Point, bool) {
+	return Point{}, false
+}
+
 func finite(value float64) bool {
 	return !math.IsNaN(value) && !math.IsInf(value, 0)
 }
