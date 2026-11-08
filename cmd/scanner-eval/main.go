@@ -160,6 +160,8 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		oraclePath := flags.String("oracles", "", "")
 		var artifacts stringList
 		flags.Var(&artifacts, "artifacts", "")
+		var benchmarks stringList
+		flags.Var(&benchmarks, "benchmark", "")
 		if flags.Parse(args[1:]) != nil || *catalogPath == "" || *oraclePath == "" || len(artifacts) == 0 || len(flags.Args()) != 0 {
 			fmt.Fprintln(stderr, "scanner-eval: invalid input")
 			return 2
@@ -174,7 +176,7 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
 			return 1
 		}
-		comparison, err := evaluation.AnalyzeCorrectionCatalogs(artifacts, oracles)
+		comparison, err := evaluation.AnalyzeCorrectionCatalogsWithBenchmarks(artifacts, benchmarks, oracles)
 		if err != nil {
 			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
 			return 1

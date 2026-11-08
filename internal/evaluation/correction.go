@@ -21,6 +21,8 @@ const (
 	CorrectionCompareFormat = "scanner-eval-correction-comparison"
 	CorrectionFormatVersion = 1
 	maxCorrectionPixels     = 80_000_000
+	maxCorrectionReceipts   = 256
+	maxCorrectionSamples    = 4096
 )
 
 type CorrectionPoint = correction.Point
@@ -79,6 +81,7 @@ type CorrectionComparisonRow struct {
 	FixtureSHA256     string              `json:"fixture_sha256"`
 	CandidateID       string              `json:"candidate_id"`
 	CandidateVersion  string              `json:"candidate_version"`
+	ExecutableSHA256  string              `json:"executable_sha256"`
 	OriginalSHA256    string              `json:"original_sha256"`
 	CorrectionID      string              `json:"correction_id"`
 	CorrectionSHA256  string              `json:"correction_sha256"`
@@ -112,6 +115,39 @@ type CorrectionComparison struct {
 	Status                    string                    `json:"status"`
 	UnmatchedBenchmarkSamples int                       `json:"unmatched_benchmark_samples,omitempty"`
 	Rows                      []CorrectionComparisonRow `json:"rows"`
+}
+
+type correctionIdentity struct {
+	FixtureID             string
+	FixtureSHA256         string
+	CandidateID           string
+	CandidateVersion      string
+	ExecutableSHA256      string
+	CandidateConfigSHA256 string
+	OriginalSHA256        string
+	CorrectionSHA256      string
+}
+
+type correctionResourceLookupKey struct {
+	fixtureID        string
+	fixtureSHA256    string
+	candidateID      string
+	candidateVersion string
+	executableSHA256 string
+	originalSHA256   string
+	correctionSHA256 string
+}
+
+type correctionBenchmarkEntry struct {
+	identity correctionIdentity
+	summary  BenchmarkSummary
+	catalog  ArtifactCatalog
+}
+
+type correctionBenchmarkIssue struct {
+	identity     correctionIdentity
+	failureClass string
+	count        int
 }
 
 var RequiredCorrectionOracleFixtures = []string{
@@ -223,17 +259,97 @@ func AnalyzeCorrectionCatalogs(paths []string, oracles CorrectionOracleFile) (Co
 
 func AnalyzeCorrectionCatalogsWithBenchmarks(artifactPaths, benchmarkPaths []string,
 	oracles CorrectionOracleFile) (CorrectionComparison, error) {
+	if len(artifactPaths) == 0 || len(artifactPaths) > maxCorrectionReceipts ||
+		len(benchmarkPaths) > maxCorrectionReceipts || oracles.Validate() != nil {
+		return CorrectionComparison{}, ErrInvalid
+	}
 	comparison, err := AnalyzeCorrectionCatalogs(artifactPaths, oracles)
 	if err != nil {
 		return CorrectionComparison{}, err
 	}
-	for index := range comparison.Rows {
-		comparison.Rows[index].Resources.Status = "unavailable"
-		comparison.Rows[index].Resources.FailureClass = "resource-unavailable"
-		comparison.Rows[index].Status = "failed"
-	}
 	if len(benchmarkPaths) == 0 {
 		return comparison, nil
+	}
+	entries, issues, err := loadCorrectionBenchmarks(benchmarkPaths)
+	if err != nil {
+		return CorrectionComparison{}, err
+	}
+	entriesByIdentity := map[correctionResourceLookupKey][]correctionBenchmarkEntry{}
+	for _, entry := range entries {
+		key := correctionLookupKey(entry.identity)
+		entriesByIdentity[key] = append(entriesByIdentity[key], entry)
+	}
+	rowIdentities := make([]correctionIdentity, len(comparison.Rows))
+	rowIdentityCounts := map[correctionResourceLookupKey]int{}
+	for index := range comparison.Rows {
+		identity, ok := correctionRowIdentity(comparison.Rows[index])
+		if ok {
+			rowIdentities[index] = identity
+			rowIdentityCounts[correctionLookupKey(identity)]++
+		}
+	}
+	attached := map[string]bool{}
+	for index := range comparison.Rows {
+		row := &comparison.Rows[index]
+		row.Status = "failed"
+		identity := rowIdentities[index]
+		if identity.CandidateID == "" {
+			row.Resources = CorrectionResources{Status: "unavailable", FailureClass: "resource-unavailable"}
+			continue
+		}
+		lookupKey := correctionLookupKey(identity)
+		if rowIdentityCounts[lookupKey] > 1 {
+			row.Resources = CorrectionResources{Status: "invalid", FailureClass: "duplicate-quality-identity"}
+			continue
+		}
+		matches := entriesByIdentity[lookupKey]
+		if len(matches) == 1 {
+			entry := matches[0]
+			row.Resources = correctionResourcesFromBenchmark(entry)
+			row.Status = "failed"
+			if row.MeasurementStatus == "complete" && row.Quality.Status == "passed" &&
+				row.Resources.Status == "complete" {
+				row.Status = "passed"
+			}
+			attached[entry.summary.RunID] = true
+			continue
+		}
+		if len(matches) > 1 {
+			row.Resources = CorrectionResources{Status: "invalid", FailureClass: "resource-duplicate"}
+			continue
+		}
+		related := false
+		failureClass := "resource-identity-mismatch"
+		for _, issue := range issues {
+			if correctionIdentityRelated(identity, issue.identity) {
+				related = true
+				failureClass = issue.failureClass
+				break
+			}
+		}
+		if related {
+			row.Resources = CorrectionResources{Status: "invalid", FailureClass: failureClass}
+		} else {
+			row.Resources = CorrectionResources{Status: "unavailable", FailureClass: "resource-unavailable"}
+		}
+	}
+	for _, entry := range entries {
+		if !attached[entry.summary.RunID] {
+			comparison.UnmatchedBenchmarkSamples += len(entry.summary.Samples)
+		}
+	}
+	for _, issue := range issues {
+		comparison.UnmatchedBenchmarkSamples += issue.count
+	}
+	comparison.Status = "complete"
+	if comparison.UnmatchedBenchmarkSamples != 0 {
+		comparison.Status = "incomplete"
+	}
+	for _, row := range comparison.Rows {
+		if row.Status != "passed" {
+			comparison.Status = "incomplete"
+			break
+		}
 	}
 	return comparison, nil
 }
@@ -250,6 +366,7 @@ func analyzeCorrectionCatalog(path string, oracles CorrectionOracleFile) Correct
 	}
 	row.FixtureID, row.FixtureSHA256 = catalog.FixtureID, catalog.FixtureSHA256
 	row.CandidateID, row.CandidateVersion = catalog.Candidate.ID, catalog.Candidate.Version
+	row.ExecutableSHA256 = catalog.Candidate.ExecutableSHA256
 	row.MeasurementStatus, row.OriginalSHA256 = catalog.Status, catalog.Original.SHA256
 	var oracle *CorrectionOracleEntry
 	for index := range oracles.Entries {
@@ -281,13 +398,18 @@ func analyzeCorrectionCatalog(path string, oracles CorrectionOracleFile) Correct
 		row.FailureClass = "provenance"
 		return row
 	}
-	root := filepath.Dir(path)
-	originalBytes, err := readRootFileValue(filepath.Join(root, "artifacts", catalog.Original.ID), maxArtifactBytes)
+	root, err := os.OpenRoot(filepath.Dir(path))
+	if err != nil {
+		row.FailureClass = "artifact-catalog"
+		return row
+	}
+	defer root.Close()
+	originalBytes, err := readCorrectionRootFile(root, filepath.Join("artifacts", catalog.Original.ID), maxArtifactBytes)
 	if err != nil {
 		row.FailureClass = "original-unavailable"
 		return row
 	}
-	correctionBytes, err := readRootFileValue(filepath.Join(root, "artifacts", correction.ID), maxArtifactBytes)
+	correctionBytes, err := readCorrectionRootFile(root, filepath.Join("artifacts", correction.ID), maxArtifactBytes)
 	if err != nil {
 		row.FailureClass = "correction-unavailable"
 		return row
@@ -369,7 +491,11 @@ func loadArtifactCatalog(path string) (ArtifactCatalog, error) {
 		return ArtifactCatalog{}, ErrInvalid
 	}
 	defer file.Close()
-	decoder := json.NewDecoder(io.LimitReader(file, 8<<20))
+	return loadArtifactCatalogReader(file)
+}
+
+func loadArtifactCatalogReader(reader io.Reader) (ArtifactCatalog, error) {
+	decoder := json.NewDecoder(io.LimitReader(reader, 8<<20))
 	decoder.DisallowUnknownFields()
 	var catalog ArtifactCatalog
 	if err := decoder.Decode(&catalog); err != nil || decoder.Decode(&struct{}{}) != io.EOF ||
@@ -379,6 +505,264 @@ func loadArtifactCatalog(path string) (ArtifactCatalog, error) {
 		return ArtifactCatalog{}, ErrInvalid
 	}
 	return catalog, nil
+}
+
+func loadArtifactCatalogInRoot(root *os.Root, name string) (ArtifactCatalog, error) {
+	if !safeRelative(name) {
+		return ArtifactCatalog{}, ErrInvalid
+	}
+	info, err := root.Lstat(name)
+	if err != nil || !info.Mode().IsRegular() {
+		return ArtifactCatalog{}, ErrInvalid
+	}
+	file, err := root.Open(name)
+	if err != nil {
+		return ArtifactCatalog{}, ErrInvalid
+	}
+	defer file.Close()
+	opened, err := file.Stat()
+	if err != nil || !opened.Mode().IsRegular() || !os.SameFile(info, opened) {
+		return ArtifactCatalog{}, ErrInvalid
+	}
+	return loadArtifactCatalogReader(file)
+}
+
+func readCorrectionRootFile(root *os.Root, name string, limit int64) ([]byte, error) {
+	if !safeRelative(name) {
+		return nil, ErrUnavailable
+	}
+	info, err := root.Lstat(name)
+	if err != nil || !info.Mode().IsRegular() || info.Size() > limit {
+		return nil, ErrUnavailable
+	}
+	file, err := root.Open(name)
+	if err != nil {
+		return nil, ErrUnavailable
+	}
+	defer file.Close()
+	opened, err := file.Stat()
+	if err != nil || !opened.Mode().IsRegular() || !os.SameFile(info, opened) {
+		return nil, ErrUnavailable
+	}
+	body, err := io.ReadAll(io.LimitReader(file, limit+1))
+	if err != nil || int64(len(body)) > limit {
+		return nil, ErrUnavailable
+	}
+	return body, nil
+}
+
+func loadCorrectionBenchmarks(paths []string) ([]correctionBenchmarkEntry, []correctionBenchmarkIssue, error) {
+	seenRuns := map[string]bool{}
+	totalSamples := 0
+	var entries []correctionBenchmarkEntry
+	var issues []correctionBenchmarkIssue
+	for _, receiptPath := range paths {
+		benchmarkPath, summaryDir, err := correctionBenchmarkPath(receiptPath)
+		if err != nil {
+			return nil, nil, ErrInvalid
+		}
+		summary, err := LoadBenchmarkSummary(benchmarkPath)
+		if err != nil || seenRuns[summary.RunID] {
+			return nil, nil, ErrInvalid
+		}
+		seenRuns[summary.RunID] = true
+		if summary.FailureMatch != nil && !*summary.FailureMatch {
+			return nil, nil, ErrInvalid
+		}
+		totalSamples += len(summary.Samples)
+		if totalSamples > maxCorrectionSamples {
+			return nil, nil, ErrInvalid
+		}
+		if summary.Status == "expected-failure" {
+			continue
+		}
+		root, err := os.OpenRoot(summaryDir)
+		if err != nil {
+			issues = append(issues, correctionBenchmarkIssue{
+				identity: correctionSummaryIdentity(summary), failureClass: "resource-artifact-catalog",
+				count: max(1, len(summary.Samples)),
+			})
+			continue
+		}
+		entry, entryIssues := loadCorrectionBenchmarkSummary(root, summary)
+		root.Close()
+		issues = append(issues, entryIssues...)
+		if entry.identity.CandidateID != "" {
+			entries = append(entries, entry)
+		}
+	}
+	return entries, issues, nil
+}
+
+func correctionBenchmarkPath(path string) (string, string, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return "", "", ErrInvalid
+	}
+	benchmarkPath := path
+	if info.IsDir() {
+		benchmarkPath = filepath.Join(path, "benchmark.json")
+	}
+	if !filepath.IsAbs(benchmarkPath) {
+		benchmarkPath, err = filepath.Abs(benchmarkPath)
+		if err != nil {
+			return "", "", ErrInvalid
+		}
+	}
+	return benchmarkPath, filepath.Dir(benchmarkPath), nil
+}
+
+func loadCorrectionBenchmarkSummary(root *os.Root, summary BenchmarkSummary) (correctionBenchmarkEntry, []correctionBenchmarkIssue) {
+	baseIdentity := correctionSummaryIdentity(summary)
+	issue := func(failure string) (correctionBenchmarkEntry, []correctionBenchmarkIssue) {
+		return correctionBenchmarkEntry{}, []correctionBenchmarkIssue{{
+			identity: baseIdentity, failureClass: failure, count: max(1, len(summary.Samples)),
+		}}
+	}
+	if summary.Status != "complete" && summary.Status != "incomplete" || len(summary.Samples) == 0 {
+		return issue("resource-incomplete")
+	}
+	var identity correctionIdentity
+	var catalog ArtifactCatalog
+	for _, sample := range summary.Samples {
+		if sample.FixtureID != summary.FixtureID || sample.FixtureSHA256 != summary.FixtureSHA256 ||
+			sample.Candidate.ID != summary.Candidate.ID || sample.Candidate.Version != summary.Candidate.Version ||
+			sample.Candidate.ExecutableSHA256 != summary.Candidate.ExecutableSHA256 ||
+			sample.CandidateConfigSHA256 != summary.CandidateConfigSHA256 ||
+			!correctionSourceHashesMatch(sample, summary) {
+			return issue("resource-identity-mismatch")
+		}
+		if !safeRelative(sample.ArtifactCatalog) {
+			return issue("resource-artifact-catalog")
+		}
+		sampleCatalog, err := loadArtifactCatalogInRoot(root, sample.ArtifactCatalog)
+		if err != nil {
+			return issue("resource-artifact-catalog")
+		}
+		if sampleCatalog.FixtureID != summary.FixtureID ||
+			sampleCatalog.FixtureSHA256 != summary.FixtureSHA256 ||
+			sampleCatalog.Candidate.ID != summary.Candidate.ID ||
+			sampleCatalog.Candidate.Version != summary.Candidate.Version ||
+			sampleCatalog.Candidate.ExecutableSHA256 != summary.Candidate.ExecutableSHA256 {
+			return issue("resource-identity-mismatch")
+		}
+		original, correctionArtifact, err := correctionArtifactPair(sampleCatalog)
+		if err != nil {
+			return issue("resource-artifact-catalog")
+		}
+		artifactRoot := filepath.Dir(sample.ArtifactCatalog)
+		originalBytes, originalErr := readCorrectionRootFile(
+			root, filepath.Join(artifactRoot, "artifacts", original.ID), maxArtifactBytes,
+		)
+		correctionBytes, correctionErr := readCorrectionRootFile(
+			root, filepath.Join(artifactRoot, "artifacts", correctionArtifact.ID), maxArtifactBytes,
+		)
+		if originalErr != nil || correctionErr != nil ||
+			fmt.Sprintf("%x", sha256.Sum256(originalBytes)) != original.SHA256 ||
+			fmt.Sprintf("%x", sha256.Sum256(correctionBytes)) != correctionArtifact.SHA256 {
+			return issue("resource-artifact-hash")
+		}
+		current := baseIdentity
+		current.OriginalSHA256 = original.SHA256
+		current.CorrectionSHA256 = correctionArtifact.SHA256
+		if identity.CandidateID != "" && identity != current {
+			return issue("resource-artifact-conflict")
+		}
+		identity, catalog = current, sampleCatalog
+	}
+	return correctionBenchmarkEntry{identity: identity, summary: summary, catalog: catalog}, nil
+}
+
+func correctionSummaryIdentity(summary BenchmarkSummary) correctionIdentity {
+	return correctionIdentity{
+		FixtureID: summary.FixtureID, FixtureSHA256: summary.FixtureSHA256,
+		CandidateID: summary.Candidate.ID, CandidateVersion: summary.Candidate.Version,
+		ExecutableSHA256:      summary.Candidate.ExecutableSHA256,
+		CandidateConfigSHA256: summary.CandidateConfigSHA256,
+	}
+}
+
+func correctionSourceHashesMatch(sample BenchmarkSample, summary BenchmarkSummary) bool {
+	for _, hashes := range []map[string]string{sample.SourceHashesBefore, sample.SourceHashesAfter} {
+		if hashes["fixture"] != summary.FixtureSHA256 ||
+			hashes["candidate_config"] != summary.CandidateConfigSHA256 ||
+			hashes["executable"] != summary.Candidate.ExecutableSHA256 {
+			return false
+		}
+	}
+	return true
+}
+
+func correctionArtifactPair(catalog ArtifactCatalog) (*Artifact, *Artifact, error) {
+	if catalog.Original == nil {
+		return nil, nil, ErrInvalid
+	}
+	var correctionArtifact *Artifact
+	for index := range catalog.Artifacts {
+		if catalog.Artifacts[index].Role != RoleCorrection {
+			continue
+		}
+		if correctionArtifact != nil {
+			return nil, nil, ErrInvalid
+		}
+		correctionArtifact = &catalog.Artifacts[index]
+	}
+	if correctionArtifact == nil || !containsString(correctionArtifact.Parents, catalog.Original.ID) {
+		return nil, nil, ErrInvalid
+	}
+	return catalog.Original, correctionArtifact, nil
+}
+
+func correctionRowIdentity(row CorrectionComparisonRow) (correctionIdentity, bool) {
+	identity := correctionIdentity{
+		FixtureID: row.FixtureID, FixtureSHA256: row.FixtureSHA256,
+		CandidateID: row.CandidateID, CandidateVersion: row.CandidateVersion,
+		ExecutableSHA256: row.ExecutableSHA256,
+		OriginalSHA256:   row.OriginalSHA256, CorrectionSHA256: row.CorrectionSHA256,
+	}
+	return identity, row.FixtureID != "" && row.FixtureSHA256 != "" && row.CandidateID != "" &&
+		row.CandidateVersion != "" && row.ExecutableSHA256 != "" &&
+		row.OriginalSHA256 != "" && row.CorrectionSHA256 != ""
+}
+
+func correctionLookupKey(identity correctionIdentity) correctionResourceLookupKey {
+	return correctionResourceLookupKey{
+		fixtureID: identity.FixtureID, fixtureSHA256: identity.FixtureSHA256,
+		candidateID: identity.CandidateID, candidateVersion: identity.CandidateVersion,
+		executableSHA256: identity.ExecutableSHA256,
+		originalSHA256:   identity.OriginalSHA256, correctionSHA256: identity.CorrectionSHA256,
+	}
+}
+
+func correctionResourcesFromBenchmark(entry correctionBenchmarkEntry) CorrectionResources {
+	resources := CorrectionResources{
+		Status: "complete", BenchmarkRunID: entry.summary.RunID,
+		CandidateID: entry.summary.Candidate.ID, CandidateVersion: entry.summary.Candidate.Version,
+		ExecutableSHA256:      entry.summary.Candidate.ExecutableSHA256,
+		CandidateConfigSHA256: entry.summary.CandidateConfigSHA256,
+		OriginalSHA256:        entry.identity.OriginalSHA256, CorrectionSHA256: entry.identity.CorrectionSHA256,
+		Metrics:       entry.summary.Metrics,
+		Sources:       append([]CandidatePin(nil), entry.summary.Candidate.Sources...),
+		Dependencies:  append([]CandidatePin(nil), entry.summary.Candidate.Dependencies...),
+		OperatorSteps: append([]string{}, entry.summary.Candidate.OperatorSteps...),
+	}
+	if entry.summary.Status != "complete" {
+		resources.Status = "incomplete"
+		resources.FailureClass = entry.summary.FailureClass
+		if resources.FailureClass == "" {
+			resources.FailureClass = "resource-incomplete"
+		}
+	}
+	return resources
+}
+
+func correctionIdentityRelated(row, issue correctionIdentity) bool {
+	if row.CandidateID == "" || row.CandidateID != issue.CandidateID {
+		return row.OriginalSHA256 != "" && row.OriginalSHA256 == issue.OriginalSHA256 &&
+			row.CorrectionSHA256 == issue.CorrectionSHA256
+	}
+	return row.FixtureID == issue.FixtureID || row.FixtureSHA256 == issue.FixtureSHA256 ||
+		row.OriginalSHA256 == issue.OriginalSHA256 && row.CorrectionSHA256 == issue.CorrectionSHA256
 }
 
 func decodeCorrectionPNG(body []byte) (image.Image, error) {

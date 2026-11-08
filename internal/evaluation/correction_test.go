@@ -266,6 +266,95 @@ func TestCorrectionRejectsMismatchedResources(t *testing.T) {
 	}
 }
 
+func TestCorrectionRejectsUnsafeResourceArtifacts(t *testing.T) {
+	for _, test := range []struct {
+		name         string
+		prepare      func(*testing.T, string, string)
+		failureClass string
+	}{
+		{
+			name: "missing catalog",
+			prepare: func(t *testing.T, _, benchmarkPath string) {
+				rewriteCorrectionBenchmark(t, benchmarkPath, func(summary *BenchmarkSummary) {
+					for index := range summary.Samples {
+						summary.Samples[index].ArtifactCatalog = "missing.json"
+					}
+				})
+			},
+			failureClass: "resource-artifact-catalog",
+		},
+		{
+			name: "traversal",
+			prepare: func(t *testing.T, _, benchmarkPath string) {
+				rewriteCorrectionBenchmark(t, benchmarkPath, func(summary *BenchmarkSummary) {
+					for index := range summary.Samples {
+						summary.Samples[index].ArtifactCatalog = "../artifact-catalog.json"
+					}
+				})
+			},
+			failureClass: "resource-artifact-catalog",
+		},
+		{
+			name: "artifact hash",
+			prepare: func(t *testing.T, catalogPath, _ string) {
+				body, err := os.ReadFile(catalogPath)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var catalog ArtifactCatalog
+				if err := json.Unmarshal(body, &catalog); err != nil {
+					t.Fatal(err)
+				}
+				catalog.Artifacts[0].SHA256 = repeatTestHash("f")
+				encoded, err := json.Marshal(catalog)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err := os.WriteFile(catalogPath, encoded, 0o600); err != nil {
+					t.Fatal(err)
+				}
+			},
+			failureClass: "resource-artifact-hash",
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			path, oracles := writeCorrectionSurvivalFixture(t, whiteImageWithContent(t), whiteImageWithContent(t),
+				image.Rect(10, 10, 20, 11), "[[0,0],[100,0],[100,50],[0,50]]", 100, 50, 0)
+			benchmarkPath := writeCorrectionBenchmark(t, path)
+			test.prepare(t, path, benchmarkPath)
+			comparison, err := AnalyzeCorrectionCatalogsWithBenchmarks([]string{path}, []string{benchmarkPath}, oracles)
+			if err != nil || len(comparison.Rows) != 1 {
+				t.Fatal(err)
+			}
+			if comparison.Rows[0].Resources.FailureClass != test.failureClass ||
+				comparison.Rows[0].Resources.Status != "invalid" ||
+				comparison.Status != "incomplete" {
+				t.Fatalf("unsafe resource evidence was not classified: %+v", comparison.Rows[0])
+			}
+		})
+	}
+}
+
+func rewriteCorrectionBenchmark(t *testing.T, path string, mutate func(*BenchmarkSummary)) {
+	t.Helper()
+	body, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var summary BenchmarkSummary
+	if err := json.Unmarshal(body, &summary); err != nil {
+		t.Fatal(err)
+	}
+	mutate(&summary)
+	encoded, err := json.Marshal(summary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestCorrectionFourArmClosure(t *testing.T) {
 	cleanPath, oracles := writeCorrectionSurvivalFixtureCandidate(t, "candidate_clean_001",
 		whiteImageWithContent(t), whiteImageWithContent(t), image.Rect(10, 10, 20, 11))
@@ -298,7 +387,7 @@ func TestCorrectionFourArmClosure(t *testing.T) {
 		case "candidate_valid_001":
 			valid = row.Quality.Status == "passed" && row.Resources.Status == "complete"
 		case "candidate_survival_001":
-			unavailable = row.Quality.Status == "failed" && row.Resources.Status == "unavailable"
+			unavailable = row.Quality.Status != "passed" && row.Resources.Status == "unavailable"
 		}
 	}
 	if !clean || !unavailable || !destructive || !valid || comparison.Status != "incomplete" {
@@ -451,7 +540,7 @@ func writeCorrectionBenchmark(t *testing.T, catalogPath string) string {
 		Status: "complete", StartedAt: "2026-11-09T00:00:00Z", FinishedAt: "2026-11-09T00:00:03Z",
 		FixtureID: catalog.FixtureID, FixtureSHA256: catalog.FixtureSHA256,
 		Candidate: catalog.Candidate, CandidateConfigSHA256: configSHA,
-		Parameters:         copyParameters(catalog.Candidate.Parameters),
+		Parameters:         map[string]string{},
 		InvocationTemplate: []string{"/usr/bin/time", "{candidate}"},
 		Observer: ObserverEvidence{Path: "/usr/bin/time", SHA256: repeatTestHash("d"),
 			Version: "time", License: "GPL-3.0-or-later"},
@@ -473,8 +562,14 @@ func writeCorrectionBenchmark(t *testing.T, catalogPath string) string {
 			Parameters: summary.Parameters, WallMillis: 100, PeakRSSBytes: 1000,
 			Status: "complete", ValidationStatus: "passed",
 			ArtifactCatalog: relative, ReceiptPath: "receipts/" + strconv.Itoa(index+1) + ".json",
-			SourceHashesBefore: map[string]string{"fixture": summary.FixtureSHA256},
-			SourceHashesAfter:  map[string]string{"fixture": summary.FixtureSHA256},
+			SourceHashesBefore: map[string]string{
+				"fixture": summary.FixtureSHA256, "candidate_config": configSHA,
+				"executable": summary.Candidate.ExecutableSHA256,
+			},
+			SourceHashesAfter: map[string]string{
+				"fixture": summary.FixtureSHA256, "candidate_config": configSHA,
+				"executable": summary.Candidate.ExecutableSHA256,
+			},
 		})
 	}
 	benchmarkPath := filepath.Join(filepath.Dir(catalogPath), "benchmark.json")

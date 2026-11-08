@@ -979,10 +979,11 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 		FixtureSHA256: "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
 		Candidate: evaluation.CandidateReceipt{
 			ID: "candidate_correction_cli_001", Version: "1", ExecutableSHA256: strings.Repeat("a", 64),
-			Sources:    []evaluation.CandidatePin{{Name: "fixture", Version: "1", License: "test-only"}},
-			Parameters: map[string]string{},
+			Sources:       []evaluation.CandidatePin{{Name: "fixture", Version: "1", License: "test-only"}},
+			OperatorSteps: []string{},
+			Parameters:    map[string]string{},
 		},
-		Status: "incomplete",
+		Status: "complete",
 		Original: &evaluation.Artifact{
 			ID: originalID, Role: evaluation.RoleOriginal, MediaType: "image/png", SHA256: digest,
 			Bytes: int64(len(body)), SourcePages: []string{"page_card_001"},
@@ -1005,11 +1006,13 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 	if err := os.WriteFile(artifactPath, encoded, 0o600); err != nil {
 		t.Fatal(err)
 	}
+	benchmarkPath := writeCorrectionCLIBenchmark(t, work, catalog)
 	result := runHelper(t, "analyze-corrections",
 		"--catalog", filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json"),
 		"--oracles", filepath.Join(root, "scripts", "fixtures", "evaluation", "correction-oracles.json"),
-		"--artifacts", artifactPath)
-	if result.code != 1 {
+		"--artifacts", artifactPath,
+		"--benchmark", benchmarkPath)
+	if result.code != 0 {
 		t.Fatalf("incomplete measurement exit=%d stderr=%s", result.code, result.stderr)
 	}
 	var comparison struct {
@@ -1023,18 +1026,85 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 					RetainedForeground int `json:"retained_foreground_pixels"`
 				} `json:"content_measurements"`
 			} `json:"quality"`
+			Resources struct {
+				Status                string `json:"status"`
+				CandidateConfigSHA256 string `json:"candidate_config_sha256"`
+				Metrics               struct {
+					Cold evaluation.ModeMetrics `json:"cold"`
+					Warm evaluation.ModeMetrics `json:"warm"`
+				} `json:"metrics"`
+			} `json:"resources"`
 		} `json:"rows"`
 	}
 	if err := json.Unmarshal([]byte(result.stdout), &comparison); err != nil {
 		t.Fatal(err)
 	}
-	if comparison.Status != "incomplete" || len(comparison.Rows) != 1 || comparison.Rows[0].Quality.Status != "passed" ||
+	if comparison.Status != "complete" || len(comparison.Rows) != 1 || comparison.Rows[0].Quality.Status != "passed" ||
 		len(comparison.Rows[0].Quality.ContentMeasurements) != 1 ||
 		comparison.Rows[0].Quality.ContentMeasurements[0].OriginalForeground == 0 ||
 		comparison.Rows[0].Quality.ContentMeasurements[0].MappedForeground !=
-			comparison.Rows[0].Quality.ContentMeasurements[0].RetainedForeground {
+			comparison.Rows[0].Quality.ContentMeasurements[0].RetainedForeground ||
+		comparison.Rows[0].Resources.Status != "complete" ||
+		comparison.Rows[0].Resources.CandidateConfigSHA256 != strings.Repeat("c", 64) ||
+		comparison.Rows[0].Resources.Metrics.Cold.Samples != 1 ||
+		comparison.Rows[0].Resources.Metrics.Warm.Samples != 1 {
 		t.Fatalf("unexpected correction comparison: %+v", comparison)
 	}
+}
+
+func writeCorrectionCLIBenchmark(t *testing.T, root string, catalog evaluation.ArtifactCatalog) string {
+	t.Helper()
+	configSHA := strings.Repeat("c", 64)
+	cold, warm := int64(100), int64(80)
+	summary := evaluation.BenchmarkSummary{
+		Format: evaluation.BenchmarkFormat, Version: evaluation.BenchmarkVersion,
+		RunID: "benchmark_correction_cli_001", Status: "complete",
+		StartedAt: "2026-11-09T00:00:00Z", FinishedAt: "2026-11-09T00:00:02Z",
+		FixtureID: catalog.FixtureID, FixtureSHA256: catalog.FixtureSHA256,
+		Candidate: catalog.Candidate, CandidateConfigSHA256: configSHA,
+		Parameters:         map[string]string{},
+		InvocationTemplate: []string{"/usr/bin/time", "{candidate}"},
+		Observer: evaluation.ObserverEvidence{
+			Path: "/usr/bin/time", SHA256: strings.Repeat("d", 64), Version: "time",
+			License: "GPL-3.0-or-later",
+		},
+		Settings: evaluation.BenchmarkSettings{
+			ColdRepetitions: 1, WarmRepetitions: 1, TimeoutSeconds: 900,
+			MaxRSSBytes: 1 << 30, MaxTempDiskBytes: 1 << 30,
+		},
+		Metrics: evaluation.BenchmarkMetrics{
+			Cold: evaluation.ModeMetrics{Samples: 1, P50Millis: &cold, P95Millis: &cold, PeakRSSBytes: 1000},
+			Warm: evaluation.ModeMetrics{Samples: 1, P50Millis: &warm, P95Millis: &warm, PeakRSSBytes: 900},
+		},
+	}
+	for index, mode := range []string{"cold", "warm"} {
+		summary.Samples = append(summary.Samples, evaluation.BenchmarkSample{
+			SampleID: summary.RunID + "_" + mode, Mode: mode, Sequence: index + 1,
+			StartedAt: summary.StartedAt, FinishedAt: summary.FinishedAt,
+			FixtureID: summary.FixtureID, FixtureSHA256: summary.FixtureSHA256,
+			Candidate: summary.Candidate, CandidateConfigSHA256: configSHA,
+			Parameters: map[string]string{}, WallMillis: 100, PeakRSSBytes: 1000,
+			Status: "complete", ValidationStatus: "passed",
+			ArtifactCatalog: "artifact-catalog.json", ReceiptPath: "receipts/" + mode + ".json",
+			SourceHashesBefore: map[string]string{
+				"fixture": summary.FixtureSHA256, "candidate_config": configSHA,
+				"executable": summary.Candidate.ExecutableSHA256,
+			},
+			SourceHashesAfter: map[string]string{
+				"fixture": summary.FixtureSHA256, "candidate_config": configSHA,
+				"executable": summary.Candidate.ExecutableSHA256,
+			},
+		})
+	}
+	body, err := json.Marshal(summary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(root, "benchmark.json")
+	if err := os.WriteFile(path, body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
 }
 
 func writeIncompleteCatalog(t *testing.T) string {
