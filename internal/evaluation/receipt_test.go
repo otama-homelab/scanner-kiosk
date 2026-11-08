@@ -2,7 +2,9 @@ package evaluation
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -55,22 +57,73 @@ func TestReceiptRequiresProvenance(t *testing.T) {
 	}
 }
 
-func TestCompareSeparatesModesAndFailures(t *testing.T) {
+func TestComparisonGroupsFixtureAndSettings(t *testing.T) {
+	photo, photoPath := benchmarkForReceiptTest(t, "complete", "fixture_photo_001")
+	_, a4Path := benchmarkForReceiptTest(t, "", "fixture_a4_ja_en_001")
+
+	differentSettings := photo
+	differentSettings.RunID = "benchmark_synthetic_settings"
+	differentSettings.Settings.TimeoutSeconds++
+	differentSettingsPath := writeReceiptSummary(t, differentSettings)
+
+	differentHash := photo
+	differentHash.RunID = "benchmark_synthetic_hash"
+	differentHash.FixtureSHA256 = repeatTestHash("b")
+	for index := range differentHash.Samples {
+		differentHash.Samples[index].FixtureSHA256 = differentHash.FixtureSHA256
+	}
+	differentHashPath := writeReceiptSummary(t, differentHash)
+
+	comparison, err := CompareBenchmarkReceipts([]string{photoPath, a4Path, differentSettingsPath, differentHashPath})
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded := marshalComparison(t, comparison)
+	if len(decoded.Groups) != 4 {
+		t.Fatalf("groups=%d, want 4: %+v", len(decoded.Groups), decoded.Groups)
+	}
+	seen := map[string]bool{}
+	for _, group := range decoded.Groups {
+		if group.FixtureID == "" || group.FixtureSHA256 == "" ||
+			group.Settings.ColdRepetitions < 0 || group.Settings.WarmRepetitions < 0 ||
+			group.Settings.TimeoutSeconds < 1 || group.Settings.MaxRSSBytes < 1 ||
+			group.Settings.MaxTempDiskBytes < 1 || len(group.Entries) == 0 {
+			t.Fatalf("incomplete group identity: %+v", group)
+		}
+		key := fmt.Sprintf("%s|%s|%+v", group.FixtureID, group.FixtureSHA256, group.Settings)
+		if seen[key] {
+			t.Fatalf("duplicate comparison group: %s", key)
+		}
+		seen[key] = true
+	}
+}
+
+func TestComparisonKeepsModesAndFailuresPerGroup(t *testing.T) {
 	success, successPath := benchmarkForReceiptTest(t, "complete", "fixture_photo_001")
-	failure, failurePath := benchmarkForReceiptTest(t, "", "fixture_a4_ja_en_001")
+	failure, failurePath := benchmarkForReceiptTest(t, "", "fixture_photo_001")
 	if success.Status != "complete" || failure.Status == "complete" {
 		t.Fatalf("unexpected summaries: success=%+v failure=%+v", success, failure)
 	}
 	comparison, err := CompareBenchmarkReceipts([]string{successPath, failurePath})
-	if err != nil || len(comparison.Entries) != 4 {
-		t.Fatalf("comparison failed: %+v %v", comparison, err)
+	if err != nil {
+		t.Fatal(err)
+	}
+	decoded := marshalComparison(t, comparison)
+	if len(decoded.Groups) != 1 || len(decoded.Groups[0].Entries) != 4 {
+		t.Fatalf("comparison groups failed: %+v", decoded)
 	}
 	var completed, incomplete, cold, warm int
-	for _, entry := range comparison.Entries {
+	for _, entry := range decoded.Groups[0].Entries {
 		if entry.Status == "complete" {
 			completed++
+			if len(entry.FailureClasses) != 0 {
+				t.Fatalf("complete entry retained a failure class: %+v", entry)
+			}
 		} else {
 			incomplete++
+			if len(entry.FailureClasses) == 0 {
+				t.Fatalf("failed entry lost its failure class: %+v", entry)
+			}
 		}
 		if entry.Mode == "cold" {
 			cold++
@@ -80,11 +133,71 @@ func TestCompareSeparatesModesAndFailures(t *testing.T) {
 		}
 	}
 	if completed != 2 || incomplete != 2 || cold != 2 || warm != 2 {
-		t.Fatalf("modes or failures were merged: %+v", comparison.Entries)
+		t.Fatalf("modes or failures were merged: %+v", decoded.Groups[0].Entries)
 	}
 	if _, err := CompareBenchmarkReceipts([]string{successPath, successPath}); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("duplicate receipt accepted: %v", err)
 	}
+	conflict := success
+	conflict.RunID = "benchmark_synthetic_conflict"
+	conflict.Candidate.ExecutableSHA256 = repeatTestHash("c")
+	conflictPath := writeReceiptSummary(t, conflict)
+	if _, err := CompareBenchmarkReceipts([]string{successPath, conflictPath}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("conflicting candidate identity accepted: %v", err)
+	}
+}
+
+type decodedComparison struct {
+	Groups []struct {
+		FixtureID     string            `json:"fixture_id"`
+		FixtureSHA256 string            `json:"fixture_sha256"`
+		Settings      BenchmarkSettings `json:"settings"`
+		Entries       []struct {
+			CandidateID      string   `json:"candidate_id"`
+			CandidateVersion string   `json:"candidate_version"`
+			Mode             string   `json:"mode"`
+			Status           string   `json:"status"`
+			FailureClasses   []string `json:"failure_classes"`
+		} `json:"entries"`
+	} `json:"groups"`
+}
+
+func marshalComparison(t *testing.T, comparison Comparison) decodedComparison {
+	t.Helper()
+	body, err := json.Marshal(comparison)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var decoded decodedComparison
+	if err := json.Unmarshal(body, &decoded); err != nil {
+		t.Fatal(err)
+	}
+	return decoded
+}
+
+func writeReceiptSummary(t *testing.T, summary BenchmarkSummary) string {
+	t.Helper()
+	runDir := filepath.Join(t.TempDir(), "benchmark")
+	if err := os.Mkdir(runDir, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	body, err := json.Marshal(summary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(runDir, "benchmark.json")
+	if err := os.WriteFile(path, body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
+func repeatTestHash(value string) string {
+	repeated := ""
+	for range 64 {
+		repeated += value
+	}
+	return repeated
 }
 
 func benchmarkForReceiptTest(t *testing.T, mode, fixtureID string) (BenchmarkSummary, string) {

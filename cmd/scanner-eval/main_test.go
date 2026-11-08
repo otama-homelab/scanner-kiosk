@@ -253,7 +253,8 @@ func TestRunCommandReturnsNormalizedCatalog(t *testing.T) {
 		"candidate_id": "candidate_cli_helper_001", "executable": executable,
 		"executable_sha256": hex.EncodeToString(sum[:]), "argv": []string{"-test.run=^TestCandidateCLIHelper$"},
 		"environment": []string{"EVAL_CANDIDATE_CLI_HELPER=1"}, "candidate_version": "1",
-		"sources": []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
+		"sources":        []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
+		"operator_steps": []string{},
 	}
 	encoded, err := json.Marshal(config)
 	if err != nil {
@@ -301,8 +302,11 @@ func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
 		t.Fatalf("benchmark failure exit=%d stderr=%s", result.code, result.stderr)
 	}
 	var summary struct {
-		Status  string `json:"status"`
-		Samples []struct {
+		Status        string                       `json:"status"`
+		FixtureID     string                       `json:"fixture_id"`
+		FixtureSHA256 string                       `json:"fixture_sha256"`
+		Settings      evaluation.BenchmarkSettings `json:"settings"`
+		Samples       []struct {
 			Status       string `json:"status"`
 			FailureClass string `json:"failure_class"`
 		} `json:"samples"`
@@ -325,6 +329,36 @@ func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
 	}
 	if _, err := os.Stat(comparisonPath); err != nil {
 		t.Fatal(err)
+	}
+	body, err := os.ReadFile(comparisonPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var comparison struct {
+		Groups []struct {
+			FixtureID     string                       `json:"fixture_id"`
+			FixtureSHA256 string                       `json:"fixture_sha256"`
+			Settings      evaluation.BenchmarkSettings `json:"settings"`
+			Entries       []struct {
+				Mode           string   `json:"mode"`
+				FailureClasses []string `json:"failure_classes"`
+			} `json:"entries"`
+		} `json:"groups"`
+	}
+	if err := json.Unmarshal(body, &comparison); err != nil {
+		t.Fatal(err)
+	}
+	if len(comparison.Groups) != 1 ||
+		comparison.Groups[0].FixtureID != summary.FixtureID ||
+		comparison.Groups[0].FixtureSHA256 != summary.FixtureSHA256 ||
+		comparison.Groups[0].Settings != summary.Settings ||
+		len(comparison.Groups[0].Entries) != 2 {
+		t.Fatalf("comparison lost condition identity: %+v", comparison)
+	}
+	for _, entry := range comparison.Groups[0].Entries {
+		if entry.Mode != "cold" && entry.Mode != "warm" || len(entry.FailureClasses) == 0 {
+			t.Fatalf("comparison merged a mode or failure: %+v", entry)
+		}
 	}
 }
 
@@ -467,7 +501,8 @@ func writeCLICandidateConfig(t *testing.T, work string) string {
 		"candidate_id": "candidate_cli_helper_001", "executable": executable,
 		"executable_sha256": hex.EncodeToString(sum[:]), "argv": []string{"-test.run=^TestCandidateCLIHelper$"},
 		"environment": []string{"EVAL_CANDIDATE_CLI_HELPER=1"}, "candidate_version": "1",
-		"sources": []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
+		"sources":        []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
+		"operator_steps": []string{},
 	}
 	encoded, err := json.Marshal(config)
 	if err != nil {
