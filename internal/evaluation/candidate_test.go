@@ -8,10 +8,11 @@ import (
 	"encoding/json"
 	"errors"
 	"image"
-	_ "image/png"
+	"image/png"
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -37,6 +38,61 @@ func TestCandidateHelper(t *testing.T) {
 		os.Exit(9)
 	}
 	mode := os.Getenv("EVAL_CANDIDATE_MODE")
+	if mode == "correction" || mode == "destructive_correction" {
+		raw, err := os.ReadFile(input)
+		if err != nil {
+			os.Exit(13)
+		}
+		decoded, err := png.Decode(bytes.NewReader(raw))
+		if err != nil {
+			os.Exit(13)
+		}
+		bounds := decoded.Bounds()
+		rect := bounds
+		if mode == "destructive_correction" {
+			rect = image.Rect(bounds.Min.X+bounds.Dx()/10, bounds.Min.Y+bounds.Dy()/10,
+				bounds.Max.X-bounds.Dx()/10, bounds.Max.Y-bounds.Dy()/10)
+		}
+		corrected := image.NewRGBA(image.Rect(0, 0, rect.Dx(), rect.Dy()))
+		for y := 0; y < rect.Dy(); y++ {
+			for x := 0; x < rect.Dx(); x++ {
+				corrected.Set(x, y, decoded.At(rect.Min.X+x, rect.Min.Y+y))
+			}
+		}
+		var encoded bytes.Buffer
+		if err := png.Encode(&encoded, corrected); err != nil {
+			os.Exit(13)
+		}
+		if err := os.WriteFile(filepath.Join(output, "corrected.png"), encoded.Bytes(), 0o600); err != nil {
+			os.Exit(13)
+		}
+		quad := [][2]int{{rect.Min.X, rect.Min.Y}, {rect.Max.X, rect.Min.Y}, {rect.Max.X, rect.Max.Y}, {rect.Min.X, rect.Max.Y}}
+		quadJSON, err := json.Marshal(quad)
+		if err != nil {
+			os.Exit(13)
+		}
+		result := map[string]any{
+			"format": "scanner-eval-candidate-result", "version": 1, "candidate_id": candidateID,
+			"artifacts": []any{map[string]any{
+				"id": "artifact_candidate_correction_001", "role": "correction", "path": "corrected.png",
+				"media_type": "image/png", "source_pages": pages,
+				"parents": []string{originalID}, "algorithm": "fixture-crop", "algorithm_version": "1",
+				"parameters": map[string]string{
+					"crop_quad": string(quadJSON), "rotation_degrees": "0",
+					"output_width": strconv.Itoa(rect.Dx()), "output_height": strconv.Itoa(rect.Dy()),
+					"confidence_kind": "unavailable", "fallback_reason": "",
+				},
+			}},
+		}
+		body, err := json.Marshal(result)
+		if err != nil {
+			os.Exit(13)
+		}
+		if err := os.WriteFile(filepath.Join(output, "result.json"), body, 0o600); err != nil {
+			os.Exit(13)
+		}
+		os.Exit(0)
+	}
 	if mode == "complete" {
 		raw, err := os.ReadFile(input)
 		if err != nil {

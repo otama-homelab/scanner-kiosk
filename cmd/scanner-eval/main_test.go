@@ -6,11 +6,16 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"image"
+	"image/color"
+	"image/png"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"scanner-kiosk/internal/evaluation"
 )
 
 func TestCandidateCLIHelper(t *testing.T) {
@@ -272,6 +277,101 @@ func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
 	if _, err := os.Stat(comparisonPath); err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestAnalyzeCorrectionsCommand(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	work := t.TempDir()
+	artifactPath := filepath.Join(work, "artifact-catalog.json")
+	originalID := "artifact_original_correction_001"
+	correctionID := "artifact_candidate_correction_001"
+	body := makeCorrectionPNG(t)
+	sum := sha256.Sum256(body)
+	digest := hex.EncodeToString(sum[:])
+	if err := os.Mkdir(filepath.Join(work, "artifacts"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range []string{originalID, correctionID} {
+		if err := os.WriteFile(filepath.Join(work, "artifacts", id), body, 0o600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	catalog := evaluation.ArtifactCatalog{
+		Format: evaluation.ArtifactCatalogFormat, Version: evaluation.ArtifactCatalogVersion,
+		RunID: "run_correction_cli_001", FixtureID: "fixture_card_001",
+		FixtureSHA256: "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+		Candidate: evaluation.CandidateReceipt{
+			ID: "candidate_correction_cli_001", Version: "1", ExecutableSHA256: strings.Repeat("a", 64),
+			Sources:    []evaluation.CandidatePin{{Name: "fixture", Version: "1", License: "test-only"}},
+			Parameters: map[string]string{},
+		},
+		Status: "incomplete",
+		Original: evaluation.Artifact{
+			ID: originalID, Role: evaluation.RoleOriginal, MediaType: "image/png", SHA256: digest,
+			Bytes: int64(len(body)), SourcePages: []string{"page_card_001"},
+		},
+		Artifacts: []evaluation.Artifact{{
+			ID: correctionID, Role: evaluation.RoleCorrection, MediaType: "image/png", SHA256: digest,
+			Bytes: int64(len(body)), SourcePages: []string{"page_card_001"}, Parents: []string{originalID},
+			Algorithm: "fixture-crop", AlgorithmVersion: "1",
+			Parameters: map[string]string{
+				"crop_quad": "[[0,0],[960,0],[960,640],[0,640]]", "rotation_degrees": "0",
+				"output_width": "960", "output_height": "640",
+				"confidence_kind": "unavailable", "fallback_reason": "",
+			},
+		}},
+	}
+	encoded, err := json.Marshal(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(artifactPath, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	result := runHelper(t, "analyze-corrections",
+		"--catalog", filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json"),
+		"--oracles", filepath.Join(root, "scripts", "fixtures", "evaluation", "correction-oracles.json"),
+		"--artifacts", artifactPath)
+	if result.code != 1 {
+		t.Fatalf("incomplete measurement exit=%d stderr=%s", result.code, result.stderr)
+	}
+	var comparison struct {
+		Status string `json:"status"`
+		Rows   []struct {
+			Quality struct {
+				Status string `json:"status"`
+			} `json:"quality"`
+		} `json:"rows"`
+	}
+	if err := json.Unmarshal([]byte(result.stdout), &comparison); err != nil {
+		t.Fatal(err)
+	}
+	if comparison.Status != "incomplete" || len(comparison.Rows) != 1 || comparison.Rows[0].Quality.Status != "passed" {
+		t.Fatalf("unexpected correction comparison: %+v", comparison)
+	}
+}
+
+func makeCorrectionPNG(t *testing.T) []byte {
+	t.Helper()
+	bitmap := image.NewRGBA(image.Rect(0, 0, 960, 640))
+	for y := range 640 {
+		for x := range 960 {
+			bitmap.SetRGBA(x, y, color.RGBA{255, 255, 255, 255})
+		}
+	}
+	for y := 20; y < 24; y++ {
+		for x := 20; x < 940; x++ {
+			bitmap.SetRGBA(x, y, color.RGBA{40, 90, 140, 255})
+		}
+	}
+	var encoded bytes.Buffer
+	if err := png.Encode(&encoded, bitmap); err != nil {
+		t.Fatal(err)
+	}
+	return encoded.Bytes()
 }
 
 func writeCLICandidateConfig(t *testing.T, work string) string {

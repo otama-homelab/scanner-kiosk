@@ -1,0 +1,71 @@
+{
+  "format": "scanner-eval-correction-oracles",
+  "version": 1,
+  "entries": [
+    {
+      "fixture_id": "fixture_a4_ja_en_001",
+      "fixture_sha256": "e2a8b58d65452c9a7e4b471481e2149c9d14502cc75b1c48120ceef9bc860e08",
+      "background_rgb": [255, 255, 255],
+      "content_regions": [{"x": 100, "y": 100, "width": 200, "height": 200}]
+    },
+    {
+      "fixture_id": "fixture_card_001",
+      "fixture_sha256": "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+      "background_rgb": [255, 255, 255],
+      "edge_regions": [{"x": 20, "y": 20, "width": 920, "height": 4}],
+      "content_regions": [{"x": 100, "y": 100, "width": 300, "height": 200}]
+    },
+    {
+      "fixture_id": "fixture_receipt_001",
+      "fixture_sha256": "81446bf13dc6fac6b75076a5dc121b32fc9266b567f03d0ddd1aad4665f2d8ba",
+      "background_rgb": [255, 255, 255],
+      "edge_regions": [{"x": 20, "y": 20, "width": 600, "height": 4}],
+      "content_regions": [{"x": 80, "y": 100, "width": 200, "height": 200}]
+    },
+    {
+      "fixture_id": "fixture_table_form_001",
+      "fixture_sha256": "9bcf99cc4e3ce2f796aa8ffed9bf000eb78f233dcb42be0da507a1b05bd77675",
+      "background_rgb": [255, 255, 255],
+      "edge_regions": [{"x": 100, "y": 180, "width": 1080, "height": 2}],
+      "content_regions": [{"x": 200, "y": 200, "width": 400, "height": 400}]
+    },
+    {
+      "fixture_id": "fixture_white_on_white_001",
+      "fixture_sha256": "3b3183628305abd483f099df717725745b6de9e8c2db033eb05e5791d7940b66",
+      "background_rgb": [255, 255, 255],
+      "edge_regions": [{"x": 120, "y": 160, "width": 960, "height": 2}],
+      "content_regions": [{"x": 200, "y": 300, "width": 400, "height": 400}]
+    },
+    {
+      "fixture_id": "fixture_vertical_text_001",
+      "fixture_sha256": "827b41f0885a5be349b3cd87d6bc641b8529268046190f4f9624808046dd7fb0",
+      "background_rgb": [255, 255, 255],
+      "content_regions": [{"x": 100, "y": 100, "width": 200, "height": 200}]
+    },
+    {
+      "fixture_id": "fixture_faint_print_001",
+      "fixture_sha256": "79f8cd22aafaeae0896aecb0f6a8319e8f12fec5f874eabf3115a2e402cc05c3",
+      "background_rgb": [255, 255, 255],
+      "content_regions": [{"x": 100, "y": 100, "width": 200, "height": 200}]
+    },
+    {
+      "fixture_id": "fixture_skew_001",
+      "fixture_sha256": "20705301d62ea5cf995d0fe4246476705d9de438c79821d5f4db59e934b99262",
+      "background_rgb": [255, 255, 255],
+      "content_regions": [{"x": 100, "y": 100, "width": 200, "height": 200}]
+    },
+    {
+      "fixture_id": "fixture_shadow_001",
+      "fixture_sha256": "0e542f8aab5054dbc13610289b0d08b3937f7f6c356c44cda3139b32b3ee5079",
+      "background_rgb": [255, 255, 255],
+      "content_regions": [{"x": 100, "y": 100, "width": 200, "height": 200}]
+    },
+    {
+      "fixture_id": "fixture_photo_001",
+      "fixture_sha256": "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+      "background_rgb": [255, 255, 255],
+      "edge_regions": [{"x": 20, "y": 20, "width": 920, "height": 4}],
+      "content_regions": [{"x": 100, "y": 100, "width": 300, "height": 200}]
+    }
+  ]
+}

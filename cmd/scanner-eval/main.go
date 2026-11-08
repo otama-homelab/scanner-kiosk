@@ -145,6 +145,40 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 			return 1
 		}
 		return 0
+	case "analyze-corrections":
+		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
+		flags.SetOutput(io.Discard)
+		catalogPath := flags.String("catalog", "", "")
+		oraclePath := flags.String("oracles", "", "")
+		var artifacts stringList
+		flags.Var(&artifacts, "artifacts", "")
+		if flags.Parse(args[1:]) != nil || *catalogPath == "" || *oraclePath == "" || len(artifacts) == 0 || len(flags.Args()) != 0 {
+			fmt.Fprintln(stderr, "scanner-eval: invalid input")
+			return 2
+		}
+		catalog, err := evaluation.LoadCatalog(*catalogPath)
+		if err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
+			return 1
+		}
+		oracles, err := evaluation.LoadCorrectionOracles(*oraclePath)
+		if err != nil || evaluation.ValidateCorrectionOracleCoverage(catalog, oracles) != nil {
+			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
+			return 1
+		}
+		comparison, err := evaluation.AnalyzeCorrectionCatalogs(artifacts, oracles)
+		if err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: evaluation unavailable")
+			return 1
+		}
+		if err := json.NewEncoder(stdout).Encode(comparison); err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+			return 1
+		}
+		if comparison.Status != "complete" {
+			return 1
+		}
+		return 0
 	default:
 		fmt.Fprintln(stderr, "scanner-eval: invalid input")
 		return 2
