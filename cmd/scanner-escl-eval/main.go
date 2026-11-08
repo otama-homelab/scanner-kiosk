@@ -363,10 +363,17 @@ func compareReceipts(target targetOracle, paths []string) evidence {
 			continue
 		}
 		seenImages[imageKey] = true
-		bitmap, err := readReceiptImage(path, item.Image)
+		bitmap, imageBytes, err := readReceiptImage(path, item.Image)
 		if err != nil || bitmap.Bounds().Dx() != item.Width || bitmap.Bounds().Dy() != item.Height {
 			issue("receipt image is not a matching bounded PNG")
 			continue
+		}
+		if item.MediaType == "image/png" {
+			sum := sha256.Sum256(imageBytes)
+			if int64(len(imageBytes)) != item.Bytes || hex.EncodeToString(sum[:]) != item.SHA256 {
+				issue("receipt image bytes or hash do not match the retained PNG")
+				continue
+			}
 		}
 		regions := measureTargetRegions(bitmap, target)
 		capture := captureEvidence{
@@ -544,14 +551,14 @@ func safeImageReference(value string) bool {
 		value != ".." && !strings.HasPrefix(value, "../") && !strings.Contains(value, "/../")
 }
 
-func readReceiptImage(receiptPath, imageReference string) (image.Image, error) {
+func readReceiptImage(receiptPath, imageReference string) (image.Image, []byte, error) {
 	receiptAbsolute, err := filepath.Abs(receiptPath)
 	if err != nil {
-		return nil, esclcapture.ErrInvalid
+		return nil, nil, esclcapture.ErrInvalid
 	}
 	root, err := os.OpenRoot(filepath.Dir(receiptAbsolute))
 	if err != nil {
-		return nil, esclcapture.ErrInvalid
+		return nil, nil, esclcapture.ErrInvalid
 	}
 	defer root.Close()
 	current := ""
@@ -559,37 +566,37 @@ func readReceiptImage(receiptPath, imageReference string) (image.Image, error) {
 	var info os.FileInfo
 	for index, part := range parts {
 		if part == "" || part == "." || part == ".." {
-			return nil, esclcapture.ErrInvalid
+			return nil, nil, esclcapture.ErrInvalid
 		}
 		current = filepath.ToSlash(filepath.Join(current, part))
 		info, err = root.Lstat(current)
 		if err != nil || info.Mode()&os.ModeSymlink != 0 ||
 			index < len(parts)-1 && !info.IsDir() || index == len(parts)-1 && !info.Mode().IsRegular() {
-			return nil, esclcapture.ErrInvalid
+			return nil, nil, esclcapture.ErrInvalid
 		}
 	}
 	if info.Size() < 1 || info.Size() > maxImageBytes {
-		return nil, esclcapture.ErrInvalid
+		return nil, nil, esclcapture.ErrInvalid
 	}
 	file, err := root.Open(imageReference)
 	if err != nil {
-		return nil, esclcapture.ErrInvalid
+		return nil, nil, esclcapture.ErrInvalid
 	}
 	defer file.Close()
 	body, err := io.ReadAll(io.LimitReader(file, maxImageBytes+1))
 	if err != nil || int64(len(body)) > maxImageBytes {
-		return nil, esclcapture.ErrInvalid
+		return nil, nil, esclcapture.ErrInvalid
 	}
 	config, err := png.DecodeConfig(bytes.NewReader(body))
 	if err != nil || config.Width < 1 || config.Height < 1 ||
 		int64(config.Width) > maxImagePixels/int64(config.Height) {
-		return nil, esclcapture.ErrInvalid
+		return nil, nil, esclcapture.ErrInvalid
 	}
 	bitmap, err := png.Decode(bytes.NewReader(body))
 	if err != nil || bitmap.Bounds().Dx() != config.Width || bitmap.Bounds().Dy() != config.Height {
-		return nil, esclcapture.ErrInvalid
+		return nil, nil, esclcapture.ErrInvalid
 	}
-	return bitmap, nil
+	return bitmap, body, nil
 }
 
 func measureTargetRegions(bitmap image.Image, target targetOracle) []regionEvidence {
