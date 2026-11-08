@@ -149,6 +149,39 @@ func TestGenerateAndListA4FixtureEndToEnd(t *testing.T) {
 	}
 }
 
+func TestCLIRejectsIncompleteCatalog(t *testing.T) {
+	catalog := writeIncompleteCatalog(t)
+	result := runHelper(t, "list-fixtures", "--catalog", catalog)
+	if result.code != 1 {
+		t.Fatalf("incomplete catalog exit=%d stderr=%s", result.code, result.stderr)
+	}
+	if result.stdout != "" || !strings.Contains(result.stderr, "evaluation unavailable") {
+		t.Fatalf("unexpected output: stdout=%q stderr=%q", result.stdout, result.stderr)
+	}
+	if strings.Contains(result.stderr, "fixture_photo_001") || strings.Contains(result.stderr, catalog) {
+		t.Fatalf("validation error leaked content: %s", result.stderr)
+	}
+}
+
+func TestCLIGenerateRejectsIncompleteCatalog(t *testing.T) {
+	catalog := writeIncompleteCatalog(t)
+	output := filepath.Join(t.TempDir(), "fixtures")
+	manifest := filepath.Join(t.TempDir(), "manifest.json")
+	result := runHelper(t, "generate-fixtures", "--catalog", catalog, "--output", output, "--manifest", manifest)
+	if result.code != 1 {
+		t.Fatalf("incomplete catalog exit=%d stderr=%s", result.code, result.stderr)
+	}
+	if result.stdout != "" || !strings.Contains(result.stderr, "evaluation unavailable") {
+		t.Fatalf("unexpected output: stdout=%q stderr=%q", result.stdout, result.stderr)
+	}
+	if _, err := os.Stat(output); !os.IsNotExist(err) {
+		t.Fatalf("output directory created before coverage validation: %v", err)
+	}
+	if strings.Contains(result.stderr, "fixture_photo_001") || strings.Contains(result.stderr, catalog) {
+		t.Fatalf("validation error leaked content: %s", result.stderr)
+	}
+}
+
 func TestCatalogRejectsDuplicateID(t *testing.T) {
 	catalog := filepath.Join(t.TempDir(), "duplicate.json")
 	fixture := map[string]any{
@@ -352,6 +385,34 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 	if comparison.Status != "incomplete" || len(comparison.Rows) != 1 || comparison.Rows[0].Quality.Status != "passed" {
 		t.Fatalf("unexpected correction comparison: %+v", comparison)
 	}
+}
+
+func writeIncompleteCatalog(t *testing.T) string {
+	t.Helper()
+	catalog := filepath.Join(t.TempDir(), "incomplete.json")
+	fixture := map[string]any{
+		"id":               "fixture_photo_001",
+		"source_class":     "public_synthetic",
+		"privacy":          "public-synthetic",
+		"media_type":       "image/png",
+		"page_ids":         []string{"page_photo_001"},
+		"document_type":    "photo",
+		"expected_outputs": []string{"pdf"},
+		"sha256":           "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+		"bytes":            12018,
+		"recipe":           map[string]string{"kind": "pattern", "variant": "photo"},
+	}
+	body, err := json.Marshal(map[string]any{
+		"format": "scanner-eval-fixtures", "version": 1,
+		"fixtures": []any{fixture},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(catalog, body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return catalog
 }
 
 func makeCorrectionPNG(t *testing.T) []byte {
