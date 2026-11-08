@@ -53,8 +53,8 @@
       "page_ids": ["page_photo_001"],
       "document_type": "photo",
       "expected_outputs": ["pdf"],
-      "sha256": "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
-      "bytes": 12018,
+      "sha256": "a429f5542eb3dc4b8486307178690ee27bfad36430d99e3549467fe8b52356fc",
+      "bytes": 12250,
       "recipe": {"kind": "pattern", "variant": "photo"}
     },
     {
@@ -157,9 +157,9 @@
       "document_type": "oversized",
       "expected_outputs": [],
       "expected_failure_class": "oversized-input",
-      "sha256": "40aff2e9d2d8922e47afd4648e6967497158785fbd1da870e7110266bf944880",
-      "bytes": 256,
-      "recipe": {"kind": "pattern", "variant": "oversized"}
+      "sha256": "1de02a61d877048560aa8103b7df8deddb4d28f5e20dd6df0bda600e3e4f153e",
+      "bytes": 209715201,
+      "recipe": {"kind": "pattern", "variant": "oversized", "size": 209715201}
     },
     {
       "id": "fixture_dependency_failure_001",
@@ -172,7 +172,11 @@
       "expected_failure_class": "dependency-unavailable",
       "sha256": "1d35ec464a27ecf2ffd35a8563b9171f995b63e912dfa7c6ad5f62722719d1d4",
       "bytes": 142,
-      "recipe": {"kind": "pattern", "variant": "dependency-failure"}
+      "recipe": {
+        "kind": "pattern",
+        "variant": "dependency-failure",
+        "dependency": "evaluation/missing-dependency"
+      }
     }
   ]
 }

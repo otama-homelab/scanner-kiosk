@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
@@ -108,7 +109,8 @@ func (c Catalog) Validate() error {
 	for index, fixture := range c.Fixtures {
 		if !ValidID(fixture.ID) || seen[fixture.ID] || fixture.SourceClass != "public_synthetic" || fixture.Privacy != PrivacyPublicSynthetic ||
 			fixture.MediaType != "image/png" || len(fixture.PageIDs) == 0 || len(fixture.PageIDs) > 256 || !boundedToken(fixture.DocumentType, 64) ||
-			len(fixture.ExpectedOutputs) > 6 || fixture.Bytes < 0 || fixture.Bytes > maxFixtureBytes ||
+			len(fixture.ExpectedOutputs) > 6 || fixture.Bytes < 0 ||
+			fixture.Bytes > maxFixtureBytes && !(fixture.Recipe.Variant == "oversized" && fixture.ExpectedFailureClass == "oversized-input") ||
 			!validStrings(fixture.Languages, 8, 16) || !validStrings(fixture.ExpectedText, 64, 1024) ||
 			!boundedOptionalToken(fixture.ExpectedFailureClass, 64) {
 			return fmt.Errorf("%w: fixture %d", ErrInvalid, index)
@@ -145,6 +147,9 @@ func (c Catalog) Validate() error {
 		} else {
 			return fmt.Errorf("%w: fixture %d", ErrInvalid, index)
 		}
+		if !validRecipeFields(fixture) {
+			return ErrInvalid
+		}
 		for _, text := range fixture.ExpectedText {
 			if !utf8.ValidString(text) || strings.ContainsRune(text, 0) {
 				return fmt.Errorf("%w: fixture %d", ErrInvalid, index)
@@ -152,6 +157,27 @@ func (c Catalog) Validate() error {
 		}
 	}
 	return nil
+}
+
+func validRecipeFields(fixture FixtureDefinition) bool {
+	if fixture.Recipe.Kind == "copy" {
+		return fixture.Recipe.Size == 0 && fixture.Recipe.Dependency == "" && fixture.ExpectedFailureClass == ""
+	}
+	switch fixture.Recipe.Variant {
+	case "invalid":
+		return fixture.Recipe.Size == 0 && fixture.Recipe.Dependency == "" &&
+			fixture.ExpectedFailureClass == "invalid-input" && len(fixture.ExpectedOutputs) == 0
+	case "oversized":
+		return fixture.Recipe.Size == maxFixtureBytes+1 && fixture.Bytes == fixture.Recipe.Size &&
+			fixture.Recipe.Dependency == "" && fixture.ExpectedFailureClass == "oversized-input" &&
+			len(fixture.ExpectedOutputs) == 0
+	case "dependency-failure":
+		return fixture.Recipe.Size == 0 && safeRelative(fixture.Recipe.Dependency) &&
+			fixture.Bytes > 0 && fixture.ExpectedFailureClass == "dependency-unavailable" &&
+			len(fixture.ExpectedOutputs) == 0
+	default:
+		return fixture.Recipe.Size == 0 && fixture.Recipe.Dependency == "" && fixture.ExpectedFailureClass == ""
+	}
 }
 
 func ValidateRequiredCoverage(catalog Catalog) error {
@@ -175,31 +201,31 @@ func Generate(catalogPath, output, manifestPath string) error {
 	if err != nil {
 		return err
 	}
+	if err := ValidateRequiredCoverage(catalog); err != nil {
+		return err
+	}
 	if err := ensureEmptyDirectory(output); err != nil {
 		return err
 	}
 	fixtures := append([]FixtureDefinition(nil), catalog.Fixtures...)
 	sort.Slice(fixtures, func(i, j int) bool { return fixtures[i].ID < fixtures[j].ID })
 	manifest := GeneratedManifest{Format: CatalogFormat, Version: CatalogVersion, ToolVersion: ToolVersion}
+	base := filepath.Dir(filepath.Dir(catalogPath))
 	for _, fixture := range fixtures {
-		body, err := generateFixture(filepath.Dir(filepath.Dir(catalogPath)), fixture)
+		path := filepath.Join(output, fixture.ID+".png")
+		sha, size, err := materializeFixture(base, fixture, path)
 		if err != nil {
 			return err
 		}
-		sum := sha256.Sum256(body)
-		sha := hex.EncodeToString(sum[:])
-		if fixture.SHA256 != "" && !matchesFixture(fixture, body) {
-			return ErrInvalid
-		}
-		name := fixture.ID + ".png"
-		if err := os.WriteFile(filepath.Join(output, name), body, 0o644); err != nil {
+		availability, err := classifyGeneratedFixture(base, fixture, path)
+		if err != nil {
 			return err
 		}
 		manifest.Fixtures = append(manifest.Fixtures, GeneratedFixture{
 			ID: fixture.ID, Privacy: fixture.Privacy, MediaType: fixture.MediaType,
 			PageIDs: fixture.PageIDs, Languages: fixture.Languages, DocumentType: fixture.DocumentType,
 			ExpectedOutputs: fixture.ExpectedOutputs, ExpectedFailureClass: fixture.ExpectedFailureClass,
-			SHA256: sha, Bytes: int64(len(body)), ExpectedText: fixture.ExpectedText, Availability: "available",
+			SHA256: sha, Bytes: size, ExpectedText: fixture.ExpectedText, Availability: availability,
 		})
 	}
 	return writeJSONExclusive(manifestPath, manifest)
@@ -210,15 +236,19 @@ func List(catalogPath string) (GeneratedManifest, error) {
 	if err != nil {
 		return GeneratedManifest{}, err
 	}
+	if err := ValidateRequiredCoverage(catalog); err != nil {
+		return GeneratedManifest{}, err
+	}
 	fixtures := append([]FixtureDefinition(nil), catalog.Fixtures...)
 	sort.Slice(fixtures, func(i, j int) bool { return fixtures[i].ID < fixtures[j].ID })
 	manifest := GeneratedManifest{Format: CatalogFormat, Version: CatalogVersion, ToolVersion: ToolVersion}
+	base := filepath.Dir(filepath.Dir(catalogPath))
 	for _, fixture := range fixtures {
 		availability := "available"
 		sha := fixture.SHA256
 		size := fixture.Bytes
 		if fixture.Recipe.Kind == "copy" {
-			source, readErr := resolveRecipeSource(filepath.Dir(filepath.Dir(catalogPath)), fixture.Recipe.Source)
+			source, readErr := resolveRecipeSource(base, fixture.Recipe.Source)
 			if readErr != nil {
 				availability = "unavailable"
 			} else {
@@ -230,6 +260,12 @@ func List(catalogPath string) (GeneratedManifest, error) {
 		} else if sha == "" || size == 0 {
 			availability = "unavailable"
 		}
+		if availability == "available" {
+			availability, err = classifyListedFixture(base, fixture)
+			if err != nil {
+				return GeneratedManifest{}, err
+			}
+		}
 		manifest.Fixtures = append(manifest.Fixtures, GeneratedFixture{
 			ID: fixture.ID, Privacy: fixture.Privacy, MediaType: fixture.MediaType,
 			PageIDs: fixture.PageIDs, Languages: fixture.Languages, DocumentType: fixture.DocumentType,
@@ -238,6 +274,165 @@ func List(catalogPath string) (GeneratedManifest, error) {
 		})
 	}
 	return manifest, nil
+}
+
+func materializeFixture(base string, fixture FixtureDefinition, outputPath string) (string, int64, error) {
+	if fixture.Recipe.Kind == "pattern" && fixture.Recipe.Variant == "oversized" {
+		file, err := os.OpenFile(outputPath, os.O_CREATE|os.O_EXCL|os.O_RDWR, 0o644)
+		if err != nil {
+			return "", 0, err
+		}
+		if err := file.Truncate(fixture.Recipe.Size); err != nil {
+			file.Close()
+			return "", 0, err
+		}
+		if err := file.Sync(); err != nil {
+			file.Close()
+			return "", 0, err
+		}
+		if _, err := file.Seek(0, io.SeekStart); err != nil {
+			file.Close()
+			return "", 0, err
+		}
+		hasher := sha256.New()
+		size, err := io.Copy(hasher, file)
+		closeErr := file.Close()
+		if err != nil {
+			return "", 0, err
+		}
+		if closeErr != nil {
+			return "", 0, closeErr
+		}
+		sha := hex.EncodeToString(hasher.Sum(nil))
+		if size != fixture.Bytes || fixture.SHA256 != "" && fixture.SHA256 != sha {
+			return "", 0, ErrInvalid
+		}
+		return sha, size, nil
+	}
+	body, err := generateFixture(base, fixture)
+	if err != nil {
+		return "", 0, err
+	}
+	if fixture.SHA256 != "" && !matchesFixture(fixture, body) {
+		return "", 0, ErrInvalid
+	}
+	if err := os.WriteFile(outputPath, body, 0o644); err != nil {
+		return "", 0, err
+	}
+	sum := sha256.Sum256(body)
+	return hex.EncodeToString(sum[:]), int64(len(body)), nil
+}
+
+func declaredFailureClass(fixture FixtureDefinition) (string, error) {
+	expected := ""
+	switch fixture.Recipe.Variant {
+	case "invalid":
+		expected = "invalid-input"
+	case "oversized":
+		expected = "oversized-input"
+	case "dependency-failure":
+		expected = "dependency-unavailable"
+	}
+	if fixture.ExpectedFailureClass != expected {
+		return "", ErrInvalid
+	}
+	return expected, nil
+}
+
+func classifyGeneratedFixture(base string, fixture FixtureDefinition, outputPath string) (string, error) {
+	declared, err := declaredFailureClass(fixture)
+	if err != nil {
+		return "", err
+	}
+	if declared == "" {
+		return "available", nil
+	}
+	observed := ""
+	switch fixture.Recipe.Variant {
+	case "invalid":
+		file, err := os.Open(outputPath)
+		if err != nil {
+			return "", err
+		}
+		_, _, decodeErr := image.Decode(file)
+		file.Close()
+		if decodeErr == nil {
+			return "", ErrInvalid
+		}
+		observed = "invalid-input"
+	case "oversized":
+		info, err := os.Lstat(outputPath)
+		if err != nil || !info.Mode().IsRegular() || info.Size() != maxFixtureBytes+1 {
+			return "", ErrInvalid
+		}
+		if _, err := readBoundedFile(outputPath, maxFixtureBytes); !errors.Is(err, ErrInvalid) {
+			return "", ErrInvalid
+		}
+		observed = "oversized-input"
+	case "dependency-failure":
+		missing, err := dependencyMissing(base, fixture.Recipe.Dependency)
+		if err != nil || !missing {
+			return "", ErrInvalid
+		}
+		observed = "dependency-unavailable"
+	}
+	if observed != declared {
+		return "", ErrInvalid
+	}
+	return "expected-failure", nil
+}
+
+func classifyListedFixture(base string, fixture FixtureDefinition) (string, error) {
+	declared, err := declaredFailureClass(fixture)
+	if err != nil {
+		return "", err
+	}
+	if declared == "" {
+		return "available", nil
+	}
+	observed := ""
+	switch fixture.Recipe.Variant {
+	case "invalid":
+		body, err := generateFixture(base, fixture)
+		if err != nil {
+			return "", err
+		}
+		if _, _, err := image.Decode(bytes.NewReader(body)); err == nil {
+			return "", ErrInvalid
+		}
+		observed = "invalid-input"
+	case "oversized":
+		if fixture.Recipe.Size != maxFixtureBytes+1 || fixture.Bytes != maxFixtureBytes+1 {
+			return "", ErrInvalid
+		}
+		observed = "oversized-input"
+	case "dependency-failure":
+		missing, err := dependencyMissing(base, fixture.Recipe.Dependency)
+		if err != nil || !missing {
+			return "", ErrInvalid
+		}
+		observed = "dependency-unavailable"
+	}
+	if observed != declared {
+		return "", ErrInvalid
+	}
+	return "expected-failure", nil
+}
+
+func dependencyMissing(base, dependency string) (bool, error) {
+	root, err := os.OpenRoot(base)
+	if err != nil {
+		return false, err
+	}
+	defer root.Close()
+	_, err = root.Lstat(dependency)
+	if errors.Is(err, os.ErrNotExist) {
+		return true, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return false, nil
 }
 
 func ListWithPrivate(catalogPath, privateCatalogPath, privateRoot string) (GeneratedManifest, error) {
@@ -344,11 +539,7 @@ func generateFixture(base string, fixture FixtureDefinition) ([]byte, error) {
 		return []byte("not a png fixture\n"), nil
 	}
 	if fixture.Recipe.Variant == "oversized" {
-		body := make([]byte, 256)
-		for i := range body {
-			body[i] = byte(i)
-		}
-		return body, nil
+		return nil, ErrInvalid
 	}
 	var baseImage image.Image
 	if fixture.Recipe.Source != "" {
@@ -479,6 +670,12 @@ func patternCanvas(width, height int, variant string) image.Image {
 			draw.Draw(img, image.Rect(x, height/8, x+2, height*7/8), &image.Uniform{C: ink}, image.Point{}, draw.Src)
 		}
 	}
+	if variant == "photo" {
+		draw.Draw(img, image.Rect(width/5, height*3/4, width*4/5, height*7/8),
+			&image.Uniform{C: color.RGBA{R: 176, G: 212, B: 232, A: 255}}, image.Point{}, draw.Src)
+		draw.Draw(img, image.Rect(width*3/4, height/5, width*3/4+48, height/5+48),
+			&image.Uniform{C: color.RGBA{R: 242, G: 192, B: 64, A: 255}}, image.Point{}, draw.Src)
+	}
 	if variant == "white-on-white" {
 		draw.Draw(img, image.Rect(width/6, height/5, width*5/6, height*4/5), &image.Uniform{C: color.RGBA{248, 248, 248, 255}}, image.Point{}, draw.Src)
 	}
@@ -500,6 +697,10 @@ func validPatternVariant(value string) bool {
 }
 
 func readBoundedFile(path string, limit int64) ([]byte, error) {
+	info, err := os.Lstat(path)
+	if err != nil || !info.Mode().IsRegular() || info.Size() > limit {
+		return nil, ErrInvalid
+	}
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err

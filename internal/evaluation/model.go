@@ -31,11 +31,13 @@ var ErrInvalid = errors.New("invalid evaluation input")
 var ErrUnavailable = errors.New("evaluation input unavailable")
 
 type Recipe struct {
-	Kind    string `json:"kind"`
-	Source  string `json:"source,omitempty"`
-	Width   int    `json:"width,omitempty"`
-	Height  int    `json:"height,omitempty"`
-	Variant string `json:"variant,omitempty"`
+	Kind       string `json:"kind"`
+	Source     string `json:"source,omitempty"`
+	Width      int    `json:"width,omitempty"`
+	Height     int    `json:"height,omitempty"`
+	Variant    string `json:"variant,omitempty"`
+	Size       int64  `json:"size,omitempty"`
+	Dependency string `json:"dependency,omitempty"`
 }
 
 type FixtureDefinition struct {

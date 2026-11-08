@@ -62,7 +62,7 @@
     },
     {
       "fixture_id": "fixture_photo_001",
-      "fixture_sha256": "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+      "fixture_sha256": "a429f5542eb3dc4b8486307178690ee27bfad36430d99e3549467fe8b52356fc",
       "background_rgb": [255, 255, 255],
       "edge_regions": [{"x": 20, "y": 20, "width": 920, "height": 4}],
       "content_regions": [{"x": 100, "y": 100, "width": 300, "height": 200}]
