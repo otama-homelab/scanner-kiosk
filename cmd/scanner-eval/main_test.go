@@ -9,6 +9,7 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -286,6 +287,165 @@ func TestRunCommandReturnsNormalizedCatalog(t *testing.T) {
 	}
 }
 
+func TestPrivateFixtureRunCLI(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	publicCatalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	work := t.TempDir()
+	privateCatalog, privateRoot, _, digest := writePrivateCLIFixture(t, work, "fixture_owner_private_001", "private.png")
+	output := filepath.Join(work, "result")
+	configPath := writeCLICandidateConfig(t, work)
+	result := runHelper(t, "run", "--catalog", publicCatalog, "--candidate", configPath,
+		"--fixture", "fixture_owner_private_001", "--output", output,
+		"--private-catalog", privateCatalog, "--private-root", privateRoot)
+	if result.code != 0 {
+		t.Fatalf("private run exit=%d stderr=%s", result.code, result.stderr)
+	}
+	var catalog struct {
+		Status        string `json:"status"`
+		FixtureID     string `json:"fixture_id"`
+		FixtureSHA256 string `json:"fixture_sha256"`
+	}
+	if err := json.Unmarshal([]byte(result.stdout), &catalog); err != nil {
+		t.Fatalf("invalid result: %v: %s", err, result.stdout)
+	}
+	if catalog.Status != "complete" || catalog.FixtureID != "fixture_owner_private_001" || catalog.FixtureSHA256 != digest {
+		t.Fatalf("unexpected private run result: %+v", catalog)
+	}
+	body, err := os.ReadFile(filepath.Join(output, "artifact-catalog.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, output := range []string{result.stdout, result.stderr, string(body)} {
+		for _, secret := range []string{privateRoot, "private.png"} {
+			if strings.Contains(output, secret) {
+				t.Fatalf("private source leaked %q: %s", secret, output)
+			}
+		}
+	}
+}
+
+func TestRunPrivateFixtureFailsClosed(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	publicCatalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	for _, test := range []struct {
+		name   string
+		mutate func(t *testing.T, privateCatalog, privateRoot string)
+		args   func(privateCatalog, privateRoot string) []string
+	}{
+		{
+			name: "missing file",
+			mutate: func(t *testing.T, _, privateRoot string) {
+				if err := os.Remove(filepath.Join(privateRoot, "owner", "private.png")); err != nil {
+					t.Fatal(err)
+				}
+			},
+		},
+		{
+			name: "public fixture",
+			mutate: func(t *testing.T, _, privateRoot string) {
+				if err := os.Chmod(filepath.Join(privateRoot, "owner", "private.png"), 0o644); err != nil {
+					t.Fatal(err)
+				}
+			},
+		},
+		{
+			name: "public catalog",
+			mutate: func(t *testing.T, privateCatalog, _ string) {
+				if err := os.Chmod(privateCatalog, 0o644); err != nil {
+					t.Fatal(err)
+				}
+			},
+		},
+		{
+			name: "symlink",
+			mutate: func(t *testing.T, _, privateRoot string) {
+				path := filepath.Join(privateRoot, "owner", "private.png")
+				target := filepath.Join(privateRoot, "owner", "target.png")
+				body, err := os.ReadFile(path)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err := os.WriteFile(target, body, 0o600); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.Remove(path); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.Symlink(target, path); err != nil {
+					t.Skip("symlinks unavailable")
+				}
+			},
+		},
+		{
+			name: "changed bytes",
+			mutate: func(t *testing.T, _, privateRoot string) {
+				body := makePrivatePNG(t, color.RGBA{R: 12, G: 34, B: 56, A: 255})
+				if err := os.WriteFile(filepath.Join(privateRoot, "owner", "private.png"), body, 0o600); err != nil {
+					t.Fatal(err)
+				}
+			},
+		},
+		{
+			name: "changed size",
+			mutate: func(t *testing.T, privateCatalog, _ string) {
+				rewritePrivateCLICatalog(t, privateCatalog, func(catalog *evaluation.PrivateCatalog) {
+					catalog.Fixtures[0].Bytes++
+				})
+			},
+		},
+		{
+			name: "duplicate id",
+			mutate: func(t *testing.T, privateCatalog, _ string) {
+				rewritePrivateCLICatalog(t, privateCatalog, func(catalog *evaluation.PrivateCatalog) {
+					catalog.Fixtures[0].ID = "fixture_photo_001"
+				})
+			},
+		},
+		{
+			name: "one-sided flags",
+			args: func(privateCatalog, _ string) []string {
+				return []string{"--private-catalog", privateCatalog}
+			},
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			work := t.TempDir()
+			privateCatalog, privateRoot, _, _ := writePrivateCLIFixture(t, work, "fixture_owner_private_001", "private.png")
+			if test.mutate != nil {
+				test.mutate(t, privateCatalog, privateRoot)
+			}
+			output := filepath.Join(work, "result")
+			args := []string{"run", "--catalog", publicCatalog, "--candidate", writeCLICandidateConfig(t, work),
+				"--fixture", "fixture_owner_private_001", "--output", output}
+			if test.args != nil {
+				args = append(args, test.args(privateCatalog, privateRoot)...)
+			} else {
+				args = append(args, "--private-catalog", privateCatalog, "--private-root", privateRoot)
+			}
+			result := runHelper(t, args...)
+			if result.code == 0 {
+				t.Fatalf("unsafe private fixture accepted: stdout=%s stderr=%s", result.stdout, result.stderr)
+			}
+			if _, err := os.Stat(output); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("candidate output committed: %v", err)
+			}
+			for _, stream := range []string{result.stdout, result.stderr} {
+				for _, secret := range []string{privateRoot, "private.png"} {
+					if strings.Contains(stream, secret) {
+						t.Fatalf("private source leaked %q: %s", secret, stream)
+					}
+				}
+			}
+		})
+	}
+}
+
 func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
 	root, err := filepath.Abs(filepath.Join("..", ".."))
 	if err != nil {
@@ -483,6 +643,74 @@ func makeCorrectionPNG(t *testing.T) []byte {
 		t.Fatal(err)
 	}
 	return encoded.Bytes()
+}
+
+func makePrivatePNG(t *testing.T, fill color.RGBA) []byte {
+	t.Helper()
+	bitmap := image.NewRGBA(image.Rect(0, 0, 8, 8))
+	for y := range 8 {
+		for x := range 8 {
+			bitmap.SetRGBA(x, y, fill)
+		}
+	}
+	var encoded bytes.Buffer
+	if err := png.Encode(&encoded, bitmap); err != nil {
+		t.Fatal(err)
+	}
+	return encoded.Bytes()
+}
+
+func writePrivateCLIFixture(t *testing.T, root, fixtureID, filename string) (string, string, string, string) {
+	t.Helper()
+	privateRoot := filepath.Join(root, "private-root")
+	if err := os.MkdirAll(filepath.Join(privateRoot, "owner"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	body := makePrivatePNG(t, color.RGBA{R: 10, G: 20, B: 30, A: 255})
+	relativePath := filepath.Join("owner", filename)
+	if err := os.WriteFile(filepath.Join(privateRoot, relativePath), body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(body)
+	digest := hex.EncodeToString(sum[:])
+	catalog := evaluation.PrivateCatalog{
+		Format: evaluation.CatalogFormat, Version: evaluation.CatalogVersion,
+		Fixtures: []evaluation.PrivateFixture{{
+			ID: fixtureID, Privacy: evaluation.PrivacyOwnerPrivate, MediaType: "image/png",
+			PageIDs: []string{"page_owner_private_001"}, Languages: []string{"ja"},
+			DocumentType: "owner-text", ExpectedOutputs: []evaluation.ArtifactRole{evaluation.RoleOCRText},
+			RelativePath: relativePath, SHA256: digest, Bytes: int64(len(body)),
+		}},
+	}
+	encoded, err := json.Marshal(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	privateCatalog := filepath.Join(root, "private-catalog.json")
+	if err := os.WriteFile(privateCatalog, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return privateCatalog, privateRoot, relativePath, digest
+}
+
+func rewritePrivateCLICatalog(t *testing.T, path string, mutate func(*evaluation.PrivateCatalog)) {
+	t.Helper()
+	body, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var catalog evaluation.PrivateCatalog
+	if err := json.Unmarshal(body, &catalog); err != nil {
+		t.Fatal(err)
+	}
+	mutate(&catalog)
+	encoded, err := json.Marshal(catalog)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func writeCLICandidateConfig(t *testing.T, work string) string {

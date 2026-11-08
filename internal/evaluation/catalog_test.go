@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"image"
 	"image/png"
 	"os"
@@ -227,6 +228,16 @@ func TestPrivateFixture(t *testing.T) {
 	private := findGenerated(t, manifest, "fixture_owner_private_001")
 	if private.Availability != "available" {
 		t.Fatalf("private fixture unavailable: %+v", private)
+	}
+}
+
+func TestPrivateCatalogRequiresPrivateMode(t *testing.T) {
+	public, privateCatalog, root := privateFixtureSet(t, "PRIVATE_CANARY_DO_NOT_EMIT", 0o600)
+	if err := os.Chmod(privateCatalog, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ListWithPrivate(public, privateCatalog, root); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("world-readable private catalog accepted: %v", err)
 	}
 }
 
