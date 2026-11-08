@@ -34,6 +34,10 @@ func TestReceiptAppendOnly(t *testing.T) {
 
 func TestReceiptRequiresProvenance(t *testing.T) {
 	summary, _ := benchmarkForReceiptTest(t, "complete", "fixture_photo_001")
+	summary.Candidate.OperatorSteps = []string{}
+	if err := summary.Validate(); err != nil {
+		t.Fatalf("explicit empty operator evidence was rejected: %v", err)
+	}
 	missingLicense := summary
 	missingLicense.Candidate.Sources = append([]CandidatePin(nil), summary.Candidate.Sources...)
 	missingLicense.Candidate.Sources[0].License = ""
@@ -54,6 +58,32 @@ func TestReceiptRequiresProvenance(t *testing.T) {
 	}
 	if err := badSource.Validate(); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("source mismatch accepted: %v", err)
+	}
+	missingSteps := summary
+	missingSteps.Candidate.OperatorSteps = nil
+	if err := missingSteps.Validate(); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("receipt without operator evidence was accepted: %v", err)
+	}
+	missingDependencyHash := summary
+	missingDependencyHash.Candidate.Dependencies = []CandidatePin{{
+		Name: "jpn.traineddata", Version: "1", License: "reviewed-license",
+	}}
+	if err := missingDependencyHash.Validate(); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("receipt dependency without SHA256 was accepted: %v", err)
+	}
+	missingDependencyLicense := summary
+	missingDependencyLicense.Candidate.Dependencies = []CandidatePin{{
+		Name: "jpn.traineddata", Version: "1", SHA256: repeatTestHash("b"),
+	}}
+	if err := missingDependencyLicense.Validate(); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("receipt dependency without a license was accepted: %v", err)
+	}
+	sourceWithoutHash := summary
+	sourceWithoutHash.Candidate.Sources = []CandidatePin{{
+		Name: "scanner-kiosk", Version: "test", License: "test-only",
+	}}
+	if err := sourceWithoutHash.Validate(); err != nil {
+		t.Fatalf("receipt source pin without an archive hash was rejected: %v", err)
 	}
 }
 

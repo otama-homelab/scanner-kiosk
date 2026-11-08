@@ -39,6 +39,9 @@ func TestBenchmarkColdWarmEndToEnd(t *testing.T) {
 		summary.Metrics.Cold.P50Millis == nil || summary.Metrics.Warm.P95Millis == nil {
 		t.Fatalf("cold/warm metrics were mixed or missing: %+v", summary.Metrics)
 	}
+	if summary.Candidate.OperatorSteps == nil {
+		t.Fatal("benchmark receipt did not preserve explicit empty operator evidence")
+	}
 	for _, sample := range summary.Samples {
 		if sample.PeakRSSBytes <= 0 || !sample.TempDiskSampled || sample.Status != "complete" {
 			t.Fatalf("incomplete observation: %+v", sample)

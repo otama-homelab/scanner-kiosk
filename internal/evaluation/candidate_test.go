@@ -463,6 +463,63 @@ func TestOriginalRemainsImmutable(t *testing.T) {
 	}
 }
 
+func TestCandidateConfigRequiresProvenance(t *testing.T) {
+	valid := CandidateConfig{
+		Format: CandidateConfigFormat, Version: CandidateConfigVersion,
+		CandidateID: "candidate_provenance_001", CandidateVersion: "1",
+		Executable: "/tmp/candidate-provenance", ExecutableSHA256: strings.Repeat("a", 64),
+		Sources:       []CandidatePin{{Name: "scanner-kiosk", Version: "test", License: "test-only"}},
+		OperatorSteps: []string{},
+		Parameters:    map[string]string{},
+	}
+	if err := valid.Validate(); err != nil {
+		t.Fatalf("source pin without an archive hash was rejected: %v", err)
+	}
+
+	missingSteps := valid
+	missingSteps.OperatorSteps = nil
+	if err := missingSteps.Validate(); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("candidate config without operator evidence was accepted: %v", err)
+	}
+
+	missingDependencyHash := valid
+	missingDependencyHash.Dependencies = []CandidatePin{{
+		Name: "jpn.traineddata", Version: "1", License: "reviewed-license",
+	}}
+	if err := missingDependencyHash.Validate(); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("declared dependency without SHA256 was accepted: %v", err)
+	}
+
+	missingDependencyLicense := valid
+	missingDependencyLicense.Dependencies = []CandidatePin{{
+		Name: "jpn.traineddata", Version: "1", SHA256: strings.Repeat("b", 64),
+	}}
+	if err := missingDependencyLicense.Validate(); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("declared dependency without a license was accepted: %v", err)
+	}
+
+	encoded, err := json.Marshal(valid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var omitted map[string]any
+	if err := json.Unmarshal(encoded, &omitted); err != nil {
+		t.Fatal(err)
+	}
+	delete(omitted, "operator_steps")
+	encoded, err = json.Marshal(omitted)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(t.TempDir(), "candidate.json")
+	if err := os.WriteFile(path, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := LoadCandidateConfig(path); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("candidate JSON without operator_steps was accepted: %v", err)
+	}
+}
+
 func TestRunRejectsInvalidPDFEvidence(t *testing.T) {
 	root := filepath.Join("..", "..")
 	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
