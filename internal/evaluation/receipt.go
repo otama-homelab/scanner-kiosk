@@ -96,8 +96,6 @@ type BenchmarkSummary struct {
 }
 
 type ComparisonEntry struct {
-	FixtureID            string   `json:"fixture_id"`
-	FixtureSHA256        string   `json:"fixture_sha256"`
 	CandidateID          string   `json:"candidate_id"`
 	CandidateVersion     string   `json:"candidate_version"`
 	Mode                 string   `json:"mode"`
@@ -110,10 +108,17 @@ type ComparisonEntry struct {
 	FailureClasses       []string `json:"failure_classes,omitempty"`
 }
 
+type ComparisonGroup struct {
+	FixtureID     string            `json:"fixture_id"`
+	FixtureSHA256 string            `json:"fixture_sha256"`
+	Settings      BenchmarkSettings `json:"settings"`
+	Entries       []ComparisonEntry `json:"entries"`
+}
+
 type Comparison struct {
 	Format  string            `json:"format"`
 	Version int               `json:"version"`
-	Entries []ComparisonEntry `json:"entries"`
+	Groups  []ComparisonGroup `json:"groups"`
 }
 
 func LoadBenchmarkSummary(receiptPath string) (BenchmarkSummary, error) {
@@ -198,6 +203,7 @@ func CompareBenchmarkReceipts(paths []string) (Comparison, error) {
 	seenRuns := map[string]bool{}
 	seenCandidates := map[string]string{}
 	comparison := Comparison{Format: CompareFormat, Version: CompareVersion}
+	groupIndexes := map[comparisonGroupKey]int{}
 	for _, receiptPath := range paths {
 		summary, err := LoadBenchmarkSummary(receiptPath)
 		if err != nil || seenRuns[summary.RunID] {
@@ -209,27 +215,72 @@ func CompareBenchmarkReceipts(paths []string) (Comparison, error) {
 			return Comparison{}, ErrInvalid
 		}
 		seenCandidates[summary.Candidate.ID] = identity
+		key := comparisonGroupKey{
+			fixtureID: summary.FixtureID, fixtureSHA256: summary.FixtureSHA256,
+			settings: summary.Settings,
+		}
+		groupIndex, ok := groupIndexes[key]
+		if !ok {
+			groupIndex = len(comparison.Groups)
+			groupIndexes[key] = groupIndex
+			comparison.Groups = append(comparison.Groups, ComparisonGroup{
+				FixtureID: summary.FixtureID, FixtureSHA256: summary.FixtureSHA256,
+				Settings: summary.Settings,
+			})
+		}
+		group := &comparison.Groups[groupIndex]
 		if summary.Settings.ColdRepetitions > 0 {
-			comparison.Entries = append(comparison.Entries, comparisonEntry(summary, "cold", summary.Metrics.Cold))
+			group.Entries = append(group.Entries, comparisonEntry(summary, "cold", summary.Metrics.Cold))
 		}
 		if summary.Settings.WarmRepetitions > 0 {
-			comparison.Entries = append(comparison.Entries, comparisonEntry(summary, "warm", summary.Metrics.Warm))
+			group.Entries = append(group.Entries, comparisonEntry(summary, "warm", summary.Metrics.Warm))
 		}
 	}
-	sort.Slice(comparison.Entries, func(i, j int) bool {
-		left, right := comparison.Entries[i], comparison.Entries[j]
+	sort.Slice(comparison.Groups, func(i, j int) bool {
+		left, right := comparison.Groups[i], comparison.Groups[j]
 		if left.FixtureID != right.FixtureID {
 			return left.FixtureID < right.FixtureID
 		}
-		if left.CandidateID != right.CandidateID {
-			return left.CandidateID < right.CandidateID
+		if left.FixtureSHA256 != right.FixtureSHA256 {
+			return left.FixtureSHA256 < right.FixtureSHA256
 		}
-		if left.Mode != right.Mode {
-			return left.Mode == "cold"
-		}
-		return left.CandidateVersion < right.CandidateVersion
+		return settingsLess(left.Settings, right.Settings)
 	})
+	for index := range comparison.Groups {
+		entries := comparison.Groups[index].Entries
+		sort.Slice(entries, func(i, j int) bool {
+			left, right := entries[i], entries[j]
+			if left.CandidateID != right.CandidateID {
+				return left.CandidateID < right.CandidateID
+			}
+			if left.CandidateVersion != right.CandidateVersion {
+				return left.CandidateVersion < right.CandidateVersion
+			}
+			return left.Mode == "cold" && right.Mode == "warm"
+		})
+	}
 	return comparison, nil
+}
+
+type comparisonGroupKey struct {
+	fixtureID     string
+	fixtureSHA256 string
+	settings      BenchmarkSettings
+}
+
+func settingsLess(left, right BenchmarkSettings) bool {
+	switch {
+	case left.ColdRepetitions != right.ColdRepetitions:
+		return left.ColdRepetitions < right.ColdRepetitions
+	case left.WarmRepetitions != right.WarmRepetitions:
+		return left.WarmRepetitions < right.WarmRepetitions
+	case left.TimeoutSeconds != right.TimeoutSeconds:
+		return left.TimeoutSeconds < right.TimeoutSeconds
+	case left.MaxRSSBytes != right.MaxRSSBytes:
+		return left.MaxRSSBytes < right.MaxRSSBytes
+	default:
+		return left.MaxTempDiskBytes < right.MaxTempDiskBytes
+	}
 }
 
 func comparisonEntry(summary BenchmarkSummary, mode string, metrics ModeMetrics) ComparisonEntry {
@@ -249,7 +300,6 @@ func comparisonEntry(summary BenchmarkSummary, mode string, metrics ModeMetrics)
 		status = "incomplete"
 	}
 	return ComparisonEntry{
-		FixtureID: summary.FixtureID, FixtureSHA256: summary.FixtureSHA256,
 		CandidateID: summary.Candidate.ID, CandidateVersion: summary.Candidate.Version,
 		Mode: mode, Status: status, Samples: metrics.Samples, P50Millis: metrics.P50Millis,
 		P95Millis: metrics.P95Millis, PeakRSSBytes: metrics.PeakRSSBytes,
