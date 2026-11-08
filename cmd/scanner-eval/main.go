@@ -162,7 +162,8 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		flags.Var(&artifacts, "artifacts", "")
 		var benchmarks stringList
 		flags.Var(&benchmarks, "benchmark", "")
-		if flags.Parse(args[1:]) != nil || *catalogPath == "" || *oraclePath == "" || len(artifacts) == 0 || len(flags.Args()) != 0 {
+		if flags.Parse(args[1:]) != nil || *catalogPath == "" || *oraclePath == "" ||
+			len(artifacts) == 0 || len(benchmarks) == 0 || len(flags.Args()) != 0 {
 			fmt.Fprintln(stderr, "scanner-eval: invalid input")
 			return 2
 		}

@@ -143,6 +143,10 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	if err != nil {
 		return ArtifactCatalog{}, fmt.Errorf("candidate config: %w", err)
 	}
+	configSHA, err := hashRegularFile(request.CandidatePath, 1<<20)
+	if err != nil {
+		return ArtifactCatalog{}, fmt.Errorf("candidate config: %w", err)
+	}
 	if request.FixtureID == "" || !filepath.IsAbs(request.OutputDir) ||
 		filepath.Clean(request.OutputDir) != request.OutputDir ||
 		request.Timeout < 0 || request.Timeout > 900*time.Second ||
@@ -170,7 +174,8 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 			match := failure.Match
 			receipt := ArtifactCatalog{
 				Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion, RunID: runID,
-				Candidate: candidateReceipt(config), FixtureID: failure.FixtureID,
+				Candidate: candidateReceipt(config), CandidateConfigSHA256: configSHA,
+				FixtureID:     failure.FixtureID,
 				FixtureSHA256: failure.FixtureSHA256, Status: status, Artifacts: []Artifact{},
 				ExpectedFailureClass: failure.ExpectedClass, ObservedFailureClass: failure.ObservedClass,
 				FailureMatch: &match,
@@ -401,7 +406,7 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	}
 	receipt := ArtifactCatalog{
 		Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion, RunID: runID,
-		Candidate: candidateReceipt(config),
+		Candidate: candidateReceipt(config), CandidateConfigSHA256: configSHA,
 		FixtureID: fixture.ID, FixtureSHA256: fixtureSHA, Status: status, MissingOutputs: missing,
 		Original: &original, Artifacts: artifacts, Validation: validation,
 	}

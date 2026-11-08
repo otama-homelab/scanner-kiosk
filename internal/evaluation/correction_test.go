@@ -533,7 +533,8 @@ func writeCorrectionSurvivalFixtureWithTransform(t *testing.T, candidateID strin
 	catalog := ArtifactCatalog{
 		Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion,
 		RunID: "run_correction_survival_001", FixtureID: "fixture_card_001",
-		FixtureSHA256: "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+		FixtureSHA256:         "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+		CandidateConfigSHA256: strings.Repeat("c", 64),
 		Candidate: CandidateReceipt{
 			ID: candidateID, Version: "1", ExecutableSHA256: repeatTestHash("a"),
 			Sources:       []CandidatePin{{Name: "fixture", Version: "1", License: "test-only"}},
@@ -681,7 +682,7 @@ func writeCorrectionCatalogWithoutOriginal(t *testing.T, status string) string {
 	body, err := json.Marshal(ArtifactCatalog{
 		Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion,
 		RunID: "run_correction_without_original", FixtureID: "fixture_card_001",
-		FixtureSHA256: repeatTestHash("a"), Status: status,
+		FixtureSHA256: repeatTestHash("a"), CandidateConfigSHA256: repeatTestHash("c"), Status: status,
 		Artifacts: []Artifact{{
 			ID: "artifact_correction_without_original", Role: RoleCorrection,
 			MediaType: "image/png", SHA256: repeatTestHash("b"), Bytes: 1,

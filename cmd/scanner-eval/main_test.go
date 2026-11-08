@@ -976,7 +976,8 @@ func TestAnalyzeCorrectionsCommand(t *testing.T) {
 	catalog := evaluation.ArtifactCatalog{
 		Format: evaluation.ArtifactCatalogFormat, Version: evaluation.ArtifactCatalogVersion,
 		RunID: "run_correction_cli_001", FixtureID: "fixture_card_001",
-		FixtureSHA256: "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+		FixtureSHA256:         "84e3dc4c4334c0fedaa3a5caedef884587c40497402328a59a4ace1759514f81",
+		CandidateConfigSHA256: strings.Repeat("c", 64),
 		Candidate: evaluation.CandidateReceipt{
 			ID: "candidate_correction_cli_001", Version: "1", ExecutableSHA256: strings.Repeat("a", 64),
 			Sources:       []evaluation.CandidatePin{{Name: "fixture", Version: "1", License: "test-only"}},

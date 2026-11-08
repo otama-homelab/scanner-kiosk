@@ -77,20 +77,21 @@ type CorrectionRegionQuality struct {
 }
 
 type CorrectionComparisonRow struct {
-	FixtureID         string              `json:"fixture_id"`
-	FixtureSHA256     string              `json:"fixture_sha256"`
-	CandidateID       string              `json:"candidate_id"`
-	CandidateVersion  string              `json:"candidate_version"`
-	ExecutableSHA256  string              `json:"executable_sha256"`
-	OriginalSHA256    string              `json:"original_sha256"`
-	CorrectionID      string              `json:"correction_id"`
-	CorrectionSHA256  string              `json:"correction_sha256"`
-	MeasurementStatus string              `json:"measurement_status"`
-	Status            string              `json:"status"`
-	FailureClass      string              `json:"failure_class,omitempty"`
-	Transform         CorrectionTransform `json:"transform"`
-	Quality           CorrectionQuality   `json:"quality"`
-	Resources         CorrectionResources `json:"resources"`
+	FixtureID             string              `json:"fixture_id"`
+	FixtureSHA256         string              `json:"fixture_sha256"`
+	CandidateID           string              `json:"candidate_id"`
+	CandidateVersion      string              `json:"candidate_version"`
+	ExecutableSHA256      string              `json:"executable_sha256"`
+	CandidateConfigSHA256 string              `json:"candidate_config_sha256"`
+	OriginalSHA256        string              `json:"original_sha256"`
+	CorrectionID          string              `json:"correction_id"`
+	CorrectionSHA256      string              `json:"correction_sha256"`
+	MeasurementStatus     string              `json:"measurement_status"`
+	Status                string              `json:"status"`
+	FailureClass          string              `json:"failure_class,omitempty"`
+	Transform             CorrectionTransform `json:"transform"`
+	Quality               CorrectionQuality   `json:"quality"`
+	Resources             CorrectionResources `json:"resources"`
 }
 
 type CorrectionResources struct {
@@ -129,13 +130,14 @@ type correctionIdentity struct {
 }
 
 type correctionResourceLookupKey struct {
-	fixtureID        string
-	fixtureSHA256    string
-	candidateID      string
-	candidateVersion string
-	executableSHA256 string
-	originalSHA256   string
-	correctionSHA256 string
+	fixtureID             string
+	fixtureSHA256         string
+	candidateID           string
+	candidateVersion      string
+	executableSHA256      string
+	candidateConfigSHA256 string
+	originalSHA256        string
+	correctionSHA256      string
 }
 
 type correctionBenchmarkEntry struct {
@@ -267,9 +269,6 @@ func AnalyzeCorrectionCatalogsWithBenchmarks(artifactPaths, benchmarkPaths []str
 	if err != nil {
 		return CorrectionComparison{}, err
 	}
-	if len(benchmarkPaths) == 0 {
-		return comparison, nil
-	}
 	entries, issues, err := loadCorrectionBenchmarks(benchmarkPaths)
 	if err != nil {
 		return CorrectionComparison{}, err
@@ -330,6 +329,16 @@ func AnalyzeCorrectionCatalogsWithBenchmarks(artifactPaths, benchmarkPaths []str
 		if related {
 			row.Resources = CorrectionResources{Status: "invalid", FailureClass: failureClass}
 		} else {
+			for _, entry := range entries {
+				if correctionIdentityConfigMismatch(identity, entry.identity) {
+					related = true
+					break
+				}
+			}
+		}
+		if related {
+			row.Resources = CorrectionResources{Status: "invalid", FailureClass: failureClass}
+		} else {
 			row.Resources = CorrectionResources{Status: "unavailable", FailureClass: "resource-unavailable"}
 		}
 	}
@@ -367,6 +376,11 @@ func analyzeCorrectionCatalog(path string, oracles CorrectionOracleFile) Correct
 	row.FixtureID, row.FixtureSHA256 = catalog.FixtureID, catalog.FixtureSHA256
 	row.CandidateID, row.CandidateVersion = catalog.Candidate.ID, catalog.Candidate.Version
 	row.ExecutableSHA256 = catalog.Candidate.ExecutableSHA256
+	row.CandidateConfigSHA256 = catalog.CandidateConfigSHA256
+	if !validHash(catalog.CandidateConfigSHA256) {
+		row.FailureClass = "candidate-config"
+		return row
+	}
 	row.MeasurementStatus, row.OriginalSHA256 = catalog.Status, catalog.Original.SHA256
 	var oracle *CorrectionOracleEntry
 	for index := range oracles.Entries {
@@ -643,7 +657,8 @@ func loadCorrectionBenchmarkSummary(root *os.Root, summary BenchmarkSummary) (co
 			sampleCatalog.FixtureSHA256 != summary.FixtureSHA256 ||
 			sampleCatalog.Candidate.ID != summary.Candidate.ID ||
 			sampleCatalog.Candidate.Version != summary.Candidate.Version ||
-			sampleCatalog.Candidate.ExecutableSHA256 != summary.Candidate.ExecutableSHA256 {
+			sampleCatalog.Candidate.ExecutableSHA256 != summary.Candidate.ExecutableSHA256 ||
+			sampleCatalog.CandidateConfigSHA256 != summary.CandidateConfigSHA256 {
 			return issue("resource-identity-mismatch")
 		}
 		original, correctionArtifact, err := correctionArtifactPair(sampleCatalog)
@@ -717,11 +732,11 @@ func correctionRowIdentity(row CorrectionComparisonRow) (correctionIdentity, boo
 	identity := correctionIdentity{
 		FixtureID: row.FixtureID, FixtureSHA256: row.FixtureSHA256,
 		CandidateID: row.CandidateID, CandidateVersion: row.CandidateVersion,
-		ExecutableSHA256: row.ExecutableSHA256,
-		OriginalSHA256:   row.OriginalSHA256, CorrectionSHA256: row.CorrectionSHA256,
+		ExecutableSHA256: row.ExecutableSHA256, CandidateConfigSHA256: row.CandidateConfigSHA256,
+		OriginalSHA256: row.OriginalSHA256, CorrectionSHA256: row.CorrectionSHA256,
 	}
 	return identity, row.FixtureID != "" && row.FixtureSHA256 != "" && row.CandidateID != "" &&
-		row.CandidateVersion != "" && row.ExecutableSHA256 != "" &&
+		row.CandidateVersion != "" && row.ExecutableSHA256 != "" && validHash(row.CandidateConfigSHA256) &&
 		row.OriginalSHA256 != "" && row.CorrectionSHA256 != ""
 }
 
@@ -729,8 +744,9 @@ func correctionLookupKey(identity correctionIdentity) correctionResourceLookupKe
 	return correctionResourceLookupKey{
 		fixtureID: identity.FixtureID, fixtureSHA256: identity.FixtureSHA256,
 		candidateID: identity.CandidateID, candidateVersion: identity.CandidateVersion,
-		executableSHA256: identity.ExecutableSHA256,
-		originalSHA256:   identity.OriginalSHA256, correctionSHA256: identity.CorrectionSHA256,
+		executableSHA256:      identity.ExecutableSHA256,
+		candidateConfigSHA256: identity.CandidateConfigSHA256,
+		originalSHA256:        identity.OriginalSHA256, correctionSHA256: identity.CorrectionSHA256,
 	}
 }
 
@@ -763,6 +779,17 @@ func correctionIdentityRelated(row, issue correctionIdentity) bool {
 	}
 	return row.FixtureID == issue.FixtureID || row.FixtureSHA256 == issue.FixtureSHA256 ||
 		row.OriginalSHA256 == issue.OriginalSHA256 && row.CorrectionSHA256 == issue.CorrectionSHA256
+}
+
+func correctionIdentityConfigMismatch(row, benchmark correctionIdentity) bool {
+	return row.CandidateConfigSHA256 != benchmark.CandidateConfigSHA256 &&
+		row.FixtureID == benchmark.FixtureID &&
+		row.FixtureSHA256 == benchmark.FixtureSHA256 &&
+		row.CandidateID == benchmark.CandidateID &&
+		row.CandidateVersion == benchmark.CandidateVersion &&
+		row.ExecutableSHA256 == benchmark.ExecutableSHA256 &&
+		row.OriginalSHA256 == benchmark.OriginalSHA256 &&
+		row.CorrectionSHA256 == benchmark.CorrectionSHA256
 }
 
 func decodeCorrectionPNG(body []byte) (image.Image, error) {
