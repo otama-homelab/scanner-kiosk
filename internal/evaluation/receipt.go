@@ -157,7 +157,7 @@ func (summary BenchmarkSummary) Validate() error {
 		summary.Observer.Version == "" || summary.Observer.License == "" {
 		return ErrInvalid
 	}
-	if !validPins(summary.Candidate.Sources) || !validPins(summary.Candidate.Dependencies) ||
+	if !validProvenance(summary.Candidate.Sources, summary.Candidate.Dependencies, summary.Candidate.OperatorSteps) ||
 		!validParameters(summary.Parameters) {
 		return ErrInvalid
 	}
@@ -170,6 +170,8 @@ func (summary BenchmarkSummary) Validate() error {
 			sample.Candidate.ID != summary.Candidate.ID ||
 			sample.Candidate.Version != summary.Candidate.Version ||
 			sample.CandidateConfigSHA256 != summary.CandidateConfigSHA256 ||
+			len(sample.Candidate.Sources) == 0 ||
+			!validProvenance(sample.Candidate.Sources, sample.Candidate.Dependencies, sample.Candidate.OperatorSteps) ||
 			sample.ReceiptPath == "" || len(sample.SourceHashesBefore) == 0 ||
 			len(sample.SourceHashesAfter) == 0 ||
 			!validParameters(sample.Parameters) {

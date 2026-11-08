@@ -46,7 +46,7 @@ type CandidateConfig struct {
 	CandidateVersion string            `json:"candidate_version"`
 	Sources          []CandidatePin    `json:"sources"`
 	Dependencies     []CandidatePin    `json:"dependencies,omitempty"`
-	OperatorSteps    []string          `json:"operator_steps,omitempty"`
+	OperatorSteps    []string          `json:"operator_steps"`
 	Parameters       map[string]string `json:"parameters,omitempty"`
 }
 
@@ -56,7 +56,7 @@ type CandidateReceipt struct {
 	ExecutableSHA256 string            `json:"executable_sha256"`
 	Sources          []CandidatePin    `json:"sources"`
 	Dependencies     []CandidatePin    `json:"dependencies,omitempty"`
-	OperatorSteps    []string          `json:"operator_steps,omitempty"`
+	OperatorSteps    []string          `json:"operator_steps"`
 	Parameters       map[string]string `json:"parameters"`
 }
 
@@ -121,8 +121,8 @@ func (c CandidateConfig) Validate() error {
 		}
 		seenEnv[key] = true
 	}
-	if !validPins(c.Sources) || !validPins(c.Dependencies) ||
-		!validOptionalStrings(c.OperatorSteps, 64, 256) || !validParameters(c.Parameters) {
+	if !validProvenance(c.Sources, c.Dependencies, c.OperatorSteps) ||
+		!validParameters(c.Parameters) {
 		return ErrInvalid
 	}
 	for _, arg := range c.Argv {
@@ -389,7 +389,7 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 			ID: config.CandidateID, Version: config.CandidateVersion, ExecutableSHA256: config.ExecutableSHA256,
 			Sources:       append([]CandidatePin(nil), config.Sources...),
 			Dependencies:  append([]CandidatePin(nil), config.Dependencies...),
-			OperatorSteps: append([]string(nil), config.OperatorSteps...),
+			OperatorSteps: append([]string{}, config.OperatorSteps...),
 			Parameters:    copyStringMap(config.Parameters),
 		},
 		FixtureID: fixture.ID, FixtureSHA256: fixtureSHA, Status: status, MissingOutputs: missing,
@@ -523,15 +523,21 @@ func validEnvironmentName(value string) bool {
 	return true
 }
 
-func validPins(values []CandidatePin) bool {
+func validPins(values []CandidatePin, requireSHA256 bool) bool {
 	for _, pin := range values {
 		if !boundedText(pin.Name, 96) || !boundedText(pin.Version, 64) ||
 			!boundedText(pin.License, 96) ||
+			requireSHA256 && !validHash(pin.SHA256) ||
 			pin.SHA256 != "" && !validHash(pin.SHA256) {
 			return false
 		}
 	}
 	return true
+}
+
+func validProvenance(sources, dependencies []CandidatePin, operatorSteps []string) bool {
+	return validPins(sources, false) && validPins(dependencies, true) &&
+		operatorSteps != nil && validOptionalStrings(operatorSteps, 64, 256)
 }
 
 func validOptionalStrings(values []string, maxItems, maxLen int) bool {

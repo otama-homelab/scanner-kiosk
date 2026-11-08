@@ -101,7 +101,7 @@ func RunBenchmark(ctx context.Context, request BenchmarkRequest) (BenchmarkSumma
 		ExecutableSHA256: config.ExecutableSHA256,
 		Sources:          append([]CandidatePin(nil), config.Sources...),
 		Dependencies:     append([]CandidatePin(nil), config.Dependencies...),
-		OperatorSteps:    append([]string(nil), config.OperatorSteps...),
+		OperatorSteps:    append([]string{}, config.OperatorSteps...),
 		Parameters:       copyStringMap(config.Parameters),
 	}
 	summary.Candidate = candidate
