@@ -77,9 +77,79 @@ func TestRepositoryCatalogGenerates(t *testing.T) {
 	}
 	catalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
 	work := t.TempDir()
-	if err := Generate(catalog, filepath.Join(work, "fixtures"), filepath.Join(work, "manifest.json")); err != nil {
+	manifestPath := filepath.Join(work, "manifest.json")
+	if err := Generate(catalog, filepath.Join(work, "fixtures"), manifestPath); err != nil {
 		t.Fatal(err)
 	}
+	if os.Getenv("SCANNER_EVAL_PRINT_HASHES") == "1" {
+		var manifest GeneratedManifest
+		body, err := os.ReadFile(manifestPath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := json.Unmarshal(body, &manifest); err != nil {
+			t.Fatal(err)
+		}
+		for _, fixture := range manifest.Fixtures {
+			t.Logf("%s %s %d", fixture.ID, fixture.SHA256, fixture.Bytes)
+		}
+	}
+}
+
+func TestRequiredFixtureCoverage(t *testing.T) {
+	catalog := loadRepositoryCatalog(t)
+	if err := ValidateRequiredCoverage(catalog); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCorpusGenerationIsDeterministic(t *testing.T) {
+	catalog := filepath.Join(repositoryRoot(t), "scripts", "fixtures", "evaluation", "catalog.json")
+	var manifests [][]byte
+	for i := 0; i < 2; i++ {
+		work := t.TempDir()
+		manifest := filepath.Join(work, "manifest.json")
+		if err := Generate(catalog, filepath.Join(work, "fixtures"), manifest); err != nil {
+			t.Fatal(err)
+		}
+		body, err := os.ReadFile(manifest)
+		if err != nil {
+			t.Fatal(err)
+		}
+		manifests = append(manifests, body)
+	}
+	if string(manifests[0]) != string(manifests[1]) {
+		t.Fatal("generation manifest is not deterministic")
+	}
+}
+
+func TestCatalogRejectsIncompleteCorpus(t *testing.T) {
+	catalog := loadRepositoryCatalog(t)
+	catalog.Fixtures = catalog.Fixtures[:1]
+	if err := ValidateRequiredCoverage(catalog); err == nil {
+		t.Fatal("incomplete corpus accepted")
+	}
+	if err := catalog.Validate(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func loadRepositoryCatalog(t *testing.T) Catalog {
+	t.Helper()
+	catalog, err := LoadCatalog(filepath.Join(repositoryRoot(t), "scripts", "fixtures", "evaluation", "catalog.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return catalog
+}
+
+func repositoryRoot(t *testing.T) string {
+	t.Helper()
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return root
 }
 
 func testFixture(id string) FixtureDefinition {
