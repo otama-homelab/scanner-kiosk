@@ -15,8 +15,8 @@ model, inference SDK or extra LLM adapter service is required.
 
 **Status:** `v0.1.4` is the current stable release. Automated checks, the G5
 acceptance matrix, formal release assets, public source materials and anonymous
-image starts have been verified. Household cutover/rollback observation and
-retirement of the legacy runtime remain operator-specific migration work.
+image starts have been verified. The legacy scanservjs runtime has been retired;
+its old PVC data remains retained for operator-controlled backup or removal.
 
 ## Run and configure
 
