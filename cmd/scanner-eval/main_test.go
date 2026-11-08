@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"os"
 	"os/exec"
@@ -10,6 +12,40 @@ import (
 	"strings"
 	"testing"
 )
+
+func TestCandidateCLIHelper(t *testing.T) {
+	if os.Getenv("EVAL_CANDIDATE_CLI_HELPER") != "1" {
+		return
+	}
+	output := os.Getenv("SCANNER_EVAL_OUTPUT")
+	originalID := os.Getenv("SCANNER_EVAL_ORIGINAL_ID")
+	pages := strings.Split(os.Getenv("SCANNER_EVAL_SOURCE_PAGES"), ",")
+	if output == "" || originalID == "" || len(pages) == 0 {
+		os.Exit(9)
+	}
+	if err := os.MkdirAll(filepath.Join(output, "texts"), 0o700); err != nil {
+		os.Exit(10)
+	}
+	if err := os.WriteFile(filepath.Join(output, "texts", "ocr.txt"), []byte("cli helper text\n"), 0o600); err != nil {
+		os.Exit(10)
+	}
+	result := map[string]any{
+		"format": "scanner-eval-candidate-result", "version": 1, "candidate_id": "candidate_cli_helper_001",
+		"artifacts": []any{map[string]any{
+			"id": "artifact_cli_ocr_0001", "role": "ocr-text", "path": "texts/ocr.txt",
+			"media_type": "text/plain; charset=utf-8", "source_pages": pages,
+			"parents": []string{originalID}, "algorithm": "cli-helper", "algorithm_version": "1",
+		}},
+	}
+	body, err := json.Marshal(result)
+	if err != nil {
+		os.Exit(10)
+	}
+	if err := os.WriteFile(filepath.Join(output, "result.json"), body, 0o600); err != nil {
+		os.Exit(10)
+	}
+	os.Exit(0)
+}
 
 func TestCLIHelper(t *testing.T) {
 	if os.Getenv("SCANNER_EVAL_TEST_HELPER") != "1" {
@@ -139,6 +175,59 @@ func TestCatalogRejectsDuplicateID(t *testing.T) {
 	}
 	if strings.Contains(result.stderr, "fixture_a4_ja_en_001") {
 		t.Fatal("error leaked fixture identifier")
+	}
+}
+
+func TestRunCommandReturnsNormalizedCatalog(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	catalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	executable, err := filepath.Abs(os.Args[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	body, err := os.ReadFile(executable)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(body)
+	config := map[string]any{
+		"format": "scanner-eval-candidate", "version": 1,
+		"candidate_id": "candidate_cli_helper_001", "executable": executable,
+		"executable_sha256": hex.EncodeToString(sum[:]), "argv": []string{"-test.run=^TestCandidateCLIHelper$"},
+		"environment": []string{"EVAL_CANDIDATE_CLI_HELPER=1"}, "candidate_version": "1",
+		"sources": []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
+	}
+	encoded, err := json.Marshal(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	configPath := filepath.Join(filepath.Dir(output), "candidate.json")
+	if err := os.WriteFile(configPath, encoded, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	result := runHelper(t, "run", "--catalog", catalog, "--candidate", configPath, "--fixture", "fixture_a4_ja_en_001", "--output", output)
+	if result.code != 1 {
+		t.Fatalf("incomplete run exit=%d stderr=%s", result.code, result.stderr)
+	}
+	var artifactCatalog struct {
+		Status   string `json:"status"`
+		Original struct {
+			SHA256 string `json:"sha256"`
+		} `json:"original"`
+		Artifacts []struct {
+			Role string `json:"role"`
+		} `json:"artifacts"`
+	}
+	if err := json.Unmarshal([]byte(result.stdout), &artifactCatalog); err != nil {
+		t.Fatalf("invalid catalog: %v: %s", err, result.stdout)
+	}
+	if artifactCatalog.Status != "incomplete" || artifactCatalog.Original.SHA256 == "" ||
+		len(artifactCatalog.Artifacts) != 1 || artifactCatalog.Artifacts[0].Role != "ocr-text" {
+		t.Fatalf("unexpected catalog: %+v", artifactCatalog)
 	}
 }
 
