@@ -234,6 +234,28 @@ func TestCandidateRunEndToEnd(t *testing.T) {
 	}
 }
 
+func TestCandidateRunRequiresOriginalPixelRetention(t *testing.T) {
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	configPath := writeCandidateConfig(t, output, "complete")
+
+	catalog, err := RunCandidate(context.Background(), CandidateRunRequest{
+		CatalogPath: catalogPath, CandidatePath: configPath,
+		FixtureID: "fixture_photo_001", OutputDir: output,
+	})
+	if err != nil || catalog.Status != "complete" || catalog.Validation == nil ||
+		catalog.Validation.Status != "passed" {
+		t.Fatalf("expected a complete PDF run: catalog=%+v err=%v", catalog, err)
+	}
+	for _, check := range catalog.Validation.Checks {
+		if check.Name == "lossless-original-pixels" && check.Status == "pass" {
+			return
+		}
+	}
+	t.Fatalf("run-path validation omitted original-pixel retention: %+v", catalog.Validation)
+}
+
 func TestCandidateRejectsUnsafeOutput(t *testing.T) {
 	root := filepath.Join("..", "..")
 	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")

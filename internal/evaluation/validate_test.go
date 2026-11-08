@@ -60,6 +60,21 @@ func TestValidatorFailsClosed(t *testing.T) {
 	}
 }
 
+func TestValidatePDFRejectsPartialOriginalOptions(t *testing.T) {
+	pdfPath, sourcePath := buildValidationPDF(t, "ALPHA ONE")
+	for _, options := range []PDFValidationOptions{
+		{ExpectLossless: true},
+		{OriginalImagePath: sourcePath},
+	} {
+		receipt, err := ValidatePDF(context.Background(), pdfPath, []string{"page_validation_001"},
+			[]string{"ALPHA ONE"}, options)
+		if !errors.Is(err, ErrInvalid) || receipt.Status == "passed" ||
+			receipt.FailureClass != "invalid-input" {
+			t.Fatalf("partial original options accepted: options=%+v receipt=%+v err=%v", options, receipt, err)
+		}
+	}
+}
+
 func buildValidationPDF(t *testing.T, expectedText string) (string, string) {
 	t.Helper()
 	bitmap := image.NewRGBA(image.Rect(0, 0, 80, 100))
