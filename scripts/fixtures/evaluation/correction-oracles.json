@@ -40,7 +40,7 @@
       "fixture_id": "fixture_vertical_text_001",
       "fixture_sha256": "827b41f0885a5be349b3cd87d6bc641b8529268046190f4f9624808046dd7fb0",
       "background_rgb": [255, 255, 255],
-      "content_regions": [{"x": 100, "y": 100, "width": 200, "height": 200}]
+      "content_regions": [{"x": 2900, "y": 200, "width": 200, "height": 200}]
     },
     {
       "fixture_id": "fixture_faint_print_001",

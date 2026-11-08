@@ -193,7 +193,7 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 		}
 	}
 	if err := writePrivateFile(root, "input/original.png", fixtureBody); err != nil {
-		return ArtifactCatalog{}, err
+		return ArtifactCatalog{}, fmt.Errorf("candidate staging: %w", err)
 	}
 	timeout := candidateTimeout
 	if request.Timeout > 0 {
@@ -294,13 +294,13 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 		*request.Metrics = metrics
 	}
 	if process.Err != nil || !process.GroupStopped {
-		return ArtifactCatalog{}, ErrUnavailable
+		return ArtifactCatalog{}, fmt.Errorf("candidate process: %w", ErrUnavailable)
 	}
 	if metrics.ResourceFailure != "" {
 		return ArtifactCatalog{}, ErrUnavailable
 	}
 	if err := verifyFile(filepath.Join(runRoot, "input", "original.png"), fixtureSHA); err != nil {
-		return ArtifactCatalog{}, ErrInvalid
+		return ArtifactCatalog{}, fmt.Errorf("candidate original verification: %w", err)
 	}
 	result, err := loadCandidateResult(root)
 	if err != nil {
@@ -337,10 +337,10 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 		Algorithm: "harness-copy", AlgorithmVersion: ToolVersion,
 	}
 	if err := destination.Mkdir("artifacts", 0o700); err != nil {
-		return ArtifactCatalog{}, ErrInvalid
+		return ArtifactCatalog{}, fmt.Errorf("artifact directory: %w", ErrInvalid)
 	}
 	if err := writePrivateFile(destination, filepath.Join("artifacts", originalID), fixtureBody); err != nil {
-		return ArtifactCatalog{}, err
+		return ArtifactCatalog{}, fmt.Errorf("original normalization: %w", err)
 	}
 	artifacts, err := normalizeCandidateArtifacts(root, destination, result)
 	if err != nil {
