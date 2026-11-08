@@ -90,6 +90,21 @@ The Phase 44 analyzer can compare linear crop/rotation transforms. Nonlinear
 grid candidates cannot claim quality through that analyzer until the artifact
 schema is extended through a later explicit design decision.
 
+## Decision
+
+The only candidate advanced for follow-up is the measured OpenCV perspective
+crop. This is not a production adoption and does not change the default. The
+follow-up must first compare multiple edge/content fixtures, a private household
+corpus when supplied, OCR text/reading-order benefit, and a documented resource
+budget.
+
+Leptonica remains a deferred classical option. DocAligner is deferred until a
+pinned ONNX Runtime/browser runtime exists. UVDoc is deferred until a nonlinear
+correction contract and runtime are available. DewarpNet remains unusable until
+its final weights have an immutable hash and explicit redistribution terms.
+DocTr is rejected because its non-commercial license does not fit a product whose
+later monetization remains an open milestone decision.
+
 ## Resource and proof limits
 
 - Upstream model sizes and parameter counts are recorded only when published or
@@ -100,6 +115,7 @@ schema is extended through a later explicit design decision.
 - UVDoc's nonlinear quality, CPU/GPU latency and memory are unmeasured.
 - No private household bytes or OCR improvement evidence were supplied.
 - Synthetic fixture success is harness evidence only.
+- The one-fixture OpenCV rerun does not establish broad quality or edge safety.
 
 ## Sources
 
