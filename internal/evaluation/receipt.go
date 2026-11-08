@@ -112,10 +112,13 @@ type ComparisonEntry struct {
 }
 
 type ComparisonGroup struct {
-	FixtureID     string            `json:"fixture_id"`
-	FixtureSHA256 string            `json:"fixture_sha256"`
-	Settings      BenchmarkSettings `json:"settings"`
-	Entries       []ComparisonEntry `json:"entries"`
+	FixtureID            string            `json:"fixture_id"`
+	FixtureSHA256        string            `json:"fixture_sha256"`
+	Settings             BenchmarkSettings `json:"settings"`
+	ExpectedFailureClass string            `json:"expected_failure_class,omitempty"`
+	ObservedFailureClass string            `json:"observed_failure_class,omitempty"`
+	FailureMatch         *bool             `json:"failure_match,omitempty"`
+	Entries              []ComparisonEntry `json:"entries"`
 }
 
 type Comparison struct {
@@ -162,6 +165,18 @@ func (summary BenchmarkSummary) Validate() error {
 	}
 	if !validProvenance(summary.Candidate.Sources, summary.Candidate.Dependencies, summary.Candidate.OperatorSteps) ||
 		!validParameters(summary.Parameters) {
+		return ErrInvalid
+	}
+	hasFailureEvidence := summary.ExpectedFailureClass != "" || summary.ObservedFailureClass != "" ||
+		summary.FailureMatch != nil
+	if hasFailureEvidence &&
+		(summary.ExpectedFailureClass == "" || summary.ObservedFailureClass == "" ||
+			summary.FailureMatch == nil || *summary.FailureMatch != (summary.Status == "expected-failure")) {
+		return ErrInvalid
+	}
+	if summary.Status == "expected-failure" &&
+		(len(summary.Samples) != 0 || summary.Metrics.Cold != (ModeMetrics{}) ||
+			summary.Metrics.Warm != (ModeMetrics{})) {
 		return ErrInvalid
 	}
 	seen := map[string]bool{}
@@ -214,15 +229,26 @@ func CompareBenchmarkReceipts(paths []string) (Comparison, error) {
 		if err != nil || seenRuns[summary.RunID] {
 			return Comparison{}, ErrInvalid
 		}
+		if summary.FailureMatch != nil && !*summary.FailureMatch ||
+			len(summary.Samples) == 0 && summary.Status != "expected-failure" {
+			return Comparison{}, ErrInvalid
+		}
 		seenRuns[summary.RunID] = true
 		identity := summary.Candidate.Version + "|" + summary.Candidate.ExecutableSHA256 + "|" + summary.CandidateConfigSHA256
 		if existing, ok := seenCandidates[summary.Candidate.ID]; ok && existing != identity {
 			return Comparison{}, ErrInvalid
 		}
 		seenCandidates[summary.Candidate.ID] = identity
+		statusClass := "ordinary"
+		if summary.Status == "expected-failure" {
+			statusClass = "expected-failure"
+		}
 		key := comparisonGroupKey{
 			fixtureID: summary.FixtureID, fixtureSHA256: summary.FixtureSHA256,
-			settings: summary.Settings,
+			settings: summary.Settings, statusClass: statusClass,
+			expectedFailureClass: summary.ExpectedFailureClass,
+			observedFailureClass: summary.ObservedFailureClass,
+			failureMatch:         summary.FailureMatch != nil && *summary.FailureMatch,
 		}
 		groupIndex, ok := groupIndexes[key]
 		if !ok {
@@ -230,7 +256,8 @@ func CompareBenchmarkReceipts(paths []string) (Comparison, error) {
 			groupIndexes[key] = groupIndex
 			comparison.Groups = append(comparison.Groups, ComparisonGroup{
 				FixtureID: summary.FixtureID, FixtureSHA256: summary.FixtureSHA256,
-				Settings: summary.Settings,
+				Settings: summary.Settings, ExpectedFailureClass: summary.ExpectedFailureClass,
+				ObservedFailureClass: summary.ObservedFailureClass, FailureMatch: summary.FailureMatch,
 			})
 		}
 		group := &comparison.Groups[groupIndex]
@@ -249,7 +276,21 @@ func CompareBenchmarkReceipts(paths []string) (Comparison, error) {
 		if left.FixtureSHA256 != right.FixtureSHA256 {
 			return left.FixtureSHA256 < right.FixtureSHA256
 		}
-		return settingsLess(left.Settings, right.Settings)
+		if left.Settings != right.Settings {
+			return settingsLess(left.Settings, right.Settings)
+		}
+		if left.ExpectedFailureClass != right.ExpectedFailureClass {
+			return left.ExpectedFailureClass < right.ExpectedFailureClass
+		}
+		if left.ObservedFailureClass != right.ObservedFailureClass {
+			return left.ObservedFailureClass < right.ObservedFailureClass
+		}
+		leftMatch := left.FailureMatch != nil && *left.FailureMatch
+		rightMatch := right.FailureMatch != nil && *right.FailureMatch
+		if leftMatch != rightMatch {
+			return !leftMatch
+		}
+		return false
 	})
 	for index := range comparison.Groups {
 		entries := comparison.Groups[index].Entries
@@ -268,9 +309,13 @@ func CompareBenchmarkReceipts(paths []string) (Comparison, error) {
 }
 
 type comparisonGroupKey struct {
-	fixtureID     string
-	fixtureSHA256 string
-	settings      BenchmarkSettings
+	fixtureID            string
+	fixtureSHA256        string
+	settings             BenchmarkSettings
+	statusClass          string
+	expectedFailureClass string
+	observedFailureClass string
+	failureMatch         bool
 }
 
 func settingsLess(left, right BenchmarkSettings) bool {
