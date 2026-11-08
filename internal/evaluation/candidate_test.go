@@ -64,11 +64,31 @@ func TestCandidateHelper(t *testing.T) {
 	if mode == "bad_hash" {
 		artifact["sha256"] = strings.Repeat("0", 64)
 	}
+	artifacts := []any{artifact}
+	if mode == "invalid_pdf" {
+		positioned := map[string]any{
+			"id": "artifact_candidate_positioned_001", "role": "positioned-text", "path": "texts/positioned.json",
+			"media_type": "application/json", "source_pages": pages, "parents": []string{"artifact_candidate_ocr_001"},
+			"algorithm": "fixture-helper", "algorithm_version": "1",
+		}
+		pdf := map[string]any{
+			"id": "artifact_candidate_pdf_001", "role": "pdf", "path": "candidate.pdf",
+			"media_type": "application/pdf", "source_pages": pages, "parents": []string{"artifact_candidate_ocr_001"},
+			"algorithm": "fixture-helper", "algorithm_version": "1",
+		}
+		if err := os.WriteFile(filepath.Join(output, "texts", "positioned.json"), []byte(`{"blocks":[]}`), 0o600); err != nil {
+			os.Exit(10)
+		}
+		if err := os.WriteFile(filepath.Join(output, "candidate.pdf"), []byte("not a pdf"), 0o600); err != nil {
+			os.Exit(10)
+		}
+		artifacts = append(artifacts, positioned, pdf)
+	}
 	result := map[string]any{
 		"format":       "scanner-eval-candidate-result",
 		"version":      1,
 		"candidate_id": "candidate_helper_001",
-		"artifacts":    []any{artifact},
+		"artifacts":    artifacts,
 	}
 	body, err := json.Marshal(result)
 	if err != nil {
@@ -214,7 +234,7 @@ func TestArtifactProvenance(t *testing.T) {
 	}
 }
 
-func TestGeneratedCannotSatisfyTranscription(t *testing.T) {
+func TestGeneratedTextIsNotTranscription(t *testing.T) {
 	fixture := fixtureForArtifactTest()
 	result := CandidateResult{
 		Format: CandidateResultFormat, Version: CandidateResultVersion, CandidateID: "candidate_role_001",
@@ -272,6 +292,22 @@ func TestOriginalRemainsImmutable(t *testing.T) {
 		FixtureID: "fixture_a4_ja_en_001", OutputDir: output,
 	}); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("mutated original was accepted: %v", err)
+	}
+}
+
+func TestRunRejectsInvalidPDFEvidence(t *testing.T) {
+	root := filepath.Join("..", "..")
+	catalogPath := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	output := filepath.Join(t.TempDir(), "result")
+	configPath := writeCandidateConfig(t, output, "invalid_pdf")
+	catalog, err := RunCandidate(context.Background(), CandidateRunRequest{
+		CatalogPath: catalogPath, CandidatePath: configPath,
+		FixtureID: "fixture_a4_ja_en_001", OutputDir: output,
+	})
+	if !errors.Is(err, ErrUnavailable) || catalog.Status != "incomplete" ||
+		catalog.Validation == nil || catalog.Validation.Status == "passed" ||
+		catalog.Validation.FailureClass != "invalid-pdf" {
+		t.Fatalf("invalid PDF evidence was not recorded as incomplete: catalog=%+v err=%v", catalog, err)
 	}
 }
 

@@ -58,16 +58,17 @@ type Artifact struct {
 }
 
 type ArtifactCatalog struct {
-	Format         string           `json:"format"`
-	Version        int              `json:"version"`
-	RunID          string           `json:"run_id"`
-	Candidate      CandidateReceipt `json:"candidate"`
-	FixtureID      string           `json:"fixture_id"`
-	FixtureSHA256  string           `json:"fixture_sha256"`
-	Status         string           `json:"status"`
-	MissingOutputs []ArtifactRole   `json:"missing_outputs,omitempty"`
-	Original       Artifact         `json:"original"`
-	Artifacts      []Artifact       `json:"artifacts"`
+	Format         string             `json:"format"`
+	Version        int                `json:"version"`
+	RunID          string             `json:"run_id"`
+	Candidate      CandidateReceipt   `json:"candidate"`
+	FixtureID      string             `json:"fixture_id"`
+	FixtureSHA256  string             `json:"fixture_sha256"`
+	Status         string             `json:"status"`
+	MissingOutputs []ArtifactRole     `json:"missing_outputs,omitempty"`
+	Original       Artifact           `json:"original"`
+	Artifacts      []Artifact         `json:"artifacts"`
+	Validation     *ValidationReceipt `json:"validation,omitempty"`
 }
 
 func loadCandidateResult(root *os.Root) (CandidateResult, error) {

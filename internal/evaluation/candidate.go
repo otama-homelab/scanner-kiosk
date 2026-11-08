@@ -261,8 +261,37 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 	}
 	missing := missingOutputs(fixture, artifacts)
 	status := "complete"
-	if len(missing) != 0 {
+	if len(missing) != 0 || len(fixture.ExpectedOutputs) == 0 {
 		status = "incomplete"
+	}
+	var validation *ValidationReceipt
+	if status == "complete" {
+		if err := ValidateTextArtifacts(destination, artifacts, fixture); err != nil {
+			status = "incomplete"
+			validation = &ValidationReceipt{
+				Format: ValidationFormat, Version: ValidationVersion, Status: "failed", FailureClass: "text-binding",
+				Checks: []ValidationCheck{{Name: "source-page-text-binding", Status: "fail"}},
+			}
+		}
+	}
+	for _, artifact := range artifacts {
+		if artifact.Role != RolePDF {
+			continue
+		}
+		pdfPath := filepath.Join(staging, "artifacts", artifact.ID)
+		receipt, validationErr := ValidatePDF(ctx, pdfPath, fixture.PageIDs, fixture.ExpectedText, PDFValidationOptions{})
+		if validation != nil {
+			receipt.Status = "failed"
+			if receipt.FailureClass == "" {
+				receipt.FailureClass = validation.FailureClass
+			}
+			receipt.Checks = append(receipt.Checks, validation.Checks...)
+		}
+		validation = &receipt
+		if validationErr != nil {
+			status = "incomplete"
+		}
+		break
 	}
 	receipt := ArtifactCatalog{
 		Format: ArtifactCatalogFormat, Version: ArtifactCatalogVersion, RunID: runID,
@@ -273,7 +302,7 @@ func RunCandidate(ctx context.Context, request CandidateRunRequest) (ArtifactCat
 			OperatorSteps: append([]string(nil), config.OperatorSteps...),
 		},
 		FixtureID: fixture.ID, FixtureSHA256: fixtureSHA, Status: status, MissingOutputs: missing,
-		Original: original, Artifacts: artifacts,
+		Original: original, Artifacts: artifacts, Validation: validation,
 	}
 	if err := writeJSONExclusiveInRoot(destination, "artifact-catalog.json", receipt); err != nil {
 		return ArtifactCatalog{}, err
