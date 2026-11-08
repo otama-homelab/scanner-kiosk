@@ -49,7 +49,7 @@ being silently treated as previews. The ref checker does not publish anything.
 
 `scripts/build-standalone.py` now supplies the packaging step for an already checked embedded app and a reviewed native manifest. It checks the static app target/build tag, compares the complete native inventory, builds the launcher in scratch, and refuses to overwrite an output directory. It neither supplies native provenance nor fetches the native input.
 
-[Native source inputs](native-sources.md) distinguishes verified recipe/patch collection from upstream archives and source delivery. Both build SDKs now have complete APK locks and offline replay evidence; Tesseract and the SANE helper reproduce their current native file bytes. Stable native closure/provenance packaging and source delivery remain required. Source CI runs the collector’s offline safety tests only.
+[Native source inputs](native-sources.md) distinguishes verified recipe/patch collection from upstream archives and source delivery. Both build SDKs now have complete APK locks and offline replay evidence; Tesseract and the SANE helper reproduce their current native file bytes. Stable native closure, provenance, corresponding source and recipient materials are bound to the published `v0.1.4` release.
 
 The source build job also runs `npm audit --audit-level=high` against the locked
 frontend build dependencies and the pinned `govulncheck` v1.9.0 against `./...`
@@ -64,16 +64,11 @@ remain separate evidence. Initial hosted run
 [41780461741](https://github.com/otama-homelab/scanner-kiosk/actions/runs/41780461741)
 passed all four jobs for commit `99990c12…`; this does not publish artifacts.
 
-The private GitHub remote and initial hosted source checks are established.
-Branch/tag protections, final native distribution/source offer,
-SBOM/security/license acceptance and publishing jobs remain pending. GitHub Free
-returned HTTP403 for branch protection on this private repository; changing
-visibility or paying for another plan requires the operator's choice. There is
-deliberately no successful-looking empty publishing job or API-only binary advertised as the plug-and-play preview. Native payload
-and release gates must be implemented for the exact input before wiring registry
-or GitHub Release writes. Until then, tag pushes verify a release input; they do
-not produce a published release. That source check created no release tag,
-registry upload or production deployment.
+The sanitized source repository is public. The earlier private-repository
+branch-protection HTTP403 and visibility decision are historical. The current
+workflow implements native payload checks, the source-first material stage,
+security/license/release gates and the serialized publisher. The exact `v0.1.4`
+main and tag runs completed the public GitHub Release and paired GHCR publication.
 
 
 ## Required source status
@@ -137,9 +132,9 @@ rejected before a writer runs. PR/manual source-check events are rejected.
 Sixteen isolated tests cover the policy and CLI, including late old runs,
 prereleases, moved tags, collisions, unknown remote state and numeric ordering.
 The six existing ref tests and actionlint also pass. The source workflow runs
-the new contract tests with its existing read-only permissions. The material
-stager, service writer/serialized workflow and actual main/tag publication are
-still incomplete; this policy is not a successful-looking publishing job.
+the contract tests with read-only permissions. The material stager, serialized
+service writer and actual main/tag publication are implemented; `v0.1.4`
+preview and formal release publication both succeeded.
 
 ## Offline material staging
 
@@ -252,17 +247,19 @@ with cancellation disabled and minimal write permissions confined to that job.
 The trusted plan hash must come from the protected read-only preflight handoff,
 not an arbitrary artifact field. Archive parsing/preflight remains credential-
 free; the credentialed writer hashes the sealed files without unpacking them.
-The source checks currently execute only the writer contract tests. The
-serialized write job and staged-plan producer/handoff are not connected yet.
+The serialized write job and staged-plan producer/handoff are connected in the
+current release workflow.
 
 Eighteen writer tests, eighteen policy tests and nine preflight tests pass
 with stateful service-boundary fakes in a network-isolated sandbox. Tests cover
 source-before-image ordering, upload/push failures, digest mismatches, fresh
 checks/source state, visibility, immutable collisions and delayed old previews.
 Public read-only probes confirmed the installed Docker client's OCI verbose
-response and GitHub's asset-digest field. These are not actual private-service
-uploads or hosted publisher success. C1/G5/security/license/authentication and
-formal main/tag acceptance remain required; no release or image was published.
+response and GitHub's asset-digest field. The exact `v0.1.4` main/tag runs then
+performed real public source/assets, core image, Tesseract image and recipient
+verification. The earlier C1/G5/security/license/authentication gate list is
+historical and was accepted for the current release under the owner-defined
+completion scope.
 
 
 ## Protected publication plan handoff (2026-11-05)

@@ -1,9 +1,19 @@
 # Physical writer handoff: prerequisites and bounded candidate
 
-Status: design/preflight only. No policy has been applied, no legacy writer has
-been stopped, and no production readiness producer is enabled. The read-only
+Status: accepted application-scope contract for `v0.1.4`. The deployed worker
+uses the shared document-root guard, readiness withdrawal, transactional device
+epoch and startup reconciliation described below. The historical LAN-wide fence
+candidate remains unapplied and is outside the accepted scope. The read-only
 inventory is recorded in the parent plan's
 `tasks/43/physical-writer-fence-inventory-20261103.json`.
+
+## Implementation
+
+- Worker lifecycle and startup recovery: [`internal/workerruntime/run_linux.go`](../../internal/workerruntime/run_linux.go)
+- Scanner driver and external-busy path: [`internal/scannerdriver/configured_linux.go`](../../internal/scannerdriver/configured_linux.go)
+- Readiness evidence: [`internal/scannerreadiness/evidence.go`](../../internal/scannerreadiness/evidence.go)
+- Device metadata: [`internal/scannermetadata/catalog.go`](../../internal/scannermetadata/catalog.go)
+- Transactional scan job boundary: [`internal/scanjob/execute.go`](../../internal/scanjob/execute.go)
 
 ## Observed deployment
 
