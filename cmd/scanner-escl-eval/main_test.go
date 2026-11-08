@@ -39,7 +39,7 @@ func TestDirectESCLCaptureCommand(t *testing.T) {
 	targetPath := writeCLITarget(t, root)
 	var stdout, stderr bytes.Buffer
 	code := run(context.Background(), []string{"capture", "--endpoint", server.URL + "/eSCL", "--arm", "e1",
-		"--region", "0,0,2480,3508", "--resolution", "300", "--color", "rgb",
+		"--region", "0,0,40,20", "--resolution", "300", "--color", "rgb",
 		"--target", targetPath, "--sequence", "1", "--output", output, "--receipt", receiptPath}, &stdout, &stderr)
 	if code != 0 {
 		t.Fatalf("capture failed: %d %s", code, stderr.String())
@@ -65,14 +65,14 @@ func TestEvaluateC1Command(t *testing.T) {
 	receiptPath := filepath.Join(root, "c1.json")
 	targetPath := writeCLITarget(t, root)
 	var stdout, stderr bytes.Buffer
-	code := run(context.Background(), []string{"evaluate-c1", "--input", input, "--region", "0,0,2480,3508",
-		"--resolution", "300", "--color", "gray", "--target", targetPath, "--sequence", "2",
+	code := run(context.Background(), []string{"evaluate-c1", "--input", input, "--region", "0,0,40,20",
+		"--resolution", "300", "--color", "rgb", "--target", targetPath, "--sequence", "2",
 		"--elapsed-millis", "25", "--receipt", receiptPath}, &stdout, &stderr)
 	if code != 0 {
 		t.Fatalf("C1 evaluation failed: %d %s", code, stderr.String())
 	}
 	value, err := readJSONMap(receiptPath)
-	if err != nil || value["arm"] != "c1" || value["color"] != "gray" || value["sha256"] == "" ||
+	if err != nil || value["arm"] != "c1" || value["color"] != "rgb" || value["sha256"] == "" ||
 		value["media_type"] != "image/png" || value["sequence"] != float64(2) ||
 		value["elapsed_millis"] != float64(25) {
 		t.Fatalf("receipt=%+v err=%v", value, err)
@@ -118,7 +118,7 @@ func TestCompareCompletePhysicalMatrix(t *testing.T) {
 	}
 	var stdout, stderr bytes.Buffer
 	if code := run(context.Background(), args, &stdout, &stderr); code != 0 {
-		t.Fatalf("compare failed: %d %s", code, stderr.String())
+		t.Fatalf("compare failed: %d %s %s", code, stderr.String(), stdout.String())
 	}
 	var evidence struct {
 		Format string `json:"format"`
@@ -240,6 +240,9 @@ func writeCLIReceipt(path, arm, imageName string, sequence int, elapsed int64, c
 		"bytes": len(body), "sha256": hex.EncodeToString(sum[:]), "width": 40, "height": 20,
 		"elapsed_millis": elapsed, "image": imageName, "target_sha256": targetSHA256,
 		"device": "canon-ts8130", "firmware": "2.63", "sequence": sequence,
+	}
+	if arm == "e2" {
+		value["intent"] = "Document"
 	}
 	encoded, err := json.Marshal(value)
 	if err != nil {

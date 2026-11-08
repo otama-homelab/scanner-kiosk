@@ -9,6 +9,8 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"errors"
+	"image"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"mime"
@@ -26,7 +28,10 @@ var (
 )
 
 type Region struct {
-	X, Y, Width, Height int
+	X      int `json:"x"`
+	Y      int `json:"y"`
+	Width  int `json:"width"`
+	Height int `json:"height"`
 }
 
 type Options struct {
@@ -129,17 +134,19 @@ func (c *Client) Capture(ctx context.Context) (Result, error) {
 		return Result{}, unavailable(ctx, err)
 	}
 	defer imageResponse.Body.Close()
-	if imageResponse.StatusCode != http.StatusOK || imageResponse.ContentLength > c.options.MaxImageBytes ||
-		mediaType(imageResponse.Header.Get("Content-Type")) != "image/png" {
+	if imageResponse.StatusCode != http.StatusOK || imageResponse.ContentLength > c.options.MaxImageBytes {
+		return Result{}, ErrUnavailable
+	}
+	returnedMediaType := mediaType(imageResponse.Header.Get("Content-Type"))
+	if returnedMediaType != "image/png" && returnedMediaType != "image/jpeg" {
 		return Result{}, ErrUnavailable
 	}
 	data, err := io.ReadAll(io.LimitReader(imageResponse.Body, c.options.MaxImageBytes+1))
 	if err != nil || int64(len(data)) > c.options.MaxImageBytes {
 		return Result{}, ErrUnavailable
 	}
-	decoded, err := png.Decode(bytes.NewReader(data))
-	if err != nil || decoded.Bounds().Dx() < 1 || decoded.Bounds().Dy() < 1 ||
-		int64(decoded.Bounds().Dx()) > c.options.MaxPixels/int64(decoded.Bounds().Dy()) {
+	normalized, width, height, err := normalizeImage(data, returnedMediaType, c.options.MaxPixels, c.options.MaxImageBytes)
+	if err != nil {
 		return Result{}, ErrInvalid
 	}
 	deleteRequest, err := http.NewRequestWithContext(ctx, http.MethodDelete, location.String(), nil)
@@ -159,13 +166,52 @@ func (c *Client) Capture(ctx context.Context) (Result, error) {
 	if c.options.Intent != "" {
 		arm = "e2"
 	}
+	elapsedMillis := time.Since(started).Milliseconds()
+	if elapsedMillis < 1 {
+		elapsedMillis = 1
+	}
 	return Result{
 		Arm: arm, Intent: c.options.Intent, Region: c.options.Region,
 		Resolution: c.options.Resolution, Color: c.options.Color,
-		MediaType: "image/png", Bytes: int64(len(data)), SHA256: hex.EncodeToString(sum[:]),
-		Width: decoded.Bounds().Dx(), Height: decoded.Bounds().Dy(),
-		ElapsedMillis: time.Since(started).Milliseconds(), Image: data,
+		MediaType: returnedMediaType, Bytes: int64(len(data)), SHA256: hex.EncodeToString(sum[:]),
+		Width: width, Height: height,
+		ElapsedMillis: elapsedMillis, Image: normalized,
 	}, nil
+}
+
+func normalizeImage(data []byte, returnedMediaType string, maxPixels, maxBytes int64) ([]byte, int, int, error) {
+	var config image.Config
+	var err error
+	switch returnedMediaType {
+	case "image/png":
+		config, err = png.DecodeConfig(bytes.NewReader(data))
+	case "image/jpeg":
+		config, err = jpeg.DecodeConfig(bytes.NewReader(data))
+	default:
+		return nil, 0, 0, ErrInvalid
+	}
+	if err != nil || config.Width < 1 || config.Height < 1 ||
+		int64(config.Width) > maxPixels/int64(config.Height) {
+		return nil, 0, 0, ErrInvalid
+	}
+	var decoded image.Image
+	switch returnedMediaType {
+	case "image/png":
+		decoded, err = png.Decode(bytes.NewReader(data))
+	case "image/jpeg":
+		decoded, err = jpeg.Decode(bytes.NewReader(data))
+	}
+	if err != nil || decoded.Bounds().Dx() != config.Width || decoded.Bounds().Dy() != config.Height {
+		return nil, 0, 0, ErrInvalid
+	}
+	if returnedMediaType == "image/png" {
+		return data, config.Width, config.Height, nil
+	}
+	var normalized bytes.Buffer
+	if err := png.Encode(&normalized, decoded); err != nil || int64(normalized.Len()) > maxBytes {
+		return nil, 0, 0, ErrInvalid
+	}
+	return normalized.Bytes(), config.Width, config.Height, nil
 }
 
 func (c *Client) location(response *http.Response) (*url.URL, error) {
