@@ -93,9 +93,11 @@ artifact catalogs or benchmark receipts.
 ## Candidate protocol
 
 The administrator supplies a candidate configuration. Required provenance is
-the candidate ID/version, executable path and SHA256, fixed argv, explicit
-environment entries, source/model pins with licenses, and optional dependency
-pins and operator steps:
+the candidate ID/version, executable path and SHA256, fixed argv, source pins
+with licenses, every declared dependency/model pin with name, version, license
+and SHA256, and an explicit `operator_steps` array. A source pin may omit its
+archive SHA256. An empty `operator_steps` array means no operator action was
+required; an omitted field is invalid evidence:
 
 ```json
 {
@@ -127,6 +129,11 @@ pins and operator steps:
   "operator_steps": ["prepare the candidate cache before the run"]
 }
 ```
+
+Use `"operator_steps": []` when no operator action is required. The harness
+preserves the explicit empty array in run and benchmark receipts. A hand-written
+receipt from an earlier harness version that omits `operator_steps` is rejected
+and must be regenerated rather than interpreted as an empty array.
 
 The candidate receives only an explicit environment containing `PATH`,
 `TMPDIR` and these fixed values:
@@ -281,10 +288,67 @@ go run ./cmd/scanner-eval compare \
   --output /private/eval/comparison-001.json
 ```
 
-`compare` rejects unknown schemas, duplicate run IDs, mismatched fixture hashes,
-missing provenance and one candidate ID with conflicting executable/config
-identities. It emits separate cold and warm rows and retains failure classes.
+`compare` rejects unknown schemas, duplicate run IDs, missing provenance and one
+candidate ID with conflicting executable/config identities. Multiple fixtures
+are allowed, but every distinct fixture ID, fixture SHA256 and complete benchmark
+settings tuple is emitted as a separate group:
+
+```json
+{
+  "format": "scanner-eval-comparison",
+  "version": 1,
+  "groups": [
+    {
+      "fixture_id": "fixture_photo_001",
+      "fixture_sha256": "<64 lowercase hex characters>",
+      "settings": {
+        "cold_repetitions": 1,
+        "warm_repetitions": 5,
+        "timeout_seconds": 900,
+        "max_rss_bytes": 2147483648,
+        "max_temp_disk_bytes": 1073741824
+      },
+      "entries": [
+        {
+          "candidate_id": "candidate_tesseract_001",
+          "candidate_version": "5.5.4",
+          "mode": "cold",
+          "status": "complete",
+          "samples": 1,
+          "p50_millis": 1234,
+          "p95_millis": 1234,
+          "failure_classes": []
+        }
+      ]
+    }
+  ]
+}
+```
+
+The group owns the fixture and settings identity; entries own only candidate,
+mode, status, metrics and failure classes. Cold and warm rows are distinct, and
+failure classes stay with the mode that produced them. A same-ID fixture with a
+different hash, or any timeout/RSS/temp-disk difference, forms another group
+instead of merging into one percentile population. Separate groups are not one
+fair population and must not be aggregated as if they shared conditions.
 A shorter wall time is not a quality or adoption decision.
+
+## Command reference
+
+All five subcommands emit machine-readable JSON on stdout unless noted.
+
+| Command | Required flags | Optional flags |
+| --- | --- | --- |
+| `generate-fixtures` | `--catalog`, `--output`, `--manifest` | none |
+| `list-fixtures` | `--catalog` | `--private-catalog` and `--private-root` together |
+| `run` | `--catalog`, `--candidate`, `--fixture`, `--output` | none |
+| `benchmark` | `--catalog`, `--candidate`, `--fixture`, `--output` | `--cold`, `--warm`, `--timeout-seconds`, `--max-rss-mib`, `--max-temp-disk-mib` |
+| `compare` | one or more `--receipt` | `--output` |
+
+Benchmark defaults are cold 1, warm 5, timeout 900 seconds, peak RSS 2048 MiB
+and sampled temporary disk 1024 MiB. `generate-fixtures` and `run` write their
+documented files instead of printing a JSON document; every command still uses
+a non-zero exit for invalid, unavailable or incomplete evidence.
 
 ## Proof limits
 
