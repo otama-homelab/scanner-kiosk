@@ -45,7 +45,7 @@ func TestScannerReadinessUpgradePreservesHeldWorkWithoutCreatingAuthority(t *tes
 		t.Fatal(err)
 	}
 	defer db.Close()
-	for query, wanted := range map[string]int{"SELECT count(*) FROM page_thumbnails": 0, "SELECT count(*) FROM scanner_readiness": 0, "SELECT count(*) FROM schema_migrations": 19, "SELECT count(*) FROM device_leases WHERE state='held' AND epoch=2": 1, "SELECT count(*) FROM jobs WHERE state='queued' AND runner_id='worker_ready_upgrade'": 1, "SELECT count(*) FROM reservations WHERE byte_size=50": 1} {
+	for query, wanted := range map[string]int{"SELECT count(*) FROM page_thumbnails": 0, "SELECT count(*) FROM scanner_readiness": 0, "SELECT count(*) FROM schema_migrations": 20, "SELECT count(*) FROM device_leases WHERE state='held' AND epoch=2": 1, "SELECT count(*) FROM jobs WHERE state='queued' AND runner_id='worker_ready_upgrade'": 1, "SELECT count(*) FROM reservations WHERE byte_size=50": 1} {
 		var n int
 		if err = db.QueryRow(query).Scan(&n); err != nil || n != wanted {
 			t.Fatal("readiness migration changed existing work", query, n, err)

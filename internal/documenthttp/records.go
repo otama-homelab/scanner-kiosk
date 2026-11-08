@@ -20,8 +20,11 @@ type Records interface {
 	Edit(context.Context, string, documents.EditRequest, time.Duration) (documents.Projection, error)
 	RequestDelete(context.Context, string, documents.DeleteRequest, time.Duration) (documents.JobProjection, error)
 	ReadPageOriginal(context.Context, string, string, string) (documents.PageOriginal, error)
+	ReadCorrectionArtifact(context.Context, string, string, string) (documents.ArtifactReference, error)
 	ReadPageThumbnail(context.Context, string, string, string) (documents.ArtifactReference, error)
 	ReadCurrentOutput(context.Context, string, string) (documents.ArtifactReference, error)
+	ApplyCorrection(context.Context, string, documents.CorrectionRequest, time.Duration) (documents.Projection, error)
+	UndoCorrection(context.Context, string, documents.CorrectionRequest, time.Duration) (documents.Projection, error)
 }
 
 type RenderAdmission interface {

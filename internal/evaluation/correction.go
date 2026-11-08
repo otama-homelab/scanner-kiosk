@@ -10,7 +10,8 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"strconv"
+
+	"scanner-kiosk/internal/correction"
 )
 
 const (
@@ -19,20 +20,8 @@ const (
 	CorrectionFormatVersion = 1
 )
 
-type CorrectionPoint struct {
-	X float64 `json:"x"`
-	Y float64 `json:"y"`
-}
-
-type CorrectionTransform struct {
-	CropQuad        [4]CorrectionPoint `json:"crop_quad"`
-	RotationDegrees float64            `json:"rotation_degrees"`
-	OutputWidth     int                `json:"output_width"`
-	OutputHeight    int                `json:"output_height"`
-	ConfidenceKind  string             `json:"confidence_kind"`
-	ConfidenceValue *float64           `json:"confidence_value,omitempty"`
-	FallbackReason  string             `json:"fallback_reason,omitempty"`
-}
+type CorrectionPoint = correction.Point
+type CorrectionTransform = correction.Transform
 
 type CorrectionRegion struct {
 	X      int `json:"x"`
@@ -170,63 +159,10 @@ func (o CorrectionOracleFile) Validate() error {
 }
 
 func ParseCorrectionTransform(parameters map[string]string, original image.Rectangle) (CorrectionTransform, error) {
-	var transform CorrectionTransform
-	quadValue := parameters["crop_quad"]
-	if quadValue == "" {
-		return transform, ErrInvalid
-	}
-	var quad [4][2]float64
-	decoder := json.NewDecoder(io.LimitReader(bytes.NewBufferString(quadValue), 4096))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(&quad); err != nil {
-		return transform, ErrInvalid
-	}
-	for index := range quad {
-		transform.CropQuad[index] = CorrectionPoint{X: quad[index][0], Y: quad[index][1]}
-		if !finite(transform.CropQuad[index].X) || !finite(transform.CropQuad[index].Y) ||
-			transform.CropQuad[index].X < float64(original.Min.X) ||
-			transform.CropQuad[index].Y < float64(original.Min.Y) ||
-			transform.CropQuad[index].X > float64(original.Max.X) ||
-			transform.CropQuad[index].Y > float64(original.Max.Y) {
-			return CorrectionTransform{}, ErrInvalid
-		}
-	}
-	rotation, err := strconv.ParseFloat(parameters["rotation_degrees"], 64)
-	if err != nil || !finite(rotation) || rotation < -45 || rotation > 45 {
+	transform, err := correction.Parse(parameters, original)
+	if err != nil {
 		return CorrectionTransform{}, ErrInvalid
 	}
-	width, err := strconv.Atoi(parameters["output_width"])
-	if err != nil || width < 1 || width > 100000 {
-		return CorrectionTransform{}, ErrInvalid
-	}
-	height, err := strconv.Atoi(parameters["output_height"])
-	if err != nil || height < 1 || height > 100000 {
-		return CorrectionTransform{}, ErrInvalid
-	}
-	if !validCorrectionQuad(transform.CropQuad) {
-		return CorrectionTransform{}, ErrInvalid
-	}
-	kind := parameters["confidence_kind"]
-	if !boundedText(kind, 64) {
-		return CorrectionTransform{}, ErrInvalid
-	}
-	if value := parameters["confidence_value"]; value != "" {
-		confidence, err := strconv.ParseFloat(value, 64)
-		if err != nil || !finite(confidence) || confidence < -1000 || confidence > 1000 {
-			return CorrectionTransform{}, ErrInvalid
-		}
-		transform.ConfidenceValue = &confidence
-	} else if kind != "unavailable" {
-		return CorrectionTransform{}, ErrInvalid
-	}
-	if !boundedOptionalText(parameters["fallback_reason"], 256) {
-		return CorrectionTransform{}, ErrInvalid
-	}
-	transform.RotationDegrees = rotation
-	transform.OutputWidth = width
-	transform.OutputHeight = height
-	transform.ConfidenceKind = kind
-	transform.FallbackReason = parameters["fallback_reason"]
 	return transform, nil
 }
 
@@ -368,32 +304,6 @@ func loadArtifactCatalog(path string) (ArtifactCatalog, error) {
 	return catalog, nil
 }
 
-func validCorrectionQuad(quad [4]CorrectionPoint) bool {
-	seen := map[CorrectionPoint]bool{}
-	sign := 0
-	for index := range quad {
-		if seen[quad[index]] {
-			return false
-		}
-		seen[quad[index]] = true
-		a, b, c := quad[index], quad[(index+1)%4], quad[(index+2)%4]
-		cross := (b.X-a.X)*(c.Y-b.Y) - (b.Y-a.Y)*(c.X-b.X)
-		if math.Abs(cross) < 1e-9 {
-			return false
-		}
-		current := 1
-		if cross < 0 {
-			current = -1
-		}
-		if sign == 0 {
-			sign = current
-		} else if sign != current {
-			return false
-		}
-	}
-	return sign > 0
-}
-
 func regionCenterInside(region CorrectionRegion, quad [4]CorrectionPoint) bool {
 	point := CorrectionPoint{
 		X: float64(region.X) + float64(region.Width)/2,
@@ -430,10 +340,6 @@ func distance(a, b uint8) int {
 		value = -value
 	}
 	return value
-}
-
-func finite(value float64) bool {
-	return !math.IsNaN(value) && !math.IsInf(value, 0)
 }
 
 func containsString(values []string, want string) bool {

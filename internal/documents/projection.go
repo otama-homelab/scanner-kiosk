@@ -3,8 +3,12 @@ package documents
 import (
 	"context"
 	"database/sql"
+	"encoding/hex"
+	"encoding/json"
 	"strings"
 	"time"
+
+	"scanner-kiosk/internal/correction"
 )
 
 // Projection contains public metadata only. Storage paths, owners and provider
@@ -33,14 +37,28 @@ type PDFPageProjection struct {
 	HeightPoints float64 `json:"height_points"`
 }
 type PageProjection struct {
-	SourceType   string             `json:"source_type"`
-	PDF          *PDFPageProjection `json:"pdf,omitempty"`
-	ID           string             `json:"id"`
-	Ordinal      int                `json:"ordinal"`
-	Rotation     int                `json:"rotation"`
-	Capture      *CaptureProjection `json:"capture"`
-	ThumbnailURL string             `json:"thumbnail_url"`
-	PreviewURL   string             `json:"preview_url"`
+	SourceType   string                `json:"source_type"`
+	PDF          *PDFPageProjection    `json:"pdf,omitempty"`
+	ID           string                `json:"id"`
+	Ordinal      int                   `json:"ordinal"`
+	Rotation     int                   `json:"rotation"`
+	Capture      *CaptureProjection    `json:"capture"`
+	ThumbnailURL string                `json:"thumbnail_url"`
+	PreviewURL   string                `json:"preview_url"`
+	Correction   *CorrectionProjection `json:"correction,omitempty"`
+}
+type CorrectionProjection struct {
+	SuggestionID         string               `json:"suggestion_id"`
+	CorrectionArtifactID string               `json:"correction_artifact_id"`
+	SourceSHA256         string               `json:"source_sha256"`
+	CorrectionSHA256     string               `json:"correction_sha256"`
+	PreviewURL           string               `json:"preview_url"`
+	Transform            correction.Transform `json:"transform"`
+	ConfidenceKind       string               `json:"confidence_kind"`
+	ConfidenceValue      *float64             `json:"confidence_value,omitempty"`
+	RiskFlags            []string             `json:"risk_flags"`
+	State                string               `json:"state"`
+	CanUndo              bool                 `json:"can_undo"`
 }
 type OutputProjection struct {
 	Revision    int64  `json:"revision"`
@@ -205,6 +223,9 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 	if err != nil {
 		return ErrStorage
 	}
+	if err = s.projectCorrections(ctx, tx, owner, values); err != nil {
+		return err
+	}
 	for i := range values {
 		values[i].PageCount = len(values[i].Pages)
 	}
@@ -242,6 +263,81 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 	}
 	if rows.Err() != nil {
 		return ErrStorage
+	}
+	return nil
+}
+
+func (s *Store) projectCorrections(ctx context.Context, tx *sql.Tx, owner string, values []Projection) error {
+	if len(values) == 0 {
+		return nil
+	}
+	positions := map[string]int{}
+	marks := make([]string, 0, len(values))
+	args := []any{owner}
+	for index, value := range values {
+		positions[value.ID] = index
+		marks = append(marks, "?")
+		args = append(args, value.ID)
+	}
+	rows, err := tx.QueryContext(ctx, `SELECT pc.document_id,pc.page_id,pc.suggestion_id,pc.correction_artifact_id,pc.source_sha256,pc.correction_sha256,pc.transform_json,pc.confidence_kind,pc.confidence_value,pc.risk_flags,pc.state
+ FROM page_corrections pc JOIN artifacts a ON a.id=pc.correction_artifact_id AND a.document_id=pc.document_id AND a.owner_id=pc.owner_id
+ WHERE pc.owner_id=? AND pc.document_id IN (`+strings.Join(marks, ",")+`) AND pc.state IN ('suggested','applied')
+ AND a.kind='intermediate' AND a.state='ready' AND a.media_type='image/png'
+ ORDER BY pc.document_id,pc.page_id,CASE pc.state WHEN 'applied' THEN 0 ELSE 1 END,pc.created_at_ms DESC,pc.suggestion_id DESC`, args...)
+	if err != nil {
+		return ErrStorage
+	}
+	defer rows.Close()
+	type selected struct {
+		document, page string
+		value          CorrectionProjection
+	}
+	var chosen []selected
+	for rows.Next() {
+		var document, page string
+		var source, correctionDigest []byte
+		var transformJSON, riskJSON string
+		var confidence sql.NullFloat64
+		var value CorrectionProjection
+		if err = rows.Scan(&document, &page, &value.SuggestionID, &value.CorrectionArtifactID, &source, &correctionDigest, &transformJSON, &value.ConfidenceKind, &confidence, &riskJSON, &value.State); err != nil {
+			return ErrStorage
+		}
+		if len(source) != 32 || len(correctionDigest) != 32 || json.Unmarshal([]byte(transformJSON), &value.Transform) != nil || json.Unmarshal([]byte(riskJSON), &value.RiskFlags) != nil {
+			return ErrStorage
+		}
+		value.SourceSHA256 = hex.EncodeToString(source)
+		value.CorrectionSHA256 = hex.EncodeToString(correctionDigest)
+		if confidence.Valid {
+			value.ConfidenceValue = &confidence.Float64
+		}
+		value.PreviewURL = "/api/documents/" + document + "/pages/" + page + "/correction/preview"
+		value.CanUndo = value.State == "applied"
+		chosen = append(chosen, selected{document: document, page: page, value: value})
+	}
+	if rows.Err() != nil {
+		return ErrStorage
+	}
+	for _, item := range chosen {
+		index, ok := positions[item.document]
+		if !ok {
+			return ErrStorage
+		}
+		found := false
+		for pageIndex := range values[index].Pages {
+			page := &values[index].Pages[pageIndex]
+			if page.ID != item.page {
+				continue
+			}
+			if page.Correction == nil || item.value.State == "applied" {
+				value := item.value
+				page.Correction = &value
+			}
+			found = true
+			break
+		}
+		if !found {
+			return ErrStorage
+		}
 	}
 	return nil
 }

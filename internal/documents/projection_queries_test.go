@@ -129,7 +129,7 @@ func TestHistoryQueryCountIndependentOfDocumentsAndPages(t *testing.T) {
 			if err != nil || len(values) != limit || next == nil {
 				t.Fatal("history pagination", len(values), next, err)
 			}
-			assertCounts(1, 3)
+			assertCounts(1, 4)
 			for _, p := range values {
 				if p.ID == docB || p.PageCount != 2 || len(p.Pages) != 2 || p.Output == nil || p.Output.Format != "pdf" || p.ReadyRevision == nil || *p.ReadyRevision != 1 {
 					t.Fatal("batch projection lost content or owner isolation")
@@ -141,7 +141,7 @@ func TestHistoryQueryCountIndependentOfDocumentsAndPages(t *testing.T) {
 				if err != nil || len(tail) != 1 || last != nil {
 					t.Fatal("last page", len(tail), err)
 				}
-				assertCounts(1, 3)
+				assertCounts(1, 4)
 			}
 		})
 	}
@@ -150,7 +150,7 @@ func TestHistoryQueryCountIndependentOfDocumentsAndPages(t *testing.T) {
 	if err != nil || p.PageCount != 2 {
 		t.Fatal(err)
 	}
-	assertCounts(1, 3)
+	assertCounts(1, 4)
 	reset()
 	if _, err = store.ReadDocument(ctx, bob, docA); !errors.Is(err, ErrUnavailable) {
 		t.Fatal("cross-owner detail", err)

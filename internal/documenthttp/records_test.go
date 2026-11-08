@@ -34,6 +34,7 @@ type memoryDocuments struct {
 	projection     documents.Projection
 	reference      documents.ArtifactReference
 	edit           documents.EditRequest
+	correction     documents.CorrectionRequest
 	deletion       documents.DeleteRequest
 	key            string
 	retention      time.Duration
@@ -112,11 +113,26 @@ func (m *memoryDocuments) file(owner string) (documents.ArtifactReference, error
 func (m *memoryDocuments) ReadPageOriginal(_ context.Context, owner, document, page string) (documents.PageOriginal, error) {
 	return m.file(owner)
 }
+func (m *memoryDocuments) ReadCorrectionArtifact(_ context.Context, owner, document, page string) (documents.ArtifactReference, error) {
+	return m.file(owner)
+}
 func (m *memoryDocuments) ReadPageThumbnail(_ context.Context, owner, document, page string) (documents.ArtifactReference, error) {
 	return m.file(owner)
 }
 func (m *memoryDocuments) ReadCurrentOutput(_ context.Context, owner, document string) (documents.ArtifactReference, error) {
 	return m.file(owner)
+}
+func (m *memoryDocuments) ApplyCorrection(_ context.Context, owner string, r documents.CorrectionRequest, retention time.Duration) (documents.Projection, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.correction, m.retention = r, retention
+	return m.projection, m.allow(owner)
+}
+func (m *memoryDocuments) UndoCorrection(_ context.Context, owner string, r documents.CorrectionRequest, retention time.Duration) (documents.Projection, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.correction, m.retention = r, retention
+	return m.projection, m.allow(owner)
 }
 
 type scanFixture struct {

@@ -35,7 +35,7 @@ func TestHistoryProjectionQueryCountIsIndependentOfDocumentCount(t *testing.T) {
 			if err != nil || next != nil || len(values) != count {
 				t.Fatal(len(values), next, err)
 			}
-			if calls.Load() != 3 {
+			if calls.Load() != 4 {
 				t.Fatal("history queries grew with document count", count, calls.Load())
 			}
 			if values[0].ID != docA || values[0].ActiveJobID == nil || *values[0].ActiveJobID != jobA {

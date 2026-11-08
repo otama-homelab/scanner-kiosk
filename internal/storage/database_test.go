@@ -84,7 +84,7 @@ func TestMigrationIdentityChecksumAndPrivateFiles(t *testing.T) {
 			}
 			expected := 5
 			if kind == Documents {
-				expected = 19
+				expected = 20
 			}
 			var count int
 			if e = db.QueryRow("SELECT count(*) FROM schema_migrations").Scan(&count); e != nil || count != expected {

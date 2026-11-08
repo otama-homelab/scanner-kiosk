@@ -5,6 +5,7 @@ const iconPaths: Partial<Record<Key, string>> = {
  rotate: '<path d="M20 7v5h-5M20 12a8 8 0 1 0-2 5"/>',
  moveEarlier: '<path d="m6 12 6-6 6 6M12 6v14"/>',
  moveLater: '<path d="m6 12 6 6 6-6M12 4v14"/>',
+ correctionCompare: '<path d="M4 7h16M7 4v6M17 4v6M4 17h16M7 14v6M17 14v6"/>',
  deletePage: trash,
  deleteDocument: trash,
  gridView: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',

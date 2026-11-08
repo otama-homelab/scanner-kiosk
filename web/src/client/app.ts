@@ -5,6 +5,7 @@ import {deletionDialog} from './deletion';
 import {ocrControls} from './ocr';
 import {passwordLogin} from './login';
 import {captureControls} from './capture';
+import {correctionControl} from './correction';
 import {importControls} from './import';
 import {messages,type Key} from './messages';
 let locale:'en'|'ja'='en';try{if(localStorage.getItem('scanner.locale')==='ja')locale='ja'}catch{}
@@ -188,6 +189,7 @@ function pdfPreview(documentID:string,page:any,index:number,thumbnail=false){
 }
 
 function showDocument(doc:any){
+ const showGeneration=generation;
  if(!opaque(doc.id)||!Number.isSafeInteger(doc.revision)||!Array.isArray(doc.pages))throw new Error('Invalid document');const active=activeJob(doc),photo=doc.purpose==='photo';const header=document.createElement('div');header.className='document-header';const title=document.createElement('div');const name=text('h1',documentName(doc));name.dataset.documentTitle=doc.id;title.append(name);document.title=documentName(doc)+' · Scanner';title.append(text('p',`${t('expires')}: ${new Intl.DateTimeFormat(locale,{dateStyle:'medium',timeStyle:'short'}).format(new Date(doc.expires_at))}`));header.append(title);main.append(header);const toolbar=document.createElement('div');toolbar.className='document-toolbar';main.append(toolbar);const secondary=document.createElement('details');secondary.className='document-more';secondary.append(text('summary',t('documentOptions')));const other=document.createElement('div');other.className='document-more-actions';other.append(documentDeleteButton(doc));secondary.append(other);
  if(active){const save=button(photo?'saveImage':'savePDF',()=>{});save.disabled=true;save.className='primary';toolbar.append(save);const progress=text('p',t('preparingFile'));progress.id='document-progress';progress.dataset.jobId=active;progress.setAttribute('role','status');toolbar.append(progress,processingGauge(progress.id));const cancel=button('cancel',()=>void mutation(cancel,async()=>{await api('/api/jobs/'+active+'/cancel','POST',undefined,requestKey());await render()}));cancel.dataset.jobCancel='true';toolbar.append(cancel);void loadJob(active,generation,0,true)}
  if(doc.output?.revision===doc.revision){const link=document.createElement('a');link.href='/api/documents/'+doc.id+'/download';link.className='download-link';link.textContent=t(photo?'saveImage':'savePDF');toolbar.append(link)}
@@ -220,6 +222,15 @@ function showDocument(doc:any){
   const actions=document.createElement('div');actions.className='page-actions';const number=text('span',`${t('page')} ${index+1}`);number.className='page-number';if(!photo)actions.append(number);
   const add=(label:Key,action:()=>void,unavailable=false)=>{const control=button(label,action);control.dataset.pageAction=label;control.disabled=!editable||unavailable;control.dataset.unavailable=String(control.disabled);controls.push(control);actions.append(iconButton(control,label));return control};
   const rotateKey=requestKey();add('rotate',()=>void edit(page.id,'rotate',async()=>{await api('/api/documents/'+doc.id+'/pages/'+page.id,'PATCH',{rotation:(page.rotation+90)%360},rotateKey,doc.revision)}));
+  if(page.correction&&page.source_type!=='pdf'){
+   const correction=correctionControl({documentID:doc.id,pageID:page.id,originalURL:preview.dataset?.preview||page.preview_url,revision:doc.revision,correction:page.correction,current:()=>showGeneration===generation,nextKey:requestKey,
+    apply:(suggestion,source,key,signal)=>api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction','POST',{suggestion_id:suggestion,source_sha256:source},key,doc.revision,signal),
+    undo:(key,signal)=>api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction','DELETE',undefined,key,doc.revision,signal),
+    changed:()=>void render(),
+    classify:err=>err instanceof APIError&&(err.status===409||err.status===412)?{message:t('changed'),unknown:false}:err instanceof APIError?{message:t('correctionFailed'),unknown:false}:{message:t('correctionUnknown'),unknown:true},
+    labels:{compare:t('correctionCompare'),title:t('correctionTitle'),original:t('correctionOriginal'),suggested:t('correctionSuggested'),apply:t('correctionApply'),keep:t('correctionKeep'),undo:t('correctionUndo'),reprocess:t('correctionReprocess'),unsafe:t('correctionUnsafe'),transform:t('correctionTransform'),confidence:t('correctionConfidence'),unavailable:t('correctionUnavailable')}});
+   correction.button.disabled=!editable;correction.button.dataset.unavailable=String(correction.button.disabled);controls.push(correction.button);actions.append(iconButton(correction.button,'correctionCompare'));disposePreviews.push(correction.dispose);
+  }
   if(!photo)for(const delta of [-1,1]){const order=doc.pages.map((item:any)=>item.id);const target=index+delta;if(target>=0&&target<order.length)[order[index],order[target]]=[order[target],order[index]];const key=requestKey();add(delta<0?'moveEarlier':'moveLater',()=>void edit(page.id,delta<0?'moveEarlier':'moveLater',async()=>{await api('/api/documents/'+doc.id+'/pages/order','PUT',{page_ids:order},key,doc.revision)}),target<0||target>=order.length)}
   if(doc.pages.length===1){const remove=documentDeleteButton(doc,photo?'deletePhoto':'deletePage');remove.disabled=!editable;remove.dataset.unavailable=String(remove.disabled);controls.push(remove);actions.append(iconButton(remove,'deletePage'))}else{
   const deleteKey=requestKey();add('deletePage',()=>{
