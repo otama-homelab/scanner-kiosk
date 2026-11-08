@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -81,43 +82,9 @@ func TestEvaluateC1Command(t *testing.T) {
 
 func TestCompareCompletePhysicalMatrix(t *testing.T) {
 	root := t.TempDir()
-	targetPath := filepath.Join(root, "target.json")
-	if err := os.WriteFile(targetPath, cliTargetJSON(), 0o600); err != nil {
-		t.Fatal(err)
-	}
-	var receipts []string
-	timings := map[string][]int64{
-		"c1": {10, 20, 30},
-		"e1": {11, 21, 31},
-		"e2": {12, 22, 32},
-	}
-	sequences := map[string][]int{
-		"c1": {10, 20, 30},
-		"e1": {11, 21, 31},
-		"e2": {12, 22, 32},
-	}
-	order := []string{"c1", "e1", "e2", "e2", "e1", "c1", "e1", "c1", "e2"}
-	counts := map[string]int{}
-	for index, arm := range order {
-		counts[arm]++
-		name := arm + "-" + string(rune('1'+counts[arm]-1)) + ".png"
-		imagePath := filepath.Join(root, name)
-		if err := os.WriteFile(imagePath, cliMarkerPNG(t, arm), 0o600); err != nil {
-			t.Fatal(err)
-		}
-		receiptPath := filepath.Join(root, arm+"-"+string(rune('1'+counts[arm]-1))+".json")
-		if err := writeCLIReceipt(receiptPath, arm, name, sequences[arm][counts[arm]-1],
-			timings[arm][counts[arm]-1], index); err != nil {
-			t.Fatal(err)
-		}
-		receipts = append(receipts, receiptPath)
-	}
-	args := []string{"compare", "--target", targetPath}
-	for _, path := range receipts {
-		args = append(args, "--receipt", path)
-	}
+	matrix := writePhysicalMatrix(t, root)
 	var stdout, stderr bytes.Buffer
-	if code := run(context.Background(), args, &stdout, &stderr); code != 0 {
+	if code := run(context.Background(), compareArgs(matrix.target, matrix.receipts), &stdout, &stderr); code != 0 {
 		t.Fatalf("compare failed: %d %s %s", code, stderr.String(), stdout.String())
 	}
 	var evidence struct {
@@ -182,6 +149,228 @@ func TestCompareCompletePhysicalMatrix(t *testing.T) {
 		regionRetention(e2.Regions, "edge") != 0 || regionRetention(e2.Regions, "content") != 1 {
 		t.Fatalf("retention c1=%+v e1=%+v e2=%+v", c1.Regions, e1.Regions, e2.Regions)
 	}
+}
+
+func TestCompareRejectsIncompleteOrMismatchedMatrix(t *testing.T) {
+	cases := map[string]func(*testing.T, string, *cliPhysicalMatrix) []string{
+		"missing-arm": func(_ *testing.T, _ string, matrix *cliPhysicalMatrix) []string {
+			return matrix.receipts[:6]
+		},
+		"duplicate-sequence": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[1], root, "duplicate-sequence", func(value map[string]any) {
+				value["sequence"] = float64(10)
+			})
+			return replaceReceipt(matrix.receipts, 1, path)
+		},
+		"non-alternating-group": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[1], root, "non-alternating", func(value map[string]any) {
+				value["arm"] = "c1"
+				value["sequence"] = float64(9)
+			})
+			return replaceReceipt(matrix.receipts, 1, path)
+		},
+		"mixed-target": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[2], root, "mixed-target", func(value map[string]any) {
+				value["target_sha256"] = strings.Repeat("b", 64)
+			})
+			return replaceReceipt(matrix.receipts, 2, path)
+		},
+		"mixed-device": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[3], root, "mixed-device", func(value map[string]any) {
+				value["device"] = "other-scanner"
+			})
+			return replaceReceipt(matrix.receipts, 3, path)
+		},
+		"mixed-firmware": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[4], root, "mixed-firmware", func(value map[string]any) {
+				value["firmware"] = "9.99"
+			})
+			return replaceReceipt(matrix.receipts, 4, path)
+		},
+		"mixed-settings": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[5], root, "mixed-settings", func(value map[string]any) {
+				value["resolution"] = float64(600)
+			})
+			return replaceReceipt(matrix.receipts, 5, path)
+		},
+		"duplicate-path": func(_ *testing.T, _ string, matrix *cliPhysicalMatrix) []string {
+			return append(append([]string(nil), matrix.receipts...), matrix.receipts[0])
+		},
+		"tampered-png-hash": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[0], root, "tampered-hash", func(value map[string]any) {
+				value["sha256"] = strings.Repeat("0", 64)
+			})
+			return replaceReceipt(matrix.receipts, 0, path)
+		},
+	}
+	for name, mutate := range cases {
+		t.Run(name, func(t *testing.T) {
+			root := t.TempDir()
+			matrix := writePhysicalMatrix(t, root)
+			receipts := mutate(t, root, &matrix)
+			assertIncomplete(t, matrix.target, receipts)
+		})
+	}
+}
+
+func TestCompareRejectsUnsafeEvidence(t *testing.T) {
+	cases := map[string]func(*testing.T, string, *cliPhysicalMatrix) []string{
+		"absolute-image": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[0], root, "absolute", func(value map[string]any) {
+				value["image"] = filepath.Join(root, "c1-1.png")
+			})
+			return replaceReceipt(matrix.receipts, 0, path)
+		},
+		"parent-image": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			path := mutateReceipt(t, matrix.receipts[0], root, "parent", func(value map[string]any) {
+				value["image"] = "../c1-1.png"
+			})
+			return replaceReceipt(matrix.receipts, 0, path)
+		},
+		"symlink-image": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			if err := os.Symlink(filepath.Join(root, "c1-1.png"), filepath.Join(root, "linked.png")); err != nil {
+				t.Fatal(err)
+			}
+			path := mutateReceipt(t, matrix.receipts[0], root, "symlink", func(value map[string]any) {
+				value["image"] = "linked.png"
+			})
+			return replaceReceipt(matrix.receipts, 0, path)
+		},
+		"non-png": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			if err := os.WriteFile(filepath.Join(root, "not-image.png"), []byte("not png"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			path := mutateReceipt(t, matrix.receipts[0], root, "non-png", func(value map[string]any) {
+				value["image"] = "not-image.png"
+			})
+			return replaceReceipt(matrix.receipts, 0, path)
+		},
+		"oversized-image": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			file, err := os.Create(filepath.Join(root, "oversized.png"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err = file.Truncate(maxImageBytes + 1); err != nil {
+				file.Close()
+				t.Fatal(err)
+			}
+			if err = file.Close(); err != nil {
+				t.Fatal(err)
+			}
+			path := mutateReceipt(t, matrix.receipts[0], root, "oversized", func(value map[string]any) {
+				value["image"] = "oversized.png"
+			})
+			return replaceReceipt(matrix.receipts, 0, path)
+		},
+		"empty-c1-region": func(t *testing.T, root string, matrix *cliPhysicalMatrix) []string {
+			imagePath := filepath.Join(root, "empty.png")
+			if err := os.WriteFile(imagePath, cliBlankPNG(t), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			path := mutateReceipt(t, matrix.receipts[0], root, "empty-c1", func(value map[string]any) {
+				value["image"] = "empty.png"
+			})
+			return replaceReceipt(matrix.receipts, 0, path)
+		},
+	}
+	for name, mutate := range cases {
+		t.Run(name, func(t *testing.T) {
+			root := t.TempDir()
+			matrix := writePhysicalMatrix(t, root)
+			receipts := mutate(t, root, &matrix)
+			assertIncomplete(t, matrix.target, receipts)
+		})
+	}
+}
+
+type cliPhysicalMatrix struct {
+	target   string
+	receipts []string
+}
+
+func writePhysicalMatrix(t *testing.T, root string) cliPhysicalMatrix {
+	t.Helper()
+	targetPath := filepath.Join(root, "target.json")
+	if err := os.WriteFile(targetPath, cliTargetJSON(), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	var receipts []string
+	timings := map[string][]int64{
+		"c1": {10, 20, 30},
+		"e1": {11, 21, 31},
+		"e2": {12, 22, 32},
+	}
+	sequences := map[string][]int{
+		"c1": {10, 20, 30},
+		"e1": {11, 21, 31},
+		"e2": {12, 22, 32},
+	}
+	order := []string{"c1", "e1", "e2", "e2", "e1", "c1", "e1", "c1", "e2"}
+	counts := map[string]int{}
+	for index, arm := range order {
+		counts[arm]++
+		name := arm + "-" + string(rune('1'+counts[arm]-1)) + ".png"
+		imagePath := filepath.Join(root, name)
+		if err := os.WriteFile(imagePath, cliMarkerPNG(t, arm), 0o600); err != nil {
+			t.Fatal(err)
+		}
+		receiptPath := filepath.Join(root, arm+"-"+string(rune('1'+counts[arm]-1))+".json")
+		if err := writeCLIReceipt(receiptPath, arm, name, sequences[arm][counts[arm]-1],
+			timings[arm][counts[arm]-1], index); err != nil {
+			t.Fatal(err)
+		}
+		receipts = append(receipts, receiptPath)
+	}
+	return cliPhysicalMatrix{target: targetPath, receipts: receipts}
+}
+
+func mutateReceipt(t *testing.T, path, root, name string, mutate func(map[string]any)) string {
+	t.Helper()
+	value, err := readJSONMap(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mutate(value)
+	body, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	output := filepath.Join(root, name+".json")
+	if err := os.WriteFile(output, body, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return output
+}
+
+func replaceReceipt(receipts []string, index int, replacement string) []string {
+	output := append([]string(nil), receipts...)
+	output[index] = replacement
+	return output
+}
+
+func assertIncomplete(t *testing.T, target string, receipts []string) {
+	t.Helper()
+	var stdout, stderr bytes.Buffer
+	if code := run(context.Background(), compareArgs(target, receipts), &stdout, &stderr); code == 0 {
+		var value map[string]any
+		_ = json.Unmarshal(stdout.Bytes(), &value)
+		t.Fatalf("incomplete evidence accepted with status %q", value["status"])
+	}
+	var value struct {
+		Status string   `json:"status"`
+		Issues []string `json:"issues"`
+	}
+	if err := json.Unmarshal(stdout.Bytes(), &value); err != nil || value.Status != "incomplete" || len(value.Issues) == 0 {
+		t.Fatalf("evidence=%+v err=%v stderr=%s", value, err, stderr.String())
+	}
+}
+
+func compareArgs(target string, receipts []string) []string {
+	args := []string{"compare", "--target", target}
+	for _, path := range receipts {
+		args = append(args, "--receipt", path)
+	}
+	return args
 }
 
 func regionRetention(regions []struct {
@@ -280,6 +469,21 @@ func cliMarkerPNG(t *testing.T, arm string) []byte {
 			for x := 16; x < 24; x++ {
 				bitmap.Set(x, y, color.Black)
 			}
+		}
+	}
+	var output bytes.Buffer
+	if err := png.Encode(&output, bitmap); err != nil {
+		t.Fatal(err)
+	}
+	return output.Bytes()
+}
+
+func cliBlankPNG(t *testing.T) []byte {
+	t.Helper()
+	bitmap := image.NewRGBA(image.Rect(0, 0, 40, 20))
+	for y := 0; y < 20; y++ {
+		for x := 0; x < 40; x++ {
+			bitmap.Set(x, y, color.White)
 		}
 	}
 	var output bytes.Buffer
