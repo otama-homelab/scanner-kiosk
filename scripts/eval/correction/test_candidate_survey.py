@@ -134,6 +134,30 @@ class CandidateSurveyTest(unittest.TestCase):
         self.assertLessEqual(non_heavy, 2)
         self.assertLessEqual(heavy, 1)
 
+    def test_selected_prototypes_have_resolved_execution_evidence(self):
+        for candidate_id in self.matrix["prototype_selection"]:
+            candidate = self.by_id[candidate_id]
+            prototype = candidate["prototype"]
+            with self.subTest(candidate=candidate_id):
+                self.assertIn(prototype["execution_status"], {"measured", "unavailable"})
+                if prototype["execution_status"] == "measured":
+                    evidence = prototype.get("evidence")
+                    self.assertIsInstance(evidence, dict)
+                    for key in (
+                        "harness_protocol", "harness_command", "measured_at",
+                        "fixture", "quality_status", "resource_status", "report",
+                    ):
+                        self.assertTrue(evidence.get(key), key)
+                    self.assertNotRegex(
+                        evidence["harness_command"],
+                        r"(?:/private/|file:)",
+                    )
+                    self.assertTrue(evidence["report"].endswith("45-CORRECTION-CANDIDATES.md"))
+                    self.assertIn(evidence["quality_status"], {"passed", "failed", "unavailable"})
+                else:
+                    self.assertTrue(prototype.get("missing_dependencies"))
+                    self.assertTrue(prototype.get("reason"))
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
