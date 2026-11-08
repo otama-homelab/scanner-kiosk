@@ -22,7 +22,7 @@ type Options={
  nextKey:()=>string;
  apply:(suggestion:string,source:string,key:string,signal:AbortSignal)=>Promise<{revision:number}>;
  undo:(key:string,signal:AbortSignal)=>Promise<{revision:number}>;
- changed:(revision:number)=>void;
+ changed:(revision:number)=>Promise<void>;
  classify:(error:unknown)=>{message:string;unknown:boolean};
  labels:{
   compare:string;
@@ -46,10 +46,16 @@ export function correctionControl(options:Options){
  let dialog:HTMLDialogElement|null=null,controller:AbortController|null=null,pending=false;
  const unsafe=options.correction.risk_flags.length>0;
  const close=()=>{if(!pending)dialog?.close()};
+ const focusReplacement=()=>{
+  const card=Array.from(document.querySelectorAll<HTMLElement>('[data-page-id]')).find(element=>element.dataset.pageId===options.pageID);
+  const replacement=card?.querySelector<HTMLButtonElement>('[data-page-action="correction"]');
+  if(replacement){replacement.focus();return}
+  const heading=document.querySelector<HTMLElement>('h1[data-document-title]');if(heading){heading.tabIndex=-1;heading.focus()}
+ };
  const open=()=>{
   if(dialog||!options.current())return;
   const key=options.nextKey();
-  dialog=document.createElement('dialog');dialog.className='correction-dialog';dialog.setAttribute('aria-labelledby','correction-title');
+  const currentDialog=document.createElement('dialog');currentDialog.className='correction-dialog';currentDialog.setAttribute('aria-labelledby','correction-title');dialog=currentDialog;let restoreFocus=true;
   const title=document.createElement('h2');title.id='correction-title';title.textContent=options.labels.title;
   const compare=document.createElement('div');compare.className='correction-compare';
   let originalState:'pending'|'loaded'|'failed'='pending',correctionState:'pending'|'loaded'|'failed'='pending';
@@ -81,7 +87,7 @@ export function correctionControl(options:Options){
   refreshApply();
   const run=async(action:(signal:AbortSignal)=>Promise<{revision:number}>)=>{
    if(pending||!options.current())return;pending=true;refreshApply();keep.disabled=true;controller=new AbortController();
-   try{const result=await action(controller.signal);if(options.current()){dialog?.close();options.changed(result.revision)}}catch(error){const result=options.classify(error);notice.textContent=result.message;if(result.unknown){apply.disabled=true;keep.disabled=false}else{refreshApply()}}finally{controller=null;pending=false;if(dialog?.open)keep.disabled=false}
+   try{const result=await action(controller.signal);if(options.current()){restoreFocus=false;currentDialog.close();await options.changed(result.revision);focusReplacement()}}catch(error){const result=options.classify(error);notice.textContent=result.message;if(result.unknown){apply.disabled=true;keep.disabled=false}else{refreshApply()}}finally{controller=null;pending=false;if(currentDialog.open)keep.disabled=false}
   };
   apply.addEventListener('click',()=>void run(signal=>options.apply(options.correction.suggestion_id,options.correction.source_sha256,key,signal)));
   actions.append(keep,apply);
@@ -92,10 +98,10 @@ export function correctionControl(options:Options){
    reprocess.addEventListener('click',()=>void run(signal=>options.undo(key,signal)));
    actions.append(undo,reprocess);
   }
-  dialog.append(title,compare,details,notice,actions);
-  dialog.addEventListener('close',()=>{controller?.abort();dialog=null},{once:true});
-  dialog.addEventListener('cancel',event=>{if(pending)event.preventDefault()});
-  document.body.append(dialog);dialog.showModal();keep.focus();
+  currentDialog.append(title,compare,details,notice,actions);
+  currentDialog.addEventListener('close',()=>{controller?.abort();currentDialog.remove();if(dialog===currentDialog)dialog=null;if(restoreFocus&&button.isConnected)button.focus()},{once:true});
+  currentDialog.addEventListener('cancel',event=>{if(pending)event.preventDefault()});
+  document.body.append(currentDialog);currentDialog.showModal();keep.focus();
  };
  button.addEventListener('click',open);
  return {button,element:button,dispose:()=>{controller?.abort();dialog?.remove();dialog=null}};

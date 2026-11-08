@@ -226,7 +226,7 @@ function showDocument(doc:any){
    const correction=correctionControl({documentID:doc.id,pageID:page.id,originalURL:preview.dataset?.preview||page.preview_url,revision:doc.revision,correction:page.correction,current:()=>showGeneration===generation,nextKey:requestKey,
     apply:(suggestion,source,key,signal)=>api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction','POST',{suggestion_id:suggestion,source_sha256:source},key,doc.revision,signal),
     undo:(key,signal)=>api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction','DELETE',undefined,key,doc.revision,signal),
-    changed:()=>void render(),
+    changed:render,
     classify:err=>err instanceof APIError&&(err.status===409||err.status===412)?{message:t('changed'),unknown:false}:err instanceof APIError?{message:t('correctionFailed'),unknown:false}:{message:t('correctionUnknown'),unknown:true},
     labels:{compare:t('correctionCompare'),title:t('correctionTitle'),original:t('correctionOriginal'),suggested:t('correctionSuggested'),apply:t('correctionApply'),keep:t('correctionKeep'),undo:t('correctionUndo'),reprocess:t('correctionReprocess'),unsafe:t('correctionUnsafe'),transform:t('correctionTransform'),confidence:t('correctionConfidence'),unavailable:t('correctionUnavailable'),previewUnavailable:t('correctionPreviewUnavailable')}});
    correction.button.disabled=!editable;correction.button.dataset.unavailable=String(correction.button.disabled);controls.push(correction.button);actions.append(iconButton(correction.button,'correctionCompare'));disposePreviews.push(correction.dispose);
