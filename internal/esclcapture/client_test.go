@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"image"
+	"image/jpeg"
 	"image/png"
 	"net/http"
 	"net/http/httptest"
@@ -79,6 +80,40 @@ func TestDirectESCLNoRetry(t *testing.T) {
 	}
 	if calls.Load() != 1 {
 		t.Fatalf("capture retried: %d", calls.Load())
+	}
+}
+
+func TestDirectESCLJPEGCapture(t *testing.T) {
+	var original bytes.Buffer
+	if err := jpeg.Encode(&original, image.NewRGBA(image.Rect(0, 0, 3, 2)), nil); err != nil {
+		t.Fatal(err)
+	}
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method + " " + r.URL.Path {
+		case "POST /eSCL/ScanJobs":
+			w.Header().Set("Location", "/eSCL/ScanJobs/job_jpeg_001")
+			w.WriteHeader(http.StatusCreated)
+		case "GET /eSCL/ScanJobs/job_jpeg_001/NextDocument":
+			w.Header().Set("Content-Type", "image/jpeg")
+			_, _ = w.Write(original.Bytes())
+		case "DELETE /eSCL/ScanJobs/job_jpeg_001":
+			w.WriteHeader(http.StatusOK)
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer server.Close()
+	client, err := New(Options{Endpoint: server.URL + "/eSCL", Region: Region{Width: 3, Height: 2}, Resolution: 300, Color: "rgb", Timeout: 5 * time.Second, MaxResponseBytes: 1 << 20, MaxImageBytes: 1 << 20, MaxPixels: 100})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := client.Capture(context.Background())
+	if err != nil || result.MediaType != "image/jpeg" || result.Width != 3 || result.Height != 2 {
+		t.Fatalf("capture: %+v %v", result, err)
+	}
+	decoded, err := png.Decode(bytes.NewReader(result.Image))
+	if err != nil || decoded.Bounds().Dx() != 3 || decoded.Bounds().Dy() != 2 {
+		t.Fatalf("normalized image: %v", err)
 	}
 }
 
