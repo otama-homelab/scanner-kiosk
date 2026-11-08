@@ -6,10 +6,11 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"image"
 	"image/color"
 	"image/png"
-	"errors"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -17,6 +18,7 @@ import (
 	"testing"
 
 	"scanner-kiosk/internal/evaluation"
+	"scanner-kiosk/internal/pdfassemble"
 )
 
 func TestCandidateCLIHelper(t *testing.T) {
@@ -28,6 +30,47 @@ func TestCandidateCLIHelper(t *testing.T) {
 	pages := strings.Split(os.Getenv("SCANNER_EVAL_SOURCE_PAGES"), ",")
 	if output == "" || originalID == "" || len(pages) == 0 {
 		os.Exit(9)
+	}
+	if os.Getenv("EVAL_CANDIDATE_CLI_MODE") == "complete" {
+		raw, err := os.ReadFile(os.Getenv("SCANNER_EVAL_INPUT"))
+		if err != nil {
+			os.Exit(12)
+		}
+		config, _, err := image.DecodeConfig(bytes.NewReader(raw))
+		if err != nil {
+			os.Exit(12)
+		}
+		pdf, err := pdfassemble.Build(context.Background(), []pdfassemble.Page{{
+			ID: pages[0], Size: "a4", Color: "color", Width: config.Width, Height: config.Height,
+			Open: func(context.Context) (io.ReadCloser, error) {
+				return io.NopCloser(bytes.NewReader(raw)), nil
+			},
+		}}, "lossless", pdfassemble.Options{
+			MaxInputBytes: 64 << 20, MaxOutputBytes: 64 << 20, MaxPagePixels: 80_000_000,
+			MaxPages: 8, JPEGQuality: 92,
+		})
+		if err != nil {
+			os.Exit(12)
+		}
+		if err := os.WriteFile(filepath.Join(output, "candidate.pdf"), pdf, 0o600); err != nil {
+			os.Exit(12)
+		}
+		result := map[string]any{
+			"format": "scanner-eval-candidate-result", "version": 1, "candidate_id": "candidate_cli_helper_001",
+			"artifacts": []any{map[string]any{
+				"id": "artifact_cli_pdf_0001", "role": "pdf", "path": "candidate.pdf",
+				"media_type": "application/pdf", "source_pages": pages,
+				"parents": []string{originalID}, "algorithm": "cli-helper", "algorithm_version": "1",
+			}},
+		}
+		body, err := json.Marshal(result)
+		if err != nil {
+			os.Exit(12)
+		}
+		if err := os.WriteFile(filepath.Join(output, "result.json"), body, 0o600); err != nil {
+			os.Exit(12)
+		}
+		os.Exit(0)
 	}
 	if err := os.MkdirAll(filepath.Join(output, "texts"), 0o700); err != nil {
 		os.Exit(10)
@@ -522,6 +565,133 @@ func TestBenchmarkAndCompareCommandsPreserveFailure(t *testing.T) {
 	}
 }
 
+func TestPrivateFixtureBenchmarkEndToEnd(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	publicCatalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	work := t.TempDir()
+	privateCatalog, privateRoot, _, digest := writePrivateCLIFixtureForOutputs(
+		t, work, "fixture_owner_private_pdf_001", "private.pdf.png", []evaluation.ArtifactRole{evaluation.RolePDF},
+	)
+	runDir := filepath.Join(work, "benchmark")
+	configPath := writeCLICandidateConfigMode(t, work, "complete")
+	result := runHelper(t, "benchmark", "--catalog", publicCatalog, "--candidate", configPath,
+		"--fixture", "fixture_owner_private_pdf_001", "--output", runDir, "--cold", "1", "--warm", "1",
+		"--timeout-seconds", "20", "--max-rss-mib", "2048", "--max-temp-disk-mib", "1024",
+		"--private-catalog", privateCatalog, "--private-root", privateRoot)
+	if result.code != 0 {
+		t.Fatalf("private benchmark exit=%d stderr=%s", result.code, result.stderr)
+	}
+	var summary struct {
+		Status        string `json:"status"`
+		FixtureID     string `json:"fixture_id"`
+		FixtureSHA256 string `json:"fixture_sha256"`
+		Samples       []struct {
+			FixtureSHA256 string `json:"fixture_sha256"`
+		} `json:"samples"`
+	}
+	if err := json.Unmarshal([]byte(result.stdout), &summary); err != nil {
+		t.Fatalf("invalid summary: %v: %s", err, result.stdout)
+	}
+	if summary.Status != "complete" || summary.FixtureID != "fixture_owner_private_pdf_001" ||
+		summary.FixtureSHA256 != digest || len(summary.Samples) != 2 {
+		t.Fatalf("unexpected private benchmark: %+v", summary)
+	}
+	for _, sample := range summary.Samples {
+		if sample.FixtureSHA256 != digest {
+			t.Fatalf("sample lost private fixture identity: %+v", sample)
+		}
+	}
+	if err := filepath.WalkDir(runDir, func(path string, entry os.DirEntry, err error) error {
+		if err != nil || entry.IsDir() || filepath.Ext(path) != ".json" {
+			return err
+		}
+		body, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		for _, secret := range []string{privateRoot, "private.pdf.png"} {
+			if strings.Contains(string(body), secret) {
+				t.Fatalf("private source leaked into %s: %s", path, body)
+			}
+		}
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+	comparisonPath := filepath.Join(work, "comparison.json")
+	compare := runHelper(t, "compare", "--receipt", runDir, "--output", comparisonPath)
+	if compare.code != 0 {
+		t.Fatalf("compare failed: %s", compare.stderr)
+	}
+	body, err := os.ReadFile(comparisonPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var comparison struct {
+		Groups []struct {
+			FixtureID     string `json:"fixture_id"`
+			FixtureSHA256 string `json:"fixture_sha256"`
+		} `json:"groups"`
+	}
+	if err := json.Unmarshal(body, &comparison); err != nil {
+		t.Fatal(err)
+	}
+	if len(comparison.Groups) != 1 || comparison.Groups[0].FixtureID != summary.FixtureID ||
+		comparison.Groups[0].FixtureSHA256 != digest {
+		t.Fatalf("comparison lost private fixture identity: %+v", comparison)
+	}
+}
+
+func TestPrivateFixtureBenchmarkMissingIsUnavailable(t *testing.T) {
+	root, err := filepath.Abs(filepath.Join("..", ".."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	publicCatalog := filepath.Join(root, "scripts", "fixtures", "evaluation", "catalog.json")
+	work := t.TempDir()
+	privateCatalog, privateRoot, _, _ := writePrivateCLIFixtureForOutputs(
+		t, work, "fixture_owner_private_pdf_001", "private.pdf.png", []evaluation.ArtifactRole{evaluation.RolePDF},
+	)
+	if err := os.Remove(filepath.Join(privateRoot, "owner", "private.pdf.png")); err != nil {
+		t.Fatal(err)
+	}
+	runDir := filepath.Join(work, "benchmark")
+	result := runHelper(t, "benchmark", "--catalog", publicCatalog,
+		"--candidate", writeCLICandidateConfigMode(t, work, "complete"),
+		"--fixture", "fixture_owner_private_pdf_001", "--output", runDir, "--cold", "1", "--warm", "1",
+		"--timeout-seconds", "20", "--max-rss-mib", "2048", "--max-temp-disk-mib", "1024",
+		"--private-catalog", privateCatalog, "--private-root", privateRoot)
+	if result.code != 1 {
+		t.Fatalf("missing private benchmark exit=%d stderr=%s", result.code, result.stderr)
+	}
+	var summary struct {
+		Status       string `json:"status"`
+		FailureClass string `json:"failure_class"`
+		Samples      []any  `json:"samples"`
+		Metrics      struct {
+			Cold struct {
+				Samples int `json:"samples"`
+			} `json:"cold"`
+			Warm struct {
+				Samples int `json:"samples"`
+			} `json:"warm"`
+		} `json:"metrics"`
+	}
+	if err := json.Unmarshal([]byte(result.stdout), &summary); err != nil {
+		t.Fatalf("invalid unavailable summary: %v: %s", err, result.stdout)
+	}
+	if summary.Status != "unavailable" || summary.FailureClass != "fixture-unavailable" ||
+		len(summary.Samples) != 0 || summary.Metrics.Cold.Samples != 0 || summary.Metrics.Warm.Samples != 0 {
+		t.Fatalf("missing private fixture became a sample: %+v", summary)
+	}
+	if _, err := os.Stat(filepath.Join(runDir, "repetitions")); !errors.Is(err, os.ErrNotExist) {
+		t.Fatalf("candidate repetitions were created: %v", err)
+	}
+}
+
 func TestAnalyzeCorrectionsCommand(t *testing.T) {
 	root, err := filepath.Abs(filepath.Join("..", ".."))
 	if err != nil {
@@ -661,6 +831,10 @@ func makePrivatePNG(t *testing.T, fill color.RGBA) []byte {
 }
 
 func writePrivateCLIFixture(t *testing.T, root, fixtureID, filename string) (string, string, string, string) {
+	return writePrivateCLIFixtureForOutputs(t, root, fixtureID, filename, []evaluation.ArtifactRole{evaluation.RoleOCRText})
+}
+
+func writePrivateCLIFixtureForOutputs(t *testing.T, root, fixtureID, filename string, outputs []evaluation.ArtifactRole) (string, string, string, string) {
 	t.Helper()
 	privateRoot := filepath.Join(root, "private-root")
 	if err := os.MkdirAll(filepath.Join(privateRoot, "owner"), 0o700); err != nil {
@@ -678,7 +852,7 @@ func writePrivateCLIFixture(t *testing.T, root, fixtureID, filename string) (str
 		Fixtures: []evaluation.PrivateFixture{{
 			ID: fixtureID, Privacy: evaluation.PrivacyOwnerPrivate, MediaType: "image/png",
 			PageIDs: []string{"page_owner_private_001"}, Languages: []string{"ja"},
-			DocumentType: "owner-text", ExpectedOutputs: []evaluation.ArtifactRole{evaluation.RoleOCRText},
+			DocumentType: "owner-text", ExpectedOutputs: outputs,
 			RelativePath: relativePath, SHA256: digest, Bytes: int64(len(body)),
 		}},
 	}
@@ -714,6 +888,10 @@ func rewritePrivateCLICatalog(t *testing.T, path string, mutate func(*evaluation
 }
 
 func writeCLICandidateConfig(t *testing.T, work string) string {
+	return writeCLICandidateConfigMode(t, work, "")
+}
+
+func writeCLICandidateConfigMode(t *testing.T, work, mode string) string {
 	t.Helper()
 	executable, err := filepath.Abs(os.Args[0])
 	if err != nil {
@@ -724,11 +902,15 @@ func writeCLICandidateConfig(t *testing.T, work string) string {
 		t.Fatal(err)
 	}
 	sum := sha256.Sum256(body)
+	environment := []string{"EVAL_CANDIDATE_CLI_HELPER=1"}
+	if mode != "" {
+		environment = append(environment, "EVAL_CANDIDATE_CLI_MODE="+mode)
+	}
 	config := map[string]any{
 		"format": "scanner-eval-candidate", "version": 1,
 		"candidate_id": "candidate_cli_helper_001", "executable": executable,
 		"executable_sha256": hex.EncodeToString(sum[:]), "argv": []string{"-test.run=^TestCandidateCLIHelper$"},
-		"environment": []string{"EVAL_CANDIDATE_CLI_HELPER=1"}, "candidate_version": "1",
+		"environment": environment, "candidate_version": "1",
 		"sources":        []any{map[string]string{"name": "scanner-kiosk", "version": "test", "license": "test-only"}},
 		"operator_steps": []string{},
 	}
