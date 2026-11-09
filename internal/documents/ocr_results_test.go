@@ -42,6 +42,30 @@ func ocrCandidateFixture(t *testing.T) (*fixture, OCRResultBundle) {
 	return f, b
 }
 
+func TestReOCRCandidateInvalidatedByEdit(t *testing.T) {
+	f, b := completedOCRCandidate(t)
+	ctx := context.Background()
+	edited, err := f.store.Edit(ctx, alice, EditRequest{DocumentID: docA, Revision: 1, IdempotencyKey: "request_edit_candidate_001", Operation: "rotate", PageID: b.Pages[0].PageID, Rotation: 90}, time.Hour)
+	if err != nil || edited.Revision != 2 {
+		t.Fatal(edited, err)
+	}
+	request := ocrResultRequest(b)
+	request.Revision = 2
+	if _, err = f.store.AdoptOCRResult(ctx, alice, request, time.Hour); err == nil {
+		t.Fatal("adopted source-mismatched candidate")
+	}
+	old, err := f.store.ReadOCRResult(ctx, alice, docA, b.ID)
+	if err != nil || old.InputRevision != 1 || old.Pages[0].Rotation != 0 {
+		t.Fatal("edit rewrote or lost immutable result", old, err)
+	}
+	if _, err = f.store.ReadOCRResultArtifact(ctx, alice, docA, b.ID, b.Pages[0].PageID, "original"); err != nil {
+		t.Fatal("edit lost source artifact", err)
+	}
+	if _, err = f.store.ReadCurrentOutput(ctx, alice, docA); err == nil {
+		t.Fatal("ordinary stale output survived edit")
+	}
+}
+
 func TestReOCRCandidateCompletion(t *testing.T) {
 	t.Run("effective correction identity", func(t *testing.T) {
 		f, b := ocrCandidateFixture(t)

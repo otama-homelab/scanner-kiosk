@@ -62,7 +62,7 @@ func (s *Store) readOCRBundle(ctx context.Context, tx *sql.Tx, owner, documentID
 func (s *Store) ReadOCRResult(ctx context.Context, owner, documentID, resultID string) (OCRResultProjection, error) {
 	var out OCRResultProjection
 	err := s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
-		b, summary, _, err := s.readOCRBundle(ctx, tx, owner, documentID, resultID)
+		b, summary, expires, err := s.readOCRBundle(ctx, tx, owner, documentID, resultID)
 		if err != nil {
 			return err
 		}
@@ -78,6 +78,9 @@ func (s *Store) ReadOCRResult(ctx context.Context, owner, documentID, resultID s
 				page.Artifacts[kind] = summary.URL + "/pages/" + p.PageID + "/" + kind
 			}
 			out.Pages = append(out.Pages, page)
+		}
+		if s.now().UnixMilli() >= expires {
+			return ErrUnavailable
 		}
 		return nil
 	})

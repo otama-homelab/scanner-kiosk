@@ -67,6 +67,13 @@ func (s *Store) FinishStoppedRender(ctx context.Context, owner, jobID string, st
 			if pages > 0 {
 				state = "review"
 			}
+			var current int
+			if err = tx.QueryRowContext(ctx, `SELECT count(*) FROM published_outputs p JOIN artifacts a ON a.id=p.artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id WHERE p.document_id=? AND p.owner_id=? AND p.revision=? AND a.state='ready' AND a.kind='output' AND (a.input_revision=p.revision OR EXISTS(SELECT 1 FROM ocr_results r WHERE r.document_id=p.document_id AND r.owner_id=p.owner_id AND r.output_artifact_id=a.id AND r.input_revision=a.input_revision AND r.state='adopted' AND r.adopted_revision=p.revision))`, document, owner, docRevision).Scan(&current); err != nil {
+				return ErrStorage
+			}
+			if current == 1 {
+				state = "ready"
+			}
 			if _, err = tx.ExecContext(ctx, "UPDATE documents SET state=? WHERE id=? AND owner_id=?", state, document, owner); err != nil {
 				return ErrStorage
 			}

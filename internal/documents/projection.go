@@ -87,7 +87,8 @@ func (s *Store) ReadDocument(ctx context.Context, owner, documentID string) (Pro
 // scalar metadata stays inside this statement, never one API query per document.
 const projectionColumns = `d.id,d.revision,d.purpose,d.state,d.created_at_ms,d.expires_at_ms,
  CASE WHEN d.purpose='photo' THEN COALESCE((SELECT COALESCE(json_extract(j.configuration_json,'$.settings.format'),json_extract(j.configuration_json,'$.photo_format')) FROM jobs j WHERE j.document_id=d.id AND j.owner_id=d.owner_id AND j.kind IN ('scan','render') AND COALESCE(json_extract(j.configuration_json,'$.settings.format'),json_extract(j.configuration_json,'$.photo_format')) IN ('jpeg','png') ORDER BY j.input_revision DESC,j.created_at_ms DESC,j.id DESC LIMIT 1),'jpeg') END,
- (SELECT j.id FROM jobs j WHERE j.document_id=d.id AND j.owner_id=d.owner_id AND j.kind!='cleanup' AND j.state IN ('queued','running','cancelling','reconciling') LIMIT 1)`
+ (SELECT j.id FROM jobs j WHERE j.document_id=d.id AND j.owner_id=d.owner_id AND j.kind!='cleanup' AND j.state IN ('queued','running','cancelling','reconciling') LIMIT 1),
+ (SELECT json_group_array(json_object('id',r.id,'state',r.state,'input_revision',r.input_revision)) FROM ocr_results r WHERE r.document_id=d.id AND r.owner_id=d.owner_id AND (r.state='candidate' OR r.state='adopted' AND r.id=(SELECT r2.id FROM ocr_results r2 WHERE r2.document_id=d.id AND r2.owner_id=d.owner_id AND r2.state='adopted' ORDER BY r2.adopted_revision DESC LIMIT 1)))`
 
 type projectionRow interface{ Scan(...any) error }
 
@@ -95,12 +96,19 @@ func scanProjection(row projectionRow) (Projection, error) {
 	var p Projection
 	var created, expires int64
 	var photo, active sql.NullString
-	if err := row.Scan(&p.ID, &p.Revision, &p.Purpose, &p.State, &created, &expires, &photo, &active); err != nil {
+	var results string
+	if err := row.Scan(&p.ID, &p.Revision, &p.Purpose, &p.State, &created, &expires, &photo, &active, &results); err != nil {
 		return Projection{}, readError(err)
 	}
 	p.CreatedAt = time.UnixMilli(created).UTC()
 	p.ExpiresAt = time.UnixMilli(expires).UTC()
 	p.Pages = []PageProjection{}
+	if json.Unmarshal([]byte(results), &p.OCRResults) != nil || len(p.OCRResults) > 2 {
+		return Projection{}, ErrStorage
+	}
+	for i := range p.OCRResults {
+		p.OCRResults[i].URL = "/api/documents/" + p.ID + "/ocr-results/" + p.OCRResults[i].ID
+	}
 	if photo.Valid {
 		p.PhotoFormat = &photo.String
 	}
@@ -261,26 +269,6 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 		output.DownloadURL = "/api/documents/" + document + "/download"
 		values[i].Output = &output
 		values[i].ReadyRevision = &output.Revision
-	}
-	if rows.Err() != nil {
-		return ErrStorage
-	}
-	rows.Close()
-	// At most the candidate and the latest adopted result are advertised. Older
-	// source-labelled results remain accessible by their immutable result identity.
-	rows, err = tx.QueryContext(ctx, `SELECT r.document_id,r.id,r.state,r.input_revision FROM ocr_results r WHERE r.owner_id=? AND r.document_id IN (`+selected+`) AND (r.state='candidate' OR r.state='adopted' AND r.id=(SELECT r2.id FROM ocr_results r2 WHERE r2.document_id=r.document_id AND r2.owner_id=r.owner_id AND r2.state='adopted' ORDER BY r2.adopted_revision DESC LIMIT 1))`, args...)
-	if err != nil {
-		return ErrStorage
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var doc string
-		var result OCRResultSummary
-		if err = rows.Scan(&doc, &result.ID, &result.State, &result.InputRevision); err != nil {
-			return ErrStorage
-		}
-		result.URL = "/api/documents/" + doc + "/ocr-results/" + result.ID
-		values[positions[doc]].OCRResults = append(values[positions[doc]].OCRResults, result)
 	}
 	if rows.Err() != nil {
 		return ErrStorage

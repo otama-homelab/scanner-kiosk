@@ -5,7 +5,82 @@ import (
 	"database/sql"
 	"errors"
 	"testing"
+	"time"
 )
+
+func TestReOCRCleanupHistory(t *testing.T) {
+	for _, state := range []string{"candidate", "adopted", "discarded"} {
+		for _, committed := range []bool{false, true} {
+			t.Run(state+map[bool]string{false: " rollback", true: " commit"}[committed], func(t *testing.T) {
+				f, b := completedOCRCandidate(t)
+				ctx := context.Background()
+				revision := int64(1)
+				var err error
+				if state == "adopted" {
+					_, err = f.store.AdoptOCRResult(ctx, alice, ocrResultRequest(b), time.Hour)
+					revision = 2
+				} else if state == "discarded" {
+					_, err = f.store.DiscardOCRResult(ctx, alice, ocrResultRequest(b), time.Hour)
+				}
+				if err != nil {
+					t.Fatal(err)
+				}
+				count := scalar(t, f.docs, `SELECT count(*) FROM artifacts WHERE document_id=?`, docA)
+				cleanup, err := f.store.RequestDelete(ctx, alice, DeleteRequest{DocumentID: docA, Revision: revision, IdempotencyKey: "request_reocr_cleanup_001"}, time.Hour)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if _, err = f.store.ReadOCRResult(ctx, alice, docA, b.ID); err == nil {
+					t.Fatal("deletion did not revoke metadata")
+				}
+				if _, err = f.store.ReadOCRResultArtifact(ctx, alice, docA, b.ID, b.Pages[0].PageID, "text"); err == nil {
+					t.Fatal("deletion did not revoke content")
+				}
+				if _, err = f.store.ClaimCleanup(ctx, alice, cleanup.ID, runner); err != nil {
+					t.Fatal(err)
+				}
+				work, err := f.store.LoadCleanupWork(ctx, alice, cleanup.ID, runner, 100)
+				if err != nil || len(work.Files) != count {
+					t.Fatal("history missing from physical cleanup manifest", len(work.Files), count, err)
+				}
+				acknowledgeAll(t, f, cleanup.ID, work)
+				original := f.store.commit
+				f.store.commit = func(tx *sql.Tx) error {
+					if committed {
+						if err := tx.Commit(); err != nil {
+							return err
+						}
+					}
+					return errors.New("lost cleanup response")
+				}
+				if err = f.store.FinishCleanup(ctx, alice, cleanup.ID, runner); !errors.Is(err, ErrCommitUncertain) {
+					t.Fatal(err)
+				}
+				recorded, err := f.store.CleanupFinishedRecorded(ctx, alice, cleanup.ID, runner)
+				if err != nil || recorded != committed {
+					t.Fatal(recorded, err)
+				}
+				f.store.commit = original
+				if !committed {
+					if err = f.store.FinishCleanup(ctx, alice, cleanup.ID, runner); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if scalar(t, f.docs, `SELECT count(*) FROM ocr_results WHERE document_id=?`, docA) != 0 || scalar(t, f.docs, `SELECT count(*) FROM artifacts WHERE document_id=?`, docA) != 0 {
+					t.Fatal("result history leaked after cleanup")
+				}
+				rows, err := f.docs.Query(`PRAGMA foreign_key_check`)
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer rows.Close()
+				if rows.Next() {
+					t.Fatal("foreign key integrity lost")
+				}
+			})
+		}
+	}
+}
 
 func claimedCleanup(t *testing.T) (*fixture, string, CleanupWork) {
 	t.Helper()

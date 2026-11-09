@@ -45,7 +45,7 @@ func TestReOCRResultReads(t *testing.T) {
 }
 
 func TestReOCRResultCrossOwner(t *testing.T) {
-	for _, mode := range []string{"foreign", "disabled", "expired", "artifact"} {
+	for _, mode := range []string{"foreign", "disabled", "expired", "expires during read", "artifact"} {
 		t.Run(mode, func(t *testing.T) {
 			f, b := completedOCRCandidate(t)
 			owner := alice
@@ -57,6 +57,15 @@ func TestReOCRResultCrossOwner(t *testing.T) {
 				must(t, f.state, `UPDATE principals SET disabled_at_ms=2000 WHERE id=?`, alice)
 			case "expired":
 				f.now = 10000
+			case "expires during read":
+				calls := 0
+				f.store.now = func() time.Time {
+					calls++
+					if calls > 1 {
+						return time.UnixMilli(10000)
+					}
+					return time.UnixMilli(2000)
+				}
 			case "artifact":
 				kind = "unknown"
 			}
