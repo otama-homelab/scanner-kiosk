@@ -10,7 +10,7 @@ This is a nonproduction experiment for Canon TS8130 input behavior. The shipped 
 | E1 | `scanner-escl-eval` | direct eSCL fixed region with `MustHonor=true`, no Intent |
 | E2 | `scanner-escl-eval` | same region plus one device-advertised Intent |
 
-All arms use the same physical target, region, color and DPI. Other-model evidence is not TS8130 evidence. The helper accepts the TS8130-advertised `image/jpeg` as well as `image/png`; both are decoded under byte/pixel bounds and retained for comparison as PNG. JPEG media type, returned byte count and returned-byte SHA256 remain in the receipt, while the normalized PNG is the local image evidence.
+All arms use the same physical target, region, color and DPI. Other-model evidence is not TS8130 evidence. The helper requests the TS8130-advertised `image/jpeg` in both ScanSettings and HTTP Accept. It accepts `image/jpeg` as well as `image/png`; both are decoded under byte/pixel bounds and retained for comparison as PNG. JPEG media type, returned byte count and returned-byte SHA256 remain in the receipt, while the normalized PNG is the local image evidence.
 
 ## Target oracle
 
@@ -99,7 +99,7 @@ go run ./cmd/scanner-escl-eval capture \
 
 E2 adds `--arm e2 --intent Document` only when the device advertises that Intent.
 
-The helper performs one `POST /ScanJobs`, one `NextDocument` GET and one job DELETE. It disables proxy, redirects, inherited cookies/credentials, compression and automatic retries, and validates bounded PNG/JPEG bytes and pixels.
+The helper performs one `POST /ScanJobs`, one `NextDocument` GET and one job DELETE. After the image is fully read and validated, DELETE 404 is accepted as an already-removed completed job; other non-2xx cleanup responses still fail. Errors identify the operation and HTTP status without exposing endpoints or document bytes. It disables proxy, redirects, inherited cookies/credentials, compression and automatic retries, and validates bounded PNG/JPEG bytes and pixels.
 
 ## Compare
 

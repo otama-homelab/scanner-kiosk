@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -114,12 +115,12 @@ func (c *Client) Capture(ctx context.Context) (Result, error) {
 	request.Header.Set("Accept-Encoding", "identity")
 	response, err := c.http.Do(request)
 	if err != nil {
-		return Result{}, unavailable(ctx, err)
+		return Result{}, fmt.Errorf("create job: %w", unavailable(ctx, err))
 	}
 	location, locationErr := c.location(response)
 	response.Body.Close()
 	if locationErr != nil {
-		return Result{}, locationErr
+		return Result{}, fmt.Errorf("create job: HTTP %d or invalid location: %w", response.StatusCode, locationErr)
 	}
 	documentURL := *location
 	documentURL.Path = strings.TrimRight(documentURL.Path, "/") + "/NextDocument"
@@ -127,27 +128,27 @@ func (c *Client) Capture(ctx context.Context) (Result, error) {
 	if err != nil {
 		return Result{}, ErrInvalid
 	}
-	imageRequest.Header.Set("Accept", "image/png")
+	imageRequest.Header.Set("Accept", "image/jpeg")
 	imageRequest.Header.Set("Accept-Encoding", "identity")
 	imageResponse, err := c.http.Do(imageRequest)
 	if err != nil {
-		return Result{}, unavailable(ctx, err)
+		return Result{}, fmt.Errorf("read image: %w", unavailable(ctx, err))
 	}
 	defer imageResponse.Body.Close()
 	if imageResponse.StatusCode != http.StatusOK || imageResponse.ContentLength > c.options.MaxImageBytes {
-		return Result{}, ErrUnavailable
+		return Result{}, fmt.Errorf("read image: HTTP %d or oversized response: %w", imageResponse.StatusCode, ErrUnavailable)
 	}
 	returnedMediaType := mediaType(imageResponse.Header.Get("Content-Type"))
 	if returnedMediaType != "image/png" && returnedMediaType != "image/jpeg" {
-		return Result{}, ErrUnavailable
+		return Result{}, fmt.Errorf("read image: unsupported media type: %w", ErrUnavailable)
 	}
 	data, err := io.ReadAll(io.LimitReader(imageResponse.Body, c.options.MaxImageBytes+1))
 	if err != nil || int64(len(data)) > c.options.MaxImageBytes {
-		return Result{}, ErrUnavailable
+		return Result{}, fmt.Errorf("read image: incomplete or oversized body: %w", ErrUnavailable)
 	}
 	normalized, width, height, err := normalizeImage(data, returnedMediaType, c.options.MaxPixels, c.options.MaxImageBytes)
 	if err != nil {
-		return Result{}, ErrInvalid
+		return Result{}, fmt.Errorf("decode image: %w", ErrInvalid)
 	}
 	deleteRequest, err := http.NewRequestWithContext(ctx, http.MethodDelete, location.String(), nil)
 	if err != nil {
@@ -155,11 +156,12 @@ func (c *Client) Capture(ctx context.Context) (Result, error) {
 	}
 	deleteResponse, err := c.http.Do(deleteRequest)
 	if err != nil {
-		return Result{}, unavailable(ctx, err)
+		return Result{}, fmt.Errorf("delete job: %w", unavailable(ctx, err))
 	}
 	deleteResponse.Body.Close()
-	if deleteResponse.StatusCode < 200 || deleteResponse.StatusCode >= 300 {
-		return Result{}, ErrUnavailable
+	// TS8130 removes completed jobs; the image has already been read and validated.
+	if deleteResponse.StatusCode != http.StatusNotFound && (deleteResponse.StatusCode < 200 || deleteResponse.StatusCode >= 300) {
+		return Result{}, fmt.Errorf("delete job: HTTP %d: %w", deleteResponse.StatusCode, ErrUnavailable)
 	}
 	sum := sha256.Sum256(data)
 	arm := "e1"
@@ -252,7 +254,7 @@ func (c *Client) settings() ([]byte, error) {
 	output.WriteString(`<scan:ColorMode>` + color + `</scan:ColorMode>`)
 	output.WriteString(`<scan:XResolution>` + strconv.Itoa(c.options.Resolution) + `</scan:XResolution>`)
 	output.WriteString(`<scan:YResolution>` + strconv.Itoa(c.options.Resolution) + `</scan:YResolution>`)
-	output.WriteString(`<pwg:DocumentFormat>image/png</pwg:DocumentFormat>`)
+	output.WriteString(`<pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>`)
 	if c.options.Intent != "" {
 		output.WriteString(`<scan:Intent>`)
 		if err := xml.EscapeText(&output, []byte(c.options.Intent)); err != nil {

@@ -3,6 +3,7 @@ package esclcapture
 import (
 	"bytes"
 	"context"
+	"errors"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -28,6 +29,9 @@ func TestDirectESCLCapture(t *testing.T) {
 			w.Header().Set("Location", "/eSCL/ScanJobs/job_capture_001")
 			w.WriteHeader(http.StatusCreated)
 		case "GET /eSCL/ScanJobs/job_capture_001/NextDocument":
+			if r.Header.Get("Accept") != "image/jpeg" {
+				t.Errorf("TS8130 requires JPEG negotiation, got %q", r.Header.Get("Accept"))
+			}
 			gets.Add(1)
 			w.Header().Set("Content-Type", "image/png")
 			_, _ = w.Write(imageBytes)
@@ -54,6 +58,9 @@ func TestDirectESCLCapture(t *testing.T) {
 				t.Fatalf("capture: %+v %v", result, err)
 			}
 			hasIntent := strings.Contains(requestBody, "<scan:Intent>"+tc.intent+"</scan:Intent>")
+			if !strings.Contains(requestBody, "<pwg:DocumentFormat>image/jpeg</pwg:DocumentFormat>") {
+				t.Errorf("TS8130 requires advertised JPEG format: %s", requestBody)
+			}
 			if hasIntent != tc.want || !strings.Contains(requestBody, `pwg:MustHonor="true"`) || !strings.Contains(requestBody, "<pwg:InputSource>Platen</pwg:InputSource>") {
 				t.Fatalf("unexpected settings: %s", requestBody)
 			}
@@ -80,6 +87,58 @@ func TestDirectESCLNoRetry(t *testing.T) {
 	}
 	if calls.Load() != 1 {
 		t.Fatalf("capture retried: %d", calls.Load())
+	}
+}
+
+func TestDirectESCLCleanupFailureIdentifiesStage(t *testing.T) {
+	imageBytes := testPNG(t)
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodPost:
+			w.Header().Set("Location", "/eSCL/ScanJobs/test")
+			w.WriteHeader(http.StatusCreated)
+		case http.MethodGet:
+			w.Header().Set("Content-Type", "image/png")
+			_, _ = w.Write(imageBytes)
+		case http.MethodDelete:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	}))
+	defer server.Close()
+	client, err := New(Options{Endpoint: server.URL + "/eSCL", Region: Region{Width: 1, Height: 1}, Resolution: 300, Color: "rgb", Timeout: time.Second, MaxResponseBytes: 4096, MaxImageBytes: 4096, MaxPixels: 100})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = client.Capture(context.Background())
+	if !errors.Is(err, ErrUnavailable) || !strings.Contains(err.Error(), "delete job: HTTP 405") {
+		t.Fatalf("missing bounded stage diagnostic: %v", err)
+	}
+}
+
+func TestDirectESCLAlreadyRemovedJob(t *testing.T) {
+	imageBytes := testPNG(t)
+	var calls atomic.Int64
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls.Add(1)
+		switch r.Method {
+		case http.MethodPost:
+			w.Header().Set("Location", "/eSCL/ScanJobs/test")
+			w.WriteHeader(http.StatusCreated)
+		case http.MethodGet:
+			w.Header().Set("Content-Type", "image/png")
+			_, _ = w.Write(imageBytes)
+		case http.MethodDelete:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer server.Close()
+	client, err := New(Options{Endpoint: server.URL + "/eSCL", Region: Region{Width: 1, Height: 1}, Resolution: 300, Color: "rgb", Timeout: time.Second, MaxResponseBytes: 4096, MaxImageBytes: 4096, MaxPixels: 100})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := client.Capture(context.Background())
+	if err != nil || !bytes.Equal(result.Image, imageBytes) || calls.Load() != 3 {
+		t.Fatalf("completed image with absent job: %v, requests %d", err, calls.Load())
 	}
 }
 

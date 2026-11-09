@@ -185,7 +185,7 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		}
 		result, err := client.Capture(ctx)
 		if err != nil {
-			fmt.Fprintln(stderr, "scanner-escl-eval: unavailable")
+			fmt.Fprintln(stderr, "scanner-escl-eval:", err)
 			return 1
 		}
 		if err := os.WriteFile(filepath.Join(*output, "capture.png"), result.Image, 0o600); err != nil {
