@@ -39,6 +39,12 @@ func TestReOCRMixedDocument(t *testing.T)         { testRuntimeReOCRDocument(t, 
 func TestReOCRPDFOnlyDocument(t *testing.T)       { testRuntimeReOCRDocument(t, "pdf") }
 func TestReOCRPDFExistingTextPolicy(t *testing.T) { testRuntimeReOCRDocument(t, "existing-text") }
 
+func TestReOCREndToEndRetainsHistory(t *testing.T) {
+	if os.Getenv("SCANNER_TEST_TESSERACT_BINARY") == "" { t.Skip("requires caller-supplied pinned real Tesseract runtime") }
+	t.Setenv("SCANNER_TEST_REAL_REOCR", "1")
+	testRuntimeReOCRDocument(t,"mixed")
+}
+
 func testRuntimeReOCRDocument(t *testing.T, mode string) {
 	for _, kind := range []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PositionedText} {
 		t.Run(string(kind), func(t *testing.T) {
@@ -156,6 +162,7 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 			if mode == "mixed" && (bundle.Pages[0].CorrectionID != "suggestion_runtime_001" || bundle.Pages[0].EffectiveArtifactID != "corrected_runtime_001" || bundle.Pages[0].Preview.SHA256 != bundle.Pages[0].EffectiveSHA256) {
 				t.Fatal("current correction source was not recognized/previewed")
 			}
+			if os.Getenv("SCANNER_TEST_REAL_REOCR") == "1" && calls.Load() != 0 { t.Fatal("real native integration still used synthetic OCR provider") }
 		})
 	}
 }
