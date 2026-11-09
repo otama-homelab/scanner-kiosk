@@ -93,7 +93,7 @@ func fixtureWithPDF(t *testing.T, imported bool, requested ...documents.RenderSe
 		t.Fatal(err)
 	}
 	sqlExec(t, docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('original_render_001',?,?,'original','ready','original.png','image/png',?,?,1,?)`, document, owner, len(data), digest[:], now)
-	sqlExec(t, docs, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,rotation) VALUES('page_render_00001',?,?,0,'original_render_001','a5','gray',300,90)`, document, owner)
+	sqlExec(t, docs, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,rotation,pixel_width,pixel_height) VALUES('page_render_00001',?,?,0,'original_render_001','a5','gray',300,90,80,100)`, document, owner)
 	if imported {
 		data := invisibleLayer()
 		digest := sha256.Sum256(data)

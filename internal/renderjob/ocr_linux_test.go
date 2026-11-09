@@ -5,8 +5,12 @@ package renderjob
 import (
 	"bytes"
 	"context"
+	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"golang.org/x/image/font/gofont/goregular"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -14,8 +18,139 @@ import (
 	"time"
 
 	"scanner-kiosk/internal/documents"
+	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/pkg/ocrplugin"
 )
+
+type candidateProvider struct {
+	kind  ocrplugin.OutputKind
+	calls int
+}
+
+func (p *candidateProvider) Capabilities(context.Context) (ocrplugin.Capabilities, error) {
+	c, _ := (&layerProvider{}).Capabilities(context.Background())
+	c.Models[0].Outputs = []ocrplugin.OutputKind{p.kind}
+	return c, nil
+}
+func (p *candidateProvider) Run(ctx context.Context, r ocrplugin.Request, a ocrplugin.Access) (ocrplugin.Result, error) {
+	p.calls++
+	out := ocrplugin.Result{ModelVersion: r.ModelVersion}
+	for _, page := range r.Pages {
+		w, e := a.CreateOutput(ctx, r.Output)
+		if e != nil {
+			return out, e
+		}
+		data := []byte("REAL OCR TEXT")
+		if r.Output == ocrplugin.PositionedText {
+			data, _ = json.Marshal(ocrplugin.PositionedPage{PageID: page.ID, Width: page.Width, Height: page.Height, Spans: []ocrplugin.Span{{Text: "REAL OCR TEXT", Box: ocrplugin.Box{X: 2, Y: 3, Width: 60, Height: 10}}}})
+		}
+		if r.Output == ocrplugin.PDFTextLayer {
+			data = invisibleLayer()
+		}
+		if _, e = w.Write(data); e != nil {
+			return out, e
+		}
+		if e = w.Close(); e != nil {
+			return out, e
+		}
+		out.Pages = append(out.Pages, ocrplugin.PageResult{PageID: page.ID, ArtifactID: w.Reference(), Kind: r.Output})
+	}
+	return out, nil
+}
+
+type candidateRecords struct {
+	*faultRecords
+	provider *candidateProvider
+	db       *sql.DB
+}
+
+func (r *candidateRecords) SelectOCR(ctx context.Context, id string, req ocrplugin.Request) (ocrplugin.Provider, error) {
+	reg, e := ocrplugin.New(ctx, r.provider)
+	if e != nil {
+		return nil, e
+	}
+	return reg.Select(id, req)
+}
+func (*candidateRecords) OCRTextLayerFont(context.Context) ([]byte, error) { return goregular.TTF, nil }
+func candidateFixture(t *testing.T, kind ocrplugin.OutputKind) (*candidateRecords, string, string, pdfassemble.Options, documents.Export) {
+	t.Helper()
+	records, db, root, job, options := fixture(t)
+	p, e := Prepare(context.Background(), records, root, owner, job, runner, options)
+	if e != nil {
+		t.Fatal(e)
+	}
+	old, e := p.Publish(context.Background())
+	if e != nil {
+		t.Fatal(e)
+	}
+
+	a, e := records.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: document, Revision: 2, IdempotencyKey: "request_reocr_00001", ReOCR: true, ResolvedOutput: kind, Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, ProviderID: "testocr", ModelID: "installed", ModelVersion: "test-version", Languages: []string{"en"}, QualityPreset: "auto"}}, ReserveBytes: 1 << 20}, documents.AdmissionLimits{UserMaxBytes: 4 << 20, GlobalMaxBytes: 8 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, e = records.ClaimExport(context.Background(), owner, a.JobID, runner); e != nil {
+		t.Fatal(e)
+	}
+	return &candidateRecords{faultRecords: records, provider: &candidateProvider{kind: kind}, db: db}, root, a.JobID, options, old
+}
+func readCandidateBundle(t *testing.T, r *candidateRecords, job string) documents.OCRResultBundle {
+	t.Helper()
+	var raw string
+	if e := r.db.QueryRow("SELECT bundle_json FROM ocr_results WHERE job_id=?", job).Scan(&raw); e != nil {
+		t.Fatal(e)
+	}
+	var b documents.OCRResultBundle
+	if e := json.Unmarshal([]byte(raw), &b); e != nil {
+		t.Fatal(e)
+	}
+	return b
+}
+func TestReOCRWorkerCandidate(t *testing.T) { testWorkerCandidate(t, ocrplugin.PositionedText) }
+func TestReOCRWorkerTextOnly(t *testing.T)  { testWorkerCandidate(t, ocrplugin.Text) }
+func testWorkerCandidate(t *testing.T, kind ocrplugin.OutputKind) {
+	records, root, job, options, old := candidateFixture(t, kind)
+	p, e := Prepare(context.Background(), records, root, owner, job, runner, options)
+	if e != nil {
+		t.Fatalf("reviewable candidate preparation: %v", e)
+	}
+	defer p.Close()
+	if _, e = p.Publish(context.Background()); e != nil {
+		t.Fatal(e)
+	}
+	current, e := records.GetExport(context.Background(), owner, document)
+	if e != nil || current.ID != old.ID {
+		t.Fatal("candidate auto-adopted", e)
+	}
+	// Read the durable bundle through the actual documents database.
+	var raw string
+	// Store is embedded, so use the same read API used by result review.
+	_ = raw
+	if records.provider.calls != 1 {
+		t.Fatal("recognition repeated")
+	}
+	b := readCandidateBundle(t, records, job)
+	if len(b.Pages) != 1 || b.Pages[0].EffectiveArtifactID != "original_render_001" || b.Pages[0].Preview == nil {
+		t.Fatal("source bundle incomplete")
+	}
+	data, e := os.ReadFile(filepath.Join(root, b.Pages[0].Text.RelativePath))
+	if e != nil || !strings.Contains(string(data), "REAL OCR TEXT") {
+		t.Fatal("transcript missing", e)
+	}
+	if (b.Pages[0].Positions != nil) != (kind == ocrplugin.PositionedText) {
+		t.Fatal("invented or missing geometry")
+	}
+	for _, a := range []documents.ArtifactRecord{b.Output, b.Pages[0].Text, *b.Pages[0].Preview} {
+		f, e := os.Open(filepath.Join(root, a.RelativePath))
+		if e != nil {
+			t.Fatal(e)
+		}
+		_, e = io.Copy(io.Discard, f)
+		f.Close()
+		if e != nil {
+			t.Fatal(e)
+		}
+	}
+}
 
 type ocrRecords struct {
 	*faultRecords
