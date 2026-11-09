@@ -20,7 +20,18 @@ type CleanupWork struct {
 
 // cleanupBarrier is per-document: other documents may have independent work.
 // A terminal job with a retained reservation/lease is still unresolved.
-func cleanupBarrier(ctx context.Context, tx *sql.Tx, document, owner string) error {
+func cleanupBarrier(ctx context.Context, tx *sql.Tx, document, owner string, now int64) error {
+	// Only expired or terminal rows may release private descriptor/task detail.
+	if _, err := tx.ExecContext(ctx, retireDeliverySQL+` WHERE document_id=? AND owner_id=? AND state!='retired' AND (expires_at_ms<=? OR state IN ('confirmed','failed','cancelled'))`, document, owner, now); err != nil {
+		return ErrStorage
+	}
+	var pinned int
+	if err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM deliveries WHERE document_id=? AND owner_id=? AND state IN ('queued','attempted','accepted','unknown') AND expires_at_ms>?)`, document, owner, now).Scan(&pinned); err != nil {
+		return ErrStorage
+	}
+	if pinned != 0 {
+		return ErrConflict
+	}
 	var blocked int
 	err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM jobs WHERE document_id=? AND owner_id=? AND kind!='cleanup' AND state IN ('queued','running','cancelling','reconciling')) OR EXISTS(SELECT 1 FROM reservations r JOIN jobs j ON j.id=r.job_id AND j.owner_id=r.owner_id WHERE j.document_id=? AND j.owner_id=?) OR EXISTS(SELECT 1 FROM device_leases l JOIN jobs j ON j.id=l.job_id WHERE j.document_id=? AND j.owner_id=?)`, document, owner, document, owner, document, owner).Scan(&blocked)
 	if err != nil {
@@ -80,7 +91,7 @@ func (s *Store) claimCleanup(ctx context.Context, owner, jobID, previousRunner, 
 	if job.Configuration != `{"version":1}` || (budget == 0 && job.DeadlineAtMS <= now) {
 		return Job{}, ErrConflict
 	}
-	if err = cleanupBarrier(ctx, tx, job.DocumentID, owner); err != nil {
+	if err = cleanupBarrier(ctx, tx, job.DocumentID, owner, now); err != nil {
 		return Job{}, err
 	}
 	if previousRunner == "" {
@@ -174,7 +185,7 @@ func (s *Store) LoadCleanupWork(ctx context.Context, owner, jobID, runnerID stri
 	if err != nil {
 		return CleanupWork{}, ErrStorage
 	}
-	if err = cleanupBarrier(ctx, tx, work.Job.DocumentID, owner); err != nil {
+	if err = cleanupBarrier(ctx, tx, work.Job.DocumentID, owner, now); err != nil {
 		return CleanupWork{}, err
 	}
 	if err = cleanupManifest(ctx, tx, work.Job.DocumentID, owner, jobID); err != nil {
@@ -279,7 +290,7 @@ type CleanupCandidate struct{ OwnerID, JobID, PreviousRunner string }
 
 func (s *Store) NextCleanup(ctx context.Context) (CleanupCandidate, error) {
 	var candidate CleanupCandidate
-	err := s.documents.QueryRowContext(ctx, `SELECT j.id,j.owner_id,COALESCE(j.runner_id,'') FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.kind='cleanup' AND ((j.state='queued' AND j.runner_id IS NULL AND j.started_at_ms IS NULL AND j.heartbeat_at_ms IS NULL) OR (j.state='running' AND j.runner_id IS NOT NULL AND j.started_at_ms IS NOT NULL AND j.heartbeat_at_ms IS NOT NULL)) AND d.state IN ('deleting','expired') AND NOT EXISTS(SELECT 1 FROM jobs b WHERE b.document_id=d.id AND b.kind!='cleanup' AND b.state IN ('queued','running','cancelling','reconciling')) AND NOT EXISTS(SELECT 1 FROM reservations r JOIN jobs b ON b.id=r.job_id AND b.owner_id=r.owner_id WHERE b.document_id=d.id) AND NOT EXISTS(SELECT 1 FROM device_leases l JOIN jobs b ON b.id=l.job_id WHERE b.document_id=d.id) AND NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.document_id=d.id AND (a.state NOT IN ('ready','deleting') OR a.sha256 IS NULL OR length(a.sha256)!=32)) ORDER BY j.created_at_ms,j.id LIMIT 1`).Scan(&candidate.JobID, &candidate.OwnerID, &candidate.PreviousRunner)
+	err := s.documents.QueryRowContext(ctx, `SELECT j.id,j.owner_id,COALESCE(j.runner_id,'') FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.kind='cleanup' AND ((j.state='queued' AND j.runner_id IS NULL AND j.started_at_ms IS NULL AND j.heartbeat_at_ms IS NULL) OR (j.state='running' AND j.runner_id IS NOT NULL AND j.started_at_ms IS NOT NULL AND j.heartbeat_at_ms IS NOT NULL)) AND d.state IN ('deleting','expired') AND NOT EXISTS(SELECT 1 FROM jobs b WHERE b.document_id=d.id AND b.kind!='cleanup' AND b.state IN ('queued','running','cancelling','reconciling')) AND NOT EXISTS(SELECT 1 FROM reservations r JOIN jobs b ON b.id=r.job_id AND b.owner_id=r.owner_id WHERE b.document_id=d.id) AND NOT EXISTS(SELECT 1 FROM device_leases l JOIN jobs b ON b.id=l.job_id WHERE b.document_id=d.id) AND NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.document_id=d.id AND (a.state NOT IN ('ready','deleting') OR a.sha256 IS NULL OR length(a.sha256)!=32)) AND NOT EXISTS(SELECT 1 FROM deliveries x WHERE x.document_id=d.id AND x.owner_id=d.owner_id AND x.state IN ('queued','attempted','accepted','unknown') AND x.expires_at_ms>?) ORDER BY j.created_at_ms,j.id LIMIT 1`, s.now().UnixMilli()).Scan(&candidate.JobID, &candidate.OwnerID, &candidate.PreviousRunner)
 	if errors.Is(err, sql.ErrNoRows) {
 		return CleanupCandidate{}, ErrNoWork
 	}

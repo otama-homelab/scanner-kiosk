@@ -397,6 +397,91 @@ func TestDeliveryRecoveryAuthorizationAndPollBound(t *testing.T) {
 	}
 }
 
+func TestDeliveryCancelClaimRace(t *testing.T) {
+	for _, attempted := range []bool{false, true} {
+		t.Run(fmt.Sprint(attempted), func(t *testing.T) {
+			h := newDeliveryHarness(t)
+			ctx := context.Background()
+			if attempted {
+				if err := h.step(); err != nil {
+					t.Fatal(err)
+				}
+			}
+			got, err := h.store.CancelDelivery(ctx, deliveryOwner, h.d.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			wantState := "cancelled"
+			if attempted {
+				wantState = "accepted"
+			}
+			if got.State != wantState {
+				t.Fatal("local cancellation claimed remote rollback", got.State)
+			}
+			h.reopen(t)
+			if err = h.step(); err != nil {
+				t.Fatal(err)
+			}
+			wantPosts := int64(0)
+			if attempted {
+				wantPosts = 1
+			}
+			if h.posts.Load() != wantPosts {
+				t.Fatal("cancel changed remote attempt count", h.posts.Load())
+			}
+		})
+	}
+}
+
+func TestDeliveryBytesExpireThroughRealCleanup(t *testing.T) {
+	_, store, db, root := fixtureWithLifetime(t, 2*time.Second)
+	ctx := context.Background()
+	pdf := []byte("%PDF-1.4\nsynthetic expiry\n%%EOF")
+	hash := sha256.Sum256(pdf)
+	if err := os.WriteFile(filepath.Join(root, "delivery.pdf"), pdf, 0600); err != nil {
+		t.Fatal(err)
+	}
+	execute(t, db, `UPDATE documents SET state='ready' WHERE id=?`, document)
+	execute(t, db, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('delivery_expiry_output',?,?,'output','ready','delivery.pdf','application/pdf',?,?,1,?)`, document, owner, len(pdf), hash[:], time.Now().UnixMilli())
+	execute(t, db, `INSERT INTO published_outputs VALUES(?,?,1,'delivery_expiry_output')`, document, owner)
+	d, err := store.AdmitDelivery(ctx, owner, documents.DeliveryRequest{DocumentID: document, Revision: 1, IdempotencyKey: "delivery_expiry_request", DestinationID: "paperless-local", ConfigFingerprint: strings.Repeat("a", 64)})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = store.ClaimDeliveryAttempt(ctx, owner, d.ID, "delivery_expiry_runner"); err != nil {
+		t.Fatal(err)
+	}
+	if err = store.MarkDeliveryUnknown(ctx, owner, d.ID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err = store.RequestDelete(ctx, owner, documents.DeleteRequest{DocumentID: document, Revision: 1, IdempotencyKey: "delivery_expiry_delete"}, time.Hour); err != nil {
+		t.Fatal(err)
+	}
+	check := func(context.Context) error { return nil }
+	if handled, dispatchErr := dispatchCleanup(ctx, store, root, "delivery_cleanup_runner", 128<<20, time.Minute, check); dispatchErr != nil || handled {
+		t.Fatal("cleanup must skip a live delivery without stalling worker", handled, dispatchErr)
+	}
+	if _, err = os.Stat(filepath.Join(root, "delivery.pdf")); err != nil {
+		t.Fatal("active bytes removed", err)
+	}
+	if wait := time.Until(time.UnixMilli(d.ExpiresAtMS)) + 10*time.Millisecond; wait > 0 {
+		time.Sleep(wait)
+	}
+	if handled, err := dispatchCleanup(ctx, store, root, "delivery_cleanup_runner", 128<<20, time.Minute, check); err != nil || !handled {
+		t.Fatal("expired bytes not reclaimed", handled, err)
+	}
+	for _, file := range []string{"delivery.pdf", "original.png"} {
+		if _, err = os.Stat(filepath.Join(root, file)); !errors.Is(err, os.ErrNotExist) {
+			t.Fatal("expired private bytes retained", file, err)
+		}
+	}
+	var state string
+	var expiry int64
+	if err = db.QueryRow(`SELECT state,expires_at_ms FROM deliveries WHERE id=?`, d.ID).Scan(&state, &expiry); err != nil || state != "retired" || expiry != d.ExpiresAtMS {
+		t.Fatal("TTL/fence changed", state, expiry, err)
+	}
+}
+
 func testDeliveryLifecycle(t *testing.T, db *sql.DB, path string) {
 	ctx := context.Background()
 	owner, documentID := "principal_delivery_01", "document_delivery_01"

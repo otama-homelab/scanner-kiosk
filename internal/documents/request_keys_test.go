@@ -14,6 +14,84 @@ import (
 
 func agedKey(now int64, nonce int) string { return fmt.Sprintf("rq1_%013d_%032x", now, nonce) }
 
+func TestDeliveryReceiptRetirementNoResurrection(t *testing.T) {
+	ctx := context.Background()
+	for _, mode := range []string{"normal", "rollback", "ack-loss"} {
+		t.Run(mode, func(t *testing.T) {
+			f, b := completedOCRCandidate(t)
+			if _, err := f.store.AdoptOCRResult(ctx, alice, ocrResultRequest(b), time.Hour); err != nil {
+				t.Fatal(err)
+			}
+			r := deliveryRequest()
+			r.IdempotencyKey = agedKey(f.now, 77)
+			d, err := f.store.AdmitDelivery(ctx, alice, r)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err = f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, runner); err != nil {
+				t.Fatal(err)
+			}
+			if err = f.store.MarkDeliveryUnknown(ctx, alice, d.ID); err != nil {
+				t.Fatal(err)
+			}
+			f.now = 2000 + requestkey.Lifetime.Milliseconds()
+			if mode != "normal" {
+				f.store.commit = func(tx *sql.Tx) error {
+					if mode == "ack-loss" {
+						if err := tx.Commit(); err != nil {
+							return err
+						}
+					}
+					return errors.New("lost retirement ack")
+				}
+			}
+			n, err := f.store.PurgeExpiredRequestReceipts(ctx, 1)
+			if mode == "normal" {
+				if err != nil || n != 1 {
+					t.Fatal(n, err)
+				}
+			} else if !errors.Is(err, ErrCommitUncertain) {
+				t.Fatal("retirement uncertainty guessed", err)
+			}
+			reopenDelivery(t, f)
+			if mode == "rollback" {
+				if scalar(t, f.docs, `SELECT count(*) FROM delivery_receipts`) != 1 {
+					t.Fatal("rollback removed receipt")
+				}
+				return
+			}
+			if scalar(t, f.docs, `SELECT count(*) FROM delivery_receipts`) != 0 || scalar(t, f.docs, `SELECT retired_at_ms FROM request_retirement_fence`) != int(f.now) {
+				t.Fatal("aged delivery receipt not monotonically retired")
+			}
+			if _, err = f.store.AdmitDelivery(ctx, alice, r); !errors.Is(err, ErrGone) {
+				t.Fatal("old delivery key admitted", err)
+			}
+			normal := admissionRequest()
+			normal.IdempotencyKey = r.IdempotencyKey
+			if _, _, err = f.store.FindRender(ctx, alice, normal); !errors.Is(err, ErrGone) {
+				t.Fatal("retired delivery key became normal operation", err)
+			}
+			// A later live document with identical bytes cannot evade retired semantic evidence.
+			must(t, f.docs, `INSERT INTO documents(id,owner_id,purpose,state,revision,created_at_ms,expires_at_ms) VALUES('document_delivery_later',?,'document','ready',1,?,?)`, alice, f.now, f.now+10000)
+			must(t, f.docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('artifact_delivery_later','document_delivery_later',?,'output','ready','later.pdf','application/pdf',?,?,1,?)`, alice, d.Artifact.Size, d.Artifact.SHA256[:], f.now)
+			must(t, f.docs, `INSERT INTO published_outputs VALUES('document_delivery_later',?,1,'artifact_delivery_later')`, alice)
+			r.DocumentID = "document_delivery_later"
+			r.Revision = 1
+			r.IdempotencyKey = agedKey(f.now, 78)
+			if _, err = f.store.AdmitDelivery(ctx, alice, r); !errors.Is(err, ErrGone) {
+				t.Fatal("new key resurrected retired payload", err)
+			}
+			f.now = 2000
+			if _, _, err = f.store.FindRender(ctx, alice, normal); !errors.Is(err, ErrStorage) {
+				t.Fatal("clock rollback resurrected delivery key", err)
+			}
+			if scalar(t, f.docs, `SELECT count(*) FROM deliveries WHERE state='retired' AND task_id IS NULL AND relative_path='retired'`) != 1 {
+				t.Fatal("compact semantic fence lost")
+			}
+		})
+	}
+}
+
 func TestDeliveryRequestKeyNamespaceBothDirections(t *testing.T) {
 	ctx := context.Background()
 	for _, aged := range []bool{false, true} {

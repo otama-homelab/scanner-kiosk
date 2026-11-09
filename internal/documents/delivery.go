@@ -92,7 +92,14 @@ func (s *Store) AdmitDelivery(ctx context.Context, owner string, r DeliveryReque
 				return ErrGone
 			}
 			out, err = loadDelivery(ctx, tx, owner, prior)
-			return err
+			if err != nil {
+				return err
+			}
+			if out.State == "retired" || out.ExpiresAtMS <= now {
+				return ErrGone
+			}
+			var live int
+			return readError(tx.QueryRowContext(ctx, `SELECT 1 FROM documents WHERE id=? AND owner_id=? AND expires_at_ms>? AND state NOT IN ('deleting','expired')`, out.DocumentID, owner, now).Scan(&live))
 		}
 		if !errors.Is(err, sql.ErrNoRows) {
 			return ErrStorage

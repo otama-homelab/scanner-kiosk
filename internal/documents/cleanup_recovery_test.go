@@ -24,6 +24,196 @@ func TestDeliveryCleanupAndRetirement(t *testing.T) {
 	if scalar(t, f.docs, `SELECT count(*) FROM artifacts WHERE id=? AND state='ready'`, d.Artifact.ID) != 1 {
 		t.Fatal("active artifact removed")
 	}
+	if _, err = f.store.NextCleanup(ctx); !errors.Is(err, ErrNoWork) {
+		t.Fatal("delivery pin stalled cleanup dispatcher", err)
+	}
+	f.now = d.ExpiresAtMS
+	if _, err = f.store.ClaimCleanupAttempt(ctx, alice, job.ID, "", runner, time.Minute); err != nil {
+		t.Fatal("TTL did not release pin", err)
+	}
+	work, err := f.store.LoadCleanupWork(ctx, alice, job.ID, runner, 100)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, file := range work.Files {
+		if err = f.store.RecordCleanupRemoval(ctx, alice, job.ID, runner, removal(file, f.now)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err = f.store.FinishCleanup(ctx, alice, job.ID, runner); err != nil {
+		t.Fatal(err)
+	}
+	reopenDelivery(t, f)
+	if scalar(t, f.docs, `SELECT count(*) FROM artifacts WHERE document_id=?`, docA) != 0 {
+		t.Fatal("expired private artifact metadata retained")
+	}
+	if scalar(t, f.docs, `SELECT count(*) FROM deliveries WHERE id=? AND state='retired' AND document_id='retired' AND relative_path='retired' AND task_id IS NULL AND remote_document_id IS NULL AND expires_at_ms=10000`, d.ID) != 1 {
+		t.Fatal("retirement lost fence or kept private locators")
+	}
+	if _, err = f.store.AdmitDelivery(ctx, alice, deliveryRequest()); !errors.Is(err, ErrGone) {
+		t.Fatal("old key revived send", err)
+	}
+	if _, err = f.docs.Exec(`DELETE FROM deliveries WHERE id=?`, d.ID); err == nil {
+		t.Fatal("semantic evidence deletable")
+	}
+}
+
+func TestDeliveryCancelClaimRace(t *testing.T) {
+	ctx := context.Background()
+	for _, order := range []string{"cancel-first", "claim-first", "race"} {
+		t.Run(order, func(t *testing.T) {
+			f, d := readyDelivery(t)
+			if order == "cancel-first" {
+				if got, err := f.store.CancelDelivery(ctx, alice, d.ID); err != nil || got.State != "cancelled" {
+					t.Fatal(got, err)
+				}
+			}
+			if order == "claim-first" {
+				if _, err := f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, runner); err != nil {
+					t.Fatal(err)
+				}
+			}
+			start := make(chan struct{})
+			done := make(chan error, 2)
+			go func() { <-start; _, err := f.store.CancelDelivery(ctx, alice, d.ID); done <- err }()
+			go func() { <-start; _, err := f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, runner); done <- err }()
+			close(start)
+			for i := 0; i < 2; i++ {
+				if err := <-done; err != nil && !errors.Is(err, ErrConflict) {
+					t.Fatal(err)
+				}
+			}
+			reopenDelivery(t, f)
+			got, err := f.store.ReadDelivery(ctx, alice, d.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got.State == "cancelled" {
+				if got.AttemptedAtMS != 0 {
+					t.Fatal("attempted delivery called cancelled")
+				}
+			} else if got.State != "attempted" || got.AttemptedAtMS == 0 {
+				t.Fatal("race rewound attempt", got)
+			}
+			if order == "cancel-first" && got.State != "cancelled" {
+				t.Fatal("cancel did not win")
+			}
+			if order == "claim-first" && got.State != "attempted" {
+				t.Fatal("attempt incorrectly rolled back")
+			}
+		})
+	}
+}
+
+func TestDeliveryUnknownTTLRelease(t *testing.T) {
+	ctx := context.Background()
+	for _, state := range []string{"queued", "attempted", "unknown", "cancelled", "confirmed", "failed"} {
+		t.Run(state, func(t *testing.T) {
+			f, d := readyDelivery(t)
+			const task = "12345678-1234-4234-8234-123456789abc"
+			if state != "queued" && state != "cancelled" {
+				if _, err := f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, runner); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if state == "unknown" {
+				if err := f.store.MarkDeliveryUnknown(ctx, alice, d.ID); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if state == "cancelled" {
+				if _, err := f.store.CancelDelivery(ctx, alice, d.ID); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if state == "confirmed" || state == "failed" {
+				if err := f.store.AcceptDelivery(ctx, alice, d.ID, task); err != nil {
+					t.Fatal(err)
+				}
+				var err error
+				if state == "confirmed" {
+					err = f.store.ConfirmDelivery(ctx, alice, d.ID, task, 42, d.Artifact.SHA256)
+				} else {
+					err = f.store.FailDelivery(ctx, alice, d.ID, task)
+				}
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			job, err := f.store.RequestDelete(ctx, alice, DeleteRequest{DocumentID: docA, Revision: 2, IdempotencyKey: "delete_delivery_ttl"}, time.Hour)
+			if err != nil {
+				t.Fatal(err)
+			}
+			must(t, f.state, `UPDATE principals SET disabled_at_ms=2000 WHERE id=?`, alice)
+			active := state == "queued" || state == "attempted" || state == "unknown"
+			if active {
+				if _, err = f.store.ClaimCleanupAttempt(ctx, alice, job.ID, "", runner, time.Minute); !errors.Is(err, ErrConflict) {
+					t.Fatal("disabled owner released live bytes", err)
+				}
+				f.now = d.ExpiresAtMS
+			}
+			if _, err = f.store.ClaimCleanupAttempt(ctx, alice, job.ID, "", runner, time.Minute); err != nil {
+				t.Fatal("pin not released on terminal/TTL", err)
+			}
+			reopenDelivery(t, f)
+			if scalar(t, f.docs, `SELECT expires_at_ms FROM deliveries WHERE id=?`, d.ID) != int(d.ExpiresAtMS) {
+				t.Fatal("TTL extended")
+			}
+			if scalar(t, f.docs, `SELECT count(*) FROM deliveries WHERE id=? AND state='retired' AND task_id IS NULL AND remote_document_id IS NULL`, d.ID) != 1 {
+				t.Fatal("remote details survived expiry")
+			}
+		})
+	}
+}
+
+func TestDeliveryCleanupCommitUncertain(t *testing.T) {
+	ctx := context.Background()
+	for _, committed := range []bool{false, true} {
+		t.Run(map[bool]string{false: "rollback", true: "ack-loss"}[committed], func(t *testing.T) {
+			f, d := readyDelivery(t)
+			if _, err := f.store.CancelDelivery(ctx, alice, d.ID); err != nil {
+				t.Fatal(err)
+			}
+			job, err := f.store.RequestDelete(ctx, alice, DeleteRequest{DocumentID: docA, Revision: 2, IdempotencyKey: "delete_delivery_fault"}, time.Hour)
+			if err != nil {
+				t.Fatal(err)
+			}
+			f.store.commit = func(tx *sql.Tx) error {
+				if committed {
+					if err := tx.Commit(); err != nil {
+						return err
+					}
+				}
+				return errors.New("lost cleanup ack")
+			}
+			if _, err = f.store.ClaimCleanupAttempt(ctx, alice, job.ID, "", runner, time.Minute); !errors.Is(err, ErrCommitUncertain) {
+				t.Fatal(err)
+			}
+			reopenDelivery(t, f)
+			_, err = f.store.LoadCleanupWork(ctx, alice, job.ID, runner, 100)
+			if !committed {
+				if !errors.Is(err, ErrConflict) {
+					t.Fatal("rolled-back cleanup acquired IO", err)
+				}
+			} else {
+				if err != nil {
+					t.Fatal("known cleanup readback lost", err)
+				}
+				if _, err = f.store.ClaimCleanupAttempt(ctx, alice, job.ID, runner, successor, time.Minute); err != nil {
+					t.Fatal(err)
+				}
+				if _, err = f.store.LoadCleanupWork(ctx, alice, job.ID, runner, 100); !errors.Is(err, ErrConflict) {
+					t.Fatal("old cleanup runner retained authority", err)
+				}
+			}
+			if scalar(t, f.docs, `SELECT count(*) FROM deliveries`) != 1 {
+				t.Fatal("uncertain cleanup erased fence")
+			}
+			if _, err = f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, successor); err == nil {
+				t.Fatal("uncertain cleanup authorized send")
+			}
+		})
+	}
 }
 
 func TestCleanupTakeoverRetainsProgressAndFencesOldRunner(t *testing.T) {

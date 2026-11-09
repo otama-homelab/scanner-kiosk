@@ -161,7 +161,11 @@ func TestDeliveryDestinationDrift(t *testing.T) {
 }
 
 func TestDeliverySemanticAdmissionRace(t *testing.T) {
-	f, d := readyDelivery(t)
+	f, b := completedOCRCandidate(t)
+	if _, err := f.store.AdoptOCRResult(context.Background(), alice, ocrResultRequest(b), time.Hour); err != nil {
+		t.Fatal(err)
+	}
+	ids := make(chan string, 2)
 	var wg sync.WaitGroup
 	for _, key := range []string{"request_delivery_race1", "request_delivery_race2"} {
 		wg.Add(1)
@@ -170,12 +174,16 @@ func TestDeliverySemanticAdmissionRace(t *testing.T) {
 			r := deliveryRequest()
 			r.IdempotencyKey = key
 			got, err := f.store.AdmitDelivery(context.Background(), alice, r)
-			if err != nil || got.ID != d.ID {
+			if err != nil {
 				t.Error("semantic race created second send", got.ID, err)
 			}
+			ids <- got.ID
 		}(key)
 	}
 	wg.Wait()
+	if first, second := <-ids, <-ids; first == "" || first != second {
+		t.Fatal("concurrent new intents did not share first ledger", first, second)
+	}
 	if scalar(t, f.docs, `SELECT count(*) FROM deliveries`) != 1 {
 		t.Fatal("semantic fence lost race")
 	}

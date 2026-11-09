@@ -15,7 +15,7 @@ type CleanupRemoval struct {
 	RemovedAtMS int64
 }
 
-func cleanupIdentity(ctx context.Context, tx *sql.Tx, owner, job, runner string) (string, int64, error) {
+func cleanupIdentity(ctx context.Context, tx *sql.Tx, owner, job, runner string, now int64) (string, int64, error) {
 	var document string
 	var started int64
 	err := tx.QueryRowContext(ctx, `SELECT j.document_id,COALESCE(a.started_at_ms,j.started_at_ms) FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id LEFT JOIN cleanup_attempts a ON a.job_id=j.id AND a.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND j.runner_id=? AND j.kind='cleanup' AND j.state='running' AND j.started_at_ms IS NOT NULL AND (a.job_id IS NULL OR a.runner_id=j.runner_id) AND d.state IN ('deleting','expired')`, job, owner, runner).Scan(&document, &started)
@@ -25,7 +25,7 @@ func cleanupIdentity(ctx context.Context, tx *sql.Tx, owner, job, runner string)
 	if err != nil {
 		return "", 0, ErrStorage
 	}
-	if err = cleanupBarrier(ctx, tx, document, owner); err != nil {
+	if err = cleanupBarrier(ctx, tx, document, owner, now); err != nil {
 		return "", 0, err
 	}
 	return document, started, nil
@@ -43,7 +43,7 @@ func (s *Store) RecordCleanupRemoval(ctx context.Context, owner, job, runner str
 		return ErrStorage
 	}
 	defer tx.Rollback()
-	_, started, err := cleanupIdentity(ctx, tx, owner, job, runner)
+	_, started, err := cleanupIdentity(ctx, tx, owner, job, runner, s.now().UnixMilli())
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func (s *Store) FinishCleanup(ctx context.Context, owner, job, runner string) er
 		return ErrStorage
 	}
 	defer tx.Rollback()
-	document, _, err := cleanupIdentity(ctx, tx, owner, job, runner)
+	document, _, err := cleanupIdentity(ctx, tx, owner, job, runner, s.now().UnixMilli())
 	if err != nil {
 		return err
 	}
