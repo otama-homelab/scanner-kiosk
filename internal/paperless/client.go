@@ -44,20 +44,39 @@ type Task struct {
 	RelatedDocument *int64 `json:"related_document"`
 }
 
-func New(o Options) (*Client, error) {
-	u, err := url.Parse(o.BaseURL)
-	if err != nil || u == nil || u.Host == "" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || strings.ContainsAny(o.BaseURL, "\x00\r\n\t\\?#") || strings.IndexFunc(u.Path, unicode.IsControl) >= 0 || strings.HasSuffix(u.Host, ":") || u.Opaque != "" || u.RawPath != "" || u.Path != "" && u.Path != "/" && path.Clean(u.Path) != strings.TrimSuffix(u.Path, "/") {
-		return nil, ErrUnavailable
+// CanonicalBaseURL is shared by operator configuration and the adapter boundary.
+func CanonicalBaseURL(raw string, allowHTTP bool) (string, error) {
+	u, err := url.Parse(raw)
+	if err != nil || u == nil || len(raw) > 2048 || u.Host == "" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || strings.ContainsAny(raw, "\x00\r\n\t\\?#") || strings.IndexFunc(u.Path, unicode.IsControl) >= 0 || strings.HasSuffix(u.Host, ":") || u.Opaque != "" || u.RawPath != "" || u.Path != "" && u.Path != "/" && path.Clean(u.Path) != strings.TrimSuffix(u.Path, "/") {
+		return "", ErrUnavailable
 	}
-	if u.Scheme != "https" && !(u.Scheme == "http" && o.AllowHTTP) {
-		return nil, ErrUnavailable
+	ip := net.ParseIP(u.Hostname())
+	if u.Scheme != "https" && !(u.Scheme == "http" && allowHTTP && (strings.EqualFold(u.Hostname(), "localhost") || ip != nil && ip.IsLoopback())) {
+		return "", ErrUnavailable
 	}
 	if u.Port() != "" {
 		p, e := strconv.Atoi(u.Port())
 		if e != nil || p < 1 || p > 65535 {
-			return nil, ErrUnavailable
+			return "", ErrUnavailable
 		}
 	}
+	u.Host = strings.ToLower(u.Host)
+	u.Path = strings.TrimSuffix(u.Path, "/")
+	if u.Port() == "443" && u.Scheme == "https" {
+		u.Host = u.Hostname()
+		if strings.Contains(u.Host, ":") {
+			u.Host = "[" + u.Host + "]"
+		}
+	}
+	return u.String(), nil
+}
+
+func New(o Options) (*Client, error) {
+	base, err := CanonicalBaseURL(o.BaseURL, o.AllowHTTP)
+	if err != nil {
+		return nil, err
+	}
+	u, _ := url.Parse(base)
 	if len(o.Token) < 1 || len(o.Token) > 4096 || strings.ContainsAny(o.Token, "\x00\r\n\t ") || len(o.DestinationID) < 1 || len(o.DestinationID) > 128 {
 		return nil, ErrUnavailable
 	}

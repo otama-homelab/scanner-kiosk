@@ -47,6 +47,7 @@ type Config struct {
 	Scanners                                                                 []Scanner
 	ScannerDiscovery                                                         bool
 	ScannerTools                                                             ScannerTools
+	Paperless                                                                Paperless
 	// Duration and limit keys use their full environment names. Only the listed,
 	// validated values are exposed; plugins have independent configuration loaders.
 	Durations map[string]time.Duration
@@ -249,6 +250,11 @@ func load(lookup Lookup, role Role) (Config, error) {
 	case "debug", "info", "warn", "error":
 	default:
 		return invalid("SCANNER_LOG_LEVEL")
+	}
+	var err error
+	c.Paperless, err = LoadPaperless(lookup)
+	if err != nil {
+		return Config{}, err
 	}
 	return c, nil
 }
