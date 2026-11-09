@@ -111,7 +111,18 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 		}
 		var composed []byte
 		if page.MediaType == "application/pdf" {
-			composed, err = pdftextlayer.OverlayPDF(ctx, base, layer, remaining)
+			origin, inspectErr := pdftextlayer.PDFTextOrigin(ctx, base, options.MaxInputBytes)
+			if inspectErr != nil {
+				return nil, inspectErr
+			}
+			if origin == pdftextlayer.TextOriginRetainedSource {
+				// Validate the supplied layer even when source text wins. A corrupt
+				// candidate must never succeed merely because its layer is unused.
+				_, err = pdftextlayer.OverlayPDF(ctx, base, layer, remaining)
+				composed = base
+			} else {
+				composed, err = pdftextlayer.OverlayPDF(ctx, base, layer, remaining)
+			}
 		} else {
 			composed, err = pdftextlayer.Overlay(ctx, base, layer, page.Width, page.Height, remaining)
 		}

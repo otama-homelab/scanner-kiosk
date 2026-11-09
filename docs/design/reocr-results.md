@@ -1,0 +1,13 @@
+# 再OCR結果とPDFテキストの由来
+
+全ページを再認識し、新しい認識本文と位置情報を結果bundleの独立したレビュー用artifactにする。PDFの検索テキストと新しい認識結果は同一とは限らない。
+
+取り込みPDFに既存のnative textまたは不可視OCR textがある場合、元のテキスト・画像・ベクターを保持し、新しい認識レイヤーを重ねない。ページのPDF text originは`retained-source`。新しい認識本文は別artifactとして提示し、PDFに採用したという表示をしない。
+
+テキストのない画像PDFには新しい不可視レイヤーを重ね、originは`recognition`。画像を再ラスタライズして元PDFの代替にしない。元のMediaBox/CropBoxとintrinsic rotationを保持し、OCR座標は回転前のCropBoxへ比例配置する。表示回転は合成後に一度だけ適用する。レイヤーの縦横比がCropBoxと合わない場合は拒否する。
+
+`pdftextlayer.PDFTextOrigin`は既存の隔離native処理境界内で、上限付きの単一ページPDFをpdfcpuの構造検証・resource解析で検査する。Form内のfontも含め、font resourceが残るページは保守的に`retained-source`とする。これは文字列の抽出成功や新しいOCRとの一致を証明する判定ではない。使われないfontが残る特殊なPDFも保守的に保持する可能性がある。ブラウザーからの自己申告は採用しない。
+
+検査不能・不正PDF・能力のhash不一致・範囲外geometry・サイズ超過・キャンセルはcandidateを失敗させる。既存出力の置換は行わない。保持するページでも供給されたレイヤーを検証し、壊れた認識artifactを成功扱いにしない。scoped input/outputと共有byte budget、隔離プロセスの時間・メモリー制限を継続利用する。
+
+Workerの結果bundleとUIへのページ別origin接続は後続の46-10/46-11で行う。この合成層の独立検証はPopplerの`pdftotext`と`pdftoppm`で行う。実文書や外部OCR providerへは送信しない。

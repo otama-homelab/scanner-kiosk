@@ -49,6 +49,39 @@ func OverlayPDF(ctx context.Context, base, layer []byte, maxBytes int64) ([]byte
 	return overlay(ctx, base, layer, 0, 0, maxBytes, true)
 }
 
+const TextOriginRetainedSource = "retained-source"
+const TextOriginRecognition = "recognition"
+
+// PDFTextOrigin inspects a bounded single-page source in the native isolation
+// boundary. Any reachable font, including fonts in Forms, conservatively retains
+// source text. This is provenance, not a claim that extracted text equals OCR.
+func PDFTextOrigin(ctx context.Context, source []byte, maxBytes int64) (string, error) {
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
+	if maxBytes < 1 || maxBytes > 1<<30 || len(source) == 0 || int64(len(source)) > maxBytes {
+		return "", ErrLimit
+	}
+	conf := model.NewStatelessConfiguration()
+	parsed, err := api.ReadValidateAndOptimize(ctx, bytes.NewReader(source), conf, nil)
+	if err != nil {
+		return "", normalize(ctx, err)
+	}
+	if parsed.PageCount != 1 {
+		return "", ErrInvalid
+	}
+	if _, _, _, err = parsed.PageDict(ctx, 1, true); err != nil {
+		return "", normalize(ctx, err)
+	}
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
+	if len(parsed.Optimize.FontObjects) > 0 || len(parsed.Optimize.FormFontObjects) > 0 {
+		return TextOriginRetainedSource, nil
+	}
+	return TextOriginRecognition, nil
+}
+
 func overlay(ctx context.Context, base, layer []byte, width, height int, maxBytes int64, imported bool) ([]byte, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err

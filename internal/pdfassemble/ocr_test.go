@@ -139,11 +139,11 @@ func TestOCRImportedPDFRotation(t *testing.T) {
 	for _, intrinsic := range []int{0, 90, 180, 270} {
 		for _, display := range []int{0, 90, 180, 270} {
 			t.Run(fmt.Sprintf("%d-%d", intrinsic, display), func(t *testing.T) {
-				raw := importedOCRFixture(200, 300, "0 0 1 rg 10 10 30 40 re f", fmt.Sprintf("/Rotate %d", intrinsic))
+				raw := importedOCRFixture(200, 300, "0 0 1 rg 10 10 30 40 re f", fmt.Sprintf("/Rotate %d /CropBox [10 20 190 290]", intrinsic))
 				page := pdfPage("pdf", raw)
 				page.Rotation = display
 				scan := source(t, "scan", "png")
-				output, err := BuildWithLayers(ctx, []Page{scan, page}, []TextLayer{pdfLayer(page.ID, 200, 300, "PDF_OCR"), layer(scan.ID, "SCAN_OCR")}, "lossless", opts())
+				output, err := BuildWithLayers(ctx, []Page{scan, page}, []TextLayer{pdfLayer(page.ID, 180, 270, "PDF_OCR"), layer(scan.ID, "SCAN_OCR")}, "lossless", opts())
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -153,6 +153,9 @@ func TestOCRImportedPDFRotation(t *testing.T) {
 				}
 				if ((boxes[1].Rot%360)+360)%360 != (intrinsic+display)%360 || boxes[1].MediaBox().Width() != 200 || boxes[1].MediaBox().Height() != 300 {
 					t.Fatal("source rotation/geometry changed", boxes[1])
+				}
+				if crop := boxes[1].CropBox(); crop.LL.X != 10 || crop.LL.Y != 20 || crop.UR.X != 190 || crop.UR.Y != 290 {
+					t.Fatal("source crop changed", crop)
 				}
 				if got := extractedOCRText(t, output); !strings.Contains(got, "PDF_OCR") || !strings.Contains(got, "SCAN_OCR") {
 					t.Fatal("mixed OCR missing", got)
