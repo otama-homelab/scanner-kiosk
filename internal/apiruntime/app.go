@@ -46,13 +46,14 @@ var (
 )
 
 type App struct {
-	state, docs *sql.DB
-	handler     http.Handler
-	closed      atomic.Bool
-	once        sync.Once
-	meter       *diskspace.Meter
-	files       *artifactread.Root
-	imports     *importupload.Service
+	state, docs    *sql.DB
+	handler        http.Handler
+	closed         atomic.Bool
+	once           sync.Once
+	meter          *diskspace.Meter
+	files          *artifactread.Root
+	imports        *importupload.Service
+	closePaperless func()
 }
 
 func New(ctx context.Context, c config.Config) (*App, error) {
@@ -188,8 +189,14 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	for _, device := range c.Scanners {
 		scanners = append(scanners, capabilityhttp.Scanner{ID: device.ID, Name: device.Name})
 	}
-	capabilityRoutes := capabilityhttp.New(catalogReader, catalogReader, documentStore, sessions, scanners, capabilityhttp.Limits{DiscoverScanners: c.ScannerDiscovery, RetentionSeconds: int64(c.Durations["SCANNER_RETENTION_SECONDS"] / time.Second), MaxDocuments: c.Limits["SCANNER_USER_MAX_DOCUMENTS"], UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], JobMaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"]}, time.Now)
+	paperlessState, closePaperless, err := paperlessCapability(c.Paperless)
+	if err != nil {
+		return nil, ErrConfig
+	}
+	app.closePaperless = closePaperless
+	capabilityRoutes := capabilityhttp.New(catalogReader, catalogReader, documentStore, sessions, scanners, capabilityhttp.Limits{DiscoverScanners: c.ScannerDiscovery, RetentionSeconds: int64(c.Durations["SCANNER_RETENTION_SECONDS"] / time.Second), MaxDocuments: c.Limits["SCANNER_USER_MAX_DOCUMENTS"], UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], JobMaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"]}, time.Now, paperlessState)
 	mux.Handle("/api/capabilities", capabilityRoutes)
+	mux.Handle("/api/capabilities/", capabilityRoutes)
 	mux.Handle("/api/scanners", capabilityRoutes)
 	mux.Handle("/api/session", sessions)
 	mux.Handle("/api/documents", documentRoutes)
@@ -214,11 +221,27 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	success = true
 	return app, nil
 }
+
+func paperlessCapability(p config.Paperless) (capabilityhttp.Paperless, func(), error) {
+	state := capabilityhttp.Paperless{Enabled: p.Enabled, Configured: p.Configured, ProcessingDestination: p.DestinationLabel}
+	client, err := p.NewClient()
+	if err != nil {
+		return capabilityhttp.Paperless{}, nil, err
+	}
+	if client != nil {
+		state.Health = client.Health
+		return state, client.Close, nil
+	}
+	return state, nil, nil
+}
 func (a *App) Handler() http.Handler { return a.handler }
 func (a *App) Close() error {
 	var err error
 	a.once.Do(func() {
 		a.closed.Store(true)
+		if a.closePaperless != nil {
+			a.closePaperless()
+		}
 		if a.meter != nil {
 			err = a.meter.Close()
 		}

@@ -10,8 +10,10 @@ import (
 	"errors"
 	"time"
 
+	"scanner-kiosk/internal/artifactread"
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/documents"
+	"scanner-kiosk/internal/paperless"
 	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/renderjob"
 	"scanner-kiosk/internal/scannerdriver"
@@ -23,7 +25,7 @@ var ErrReconciliation = errors.New("worker recovery required before accepting mo
 var ErrRoot = errors.New("worker storage roots must be existing private directories")
 
 // Run acquires one boot identity for the whole lifecycle. Once processes at most
-// one eligible job; otherwise it polls until cancellation. Scans require explicit
+// one eligible job and one independent delivery step; otherwise it polls until cancellation. Scans require explicit
 // acquisition opt-in and a never-started admission pinned to this fresh boot.
 func Run(ctx context.Context, c config.Config, once bool) (result error) {
 	resources, err := openWorkerStorage(c)
@@ -112,6 +114,37 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 			}
 		}
 	}()
+	deliveryClient, err := c.Paperless.NewClient()
+	if err != nil {
+		return configError()
+	}
+	if deliveryClient != nil {
+		defer deliveryClient.Close()
+		root, err := artifactread.OpenRoot(c.DocumentDir, paperless.MaxPDFBytes)
+		if err != nil {
+			return err
+		}
+		defer root.Close()
+		deliveryCtx, stopDelivery := context.WithCancel(ctx)
+		deliveryDone := make(chan error, 1)
+		go func() {
+			err := runDeliveries(deliveryCtx, store, root, deliveryClient, once)
+			if err != nil && deliveryCtx.Err() == nil {
+				cancelWorker()
+			}
+			deliveryDone <- err
+		}()
+		defer func() {
+			if !once || ctx.Err() != nil {
+				stopDelivery()
+			}
+			err := <-deliveryDone
+			stopDelivery()
+			if err != nil && !errors.Is(err, context.Canceled) {
+				result = errors.Join(result, err)
+			}
+		}()
+	}
 	options := pdfassemble.Options{MaxInputBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxOutputBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"], MaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JPEGQuality: 92}
 	scanLimit := c.EffectiveScanConcurrency()
 	if scanLimit < 1 {
@@ -280,3 +313,31 @@ func Run(ctx context.Context, c config.Config, once bool) (result error) {
 	}
 }
 func configError() error { return errors.New("worker role configuration required") }
+
+// One sequential delivery lane runs independently of native scan/render work.
+// A durable attempted marker, not a tick or restart, decides upload authority.
+func runDeliveries(ctx context.Context, store *documents.Store, root *artifactread.Root, client *paperless.Client, once bool) error {
+	for {
+		candidate, err := store.NextDelivery(ctx, client.DestinationID(), client.ConfigFingerprint())
+		if err != nil && !errors.Is(err, documents.ErrNoWork) {
+			return err
+		}
+		if err == nil {
+			err = ProcessDelivery(ctx, store, root, client, candidate.OwnerID, candidate.DeliveryID)
+			// Optional remote failure remains in the durable ledger, never a normal job failure.
+			if errors.Is(err, documents.ErrStorage) || errors.Is(err, documents.ErrCommitUncertain) {
+				return err
+			}
+		}
+		if once {
+			return ctx.Err()
+		}
+		timer := time.NewTimer(time.Second)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return ctx.Err()
+		case <-timer.C:
+		}
+	}
+}

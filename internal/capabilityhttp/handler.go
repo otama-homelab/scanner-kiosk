@@ -1,14 +1,19 @@
-// Package capabilityhttp exposes worker metadata without provider clients or device endpoints.
+// Package capabilityhttp exposes public metadata and an explicit read-only health command.
 package capabilityhttp
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"io"
+	"mime"
 	"net/http"
+	"sync"
 	"time"
 
 	"scanner-kiosk/internal/documents"
+	"scanner-kiosk/internal/paperless"
 	"scanner-kiosk/internal/renderadmission"
 	"scanner-kiosk/internal/scanner"
 	"scanner-kiosk/internal/scannermetadata"
@@ -68,11 +73,30 @@ type defaultsView struct {
 	OCR     documents.RenderOCR `json:"ocr"`
 }
 type response struct {
-	Revision   string        `json:"revision"`
-	Scanners   []scannerView `json:"scanners"`
-	OCRPlugins []pluginView  `json:"ocr_plugins"`
-	Defaults   defaultsView  `json:"defaults"`
-	Limits     Limits        `json:"limits"`
+	Paperless  *paperlessView `json:"paperless,omitempty"`
+	Revision   string         `json:"revision"`
+	Scanners   []scannerView  `json:"scanners"`
+	OCRPlugins []pluginView   `json:"ocr_plugins"`
+	Defaults   defaultsView   `json:"defaults"`
+	Limits     Limits         `json:"limits"`
+}
+
+// Paperless accepts public configuration and only the read-only health operation.
+type Paperless struct {
+	Enabled, Configured   bool
+	ProcessingDestination string
+	Health                func(context.Context) paperless.HealthResult
+}
+type paperlessHealth struct {
+	Status    paperless.HealthStatus `json:"status"`
+	CheckedAt *time.Time             `json:"checked_at,omitempty"`
+}
+type paperlessView struct {
+	Enabled               bool            `json:"enabled"`
+	Configured            bool            `json:"configured"`
+	ProcessingDestination string          `json:"processing_destination"`
+	ConfirmationRequired  bool            `json:"confirmation_required"`
+	Health                paperlessHealth `json:"health"`
 }
 
 type scannerResponse struct {
@@ -85,9 +109,51 @@ type scannerResponse struct {
 // New accepts sanitized labels and independently validated scanner metadata.
 // Verified tuples alone do not establish readiness; status uses a separate port.
 // OCR is initially off; this endpoint never guesses a model or language selection.
-func New(source renderadmission.CatalogSource, scannerSource scannermetadata.Source, readinessSource scannerreadiness.Source, sessions *websession.Handler, scanners []Scanner, limits Limits, now func() time.Time) http.Handler {
+func New(source renderadmission.CatalogSource, scannerSource scannermetadata.Source, readinessSource scannerreadiness.Source, sessions *websession.Handler, scanners []Scanner, limits Limits, now func() time.Time, delivery ...Paperless) http.Handler {
 	configured := append([]Scanner(nil), scanners...)
 	mux := http.NewServeMux()
+	var stateMu, probeMu sync.Mutex
+	var public *paperlessView
+	if len(delivery) == 1 && delivery[0].Enabled {
+		p := delivery[0]
+		public = &paperlessView{Enabled: true, Configured: p.Configured, ProcessingDestination: p.ProcessingDestination, ConfirmationRequired: true, Health: paperlessHealth{Status: "unknown"}}
+		mux.Handle("POST /api/capabilities/paperless/health", sessions.RequirePrincipal(func(w http.ResponseWriter, r *http.Request, _ websession.Principal) {
+			fail := func(status int) {
+				w.WriteHeader(status)
+				_ = json.NewEncoder(w).Encode(map[string]string{"code": "invalid_request", "message": http.StatusText(status)})
+			}
+			if r.URL.RawQuery != "" || r.URL.ForceQuery {
+				fail(400)
+				return
+			}
+			media, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+			if err != nil || media != "application/json" {
+				fail(400)
+				return
+			}
+			decoder := json.NewDecoder(http.MaxBytesReader(w, r.Body, 256))
+			var input map[string]json.RawMessage
+			if decoder.Decode(&input) != nil || input == nil || len(input) != 0 || decoder.Decode(new(any)) != io.EOF {
+				fail(400)
+				return
+			}
+			if !p.Configured || p.Health == nil {
+				fail(503)
+				return
+			}
+			if !probeMu.TryLock() {
+				fail(409)
+				return
+			}
+			defer probeMu.Unlock()
+			result := p.Health(r.Context())
+			stateMu.Lock()
+			public.Health = paperlessHealth{Status: result.Status, CheckedAt: &result.CheckedAt}
+			out := *public
+			stateMu.Unlock()
+			_ = json.NewEncoder(w).Encode(out)
+		}))
+	}
 	handle := func(withOCR bool) http.Handler {
 		return sessions.RequirePrincipal(func(w http.ResponseWriter, r *http.Request, principal websession.Principal) {
 			w.Header().Set("Cache-Control", "no-store")
@@ -112,6 +178,14 @@ func New(source renderadmission.CatalogSource, scannerSource scannermetadata.Sou
 
 			capture := documents.Capture{Size: "a4", Color: "color", DPI: 300}
 			out := response{Scanners: []scannerView{}, OCRPlugins: []pluginView{}, Defaults: defaultsView{Capture: capture}, Limits: limits}
+			if withOCR {
+				stateMu.Lock()
+				if public != nil {
+					copy := *public
+					out.Paperless = &copy
+				}
+				stateMu.Unlock()
+			}
 			metadata := scannermetadata.Snapshot{}
 			status := scannerreadiness.Snapshot{}
 			registered := append([]Scanner(nil), configured...)

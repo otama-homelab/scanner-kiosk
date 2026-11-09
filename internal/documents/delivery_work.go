@@ -4,7 +4,52 @@ import (
 	"context"
 	"crypto/sha256"
 	"database/sql"
+	"errors"
 )
+
+type DeliveryCandidate struct{ OwnerID, DeliveryID string }
+
+// NextDelivery observes fixed-destination work; ProcessDelivery rechecks authority.
+// No normal job/active index is involved. Poll reservations survive worker restarts.
+func (s *Store) NextDelivery(ctx context.Context, destination, fingerprint string) (DeliveryCandidate, error) {
+	var out DeliveryCandidate
+	err := s.withPrincipalSnapshot(ctx, func(principals *sql.Conn, tx *sql.Tx) error {
+		now := s.now().UnixMilli()
+		rows, err := tx.QueryContext(ctx, `SELECT x.owner_id,x.id FROM deliveries x JOIN documents d ON d.id=x.document_id AND d.owner_id=x.owner_id
+ WHERE x.destination_id=? AND x.config_fingerprint=? AND x.expires_at_ms>? AND d.expires_at_ms>? AND d.state NOT IN ('deleting','expired')
+ AND ((x.state='queued' AND d.state='ready' AND d.revision=x.revision AND EXISTS(
+ SELECT 1 FROM published_outputs p JOIN artifacts a ON a.id=p.artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id
+ WHERE p.document_id=d.id AND p.owner_id=d.owner_id AND p.revision=x.revision AND a.id=x.artifact_id AND a.state='ready' AND a.sha256=x.payload_sha256))
+ OR x.state='attempted' OR (x.state='accepted' AND x.task_id IS NOT NULL AND x.poll_count<=20) OR (x.state='unknown' AND x.task_id IS NOT NULL AND x.poll_count<20))
+ ORDER BY CASE x.state WHEN 'queued' THEN 0 WHEN 'attempted' THEN 1 ELSE 2 END,x.poll_count,x.created_at_ms,x.id`, destination, fingerprint, now, now)
+		if err != nil {
+			return storageOperationError(err)
+		}
+		defer rows.Close()
+		for rows.Next() {
+			if err = rows.Scan(&out.OwnerID, &out.DeliveryID); err != nil {
+				return ErrStorage
+			}
+			var enabled int
+			err = principals.QueryRowContext(ctx, "SELECT 1 FROM principals WHERE id=? AND disabled_at_ms IS NULL", out.OwnerID).Scan(&enabled)
+			if errors.Is(err, sql.ErrNoRows) {
+				continue
+			}
+			if err != nil {
+				return storageOperationError(err)
+			}
+			return nil
+		}
+		if err = rows.Err(); err != nil {
+			return storageOperationError(err)
+		}
+		return ErrNoWork
+	})
+	if err != nil {
+		return DeliveryCandidate{}, err
+	}
+	return out, nil
+}
 
 // ClaimDelivery is a fresh, single attempt. Readback never grants upload authority.
 func (s *Store) ClaimDelivery(ctx context.Context, owner, deliveryID string) (Delivery, error) {

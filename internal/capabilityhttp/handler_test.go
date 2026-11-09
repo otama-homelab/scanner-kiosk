@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"scanner-kiosk/internal/paperless"
 	"scanner-kiosk/internal/renderadmission"
 	"scanner-kiosk/internal/storage"
 	"scanner-kiosk/internal/websession"
@@ -47,7 +48,7 @@ func (b unreadBody) Read([]byte) (int, error) {
 }
 func (unreadBody) Close() error { return nil }
 
-func metadataHTTP(t *testing.T, source *metadataSource) (http.Handler, *http.Cookie) {
+func metadataHTTP(t *testing.T, source *metadataSource, delivery ...Paperless) (http.Handler, *http.Cookie) {
 	t.Helper()
 	state, err := storage.Open(filepath.Join(t.TempDir(), "state.db"), storage.State)
 	if err != nil {
@@ -68,7 +69,54 @@ func metadataHTTP(t *testing.T, source *metadataSource) (http.Handler, *http.Coo
 	if login.Code != 200 || len(cookies) != 1 {
 		t.Fatal("guest login failed", login.Code, login.Body.String())
 	}
-	return New(source, nil, nil, sessions, nil, Limits{JobMaxPages: 10, MaxPagePixels: 1000000}, func() time.Time { return time.UnixMilli(2000) }), cookies[0]
+	return New(source, nil, nil, sessions, nil, Limits{JobMaxPages: 10, MaxPagePixels: 1000000}, func() time.Time { return time.UnixMilli(2000) }, delivery...), cookies[0]
+}
+
+func TestPaperlessCapabilityProjection(t *testing.T) {
+	started, release := make(chan struct{}), make(chan struct{})
+	source := &metadataSource{snapshot: renderadmission.CatalogSnapshot{PublishedAtMS: 1000, ExpiresAtMS: 10000}}
+	h, cookie := metadataHTTP(t, source, Paperless{Enabled: true, Configured: true, ProcessingDestination: "Archive", Health: func(ctx context.Context) paperless.HealthResult {
+		close(started)
+		select {
+		case <-release:
+		case <-ctx.Done():
+		}
+		return paperless.HealthResult{Status: paperless.HealthHealthy, CheckedAt: time.Now().UTC()}
+	}})
+	probe := func() *httptest.ResponseRecorder {
+		r := httptest.NewRequest("POST", "https://scanner.example.test/api/capabilities/paperless/health", strings.NewReader("{}"))
+		r.AddCookie(cookie)
+		r.Header.Set("Origin", "https://scanner.example.test")
+		r.Header.Set("Content-Type", "application/json")
+		w := httptest.NewRecorder()
+		h.ServeHTTP(w, r)
+		return w
+	}
+	done := make(chan *httptest.ResponseRecorder, 1)
+	go func() { done <- probe() }()
+	<-started
+	metadata := make(chan *httptest.ResponseRecorder, 1)
+	go func() { metadata <- metadataCall(h, "GET", "/api/capabilities", cookie) }()
+	select {
+	case w := <-metadata:
+		if w.Code != 200 || !strings.Contains(w.Body.String(), `"status":"unknown"`) {
+			t.Error("probe changed public state prematurely", w.Code)
+		}
+	case <-time.After(time.Second):
+		close(release)
+		<-done
+		t.Fatal("slow health blocked ordinary metadata")
+	}
+	if w := probe(); w.Code != 409 {
+		t.Error("overlapping health was not bounded", w.Code)
+	}
+	close(release)
+	if w := <-done; w.Code != 200 {
+		t.Fatal("health did not finish", w.Code)
+	}
+	if source.reads != 1 {
+		t.Fatal("health consulted processing catalog", source.reads)
+	}
 }
 
 func metadataCall(handler http.Handler, method, path string, cookie *http.Cookie) *httptest.ResponseRecorder {
