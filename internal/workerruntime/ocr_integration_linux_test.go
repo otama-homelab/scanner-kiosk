@@ -6,19 +6,82 @@ import (
 	"bytes"
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"image"
 	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
+	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/documents"
 	ocrruntime "scanner-kiosk/internal/ocr/runtime"
 	"scanner-kiosk/internal/pdfassemble"
+	"scanner-kiosk/pkg/ocrplugin"
 )
+
+func TestRuntimeReOCRCompletion(t *testing.T) {
+	var calls atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls.Add(1)
+		content, _ := json.Marshal(map[string]any{"text": "RUNTIME OCR TEXT"})
+		json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": string(content)}}}})
+	}))
+	defer server.Close()
+	c, store, db, root := fixture(t)
+	admit(t, store)
+	if e := Run(context.Background(), c, true); e != nil {
+		t.Fatal(e)
+	}
+	old, e := store.GetExport(context.Background(), owner, document)
+	if e != nil {
+		t.Fatal(e)
+	}
+	profile := config.LLMProfile{ID: "fixture", Name: "Fixture", Protocol: "chat-completions", Endpoint: server.URL, AllowInsecureHTTP: true, Model: "fixture", ResponseModel: "fixture", Version: "1", Languages: []string{"en"}, Outputs: []ocrplugin.OutputKind{ocrplugin.Text}, MaxCompletionTokens: 1000}
+	profiles, _ := json.Marshal([]config.LLMProfile{profile})
+	t.Setenv("SCANNER_OCR_PLUGINS", "llm")
+	t.Setenv("SCANNER_OCR_DEFAULT_PLUGIN", "llm")
+	t.Setenv("SCANNER_OCR_DEFAULT_LANGUAGES", "en")
+	t.Setenv("SCANNER_OCR_LLM_PROFILES_JSON", string(profiles))
+	metadata, e := ocrruntime.NewWorker(context.Background(), c, os.LookupEnv, t.TempDir())
+	if e != nil {
+		t.Fatal(e)
+	}
+	defaults := metadata.Defaults()
+	metadata.Close()
+	a, e := store.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: document, Revision: 2, IdempotencyKey: "request_reocr_runtime01", ReOCR: true, ResolvedOutput: ocrplugin.Text, Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, ProviderID: defaults.PluginID, ModelID: defaults.ModelID, ModelVersion: defaults.ModelVersion, Languages: defaults.Languages, QualityPreset: defaults.QualityPreset}}, ReserveBytes: 1 << 20}, documents.AdmissionLimits{UserMaxBytes: 4 << 20, GlobalMaxBytes: 8 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = Run(context.Background(), c, true); e != nil {
+		t.Fatal("actual runtime route failed", e)
+	}
+	var raw string
+	if e = db.QueryRow("SELECT bundle_json FROM ocr_results WHERE job_id=?", a.JobID).Scan(&raw); e != nil {
+		t.Fatal("actual runtime failed to complete candidate", e)
+	}
+	var bundle documents.OCRResultBundle
+	if e = json.Unmarshal([]byte(raw), &bundle); e != nil {
+		t.Fatal(e)
+	}
+	if len(bundle.Pages) != 1 || bundle.Pages[0].Positions != nil || calls.Load() != 1 {
+		t.Fatal("runtime candidate geometry or invocation mismatch")
+	}
+	text, e := os.ReadFile(filepath.Join(root, bundle.Pages[0].Text.RelativePath))
+	if e != nil || string(text) != "RUNTIME OCR TEXT" {
+		t.Fatal("durable runtime transcript missing", e)
+	}
+	current, e := store.GetExport(context.Background(), owner, document)
+	if e != nil || current.ID != old.ID {
+		t.Fatal("runtime adopted candidate", e)
+	}
+}
 
 // This invokes the compiled product command, not a substituted executor. All
 // documents are synthetic; physical scanning/HTTP/production are not exercised.
