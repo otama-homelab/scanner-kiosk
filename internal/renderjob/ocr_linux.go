@@ -48,6 +48,14 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		if e != nil {
 			return nil, "", nil, e
 		}
+		media := reply.Mapping.MediaBox
+		width, height := media[2]-media[0], media[3]-media[1]
+		if reply.Mapping.SourceRotation%180 != 0 {
+			width, height = height, width
+		}
+		if width != work.Snapshot.Pages[i].PDFWidthPoints || height != work.Snapshot.Pages[i].PDFHeightPoints {
+			return nil, "", nil, documents.ErrInvalid
+		}
 		w, e := rasterScope.CreateArtifact(ctx, artifactscope.PNG)
 		if e != nil {
 			return nil, "", nil, e
@@ -121,13 +129,18 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		a := b.Artifact
 		combined[a.ID] = artifactscope.Input{RelativePath: a.RelativePath, Size: a.Size, SHA256: a.SHA256}
 	}
-	derived, err := artifactscope.NewWithBudget(root, combined, artifactscope.Limits{MaxInputBytes: max(options.MaxInputBytes, options.MaxOutputBytes), MaxOutputBytes: options.MaxOutputBytes, MaxTotalOutputBytes: work.ReserveBytes, MaxOutputs: len(pages) * 3}, budget)
-	if err != nil {
-		return nil, "", nil, err
-	}
-	track(derived)
+	var derived *artifactscope.Scope
 	read := func(id string, limit int64) ([]byte, error) {
-		r, e := derived.OpenInput(ctx, id)
+		meta, ok := combined[id]
+		if !ok {
+			return nil, documents.ErrInvalid
+		}
+		readerRoot, e := artifactread.OpenRoot(root, max(options.MaxInputBytes, options.MaxOutputBytes))
+		if e != nil {
+			return nil, e
+		}
+		defer readerRoot.Close()
+		r, e := readerRoot.Open(ctx, artifactread.Input{RelativePath: meta.RelativePath, Size: meta.Size, SHA256: meta.SHA256})
 		if e != nil {
 			return nil, e
 		}
@@ -142,6 +155,14 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		return data, nil
 	}
 	write := func(kind string, data []byte) (string, error) {
+		if derived == nil {
+			var e error
+			derived, e = artifactscope.NewWithBudget(root, combined, artifactscope.Limits{MaxInputBytes: max(options.MaxInputBytes, options.MaxOutputBytes), MaxOutputBytes: options.MaxOutputBytes, MaxTotalOutputBytes: work.ReserveBytes, MaxOutputs: len(pages) * 3}, budget)
+			if e != nil {
+				return "", e
+			}
+			track(derived)
+		}
 		var w ocrplugin.ArtifactWriter
 		var e error
 		if kind == string(ocrplugin.Text) {
@@ -174,6 +195,12 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 			page.PDFTextOrigin = raster.Origin
 			mapping := raster.Mapping
 			page.PDFRaster = &mapping
+			for _, a := range rasterArtifacts {
+				if a.ID == recognitionPages[i].ID {
+					preview := resultArtifact(a, "image/png", page.PixelWidth, page.PixelHeight)
+					page.Preview = &preview
+				}
+			}
 		}
 		data, e := read(b.Artifact.ID, min(options.MaxOutputBytes, 64<<20))
 		if e != nil {
@@ -201,10 +228,12 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 			if e != nil {
 				return nil, "", nil, e
 			}
-			layer, e := pdftextlayer.RenderPositioned(ctx, positioned, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()))
+			var layer []byte
 			if page.PDFRaster != nil {
 				box := page.PDFRaster.CropBox
 				layer, e = pdftextlayer.RenderPositionedPDF(ctx, positioned, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()), box[2]-box[0], box[3]-box[1])
+			} else {
+				layer, e = pdftextlayer.RenderPositioned(ctx, positioned, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()))
 			}
 			if e != nil {
 				return nil, "", nil, e
@@ -235,6 +264,10 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 				return nil, "", nil, err
 			}
 		}
+		if page.Preview != nil {
+			bundle.Pages = append(bundle.Pages, page)
+			continue
+		}
 		preview, e := read(recognitionPages[i].ID, options.MaxInputBytes)
 		if e != nil {
 			return nil, "", nil, e
@@ -249,9 +282,12 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		}
 		bundle.Pages = append(bundle.Pages, page)
 	}
-	outputs, err := derived.Seal(ctx)
-	if err != nil {
-		return nil, "", nil, err
+	var outputs []artifactscope.Artifact
+	if derived != nil {
+		outputs, err = derived.Seal(ctx)
+		if err != nil {
+			return nil, "", nil, err
+		}
 	}
 	byID := map[string]artifactscope.Artifact{}
 	for _, a := range outputs {
@@ -264,8 +300,10 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		if ref.text != "" {
 			p.Text = resultArtifact(byID[ref.text], "text/plain", 0, 0)
 		}
-		preview := resultArtifact(byID[ref.preview], recognitionPages[i].MediaType, p.PixelWidth, p.PixelHeight)
-		p.Preview = &preview
+		if ref.preview != "" {
+			preview := resultArtifact(byID[ref.preview], recognitionPages[i].MediaType, p.PixelWidth, p.PixelHeight)
+			p.Preview = &preview
+		}
 		if ref.layer != "" {
 			a := resultArtifact(byID[ref.layer], "application/pdf", 0, 0)
 			p.Layer = &a

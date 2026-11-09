@@ -357,6 +357,9 @@ func run() error {
 		if err = verify(root, m, selfHash); err != nil {
 			return err
 		}
+		if binary == "usr/bin/pdftoppm" && !popplerDataAvailable(root) {
+			return errRuntime
+		}
 		loader := filepath.Join(root, "lib/ld-musl-x86_64.so.1")
 		args := append([]string{loader, "--library-path", libraryPath(root), filepath.Join(root, binary)}, os.Args[1:]...)
 		return syscall.Exec(loader, args, nativeEnvironment(root, os.Environ()))
@@ -371,6 +374,18 @@ func run() error {
 	}
 	app := filepath.Join(root, "app/scanner")
 	return syscall.Exec(app, append([]string{app}, os.Args[1:]...), applicationEnvironment(root, os.Args[1:], os.Environ()))
+}
+
+// Upstream Poppler uses a compile-time data path on Linux. An environment
+// override cannot relocate CMaps; require an operator-provided read-only bind
+// of the verified data rather than silently using unrelated host CMaps.
+func popplerDataAvailable(root string) bool {
+	bundled, e := os.Stat(filepath.Join(root, "usr/share/poppler"))
+	if e != nil {
+		return false
+	}
+	installed, e := os.Stat("/usr/share/poppler")
+	return e == nil && bundled.IsDir() && installed.IsDir() && os.SameFile(bundled, installed)
 }
 func main() {
 	if err := run(); err != nil {

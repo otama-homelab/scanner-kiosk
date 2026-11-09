@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"golang.org/x/image/font/gofont/goregular"
 	"image"
+	"image/color"
+	"image/png"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -22,6 +24,7 @@ import (
 	"time"
 
 	"scanner-kiosk/internal/config"
+	"scanner-kiosk/internal/correction"
 	"scanner-kiosk/internal/documents"
 	ocrruntime "scanner-kiosk/internal/ocr/runtime"
 	"scanner-kiosk/internal/pdfassemble"
@@ -73,6 +76,27 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 					execute(t, db, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,'original','ready',?,'application/pdf',?,?,1,?)`, id, document, owner, name, len(part.PDF), digest[:], time.Now().UnixMilli())
 					execute(t, db, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,source_type,pdf_width_points,pdf_height_points,rotation) VALUES(?,?,?,?,?,'pdf',?,?,?)`, page, document, owner, wantPages, id, part.WidthPoints, part.HeightPoints, i*90)
 					wantPages++
+				}
+				if mode == "mixed" {
+					corrected := image.NewGray(image.Rect(0, 0, 80, 100))
+					corrected.SetGray(0, 0, color.Gray{Y: 255})
+					var encoded bytes.Buffer
+					if e := png.Encode(&encoded, corrected); e != nil {
+						t.Fatal(e)
+					}
+					data := encoded.Bytes()
+					if e := os.WriteFile(filepath.Join(root, "corrected.png"), data, 0600); e != nil {
+						t.Fatal(e)
+					}
+					digest := sha256.Sum256(data)
+					var original []byte
+					if e := db.QueryRow("SELECT sha256 FROM artifacts WHERE id='original_runtime_001'").Scan(&original); e != nil {
+						t.Fatal(e)
+					}
+					transform, _ := json.Marshal(correction.Transform{CropQuad: [4]correction.Point{{X: 0, Y: 0}, {X: 80, Y: 0}, {X: 80, Y: 100}, {X: 0, Y: 100}}, OutputWidth: 80, OutputHeight: 100, ConfidenceKind: "unavailable"})
+					execute(t, db, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('corrected_runtime_001',?,?,'intermediate','ready','corrected.png','image/png',?,?,1,?)`, document, owner, len(data), digest[:], time.Now().UnixMilli())
+					execute(t, db, `INSERT INTO page_corrections(suggestion_id,document_id,owner_id,page_id,original_artifact_id,correction_artifact_id,source_sha256,correction_sha256,transform_json,confidence_kind,created_at_ms) VALUES('suggestion_runtime_001',?,?,'page_runtime_00001','original_runtime_001','corrected_runtime_001',?,?,?,'unavailable',?)`, document, owner, original, digest[:], string(transform), time.Now().UnixMilli())
+					execute(t, db, `UPDATE page_corrections SET state='applied',applied_at_ms=? WHERE suggestion_id='suggestion_runtime_001'`, time.Now().UnixMilli())
 				}
 			}
 			admit(t, store)
@@ -128,6 +152,9 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 			}
 			if mode != "image" {
 				assertRuntimePDFSources(t, root, bundle, old, kind)
+			}
+			if mode == "mixed" && (bundle.Pages[0].CorrectionID != "suggestion_runtime_001" || bundle.Pages[0].EffectiveArtifactID != "corrected_runtime_001" || bundle.Pages[0].Preview.SHA256 != bundle.Pages[0].EffectiveSHA256) {
+				t.Fatal("current correction source was not recognized/previewed")
 			}
 		})
 	}
@@ -207,7 +234,7 @@ func assertRuntimePDFSources(t *testing.T, root string, b documents.OCRResultBun
 		t.Fatal("independent image structure", e)
 	}
 	// The final imported pages must remain vectors/text, not recognition images.
-	if len(b.Pages) == 2 && len(strings.Split(strings.TrimSpace(string(images)),"\n")) != 2 {
+	if len(b.Pages) == 2 && len(strings.Split(strings.TrimSpace(string(images)), "\n")) != 2 {
 		t.Fatalf("PDF-only candidate contains replacement raster: %s", images)
 	}
 }

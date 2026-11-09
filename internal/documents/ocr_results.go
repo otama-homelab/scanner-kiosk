@@ -76,6 +76,13 @@ func normalizeOCRBundle(b OCRResultBundle) ([]byte, []ocrResultArtifact, int64, 
 				}
 			}
 			w, h := c[2]-c[0], c[3]-c[1]
+			pointWidth, pointHeight := b[2]-b[0], b[3]-b[1]
+			if m.SourceRotation%180 != 0 {
+				pointWidth, pointHeight = pointHeight, pointWidth
+			}
+			if pointWidth != p.PDFWidthPoints || pointHeight != p.PDFHeightPoints {
+				return nil, nil, 0, ErrInvalid
+			}
 			if w <= 0 || h <= 0 || c[0] < b[0] || c[1] < b[1] || c[2] > b[2] || c[3] > b[3] || p.PixelWidth != int(math.Ceil(w*300/72)) || p.PixelHeight != int(math.Ceil(h*300/72)) || m.ScaleX != float64(p.PixelWidth)/w || m.ScaleY != float64(p.PixelHeight)/h {
 				return nil, nil, 0, ErrInvalid
 			}

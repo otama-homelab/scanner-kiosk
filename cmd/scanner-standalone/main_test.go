@@ -283,3 +283,16 @@ func TestInstallWithPrivateUmask(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestPopplerRequiresVerifiedDataMount(t *testing.T) {
+	root := t.TempDir()
+	if popplerDataAvailable(root) {
+		t.Fatal("missing verified CMaps accepted")
+	}
+	if e := os.MkdirAll(filepath.Join(root, "usr/share/poppler"), 0700); e != nil {
+		t.Fatal(e)
+	}
+	if popplerDataAvailable(root) {
+		t.Fatal("unrelated ambient host CMaps accepted")
+	}
+}

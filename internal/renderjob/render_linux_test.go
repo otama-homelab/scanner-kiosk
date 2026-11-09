@@ -8,6 +8,8 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"errors"
+	"github.com/pdfcpu/pdfcpu/pkg/api"
+	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"image"
 	"image/png"
 	"os"
@@ -60,6 +62,10 @@ func fixture(t *testing.T, requested ...documents.RenderSettings) (*faultRecords
 }
 
 func fixtureWithPDF(t *testing.T, imported bool, requested ...documents.RenderSettings) (*faultRecords, *sql.DB, string, string, pdfassemble.Options) {
+	return fixtureWithPDFData(t, imported, invisibleLayer(), requested...)
+}
+
+func fixtureWithPDFData(t *testing.T, imported bool, pdf []byte, requested ...documents.RenderSettings) (*faultRecords, *sql.DB, string, string, pdfassemble.Options) {
 	t.Helper()
 	root := t.TempDir()
 	if err := os.Chmod(root, 0700); err != nil {
@@ -95,13 +101,17 @@ func fixtureWithPDF(t *testing.T, imported bool, requested ...documents.RenderSe
 	sqlExec(t, docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('original_render_001',?,?,'original','ready','original.png','image/png',?,?,1,?)`, document, owner, len(data), digest[:], now)
 	sqlExec(t, docs, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,rotation,pixel_width,pixel_height) VALUES('page_render_00001',?,?,0,'original_render_001','a5','gray',300,90,80,100)`, document, owner)
 	if imported {
-		data := invisibleLayer()
+		data := pdf
 		digest := sha256.Sum256(data)
 		if err = os.WriteFile(filepath.Join(root, "imported.pdf"), data, 0600); err != nil {
 			t.Fatal(err)
 		}
 		sqlExec(t, docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('original_import_001',?,?,'original','ready','imported.pdf','application/pdf',?,?,1,?)`, document, owner, len(data), digest[:], now)
-		sqlExec(t, docs, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,source_type,pdf_width_points,pdf_height_points) VALUES('page_import_00001',?,?,1,'original_import_001','pdf',80,100)`, document, owner)
+		dimensions, e := api.PageDims(context.Background(), bytes.NewReader(data), model.NewStatelessConfiguration())
+		if e != nil || len(dimensions) != 1 {
+			t.Fatal("fixture geometry", e)
+		}
+		sqlExec(t, docs, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,source_type,pdf_width_points,pdf_height_points) VALUES('page_import_00001',?,?,1,'original_import_001','pdf',?,?)`, document, owner, dimensions[0].Width, dimensions[0].Height)
 	}
 	settings := documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless"}
 	if len(requested) > 0 {
