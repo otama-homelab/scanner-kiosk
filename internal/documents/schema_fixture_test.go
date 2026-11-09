@@ -59,6 +59,13 @@ func seedFixtureSchemas(t *testing.T, statePath, documentsPath string) {
 	}
 }
 
+func TestReOCRSchemaUpgrade(t *testing.T) {
+	f := setup(t)
+	if scalar(t, f.docs, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='ocr_results'") != 1 {
+		t.Fatal("completed OCR candidates need durable storage separate from published outputs")
+	}
+}
+
 func TestFixtureSchemasRemainPrivateAndIndependent(t *testing.T) {
 	first, second := setup(t), setup(t)
 	must(t, first.state, "UPDATE principals SET disabled_at_ms=2000 WHERE id=?", alice)
