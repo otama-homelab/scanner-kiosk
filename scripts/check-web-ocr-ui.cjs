@@ -36,7 +36,7 @@ if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
 }else if(process.env.SCANNER_TEST_SCENARIO){
  const {test}=require('node:test');
  const scenario=process.env.SCANNER_TEST_SCENARIO;
- test(scenario==='reocr-start'?'TestReOCRStartLifecycle':scenario==='reocr-adopt'?'TestReOCRWholeDocumentAdoption':'TestReOCRComparePositions',async(t)=>{
+ test(scenario==='structure-suggestion'?'TestStructureFilenameSuggestion':scenario==='reocr-start'?'TestReOCRStartLifecycle':scenario==='reocr-adopt'?'TestReOCRWholeDocumentAdoption':'TestReOCRComparePositions',async(t)=>{
   const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE});
   const checks=[],requests=[];
   try{for(const width of scenario==='reocr-compare'?[1280,390,1440,320]:[1280,390]){
@@ -50,6 +50,7 @@ if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
     if(path==='/api/capabilities'&&offline)return reply(r,{code:'provider_unavailable'},503);
     if(path==='/api/capabilities')return reply(r,{ocr_plugins:[{id:'remote',name:'Remote',external_processing:true,models:[{id:'model',name:'OCR model',available:true,outputs:['searchable_pdf'],languages:['ja'],quality_presets:['standard'],default_quality_preset:'standard',processing_destination:'Family OCR server'}]}],defaults:{ocr:{provider_id:'remote',model_id:'model',languages:['ja'],quality_preset:'standard'}}});
     if(path==='/api/documents/'+id)return reply(r,{id,revision:disposition==='adopted'||stale?2:1,purpose:'document',state:'ready',created_at:'2026-11-07T03:00:00Z',expires_at:'2099-01-01T00:00:00Z',active_job_id:active,output:{revision:disposition==='adopted'?2:1},ocr_results:scenario==='reocr-start'?[]:disposition==='candidate'?[summary(old,'adopted'),summary(candidate,'candidate')]:[summary(disposition==='adopted'?candidate:old,'adopted')],pages:[{id:pageid,rotation:0,capture:{size:'a4',color:'gray',dpi:300}},...(scenario==='reocr-adopt'?[{id:'page_reocr_000002',rotation:90,capture:{size:'a4',color:'gray',dpi:300}}]:[])]});
+    if(path.endsWith('/download'))return r.fulfill({status:200,headers:{'Content-Type':'application/pdf','Content-Disposition':'attachment; filename="scan.pdf"'},body:Buffer.from('%PDF-1.4\nunchanged browser fixture\n%%EOF')});
     if(path.endsWith('/adopt')||path.endsWith('/discard')){if(stale)return reply(r,{code:'source_changed'},412);disposition=path.endsWith('/adopt')?'adopted':'discarded';await new Promise(resolve=>setTimeout(resolve,50));return lose?r.abort('failed'):reply(r,{id,revision:disposition==='adopted'?2:1})}
     if(path.endsWith('/ocr-results/'+old)||path.endsWith('/ocr-results/'+candidate)){const detail={...result(path.endsWith(old)?old:candidate),state:path.endsWith(candidate)?disposition:'adopted'};if(scenario==='reocr-adopt')detail.pages.push({...detail.pages[0],page_id:'page_reocr_000002',transcript_unavailable:true,artifacts:{}});return reply(r,detail)}
     if(path.includes('/ocr-results/')&&path.endsWith('/positions'))return reply(r,{page_id:pageid,width:200,height:100,spans:[{text:'<script>window.ocrInjected=true</script>',box:{x:20,y:10,width:40,height:20}},{text:'日本語 second',box:{x:100,y:50,width:60,height:10}}]});
@@ -62,6 +63,18 @@ if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
    });
    page.on('console',e=>{if(e.type()==='error')console.error(e.text())});page.on('pageerror',e=>console.error(e.message));await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);try{await page.locator('h1[data-document-title]').waitFor()}catch(e){console.error(await page.locator('body').innerText(),requests);throw e}
    assert.equal(requests.filter(r=>r.path.endsWith('/reocr')).length,before);
+   if(scenario==='structure-suggestion'){
+    const panel=page.locator('.ocr-result-panel').first(),generated=panel.locator('[data-structure-suggestion]'),create=panel.getByRole('button',{name:'Create filename suggestion',exact:true});
+    await panel.locator('.ocr-spans button').first().waitFor();assert.equal(await create.count(),0,'no suggestion control until an actual source span is selected');assert.equal(await generated.count(),0,'viewing never generates');
+    const save=page.locator('.document-toolbar a.download-link'),href=await save.getAttribute('href');
+    const download=async()=>{const event=page.waitForEvent('download');await save.click();const file=await event;assert.equal(file.suggestedFilename(),'scan.pdf');return require('node:fs').readFileSync(await file.path()).toString('base64')};
+    const original=await download();const span=panel.locator('.ocr-spans button').first();await span.click();assert.equal(await create.count(),1,'selected authorized span must offer explicit filename suggestion');await create.click();await generated.waitFor();assert.match(await generated.innerText(),/Generated filename suggestion/);assert.match(await generated.innerText(),/not a transcript/);assert.match(await generated.innerText(),new RegExp(old));assert.match(await generated.innerText(),/Source revision 1/);assert.match(await generated.innerText(),new RegExp(pageid));assert.match(await generated.innerText(),new RegExp('a'.repeat(64)));assert.match(await generated.innerText(),/Item 1/);
+    assert.equal(await generated.locator('script').count(),0);assert.equal(await page.evaluate(()=>window.ocrInjected),undefined);
+    const source=generated.getByRole('button',{name:'Show source',exact:true});await source.focus();await page.keyboard.press('Enter');await page.waitForFunction(()=>document.activeElement?.matches('.ocr-spans button'));assert.equal(await span.getAttribute('aria-pressed'),'true');assert.equal(await panel.locator('.ocr-highlight').getAttribute('x'),'20');assert.equal(await panel.locator('.ocr-highlight').getAttribute('visibility'),'visible');
+    assert.equal(await save.getAttribute('href'),href);assert.equal(await download(),original);assert.equal(requests.filter(r=>r.method!=='GET').length,0,'suggestions never mutate, adopt, rename or render');
+    await page.locator('#locale').selectOption('ja');await page.locator('.ocr-spans button').first().waitFor();assert.equal(await page.locator('[data-structure-suggestion]').count(),0);await page.locator('#locale').selectOption('en');await page.locator('.ocr-spans button').first().waitFor();assert.equal(await page.locator('[data-structure-suggestion]').count(),0);
+    assert(requests.some(r=>r.path.endsWith('/positions'))&&requests.some(r=>r.path.endsWith('/text')),'source comes from exact result artifact requests');checks.push('TestStructureFilenameSuggestion '+width);await context.close();continue;
+   }
    if(scenario==='reocr-adopt'){
     const adopt=page.getByRole('button',{name:'Adopt for whole document',exact:true});assert.equal(await adopt.count(),1,'candidate requires explicit whole-document adoption');
     assert.equal(requests.filter(r=>r.path.endsWith('/adopt')).length,width===1280?0:2,'opening never adopts');

@@ -6,7 +6,7 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--playwright-module',required=True);p.add_argument('--chromium',required=True);p.add_argument('--receipt',required=True);
 for name in ['fixture-python','tesseract-binary','tessdata','font']:p.add_argument('--'+name)
-p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native'])
+p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion'])
 args=p.parse_args()
 native_args=[args.fixture_python,args.tesseract_binary,args.tessdata,args.font]
 if any(native_args) and not all(native_args):p.error('native OCR verification requires all four fixture/tool options')
@@ -14,7 +14,7 @@ root=Path(__file__).resolve().parents[1]
 files=sorted([*root.glob('cmd/**/*.go'),*root.glob('internal/**/*.go'),*root.glob('internal/**/*.sql'),*root.glob('pkg/**/*.go'),*root.glob('web/src/**/*.*'),*root.glob('web/public/*'),root/'web/package.json',root/'web/package-lock.json',root/'web/astro.config.mjs',root/'go.mod',root/'go.sum',root/'scripts/build-web.py',root/'scripts/check-web.py',root/'scripts/check-web-editor-ux.cjs',root/'scripts/web-controls.cjs',root/'scripts/check-web.cjs',root/'scripts/check-web-ocr.cjs',root/'scripts/check-web-simple.cjs',root/'scripts/check-web-none.cjs',root/'scripts/check-web-capture.cjs',root/'scripts/check-web-correction.cjs',root/'scripts/check-web-placement.cjs',root/'scripts/check-web-import.cjs',root/'scripts/check-web-rate.cjs',root/'scripts/check-web-keyboard.cjs',root/'scripts/check-web-home.cjs',root/'scripts/check-web-ocr-ui.cjs'])
 def hashes():return {str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files}
 def validate_scenario(evidence,scenario):
- names={'reocr-start':['TestReOCRStartLifecycle'],'reocr-compare':['TestReOCRComparePositions','TestReOCRReadingOrder'],'reocr-adopt':['TestReOCRWholeDocumentAdoption','TestReOCRDiscardRecovery','TestReOCRKeyboardFocus']}[scenario]
+ names={'reocr-start':['TestReOCRStartLifecycle'],'reocr-compare':['TestReOCRComparePositions','TestReOCRReadingOrder'],'reocr-adopt':['TestReOCRWholeDocumentAdoption','TestReOCRDiscardRecovery','TestReOCRKeyboardFocus'],'structure-suggestion':['TestStructureFilenameSuggestion']}[scenario]
  assert evidence['passed'] and evidence['requests'] and evidence['scenario']==scenario
  for name in names:
   for width in [1280,390]:assert name+' '+str(width) in evidence['checks'],'required browser scenario missing'
@@ -197,7 +197,7 @@ for index in [1,2]:
    if ocr_ui_result.returncode:raise RuntimeError(ocr_ui_result.stderr[-12000:])
    ocr_ui_browser=json.loads(ocr_ui_result.stdout)
    reocr_browser={}
-   for scenario in ['reocr-start','reocr-compare','reocr-adopt']:
+   for scenario in ['reocr-start','reocr-compare','reocr-adopt','structure-suggestion']:
     scenario_receipt=work/(scenario+'.json')
     outcome=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCENARIO=scenario,SCANNER_TEST_RECEIPT=str(scenario_receipt)),capture_output=True,text=True,timeout=90)
     if outcome.returncode:raise RuntimeError(outcome.stdout+outcome.stderr)
