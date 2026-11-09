@@ -21,6 +21,14 @@ import (
 	"scanner-kiosk/internal/pdfassemble"
 )
 
+func TestAnalyzeStructureCommand(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+	code := run(context.Background(), []string{"analyze-structure", "--oracle", "missing", "--catalog", "missing", "--manifest", "missing", "--require-candidate", "docling-cpu-2.149.0", "--require-complete-evidence", "--allow-validated-unavailable"}, &stdout, &stderr)
+	if code != 1 || stdout.Len() != 0 || stderr.String() != "scanner-eval: structure evidence incomplete\n" {
+		t.Fatalf("structure command must validate evidence with content-free error: code=%d stdout=%q stderr=%q", code, stdout.String(), stderr.String())
+	}
+}
+
 func TestAnalyzeOCRCommand(t *testing.T) {
 	oracle := filepath.Join("..", "..", "scripts", "fixtures", "evaluation", "ocr-oracles.json")
 	root := t.TempDir()
