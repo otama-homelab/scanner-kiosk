@@ -26,6 +26,44 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	switch args[0] {
+	case "analyze-structure":
+		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
+		flags.SetOutput(io.Discard)
+		oracle := flags.String("oracle", "", "")
+		catalog := flags.String("catalog", "", "")
+		manifest := flags.String("manifest", "", "")
+		output := flags.String("output", "", "")
+		complete := flags.Bool("require-complete-evidence", false, "")
+		unavailable := flags.Bool("allow-validated-unavailable", false, "")
+		var candidates stringList
+		flags.Var(&candidates, "require-candidate", "")
+		if flags.Parse(args[1:]) != nil || *oracle == "" || *catalog == "" || *manifest == "" || len(candidates) != 1 || !*complete || !*unavailable || len(flags.Args()) != 0 {
+			fmt.Fprintln(stderr, "scanner-eval: invalid input")
+			return 2
+		}
+		comparison, err := evaluation.AnalyzeStructureEvidence(*oracle, *catalog, *manifest, candidates[0], *complete, *unavailable)
+		if err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: structure evidence incomplete")
+			return 1
+		}
+		if *output != "" {
+			file, err := os.OpenFile(*output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
+			if err != nil {
+				fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+				return 1
+			}
+			encodeErr := json.NewEncoder(file).Encode(comparison)
+			closeErr := file.Close()
+			if encodeErr != nil || closeErr != nil {
+				fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+				return 1
+			}
+		}
+		if json.NewEncoder(stdout).Encode(comparison) != nil {
+			fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+			return 1
+		}
+		return 0
 	case "analyze-ocr":
 		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
 		flags.SetOutput(io.Discard)
