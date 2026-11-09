@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Check an embedded product frontend against real API stores and a local TLS proxy."""
-import argparse,hashlib,http.client,json,os,signal,socket,sqlite3,ssl,struct,subprocess,tempfile,threading,time,zlib
+import argparse,hashlib,http.client,json,os,signal,socket,sqlite3,ssl,struct,subprocess,tempfile,threading,time,zlib,shutil
 from datetime import datetime,timezone
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--playwright-module',required=True);p.add_argument('--chromium',required=True);p.add_argument('--receipt',required=True);
 for name in ['fixture-python','tesseract-binary','tessdata','font']:p.add_argument('--'+name)
-p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion'])
+p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion','delivery'])
 args=p.parse_args()
 native_args=[args.fixture_python,args.tesseract_binary,args.tessdata,args.font]
 if any(native_args) and not all(native_args):p.error('native OCR verification requires all four fixture/tool options')
@@ -19,6 +19,141 @@ def validate_scenario(evidence,scenario):
  for name in names:
   for width in ([1280,320,390,768,1440] if scenario=='structure-suggestion' else [1280,390]):assert name+' '+str(width) in evidence['checks'],'required browser scenario missing'
 before=hashes()
+def check_delivery():
+ """Real application/SQLite/worker, synthetic loopback provider; no private inputs."""
+ with tempfile.TemporaryDirectory(prefix='scanner-delivery-web-') as temporary:
+  work=Path(temporary);binary=work/'scanner'
+  subprocess.run(['npm','--prefix','web','run','build'],cwd=root,check=True,capture_output=True)
+  shutil.copytree(root/'web/dist',root/'internal/webui/dist',dirs_exist_ok=True)
+  subprocess.run(['go','build','-tags','webui','-o',str(binary),'./cmd/scanner'],cwd=root,check=True,capture_output=True)
+  for name in ['state','documents']:(work/name).mkdir(mode=0o700)
+  pdf=b'%PDF-1.4\n';offsets=[0]
+  for index,obj in enumerate([b'<</Type/Catalog/Pages 2 0 R>>',b'<</Type/Pages/Count 1/Kids[3 0 R]>>',b'<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Contents 4 0 R>>',b'<</Length 0>>\nstream\n\nendstream'],1):
+   offsets.append(len(pdf));pdf+=str(index).encode()+b' 0 obj\n'+obj+b'\nendobj\n'
+  xref=len(pdf);pdf+=b'xref\n0 5\n0000000000 65535 f \n'+b''.join(('%010d 00000 n \n'%offset).encode() for offset in offsets[1:])+b'trailer<</Size 5/Root 1 0 R>>\nstartxref\n'+str(xref).encode()+b'\n%%EOF\n'
+  pdfs={name:pdf+b'%'+name.encode()+b'\n' for name in ['happy','loss','cancel','slow']};digests={name:hashlib.sha256(data).hexdigest() for name,data in pdfs.items()};digest=digests['happy'];task='12345678-1234-4234-8234-123456789abc'
+  remote_state={'mode':'pending','uploads':0,'requests':[],'marker':'','checksum':digest}
+  class Remote(BaseHTTPRequestHandler):
+   def log_message(self,*args):pass
+   def reply(self,value,status=200):
+    data=json.dumps(value).encode();self.send_response(status);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(data)));self.send_header('X-Version','3.4.2');self.send_header('X-Api-Version','10');self.end_headers();self.wfile.write(data)
+   def do_GET(self):
+    remote_state['requests'].append({'method':'GET','path':self.path})
+    assert self.headers.get('Accept')=='application/json; version=9'
+    if self.path=='/api/':return self.reply({'documents':'synthetic','tasks':'synthetic'})
+    if self.path=='/api/tasks/?task_id='+task:
+     mode=remote_state['mode']
+     if mode=='missing':return self.reply([],404)
+     if mode=='schema10':return self.reply({'results':[]})
+     return self.reply([{'task_id':task,'task_file_name':('different.pdf' if mode=='marker' else remote_state['marker']),'status':('STARTED' if mode in ['pending','slow'] else 'SUCCESS'),'related_document':42}])
+    if self.path=='/api/documents/42/metadata/':return self.reply({'original_checksum':('0'*64 if remote_state['mode']=='checksum' else remote_state['checksum'])})
+    self.reply({},404)
+   def do_POST(self):
+    assert self.path=='/api/documents/post_document/'
+    assert self.headers.get('Accept')=='application/json; version=9'
+    assert self.headers.get('Authorization')=='Token synthetic-delivery-only'
+    body=self.rfile.read(int(self.headers['Content-Length']));matches=[data for data in pdfs.values() if data in body];assert len(matches)==1;remote_state['checksum']=hashlib.sha256(matches[0]).hexdigest()
+    import re
+    marker=re.search(br'filename="(delivery_[a-z0-9]+\.pdf)"',body);assert marker
+    remote_state['marker']=marker.group(1).decode();remote_state['uploads']+=1;remote_state['requests'].append({'method':'POST','path':self.path})
+    if remote_state['mode']=='loss':self.close_connection=True;self.connection.shutdown(socket.SHUT_RDWR);self.connection.close();return
+    if remote_state['mode']=='slow':time.sleep(2)
+    self.reply(task)
+  remote=ThreadingHTTPServer(('127.0.0.1',0),Remote);remote_thread=threading.Thread(target=remote.serve_forever,daemon=True);remote_thread.start()
+  with socket.socket() as sock:sock.bind(('127.0.0.1',0));backend=sock.getsockname()[1]
+  processes={'api':None,'worker':None};setting='disabled'
+  def stop(role):
+   process=processes[role]
+   if process is not None:
+    process.terminate();out,err=process.communicate(timeout=20);assert process.returncode==0 and not out and not err,role+' shutdown failed';processes[role]=None
+  def environment():
+   env={'PATH':os.environ['PATH'],'SCANNER_PUBLIC_URL':origin,'SCANNER_AUTHENTICATE_TYPE':'none','SCANNER_LISTEN_ADDR':'127.0.0.1:'+str(backend),'SCANNER_STATE_DIR':str(work/'state'),'SCANNER_DOCUMENT_DIR':str(work/'documents'),'SCANNER_OCR_PLUGINS':'','SCANNER_OCR_DEFAULT_PLUGIN':''}
+   if setting!='disabled':env.update(SCANNER_PAPERLESS_ENABLED='true',SCANNER_PAPERLESS_DESTINATION='Household archive',SCANNER_PAPERLESS_BASE_URL='http://127.0.0.1:'+str(remote.server_port),SCANNER_PAPERLESS_ALLOW_INSECURE_HTTP='true',SCANNER_PAPERLESS_TOKEN_ENV='SCANNER_PAPERLESS_TOKEN_FIXTURE')
+   if setting=='configured':env['SCANNER_PAPERLESS_TOKEN_FIXTURE']='synthetic-delivery-only'
+   return env
+  def start():
+   processes['api']=subprocess.Popen([str(binary),'serve'],env=environment(),stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+   deadline=time.monotonic()+15
+   while True:
+    assert processes['api'].poll() is None,'API startup failed'
+    try:
+     conn=http.client.HTTPConnection('127.0.0.1',backend,timeout=1);conn.request('GET','/health/ready');status=conn.getresponse().status;conn.close()
+     if status==200:break
+    except OSError:pass
+    assert time.monotonic()<deadline,'API startup timeout';time.sleep(.05)
+   start_worker(False)
+  def start_worker(delivery):
+   env=environment()
+   if not delivery:env['SCANNER_PAPERLESS_ENABLED']='false'
+   processes['worker']=subprocess.Popen([str(binary),'worker'],env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+   deadline=time.monotonic()+15
+   while True:
+    with sqlite3.connect(work/'documents/documents.sqlite3') as db:ready=db.execute('SELECT count(*) FROM ocr_catalog_snapshot').fetchone()[0]
+    if ready:return
+    assert processes['worker'].poll() is None and time.monotonic()<deadline,'catalog worker startup failed';time.sleep(.05)
+  def seed():
+   now=int(time.time()*1000)
+   def chunk(kind,data):return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data))
+   image=bytes.fromhex('89504e470d0a1a0a')+chunk(b'IHDR',struct.pack('>IIBBBBB',32,16,8,2,0,0,0))+chunk(b'IDAT',zlib.compress((bytes([0])+bytes([100,120,140])*32)*16))+chunk(b'IEND',b'')
+   with sqlite3.connect(work/'state/state.sqlite3') as db:owner=db.execute("SELECT id FROM principals WHERE kind='guest' AND disabled_at_ms IS NULL ORDER BY created_at_ms DESC LIMIT 1").fetchone()[0]
+   source=work/'documents/output.pdf';source.write_bytes(pdf);source.chmod(0o600)
+   with sqlite3.connect(work/'documents/documents.sqlite3') as db:
+    db.execute('INSERT OR IGNORE INTO owners(id) VALUES(?)',(owner,))
+    for name in ['happy','loss','cancel','slow']:
+     doc='document_delivery_'+name;artifact='artifact_delivery_'+name
+     data=pdfs[name];file=work/'documents'/(name+'.pdf');file.write_bytes(data);file.chmod(0o600)
+     original=work/'documents'/(name+'.png');original.write_bytes(image);original.chmod(0o600)
+     db.execute("INSERT INTO documents(id,owner_id,purpose,state,created_at_ms,expires_at_ms) VALUES(?,?,'document','ready',?,?)",(doc,owner,now,now+3600000))
+     db.execute("INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,'original','ready',?,'image/png',?,?,1,?)",('original_delivery_'+name,doc,owner,name+'.png',len(image),hashlib.sha256(image).digest(),now))
+     db.execute("INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,pixel_width,pixel_height) VALUES(?,?,?,0,?,'a4','color',300,32,16)",('page_delivery_'+name,doc,owner,'original_delivery_'+name))
+     db.execute("INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,'output','ready',?,'application/pdf',?,?,1,?)",(artifact,doc,owner,name+'.pdf',len(data),bytes.fromhex(digests[name]),now))
+     db.execute('INSERT INTO published_outputs VALUES(?,?,1,?)',(doc,owner,artifact))
+  class Proxy(BaseHTTPRequestHandler):
+   def log_message(self,*args):pass
+   def relay(self):
+    nonlocal setting
+    data=self.rfile.read(int(self.headers.get('Content-Length','0')))
+    if self.path=='/__fixture/delivery':
+     command=json.loads(data);action=command['action']
+     if action=='setting':stop('worker');stop('api');setting=command['value'];start()
+     elif action=='seed':seed()
+     elif action=='mode':remote_state['mode']=command['value']
+     elif action=='start-worker':
+      stop('worker');start_worker(True)
+     elif action=='stop-worker':stop('worker');start_worker(False)
+     elif action=='restart':stop('worker');stop('api');start()
+     elif action!='observe':raise AssertionError('unknown fixture operation')
+     with sqlite3.connect(work/'documents/documents.sqlite3') as db:rows=db.execute('SELECT state FROM deliveries ORDER BY created_at_ms').fetchall() if db.execute("SELECT count(*) FROM sqlite_master WHERE name='deliveries'").fetchone()[0] else []
+     payload=json.dumps({'uploads':remote_state['uploads'],'states':[r[0] for r in rows],'pdf_sha256':digests}).encode();self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(payload)));self.end_headers();self.wfile.write(payload);return
+    conn=http.client.HTTPConnection('127.0.0.1',backend,timeout=20)
+    headers={k:v for k,v in self.headers.items() if k.lower() not in ['connection','transfer-encoding']}
+    try:
+     conn.request(self.command,self.path,data,headers);response=conn.getresponse();body=response.read();self.send_response(response.status)
+     for k,v in response.getheaders():
+      if k.lower() not in ['connection','transfer-encoding','server','date']:self.send_header(k,v)
+     self.end_headers();self.wfile.write(body)
+    except (BrokenPipeError,ConnectionResetError,ssl.SSLEOFError):pass
+    finally:conn.close()
+   do_GET=do_POST=do_PATCH=do_PUT=do_DELETE=relay
+  proxy=ThreadingHTTPServer(('127.0.0.1',0),Proxy);origin='https://127.0.0.1:'+str(proxy.server_port)
+  cert,key=work/'cert.pem',work/'key.pem';subprocess.run(['openssl','req','-x509','-newkey','rsa:2048','-nodes','-keyout',str(key),'-out',str(cert),'-days','1','-subj','/CN=scanner-fixture','-addext','subjectAltName=IP:127.0.0.1'],check=True,capture_output=True);key.chmod(0o600)
+  tls=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);tls.load_cert_chain(cert,key);proxy.socket=tls.wrap_socket(proxy.socket,server_side=True)
+  thread=threading.Thread(target=proxy.serve_forever,daemon=True);thread.start()
+  try:
+   start();evidence=work/'browser.json'
+   result=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-delivery.cjs'],cwd=root,env=dict(os.environ,PLAYWRIGHT_MODULE=args.playwright_module,CHROMIUM_EXECUTABLE=args.chromium,SCANNER_TEST_ORIGIN=origin,SCANNER_TEST_RECEIPT=str(evidence)),capture_output=True,text=True,timeout=180)
+   print(result.stdout,end='');print(result.stderr,end='');assert result.returncode==0,'delivery browser failed'
+   browser=json.loads(evidence.read_text());assert browser['passed'] and browser['real_backend'] and browser['checks']
+   assert remote_state['uploads']==3,'happy, loss and slow must each upload exactly once'
+   assert before==hashes(),'source changed during verification'
+   assert all(hashlib.sha256((work/'documents'/(name+'.pdf')).read_bytes()).hexdigest()==value for name,value in digests.items())
+   built={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((root/'internal/webui/dist').rglob('*')) if f.is_file()}
+   receipt={'passed':True,'scenario':'delivery','timestamp_utc':datetime.now(timezone.utc).isoformat(),'browser':browser,'source_sha256':before,'built_assets_sha256':built,'pdf_sha256':digests,'remote_requests':remote_state['requests'],'remote_uploads':remote_state['uploads'],'scope':'Synthetic loopback Paperless API9, compiled real serve/worker and private SQLite through local TLS. No live service/credentials/private documents/physical phone/screen reader/deployment acceptance.'}
+   Path(args.receipt).write_text(json.dumps(receipt,indent=2)+'\n')
+  finally:
+   stop('worker');stop('api');proxy.shutdown();proxy.server_close();thread.join(timeout=5);remote.shutdown();remote.server_close();remote_thread.join(timeout=5)
+if args.scenario=='delivery':
+ files.extend([root/'scripts/check-web-delivery.cjs',root/'docs/design/paperless-delivery.md']);before=hashes();check_delivery();raise SystemExit(0)
 with tempfile.TemporaryDirectory(prefix='scanner-product-web-') as temporary:
  work=Path(temporary);binary=work/'scanner'
  subprocess.run(['python3','scripts/build-web.py','--output',str(binary)],cwd=root,check=True,capture_output=True)

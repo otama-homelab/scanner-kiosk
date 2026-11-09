@@ -5,7 +5,7 @@ const states=new Map<string,Key>([['queued','deliveryQueued'],['attempted','deli
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
 export function deliveryControl(o:Options){
  const {doc,t}=o,element=document.createElement('section');element.hidden=true;element.className='ocr-results';
- const controller=new AbortController();let disposed=false,pending=false,checked=false,uncertain=false,record:any=null,cap:any=null,timer:ReturnType<typeof setTimeout>|undefined,dialog:HTMLDialogElement|null=null,polls=0;
+ const controller=new AbortController();let disposed=false,pending=false,failure=false,checked=false,uncertain=false,record:any=null,cap:any=null,timer:ReturnType<typeof setTimeout>|undefined,dialog:HTMLDialogElement|null=null,polls=0;
  const current=()=>!disposed&&o.current();
  const call=(path:string,method='GET',body?:unknown,key?:string,revision?:number)=>o.api(path,method,body,key,revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));
  const make=(tag:string,value:string)=>{const node=document.createElement(tag);node.textContent=value;return node};
@@ -13,11 +13,11 @@ export function deliveryControl(o:Options){
  const state=make('p','');state.setAttribute('role','status');state.tabIndex=-1;
  const intent='scanner.delivery.'+doc.id+'.'+doc.revision;
  try{uncertain=localStorage.getItem(intent)!==null}catch{uncertain=true}
- function validate(value:any){if(!opaque(value?.id)||value.document_id!==doc.id||!Number.isSafeInteger(value.revision)||value.destination!=='paperless'||!states.has(value.state))throw new Error('Invalid delivery');return value}
+ function validate(value:any){if(!opaque(value?.id)||!opaque(value.document_id)||!Number.isSafeInteger(value.revision)||value.destination!=='paperless'||!states.has(value.state))throw new Error('Invalid delivery');return value}
  async function read(){checked=false;try{record=validate(await call('/api/documents/'+doc.id+'/deliveries/current'));uncertain=false;try{localStorage.removeItem(intent)}catch{}checked=true}catch(err){if((err as {status?:number}).status===404){record=null;checked=true}else throw err}}
  function schedule(){if(timer)clearTimeout(timer);if(record&&['queued','attempted','accepted'].includes(record.state)&&polls++<40)timer=setTimeout(()=>void update(),1500)}
  async function update(){try{await read();if(current()){draw();schedule()}}catch{if(current()){checked=false;draw()}}}
- async function command(path:string,body:unknown){if(pending)return;pending=true;draw();try{record=validate(await call(path,'POST',body));if(current()){draw();state.focus();schedule()}}catch{if(current()){state.textContent=t('deliveryUnavailable');state.focus()}}finally{pending=false;if(current())draw()}}
+ async function command(path:string,body:unknown){if(pending)return;failure=false;pending=true;draw();try{record=validate(await call(path,'POST',body));if(current()){draw();state.focus();schedule()}}catch{if(current()){failure=true;state.textContent=t('deliveryUnavailable');state.focus()}}finally{pending=false;if(current())draw()}}
  function confirm(opener:HTMLButtonElement){
   if(dialog||pending||!checked||uncertain||record)return;
   const key=requestKey();dialog=document.createElement('dialog');dialog.className='output-settings';dialog.setAttribute('aria-labelledby','delivery-confirm-title');
@@ -31,20 +31,20 @@ export function deliveryControl(o:Options){
    catch{try{await read()}catch{checked=false}}
    finally{pending=false;if(current()){dialog?.close();draw();state.focus();schedule()}}
   })());submit.className='primary';const actions=document.createElement('div');actions.className='output-actions';actions.append(cancel,submit);
-  dialog.append(title,make('p',o.name),make('p',cap.processing_destination),hint,actions);element.append(dialog);
+  const destination=make('p',cap.processing_destination);destination.className='ocr-result-panel';dialog.append(title,make('p',o.name),destination,hint,actions);element.append(dialog);
   dialog.addEventListener('cancel',e=>{if(pending)e.preventDefault()});dialog.addEventListener('close',()=>{dialog?.remove();dialog=null;if(current()&&opener.isConnected)opener.focus()},{once:true});dialog.showModal();cancel.focus();
  }
  function draw(){
   if(!current()||!cap?.enabled)return;element.hidden=false;element.dataset.delivery='';
   const focused=element.contains(document.activeElement)?document.activeElement as HTMLElement:null;
   const focusKey=focused?.dataset.deliveryAction;
-  const heading=make('h2','Paperless');const destination=make('p',t('deliveryDestination')+': '+cap.processing_destination);
+  const heading=make('h2','Paperless');const destination=make('p',t('deliveryDestination')+': '+cap.processing_destination);destination.className='ocr-result-panel';
   const health=make('p',t(!cap.configured?'deliveryUnconfigured':cap.health?.status==='healthy'?'deliveryHealthy':cap.health?.status==='unknown'?'deliveryHealthUnknown':'deliveryHealthFailed'));
   if(cap.health?.checked_at)health.append(document.createTextNode(' · '+new Date(cap.health.checked_at).toLocaleString()));
   const controls=document.createElement('div');controls.className='output-actions';element.replaceChildren(heading,destination,health,state,controls);
   const add=(key:Key,action:()=>void)=>{const b=button(key,action);b.dataset.deliveryAction=key;controls.append(b);return b};
   element.dataset.deliveryState=record?.state||'';
-  state.textContent=record?t(states.get(record.state)!):uncertain?t('deliveryUnknown'):!checked?t('deliveryUnavailable'):'';
+  state.textContent=failure?t('deliveryUnavailable'):record?t(states.get(record.state)!):uncertain?t('deliveryUnknown'):!checked?t('deliveryUnavailable'):'';
   if(record?.remote_processing_may_continue)element.append(make('p',t('deliveryRemoteContinues')));
   if(cap.configured){add('deliveryCheckHealth',()=>void(async()=>{if(pending)return;pending=true;draw();try{cap=await call('/api/capabilities/paperless/health','POST',{})}catch{cap.health={status:'unavailable'}}finally{pending=false;if(current())draw()}})());
    if(checked&&!record&&!uncertain){const send=add('deliverySend',()=>confirm(send))}
