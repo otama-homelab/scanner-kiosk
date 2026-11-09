@@ -16,6 +16,25 @@ func deliveryRequest() DeliveryRequest {
 	return DeliveryRequest{DocumentID: docA, Revision: 2, IdempotencyKey: "request_delivery_0001", DestinationID: "paperless-local", ConfigFingerprint: strings.Repeat("a", 64)}
 }
 
+func TestDeliveryCurrentOwnerAndExpiry(t *testing.T) {
+	f, d := readyDelivery(t)
+	ctx := context.Background()
+	current, err := f.store.ReadCurrentDelivery(ctx, alice, docA, d.DestinationID)
+	if err != nil || current.ID != d.ID {
+		t.Fatal("current payload ledger", current.ID, err)
+	}
+	if _, err = f.store.ReadCurrentDelivery(ctx, bob, docA, d.DestinationID); !errors.Is(err, ErrUnavailable) {
+		t.Fatal("foreign current ledger", err)
+	}
+	if _, err = f.store.ReadCurrentDelivery(ctx, alice, docA, "other-destination"); !errors.Is(err, ErrUnavailable) {
+		t.Fatal("wrong destination ledger", err)
+	}
+	f.now = d.ExpiresAtMS
+	if _, err = f.store.ReadCurrentDelivery(ctx, alice, docA, d.DestinationID); !errors.Is(err, ErrUnavailable) {
+		t.Fatal("expired current ledger", err)
+	}
+}
+
 func TestDeliveryOneAttemptCrashMatrix(t *testing.T) {
 	ctx := context.Background()
 	const task = "12345678-1234-4234-8234-123456789abc"
