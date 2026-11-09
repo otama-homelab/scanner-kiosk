@@ -441,6 +441,25 @@ func compareExtractedImage(ctx context.Context, pdfimages, pdfPath string, pageN
 	}
 	original, err := decodeImageFile(originalPath)
 	if err != nil {
+		body, readErr := readRootFileValue(originalPath, maxArtifactBytes)
+		if readErr != nil || !bytes.HasPrefix(body, []byte("%PDF-")) {
+			return ErrInvalid
+		}
+		originalPrefix := filepath.Join(work, fmt.Sprintf("original-extract-%d", pageNumber))
+		if _, _, err := runTool(ctx, pdfimages, []string{"-png", "-f", strconv.Itoa(pageNumber), "-l", strconv.Itoa(pageNumber), originalPath, originalPrefix}, work); err != nil {
+			return err
+		}
+		var originals []string
+		originals, err = filepath.Glob(originalPrefix + "-*.png")
+		if err != nil || len(originals) != 1 {
+			return ErrInvalid
+		}
+		original, err = decodeImageFile(originals[0])
+		if err != nil {
+			return err
+		}
+	}
+	if err != nil {
 		return err
 	}
 	return comparePixels(original, extracted)

@@ -8,6 +8,7 @@ import (
 	"io"
 	"os"
 	"scanner-kiosk/internal/pdfassemble"
+	"scanner-kiosk/internal/pdfimport"
 	"scanner-kiosk/internal/pdftextlayer"
 	"scanner-kiosk/pkg/ocrplugin"
 )
@@ -20,10 +21,11 @@ func main() {
 }
 func run() error {
 	var request struct {
-		Pages  []ocrplugin.PositionedPage `json:"pages"`
-		Images []string                   `json:"images"`
-		Font   string                     `json:"font"`
-		Output string                     `json:"output"`
+		Pages     []ocrplugin.PositionedPage `json:"pages"`
+		Images    []string                   `json:"images"`
+		Font      string                     `json:"font"`
+		Output    string                     `json:"output"`
+		SourcePDF string                     `json:"source_pdf"`
 	}
 	decoder := json.NewDecoder(io.LimitReader(os.Stdin, 4<<20))
 	decoder.DisallowUnknownFields()
@@ -40,6 +42,20 @@ func run() error {
 	ctx := context.Background()
 	pages := []pdfassemble.Page{}
 	layers := []pdfassemble.TextLayer{}
+	var sources []pdfimport.Page
+	if request.SourcePDF != "" {
+		body, err := os.ReadFile(request.SourcePDF)
+		if err != nil {
+			return err
+		}
+		sources, err = pdfimport.Split(ctx, body, pdfimport.Options{MaxInputBytes: 200 << 20, MaxOutputBytes: 200 << 20, MaxPages: 256})
+		if err != nil {
+			return err
+		}
+		if len(sources) != len(request.Pages) {
+			return io.ErrUnexpectedEOF
+		}
+	}
 	for i, page := range request.Pages {
 		input := ocrplugin.InputPage{ID: page.PageID, Width: page.Width, Height: page.Height}
 		layer, err := pdftextlayer.RenderPositioned(ctx, page, input, font, 64<<20)
@@ -47,7 +63,12 @@ func run() error {
 			return err
 		}
 		imagePath := request.Images[i]
-		pages = append(pages, pdfassemble.Page{ID: page.PageID, Size: "a4", Color: "color", Width: page.Width, Height: page.Height, MediaType: "image/png", Open: func(context.Context) (io.ReadCloser, error) { return os.Open(imagePath) }})
+		if len(sources) > 0 {
+			raw := sources[i].PDF
+			pages = append(pages, pdfassemble.Page{ID: page.PageID, MediaType: "application/pdf", Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(raw)), nil }})
+		} else {
+			pages = append(pages, pdfassemble.Page{ID: page.PageID, Size: "a4", Color: "color", Width: page.Width, Height: page.Height, MediaType: "image/png", Open: func(context.Context) (io.ReadCloser, error) { return os.Open(imagePath) }})
+		}
 		layers = append(layers, pdfassemble.TextLayer{PageID: page.PageID, Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(layer)), nil }})
 	}
 	data, err := pdfassemble.BuildWithLayers(ctx, pages, layers, "lossless", pdfassemble.Options{MaxInputBytes: 200 << 20, MaxOutputBytes: 200 << 20, MaxPagePixels: 80_000_000, MaxPages: 256, JPEGQuality: 90})

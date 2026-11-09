@@ -103,6 +103,8 @@ def main():
                               "algorithm": engine, "algorithm_version": lock["version"]})
     request = {"pages": positioned, "images": [str(output/f"input-{i}.png") for i in range(len(pages))],
                "font": lock["font"], "output": str(output/"searchable.pdf")}
+    if source.read_bytes()[:5] == b"%PDF-":
+        request["source_pdf"] = str(source)
     subprocess.run([lock["compositor"]], input=json.dumps(request).encode(), check=True, stdout=subprocess.DEVNULL, timeout=60)
     artifacts.append({"id": "artifact_ocr_pdf_001", "role": "pdf", "path": "searchable.pdf", "media_type": "application/pdf",
                       "source_pages": pages, "parents": [os.environ["SCANNER_EVAL_ORIGINAL_ID"]],
