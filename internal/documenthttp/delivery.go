@@ -173,11 +173,19 @@ func (h *Handler) reconcileDelivery(w http.ResponseWriter, r *http.Request, p we
 	if taskID == "" {
 		taskID = d.TaskID
 	}
-	if d.DestinationID != s.DestinationID || d.ConfigFingerprint != s.ConfigFingerprint || s.Task == nil || s.Metadata == nil || d.State != "unknown" && d.State != "accepted" && d.State != "attempted" || taskID == "" || d.TaskID != "" && d.TaskID != taskID {
+	if d.State != "unknown" && d.State != "accepted" && d.State != "attempted" || taskID == "" || d.TaskID != "" && d.TaskID != taskID {
 		failure(w, documents.ErrConflict)
 		return
 	}
-	task, remoteErr := s.Task(r.Context(), taskID, d.Filename)
+	var task paperless.Task
+	remoteErr := paperless.ErrUnavailable
+	// Destination drift is an unknown observation, never permission to query a new provider.
+	if d.DestinationID == s.DestinationID && d.ConfigFingerprint == s.ConfigFingerprint && s.Task != nil && s.Metadata != nil {
+		task, remoteErr = s.Task(r.Context(), taskID, d.Filename)
+	}
+	if remoteErr == nil && task.Status == "SUCCESS" && task.RelatedDocument == nil {
+		remoteErr = paperless.ErrUnavailable
+	}
 	if remoteErr == nil && task.Status == "SUCCESS" {
 		remoteErr = s.Metadata(r.Context(), *task.RelatedDocument, d.Artifact.SHA256)
 	}

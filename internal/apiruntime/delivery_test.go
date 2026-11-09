@@ -60,6 +60,9 @@ func newDeliveryFixture(t *testing.T, ttl ...time.Duration) *deliveryFixture {
 			return
 		}
 		if r.URL.Path == "/api/tasks/" {
+			if r.URL.RawQuery != "task_id="+deliveryTask {
+				t.Error("recovery did not query exact task UUID")
+			}
 			marker := f.marker
 			if f.mode == "marker" {
 				marker = "other-owner.pdf"
@@ -429,7 +432,7 @@ func TestDeliveryRecoveryOwnership(t *testing.T) {
 				want, gets = 404, 0
 			case "expired":
 				time.Sleep(510 * time.Millisecond)
-				want, gets = 404, 0
+				want, gets = 410, 0
 			case "stored-task":
 				if err := s.AcceptDelivery(context.Background(), f.owner, id, deliveryTask); err != nil {
 					t.Fatal(err)
