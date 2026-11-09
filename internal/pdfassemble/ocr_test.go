@@ -57,6 +57,33 @@ func pdfPage(id string, raw []byte) Page {
 	return Page{ID: id, MediaType: "application/pdf", Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(raw)), nil }}
 }
 
+func TestOCRImportedPDFExistingText(t *testing.T) {
+	for _, rendering := range []string{"0", "3"} {
+		raw := importedOCRFixture(200, 300, "10 10 30 40 re f BT /F1 12 Tf "+rendering+" Tr 20 30 Td (ORIGINAL TOKEN) Tj ET", "")
+		output, err := BuildWithLayers(context.Background(), []Page{pdfPage("source", raw)}, []TextLayer{pdfLayer("source", 200, 300, "NEW RECOGNITION")}, "lossless", opts())
+		if err != nil {
+			t.Fatal(err)
+		}
+		text := extractedOCRText(t, output)
+		if !strings.Contains(text, "ORIGINAL TOKEN") || strings.Contains(text, "NEW RECOGNITION") {
+			t.Fatalf("source text must be retained without new layer: %q", text)
+		}
+	}
+}
+
+func TestOCRImportedPDFNoDuplicateText(t *testing.T) {
+	raw := importedOCRFixture(200, 300, "BT /F1 12 Tf 3 Tr 20 30 Td (UNIQUE TOKEN) Tj ET", "")
+	blank := importedOCRFixture(200, 300, "10 10 30 40 re f", "")
+	output, err := BuildWithLayers(context.Background(), []Page{pdfPage("text", raw), pdfPage("blank", blank)}, []TextLayer{pdfLayer("text", 200, 300, "UNIQUE TOKEN"), pdfLayer("blank", 200, 300, "ADDED TOKEN")}, "lossless", opts())
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := extractedOCRText(t, output)
+	if strings.Count(text, "UNIQUE TOKEN") != 1 || strings.Count(text, "ADDED TOKEN") != 1 {
+		t.Fatalf("duplicate/lost text: %q", text)
+	}
+}
+
 func pdfLayer(id string, width, height float64, text string) TextLayer {
 	raw := importedOCRFixture(width, height, "BT /F1 12 Tf 3 Tr 20 30 Td ("+text+") Tj ET", "")
 	return TextLayer{PageID: id, Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(raw)), nil }}
