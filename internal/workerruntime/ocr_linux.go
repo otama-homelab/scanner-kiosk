@@ -23,7 +23,15 @@ type renderExecutionRecords interface {
 	renderjob.Records
 	renderjob.PulseRecords
 	renderjob.StopRecords
+	renderjob.OCRResultRecords
 	PublishExportWithThumbnails(context.Context, string, string, string, int64, documents.Export, []documents.ThumbnailRecord) error
+}
+
+func (*processingRecords) OCRTextLayerFont(ctx context.Context) ([]byte, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	return ocrruntime.ReadTextLayerFont(os.Getenv("SCANNER_OCR_LLM_TEXT_LAYER_FONT"))
 }
 
 type processingRecords struct {

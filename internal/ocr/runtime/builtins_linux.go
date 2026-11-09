@@ -60,7 +60,7 @@ func NewWorker(ctx context.Context, core config.Config, lookup config.Lookup, wo
 			}
 			var fontData []byte
 			if cfg.TextLayerFontPath != "" {
-				fontData, err = readTextLayerFont(cfg.TextLayerFontPath)
+				fontData, err = ReadTextLayerFont(cfg.TextLayerFontPath)
 				if err != nil {
 					return Instance{}, err
 				}
@@ -81,8 +81,9 @@ func NewWorker(ctx context.Context, core config.Config, lookup config.Lookup, wo
 	return Build(ctx, settings, factories)
 }
 
+// ReadTextLayerFont bounds the operator-approved font shared with the coordinator.
 // Nonblocking open prevents a configured FIFO/device from hanging worker startup.
-func readTextLayerFont(path string) ([]byte, error) {
+func ReadTextLayerFont(path string) ([]byte, error) {
 	fail := func() ([]byte, error) { return nil, errors.New("LLM text-layer font unavailable or invalid") }
 	file, err := os.OpenFile(path, os.O_RDONLY|syscall.O_NONBLOCK, 0)
 	if err != nil {

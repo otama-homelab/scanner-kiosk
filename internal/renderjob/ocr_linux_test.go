@@ -105,8 +105,12 @@ func readCandidateBundle(t *testing.T, r *candidateRecords, job string) document
 	}
 	return b
 }
-func TestReOCRWorkerCandidate(t *testing.T) { testWorkerCandidate(t, ocrplugin.PositionedText) }
-func TestReOCRWorkerTextOnly(t *testing.T)  { testWorkerCandidate(t, ocrplugin.Text) }
+func TestReOCRWorkerCandidate(t *testing.T) {
+	for _, kind := range []ocrplugin.OutputKind{ocrplugin.PositionedText, ocrplugin.PDFTextLayer} {
+		t.Run(string(kind), func(t *testing.T) { testWorkerCandidate(t, kind) })
+	}
+}
+func TestReOCRWorkerTextOnly(t *testing.T) { testWorkerCandidate(t, ocrplugin.Text) }
 func testWorkerCandidate(t *testing.T, kind ocrplugin.OutputKind) {
 	records, root, job, options, old := candidateFixture(t, kind)
 	p, e := Prepare(context.Background(), records, root, owner, job, runner, options)
@@ -129,7 +133,7 @@ func testWorkerCandidate(t *testing.T, kind ocrplugin.OutputKind) {
 		t.Fatal("source bundle incomplete")
 	}
 	data, e := os.ReadFile(filepath.Join(root, b.Pages[0].Text.RelativePath))
-	if e != nil || !strings.Contains(string(data), "REAL OCR TEXT") {
+	if e != nil || (kind != ocrplugin.PDFTextLayer && !strings.Contains(string(data), "REAL OCR TEXT")) || (kind == ocrplugin.PDFTextLayer && (len(data) != 0 || !b.Pages[0].TranscriptUnavailable || b.Pages[0].Layer == nil)) {
 		t.Fatal("transcript missing", e)
 	}
 	if (b.Pages[0].Positions != nil) != (kind == ocrplugin.PositionedText) {
