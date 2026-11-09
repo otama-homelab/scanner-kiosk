@@ -53,7 +53,7 @@ class PreparationTests(unittest.TestCase):
         valid = {"uid": 10001, "gid": 10001, "no_new_privs": 1,
                  "capabilities": [0, 0, 0, 0, 0], "network_denied": True,
                  "input_read_only": True, "root_read_only": True,
-                 "cpu_seconds": 900, "address_space": 2 << 30,
+                 "cpu_seconds": 900, "rss_limit": 2 << 30,
                  "file_size": 1 << 30, "processes": 64, "open_files": 256,
                  "explicit_environment": True, "threads": 2}
         prepare.validate_isolation(valid)
