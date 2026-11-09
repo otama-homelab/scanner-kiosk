@@ -52,7 +52,9 @@ export function ocrResults(o:Options){
  if(readDisposition()){check.hidden=false;fail()}
  const previous=summaries.find((r:any)=>r.state==='adopted');
  if(previous&&opaque(previous.id)&&doc.output?.revision!==doc.revision){const link=document.createElement('a');link.className='download-link';link.href=base+'/ocr-results/'+previous.id+'/output';link.textContent=t('savePDF');element.prepend(link)}
- let comparisonAbort:AbortController|null=null,comparisonVersion=0;
+ let comparisonAbort:AbortController|null=null,comparisonVersion=0,expiryTimer:ReturnType<typeof setTimeout>|undefined;
+ const expiryHandlers=new Set<()=>void>(),expires=Date.parse(doc.expires_at);
+ const expire=()=>{const remaining=expires-Date.now();if(remaining>0)expiryTimer=setTimeout(expire,Math.min(remaining,2147483647));else for(const clear of expiryHandlers)clear()};expire();
  if(summaries.length){
   if(summaries.length>2||summaries.some((r:any)=>!opaque(r.id)||!['candidate','adopted'].includes(r.state)||!Number.isSafeInteger(r.input_revision)))throw new Error('Invalid result summaries');
   const title=make('h2',t('reocrCompare'));title.tabIndex=-1;title.dataset.reocrHeading='true';element.append(title);
@@ -70,7 +72,7 @@ export function ocrResults(o:Options){
   }
   async function compare(){
    comparisonAbort?.abort();comparisonAbort=new AbortController();const signal=comparisonAbort.signal,version=++comparisonVersion,pageID=select.value;
-   panels.replaceChildren();
+   expiryHandlers.clear();panels.replaceChildren();
    await Promise.all(summaries.map(async(summary:any)=>{
     const panel=document.createElement('section');panel.className='ocr-result-panel';panel.dataset.resultId=summary.id;panel.append(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('loading')));panels.append(panel);
     try{
@@ -103,11 +105,12 @@ export function ocrResults(o:Options){
      const optional=document.createElement('div'),notice=make('p','');notice.setAttribute('role','status');
      let selected=-1,generation=0;
      const available=()=>current()&&version===comparisonVersion&&!signal.aborted&&!!overlay&&Date.now()<Date.parse(doc.expires_at);
-     clearSuggestion=()=>{generation++;optional.replaceChildren();notice.textContent=t('structureUnavailable')};
+     clearSuggestion=()=>{generation++;const focused=optional.contains(document.activeElement);optional.replaceChildren();notice.textContent=t('structureUnavailable');if(focused)spans.querySelectorAll('button')[selected]?.focus()};expiryHandlers.add(clearSuggestion);
      const sourceIdentity=(r:any)=>{const pages=r.pages?.filter((v:any)=>v.page_id===pageID);return r.id===result.id&&r.input_revision===result.input_revision&&r.state===result.state&&pages?.length===1&&JSON.stringify(pages[0])===JSON.stringify(p)};
      const validate=async(index:number)=>{
-      if(!available()||!sourceIdentity(await api(resultBase,'GET',undefined,undefined,undefined,signal)))throw new Error('Unavailable source');
-      const [text,raw]=await Promise.all([artifact(artifacts.text,prefix+'text',signal),artifact(artifacts.positions,prefix+'positions',signal)]),fresh=JSON.parse(raw);
+      const deadline=AbortSignal.any([signal,AbortSignal.timeout(15000)]);
+      if(!available()||!sourceIdentity(await api(resultBase,'GET',undefined,undefined,undefined,deadline)))throw new Error('Unavailable source');
+      const [text,raw]=await Promise.all([artifact(artifacts.text,prefix+'text',deadline),artifact(artifacts.positions,prefix+'positions',deadline)]),fresh=JSON.parse(raw);
       if(!available()||text!==transcript||fresh.page_id!==pageID||fresh.width!==positions.width||fresh.height!==positions.height||JSON.stringify(fresh.spans?.[index])!==JSON.stringify(positions.spans[index]))throw new Error('Changed source');
      };
      const create=button('structureCreate',()=>void(async()=>{
@@ -116,7 +119,7 @@ export function ocrResults(o:Options){
        await validate(index);if(token!==generation)return;
        const name=Array.from(span.text.normalize('NFC').replace(/[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069/\\:*?"<>|]/gu,' ').replace(/\s+/gu,' ').trim().replace(/^[. ]+|[. ]+$/gu,'')).slice(0,64).join('');
        if(!name)throw new Error('Empty suggestion');
-       const generated=document.createElement('section');generated.dataset.structureSuggestion='true';
+       const generated=document.createElement('div');generated.dataset.structureSuggestion='true';generated.setAttribute('role','region');generated.setAttribute('aria-label',t('structureGenerated'));
        generated.append(make('h4',t('structureGenerated')),make('p',t('structureHelp')),make('p',name+'.pdf'));
        const reference=make('p',`${result.id} · ${t('reocrRevision')} ${result.input_revision} · ${t('page')} ${doc.pages.findIndex((v:any)=>v.id===pageID)+1} (${pageID}) · ${t('structureItem')} ${index+1} · ${p.effective_sha256}`);reference.className='ocr-source';
        const source=button('structureSource',()=>void(async()=>{source.disabled=true;try{await validate(index);if(token!==generation)return;const control=spans.querySelectorAll('button')[index];control.focus();control.click()}catch{if(current()&&version===comparisonVersion){clearSuggestion();spans.querySelectorAll('button')[index]?.focus()}}finally{source.disabled=false}})());
@@ -150,5 +153,5 @@ export function ocrResults(o:Options){
    actions.append(discard,adopt);element.append(actions);
   }
  }
- return {element,dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();controls?.dispose();dialog?.remove()}};
+ return {element,dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();dialog?.remove()}};
 }
