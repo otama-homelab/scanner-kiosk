@@ -42,6 +42,23 @@ type ocrHTTPFixture struct {
 	cookie      *http.Cookie
 	owner, root string
 	offset      atomic.Int64
+	reads       atomic.Int64
+	beforeRead  func(int64)
+}
+
+// Keep the real Store as the authority, but inject a state change exactly on
+// the second resolution (after stream opened and hashed the file).
+type ocrReadBoundary struct {
+	*documents.Store
+	fixture *ocrHTTPFixture
+}
+
+func (s ocrReadBoundary) ReadOCRResultArtifact(ctx context.Context, owner, document, result, page, kind string) (documents.ArtifactReference, error) {
+	n := s.fixture.reads.Add(1)
+	if s.fixture.beforeRead != nil {
+		s.fixture.beforeRead(n)
+	}
+	return s.Store.ReadOCRResultArtifact(ctx, owner, document, result, page, kind)
 }
 
 func (f *ocrHTTPFixture) exec(db *sql.DB, q string, args ...any) {
@@ -121,7 +138,7 @@ func newOCRHTTP(t *testing.T) *ocrHTTPFixture {
 	mux := http.NewServeMux()
 	mux.Handle("/auth/", sessions)
 	mux.Handle("/api/session", sessions)
-	mux.Handle("/api/", documenthttp.New(f.store, sessions, time.Hour, files, time.Minute, service, nil, nil))
+	mux.Handle("/api/", documenthttp.New(ocrReadBoundary{f.store, f}, sessions, time.Hour, files, time.Minute, service, nil, nil))
 	f.server = httptest.NewTLSServer(mux)
 	t.Cleanup(f.server.Close)
 	f.cookie = f.login()
@@ -258,6 +275,104 @@ func (f *ocrHTTPFixture) candidate() documents.OCRResultBundle {
 		f.t.Fatal("complete candidate", err)
 	}
 	return b
+}
+
+func TestReOCRHTTPArtifacts(t *testing.T) {
+	f := newOCRHTTP(t)
+	f.candidate()
+	base := "/api/documents/" + documentID + "/ocr-results/" + resultID
+	code, _, body := f.call("GET", base, "", f.cookie, nil)
+	if code != 200 {
+		t.Fatalf("result metadata: want 200 got %d %s", code, body)
+	}
+	var result documents.OCRResultProjection
+	if err := json.Unmarshal(body, &result); err != nil || len(result.Pages) != 1 {
+		t.Fatal(string(body), err)
+	}
+	if strings.Contains(string(body), "relative_path") || strings.Contains(string(body), "text.txt") || strings.Contains(string(body), "<script>") {
+		t.Fatal("private content/path in metadata", string(body))
+	}
+	if result.Pages[0].Artifacts["positions"] != "" || result.Pages[0].TranscriptUnavailable {
+		t.Fatal("fabricated positions or missing transcript", result)
+	}
+	textPath := base + "/pages/" + pageID + "/text"
+	code, h, body := f.call("GET", textPath, "", f.cookie, nil)
+	if code != 200 || h.Get("Content-Type") != "text/plain" || string(body) != "<script>alert('OCR')</script> 日本語" || h.Get("Cross-Origin-Resource-Policy") != "same-origin" {
+		t.Fatal("inert transcript", code, h, string(body))
+	}
+	if f.reads.Load() < 2 {
+		t.Fatal("missing post-open authorization")
+	}
+	code, _, body = f.call("GET", base+"/pages/"+pageID+"/effective", "", f.cookie, nil)
+	if code != 200 || string(body) != "synthetic source" {
+		t.Fatal("recognition source", code, string(body))
+	}
+	code, h, body = f.call("GET", base+"/output", "", f.cookie, func(h http.Header) { h.Set("Range", "bytes=0-2") })
+	if code != 206 || string(body) != "syn" || !strings.Contains(h.Get("Content-Disposition"), "attachment") {
+		t.Fatal("result PDF range", code, h, string(body))
+	}
+	for _, path := range []string{base + "/pages/" + pageID + "/positions", base + "/pages/page_foreign_0001/text", strings.Replace(base, resultID, "result_foreign_001", 1), base + "?path=/etc/passwd", base + "/pages/" + pageID + "/raw", base + "/pages/" + pageID + "/%2e%2e"} {
+		code, _, _ := f.call("GET", path, "", f.cookie, nil)
+		if code == 200 {
+			t.Fatal("substitution/query/traversal accepted", path)
+		}
+	}
+	other := f.login()
+	code, _, _ = f.call("GET", textPath, "", other, nil)
+	if code != 404 {
+		t.Fatal("foreign artifact", code)
+	}
+	if err := os.WriteFile(filepath.Join(f.root, "text.txt"), []byte(strings.Repeat("x", len("<script>alert('OCR')</script> 日本語"))), 0600); err != nil {
+		t.Fatal(err)
+	}
+	code, _, _ = f.call("GET", textPath, "", f.cookie, nil)
+	if code != 503 {
+		t.Fatal("corrupt sealed transcript", code)
+	}
+	for _, mode := range []string{"expiry", "disable"} {
+		t.Run(mode+" after open", func(t *testing.T) {
+			g := newOCRHTTP(t)
+			g.candidate()
+			g.beforeRead = func(n int64) {
+				if n == 2 {
+					if mode == "expiry" {
+						g.offset.Store(int64(2 * time.Hour))
+					} else {
+						g.exec(g.state, "UPDATE principals SET disabled_at_ms=? WHERE id=?", time.Now().UnixMilli(), g.owner)
+					}
+				}
+			}
+			code, _, b := g.call("GET", textPath, "", g.cookie, nil)
+			if code != 404 || strings.Contains(string(b), "<script>") || g.reads.Load() != 2 {
+				t.Fatal("post-open authority ignored", code, string(b), g.reads.Load())
+			}
+		})
+	}
+}
+
+func TestReOCRHTTPReadHasNoSideEffect(t *testing.T) {
+	f := newOCRHTTP(t)
+	f.candidate()
+	base := "/api/documents/" + documentID + "/ocr-results/" + resultID
+	count := func() [3]int {
+		var n [3]int
+		for i, table := range []string{"jobs", "reservations", "request_receipts"} {
+			if err := f.docs.QueryRow("SELECT count(*) FROM " + table).Scan(&n[i]); err != nil {
+				t.Fatal(err)
+			}
+		}
+		return n
+	}
+	before := count()
+	for _, path := range []string{base, base + "/pages/" + pageID + "/text", base + "/output"} {
+		code, _, b := f.call("GET", path, "", f.cookie, nil)
+		if code != 200 {
+			t.Fatalf("read-only result route: want 200 got %d %s", code, b)
+		}
+	}
+	if after := count(); after != before {
+		t.Fatal("GET admitted work", before, after)
+	}
 }
 func TestReOCRHTTPRejectsMalformed(t *testing.T) {
 	f := newOCRHTTP(t)
