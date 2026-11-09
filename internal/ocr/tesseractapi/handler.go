@@ -229,6 +229,12 @@ func (h *Handler) recognize(w http.ResponseWriter, r *http.Request) {
 		fail(503)
 		return
 	}
+	if settings.Output == ocrplugin.PositionedText {
+		if _, err := positionedResult(data, request.Pages[0]); err != nil {
+			fail(503)
+			return
+		}
+	}
 	// Complete local process stop and workspace cleanup before a success response.
 	if err = cleanup(); err != nil {
 		clean = false
@@ -259,7 +265,7 @@ func (a *fileAccess) OpenInput(ctx context.Context, id string) (io.ReadCloser, e
 	return os.Open(filepath.Join(a.root, "input"))
 }
 func (a *fileAccess) CreateOutput(ctx context.Context, kind ocrplugin.OutputKind) (ocrplugin.ArtifactWriter, error) {
-	if ctx.Err() != nil || a.created || (kind != ocrplugin.Text && kind != ocrplugin.PDFTextLayer) {
+	if ctx.Err() != nil || a.created || (kind != ocrplugin.Text && kind != ocrplugin.PDFTextLayer && kind != ocrplugin.PositionedText) {
 		return nil, errService
 	}
 	f, err := os.OpenFile(filepath.Join(a.root, "result"), os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)

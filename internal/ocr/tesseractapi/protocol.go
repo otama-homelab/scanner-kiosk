@@ -11,6 +11,7 @@ import (
 	"io"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"scanner-kiosk/pkg/ocrplugin"
 )
@@ -71,6 +72,9 @@ func validImage(input io.Reader, width, height int, pixels int64) bool {
 	return err == nil && (format == "png" || format == "jpeg") && c.Width == width && c.Height == height
 }
 func contentType(kind ocrplugin.OutputKind) string {
+	if kind == ocrplugin.PositionedText {
+		return "application/json"
+	}
 	if kind == ocrplugin.Text {
 		return "text/plain; charset=utf-8"
 	}
@@ -100,9 +104,18 @@ func nativeCapabilities(c ocrplugin.Capabilities) bool {
 		}
 	}
 	for _, output := range m.Outputs {
-		if output != ocrplugin.Text && output != ocrplugin.PDFTextLayer {
+		if output != ocrplugin.Text && output != ocrplugin.PDFTextLayer && output != ocrplugin.PositionedText {
 			return false
 		}
 	}
 	return true
+}
+
+// The service uses only its fixed page identity; private application IDs never cross the wire.
+func positionedResult(raw []byte, input ocrplugin.InputPage) (ocrplugin.PositionedPage, error) {
+	var page ocrplugin.PositionedPage
+	if !utf8.Valid(raw) || decode(raw, &page) != nil || page.Spans == nil || len(page.Spans) > 100000 || ocrplugin.ValidatePositionedPage(page, input) != nil {
+		return ocrplugin.PositionedPage{}, errService
+	}
+	return page, nil
 }

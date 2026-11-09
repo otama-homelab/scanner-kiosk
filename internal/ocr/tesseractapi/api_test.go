@@ -101,17 +101,21 @@ func limits() Limits {
 }
 func setup(t *testing.T, e *engine) (*Client, *httptest.Server, string) {
 	t.Helper()
+	l := limits()
+	if e.positioned {
+		l.Timeout = 5 * time.Second
+	}
 	root := t.TempDir()
 	if err := os.Chmod(root, 0700); err != nil {
 		t.Fatal(err)
 	}
-	h, err := NewHandler(HandlerOptions{Provider: e, APIKey: key, WorkRoot: root, Limits: limits()})
+	h, err := NewHandler(HandlerOptions{Provider: e, APIKey: key, WorkRoot: root, Limits: l})
 	if err != nil {
 		t.Fatal("handler initialization", err)
 	}
 	s := httptest.NewServer(h)
 	t.Cleanup(s.Close)
-	c, err := NewClient(context.Background(), ClientOptions{Settings: config.Tesseract{Endpoint: s.URL, AllowInsecureHTTP: true, ProcessingDestination: "Household OCR"}, APIKey: key, Limits: limits()})
+	c, err := NewClient(context.Background(), ClientOptions{Settings: config.Tesseract{Endpoint: s.URL, AllowInsecureHTTP: true, ProcessingDestination: "Household OCR"}, APIKey: key, Limits: l})
 	if err != nil {
 		t.Fatal("client initialization", err)
 	}
@@ -453,6 +457,30 @@ func TestAPIPositionedRejectsMalformed(t *testing.T) {
 			if _, err := c.Run(context.Background(), r, a); err == nil || len(a.outputs) != 0 || strings.Contains(err.Error(), "private") {
 				t.Fatal("malformed result published or leaked", err)
 			}
+			remote := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.Method == "GET" {
+					caps, _ := e.Capabilities(r.Context())
+					json.NewEncoder(w).Encode(caps)
+					return
+				}
+				w.Header().Set("Content-Type", "application/json")
+				w.Header().Set("X-OCR-Model-Version", modelVersion)
+				io.WriteString(w, tc.raw)
+			}))
+			defer remote.Close()
+			l := limits()
+			l.Timeout = 5 * time.Second
+			client, err := NewClient(context.Background(), ClientOptions{Settings: config.Tesseract{Endpoint: remote.URL, AllowInsecureHTTP: true, ProcessingDestination: "Household OCR"}, APIKey: key, Limits: l})
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer client.Close()
+			r = job(client)
+			r.Output = ocrplugin.PositionedText
+			a = &access{input: bitmap(t)}
+			if _, err = client.Run(context.Background(), r, a); err == nil || len(a.outputs) != 0 || strings.Contains(err.Error(), "private") {
+				t.Fatal("remote malformed JSON published or leaked", err)
+			}
 		})
 	}
 }
@@ -474,7 +502,9 @@ func TestAPIPositionedWrongType(t *testing.T) {
 				io.WriteString(w, `{"page_id":"page","width":40,"height":50,"spans":[]}`)
 			}))
 			defer s.Close()
-			c, err := NewClient(context.Background(), ClientOptions{Settings: config.Tesseract{Endpoint: s.URL, AllowInsecureHTTP: true, ProcessingDestination: "Household OCR"}, APIKey: key, Limits: limits()})
+			l := limits()
+			l.Timeout = 5 * time.Second
+			c, err := NewClient(context.Background(), ClientOptions{Settings: config.Tesseract{Endpoint: s.URL, AllowInsecureHTTP: true, ProcessingDestination: "Household OCR"}, APIKey: key, Limits: l})
 			if err != nil {
 				t.Fatal(err)
 			}

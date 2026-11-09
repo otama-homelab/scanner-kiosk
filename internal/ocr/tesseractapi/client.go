@@ -133,6 +133,19 @@ func (c *Client) Run(ctx context.Context, r ocrplugin.Request, a ocrplugin.Acces
 		if readErr != nil || closeErr != nil || res.StatusCode != 200 || res.Header.Get("X-OCR-Model-Version") != c.nativeVersion || res.Header.Get("Content-Type") != contentType(r.Output) || int64(len(data)) > c.options.Limits.MaxResultBytes || (r.Output == ocrplugin.Text && !utf8.Valid(data)) || (r.Output == ocrplugin.PDFTextLayer && !bytes.HasPrefix(data, []byte("%PDF-"))) || ctx.Err() != nil {
 			return ocrplugin.Result{}, errService
 		}
+		if r.Output == ocrplugin.PositionedText {
+			remote := page
+			remote.ID = "page"
+			positioned, err := positionedResult(data, remote)
+			if err != nil {
+				return ocrplugin.Result{}, errService
+			}
+			positioned.PageID = page.ID
+			data, err = json.Marshal(positioned)
+			if err != nil || int64(len(data)) > c.options.Limits.MaxResultBytes {
+				return ocrplugin.Result{}, errService
+			}
+		}
 		out, err := a.CreateOutput(ctx, r.Output)
 		if err != nil {
 			return ocrplugin.Result{}, errService
