@@ -1,7 +1,39 @@
 const {reveal}=require('./web-controls.cjs');
 const assert=require('node:assert/strict');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
-if(process.env.SCANNER_TEST_SCENARIO){
+if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
+ const {test}=require('node:test');
+ test('TestReOCRNativeLifecycle',async()=>{
+  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE});
+  const context=await browser.newContext({ignoreHTTPSErrors:true,storageState:process.env.SCANNER_TEST_STORAGE});
+  const page=await context.newPage();page.setDefaultTimeout(15000);
+  const origin=process.env.SCANNER_TEST_ORIGIN,base='/api/documents/document_native_001';const checks=[];
+  const get=async path=>{const r=await page.request.get(origin+path);assert.equal(r.status(),200);return r.json()};
+  const control=async action=>assert.equal((await page.request.post(origin+'/__fixture/native-'+action)).status(),200);
+  // The real API shares a 32-request burst across UI artifact loads and probes.
+  // Refill between independent user flows rather than changing server limits.
+  const settled=()=>page.waitForTimeout(4000);
+  const download=async()=>{const r=await page.request.get(origin+base+'/download');assert.equal(r.status(),200);return require('node:crypto').createHash('sha256').update(await r.body()).digest('hex')};
+  const wait=async(id,state)=>{let last;for(let i=0;i<60;i++){last=await get('/api/jobs/'+id);if(['succeeded','failed','cancelled'].includes(last.state)){assert.equal(last.state,state);return last}await page.waitForTimeout(1000)}throw Error('real job did not finish: '+JSON.stringify(last))};
+  const start=async()=>{await page.getByRole('button',{name:'Recognize text again',exact:true}).click();await page.getByRole('switch').check();const accepted=page.waitForResponse(r=>new URL(r.url()).pathname===base+'/reocr'&&r.request().method()==='POST');await page.getByRole('button',{name:'Start recognition',exact:true}).click();const r=await accepted;assert.equal(r.status(),202);return (await r.json()).id};
+  try{
+   await settled();
+   await page.goto(origin+'/#/document/document_native_001');await page.locator('h1[data-document-title]').waitFor();
+   const before=await get(base),original=await download();
+   const first=await start();await wait(first,'succeeded');await page.getByRole('button',{name:'Adopt for whole document',exact:true}).waitFor();assert.equal(await download(),original,'candidate never auto-publishes');
+   await page.getByRole('button',{name:'Adopt for whole document',exact:true}).click();await page.waitForFunction(()=>document.querySelector('[data-reocr-action]')?.disabled===false);
+   const adopted=await get(base);assert.equal(adopted.revision,before.revision+1);const adoptedHash=await download();checks.push('real start candidate explicit whole-document adoption');await settled();
+   const second=await start();await wait(second,'succeeded');await page.getByRole('button',{name:'Discard candidate',exact:true}).waitFor();assert.equal(await page.locator('.ocr-result-panel').count(),2);await page.locator('.ocr-spans button').first().click();assert(await page.locator('.ocr-highlight[visibility="visible"]').count()>0);assert.equal(await download(),adoptedHash);
+   await page.getByRole('button',{name:'Discard candidate',exact:true}).click();await page.getByRole('button',{name:'Discard candidate',exact:true}).waitFor({state:'detached'});assert.equal(await download(),adoptedHash);checks.push('real same-page previous/candidate positions and discard retains output');await settled();
+   await control('pause');const cancelled=await start();assert.equal(await download(),adoptedHash);await page.getByRole('button',{name:'Cancel recognition',exact:true}).click();await control('resume');await wait(cancelled,'cancelled');assert.equal(await download(),adoptedHash);checks.push('real queued cancellation retains usable download');await settled();
+   await control('pause');const failed=await start();await control('corrupt');await control('resume');await wait(failed,'failed');await control('restore');await page.reload();await page.getByRole('button',{name:'Recognize text again',exact:true}).waitFor();assert.equal(await download(),adoptedHash);checks.push('real worker source-identity failure retains prior output');await settled();
+   let lostJob=null,posts=0;await page.route('**'+base+'/reocr',async route=>{posts++;const response=await route.fetch();assert.equal(response.status(),202);lostJob=(await response.json()).id;await route.abort('failed')});
+   await page.getByRole('button',{name:'Recognize text again',exact:true}).click();await page.getByRole('switch').check();await page.getByRole('button',{name:'Start recognition',exact:true}).click();await page.getByText('The result is uncertain. Check status before any new recognition request.',{exact:true}).waitFor();assert(lostJob);await wait(lostJob,'succeeded');await page.getByRole('button',{name:'Close',exact:true}).click();await page.getByRole('button',{name:'Check recognition status',exact:true}).click();await page.getByRole('button',{name:'Discard candidate',exact:true}).waitFor();assert.equal(posts,1);assert.equal(await download(),adoptedHash);await page.getByRole('button',{name:'Discard candidate',exact:true}).click();checks.push('real accepted command lost response reconciled without duplicate POST');
+   const after=await get(base);assert.equal(after.created_at,before.created_at);assert.equal(after.expires_at,before.expires_at);assert.equal(after.revision,adopted.revision);
+   require('node:fs').writeFileSync(process.env.SCANNER_TEST_RECEIPT,JSON.stringify({passed:true,scenario:'reocr-native',checks,first_job:first,cancelled_job:cancelled,failed_job:failed,unknown_job:lostJob,retained_output_sha256:adoptedHash}));
+  }catch(error){console.error('native lifecycle DOM:',await page.locator('body').innerText());throw error}finally{await control('resume');await context.close();await browser.close()}
+ });
+}else if(process.env.SCANNER_TEST_SCENARIO){
  const {test}=require('node:test');
  const scenario=process.env.SCANNER_TEST_SCENARIO;
  test(scenario==='reocr-start'?'TestReOCRStartLifecycle':scenario==='reocr-adopt'?'TestReOCRWholeDocumentAdoption':'TestReOCRComparePositions',async(t)=>{

@@ -10,4 +10,10 @@
 
 検査不能・不正PDF・能力のhash不一致・範囲外geometry・サイズ超過・キャンセルはcandidateを失敗させる。既存出力の置換は行わない。保持するページでも供給されたレイヤーを検証し、壊れた認識artifactを成功扱いにしない。scoped input/outputと共有byte budget、隔離プロセスの時間・メモリー制限を継続利用する。
 
-Workerの結果bundleとUIへのページ別origin接続は後続の46-10/46-11で行う。この合成層の独立検証はPopplerの`pdftotext`と`pdftoppm`で行う。実文書や外部OCR providerへは送信しない。
+Workerの結果bundleとUIへのページ別origin接続は46-10/46-11で実装済み。この合成層の独立検証はPopplerの`pdftotext`と`pdftoppm`で行う。実文書や外部OCR providerへは送信しない。
+
+46-14の`TestReOCREndToEndRetainsHistory`は、固定した実Tesseractと実Store/Workerを使い、補正済み画像・未補正画像・取り込みPDFの4ページを認識する。現在の実効入力とページ順、PDF由来、候補完成前後の既存出力hash、明示的な全文書採用、採用後の旧出力履歴と作成時刻・有効期限の保持を検証する。通常のmock provider経路とは分け、実ランタイム指定時にはproviderの代用呼び出しがないことも確認する。
+
+実行時には`SCANNER_TEST_TESSERACT_BINARY`、`SCANNER_TEST_TESSDATA`、`SCANNER_TEST_PDF_RUNTIME`を固定したローカルruntimeへ、`SCANNER_TEST_POSITIONED_FONT`をhash確認済みの日本語フォントへ指定する。日本語の縦書き・混在位置検索と対象packageのrace検証、600秒上限の全Goテスト直列実行を通過した。実行receiptと完全なruntime identityはローカルGSD証拠に保持し、合成fixtureの成功から家庭の実文書での品質や採用可否を推定しない。
+
+既存の`check-web.py`へ実Tesseract・辞書・承認済み日本語フォントとfixture Pythonを指定すると、実API/Store/常駐Workerを使うブラウザー検証も実行する。開始、候補の同一ページ位置比較、明示採用、破棄、キャンセル、元画像identity不一致による失敗、受付後の応答喪失を確認し、採用以外で既存downloadが切り替わらないことをhashで検証する。状態確認は毎秒1回、独立した操作間は4秒待ち、通常APIのburst制限を変更しない。以前のstorage/catalogエラーは原因未確定の証拠として保持する。

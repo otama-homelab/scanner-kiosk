@@ -24,6 +24,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   assert.equal(download.suggestedFilename(),'scan.pdf');await download.saveAs(process.env.SCANNER_TEST_DOWNLOAD);
   assert.deepEqual(errors,[]);assert.deepEqual(await page.evaluate(()=>window.__csp||[]),[]);
   console.log(JSON.stringify({passed:true,job_id:job.id,model_version:model.version,checks:['real worker catalog and configured Japanese/English preference','browser OCR command accepted with server-pinned model','daemon recognition to succeeded job','Chromium native PDF download','no JavaScript/CSP errors']}));
+  if(process.env.SCANNER_TEST_STORAGE)await context.storageState({path:process.env.SCANNER_TEST_STORAGE});
   await context.close();
  }finally{await browser.close()}
 })().catch(error=>{console.error(error);process.exitCode=1});

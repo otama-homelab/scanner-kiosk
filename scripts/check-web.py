@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Check an embedded product frontend against real API stores and a local TLS proxy."""
-import argparse,hashlib,http.client,json,os,socket,sqlite3,ssl,struct,subprocess,tempfile,threading,time,zlib
+import argparse,hashlib,http.client,json,os,signal,socket,sqlite3,ssl,struct,subprocess,tempfile,threading,time,zlib
 from datetime import datetime,timezone
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--playwright-module',required=True);p.add_argument('--chromium',required=True);p.add_argument('--receipt',required=True);
 for name in ['fixture-python','tesseract-binary','tessdata','font']:p.add_argument('--'+name)
-p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt'])
+p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native'])
 args=p.parse_args()
 native_args=[args.fixture_python,args.tesseract_binary,args.tessdata,args.font]
 if any(native_args) and not all(native_args):p.error('native OCR verification requires all four fixture/tool options')
@@ -51,6 +51,15 @@ for index in [1,2]:
  class Proxy(BaseHTTPRequestHandler):
   def log_message(self,*args):pass
   def relay(self):
+   if self.path in ['/__fixture/native-pause','/__fixture/native-resume','/__fixture/native-corrupt','/__fixture/native-restore'] and all(native_args):
+    if native_process is None or native_process.poll() is not None:
+     self.send_response(503);self.send_header('Content-Length','0');self.end_headers();return
+    if self.path.endswith('pause'):native_process.send_signal(signal.SIGSTOP)
+    elif self.path.endswith('resume'):native_process.send_signal(signal.SIGCONT)
+    else:
+     target=work/'documents/native-original-1.png'
+     target.write_bytes(b'invalid synthetic image' if self.path.endswith('corrupt') else (work/'native-1.png').read_bytes())
+    self.send_response(200);self.send_header('Content-Length','0');self.end_headers();return
    if self.path=='/__fixture/native-seed' and all(native_args):
     now=int(time.time()*1000)
     with sqlite3.connect(work/'state/state.sqlite3') as db:owner=db.execute("SELECT id FROM principals WHERE kind='guest' AND disabled_at_ms IS NULL ORDER BY created_at_ms DESC,id DESC LIMIT 1").fetchone()[0]
@@ -97,7 +106,7 @@ for index in [1,2]:
      withdrawn=list(db.execute("SELECT a.document_id,a.relative_path FROM artifacts a JOIN documents d ON d.id=a.document_id WHERE d.state IN ('deleting','expired')"))
     worker_env={'PATH':os.environ['PATH'],'SCANNER_STATE_DIR':str(work/'state'),'SCANNER_DOCUMENT_DIR':str(work/'documents')}
     completed=subprocess.run([str(binary),'worker','--once'],env=worker_env,capture_output=True,timeout=30)
-    assert completed.returncode==0 and not completed.stdout and not completed.stderr
+    assert completed.returncode==0 and not completed.stdout and not completed.stderr,(completed.returncode,completed.stdout,completed.stderr)
     with sqlite3.connect(work/'documents/documents.sqlite3') as db:
      for document,relative in withdrawn:
       if db.execute("SELECT count(*) FROM jobs WHERE document_id=? AND kind='cleanup' AND state='succeeded'",(document,)).fetchone()[0]:
@@ -149,7 +158,7 @@ for index in [1,2]:
    if time.monotonic()>deadline:raise RuntimeError('readiness timed out')
    time.sleep(.05)
   browser_env=dict(os.environ,PLAYWRIGHT_MODULE=args.playwright_module,CHROMIUM_EXECUTABLE=args.chromium,SCANNER_TEST_ORIGIN=origin,SCANNER_TEST_SCREENSHOT='/tmp/scanner-kiosk-product-review.png')
-  if args.scenario:
+  if args.scenario and args.scenario!='reocr-native':
    focused=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCENARIO=args.scenario,SCANNER_TEST_RECEIPT=args.receipt),capture_output=True,text=True,timeout=90)
    print(focused.stdout,end='');print(focused.stderr,end='')
    if focused.returncode:raise SystemExit(focused.returncode)
@@ -159,45 +168,46 @@ for index in [1,2]:
    evidence.update(source_sha256=before,timestamp_utc=datetime.now(timezone.utc).isoformat())
    Path(args.receipt).write_text(json.dumps(evidence,indent=2)+'\n')
    raise SystemExit(0)
-  result=subprocess.run(['node','scripts/check-web.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if result.returncode:raise RuntimeError(result.stderr[-12000:])
-  browser=json.loads(result.stdout)
-  capture_result=subprocess.run(['node','scripts/check-web-capture.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCREENSHOT='/tmp/scanner-kiosk-capture-mobile.png'),capture_output=True,text=True,timeout=90)
-  if capture_result.returncode:raise RuntimeError(capture_result.stderr[-4000:])
-  capture_browser=json.loads(capture_result.stdout)
-  correction_result=subprocess.run(['node','scripts/check-web-correction.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if correction_result.returncode:raise RuntimeError(correction_result.stderr[-12000:])
-  correction_browser=json.loads(correction_result.stdout)
-  placement_result=subprocess.run(['node','scripts/check-web-placement.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if placement_result.returncode:raise RuntimeError(placement_result.stderr[-4000:])
-  placement_browser=json.loads(placement_result.stdout)
-  import_result=subprocess.run(['node','scripts/check-web-import.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if import_result.returncode:raise RuntimeError(import_result.stderr[-4000:])
-  import_browser=json.loads(import_result.stdout)
-  rate_result=subprocess.run(['node','scripts/check-web-rate.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if rate_result.returncode:raise RuntimeError(rate_result.stderr[-12000:])
-  rate_browser=json.loads(rate_result.stdout)
-  keyboard_result=subprocess.run(['node','scripts/check-web-keyboard.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if keyboard_result.returncode:raise RuntimeError(keyboard_result.stderr[-12000:])
-  keyboard_browser=json.loads(keyboard_result.stdout)
-  home_result=subprocess.run(['node','scripts/check-web-home.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if home_result.returncode:raise RuntimeError(home_result.stderr[-12000:])
-  home_browser=json.loads(home_result.stdout)
-  ocr_ui_result=subprocess.run(['node','scripts/check-web-ocr-ui.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if ocr_ui_result.returncode:raise RuntimeError(ocr_ui_result.stderr[-12000:])
-  ocr_ui_browser=json.loads(ocr_ui_result.stdout)
-  reocr_browser={}
-  for scenario in ['reocr-start','reocr-compare','reocr-adopt']:
-   scenario_receipt=work/(scenario+'.json')
-   outcome=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCENARIO=scenario,SCANNER_TEST_RECEIPT=str(scenario_receipt)),capture_output=True,text=True,timeout=90)
-   if outcome.returncode:raise RuntimeError(outcome.stdout+outcome.stderr)
-   evidence=json.loads(scenario_receipt.read_text());validate_scenario(evidence,scenario)
-   reocr_browser[scenario]=evidence
-  editor_result=subprocess.run(['node','scripts/check-web-editor-ux.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
-  if editor_result.returncode:raise RuntimeError(editor_result.stderr[-12000:])
-  editor_browser=json.loads(editor_result.stdout)
+  if args.scenario!='reocr-native':
+   result=subprocess.run(['node','scripts/check-web.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if result.returncode:raise RuntimeError(result.stderr[-12000:])
+   browser=json.loads(result.stdout)
+   capture_result=subprocess.run(['node','scripts/check-web-capture.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCREENSHOT='/tmp/scanner-kiosk-capture-mobile.png'),capture_output=True,text=True,timeout=90)
+   if capture_result.returncode:raise RuntimeError(capture_result.stderr[-4000:])
+   capture_browser=json.loads(capture_result.stdout)
+   correction_result=subprocess.run(['node','scripts/check-web-correction.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if correction_result.returncode:raise RuntimeError(correction_result.stderr[-12000:])
+   correction_browser=json.loads(correction_result.stdout)
+   placement_result=subprocess.run(['node','scripts/check-web-placement.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if placement_result.returncode:raise RuntimeError(placement_result.stderr[-4000:])
+   placement_browser=json.loads(placement_result.stdout)
+   import_result=subprocess.run(['node','scripts/check-web-import.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if import_result.returncode:raise RuntimeError(import_result.stderr[-4000:])
+   import_browser=json.loads(import_result.stdout)
+   rate_result=subprocess.run(['node','scripts/check-web-rate.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if rate_result.returncode:raise RuntimeError(rate_result.stderr[-12000:])
+   rate_browser=json.loads(rate_result.stdout)
+   keyboard_result=subprocess.run(['node','scripts/check-web-keyboard.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if keyboard_result.returncode:raise RuntimeError(keyboard_result.stderr[-12000:])
+   keyboard_browser=json.loads(keyboard_result.stdout)
+   home_result=subprocess.run(['node','scripts/check-web-home.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if home_result.returncode:raise RuntimeError(home_result.stderr[-12000:])
+   home_browser=json.loads(home_result.stdout)
+   ocr_ui_result=subprocess.run(['node','scripts/check-web-ocr-ui.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if ocr_ui_result.returncode:raise RuntimeError(ocr_ui_result.stderr[-12000:])
+   ocr_ui_browser=json.loads(ocr_ui_result.stdout)
+   reocr_browser={}
+   for scenario in ['reocr-start','reocr-compare','reocr-adopt']:
+    scenario_receipt=work/(scenario+'.json')
+    outcome=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCENARIO=scenario,SCANNER_TEST_RECEIPT=str(scenario_receipt)),capture_output=True,text=True,timeout=90)
+    if outcome.returncode:raise RuntimeError(outcome.stdout+outcome.stderr)
+    evidence=json.loads(scenario_receipt.read_text());validate_scenario(evidence,scenario)
+    reocr_browser[scenario]=evidence
+   editor_result=subprocess.run(['node','scripts/check-web-editor-ux.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
+   if editor_result.returncode:raise RuntimeError(editor_result.stderr[-12000:])
+   editor_browser=json.loads(editor_result.stdout)
   if all(native_args):
-   worker_env={'PATH':os.environ['PATH'],'SCANNER_STATE_DIR':str(work/'state'),'SCANNER_DOCUMENT_DIR':str(work/'documents'),'SCANNER_OCR_PLUGINS':'tesseract','SCANNER_OCR_DEFAULT_PLUGIN':'tesseract','SCANNER_OCR_DEFAULT_LANGUAGES':'ja,en','SCANNER_OCR_TESSERACT_PATH':str(Path(args.tesseract_binary).resolve()),'SCANNER_OCR_TESSERACT_DATA_DIR':str(Path(args.tessdata).resolve())}
+   worker_env={'PATH':os.environ['PATH'],'SCANNER_STATE_DIR':str(work/'state'),'SCANNER_DOCUMENT_DIR':str(work/'documents'),'SCANNER_OCR_PLUGINS':'tesseract','SCANNER_OCR_DEFAULT_PLUGIN':'tesseract','SCANNER_OCR_DEFAULT_LANGUAGES':'ja,en','SCANNER_OCR_TESSERACT_PATH':str(Path(args.tesseract_binary).resolve()),'SCANNER_OCR_TESSERACT_DATA_DIR':str(Path(args.tessdata).resolve()),'SCANNER_OCR_LLM_TEXT_LAYER_FONT':str(Path(args.font).resolve())}
    native_process=subprocess.Popen([str(binary),'worker'],env=worker_env,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
    deadline=time.monotonic()+20
    while True:
@@ -206,7 +216,7 @@ for index in [1,2]:
     if catalog and any(provider['id']=='tesseract' for provider in json.loads(catalog[1])['Providers']):break
     assert time.monotonic()<deadline,'native worker did not publish catalog'
     time.sleep(.05)
-   native_env=dict(browser_env,SCANNER_TEST_DOWNLOAD=str(work/'browser-ocr.pdf'))
+   native_env=dict(browser_env,SCANNER_TEST_DOWNLOAD=str(work/'browser-ocr.pdf'),SCANNER_TEST_STORAGE=str(work/'native-browser-state.json'))
    native_result=subprocess.run(['node','scripts/check-web-ocr.cjs'],cwd=root,env=native_env,capture_output=True,text=True,timeout=90)
    if native_result.returncode:raise RuntimeError(native_result.stderr[-4000:])
    native_browser=json.loads(native_result.stdout)
@@ -242,6 +252,13 @@ print(json.dumps(checks))
    for index in [1,2]:assert (work/('native-'+str(index)+'.png')).read_bytes()==(work/'documents'/('native-original-'+str(index)+'.png')).read_bytes()
    assert not list((work/'documents/.native').iterdir())
    native_proof={'passed':True,'browser':native_browser,'artifact_checks':json.loads(independent.stdout),'fixture_sha256':{str(index):hashlib.sha256((work/('native-'+str(index)+'.png')).read_bytes()).hexdigest() for index in [1,2]},'tool_sha256':{'binary':hashlib.sha256(Path(args.tesseract_binary).read_bytes()).hexdigest(),'font':hashlib.sha256(Path(args.font).read_bytes()).hexdigest(),**{name:hashlib.sha256((Path(args.tessdata)/(name+'.traineddata')).read_bytes()).hexdigest() for name in ['jpn','eng']}}}
+   native_lifecycle=work/'native-reocr.json'
+   native_result=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(native_env,SCANNER_TEST_SCENARIO='reocr-native',SCANNER_TEST_RECEIPT=str(native_lifecycle)),capture_output=True,text=True,timeout=180)
+   if native_result.returncode:raise RuntimeError(native_result.stdout+native_result.stderr)
+   native_proof['reocr']=json.loads(native_lifecycle.read_text());assert native_proof['reocr']['passed']
+   if args.scenario=='reocr-native':
+    assert before==hashes(),'source changed during verification'
+    Path(args.receipt).write_text(json.dumps({'passed':True,'native_ocr':native_proof,'source_sha256':before},indent=2)+'\n');print(json.dumps({'passed':True,'native_ocr':True,'reocr_checks':len(native_proof['reocr']['checks'])}));raise SystemExit(0)
 
 
   # A separate real API/state is selected behind the same local TLS proxy.
@@ -308,7 +325,7 @@ print(json.dumps(checks))
    if native_process is not None:
     if native_process.poll() is None:native_process.terminate()
     native_out,native_error=native_process.communicate(timeout=30)
-    assert native_process.returncode==0 and not native_out and not native_error,'native worker shutdown failed'
+    assert native_process.returncode==0 and not native_out and not native_error,('native worker shutdown failed',native_process.returncode,native_out,native_error)
     with sqlite3.connect(work/'documents/documents.sqlite3') as db:
      assert db.execute('SELECT state FROM processing_coordinator').fetchone()[0]=='stopped'
      assert db.execute('SELECT count(*) FROM ocr_catalog_snapshot').fetchone()[0]==0

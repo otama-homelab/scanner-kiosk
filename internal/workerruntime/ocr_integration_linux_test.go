@@ -40,12 +40,15 @@ func TestReOCRPDFOnlyDocument(t *testing.T)       { testRuntimeReOCRDocument(t, 
 func TestReOCRPDFExistingTextPolicy(t *testing.T) { testRuntimeReOCRDocument(t, "existing-text") }
 
 func TestReOCREndToEndRetainsHistory(t *testing.T) {
-	if os.Getenv("SCANNER_TEST_TESSERACT_BINARY") == "" { t.Skip("requires caller-supplied pinned real Tesseract runtime") }
+	if os.Getenv("SCANNER_TEST_TESSERACT_BINARY") == "" {
+		t.Skip("requires caller-supplied pinned real Tesseract runtime")
+	}
 	t.Setenv("SCANNER_TEST_REAL_REOCR", "1")
-	testRuntimeReOCRDocument(t,"mixed")
+	testRuntimeReOCRDocument(t, "mixed")
 }
 
 func testRuntimeReOCRDocument(t *testing.T, mode string) {
+	realNative := os.Getenv("SCANNER_TEST_REAL_REOCR") == "1"
 	for _, kind := range []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PositionedText} {
 		t.Run(string(kind), func(t *testing.T) {
 			var calls atomic.Int32
@@ -61,6 +64,19 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 			defer server.Close()
 			c, store, db, root := fixture(t)
 			wantPages := 1
+			if realNative {
+				var source []byte
+				if source, _ = os.ReadFile(filepath.Join(root, "original.png")); len(source) == 0 {
+					t.Fatal("missing uncorrected fixture")
+				}
+				if e := os.WriteFile(filepath.Join(root, "second.png"), source, 0600); e != nil {
+					t.Fatal(e)
+				}
+				digest := sha256.Sum256(source)
+				execute(t, db, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('original_runtime_002',?,?,'original','ready','second.png','image/png',?,?,1,?)`, document, owner, len(source), digest[:], time.Now().UnixMilli())
+				execute(t, db, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,pixel_width,pixel_height) VALUES('page_runtime_00002',?,?,1,'original_runtime_002','a4','gray',300,80,100)`, document, owner)
+				wantPages++
+			}
 			if mode != "image" {
 				configurePDFRaster(t)
 				parts, e := pdfimport.Split(context.Background(), importFixturePDF(), pdfimport.Options{MaxInputBytes: 1 << 20, MaxOutputBytes: 1 << 20, MaxPages: 10})
@@ -113,6 +129,14 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 			if e != nil {
 				t.Fatal(e)
 			}
+			oldBytes, e := os.ReadFile(filepath.Join(root, old.RelativePath))
+			if e != nil {
+				t.Fatal(e)
+			}
+			var created, expires int64
+			if e = db.QueryRow("SELECT created_at_ms,expires_at_ms FROM documents WHERE id=?", document).Scan(&created, &expires); e != nil {
+				t.Fatal(e)
+			}
 			profile := config.LLMProfile{ID: "fixture", Name: "Fixture", ProcessingDestination: "Synthetic loopback fixture", Protocol: "chat-completions", Endpoint: server.URL, AllowInsecureHTTP: true, Model: "fixture", ResponseModel: "fixture", Version: "1", Languages: []string{"en"}, Outputs: []ocrplugin.OutputKind{kind}, MaxCompletionTokens: 1000}
 			profiles, _ := json.Marshal([]config.LLMProfile{profile})
 			t.Setenv("SCANNER_OCR_PLUGINS", "llm")
@@ -124,13 +148,24 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 				t.Fatal(e)
 			}
 			t.Setenv("SCANNER_OCR_LLM_TEXT_LAYER_FONT", fontPath)
+			if realNative {
+				t.Setenv("SCANNER_OCR_PLUGINS", "tesseract")
+				t.Setenv("SCANNER_OCR_DEFAULT_PLUGIN", "tesseract")
+				t.Setenv("SCANNER_OCR_DEFAULT_LANGUAGES", "ja,en")
+				t.Setenv("SCANNER_OCR_TESSERACT_PATH", os.Getenv("SCANNER_TEST_TESSERACT_BINARY"))
+				t.Setenv("SCANNER_OCR_TESSERACT_DATA_DIR", os.Getenv("SCANNER_TEST_TESSDATA"))
+			}
 			metadata, e := ocrruntime.NewWorker(context.Background(), c, os.LookupEnv, t.TempDir())
 			if e != nil {
 				t.Fatal(e)
 			}
 			defaults := metadata.Defaults()
 			metadata.Close()
-			a, e := store.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: document, Revision: 2, IdempotencyKey: "request_reocr_runtime01", ReOCR: true, ResolvedOutput: kind, Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, ProviderID: defaults.PluginID, ModelID: defaults.ModelID, ModelVersion: defaults.ModelVersion, Languages: defaults.Languages, QualityPreset: defaults.QualityPreset}}, ReserveBytes: 1 << 20}, documents.AdmissionLimits{UserMaxBytes: 4 << 20, GlobalMaxBytes: 8 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
+			reserve := int64(1 << 20)
+			if realNative {
+				reserve = 64 << 20
+			}
+			a, e := store.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: document, Revision: 2, IdempotencyKey: "request_reocr_runtime01", ReOCR: true, ResolvedOutput: kind, Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, ProviderID: defaults.PluginID, ModelID: defaults.ModelID, ModelVersion: defaults.ModelVersion, Languages: defaults.Languages, QualityPreset: defaults.QualityPreset}}, ReserveBytes: reserve}, documents.AdmissionLimits{UserMaxBytes: reserve * 4, GlobalMaxBytes: reserve * 8, JobMaxBytes: reserve, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
 			if e != nil {
 				t.Fatal(e)
 			}
@@ -145,24 +180,60 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 			if e = json.Unmarshal([]byte(raw), &bundle); e != nil {
 				t.Fatal(e)
 			}
-			if len(bundle.Pages) != wantPages || (bundle.Pages[0].Positions != nil) != (kind == ocrplugin.PositionedText) || calls.Load() != int32(wantPages) {
+			wantCalls := int32(wantPages)
+			if realNative {
+				wantCalls = 0
+			}
+			if len(bundle.Pages) != wantPages || (bundle.Pages[0].Positions != nil) != (kind == ocrplugin.PositionedText) || calls.Load() != wantCalls {
 				t.Fatal("runtime candidate geometry or invocation mismatch")
 			}
 			text, e := os.ReadFile(filepath.Join(root, bundle.Pages[0].Text.RelativePath))
-			if e != nil || string(text) != "RUNTIME OCR TEXT" {
+			if e != nil || !realNative && string(text) != "RUNTIME OCR TEXT" {
 				t.Fatal("durable runtime transcript missing", e)
 			}
 			current, e := store.GetExport(context.Background(), owner, document)
 			if e != nil || current.ID != old.ID {
 				t.Fatal("runtime adopted candidate", e)
 			}
-			if mode != "image" {
+			if mode != "image" && !realNative {
 				assertRuntimePDFSources(t, root, bundle, old, kind)
 			}
 			if mode == "mixed" && (bundle.Pages[0].CorrectionID != "suggestion_runtime_001" || bundle.Pages[0].EffectiveArtifactID != "corrected_runtime_001" || bundle.Pages[0].Preview.SHA256 != bundle.Pages[0].EffectiveSHA256) {
 				t.Fatal("current correction source was not recognized/previewed")
 			}
-			if os.Getenv("SCANNER_TEST_REAL_REOCR") == "1" && calls.Load() != 0 { t.Fatal("real native integration still used synthetic OCR provider") }
+			if os.Getenv("SCANNER_TEST_REAL_REOCR") == "1" && calls.Load() != 0 {
+				t.Fatal("real native integration still used synthetic OCR provider")
+			}
+			if realNative {
+				if len(bundle.Pages) != 4 || bundle.Pages[1].CorrectionID != "" || bundle.Pages[1].EffectiveArtifactID != "original_runtime_002" || bundle.Pages[2].SourceType != "pdf" || bundle.Pages[3].SourceType != "pdf" {
+					t.Fatal("corrected/uncorrected/PDF authoritative page order lost")
+				}
+				for _, p := range bundle.Pages {
+					if p.SourceType == "pdf" && (p.PDFRaster == nil || p.PDFTextOrigin != "retained-source") {
+						t.Fatal("native PDF provenance missing")
+					}
+				}
+				projection, e := store.AdoptOCRResult(context.Background(), owner, documents.OCRResultRequest{DocumentID: document, ResultID: bundle.ID, Revision: 2, IdempotencyKey: "request_real_adopt_001"}, time.Hour)
+				if e != nil || projection.Revision != 3 {
+					t.Fatal("explicit native adoption", e)
+				}
+				retained, e := os.ReadFile(filepath.Join(root, old.RelativePath))
+				if e != nil || !bytes.Equal(retained, oldBytes) {
+					t.Fatal("old output bytes changed", e)
+				}
+				var afterCreated, afterExpires int64
+				var history int
+				if e = db.QueryRow("SELECT created_at_ms,expires_at_ms FROM documents WHERE id=?", document).Scan(&afterCreated, &afterExpires); e != nil || created != afterCreated || expires != afterExpires {
+					t.Fatal("native reOCR extended lifetime", e)
+				}
+				if e = db.QueryRow("SELECT count(*) FROM artifacts WHERE id=? AND state='ready'", old.ID).Scan(&history); e != nil || history != 1 {
+					t.Fatal("prior export history removed", e)
+				}
+				published, e := store.GetExport(context.Background(), owner, document)
+				if e != nil || published.ID != bundle.Output.ID {
+					t.Fatal("whole-document native adoption failed", e)
+				}
+			}
 		})
 	}
 }
