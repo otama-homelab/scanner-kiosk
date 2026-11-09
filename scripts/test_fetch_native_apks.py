@@ -167,6 +167,28 @@ class NativeAPKFetchTests(unittest.TestCase):
                 records = module.validate(json.loads((native/filename).read_bytes()))
                 self.assertEqual(len(records), count)
 
+    def test_PDFRasterNativeInputs(self):
+        native = Path(__file__).resolve().parents[1]/'native'
+        lock = json.loads((native/'runtime-apks.lock.json').read_bytes())
+        origin_raw = (native/'runtime-provenance.json').read_bytes()
+        origin = json.loads(origin_raw)
+        files = json.loads((native/'runtime-manifest.json').read_bytes())['files']
+        self.assertEqual(hashlib.sha256(origin_raw).hexdigest(), lock['runtime_provenance_sha256'])
+        packages = {p['name']: p for p in module.validate(lock)}
+        for executable in ['pdftoppm', 'pdftotext', 'pdfinfo']:
+            path = 'usr/bin/'+executable
+            self.assertIn(path, files)
+            self.assertIn(path, origin['apk_source_components']['poppler-utils']['retained_files'])
+        for package in ['poppler', 'poppler-utils', 'poppler-data']:
+            self.assertIn(package, packages)
+            self.assertRegex(packages[package]['apk_control_checksum'], r'^Q1')
+            self.assertRegex(packages[package]['source_commit'], r'^[0-9a-f]{40}$')
+        sources = json.loads((native/'source-inputs.lock.json').read_bytes())['files']
+        self.assertTrue(any('/poppler-' in item['path'] for item in sources))
+        self.assertTrue(any('/poppler-data-' in item['path'] for item in sources))
+        self.assertTrue(any('/poppler-' in path and path.endswith('/COPYING')
+                            for path in origin['notice_files']))
+
 
 if __name__ == '__main__':
     unittest.main()
