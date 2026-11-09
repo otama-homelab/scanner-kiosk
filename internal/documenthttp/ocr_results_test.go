@@ -129,7 +129,7 @@ func newOCRHTTP(t *testing.T) *ocrHTTPFixture {
 		t.Fatal(err)
 	}
 	os.Chmod(f.root, 0700)
-	files, err := artifactread.OpenRoot(f.root, 4<<20)
+	files, err := artifactread.OpenRoot(f.root, 1024)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -248,7 +248,7 @@ func TestReOCRHTTPCommands(t *testing.T) {
 	}
 }
 
-func (f *ocrHTTPFixture) candidate() documents.OCRResultBundle {
+func (f *ocrHTTPFixture) candidate(configure ...func(*documents.OCRResultBundle)) documents.OCRResultBundle {
 	code, _, body := f.call("POST", "/api/documents/"+documentID+"/reocr", reocrBody, f.cookie, nil)
 	if code != 202 {
 		f.t.Fatal("candidate admission", code, string(body))
@@ -271,6 +271,9 @@ func (f *ocrHTTPFixture) candidate() documents.OCRResultBundle {
 	}
 	originalHash := sha256.Sum256([]byte("synthetic source"))
 	b := documents.OCRResultBundle{ID: resultID, JobID: job.ID, InputRevision: job.InputRevision, Settings: snapshot.Settings, Output: makeArtifact("output_http_0001", "output.pdf", "application/pdf", []byte("synthetic PDF")), Pages: []documents.OCRResultPage{{PageID: pageID, OriginalArtifactID: "original_http_001", EffectiveArtifactID: "original_http_001", OriginalSHA256: originalHash, EffectiveSHA256: originalHash, SourceType: "scan", PixelWidth: 32, PixelHeight: 16, PDFTextOrigin: "recognition", Text: makeArtifact("text_http_000001", "text.txt", "text/plain", []byte("<script>alert('OCR')</script> 日本語"))}}}
+	for _, configure := range configure {
+		configure(&b)
+	}
 	if err = f.store.CompleteOCRResult(context.Background(), f.owner, job.ID, "runner_http_0001", job.InputRevision, b); err != nil {
 		f.t.Fatal("complete candidate", err)
 	}
@@ -348,6 +351,20 @@ func TestReOCRHTTPArtifacts(t *testing.T) {
 			}
 		})
 	}
+	t.Run("oversized positions JSON", func(t *testing.T) {
+		g := newOCRHTTP(t)
+		data := []byte(`{"text":"` + strings.Repeat("x", 2048) + `"}`)
+		g.candidate(func(b *documents.OCRResultBundle) {
+			if err := os.WriteFile(filepath.Join(g.root, "positions.json"), data, 0600); err != nil {
+				t.Fatal(err)
+			}
+			b.Pages[0].Positions = &documents.ArtifactRecord{ID: "positions_http_001", RelativePath: "positions.json", MediaType: "application/json", Size: int64(len(data)), SHA256: sha256.Sum256(data), PixelWidth: 32, PixelHeight: 16}
+		})
+		code, _, body := g.call("GET", base+"/pages/"+pageID+"/positions", "", g.cookie, nil)
+		if code != 503 || strings.Contains(string(body), strings.Repeat("x", 20)) {
+			t.Fatal("artifact size limit bypass", code, string(body))
+		}
+	})
 }
 
 func TestReOCRHTTPReadHasNoSideEffect(t *testing.T) {

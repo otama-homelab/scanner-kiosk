@@ -1,7 +1,7 @@
 package documenthttp
 
 import (
-	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"mime"
@@ -11,6 +11,71 @@ import (
 	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/internal/websession"
 )
+
+func resultIDs(r *http.Request) bool {
+	for _, name := range []string{"document_id", "result_id"} {
+		value := r.PathValue(name)
+		if !opaque(value) || len(value) > 96 {
+			return false
+		}
+	}
+	return r.URL.RawQuery == ""
+}
+
+func (h *Handler) ocrResult(w http.ResponseWriter, r *http.Request, p websession.Principal) {
+	if !resultIDs(r) {
+		failure(w, documents.ErrInvalid)
+		return
+	}
+	value, err := h.store.ReadOCRResult(r.Context(), p.ID, r.PathValue("document_id"), r.PathValue("result_id"))
+	if err != nil {
+		failure(w, err)
+		return
+	}
+	write(w, 200, value)
+}
+
+func (h *Handler) ocrResultArtifact(w http.ResponseWriter, r *http.Request, p websession.Principal) {
+	if !resultIDs(r) {
+		failure(w, documents.ErrInvalid)
+		return
+	}
+	document, result, page, kind := r.PathValue("document_id"), r.PathValue("result_id"), r.PathValue("page_id"), r.PathValue("kind")
+	if page == "" {
+		kind = "output"
+	} else if !opaque(page) || len(page) > 96 {
+		failure(w, documents.ErrInvalid)
+		return
+	}
+	// Only published comparison artifacts are addressable. Provider work files
+	// and arbitrary kind/path selectors never gain filesystem authority.
+	switch kind {
+	case "output", "original", "effective", "text", "positions", "preview", "thumbnail", "layer":
+	default:
+		failure(w, documents.ErrUnavailable)
+		return
+	}
+	resolve := func(ctx context.Context) (documents.ArtifactReference, error) {
+		return h.store.ReadOCRResultArtifact(ctx, p.ID, document, result, page, kind)
+	}
+	reference, err := resolve(r.Context())
+	if err != nil {
+		failure(w, err)
+		return
+	}
+	media := reference.Artifact.MediaType
+	if media != "text/plain" && media != "application/json" && media != "application/pdf" && media != "image/png" && media != "image/jpeg" {
+		failure(w, documents.ErrStorage)
+		return
+	}
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
+	disposition := "inline"
+	if kind == "output" {
+		disposition = `attachment; filename="scan.pdf"`
+	}
+	h.stream(w, r, reference, resolve, disposition, media == "application/pdf")
+}
 
 func (h *Handler) adoptOCRResult(w http.ResponseWriter, r *http.Request, p websession.Principal) {
 	h.disposeOCRResult(w, r, p, true)
@@ -50,7 +115,7 @@ func (h *Handler) disposeOCRResult(w http.ResponseWriter, r *http.Request, p web
 	// The URL and concurrency headers carry the entire command. An explicit empty
 	// JSON object prevents ignored fields, duplicate keys and partial adoption.
 	var fields map[string]json.RawMessage
-	if uniqueJSON(data) != nil || json.Unmarshal(data, &fields) != nil || fields == nil || len(fields) != 0 || len(bytes.TrimSpace(data)) == 0 {
+	if uniqueJSON(data) != nil || json.Unmarshal(data, &fields) != nil || fields == nil || len(fields) != 0 {
 		failure(w, documents.ErrInvalid)
 		return
 	}

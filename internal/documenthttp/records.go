@@ -27,6 +27,8 @@ type Records interface {
 	UndoCorrection(context.Context, string, documents.CorrectionRequest, time.Duration) (documents.Projection, error)
 	AdoptOCRResult(context.Context, string, documents.OCRResultRequest, time.Duration) (documents.Projection, error)
 	DiscardOCRResult(context.Context, string, documents.OCRResultRequest, time.Duration) (documents.Projection, error)
+	ReadOCRResult(context.Context, string, string, string) (documents.OCRResultProjection, error)
+	ReadOCRResultArtifact(context.Context, string, string, string, string, string) (documents.ArtifactReference, error)
 }
 
 type RenderAdmission interface {
