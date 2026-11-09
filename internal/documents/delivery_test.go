@@ -6,10 +6,62 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"scanner-kiosk/internal/storage"
 )
 
 func deliveryRequest() DeliveryRequest {
 	return DeliveryRequest{DocumentID: docA, Revision: 2, IdempotencyKey: "request_delivery_0001", DestinationID: "paperless-local", ConfigFingerprint: strings.Repeat("a", 64)}
+}
+
+func readyDelivery(t *testing.T) (*fixture, Delivery) {
+	t.Helper()
+	f, b := completedOCRCandidate(t)
+	if _, err := f.store.AdoptOCRResult(context.Background(), alice, ocrResultRequest(b), time.Hour); err != nil {
+		t.Fatal(err)
+	}
+	d, err := f.store.AdmitDelivery(context.Background(), alice, deliveryRequest())
+	if err != nil {
+		t.Fatal(err)
+	}
+	return f, d
+}
+
+func reopenDelivery(t *testing.T, f *fixture) {
+	t.Helper()
+	if err := f.docs.Close(); err != nil {
+		t.Fatal(err)
+	}
+	var err error
+	f.docs, err = storage.Open(f.docsPath, storage.Documents)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.store, err = New(f.state, f.docs, func() time.Time { return time.UnixMilli(f.now) }, fixtureSpace)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestDeliverySemanticDedupNewKey(t *testing.T) {
+	ctx := context.Background()
+	f, d := readyDelivery(t)
+	r := deliveryRequest()
+	r.IdempotencyKey = "request_delivery_0002"
+	again, err := f.store.AdmitDelivery(ctx, alice, r)
+	if err != nil || again.ID != d.ID {
+		t.Fatal("new key bypassed send fence", again, err)
+	}
+	render := admissionRequest()
+	render.IdempotencyKey = deliveryRequest().IdempotencyKey
+	if _, _, err = f.store.FindRender(ctx, alice, render); !errors.Is(err, ErrIdempotencyConflict) {
+		t.Fatal("delivery key must conflict before normal render admission", err)
+	}
+	reopenDelivery(t, f)
+	again, err = f.store.AdmitDelivery(ctx, alice, r)
+	if err != nil || again.ID != d.ID {
+		t.Fatal("reopen lost semantic evidence", err)
+	}
 }
 
 func TestDeliveryAdmissionSnapshot(t *testing.T) {
