@@ -7,6 +7,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"golang.org/x/image/font/gofont/goregular"
 	"image"
 	"io"
@@ -24,10 +25,18 @@ import (
 	"scanner-kiosk/internal/documents"
 	ocrruntime "scanner-kiosk/internal/ocr/runtime"
 	"scanner-kiosk/internal/pdfassemble"
+	"scanner-kiosk/internal/pdfimport"
 	"scanner-kiosk/pkg/ocrplugin"
 )
 
 func TestRuntimeReOCRCompletion(t *testing.T) {
+	testRuntimeReOCRDocument(t, "image")
+}
+func TestReOCRMixedDocument(t *testing.T)         { testRuntimeReOCRDocument(t, "mixed") }
+func TestReOCRPDFOnlyDocument(t *testing.T)       { testRuntimeReOCRDocument(t, "pdf") }
+func TestReOCRPDFExistingTextPolicy(t *testing.T) { testRuntimeReOCRDocument(t, "existing-text") }
+
+func testRuntimeReOCRDocument(t *testing.T, mode string) {
 	for _, kind := range []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PositionedText} {
 		t.Run(string(kind), func(t *testing.T) {
 			var calls atomic.Int32
@@ -42,6 +51,30 @@ func TestRuntimeReOCRCompletion(t *testing.T) {
 			}))
 			defer server.Close()
 			c, store, db, root := fixture(t)
+			wantPages := 1
+			if mode != "image" {
+				configurePDFRaster(t)
+				parts, e := pdfimport.Split(context.Background(), importFixturePDF(), pdfimport.Options{MaxInputBytes: 1 << 20, MaxOutputBytes: 1 << 20, MaxPages: 10})
+				if e != nil {
+					t.Fatal(e)
+				}
+				if mode != "mixed" {
+					execute(t, db, "DELETE FROM pages WHERE document_id=?", document)
+					wantPages = 0
+				}
+				for i, part := range parts {
+					name := fmt.Sprintf("source-%d.pdf", i)
+					if e = os.WriteFile(filepath.Join(root, name), part.PDF, 0600); e != nil {
+						t.Fatal(e)
+					}
+					digest := sha256.Sum256(part.PDF)
+					id := fmt.Sprintf("original_pdf_%05d", i)
+					page := fmt.Sprintf("page_pdf_%09d", i)
+					execute(t, db, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,'original','ready',?,'application/pdf',?,?,1,?)`, id, document, owner, name, len(part.PDF), digest[:], time.Now().UnixMilli())
+					execute(t, db, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,source_type,pdf_width_points,pdf_height_points,rotation) VALUES(?,?,?,?,?,'pdf',?,?,?)`, page, document, owner, wantPages, id, part.WidthPoints, part.HeightPoints, i*90)
+					wantPages++
+				}
+			}
 			admit(t, store)
 			if e := Run(context.Background(), c, true); e != nil {
 				t.Fatal(e)
@@ -82,7 +115,7 @@ func TestRuntimeReOCRCompletion(t *testing.T) {
 			if e = json.Unmarshal([]byte(raw), &bundle); e != nil {
 				t.Fatal(e)
 			}
-			if len(bundle.Pages) != 1 || (bundle.Pages[0].Positions != nil) != (kind == ocrplugin.PositionedText) || calls.Load() != 1 {
+			if len(bundle.Pages) != wantPages || (bundle.Pages[0].Positions != nil) != (kind == ocrplugin.PositionedText) || calls.Load() != int32(wantPages) {
 				t.Fatal("runtime candidate geometry or invocation mismatch")
 			}
 			text, e := os.ReadFile(filepath.Join(root, bundle.Pages[0].Text.RelativePath))
@@ -93,7 +126,89 @@ func TestRuntimeReOCRCompletion(t *testing.T) {
 			if e != nil || current.ID != old.ID {
 				t.Fatal("runtime adopted candidate", e)
 			}
+			if mode != "image" {
+				assertRuntimePDFSources(t, root, bundle, old, kind)
+			}
 		})
+	}
+}
+
+func configurePDFRaster(t *testing.T) {
+	t.Helper()
+	runtimeRoot := os.Getenv("SCANNER_TEST_PDF_RUNTIME")
+	binary, e := os.ReadFile(filepath.Join(runtimeRoot, "usr/bin/pdftoppm"))
+	if e != nil || fmt.Sprintf("%x", sha256.Sum256(binary)) != "e969e55d7e2229f1e438284f9e8cfd666313e45a9b7b6265ccbf8b4ade5f2070" {
+		t.Fatal("verified official Poppler required: SCANNER_TEST_PDF_RUNTIME")
+	}
+	dir := t.TempDir()
+	self, e := os.Executable()
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = os.Symlink(runtimeRoot, filepath.Join(dir, "runtime")); e != nil {
+		t.Fatal(e)
+	}
+	tool := filepath.Join(dir, "pdf-test-tool")
+	if e = os.Symlink(self, tool); e != nil {
+		t.Fatal(e)
+	}
+	t.Setenv("SCANNER_PDF_RASTER_PATH", tool)
+}
+
+func assertRuntimePDFSources(t *testing.T, root string, b documents.OCRResultBundle, old documents.Export, kind ocrplugin.OutputKind) {
+	t.Helper()
+	output := filepath.Join(root, b.Output.RelativePath)
+	text, e := exec.Command("pdftotext", "-layout", output, "-").CombinedOutput()
+	if e != nil {
+		t.Fatalf("independent extraction: %v %s", e, text)
+	}
+	for _, word := range []string{"IMPORT_ALPHA", "IMPORT_BETA"} {
+		if strings.Count(string(text), word) != 1 {
+			t.Fatalf("native text duplicated or lost: %s", text)
+		}
+	}
+	for i, p := range b.Pages {
+		if p.SourceType != "pdf" {
+			continue
+		}
+		if p.PDFTextOrigin != "retained-source" || p.PDFRaster == nil || p.PDFRaster.DPI != 300 || p.Preview == nil || (p.Positions != nil) != (kind == ocrplugin.PositionedText) {
+			t.Fatalf("missing real PDF provenance: %+v", p)
+		}
+		transcript, e := os.ReadFile(filepath.Join(root, p.Text.RelativePath))
+		if e != nil || string(transcript) != "RUNTIME OCR TEXT" {
+			t.Fatal("PDF transcript missing", e)
+		}
+		preview, e := os.ReadFile(filepath.Join(root, p.Preview.RelativePath))
+		if e != nil {
+			t.Fatal(e)
+		}
+		config, _, e := image.DecodeConfig(bytes.NewReader(preview))
+		if e != nil || config.Width != p.PixelWidth || config.Height != p.PixelHeight {
+			t.Fatal("preview does not match recognition frame", e)
+		}
+		var renders [][]byte
+		for _, path := range []string{filepath.Join(root, old.RelativePath), output} {
+			pixels, e := exec.Command("pdftoppm", "-f", fmt.Sprint(i+1), "-l", fmt.Sprint(i+1), "-singlefile", "-r", "72", "-png", path).Output()
+			if e != nil {
+				t.Fatal("independent raster", e)
+			}
+			renders = append(renders, pixels)
+		}
+		if !bytes.Equal(renders[0], renders[1]) {
+			t.Fatal("original vector/text appearance or rotation changed")
+		}
+		original, e := os.ReadFile(filepath.Join(root, fmt.Sprintf("source-%d.pdf", i-(len(b.Pages)-2))))
+		if e != nil || sha256.Sum256(original) != p.OriginalSHA256 {
+			t.Fatal("original PDF replaced", e)
+		}
+	}
+	images, e := exec.Command("pdfimages", "-list", output).CombinedOutput()
+	if e != nil {
+		t.Fatal("independent image structure", e)
+	}
+	// The final imported pages must remain vectors/text, not recognition images.
+	if len(b.Pages) == 2 && len(strings.Fields(string(images))) > 16 {
+		t.Fatalf("PDF-only candidate contains replacement raster: %s", images)
 	}
 }
 

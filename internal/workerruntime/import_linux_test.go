@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -22,6 +23,14 @@ import (
 )
 
 func TestMain(m *testing.M) {
+	if filepath.Base(os.Args[0]) == "pdf-test-tool" {
+		root := filepath.Join(filepath.Dir(os.Args[0]), "runtime")
+		loader := filepath.Join(root, "lib/ld-musl-x86_64.so.1")
+		args := append([]string{loader, "--library-path", filepath.Join(root, "lib") + ":" + filepath.Join(root, "usr/lib"), filepath.Join(root, "usr/bin/pdftoppm")}, os.Args[1:]...)
+		if syscall.Exec(loader, args, []string{"LANG=C", "HOME=/nonexistent"}) != nil {
+			os.Exit(10)
+		}
+	}
 	if len(os.Args) > 1 && os.Args[1] == "__pdf-raster" {
 		os.Exit(renderjob.PDFRasterChild(os.Args[2:], os.Stdin, os.Stdout))
 	}
