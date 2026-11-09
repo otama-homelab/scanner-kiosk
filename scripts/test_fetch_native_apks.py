@@ -168,6 +168,7 @@ class NativeAPKFetchTests(unittest.TestCase):
                 self.assertEqual(len(records), count)
 
     def test_PDFRasterNativeInputs(self):
+        del self.fail  # Fetch fixtures use this name; restore unittest assertions.
         native = Path(__file__).resolve().parents[1]/'native'
         lock = json.loads((native/'runtime-apks.lock.json').read_bytes())
         origin_raw = (native/'runtime-provenance.json').read_bytes()
