@@ -40,6 +40,85 @@ func admissionRequest() RenderAdmission {
 func admissionLimits() AdmissionLimits {
 	return AdmissionLimits{UserMaxBytes: 1000, GlobalMaxBytes: 2000, JobMaxBytes: 100, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}
 }
+
+func reOCRRequest() RenderAdmission {
+	r := admissionRequest()
+	r.ReOCR = true
+	r.ResolvedOutput = ocrplugin.PositionedText
+	r.Settings.OCR = RenderOCR{Enabled: true, ProviderID: "tesseract", ModelID: "installed", ModelVersion: "pinned-model", Languages: []string{"ja"}, QualityPreset: "auto"}
+	return r
+}
+
+func seedPriorOutput(t *testing.T, f *fixture) {
+	t.Helper()
+	a := output()
+	must(t, f.docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,'output','ready',?,'application/pdf',3,?,1,1000)`, a.ID, docA, alice, a.RelativePath, a.SHA256[:])
+	must(t, f.docs, `INSERT INTO published_outputs(document_id,owner_id,revision,artifact_id) VALUES(?,?,1,?)`, docA, alice, a.ID)
+}
+
+func TestReOCRAdmissionKeepsOutput(t *testing.T) {
+	f := renderFixture(t)
+	seedPriorOutput(t, f)
+	result, err := f.store.AdmitRender(context.Background(), alice, reOCRRequest(), admissionLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Revision != 1 {
+		t.Fatal("optional reOCR changed source revision", result.Revision)
+	}
+	for _, running := range []bool{false, true} {
+		if running {
+			if _, err := f.store.ClaimExport(context.Background(), alice, result.JobID, runner); err != nil {
+				t.Fatal(err)
+			}
+		}
+		ref, err := f.store.ReadCurrentOutput(context.Background(), alice, docA)
+		if err != nil || ref.Artifact.ID != output().ID {
+			t.Fatal("prior output unavailable during reOCR", err)
+		}
+	}
+}
+
+func TestReOCRAdmissionWholeDocument(t *testing.T) {
+	f := renderFixture(t)
+	seedPageAt(t, f, docA, alice, "original_alice_0002", "page_alice_000002", 1)
+	r, err := f.store.AdmitRender(context.Background(), alice, reOCRRequest(), admissionLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var raw string
+	if err := f.docs.QueryRow(`SELECT configuration_json FROM jobs WHERE id=?`, r.JobID).Scan(&raw); err != nil {
+		t.Fatal(err)
+	}
+	var snapshot map[string]any
+	if json.Unmarshal([]byte(raw), &snapshot) != nil || snapshot["reocr"] != true {
+		t.Fatal("snapshot lost trusted reOCR intent")
+	}
+	pages, ok := snapshot["pages"].([]any)
+	if !ok || len(pages) != 2 || pages[1].(map[string]any)["id"] != "page_alice_000002" {
+		t.Fatal("whole document order not frozen")
+	}
+}
+
+func TestReOCRAdmissionIdentity(t *testing.T) {
+	f := renderFixture(t)
+	r := reOCRRequest()
+	first, err := f.store.AdmitRender(context.Background(), alice, r, admissionLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	r.ReOCR = false
+	if _, err := f.store.AdmitRender(context.Background(), alice, r, admissionLimits()); !errors.Is(err, ErrIdempotencyConflict) {
+		t.Fatal("ordinary render replayed reOCR intent", err)
+	}
+	r.ReOCR = true
+	r.Settings.OCR.ModelVersion = "changed-server-model"
+	r.ReserveBytes = 10000
+	again, err := f.store.AdmitRender(context.Background(), alice, r, admissionLimits())
+	if err != nil || !again.Replay || first.JobID != again.JobID {
+		t.Fatal("reOCR replay depends on new model or reservation", err)
+	}
+}
 func TestReOCRSnapshotPinsOutput(t *testing.T) {
 	f := renderFixture(t)
 	request := admissionRequest()
