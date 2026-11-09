@@ -106,6 +106,16 @@ def load_runtime(root, lock, expected_sha256):
         raise ValueError("incomplete runtime identity/license closure")
     for ref in value["files"]:
         verify_ref(root, ref)
+    retained = Path(value["phase46_root"])
+    retained_lock = retained / "tesseract-5.5.4-runtime.json"
+    if digest(retained_lock) != value["inputs"]["retained_runtime_lock_sha256"]:
+        raise ValueError("changed retained Tesseract runtime")
+    retained_value = json.loads(retained_lock.read_text())
+    for ref in retained_value["files"]:
+        verify_ref(retained, ref)
+    if (value["tesseract"] != retained_value["tesseract"]
+            or digest(Path(value["tesseract"])) != value["inputs"]["tesseract_sha256"]):
+        raise ValueError("changed retained Tesseract helper")
     return value
 
 

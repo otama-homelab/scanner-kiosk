@@ -53,6 +53,20 @@ emits only the `structure` role, with the original parent and exact source page.
 Raw Docling output stays in private evidence and is separate from recognized text
 and positioned-text artifacts.
 
+The normalized format is `scanner-eval-structure` version1. `source` binds the
+original artifact ID, SHA256, page ID and pixel dimensions; `runtime_lock_sha256`
+binds the actual adapter/dependency/model/config snapshot. `blocks` retain Docling
+`self_ref` IDs and tree order, parent IDs, labels, observed text and boxes. `cells`
+use stable table-ref/list-index IDs and retain row/column offsets and spans.
+Bottom-left coordinates become top-left source pixels exactly once, using the
+observed Docling page dimensions. Missing geometry is `null` with
+`geometry_status: unavailable`; absent cells stay absent with `cells_status:
+unavailable`. No boxes, blank grid cells, text, regex tables or summaries are
+created to match an oracle. JSON4MiB, total text2MiB, individual text64KiB,
+4096 blocks,8192 cells,65536 JSON nodes and depth32 bound parser work. Foreign
+pages, duplicate/cyclic/orphan references, overlapping cell spans, nonfinite or
+out-of-bounds coordinates and candidate-declared source/hash/size authority fail.
+
 Acquisition, identity/license, isolation, offline-install, model, timeout and
 resource failures remain failures. Exit2 plus a `scanner-eval-structure-disposition`
 receipt binds the attempted pins, frozen inputs, failure stage and actual command
