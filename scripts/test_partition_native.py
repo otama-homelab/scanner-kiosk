@@ -36,12 +36,19 @@ class PartitionNativeTest(unittest.TestCase):
             'usr/lib/sane/libsane-airscan.so.1':elf(['libshared.so.1']),
             'usr/lib/libsane.so.1':elf(['libshared.so.1']),
             'usr/bin/tesseract':elf(['libtesseract.so.5'],loader),
+            'usr/bin/pdftoppm':elf(['libpoppler.so.156'],loader),
+            'usr/bin/pdftotext':elf(['libpoppler.so.156'],loader),
+            'usr/bin/pdfinfo':elf(['libpoppler.so.156'],loader),
+            'usr/lib/libpoppler.so.156':elf(['libshared.so.1']),
+            'usr/share/poppler/cMap/Adobe-Japan1/90ms-RKSJ-H':b'Japanese CMap',
+            'usr/share/poppler/cidToUnicode/Adobe-Japan1':b'Japanese Unicode mapping',
             'usr/lib/libtesseract.so.5':elf(['libshared.so.1']),
             'usr/lib/libshared.so.1.0':elf(['libc.musl-x86_64.so.1']),
             'lib/ld-musl-x86_64.so.1':elf(),
             'usr/share/scanner-kiosk/ca-certificates.crt':b'public certificates',
             'usr/share/scanner-kiosk/notices/LICENSE':b'fixture license',
             'usr/share/scanner-kiosk/notices/tesseract/LICENSE':b'engine license notice',
+            'usr/share/scanner-kiosk/notices/native/poppler-25.12.0/COPYING':b'GPL notice',
             'usr/share/tessdata/eng.traineddata':b'eng',
             'usr/share/tessdata/jpn.traineddata':b'jpn',
             'usr/share/tessdata/osd.traineddata':b'osd',
@@ -107,6 +114,30 @@ class PartitionNativeTest(unittest.TestCase):
         self.put('lib/libshared.so.1',elf())
         with self.assertRaises(ValueError):self.partition()
         self.assertFalse(self.output.exists())
+
+    def test_PDFRasterWorkerPartition(self):
+        self.partition()
+        core=json.loads((self.output/'core/native-manifest.json').read_text())['files']
+        tess=json.loads((self.output/'tesseract/native-manifest.json').read_text())['files']
+        for name in ['usr/bin/pdftoppm','usr/bin/pdftotext','usr/bin/pdfinfo',
+                     'usr/lib/libpoppler.so.156',
+                     'usr/share/poppler/cMap/Adobe-Japan1/90ms-RKSJ-H',
+                     'usr/share/poppler/cidToUnicode/Adobe-Japan1']:
+            self.assertIn(name,core)
+            self.assertNotIn(name,tess)
+        self.assertIn('usr/share/scanner-kiosk/notices/native/poppler-25.12.0/COPYING',core)
+        self.assertFalse(any('credential' in n or n.endswith('.env') for n in core))
+
+    def test_missing_PDF_raster_input_fails_without_output(self):
+        for name in ['usr/bin/pdftoppm','usr/lib/libpoppler.so.156',
+                     'usr/share/poppler/cMap/Adobe-Japan1/90ms-RKSJ-H',
+                     'usr/share/poppler/cidToUnicode/Adobe-Japan1']:
+            with self.subTest(name=name):
+                entry=self.files.pop(name)
+                try:
+                    with self.assertRaises(ValueError):self.partition()
+                    self.assertFalse(self.output.exists())
+                finally:self.files[name]=entry
 
     def test_changed_bytes_and_unsafe_elf_or_links_are_rejected(self):
         p=self.native/'usr/share/tessdata/jpn.traineddata';p.chmod(0o644);p.write_bytes(b'changed');p.chmod(0o444)
