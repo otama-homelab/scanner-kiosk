@@ -3,7 +3,6 @@ package renderadmission
 import (
 	"context"
 	"errors"
-	"reflect"
 	"scanner-kiosk/internal/documents"
 	"testing"
 	"time"
@@ -16,25 +15,6 @@ type records struct {
 	request  documents.RenderAdmission
 	limits   documents.AdmissionLimits
 	findHook func(documents.RenderAdmission)
-}
-
-func TestReOCRCatalogPinsOutput(t *testing.T) {
-	record := &records{}
-	snapshot := catalogFixture()
-	service := Service{Records: record, Resolver: &CatalogResolver{Source: catalogSource{snapshot: snapshot}, Now: func() time.Time { return time.UnixMilli(2000) }}, Limits: documents.AdmissionLimits{JobMaxBytes: 100}}
-	request := documents.RenderAdmission{Settings: documents.RenderSettings{Format: "pdf", OCR: selection()}}
-	flag := reflect.ValueOf(&request).Elem().FieldByName("ReOCR")
-	if !flag.IsValid() || flag.Kind() != reflect.Bool {
-		t.Fatal("server-marked reOCR admission must exist independently of browser settings")
-	}
-	flag.SetBool(true)
-	if _, err := service.Admit(context.Background(), "owner", request); err != nil {
-		t.Fatal(err)
-	}
-	output := reflect.ValueOf(record.request).FieldByName("ResolvedOutput")
-	if !output.IsValid() || output.String() != "pdf_text_layer" {
-		t.Fatal("reOCR output was not pinned from the selected model")
-	}
 }
 
 func (r *records) FindRender(_ context.Context, _ string, request documents.RenderAdmission) (documents.Admission, bool, error) {
@@ -55,7 +35,7 @@ type resolver struct {
 	fail   bool
 }
 
-func (r *resolver) ResolveOCR(context.Context, documents.RenderOCR) (ResolvedOCR, error) {
+func (r *resolver) ResolveOCR(context.Context, documents.RenderOCR, bool) (ResolvedOCR, error) {
 	r.called++
 	if r.fail {
 		return ResolvedOCR{}, errors.New("private provider error")
@@ -69,6 +49,31 @@ func TestReplayDoesNotResolveChangedProvider(t *testing.T) {
 	result, err := s.Admit(context.Background(), "owner", documents.RenderAdmission{Settings: documents.RenderSettings{OCR: documents.RenderOCR{Enabled: true}}})
 	if err != nil || result.JobID != "original_job_00001" || provider.called != 0 || record.admitted != 0 {
 		t.Fatal(result, err)
+	}
+}
+
+func TestReOCRAdmissionReplayBeforeCatalog(t *testing.T) {
+	for _, snapshot := range []CatalogSnapshot{{}, {PublishedAtMS: 1000, ExpiresAtMS: 2000}} {
+		record := &records{previous: documents.Admission{JobID: "original_job_00001", Replay: true}, found: true}
+		service := Service{Records: record, Resolver: &CatalogResolver{Source: catalogSource{snapshot: snapshot}, Now: func() time.Time { return time.UnixMilli(3000) }}}
+		request := documents.RenderAdmission{ReOCR: true, Settings: documents.RenderSettings{Format: "pdf", OCR: selection()}}
+		result, err := service.Admit(context.Background(), "owner", request)
+		if err != nil || !result.Replay || result.JobID != "original_job_00001" || record.admitted != 0 {
+			t.Fatal("changed catalog prevented replay", result, err)
+		}
+		record.found = false
+		if _, err := service.Admit(context.Background(), "owner", request); !errors.Is(err, ErrProviderUnavailable) || record.admitted != 0 {
+			t.Fatal("unavailable new work admitted", err)
+		}
+	}
+	for _, request := range []documents.RenderAdmission{
+		{ReOCR: true, Settings: documents.RenderSettings{Format: "pdf"}},
+		{ReOCR: true, Settings: documents.RenderSettings{Format: "png", OCR: selection()}},
+	} {
+		service := Service{Records: &records{found: true}}
+		if _, err := service.Admit(context.Background(), "owner", request); !errors.Is(err, documents.ErrInvalid) {
+			t.Fatal("invalid reOCR intent replayed", err)
+		}
 	}
 }
 func TestAdmissionUsesPolicyReservationAndPinnedOCR(t *testing.T) {
@@ -107,10 +112,10 @@ func TestAdmissionRetainsSmallerDeploymentPixelLimit(t *testing.T) {
 	}
 }
 
-type resolverFunc func(context.Context, documents.RenderOCR) (ResolvedOCR, error)
+type resolverFunc func(context.Context, documents.RenderOCR, bool) (ResolvedOCR, error)
 
-func (f resolverFunc) ResolveOCR(ctx context.Context, selection documents.RenderOCR) (ResolvedOCR, error) {
-	return f(ctx, selection)
+func (f resolverFunc) ResolveOCR(ctx context.Context, selection documents.RenderOCR, reOCR bool) (ResolvedOCR, error) {
+	return f(ctx, selection, reOCR)
 }
 
 func TestAdmissionFreezesLanguagesAcrossCallerRecordsAndResolver(t *testing.T) {
@@ -119,7 +124,7 @@ func TestAdmissionFreezesLanguagesAcrossCallerRecordsAndResolver(t *testing.T) {
 		request.Settings.OCR.Languages[0] = "records_mutation"
 		languages[0] = "caller_mutation"
 	}}
-	provider := resolverFunc(func(_ context.Context, selection documents.RenderOCR) (ResolvedOCR, error) {
+	provider := resolverFunc(func(_ context.Context, selection documents.RenderOCR, _ bool) (ResolvedOCR, error) {
 		if len(selection.Languages) != 1 || selection.Languages[0] != "eng" {
 			t.Fatal("selection changed after lookup", selection)
 		}

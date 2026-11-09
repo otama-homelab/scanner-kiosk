@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"scanner-kiosk/internal/storage"
+	"scanner-kiosk/pkg/ocrplugin"
 )
 
 func renderFixture(t *testing.T) *fixture {
@@ -38,6 +39,25 @@ func admissionRequest() RenderAdmission {
 }
 func admissionLimits() AdmissionLimits {
 	return AdmissionLimits{UserMaxBytes: 1000, GlobalMaxBytes: 2000, JobMaxBytes: 100, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour}
+}
+func TestReOCRSnapshotPinsOutput(t *testing.T) {
+	f := renderFixture(t)
+	request := admissionRequest()
+	request.ReOCR = true
+	request.ResolvedOutput = ocrplugin.PositionedText
+	request.Settings.OCR = RenderOCR{Enabled: true, ProviderID: "tesseract", ModelID: "installed", ModelVersion: "pinned-model", Languages: []string{"ja"}, QualityPreset: "auto"}
+	result, err := f.store.AdmitRender(context.Background(), alice, request, admissionLimits())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var raw string
+	if err := f.docs.QueryRow("SELECT configuration_json FROM jobs WHERE id=?", result.JobID).Scan(&raw); err != nil {
+		t.Fatal(err)
+	}
+	var snapshot RenderSnapshot
+	if err := json.Unmarshal([]byte(raw), &snapshot); err != nil || snapshot.OCROutput != ocrplugin.PositionedText || snapshot.Settings.OCR.ModelVersion != "pinned-model" {
+		t.Fatalf("resolved output not frozen: %v", err)
+	}
 }
 func TestRenderAdmissionAndReplaySnapshot(t *testing.T) {
 	f := renderFixture(t)

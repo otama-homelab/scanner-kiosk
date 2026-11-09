@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"scanner-kiosk/internal/documents"
+	"scanner-kiosk/pkg/ocrplugin"
 	"slices"
 )
 
@@ -19,12 +20,13 @@ type ResolvedOCR struct {
 	ModelVersion, QualityPreset string
 	MaxPages                    int
 	MaxPagePixels               int64
+	Output                      ocrplugin.OutputKind
 }
 
 // Resolver consumes trusted worker capability projections, never browser secrets
 // or provider constructors. A version is pinned only for new work.
 type Resolver interface {
-	ResolveOCR(context.Context, documents.RenderOCR) (ResolvedOCR, error)
+	ResolveOCR(context.Context, documents.RenderOCR, bool) (ResolvedOCR, error)
 }
 type Service struct {
 	Records  Records
@@ -33,7 +35,7 @@ type Service struct {
 }
 
 func (s *Service) Admit(ctx context.Context, owner string, request documents.RenderAdmission) (documents.Admission, error) {
-	if request.Settings.OCR.ModelVersion != "" || request.ResolvedQualityPreset != "" || request.ReserveBytes != 0 {
+	if request.Settings.OCR.ModelVersion != "" || request.ResolvedQualityPreset != "" || request.ResolvedOutput != "" || request.ReserveBytes != 0 || request.ReOCR && (!request.Settings.OCR.Enabled || request.Settings.Format != "pdf") {
 		return documents.Admission{}, documents.ErrInvalid
 	}
 	// Keep one client intent across caller, receipt-store and resolver mutation.
@@ -54,12 +56,15 @@ func (s *Service) Admit(ctx context.Context, owner string, request documents.Ren
 		}
 		selection := request.Settings.OCR
 		selection.Languages = slices.Clone(selection.Languages)
-		resolved, err := s.Resolver.ResolveOCR(ctx, selection)
+		resolved, err := s.Resolver.ResolveOCR(ctx, selection, request.ReOCR)
 		if errors.Is(err, ErrUnsupported) {
 			return documents.Admission{}, ErrUnsupported
 		}
 		if err != nil || resolved.ModelVersion == "" || resolved.MaxPages < 1 || resolved.MaxPagePixels < 1 || request.Settings.OCR.QualityPreset != "" && resolved.QualityPreset != request.Settings.OCR.QualityPreset {
 			return documents.Admission{}, ErrProviderUnavailable
+		}
+		if request.ReOCR && resolved.Output != ocrplugin.PositionedText && resolved.Output != ocrplugin.Text && resolved.Output != ocrplugin.PDFTextLayer && resolved.Output != ocrplugin.SearchablePDF {
+			return documents.Admission{}, ErrUnsupported
 		}
 		limits.OCRMaxPages, limits.OCRMaxPagePixels = resolved.MaxPages, resolved.MaxPagePixels
 		if s.Limits.OCRMaxPagePixels > 0 {
@@ -67,6 +72,9 @@ func (s *Service) Admit(ctx context.Context, owner string, request documents.Ren
 		}
 		request.Settings.OCR.ModelVersion = resolved.ModelVersion
 		request.ResolvedQualityPreset = resolved.QualityPreset
+		if request.ReOCR {
+			request.ResolvedOutput = resolved.Output
+		}
 	}
 	// Conservative reservation: worker execution cannot exceed the configured
 	// whole-job ceiling. Capacity and disk headroom are enforced in the transaction.

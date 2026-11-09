@@ -12,6 +12,8 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"scanner-kiosk/pkg/ocrplugin"
 )
 
 var (
@@ -49,10 +51,13 @@ type RenderAdmission struct {
 	Revision       int64
 	IdempotencyKey string
 	Settings       RenderSettings
+	// Server operation intent, never part of browser-controlled RenderSettings.
+	ReOCR bool
 	// Resolved by server-side capability validation, never accepted as a user quota.
 	ReserveBytes int64
 	// Used only when the client omitted a quality preset. It is not part of the client-command hash.
 	ResolvedQualityPreset string
+	ResolvedOutput        ocrplugin.OutputKind
 }
 type Admission struct {
 	JobID, DocumentID string
@@ -71,9 +76,10 @@ type CapturedPage struct {
 	DPI                int     `json:"dpi"`
 }
 type RenderSnapshot struct {
-	Version  int            `json:"version"`
-	Settings RenderSettings `json:"settings"`
-	Pages    []CapturedPage `json:"pages"`
+	Version   int                  `json:"version"`
+	Settings  RenderSettings       `json:"settings"`
+	Pages     []CapturedPage       `json:"pages"`
+	OCROutput ocrplugin.OutputKind `json:"ocr_output,omitempty"`
 }
 
 // AdmitRender retains the trusted entry point through the policy service.
@@ -227,7 +233,7 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		if err != nil {
 			return ErrStorage
 		}
-		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, Settings: snapshotSettings, Pages: pages})
+		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, Settings: snapshotSettings, Pages: pages, OCROutput: request.ResolvedOutput})
 		if err != nil {
 			return ErrInvalid
 		}

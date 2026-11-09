@@ -26,15 +26,72 @@ func selection() documents.RenderOCR {
 func TestCatalogPinsExactVersionAndExplicitDefault(t *testing.T) {
 	source := catalogFixture()
 	resolver := CatalogResolver{Source: catalogSource{snapshot: source}, Now: func() time.Time { return time.UnixMilli(2000) }}
-	result, err := resolver.ResolveOCR(context.Background(), selection())
+	result, err := resolver.ResolveOCR(context.Background(), selection(), false)
 	if err != nil || result.ModelVersion != "model-v2" || result.QualityPreset != "standard" {
 		t.Fatal(result, err)
 	}
 	request := selection()
 	request.QualityPreset = "fast"
-	result, err = resolver.ResolveOCR(context.Background(), request)
+	result, err = resolver.ResolveOCR(context.Background(), request, false)
 	if err != nil || result.QualityPreset != "fast" {
 		t.Fatal("explicit preset lost", result, err)
+	}
+}
+
+func TestReOCRCatalogPinsOutput(t *testing.T) {
+	for _, tc := range []struct {
+		name    string
+		outputs []ocrplugin.OutputKind
+		want    ocrplugin.OutputKind
+	}{
+		{"positioned", []ocrplugin.OutputKind{ocrplugin.PDFTextLayer, ocrplugin.Text, ocrplugin.PositionedText}, ocrplugin.PositionedText},
+		{"text-only", []ocrplugin.OutputKind{ocrplugin.Text}, ocrplugin.Text},
+		{"layer-only", []ocrplugin.OutputKind{ocrplugin.PDFTextLayer}, ocrplugin.PDFTextLayer},
+		{"searchable-only", []ocrplugin.OutputKind{ocrplugin.SearchablePDF}, ocrplugin.SearchablePDF},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			snapshot := catalogFixture()
+			snapshot.Providers[0].Models[0].Outputs = tc.outputs
+			resolver := &CatalogResolver{Source: catalogSource{snapshot: snapshot}, Now: func() time.Time { return time.UnixMilli(2000) }}
+			resolved, err := resolver.ResolveOCR(context.Background(), selection(), true)
+			if err != nil || resolved.Output != tc.want || resolved.ModelVersion != "model-v2" || resolved.QualityPreset != "standard" || resolved.MaxPages != 50 || resolved.MaxPagePixels != 40000000 {
+				t.Fatal("selection changed model/settings/bounds", resolved, err)
+			}
+			record := &records{}
+			service := Service{Records: record, Resolver: resolver, Limits: documents.AdmissionLimits{JobMaxBytes: 100, OCRMaxPagePixels: 200}}
+			request := documents.RenderAdmission{ReOCR: true, Settings: documents.RenderSettings{Format: "pdf", OCR: selection()}}
+			if _, err := service.Admit(context.Background(), "owner", request); err != nil || record.request.ResolvedOutput != tc.want || record.request.Settings.OCR.ModelVersion != "model-v2" || record.limits.OCRMaxPagePixels != 200 {
+				t.Fatal("trusted output not carried to admission", record.request, err)
+			}
+			request.ResolvedOutput = tc.want
+			if _, err := service.Admit(context.Background(), "owner", request); !errors.Is(err, documents.ErrInvalid) {
+				t.Fatal("caller-selected output admitted", err)
+			}
+		})
+	}
+	for _, mode := range []string{"expired", "withdrawn", "unsupported-language", "incompatible"} {
+		t.Run(mode, func(t *testing.T) {
+			snapshot := catalogFixture()
+			request := selection()
+			want := ErrUnsupported
+			switch mode {
+			case "expired":
+				snapshot.ExpiresAtMS = 2000
+				want = ErrProviderUnavailable
+			case "withdrawn":
+				snapshot.Providers = nil
+				snapshot.Defaults = nil
+			case "unsupported-language":
+				request.Languages = []string{"unknown"}
+			case "incompatible":
+				snapshot.Providers[0].Models[0].Outputs = []ocrplugin.OutputKind{"invalid"}
+				want = ErrProviderUnavailable
+			}
+			resolver := &CatalogResolver{Source: catalogSource{snapshot: snapshot}, Now: func() time.Time { return time.UnixMilli(2000) }}
+			if _, err := resolver.ResolveOCR(context.Background(), request, true); !errors.Is(err, want) {
+				t.Fatal("incompatible choice substituted", err)
+			}
+		})
 	}
 }
 func TestCatalogRejectsStaleUnknownAndIncompatibleSelections(t *testing.T) {
@@ -78,7 +135,7 @@ func TestCatalogRejectsStaleUnknownAndIncompatibleSelections(t *testing.T) {
 				snapshot.Providers[0].Models[0].Languages = append(snapshot.Providers[0].Models[0].Languages, "eng")
 			}
 			resolver := CatalogResolver{Source: catalogSource{snapshot: snapshot}, Now: func() time.Time { return time.UnixMilli(2000) }}
-			if _, err := resolver.ResolveOCR(context.Background(), request); !errors.Is(err, expected) {
+			if _, err := resolver.ResolveOCR(context.Background(), request, false); !errors.Is(err, expected) {
 				t.Fatal(name, err)
 			}
 		})
@@ -87,11 +144,11 @@ func TestCatalogRejectsStaleUnknownAndIncompatibleSelections(t *testing.T) {
 func TestCatalogUnavailableAndExpiryDuringResolution(t *testing.T) {
 	now := 1000
 	resolver := CatalogResolver{Source: catalogSource{snapshot: catalogFixture()}, Now: func() time.Time { now += 5000; return time.UnixMilli(int64(now)) }}
-	if _, err := resolver.ResolveOCR(context.Background(), selection()); !errors.Is(err, ErrProviderUnavailable) {
+	if _, err := resolver.ResolveOCR(context.Background(), selection(), false); !errors.Is(err, ErrProviderUnavailable) {
 		t.Fatal("expired resolution returned authority", err)
 	}
 	resolver.Source = catalogSource{err: errors.New("private connection detail")}
-	if _, err := resolver.ResolveOCR(context.Background(), selection()); err != ErrProviderUnavailable {
+	if _, err := resolver.ResolveOCR(context.Background(), selection(), false); err != ErrProviderUnavailable {
 		t.Fatal("source error escaped", err)
 	}
 }
@@ -111,7 +168,7 @@ func TestCatalogModelWithoutPresetAcceptsEmptyDefault(t *testing.T) {
 	snapshot.Providers[0].Models[0].QualityPresets = nil
 	snapshot.Defaults[0].QualityPreset = ""
 	resolver := CatalogResolver{Source: catalogSource{snapshot: snapshot}, Now: func() time.Time { return time.UnixMilli(2000) }}
-	resolved, err := resolver.ResolveOCR(context.Background(), selection())
+	resolved, err := resolver.ResolveOCR(context.Background(), selection(), false)
 	if err != nil || resolved.QualityPreset != "" {
 		t.Fatal(resolved, err)
 	}

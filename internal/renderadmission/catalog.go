@@ -4,6 +4,7 @@ import (
 	"context"
 	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/pkg/ocrplugin"
+	"slices"
 	"time"
 )
 
@@ -33,7 +34,7 @@ type CatalogResolver struct {
 
 // ResolveOCR pins an exact advertised model. It neither probes providers nor
 // reads credentials, performs OCR, chooses another model, or disables OCR.
-func (r *CatalogResolver) ResolveOCR(ctx context.Context, request documents.RenderOCR) (ResolvedOCR, error) {
+func (r *CatalogResolver) ResolveOCR(ctx context.Context, request documents.RenderOCR, reOCR bool) (ResolvedOCR, error) {
 	if r.Source == nil || r.Now == nil {
 		return ResolvedOCR{}, ErrProviderUnavailable
 	}
@@ -74,12 +75,16 @@ func (r *CatalogResolver) ResolveOCR(ctx context.Context, request documents.Rend
 	if len(model.QualityPresets) == 0 && preset != "" || len(model.QualityPresets) > 0 && !hasString(model.QualityPresets, preset) {
 		return ResolvedOCR{}, ErrUnsupported
 	}
-	// The installed initial pipeline consumes native searchable PDF or invisible
-	// PDF text layers. Text/positioned-text models need an additional renderer.
-	compatible := false
-	for _, output := range model.Outputs {
-		if output == ocrplugin.SearchablePDF || output == ocrplugin.PDFTextLayer {
-			compatible = true
+	// ReOCR's coordinator retains recognition artifacts before common rendering.
+	outputs := []ocrplugin.OutputKind{ocrplugin.PDFTextLayer, ocrplugin.SearchablePDF}
+	if reOCR {
+		outputs = append([]ocrplugin.OutputKind{ocrplugin.PositionedText, ocrplugin.Text}, outputs...)
+	}
+	var selected ocrplugin.OutputKind
+	for _, kind := range outputs {
+		if slices.Contains(model.Outputs, kind) {
+			selected = kind
+			break
 		}
 	}
 	if err := ctx.Err(); err != nil {
@@ -88,10 +93,10 @@ func (r *CatalogResolver) ResolveOCR(ctx context.Context, request documents.Rend
 	if r.Now().UnixMilli() >= snapshot.ExpiresAtMS {
 		return ResolvedOCR{}, ErrProviderUnavailable
 	}
-	if !compatible {
+	if selected == "" {
 		return ResolvedOCR{}, ErrUnsupported
 	}
-	return ResolvedOCR{ModelVersion: model.Version, QualityPreset: preset, MaxPages: model.MaxPages, MaxPagePixels: model.MaxPagePixels}, nil
+	return ResolvedOCR{ModelVersion: model.Version, QualityPreset: preset, MaxPages: model.MaxPages, MaxPagePixels: model.MaxPagePixels, Output: selected}, nil
 }
 func hasString(values []string, value string) bool {
 	for _, candidate := range values {

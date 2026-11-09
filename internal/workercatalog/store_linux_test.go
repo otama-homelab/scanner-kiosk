@@ -67,7 +67,7 @@ func TestCatalogPublicationSourceExpiryAndStop(t *testing.T) {
 		t.Fatal(source, err)
 	}
 	resolver := renderadmission.CatalogResolver{Source: f.store, Now: func() time.Time { return time.UnixMilli(f.now) }}
-	resolved, err := resolver.ResolveOCR(ctx, documents.RenderOCR{Enabled: true, ProviderID: "plugin", ModelID: "model", Languages: []string{"jpn", "eng"}})
+	resolved, err := resolver.ResolveOCR(ctx, documents.RenderOCR{Enabled: true, ProviderID: "plugin", ModelID: "model", Languages: []string{"jpn", "eng"}}, false)
 	if err != nil || resolved.ModelVersion != "pinned-v1" {
 		t.Fatal("persistent source did not resolve", resolved, err)
 	}
