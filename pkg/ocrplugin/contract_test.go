@@ -139,6 +139,18 @@ func TestPositionedOutputCannotEscapeInputOrInventConfidence(t *testing.T) {
 	}
 }
 
+func TestPositionedBlankAndExactPageIdentity(t *testing.T) {
+	input := InputPage{ID: "exact-source", Width: 80, Height: 100}
+	blank := PositionedPage{PageID: input.ID, Width: input.Width, Height: input.Height, Spans: []Span{}}
+	if err := ValidatePositionedPage(blank, input); err != nil {
+		t.Fatal("explicit blank recognition rejected", err)
+	}
+	blank.PageID = "other-source"
+	if err := ValidatePositionedPage(blank, input); err == nil {
+		t.Fatal("even blank recognition must bind the actual source page")
+	}
+}
+
 func TestTextLayerIsNotACompleteSearchableDocument(t *testing.T) {
 	registry, err := New(context.Background(), provider("tesseract-layer", PDFTextLayer))
 	if err != nil {

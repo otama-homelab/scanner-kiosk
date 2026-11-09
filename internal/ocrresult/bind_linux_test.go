@@ -5,6 +5,7 @@ package ocrresult_test
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"errors"
 	"os"
 	"testing"
@@ -83,5 +84,79 @@ func TestBindingUsesSealedScopeAndRejectsForeignOutput(t *testing.T) {
 	request.Pages[0].ID = "changed"
 	if pages[0].Input.ID != "first" || pages[0].Artifact.RelativePath == "changed" {
 		t.Fatal("binding aliases mutable caller records")
+	}
+}
+
+func TestPositionedExactCoverage(t *testing.T) {
+	ctx := context.Background()
+	root := t.TempDir()
+	if err := os.Chmod(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	scope, err := artifactscope.New(root, nil, artifactscope.Limits{MaxInputBytes: 1024, MaxOutputBytes: 1024, MaxTotalOutputBytes: 2048, MaxOutputs: 2})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer scope.Close()
+	request := ocrplugin.Request{JobID: "job", InputRevision: 7, ModelID: "installed", ModelVersion: "exact-version", Output: ocrplugin.PositionedText, Pages: []ocrplugin.InputPage{{ID: "first", ArtifactID: "original-first", Width: 80, Height: 100}, {ID: "second", ArtifactID: "original-second", Width: 90, Height: 200}}}
+	result := ocrplugin.Result{ModelVersion: request.ModelVersion}
+	var total int64
+	for _, input := range request.Pages {
+		writer, err := scope.CreateOutput(ctx, ocrplugin.PositionedText)
+		if err != nil {
+			t.Fatal(err)
+		}
+		payload, err := json.Marshal(ocrplugin.PositionedPage{PageID: input.ID, Width: input.Width, Height: input.Height, Spans: []ocrplugin.Span{{Text: "日本語", Box: ocrplugin.Box{X: 1, Y: 2, Width: 3, Height: 4}}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := writer.Write(payload); err != nil {
+			t.Fatal(err)
+		}
+		if err := writer.Close(); err != nil {
+			t.Fatal(err)
+		}
+		total += int64(len(payload))
+		result.Pages = append(result.Pages, ocrplugin.PageResult{PageID: input.ID, ArtifactID: writer.Reference(), Kind: ocrplugin.PositionedText})
+	}
+	sealed, err := scope.Seal(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result.Pages[0], result.Pages[1] = result.Pages[1], result.Pages[0]
+	pages, err := ocrresult.BindSealed(request, result, sealed, total)
+	if err != nil || len(pages) != 2 || pages[0].Input.ID != "first" || pages[1].Input.ID != "second" || pages[0].Artifact.ID != result.Pages[1].ArtifactID {
+		t.Fatalf("sealed results did not follow immutable request order: %v", err)
+	}
+	for _, name := range []string{"missing-page", "foreign-artifact", "duplicate-page", "duplicate-artifact", "extra-artifact", "reused-input", "wrong-kind", "stale-version", "aggregate-bytes"} {
+		t.Run(name, func(t *testing.T) {
+			changed := result
+			changed.Pages = append([]ocrplugin.PageResult(nil), result.Pages...)
+			artifacts := append([]artifactscope.Artifact(nil), sealed...)
+			budget := total
+			switch name {
+			case "missing-page":
+				changed.Pages = changed.Pages[:1]
+			case "foreign-artifact":
+				changed.Pages[0].ArtifactID = "foreign-output"
+			case "duplicate-page":
+				changed.Pages[1].PageID = changed.Pages[0].PageID
+			case "duplicate-artifact":
+				changed.Pages[1].ArtifactID = changed.Pages[0].ArtifactID
+			case "extra-artifact":
+				artifacts = append(artifacts, artifacts[0])
+			case "reused-input":
+				artifacts[0].ID = request.Pages[0].ArtifactID
+			case "wrong-kind":
+				changed.Pages[0].Kind = ocrplugin.Text
+			case "stale-version":
+				changed.ModelVersion = "another-version"
+			case "aggregate-bytes":
+				budget--
+			}
+			if bound, err := ocrresult.BindSealed(request, changed, artifacts, budget); err == nil || bound != nil {
+				t.Fatal("invalid positioned coverage accepted")
+			}
+		})
 	}
 }

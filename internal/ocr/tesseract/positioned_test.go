@@ -4,8 +4,11 @@ package tesseract
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -125,3 +128,55 @@ func TestTesseractPositionedParser(t *testing.T) {
 	}
 }
 
+func TestTesseractPositionedCompatibility(t *testing.T) {
+	opts := options(t)
+	script := "#!/bin/sh\ncase \" $* \" in\n*' tessedit_create_tsv=1 '*) printf '%s' '" + positionedTSV + "' > \"$2.tsv\";;\n*' tessedit_create_pdf=1 '*) printf '%%PDF-fixture' > \"$2.pdf\";;\n*' tessedit_create_txt=1 '*) printf '日本語 text' > \"$2.txt\";;\n*) exit 19;;\nesac\n"
+	if err := os.WriteFile(opts.Binary, []byte(script), 0700); err != nil {
+		t.Fatal(err)
+	}
+	p, err := New(opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Output capabilities must not change the existing binary/dictionary identity.
+	hash := sha256.New()
+	hash.Write([]byte(script))
+	hash.Write([]byte("\x00osd\x00osd\x00en\x00eng\x00eng\x00ja\x00jpn\x00jpn"))
+	wantVersion := "sha256-" + hex.EncodeToString(hash.Sum(nil))
+	if p.caps.Models[0].Version != wantVersion {
+		t.Fatal("adding output changed the exact installed model fingerprint rule")
+	}
+	for _, kind := range []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PDFTextLayer, ocrplugin.PositionedText} {
+		t.Run(string(kind), func(t *testing.T) {
+			req := request(p)
+			req.Output = kind
+			access := &memoryAccess{input: blankPNG(t)}
+			result, err := p.Run(context.Background(), req, access)
+			if err != nil || len(result.Pages) != 1 || result.Pages[0].Kind != kind || result.ModelVersion != wantVersion || len(access.outputs) != 1 || !access.outputs[0].closed {
+				t.Fatalf("output compatibility lost: %v", err)
+			}
+			switch kind {
+			case ocrplugin.Text:
+				if access.outputs[0].String() != "日本語 text" {
+					t.Fatal("plain text changed")
+				}
+			case ocrplugin.PDFTextLayer:
+				if access.outputs[0].String() != "%PDF-fixture" {
+					t.Fatal("PDF text layer changed")
+				}
+			case ocrplugin.PositionedText:
+				var page ocrplugin.PositionedPage
+				if json.Unmarshal(access.outputs[0].Bytes(), &page) != nil || len(page.Spans) != 2 {
+					t.Fatal("missing positioned result")
+				}
+			}
+		})
+	}
+	// The ja public language mapping remains pinned to the actual installed jpn file.
+	if p.dictionaries["ja"] != "jpn" {
+		t.Fatal("implicit dictionary/version substitution")
+	}
+	if _, err := os.Stat(filepath.Join(opts.DataDir, "jpn.traineddata")); err != nil {
+		t.Fatal(err)
+	}
+}
