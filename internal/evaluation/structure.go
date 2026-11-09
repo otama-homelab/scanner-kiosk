@@ -231,7 +231,53 @@ type StructureBaselineRow struct {
 }
 
 func structureBaselineRows(b OCRComparison, oracle OCROracleFile) ([]StructureBaselineRow, error) {
-	return nil, ErrUnavailable
+	if len(oracle.Entries) != 8 || len(b.Rows) != 64 {
+		return nil, ErrInvalid
+	}
+	entries := map[string]OCROracleEntry{}
+	for _, entry := range oracle.Entries {
+		entries[entry.FixtureID] = entry
+	}
+	counts := map[string]map[string]int{}
+	configs := map[string]string{}
+	rows := []StructureBaselineRow{}
+	for _, r := range b.Rows {
+		entry, ok := entries[r.FixtureID]
+		if !ok || r.EngineID != "tesseract-5.5.4" && r.EngineID != "ndlocr-lite-1.3.0" || r.FixtureSHA256 != entry.FixtureSHA256 || !validHash(r.CandidateConfigSHA256) || len(r.Pages) != len(entry.Pages) || r.Mode != "standalone" && r.Mode != "cold" && r.Mode != "warm" {
+			return nil, ErrInvalid
+		}
+		if previous := configs[r.EngineID]; previous != "" && previous != r.CandidateConfigSHA256 {
+			return nil, ErrInvalid
+		}
+		configs[r.EngineID] = r.CandidateConfigSHA256
+		for i, p := range r.Pages {
+			if p.PageID != entry.Pages[i].PageID || p.TextErrors < 0 || p.ReferenceCodePoints < 0 || p.ReadingOrderInversions < 0 || p.MatchedRegions < 0 || p.MatchedRegions > p.Regions || p.MatchedCells < 0 || p.MatchedCells > p.Cells || p.Status != "passed" && p.Status != "failed" {
+				return nil, ErrInvalid
+			}
+		}
+		key := r.EngineID + "\x00" + r.FixtureID
+		if counts[key] == nil {
+			counts[key] = map[string]int{}
+		}
+		counts[key][r.Mode]++
+		if r.Mode == "standalone" {
+			if r.ResourceStatus != "not-measured" {
+				return nil, ErrInvalid
+			}
+			rows = append(rows, StructureBaselineRow{EngineID: r.EngineID, FixtureID: r.FixtureID, FixtureSHA256: r.FixtureSHA256, CandidateConfigSHA256: r.CandidateConfigSHA256, Pages: r.Pages})
+		} else if r.ResourceStatus != "measured" {
+			return nil, ErrInvalid
+		}
+	}
+	if len(counts) != 16 || len(rows) != 16 {
+		return nil, ErrInvalid
+	}
+	for _, modes := range counts {
+		if modes["standalone"] != 1 || modes["cold"] != 1 || modes["warm"] != 2 {
+			return nil, ErrInvalid
+		}
+	}
+	return rows, nil
 }
 
 func ValidateStructurePayload(body []byte, source StructureSource, lock string) (StructurePayload, error) {
@@ -457,7 +503,8 @@ func AnalyzeStructureEvidence(oraclePath, catalogPath, manifestPath, candidate s
 	if err != nil || catalogSHA != structureCatalogSHA {
 		return out, ErrInvalid
 	}
-	if _, err := LoadOCROracles(oraclePath); err != nil {
+	oracles, err := LoadOCROracles(oraclePath)
+	if err != nil {
 		return out, ErrInvalid
 	}
 	manifestRoot, err := openStructureRoot(filepath.Dir(manifestPath))
@@ -494,6 +541,10 @@ func AnalyzeStructureEvidence(oraclePath, catalogPath, manifestPath, candidate s
 		return out, ErrInvalid
 	}
 	gap, err := structureGap(baseline)
+	if err != nil {
+		return out, ErrInvalid
+	}
+	baselineRows, err := structureBaselineRows(baseline, oracles)
 	if err != nil {
 		return out, ErrInvalid
 	}
@@ -555,6 +606,7 @@ func AnalyzeStructureEvidence(oraclePath, catalogPath, manifestPath, candidate s
 	out.FailureExitCode = d.Evidence.ExitCode
 	out.Decision = "defer"
 	out.BaselineGap = gap
+	out.BaselineRows = baselineRows
 	out.Measurements = map[string]string{}
 	for _, dimension := range []string{"text_errors", "reading_order", "matched_regions", "matched_cells", "row_column_topology", "geometry", "elapsed_time", "peak_rss", "sampled_temp_disk", "model_license_closure", "installed_dependency_closure", "generated_quality"} {
 		out.Measurements[dimension] = "unresolved"
