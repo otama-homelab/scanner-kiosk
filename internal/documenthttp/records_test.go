@@ -29,19 +29,20 @@ const requestKey = "request_memory_001"
 // Only session bootstrap uses SQLite. All document/job projections, commands
 // and file authorizations below use this non-SQL implementation of the port.
 type memoryDocuments struct {
-	mu             sync.Mutex
-	owner          string
-	projection     documents.Projection
-	reference      documents.ArtifactReference
-	edit           documents.EditRequest
-	correction     documents.CorrectionRequest
-	deletion       documents.DeleteRequest
-	key            string
-	retention      time.Duration
-	failure        error
-	reads          int
-	denySecondRead bool
-	calls          int
+	*documents.Store // unrelated result commands are never used by port tests
+	mu               sync.Mutex
+	owner            string
+	projection       documents.Projection
+	reference        documents.ArtifactReference
+	edit             documents.EditRequest
+	correction       documents.CorrectionRequest
+	deletion         documents.DeleteRequest
+	key              string
+	retention        time.Duration
+	failure          error
+	reads            int
+	denySecondRead   bool
+	calls            int
 }
 
 func (m *memoryDocuments) allow(owner string) error {

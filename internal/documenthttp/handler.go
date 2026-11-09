@@ -51,6 +51,9 @@ func New(store Records, sessions *websession.Handler, retention time.Duration, f
 	mux.Handle("GET /api/jobs/{job_id}", sessions.RequirePrincipal(h.job))
 	mux.Handle("POST /api/jobs/{job_id}/cancel", sessions.RequirePrincipal(h.cancelJob))
 	mux.Handle("POST /api/documents/{document_id}/render", sessions.RequirePrincipal(h.render))
+	mux.Handle("POST /api/documents/{document_id}/reocr", sessions.RequirePrincipal(h.reocr))
+	mux.Handle("POST /api/documents/{document_id}/ocr-results/{result_id}/adopt", sessions.RequirePrincipal(h.adoptOCRResult))
+	mux.Handle("POST /api/documents/{document_id}/ocr-results/{result_id}/discard", sessions.RequirePrincipal(h.discardOCRResult))
 	return mux
 }
 func write(w http.ResponseWriter, status int, value any) {

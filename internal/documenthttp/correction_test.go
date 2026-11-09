@@ -131,12 +131,13 @@ func correctionMemory(t *testing.T) *correctionRecords {
 }
 
 type correctionRecords struct {
-	owner      string
-	projection documents.Projection
-	reference  documents.ArtifactReference
-	correction documents.CorrectionRequest
-	failure    error
-	calls      int
+	*documents.Store // unrelated result commands are never used by correction tests
+	owner            string
+	projection       documents.Projection
+	reference        documents.ArtifactReference
+	correction       documents.CorrectionRequest
+	failure          error
+	calls            int
 }
 
 func (r *correctionRecords) allow(owner string) error {

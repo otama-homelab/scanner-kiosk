@@ -79,6 +79,12 @@ func uniqueJSON(data []byte) error {
 	return nil
 }
 func (h *Handler) render(w http.ResponseWriter, r *http.Request, p websession.Principal) {
+	h.renderCommand(w, r, p, false)
+}
+func (h *Handler) reocr(w http.ResponseWriter, r *http.Request, p websession.Principal) {
+	h.renderCommand(w, r, p, true)
+}
+func (h *Handler) renderCommand(w http.ResponseWriter, r *http.Request, p websession.Principal, reocr bool) {
 	key, match := r.Header.Get("Idempotency-Key"), r.Header.Get("If-Match")
 	if r.URL.RawQuery != "" || len(r.Header.Values("Idempotency-Key")) != 1 || !opaque(key) || len(r.Header.Values("If-Match")) != 1 || len(match) < 3 || match[0] != '"' || match[len(match)-1] != '"' {
 		failure(w, documents.ErrInvalid)
@@ -144,6 +150,10 @@ func (h *Handler) render(w http.ResponseWriter, r *http.Request, p websession.Pr
 		}
 	}
 	settings := documents.RenderSettings{Format: input.Format, OCR: documents.RenderOCR{Enabled: *input.OCR.Enabled, ProviderID: input.OCR.ProviderID, ModelID: input.OCR.ModelID, Languages: input.OCR.Languages, QualityPreset: input.OCR.QualityPreset}}
+	if reocr && (settings.Format != "pdf" || !settings.OCR.Enabled) {
+		failure(w, documents.ErrInvalid)
+		return
+	}
 	if input.PDFEncoding != nil {
 		if *input.PDFEncoding != "jpeg" && *input.PDFEncoding != "lossless" {
 			failure(w, documents.ErrInvalid)
@@ -156,7 +166,7 @@ func (h *Handler) render(w http.ResponseWriter, r *http.Request, p websession.Pr
 		failure(w, documents.ErrInvalid)
 		return
 	}
-	admission, err := h.renderService.Admit(r.Context(), p.ID, documents.RenderAdmission{DocumentID: document, Revision: revision, IdempotencyKey: key, Settings: settings})
+	admission, err := h.renderService.Admit(r.Context(), p.ID, documents.RenderAdmission{DocumentID: document, Revision: revision, IdempotencyKey: key, Settings: settings, ReOCR: reocr})
 	if err != nil {
 		failure(w, err)
 		return

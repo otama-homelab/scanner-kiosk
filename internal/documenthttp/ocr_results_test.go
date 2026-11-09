@@ -10,7 +10,9 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -39,6 +41,7 @@ type ocrHTTPFixture struct {
 	server      *httptest.Server
 	cookie      *http.Cookie
 	owner, root string
+	offset      atomic.Int64
 }
 
 func (f *ocrHTTPFixture) exec(db *sql.DB, q string, args ...any) {
@@ -100,7 +103,7 @@ func newOCRHTTP(t *testing.T) *ocrHTTPFixture {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { f.docs.Close() })
-	f.store, err = documents.New(f.state, f.docs, time.Now, func(context.Context) (int64, error) { return 1 << 40, nil })
+	f.store, err = documents.New(f.state, f.docs, func() time.Time { return time.Now().Add(time.Duration(f.offset.Load())) }, func(context.Context) (int64, error) { return 1 << 40, nil })
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -178,11 +181,83 @@ func TestReOCRHTTPCommands(t *testing.T) {
 		t.Run(op, func(t *testing.T) {
 			g := newOCRHTTP(t)
 			code, _, b := g.call("POST", "/api/documents/"+documentID+"/ocr-results/"+resultID+"/"+op, `{}`, g.cookie, nil)
+			if code != 409 {
+				t.Fatalf("unknown candidate: want 409 got %d %s", code, b)
+			}
+			bundle := g.candidate()
+			headers := func(h http.Header) {
+				h.Set("If-Match", strconv.Quote(strconv.FormatInt(bundle.InputRevision, 10)))
+				h.Set("Idempotency-Key", "request_dispose_http001")
+			}
+			path := "/api/documents/" + documentID + "/ocr-results/" + resultID + "/" + op
+			for _, bad := range []string{`{"page_id":"partial"}`, `{"x":1,"x":2}`, `null`, `[]`, strings.Repeat(" ", 65537)} {
+				code, _, _ := g.call("POST", path, bad, g.cookie, headers)
+				if code != 400 && code != 413 {
+					t.Fatal("malformed disposition", code)
+				}
+			}
+			code, _, _ = g.call("POST", path, `{}`, g.cookie, func(h http.Header) { headers(h); h.Set("If-Match", `"99"`) })
+			if code != 412 {
+				t.Fatal("stale disposition", code)
+			}
+			other := g.login()
+			code, _, _ = g.call("POST", path, `{}`, other, headers)
 			if code != 404 {
-				t.Fatalf("unknown result: want 404 got %d %s", code, b)
+				t.Fatal("foreign disposition", code)
+			}
+			code, h, b := g.call("POST", path, `{}`, g.cookie, headers)
+			if code != 200 {
+				t.Fatal("candidate disposition", code, string(b))
+			}
+			var projection documents.Projection
+			json.Unmarshal(b, &projection)
+			if h.Get("ETag") != strconv.Quote(strconv.FormatInt(projection.Revision, 10)) {
+				t.Fatal("ETag", h)
+			}
+			code, _, replay := g.call("POST", path, `{}`, g.cookie, headers)
+			if code != 200 || string(replay) != string(b) {
+				t.Fatal("lost response replay", code, string(replay))
+			}
+			code, _, _ = g.call("POST", strings.Replace(path, resultID, "ocr_result_other001", 1), `{}`, g.cookie, headers)
+			if code != 409 {
+				t.Fatal("changed disposition replay", code)
+			}
+			var state string
+			g.docs.QueryRow("SELECT state FROM ocr_results WHERE id=?", resultID).Scan(&state)
+			if state != map[string]string{"adopt": "adopted", "discard": "discarded"}[op] {
+				t.Fatal(state)
 			}
 		})
 	}
+}
+
+func (f *ocrHTTPFixture) candidate() documents.OCRResultBundle {
+	code, _, body := f.call("POST", "/api/documents/"+documentID+"/reocr", reocrBody, f.cookie, nil)
+	if code != 202 {
+		f.t.Fatal("candidate admission", code, string(body))
+	}
+	var job documents.JobProjection
+	json.Unmarshal(body, &job)
+	claimed, err := f.store.ClaimExport(context.Background(), f.owner, job.ID, "runner_http_0001")
+	if err != nil {
+		f.t.Fatal(err)
+	}
+	var snapshot documents.RenderSnapshot
+	if err = json.Unmarshal([]byte(claimed.Configuration), &snapshot); err != nil {
+		f.t.Fatal(err)
+	}
+	makeArtifact := func(id, path, media string, data []byte) documents.ArtifactRecord {
+		if err := os.WriteFile(filepath.Join(f.root, path), data, 0600); err != nil {
+			f.t.Fatal(err)
+		}
+		return documents.ArtifactRecord{ID: id, RelativePath: path, MediaType: media, Size: int64(len(data)), SHA256: sha256.Sum256(data)}
+	}
+	originalHash := sha256.Sum256([]byte("synthetic source"))
+	b := documents.OCRResultBundle{ID: resultID, JobID: job.ID, InputRevision: job.InputRevision, Settings: snapshot.Settings, Output: makeArtifact("output_http_0001", "output.pdf", "application/pdf", []byte("synthetic PDF")), Pages: []documents.OCRResultPage{{PageID: pageID, OriginalArtifactID: "original_http_001", EffectiveArtifactID: "original_http_001", OriginalSHA256: originalHash, EffectiveSHA256: originalHash, SourceType: "scan", PixelWidth: 32, PixelHeight: 16, PDFTextOrigin: "recognition", Text: makeArtifact("text_http_000001", "text.txt", "text/plain", []byte("<script>alert('OCR')</script> 日本語"))}}}
+	if err = f.store.CompleteOCRResult(context.Background(), f.owner, job.ID, "runner_http_0001", job.InputRevision, b); err != nil {
+		f.t.Fatal("complete candidate", err)
+	}
+	return b
 }
 func TestReOCRHTTPRejectsMalformed(t *testing.T) {
 	f := newOCRHTTP(t)
@@ -220,7 +295,7 @@ func TestReOCRHTTPRejectsMalformed(t *testing.T) {
 	if code != 404 {
 		t.Fatal("foreign", code)
 	}
-	f.exec(f.docs, "UPDATE documents SET expires_at_ms=? WHERE id=?", time.Now().Add(-time.Second).UnixMilli(), documentID)
+	f.offset.Store(int64(2 * time.Hour))
 	code, _, _ = f.call("POST", path, reocrBody, f.cookie, nil)
 	if code != 404 {
 		t.Fatal("expired", code)
