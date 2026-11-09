@@ -29,12 +29,17 @@ const key = "fixture-service-key-00000000000000000000"
 const modelVersion = "sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 type engine struct {
-	run   func(context.Context, ocrplugin.Request, ocrplugin.Access) (ocrplugin.Result, error)
-	calls atomic.Int32
+	run        func(context.Context, ocrplugin.Request, ocrplugin.Access) (ocrplugin.Result, error)
+	calls      atomic.Int32
+	positioned bool
 }
 
 func (e *engine) Capabilities(context.Context) (ocrplugin.Capabilities, error) {
-	return ocrplugin.Capabilities{APIVersion: 1, ID: "tesseract", Name: "Tesseract", Version: "1", Models: []ocrplugin.Model{{ID: "installed", Name: "Installed dictionaries", Version: modelVersion, Languages: []string{"ja", "en"}, QualityPresets: []string{"auto", "block"}, Outputs: []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PDFTextLayer}, MaxPages: 5, MaxPagePixels: 10000}}}, nil
+	outputs := []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PDFTextLayer}
+	if e.positioned {
+		outputs = append(outputs, ocrplugin.PositionedText)
+	}
+	return ocrplugin.Capabilities{APIVersion: 1, ID: "tesseract", Name: "Tesseract", Version: "1", Models: []ocrplugin.Model{{ID: "installed", Name: "Installed dictionaries", Version: modelVersion, Languages: []string{"ja", "en"}, QualityPresets: []string{"auto", "block"}, Outputs: outputs, MaxPages: 5, MaxPagePixels: 10000}}}, nil
 }
 func (e *engine) Run(ctx context.Context, r ocrplugin.Request, a ocrplugin.Access) (ocrplugin.Result, error) {
 	e.calls.Add(1)
@@ -365,6 +370,122 @@ func TestNativeAdapterAcrossHTTPPreservesBoundaries(t *testing.T) {
 		if len(files) != 0 {
 			t.Fatal("native/API retained input, stderr or text")
 		}
+	}
+}
+
+func TestAPIPositionedRoundTrip(t *testing.T) {
+	opts, work := nativeFixture(t)
+	script := "#!/bin/sh\nprintf 'level\\tpage_num\\tblock_num\\tpar_num\\tline_num\\tword_num\\tleft\\ttop\\twidth\\theight\\tconf\\ttext\\n1\\t1\\t0\\t0\\t0\\t0\\t0\\t0\\t40\\t50\\t-1\\t\\n2\\t1\\t1\\t0\\t0\\t0\\t2\\t3\\t20\\t10\\t-1\\t\\n3\\t1\\t1\\t1\\t0\\t0\\t2\\t3\\t20\\t10\\t-1\\t\\n4\\t1\\t1\\t1\\t1\\t0\\t2\\t3\\t20\\t10\\t-1\\t\\n5\\t1\\t1\\t1\\t1\\t1\\t2\\t3\\t20\\t10\\t95\\t日本語\\n' > \"$2.tsv\"\n"
+	if err := os.WriteFile(opts.Binary, []byte(script), 0700); err != nil {
+		t.Fatal(err)
+	}
+	p, err := tesseract.New(opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	h, err := NewHandler(HandlerOptions{Provider: p, APIKey: key, WorkRoot: work, Limits: limits()})
+	if err != nil {
+		t.Fatalf("positioned native provider must cross service boundary: %v", err)
+	}
+	s := httptest.NewServer(h)
+	defer s.Close()
+	c, err := NewClient(context.Background(), ClientOptions{Settings: config.Tesseract{Endpoint: s.URL, AllowInsecureHTTP: true, ProcessingDestination: "Household OCR"}, APIKey: key, Limits: limits()})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	r := job(c)
+	r.Output = ocrplugin.PositionedText
+	r.Pages = append(r.Pages, ocrplugin.InputPage{ID: "second-private-page", ArtifactID: "second-private-input", Width: 40, Height: 50, DPI: 300})
+	a := &access{input: bitmap(t)}
+	result, err := c.Run(context.Background(), r, a)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result.Pages) != 2 || len(a.outputs) != 2 || result.ModelVersion != r.ModelVersion {
+		t.Fatal("incorrect positioned coverage")
+	}
+	for i, out := range a.outputs {
+		var page ocrplugin.PositionedPage
+		if !out.closed || json.Unmarshal(out.Bytes(), &page) != nil || ocrplugin.ValidatePositionedPage(page, r.Pages[i]) != nil || len(page.Spans) != 1 || page.Spans[0].Text != "日本語" || page.Spans[0].Box.X != 2 || page.Spans[0].Confidence == nil || *page.Spans[0].Confidence != .95 || result.Pages[i].PageID != r.Pages[i].ID {
+			t.Fatal("positioned bytes or local identity lost", out.String())
+		}
+	}
+	for _, dir := range []string{opts.WorkRoot, work} {
+		files, _ := os.ReadDir(dir)
+		if len(files) != 0 {
+			t.Fatal("positioned request retained data")
+		}
+	}
+}
+
+func TestAPIPositionedRejectsMalformed(t *testing.T) {
+	valid := `{"page_id":"page","width":40,"height":50,"spans":[{"text":"日本語","box":{"x":2,"y":3,"width":20,"height":10}}]}`
+	for _, tc := range []struct{ name, raw string }{
+		{"foreign-page", strings.Replace(valid, `"page"`, `"private-page"`, 1)},
+		{"wrong-geometry", strings.Replace(valid, `"width":40`, `"width":41`, 1)},
+		{"outside", strings.Replace(valid, `"x":2`, `"x":39`, 1)},
+		{"unknown", strings.TrimSuffix(valid, "}") + `,"path":"/private/path"}`},
+		{"trailing", valid + ` {}`},
+		{"invalid-utf8", strings.Replace(valid, "日本語", string([]byte{255}), 1)},
+		{"missing-spans", `{"page_id":"page","width":40,"height":50}`},
+		{"oversize", strings.Repeat("x", (1<<20)+1)},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			e := &engine{positioned: true, run: func(ctx context.Context, r ocrplugin.Request, a ocrplugin.Access) (ocrplugin.Result, error) {
+				o, err := a.CreateOutput(ctx, r.Output)
+				if err != nil {
+					return ocrplugin.Result{}, err
+				}
+				_, err = o.Write([]byte(tc.raw))
+				if err != nil {
+					return ocrplugin.Result{}, err
+				}
+				if err = o.Close(); err != nil {
+					return ocrplugin.Result{}, err
+				}
+				return ocrplugin.Result{ModelVersion: r.ModelVersion, Pages: []ocrplugin.PageResult{{PageID: "page", ArtifactID: o.Reference(), Kind: r.Output}}}, nil
+			}}
+			c, _, _ := setup(t, e)
+			r := job(c)
+			r.Output = ocrplugin.PositionedText
+			a := &access{input: bitmap(t)}
+			if _, err := c.Run(context.Background(), r, a); err == nil || len(a.outputs) != 0 || strings.Contains(err.Error(), "private") {
+				t.Fatal("malformed result published or leaked", err)
+			}
+		})
+	}
+}
+
+func TestAPIPositionedWrongType(t *testing.T) {
+	for _, kind := range []string{"application/pdf", "text/plain; charset=utf-8", "application/json; charset=utf-8"} {
+		t.Run(kind, func(t *testing.T) {
+			e := &engine{positioned: true}
+			var posts atomic.Int32
+			s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.Method == "GET" {
+					caps, _ := e.Capabilities(r.Context())
+					json.NewEncoder(w).Encode(caps)
+					return
+				}
+				posts.Add(1)
+				w.Header().Set("Content-Type", kind)
+				w.Header().Set("X-OCR-Model-Version", modelVersion)
+				io.WriteString(w, `{"page_id":"page","width":40,"height":50,"spans":[]}`)
+			}))
+			defer s.Close()
+			c, err := NewClient(context.Background(), ClientOptions{Settings: config.Tesseract{Endpoint: s.URL, AllowInsecureHTTP: true, ProcessingDestination: "Household OCR"}, APIKey: key, Limits: limits()})
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer c.Close()
+			r := job(c)
+			r.Output = ocrplugin.PositionedText
+			a := &access{input: bitmap(t)}
+			if _, err = c.Run(context.Background(), r, a); err == nil || len(a.outputs) != 0 || posts.Load() != 1 {
+				t.Fatal("wrong media type accepted or retried", err)
+			}
+		})
 	}
 }
 
