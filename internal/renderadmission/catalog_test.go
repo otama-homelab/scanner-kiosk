@@ -27,7 +27,7 @@ func TestCatalogPinsExactVersionAndExplicitDefault(t *testing.T) {
 	source := catalogFixture()
 	resolver := CatalogResolver{Source: catalogSource{snapshot: source}, Now: func() time.Time { return time.UnixMilli(2000) }}
 	result, err := resolver.ResolveOCR(context.Background(), selection(), false)
-	if err != nil || result.ModelVersion != "model-v2" || result.QualityPreset != "standard" {
+	if err != nil || result.ModelVersion != "model-v2" || result.QualityPreset != "standard" || result.Output != ocrplugin.PDFTextLayer {
 		t.Fatal(result, err)
 	}
 	request := selection()
@@ -36,6 +36,63 @@ func TestCatalogPinsExactVersionAndExplicitDefault(t *testing.T) {
 	if err != nil || result.QualityPreset != "fast" {
 		t.Fatal("explicit preset lost", result, err)
 	}
+	t.Run("no substitution or probing", func(t *testing.T) {
+		for _, mode := range []string{"provider", "model", "version", "output", "unavailable"} {
+			t.Run(mode, func(t *testing.T) {
+				snapshot := catalogFixture()
+				alternative := catalogFixture().Providers[0]
+				alternative.ID = "alternative"
+				snapshot.Providers = append(snapshot.Providers, alternative)
+				request := selection()
+				want := ErrUnsupported
+				source := &countedCatalogSource{snapshot: snapshot}
+				switch mode {
+				case "provider":
+					request.ProviderID = "absent"
+				case "model":
+					request.ModelID = "absent"
+				case "version":
+					request.ModelVersion = "browser-pin"
+				case "output":
+					snapshot.Providers[0].Models[0].Outputs = []ocrplugin.OutputKind{ocrplugin.Text}
+				case "unavailable":
+					source.err = errors.New("private endpoint credential")
+					want = ErrProviderUnavailable
+				}
+				source.snapshot = snapshot
+				resolver := CatalogResolver{Source: source, Now: func() time.Time { return time.UnixMilli(2000) }}
+				if _, err := resolver.ResolveOCR(context.Background(), request, false); !errors.Is(err, want) || source.reads != 1 {
+					t.Fatal("selection substituted or retried", err, source.reads)
+				}
+			})
+		}
+	})
+	t.Run("plain save and replay ignore optional outage", func(t *testing.T) {
+		source := &countedCatalogSource{err: errors.New("optional provider offline")}
+		record := &records{}
+		service := Service{Records: record, Resolver: &CatalogResolver{Source: source, Now: time.Now}}
+		request := documents.RenderAdmission{Settings: documents.RenderSettings{Format: "pdf"}}
+		first, err := service.Admit(context.Background(), "owner", request)
+		if err != nil || record.admitted != 1 || record.request.Settings.OCR.Enabled || source.reads != 0 {
+			t.Fatal("plain save depended on OCR", err)
+		}
+		record.found, record.previous = true, first
+		again, err := service.Admit(context.Background(), "owner", request)
+		if err != nil || again.JobID != first.JobID || record.admitted != 1 || source.reads != 0 {
+			t.Fatal("plain save replay depended on OCR", err)
+		}
+	})
+}
+
+type countedCatalogSource struct {
+	snapshot CatalogSnapshot
+	err      error
+	reads    int
+}
+
+func (s *countedCatalogSource) ReadOCRCatalog(context.Context) (CatalogSnapshot, error) {
+	s.reads++
+	return s.snapshot, s.err
 }
 
 func TestReOCRCatalogPinsOutput(t *testing.T) {
