@@ -3,26 +3,170 @@ package paperless
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"strings"
 	"sync/atomic"
 	"testing"
+	"time"
 )
 
 func TestPaperlessHealthContract(t *testing.T) {
-	client, calls := testClient(t, func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, `{"documents":"https://untrusted.invalid/","tasks":"https://untrusted.invalid/"}`)
-	})
-	if !reflect.ValueOf(client).MethodByName("Health").IsValid() {
-		t.Fatal("fixed adapter has no explicit read-only health operation")
+	const routes = `{"documents":"https://untrusted.invalid/private-documents/","tasks":"https://untrusted.invalid/private-tasks/"}`
+	for _, tc := range []struct {
+		name, body, media, version, api string
+		code                            int
+		want                            HealthStatus
+	}{
+		{"healthy", routes, "application/json", "3.4.2", "10", 200, HealthHealthy},
+		{"unauthorized", `{"detail":"synthetic-token private-content"}`, "application/json", "3.4.2", "10", 401, HealthUnauthorized},
+		{"forbidden", "private-content", "text/html", "3.4.2", "10", 403, HealthForbidden},
+		{"redirect", routes, "application/json", "3.4.2", "10", 302, HealthRedirect},
+		{"server error", routes, "application/json", "3.4.2", "10", 503, HealthUnavailable},
+		{"wrong media", routes, "text/html", "3.4.2", "10", 200, HealthIncompatible},
+		{"wrong version", routes, "application/json", "3.4.3", "10", 200, HealthIncompatible},
+		{"wrong api", routes, "application/json", "3.4.2", "9", 200, HealthIncompatible},
+		{"no auth version", routes, "application/json", "", "", 200, HealthIncompatible},
+		{"list schema", `[]`, "application/json", "3.4.2", "10", 200, HealthIncompatible},
+		{"null", `null`, "application/json", "3.4.2", "10", 200, HealthIncompatible},
+		{"empty schema", `{}`, "application/json", "3.4.2", "10", 200, HealthIncompatible},
+		{"wrong field", `{"documents":42,"tasks":"private-content"}`, "application/json", "3.4.2", "10", 200, HealthIncompatible},
+		{"trailing", routes + ` {}`, "application/json", "3.4.2", "10", 200, HealthIncompatible},
+		{"oversize", `{"documents":"` + strings.Repeat("a", maxResponseBytes) + `","tasks":"x"}`, "application/json", "3.4.2", "10", 200, HealthIncompatible},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var escaped, posts atomic.Int64
+			target := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { escaped.Add(1) }))
+			defer target.Close()
+			client, calls := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+				if r.Method == "POST" {
+					posts.Add(1)
+				}
+				body, _ := io.ReadAll(r.Body)
+				if r.Method != "GET" || r.URL.Path != "/api/" || r.URL.RawQuery != "" || len(body) != 0 || r.ContentLength != 0 {
+					t.Error("health carried authority/payload", r.Method, r.URL.Path)
+				}
+				w.Header().Set("Content-Type", tc.media)
+				w.Header().Set("X-Version", tc.version)
+				w.Header().Set("X-Api-Version", tc.api)
+				w.Header().Set("Location", target.URL)
+				w.WriteHeader(tc.code)
+				fmt.Fprint(w, tc.body)
+			})
+			if calls.Load() != 0 {
+				t.Fatal("construction probed remote")
+			}
+			before := time.Now()
+			got := client.Health(context.Background())
+			after := time.Now()
+			if got.Status != tc.want || got.CheckedAt.Before(before) || got.CheckedAt.After(after) {
+				t.Fatal("wrong bounded observation", got)
+			}
+			encoded, _ := json.Marshal(got)
+			var fields map[string]any
+			if json.Unmarshal(encoded, &fields) != nil || len(fields) != 2 {
+				t.Fatal("extra health authority", string(encoded))
+			}
+			for _, private := range []string{"synthetic-token", "private-content", "untrusted.invalid", target.URL, client.base.String(), "confirmed", "accepted"} {
+				if strings.Contains(string(encoded), private) {
+					t.Fatal("remote details or delivery state leaked")
+				}
+			}
+			if calls.Load() != 1 || posts.Load() != 0 || escaped.Load() != 0 {
+				t.Fatal("health followed/replayed/uploaded", calls.Load(), posts.Load(), escaped.Load())
+			}
+			transport := client.client.Transport.(*http.Transport)
+			if transport.Proxy != nil || client.client.Timeout != 15*time.Second || transport.ResponseHeaderTimeout != 10*time.Second || transport.MaxResponseHeaderBytes != 16<<10 {
+				t.Fatal("lost direct transport bounds")
+			}
+		})
 	}
-	if calls.Load() != 0 {
-		t.Fatal("constructing client implicitly contacted remote")
+	t.Run("timeout", func(t *testing.T) {
+		client, calls := testClient(t, func(w http.ResponseWriter, r *http.Request) { <-r.Context().Done() })
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+		defer cancel()
+		if got := client.Health(ctx); got.Status != HealthTimeout {
+			t.Fatal("timeout not distinguished", got)
+		}
+		if calls.Load() != 1 {
+			t.Fatal("timeout replay", calls.Load())
+		}
+	})
+	t.Run("body timeout", func(t *testing.T) {
+		client, calls := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("X-Version", "3.4.2")
+			w.Header().Set("X-Api-Version", "10")
+			w.WriteHeader(http.StatusOK)
+			w.(http.Flusher).Flush()
+			<-r.Context().Done()
+		})
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+		defer cancel()
+		if got := client.Health(ctx); got.Status != HealthTimeout {
+			t.Fatal("body timeout not distinguished", got)
+		}
+		if calls.Load() != 1 {
+			t.Fatal("body timeout replay", calls.Load())
+		}
+	})
+	t.Run("base path", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/paperless/api/" {
+				t.Error("lost fixed base path")
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Header().Set("X-Version", "3.4.2")
+			w.Header().Set("X-Api-Version", "10")
+			fmt.Fprint(w, routes)
+		}))
+		defer server.Close()
+		client, err := New(testOptions(server.URL + "/paperless/"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer client.Close()
+		if client.Health(context.Background()).Status != HealthHealthy {
+			t.Fatal("base path health failed")
+		}
+	})
+}
+
+func TestPaperlessHealthHasNoUploadAuthority(t *testing.T) {
+	var roots, metadata, posts atomic.Int64
+	expected := sha256.Sum256([]byte("synthetic-PDF"))
+	client, calls := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "POST" {
+			posts.Add(1)
+		}
+		switch r.URL.Path {
+		case "/api/":
+			roots.Add(1)
+			w.Header().Set("X-Version", "3.4.2")
+			w.Header().Set("X-Api-Version", "10")
+			fmt.Fprint(w, `{"documents":"ignored","tasks":"ignored"}`)
+		case "/api/documents/42/metadata/":
+			metadata.Add(1)
+			fmt.Fprintf(w, `{"original_checksum":"%x"}`, expected)
+		default:
+			t.Error("health requested content/list/upload", r.URL.Path)
+		}
+	})
+	if err := client.Metadata(context.Background(), 42, expected); err != nil {
+		t.Fatal(err)
+	}
+	if roots.Load() != 0 || metadata.Load() != 1 {
+		t.Fatal("metadata implicitly probed health")
+	}
+	beforeID, beforeFingerprint := client.DestinationID(), client.ConfigFingerprint()
+	if result := client.Health(context.Background()); result.Status != HealthHealthy {
+		t.Fatal(result)
+	}
+	if roots.Load() != 1 || metadata.Load() != 1 || posts.Load() != 0 || calls.Load() != 2 || client.DestinationID() != beforeID || client.ConfigFingerprint() != beforeFingerprint {
+		t.Fatal("health acquired upload/reconciliation authority")
 	}
 }
 

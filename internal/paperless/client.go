@@ -44,6 +44,68 @@ type Task struct {
 	RelatedDocument *int64 `json:"related_document"`
 }
 
+type HealthStatus string
+
+const (
+	HealthHealthy      HealthStatus = "healthy"
+	HealthUnauthorized HealthStatus = "unauthorized"
+	HealthForbidden    HealthStatus = "forbidden"
+	HealthTimeout      HealthStatus = "timeout"
+	HealthRedirect     HealthStatus = "redirect"
+	HealthIncompatible HealthStatus = "incompatible"
+	HealthUnavailable  HealthStatus = "unavailable"
+)
+
+// HealthResult is only an observation; it carries no delivery or upload evidence.
+type HealthResult struct {
+	Status    HealthStatus `json:"status"`
+	CheckedAt time.Time    `json:"checked_at"`
+}
+
+// Health reads only the API route map, discarding all remote URLs and content.
+func (c *Client) Health(ctx context.Context) HealthResult {
+	result := HealthResult{Status: HealthUnavailable, CheckedAt: time.Now().UTC()}
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, c.endpoint(""), nil)
+	if err != nil {
+		return result
+	}
+	response, err := c.request(request)
+	if err != nil {
+		var timeout net.Error
+		if errors.Is(err, context.DeadlineExceeded) || errors.As(err, &timeout) && timeout.Timeout() {
+			result.Status = HealthTimeout
+		}
+		return result
+	}
+	defer response.Body.Close()
+	switch {
+	case response.StatusCode == http.StatusUnauthorized:
+		result.Status = HealthUnauthorized
+	case response.StatusCode == http.StatusForbidden:
+		result.Status = HealthForbidden
+	case response.StatusCode >= 300 && response.StatusCode < 400:
+		result.Status = HealthRedirect
+	case response.StatusCode == http.StatusOK:
+		result.Status = HealthIncompatible
+		// v3.4.2 middleware reports the highest supported API, not the negotiated 9.
+		if response.Header.Get("X-Version") != "3.4.2" || response.Header.Get("X-Api-Version") != "10" {
+			return result
+		}
+		var routes struct {
+			Documents string `json:"documents"`
+			Tasks     string `json:"tasks"`
+		}
+		err = readJSON(response, &routes)
+		var timeout net.Error
+		if errors.As(err, &timeout) && timeout.Timeout() {
+			result.Status = HealthTimeout
+		} else if err == nil && routes.Documents != "" && routes.Tasks != "" {
+			result.Status = HealthHealthy
+		}
+	}
+	return result
+}
+
 // CanonicalBaseURL is shared by operator configuration and the adapter boundary.
 func CanonicalBaseURL(raw string, allowHTTP bool) (string, error) {
 	u, err := url.Parse(raw)
@@ -180,19 +242,33 @@ func (c *Client) Metadata(ctx context.Context, documentID int64, expected [32]by
 	return nil
 }
 func (c *Client) do(request *http.Request, out any) error {
-	request.Header.Set("Accept", APIVersion)
-	request.Header.Set("Authorization", "Token "+c.token)
-	response, err := c.client.Do(request)
+	response, err := c.request(request)
 	if err != nil {
 		return ErrUnavailable
 	}
 	defer response.Body.Close()
+	if readJSON(response, out) != nil {
+		return ErrUnavailable
+	}
+	return nil
+}
+
+func (c *Client) request(request *http.Request) (*http.Response, error) {
+	request.Header.Set("Accept", APIVersion)
+	request.Header.Set("Authorization", "Token "+c.token)
+	return c.client.Do(request)
+}
+
+func readJSON(response *http.Response, out any) error {
 	media, _, err := mime.ParseMediaType(response.Header.Get("Content-Type"))
 	if err != nil || media != "application/json" || response.StatusCode != http.StatusOK {
 		return ErrUnavailable
 	}
 	data, err := io.ReadAll(io.LimitReader(response.Body, maxResponseBytes+1))
-	if err != nil || len(data) > maxResponseBytes {
+	if err != nil {
+		return err
+	}
+	if len(data) > maxResponseBytes {
 		return ErrUnavailable
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
