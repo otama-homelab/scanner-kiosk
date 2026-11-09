@@ -1,6 +1,12 @@
 export const messages = {
  en:{
   reocr:'Recognize text again',
+  structureCreate:'Create filename suggestion',
+  structureGenerated:'Generated filename suggestion',
+  structureHelp:'Derived from the selected OCR text; not a transcript or verified fact. Your saved filename stays unchanged.',
+  structureSource:'Show source',
+  structureItem:'Item',
+  structureUnavailable:'The matching source is unavailable. Select a source item again or reload the document. Your saved file is still available.',
   reocrAdopt:'Adopt for whole document',
   reocrDiscard:'Discard candidate',
   reocrCompare:'Compare recognition results',
@@ -187,6 +193,12 @@ export const messages = {
  },
  ja:{
   reocr:'文字をもう一度認識',
+  structureCreate:'ファイル名の候補を作る',
+  structureGenerated:'生成したファイル名の候補',
+  structureHelp:'選んだ認識文字から作成した候補です。認識文字の転記や確認済みの事実ではありません。保存時のファイル名は変わりません。',
+  structureSource:'出典を表示',
+  structureItem:'項目',
+  structureUnavailable:'対応する出典を確認できません。項目を選び直すか文書を再読み込みしてください。保存済みファイルは引き続き使えます。',
   reocrAdopt:'文書全体に採用',
   reocrDiscard:'候補を破棄',
   reocrCompare:'認識結果を比較',
