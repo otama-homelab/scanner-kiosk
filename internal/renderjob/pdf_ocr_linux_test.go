@@ -23,7 +23,7 @@ func (*candidateRecords) PDFRasterCommand() PDFRasterCommand {
 	return PDFRasterCommand{Path: filepath.Join(root, "lib/ld-musl-x86_64.so.1"), Args: []string{"--library-path", filepath.Join(root, "lib") + ":" + filepath.Join(root, "usr/lib"), filepath.Join(root, "usr/bin/pdftoppm")}}
 }
 
-func pdfCandidateFixture(t *testing.T, wrongGeometry ...bool) (*candidateRecords, string, string, pdfassemble.Options, documents.Export) {
+func pdfCandidateFixture(t *testing.T) (*candidateRecords, string, string, pdfassemble.Options, documents.Export) {
 	t.Helper()
 	runtimeRoot := os.Getenv("SCANNER_TEST_PDF_RUNTIME")
 	binary, e := os.ReadFile(filepath.Join(runtimeRoot, "usr/bin/pdftoppm"))
@@ -39,9 +39,6 @@ func pdfCandidateFixture(t *testing.T, wrongGeometry ...bool) (*candidateRecords
 	if e != nil {
 		t.Fatal(e)
 	}
-	if len(wrongGeometry) > 0 && wrongGeometry[0] {
-		sqlExec(t, db, "UPDATE pages SET pdf_width_points=81 WHERE source_type='pdf'")
-	}
 	a, e := r.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: document, Revision: 2, IdempotencyKey: "request_pdfocr_0001", ReOCR: true, ResolvedOutput: ocrplugin.PositionedText, Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, ProviderID: "testocr", ModelID: "installed", ModelVersion: "test-version", Languages: []string{"en"}, QualityPreset: "auto"}}, ReserveBytes: 1 << 20}, documents.AdmissionLimits{UserMaxBytes: 4 << 20, GlobalMaxBytes: 8 << 20, JobMaxBytes: 1 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
 	if e != nil {
 		t.Fatal(e)
@@ -53,9 +50,16 @@ func pdfCandidateFixture(t *testing.T, wrongGeometry ...bool) (*candidateRecords
 	return &candidateRecords{faultRecords: r, provider: &candidateProvider{kind: ocrplugin.PositionedText}, db: db}, root, a.JobID, o, old
 }
 
+type wrongPDFGeometryRecords struct {*candidateRecords}
+func (r wrongPDFGeometryRecords) LoadRenderWork(ctx context.Context,owner,job,runner string)(documents.RenderWork,error){
+	w,e:=r.candidateRecords.LoadRenderWork(ctx,owner,job,runner)
+	if e==nil {w.Snapshot.Pages[1].PDFWidthPoints++}
+	return w,e
+}
+
 func TestReOCRPDFExistingTextPolicy(t *testing.T) {
-	r, root, job, o, old := pdfCandidateFixture(t, true)
-	p, e := Prepare(context.Background(), r, root, owner, job, runner, o)
+	r, root, job, o, old := pdfCandidateFixture(t)
+	p, e := Prepare(context.Background(), wrongPDFGeometryRecords{r}, root, owner, job, runner, o)
 	if e == nil {
 		p.Close()
 		t.Fatal("actual PDF geometry must bind the admitted source geometry")

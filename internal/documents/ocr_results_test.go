@@ -107,13 +107,22 @@ func TestReOCRCandidateCompletion(t *testing.T) {
 }
 
 func TestReOCRPDFExistingTextPolicy(t *testing.T) {
-	_,b:=ocrCandidateFixture(t)
-	p:=&b.Pages[0]
-	p.SourceType="pdf";p.PDFWidthPoints=80;p.PDFHeightPoints=100;p.PixelWidth=334;p.PixelHeight=417;p.PDFTextOrigin="retained-source"
-	p.PDFRaster=&PDFRasterMapping{DPI:300,MediaBox:[4]float64{0,0,80,100},CropBox:[4]float64{0,0,80,100},ScaleX:334.0/80,ScaleY:417.0/100}
-	if _,_,_,e:=normalizeOCRBundle(b);e!=nil{t.Fatal("valid retained-source mapping rejected",e)}
-	p.PDFWidthPoints=81
-	if _,_,_,e:=normalizeOCRBundle(b);e==nil{t.Fatal("raster mapping did not bind original point geometry")}
+	_, b := ocrCandidateFixture(t)
+	p := &b.Pages[0]
+	p.SourceType = "pdf"
+	p.PDFWidthPoints = 80
+	p.PDFHeightPoints = 100
+	p.PixelWidth = 334
+	p.PixelHeight = 417
+	p.PDFTextOrigin = "retained-source"
+	p.PDFRaster = &PDFRasterMapping{DPI: 300, MediaBox: [4]float64{0, 0, 80, 100}, CropBox: [4]float64{0, 0, 80, 100}, ScaleX: 334.0 / 80, ScaleY: 417.0 / 100}
+	if _, _, _, e := normalizeOCRBundle(b); e != nil {
+		t.Fatal("valid retained-source mapping rejected", e)
+	}
+	p.PDFWidthPoints = 81
+	if _, _, _, e := normalizeOCRBundle(b); e == nil {
+		t.Fatal("raster mapping did not bind original point geometry")
+	}
 }
 
 func TestReOCRCandidateBundleAtomicity(t *testing.T) {

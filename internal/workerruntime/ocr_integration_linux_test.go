@@ -207,7 +207,7 @@ func assertRuntimePDFSources(t *testing.T, root string, b documents.OCRResultBun
 		t.Fatal("independent image structure", e)
 	}
 	// The final imported pages must remain vectors/text, not recognition images.
-	if len(b.Pages) == 2 && len(strings.Fields(string(images))) > 16 {
+	if len(b.Pages) == 2 && len(strings.Split(strings.TrimSpace(string(images)),"\n")) != 2 {
 		t.Fatalf("PDF-only candidate contains replacement raster: %s", images)
 	}
 }
