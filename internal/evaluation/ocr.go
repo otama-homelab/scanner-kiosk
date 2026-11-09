@@ -2,6 +2,7 @@ package evaluation
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"math"
@@ -60,6 +61,7 @@ type OCRComparisonRow struct {
 	CandidateVersion      string                `json:"candidate_version"`
 	CandidateConfigSHA256 string                `json:"candidate_config_sha256"`
 	ExecutableSHA256      string                `json:"executable_sha256"`
+	PDFValidation         *ValidationReceipt    `json:"pdf_validation,omitempty"`
 	PDFStatus             string                `json:"pdf_status"`
 	LicenseStatus         string                `json:"license_status"`
 	ResourceStatus        string                `json:"resource_status"`
@@ -517,6 +519,7 @@ func analyzeOCRRun(root *os.Root, ref OCRFileRef, pair OCRManifestPair, oracle O
 	texts := map[string]string{}
 	positions := map[string]ocrplugin.PositionedPage{}
 	pdfFound := false
+	var pdfBytes []byte
 	for _, artifact := range artifacts {
 		if !ValidID(artifact.ID) || seen[artifact.ID] || !validHash(artifact.SHA256) || artifact.Bytes < 0 || artifact.Bytes > maxArtifactBytes || !ValidRole(artifact.Role) || artifact.Role != RoleOriginal && !validRoleMediaType(artifact.Role, artifact.MediaType) {
 			return row, ErrInvalid
@@ -575,6 +578,7 @@ func analyzeOCRRun(root *os.Root, ref OCRFileRef, pair OCRManifestPair, oracle O
 				return row, ErrInvalid
 			}
 			pdfFound = true
+			pdfBytes = body
 		}
 	}
 	if !pdfFound || len(texts) != len(oracle.Pages) || len(positions) != len(oracle.Pages) || len(catalog.Validation.Pages) != len(oracle.Pages) {
@@ -592,6 +596,46 @@ func analyzeOCRRun(root *os.Root, ref OCRFileRef, pair OCRManifestPair, oracle O
 		}
 		row.Pages = append(row.Pages, q)
 	}
+	// Reopen only staged, hash-verified bytes, never a candidate-supplied receipt.
+	work, err := os.MkdirTemp("", "scanner-ocr-proof-")
+	if err != nil {
+		return row, ErrUnavailable
+	}
+	defer os.RemoveAll(work)
+	pdfPath := filepath.Join(work, "output.pdf")
+	if os.WriteFile(pdfPath, pdfBytes, 0600) != nil {
+		return row, ErrUnavailable
+	}
+	var options PDFValidationOptions
+	for i, page := range oracle.Pages {
+		source, err := readOCREvidence(root, pair.PageSources[i], maxArtifactBytes)
+		if err != nil {
+			return row, err
+		}
+		sourcePath := filepath.Join(work, page.PageID+".image")
+		if os.WriteFile(sourcePath, source, 0600) != nil {
+			return row, ErrUnavailable
+		}
+		// Recognizer errors are measured against ground truth separately above.
+		// Here prove that the PDF faithfully carries the actual recognized spans.
+		recognized := page
+		recognized.Spans = nil
+		pos := positions[page.PageID]
+		for j, span := range pos.Spans {
+			recognized.Spans = append(recognized.Spans, OCROracleSpan{Text: span.Text, Order: j, Box: [4]float64{span.Box.X, span.Box.Y, span.Box.Width, span.Box.Height}})
+		}
+		recognized.Blank = len(recognized.Spans) == 0
+		options.PageOracles = append(options.PageOracles, PDFPageOracle{OCR: recognized, SourceImagePath: sourcePath})
+	}
+	proof, proofErr := ValidatePDF(context.Background(), pdfPath, pageIDsOCR(oracle.Pages), nil, options)
+	if proof.Status == "unavailable" {
+		return row, ErrUnavailable
+	}
+	if proofErr != nil && proof.Status != "failed" {
+		return row, proofErr
+	}
+	row.PDFStatus = proof.Status
+	row.PDFValidation = &proof
 	return row, nil
 }
 func pageIDsOCR(pages []OCRPageOracle) []string {

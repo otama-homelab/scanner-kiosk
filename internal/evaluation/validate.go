@@ -10,6 +10,7 @@ import (
 	"image"
 	"image/draw"
 	"io"
+	"math"
 	"os"
 	"path"
 	"path/filepath"
@@ -20,6 +21,8 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"golang.org/x/text/unicode/norm"
 
 	"scanner-kiosk/internal/processrun"
 )
@@ -66,7 +69,18 @@ type ValidationReceipt struct {
 	Checks       []ValidationCheck `json:"checks"`
 }
 
+// PDFPageOracle binds a PDF page to its effective OCR input bitmap and recognized
+// content. A zero MediaBox accepts the actual finite positive page dimensions;
+// a nonzero box requires a match within Poppler reporting precision (0.02pt).
+type PDFPageOracle struct {
+	OCR             OCRPageOracle `json:"ocr"`
+	SourceImagePath string        `json:"source_image_path"`
+	MediaBox        [4]float64    `json:"media_box"`
+	Rotation        int           `json:"rotation"`
+}
+
 type PDFValidationOptions struct {
+	PageOracles       []PDFPageOracle `json:"page_oracles,omitempty"`
 	OriginalImagePath string
 	ExpectLossless    bool
 }
@@ -95,6 +109,42 @@ func validatePDF(ctx context.Context, pdfPath string, pageIDs, expectedText []st
 			filepath.Clean(options.OriginalImagePath) != options.OriginalImagePath) {
 		receipt.FailureClass = "invalid-input"
 		return receipt, ErrInvalid
+	}
+	if len(options.PageOracles) != 0 {
+		if len(options.PageOracles) != len(pageIDs) || options.OriginalImagePath != "" {
+			return validationFailure(receipt, "page-oracle", "invalid-input")
+		}
+		for i, expected := range options.PageOracles {
+			if validateOCROraclePage(expected.OCR) != nil || expected.OCR.PageID != pageIDs[i] || !filepath.IsAbs(expected.SourceImagePath) || filepath.Clean(expected.SourceImagePath) != expected.SourceImagePath {
+				return validationFailure(receipt, "page-oracle", "invalid-input")
+			}
+			hash, err := hashRegularFile(expected.SourceImagePath, maxArtifactBytes)
+			if err != nil || hash != expected.OCR.SourceSHA256 {
+				return validationFailure(receipt, "source-image-identity", "source-mismatch")
+			}
+			f, err := os.Open(expected.SourceImagePath)
+			if err != nil {
+				return validationFailure(receipt, "source-image-geometry", "source-mismatch")
+			}
+			config, _, err := image.DecodeConfig(f)
+			f.Close()
+			if err != nil || config.Width != expected.OCR.Width || config.Height != expected.OCR.Height {
+				return validationFailure(receipt, "source-image-geometry", "source-mismatch")
+			}
+			if expected.Rotation != 0 && expected.Rotation != 90 && expected.Rotation != 180 && expected.Rotation != 270 {
+				return validationFailure(receipt, "page-oracle", "invalid-input")
+			}
+			if expected.MediaBox != [4]float64{} {
+				for _, v := range expected.MediaBox {
+					if math.IsNaN(v) || math.IsInf(v, 0) {
+						return validationFailure(receipt, "page-oracle", "invalid-input")
+					}
+				}
+				if expected.MediaBox[2] <= expected.MediaBox[0] || expected.MediaBox[3] <= expected.MediaBox[1] {
+					return validationFailure(receipt, "page-oracle", "invalid-input")
+				}
+			}
+		}
 	}
 	pdfSHA, err := hashRegularFile(pdfPath, maxArtifactBytes)
 	if err != nil {
@@ -162,6 +212,32 @@ func validatePDF(ctx context.Context, pdfPath string, pageIDs, expectedText []st
 		textOutput, _, commandErr := runTool(ctx, tools.Text, []string{"-f", strconv.Itoa(pageNumber), "-l", strconv.Itoa(pageNumber), "-raw", pdfPath, "-"}, work)
 		if commandErr != nil || !utf8.Valid(textOutput) {
 			return validationFailure(receipt, "source-page-text-binding", "text-invalid")
+		}
+		if len(options.PageOracles) != 0 {
+			expected := options.PageOracles[index]
+			if rotation != expected.Rotation || imageCount != 1 || mediaBox[2] <= mediaBox[0] || mediaBox[3] <= mediaBox[1] {
+				return validationFailure(receipt, "source-page-geometry", "geometry-mismatch")
+			}
+			if expected.MediaBox != [4]float64{} {
+				for j, value := range mediaBox {
+					if math.Abs(value-expected.MediaBox[j]) > .02 {
+						return validationFailure(receipt, "source-page-geometry", "geometry-mismatch")
+					}
+				}
+			}
+			spans := append([]OCROracleSpan(nil), expected.OCR.Spans...)
+			sort.SliceStable(spans, func(i, j int) bool { return spans[i].Order < spans[j].Order })
+			var want strings.Builder
+			for _, span := range spans {
+				want.WriteString(span.Text)
+			}
+			if compactText(norm.NFC.String(string(textOutput))) != compactText(norm.NFC.String(want.String())) {
+				return validationFailure(receipt, "source-page-text-binding", "text-binding")
+			}
+			if err := compareExtractedImage(ctx, tools.Images, pdfPath, pageNumber, expected.SourceImagePath, work); err != nil {
+				return validationFailure(receipt, "source-page-pixels", "pixel-mismatch")
+			}
+			receipt.Checks = append(receipt.Checks, ValidationCheck{Name: "source-page-oracle", Status: "pass"})
 		}
 		textSHA := sha256.Sum256(textOutput)
 		compact := compactText(string(textOutput))
@@ -373,6 +449,10 @@ func compareExtractedImage(ctx context.Context, pdfimages, pdfPath string, pageN
 func decodeImageFile(filePath string) (image.Image, error) {
 	body, err := readRootFileValue(filePath, maxArtifactBytes)
 	if err != nil {
+		return nil, ErrInvalid
+	}
+	config, _, err := image.DecodeConfig(bytes.NewReader(body))
+	if err != nil || config.Width < 1 || config.Height < 1 || int64(config.Width) > 80_000_000/int64(config.Height) {
 		return nil, ErrInvalid
 	}
 	decoded, _, err := image.Decode(bytes.NewReader(body))
