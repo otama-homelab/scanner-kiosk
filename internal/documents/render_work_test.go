@@ -4,7 +4,48 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 )
+
+func reOCRCorrectionWork(t *testing.T) (*fixture, Admission) {
+	t.Helper()
+	f, correction, _ := correctionFixture(t)
+	if _, err := f.store.ApplyCorrection(context.Background(), alice, correction, time.Hour); err != nil { t.Fatal(err) }
+	r := reOCRRequest()
+	r.Revision = 2
+	a, err := f.store.AdmitRender(context.Background(), alice, r, admissionLimits())
+	if err != nil { t.Fatal(err) }
+	if _, err = f.store.ClaimExport(context.Background(), alice, a.JobID, runner); err != nil { t.Fatal(err) }
+	return f, a
+}
+
+func TestReOCRWorkUsesAppliedCorrection(t *testing.T) {
+	f, a := reOCRCorrectionWork(t)
+	w, err := f.store.LoadRenderWork(context.Background(), alice, a.JobID, runner)
+	if err != nil { t.Fatal(err) }
+	if len(w.Inputs) != 1 || w.Inputs[0].ID != "artifact_correction_one" || w.Snapshot.Pages[0].OriginalArtifactID != "artifact_correction_original" { t.Fatal("effective input lost correction or original lineage") }
+}
+
+func TestReOCRWorkRejectsSourceDrift(t *testing.T) {
+	for _, mode := range []string{"hash", "transform", "rotation", "original-hash", "correction-removed", "geometry"} {
+		t.Run(mode, func(t *testing.T) {
+			f, a := reOCRCorrectionWork(t)
+			// Simulate stored metadata corruption beyond normal immutable-write guards.
+			must(t, f.docs, "DROP TRIGGER artifact_identity_immutable")
+			must(t, f.docs, "DROP TRIGGER correction_suggestion_immutable")
+			must(t, f.docs, "DROP TRIGGER page_capture_immutable")
+			switch mode {
+			case "hash": must(t, f.docs, "UPDATE artifacts SET sha256=zeroblob(32) WHERE id='artifact_correction_one'")
+			case "original-hash": must(t, f.docs, "UPDATE artifacts SET sha256=zeroblob(32) WHERE id='artifact_correction_original'")
+			case "transform": must(t, f.docs, "UPDATE page_corrections SET transform_json='{}' WHERE state='applied'")
+			case "rotation": must(t, f.docs, "UPDATE pages SET rotation=90 WHERE id=?", correctionPage)
+			case "correction-removed": must(t, f.docs, "UPDATE page_corrections SET state='discarded',applied_at_ms=NULL WHERE state='applied'")
+			case "geometry": must(t, f.docs, "UPDATE pages SET pixel_width=961 WHERE id=?", correctionPage)
+			}
+			if w, err := f.store.LoadRenderWork(context.Background(), alice, a.JobID, runner); err == nil || len(w.Inputs) != 0 { t.Fatal("changed effective source accepted") }
+		})
+	}
+}
 
 func TestRenderWorkMatchesClaimedSnapshot(t *testing.T) {
 	f := renderFixture(t)
