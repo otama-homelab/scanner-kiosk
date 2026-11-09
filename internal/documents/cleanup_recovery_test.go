@@ -11,6 +11,21 @@ import (
 const successor = "worker_cleanup_next_01"
 const thirdRunner = "worker_cleanup_third_01"
 
+func TestDeliveryCleanupAndRetirement(t *testing.T) {
+	ctx := context.Background()
+	f, d := readyDelivery(t)
+	job, err := f.store.RequestDelete(ctx, alice, DeleteRequest{DocumentID: docA, Revision: 2, IdempotencyKey: "delete_delivery_0001"}, time.Hour)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = f.store.ClaimCleanupAttempt(ctx, alice, job.ID, "", runner, time.Minute); !errors.Is(err, ErrConflict) {
+		t.Fatal("cleanup must not claim a delivery-pinned output", err)
+	}
+	if scalar(t, f.docs, `SELECT count(*) FROM artifacts WHERE id=? AND state='ready'`, d.Artifact.ID) != 1 {
+		t.Fatal("active artifact removed")
+	}
+}
+
 func TestCleanupTakeoverRetainsProgressAndFencesOldRunner(t *testing.T) {
 	f, job, work := claimedCleanup(t)
 	ctx := context.Background()
