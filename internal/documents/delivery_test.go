@@ -2,8 +2,10 @@ package documents
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -12,6 +14,171 @@ import (
 
 func deliveryRequest() DeliveryRequest {
 	return DeliveryRequest{DocumentID: docA, Revision: 2, IdempotencyKey: "request_delivery_0001", DestinationID: "paperless-local", ConfigFingerprint: strings.Repeat("a", 64)}
+}
+
+func TestDeliveryOneAttemptCrashMatrix(t *testing.T) {
+	ctx := context.Background()
+	const task = "12345678-1234-4234-8234-123456789abc"
+	for _, stage := range []string{"queued", "attempted", "accepted", "confirmed"} {
+		for _, committed := range []bool{false, true} {
+			name := stage + map[bool]string{false: "/rollback", true: "/ack-loss"}[committed]
+			t.Run(name, func(t *testing.T) {
+				f, b := completedOCRCandidate(t)
+				if _, err := f.store.AdoptOCRResult(ctx, alice, ocrResultRequest(b), time.Hour); err != nil {
+					t.Fatal(err)
+				}
+				var d Delivery
+				var err error
+				if stage != "queued" {
+					d, err = f.store.AdmitDelivery(ctx, alice, deliveryRequest())
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+				if stage == "accepted" || stage == "confirmed" {
+					if _, err = f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, runner); err != nil {
+						t.Fatal(err)
+					}
+				}
+				if stage == "confirmed" {
+					if err = f.store.AcceptDelivery(ctx, alice, d.ID, task); err != nil {
+						t.Fatal(err)
+					}
+				}
+				f.store.commit = func(tx *sql.Tx) error {
+					if committed {
+						if err := tx.Commit(); err != nil {
+							return err
+						}
+					}
+					return errors.New("lost acknowledgement")
+				}
+				switch stage {
+				case "queued":
+					_, err = f.store.AdmitDelivery(ctx, alice, deliveryRequest())
+				case "attempted":
+					_, err = f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, runner)
+				case "accepted":
+					err = f.store.AcceptDelivery(ctx, alice, d.ID, task)
+				case "confirmed":
+					err = f.store.ConfirmDelivery(ctx, alice, d.ID, task, 42, d.Artifact.SHA256)
+				}
+				if !errors.Is(err, ErrCommitUncertain) {
+					t.Fatal("uncertain outcome guessed", err)
+				}
+				reopenDelivery(t, f)
+				known, err := f.store.FindDelivery(ctx, alice, deliveryRequest().IdempotencyKey)
+				if stage == "queued" && !committed {
+					if !errors.Is(err, ErrUnavailable) {
+						t.Fatal("uncommitted admission became work", err)
+					}
+					return
+				}
+				if err != nil {
+					t.Fatal(err)
+				}
+				want := stage
+				if !committed {
+					want = map[string]string{"attempted": "queued", "accepted": "attempted", "confirmed": "accepted"}[stage]
+				}
+				if known.State != want {
+					t.Fatal("wrong persisted outcome", known.State, want)
+				}
+				if known.AttemptedAtMS != 0 {
+					if _, err = f.store.LoadDeliveryAttempt(ctx, alice, known.ID, runner); err != nil {
+						t.Fatal("exact attempt readback failed", err)
+					}
+					if _, err = f.store.LoadDeliveryAttempt(ctx, alice, known.ID, successor); !errors.Is(err, ErrConflict) {
+						t.Fatal("other runner inherited attempt", err)
+					}
+					if _, err = f.store.ClaimDeliveryAttempt(ctx, alice, known.ID, successor); !errors.Is(err, ErrConflict) {
+						t.Fatal("persisted attempt became retryable", err)
+					}
+				}
+				t.Log("reopened exact receipt/runner; no network authority returned after uncertain commit", known.State)
+			})
+		}
+	}
+}
+
+func TestDeliveryConcurrentClaimAtMostOneAttempt(t *testing.T) {
+	f, d := readyDelivery(t)
+	ctx := context.Background()
+	start := make(chan struct{})
+	results := make(chan error, 2)
+	for _, who := range []string{runner, successor} {
+		go func(who string) {
+			<-start
+			_, err := f.store.ClaimDeliveryAttempt(ctx, alice, d.ID, who)
+			results <- err
+		}(who)
+	}
+	close(start)
+	winners := 0
+	for i := 0; i < 2; i++ {
+		err := <-results
+		if err == nil {
+			winners++
+		} else if !errors.Is(err, ErrConflict) {
+			t.Fatal(err)
+		}
+	}
+	if winners != 1 {
+		t.Fatal("claim must have exactly one winner", winners)
+	}
+	reopenDelivery(t, f)
+	if d, err := f.store.ReadDelivery(ctx, alice, d.ID); err != nil || d.State != "attempted" || d.RunnerID == "" {
+		t.Fatal(d, err)
+	}
+}
+
+func TestDeliveryDestinationDrift(t *testing.T) {
+	for _, mode := range []string{"disabled", "expired", "revision", "output", "owner"} {
+		t.Run(mode, func(t *testing.T) {
+			f, d := readyDelivery(t)
+			owner := alice
+			switch mode {
+			case "disabled":
+				must(t, f.state, `UPDATE principals SET disabled_at_ms=2000 WHERE id=?`, alice)
+			case "expired":
+				f.now = d.ExpiresAtMS
+			case "revision":
+				must(t, f.docs, `DELETE FROM published_outputs WHERE document_id=?`, docA)
+				must(t, f.docs, `UPDATE documents SET revision=revision+1 WHERE id=?`, docA)
+			case "output":
+				must(t, f.docs, `DELETE FROM published_outputs WHERE document_id=?`, docA)
+			case "owner":
+				owner = bob
+			}
+			if _, err := f.store.ClaimDeliveryAttempt(context.Background(), owner, d.ID, runner); err == nil {
+				t.Fatal("drift authorized upload")
+			}
+			if scalar(t, f.docs, `SELECT count(*) FROM deliveries WHERE attempted_at_ms IS NOT NULL`) != 0 {
+				t.Fatal("blocked upload acquired attempt")
+			}
+		})
+	}
+}
+
+func TestDeliverySemanticAdmissionRace(t *testing.T) {
+	f, d := readyDelivery(t)
+	var wg sync.WaitGroup
+	for _, key := range []string{"request_delivery_race1", "request_delivery_race2"} {
+		wg.Add(1)
+		go func(key string) {
+			defer wg.Done()
+			r := deliveryRequest()
+			r.IdempotencyKey = key
+			got, err := f.store.AdmitDelivery(context.Background(), alice, r)
+			if err != nil || got.ID != d.ID {
+				t.Error("semantic race created second send", got.ID, err)
+			}
+		}(key)
+	}
+	wg.Wait()
+	if scalar(t, f.docs, `SELECT count(*) FROM deliveries`) != 1 {
+		t.Fatal("semantic fence lost race")
+	}
 }
 
 func readyDelivery(t *testing.T) (*fixture, Delivery) {

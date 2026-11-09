@@ -53,7 +53,7 @@ func TestDeliverySchemaUpgrade(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	for query, want := range map[string]int{`SELECT count(*) FROM schema_migrations`: 22, `SELECT count(*) FROM documents`: 1, `SELECT count(*) FROM artifacts`: 1, `SELECT count(*) FROM published_outputs`: 1, `SELECT count(*) FROM request_receipts`: 1, `PRAGMA foreign_keys`: 1} {
+	for query, want := range map[string]int{`SELECT count(*) FROM schema_migrations`: len(files), `SELECT count(*) FROM documents`: 1, `SELECT count(*) FROM artifacts`: 1, `SELECT count(*) FROM published_outputs`: 1, `SELECT count(*) FROM request_receipts`: 1, `PRAGMA foreign_keys`: 1} {
 		var got int
 		if err = db.QueryRow(query).Scan(&got); err != nil || got != want {
 			t.Fatal("upgrade lost old data/constraints", query, got, err)

@@ -88,7 +88,7 @@ func (s *Store) ApplyCancel(ctx context.Context, owner string, command CancelCom
 		if !errors.Is(err, sql.ErrNoRows) {
 			return ErrStorage
 		}
-		keyExpiry, err := s.freshRequestKey(ctx, tx, key, now)
+		keyExpiry, err := s.freshRequestKey(ctx, tx, owner, key, now)
 		if err != nil {
 			return err
 		}

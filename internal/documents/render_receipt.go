@@ -25,7 +25,7 @@ func (s *Store) LookupRender(ctx context.Context, owner string, intent RenderInt
 		var err error
 		out, found, err = s.renderReceipt(ctx, tx, owner, s.now().UnixMilli(), key, digest)
 		if err == nil && !found {
-			_, err = s.freshRequestKey(ctx, tx, request.IdempotencyKey, s.now().UnixMilli())
+			_, err = s.freshRequestKey(ctx, tx, owner, request.IdempotencyKey, s.now().UnixMilli())
 		}
 		return err
 	})

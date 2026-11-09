@@ -26,14 +26,15 @@ type Delivery struct {
 	ExpiresAtMS                                               int64
 	DestinationID, ConfigFingerprint, Filename, State, TaskID string
 	CreatedAtMS, AttemptedAtMS, RemoteDocumentID              int64
+	RunnerID                                                  string
 }
 
-const deliveryColumns = `id,owner_id,document_id,revision,artifact_id,relative_path,media_type,byte_size,payload_sha256,expires_at_ms,destination_id,config_fingerprint,filename,state,created_at_ms,COALESCE(attempted_at_ms,0),COALESCE(task_id,''),COALESCE(remote_document_id,0)`
+const deliveryColumns = `id,owner_id,document_id,revision,artifact_id,relative_path,media_type,byte_size,payload_sha256,expires_at_ms,destination_id,config_fingerprint,filename,state,created_at_ms,COALESCE(attempted_at_ms,0),COALESCE(task_id,''),COALESCE(remote_document_id,0),COALESCE(runner_id,'')`
 
 func loadDelivery(ctx context.Context, tx *sql.Tx, owner, deliveryID string) (Delivery, error) {
 	var d Delivery
 	var digest []byte
-	err := tx.QueryRowContext(ctx, `SELECT `+deliveryColumns+` FROM deliveries WHERE id=? AND owner_id=?`, deliveryID, owner).Scan(&d.ID, &d.OwnerID, &d.DocumentID, &d.Revision, &d.Artifact.ID, &d.Artifact.RelativePath, &d.Artifact.MediaType, &d.Artifact.Size, &digest, &d.ExpiresAtMS, &d.DestinationID, &d.ConfigFingerprint, &d.Filename, &d.State, &d.CreatedAtMS, &d.AttemptedAtMS, &d.TaskID, &d.RemoteDocumentID)
+	err := tx.QueryRowContext(ctx, `SELECT `+deliveryColumns+` FROM deliveries WHERE id=? AND owner_id=?`, deliveryID, owner).Scan(&d.ID, &d.OwnerID, &d.DocumentID, &d.Revision, &d.Artifact.ID, &d.Artifact.RelativePath, &d.Artifact.MediaType, &d.Artifact.Size, &digest, &d.ExpiresAtMS, &d.DestinationID, &d.ConfigFingerprint, &d.Filename, &d.State, &d.CreatedAtMS, &d.AttemptedAtMS, &d.TaskID, &d.RemoteDocumentID, &d.RunnerID)
 	if err != nil {
 		return Delivery{}, readError(err)
 	}
@@ -104,7 +105,7 @@ func (s *Store) AdmitDelivery(ctx context.Context, owner string, r DeliveryReque
 		if used != 0 {
 			return ErrIdempotencyConflict
 		}
-		keyExpiry, err := s.freshRequestKey(ctx, tx, r.IdempotencyKey, now)
+		keyExpiry, err := s.freshRequestKey(ctx, tx, owner, r.IdempotencyKey, now)
 		if err != nil {
 			return err
 		}
@@ -159,7 +160,10 @@ func (s *Store) AdmitDelivery(ctx context.Context, owner string, r DeliveryReque
 }
 
 // ClaimDelivery returns upload authority only after a positively acknowledged commit.
-func (s *Store) ClaimDelivery(ctx context.Context, owner, deliveryID string) (Delivery, error) {
+func (s *Store) ClaimDeliveryAttempt(ctx context.Context, owner, deliveryID, runnerID string) (Delivery, error) {
+	if !id(runnerID) {
+		return Delivery{}, ErrInvalid
+	}
 	var d Delivery
 	err := s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
 		var err error
@@ -168,10 +172,10 @@ func (s *Store) ClaimDelivery(ctx context.Context, owner, deliveryID string) (De
 			return err
 		}
 		now := s.now().UnixMilli()
-		result, err := tx.ExecContext(ctx, `UPDATE deliveries SET state='attempted',attempted_at_ms=? WHERE id=? AND owner_id=? AND state='queued' AND attempted_at_ms IS NULL AND expires_at_ms>?
+		result, err := tx.ExecContext(ctx, `UPDATE deliveries SET state='attempted',attempted_at_ms=?,runner_id=? WHERE id=? AND owner_id=? AND state='queued' AND attempted_at_ms IS NULL AND expires_at_ms>?
    AND EXISTS(SELECT 1 FROM published_outputs p JOIN documents d ON d.id=p.document_id AND d.owner_id=p.owner_id AND d.revision=p.revision JOIN artifacts a ON a.id=p.artifact_id AND a.document_id=d.id AND a.owner_id=d.owner_id
    WHERE d.id=deliveries.document_id AND d.owner_id=deliveries.owner_id AND d.revision=deliveries.revision AND d.state='ready' AND d.expires_at_ms>? AND a.id=deliveries.artifact_id AND a.state='ready' AND a.kind='output' AND a.relative_path=deliveries.relative_path AND a.media_type=deliveries.media_type AND a.byte_size=deliveries.byte_size AND a.sha256=deliveries.payload_sha256
-   AND (a.input_revision=d.revision OR EXISTS(SELECT 1 FROM ocr_results r WHERE r.document_id=d.id AND r.owner_id=d.owner_id AND r.output_artifact_id=a.id AND r.input_revision=a.input_revision AND r.state='adopted' AND r.adopted_revision=d.revision)))`, now, deliveryID, owner, now, now)
+   AND (a.input_revision=d.revision OR EXISTS(SELECT 1 FROM ocr_results r WHERE r.document_id=d.id AND r.owner_id=d.owner_id AND r.output_artifact_id=a.id AND r.input_revision=a.input_revision AND r.state='adopted' AND r.adopted_revision=d.revision)))`, now, runnerID, deliveryID, owner, now, now)
 		if err != nil {
 			return ErrStorage
 		}
@@ -184,6 +188,7 @@ func (s *Store) ClaimDelivery(ctx context.Context, owner, deliveryID string) (De
 		}
 		d.State = "attempted"
 		d.AttemptedAtMS = now
+		d.RunnerID = runnerID
 		if s.now().UnixMilli() >= d.ExpiresAtMS {
 			return ErrUnavailable
 		}

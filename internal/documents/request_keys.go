@@ -2,13 +2,22 @@ package documents
 
 import (
 	"context"
+	"crypto/sha256"
 	"database/sql"
 	"errors"
 
 	"scanner-kiosk/internal/requestkey"
 )
 
-func (s *Store) freshRequestKey(ctx context.Context, tx *sql.Tx, key string, now int64) (any, error) {
+func (s *Store) freshRequestKey(ctx context.Context, tx *sql.Tx, owner, key string, now int64) (any, error) {
+	hash := sha256.Sum256([]byte(key))
+	var used int
+	if err := tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM delivery_receipts WHERE owner_id=? AND key_hash=?)`, owner, hash[:]).Scan(&used); err != nil {
+		return nil, ErrStorage
+	}
+	if used != 0 {
+		return nil, ErrIdempotencyConflict
+	}
 	_, aged, err := requestkey.Expiry(key)
 	if err != nil {
 		return nil, ErrInvalid

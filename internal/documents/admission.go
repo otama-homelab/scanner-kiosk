@@ -112,7 +112,7 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 			out = replay
 			return nil
 		}
-		keyExpiry, err := s.freshRequestKey(ctx, tx, request.IdempotencyKey, now)
+		keyExpiry, err := s.freshRequestKey(ctx, tx, owner, request.IdempotencyKey, now)
 		if err != nil {
 			return err
 		}

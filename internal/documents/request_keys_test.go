@@ -13,6 +13,64 @@ import (
 )
 
 func agedKey(now int64, nonce int) string { return fmt.Sprintf("rq1_%013d_%032x", now, nonce) }
+
+func TestDeliveryRequestKeyNamespaceBothDirections(t *testing.T) {
+	ctx := context.Background()
+	for _, aged := range []bool{false, true} {
+		for _, op := range []string{"render-find", "render-admit", "edit", "scan", "delete", "cancel"} {
+			t.Run(fmt.Sprintf("aged=%t/%s", aged, op), func(t *testing.T) {
+				f, b := completedOCRCandidate(t)
+				if _, err := f.store.AdoptOCRResult(ctx, alice, ocrResultRequest(b), time.Hour); err != nil {
+					t.Fatal(err)
+				}
+				r := deliveryRequest()
+				if aged {
+					r.IdempotencyKey = agedKey(f.now, 55)
+				}
+				if _, err := f.store.AdmitDelivery(ctx, alice, r); err != nil {
+					t.Fatal(err)
+				}
+				var err error
+				switch op {
+				case "render-find":
+					normal := admissionRequest()
+					normal.Revision = 2
+					normal.IdempotencyKey = r.IdempotencyKey
+					_, _, err = f.store.FindRender(ctx, alice, normal)
+				case "render-admit":
+					normal := admissionRequest()
+					normal.Revision = 2
+					normal.IdempotencyKey = r.IdempotencyKey
+					_, err = f.store.AdmitRender(ctx, alice, normal, admissionLimits())
+				case "edit":
+					normal := rotation()
+					normal.Revision = 2
+					normal.IdempotencyKey = r.IdempotencyKey
+					_, err = f.store.Edit(ctx, alice, normal, time.Hour)
+				case "scan":
+					normal := scanRequest()
+					normal.IdempotencyKey = r.IdempotencyKey
+					_, err = f.store.AdmitScan(ctx, alice, normal, scanLimits())
+				case "delete":
+					_, err = f.store.RequestDelete(ctx, alice, DeleteRequest{DocumentID: docA, Revision: 2, IdempotencyKey: r.IdempotencyKey}, time.Hour)
+				case "cancel":
+					_, err = f.store.CancelJob(ctx, alice, jobA, r.IdempotencyKey, time.Hour)
+				}
+				if !errors.Is(err, ErrIdempotencyConflict) {
+					t.Fatal("normal operation did not honor delivery key", err)
+				}
+				// The already committed ordinary adoption receipt reserves its key in the other direction.
+				r.IdempotencyKey = ocrResultRequest(b).IdempotencyKey
+				if _, err = f.store.AdmitDelivery(ctx, alice, r); !errors.Is(err, ErrIdempotencyConflict) {
+					t.Fatal("delivery did not honor normal key", err)
+				}
+				if scalar(t, f.docs, `SELECT count(*) FROM deliveries`) != 1 || scalar(t, f.docs, `SELECT revision FROM documents WHERE id=?`, docA) != 2 {
+					t.Fatal("key conflict mutated content")
+				}
+			})
+		}
+	}
+}
 func TestAgedScanReceiptPurgeNeverReexecutesAfterClockRollback(t *testing.T) {
 	f := scanFixture(t)
 	ctx := context.Background()

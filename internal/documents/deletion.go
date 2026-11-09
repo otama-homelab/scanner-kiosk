@@ -48,7 +48,7 @@ func (s *Store) ApplyDelete(ctx context.Context, owner string, command DeleteCom
 		if !errors.Is(err, sql.ErrNoRows) {
 			return ErrStorage
 		}
-		keyExpiry, err := s.freshRequestKey(ctx, tx, request.IdempotencyKey, now)
+		keyExpiry, err := s.freshRequestKey(ctx, tx, owner, request.IdempotencyKey, now)
 		if err != nil {
 			return err
 		}
