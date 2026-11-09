@@ -320,7 +320,7 @@ func (c Catalog) Validate() error {
 	seen := map[string]bool{}
 	for index, fixture := range c.Fixtures {
 		if !ValidID(fixture.ID) || seen[fixture.ID] || fixture.SourceClass != "public_synthetic" || fixture.Privacy != PrivacyPublicSynthetic ||
-			fixture.MediaType != "image/png" || len(fixture.PageIDs) == 0 || len(fixture.PageIDs) > 256 || !boundedToken(fixture.DocumentType, 64) ||
+			(fixture.MediaType != "image/png" && !(fixture.MediaType == "application/pdf" && fixture.Recipe.Kind == "copy")) || len(fixture.PageIDs) == 0 || len(fixture.PageIDs) > 256 || !boundedToken(fixture.DocumentType, 64) ||
 			len(fixture.ExpectedOutputs) > 6 || fixture.Bytes < 0 ||
 			fixture.Bytes > maxFixtureBytes && !(fixture.Recipe.Variant == "oversized" && fixture.ExpectedFailureClass == "oversized-input") ||
 			!validStrings(fixture.Languages, 8, 16) || !validStrings(fixture.ExpectedText, 64, 1024) ||
@@ -424,7 +424,11 @@ func Generate(catalogPath, output, manifestPath string) error {
 	manifest := GeneratedManifest{Format: CatalogFormat, Version: CatalogVersion, ToolVersion: ToolVersion}
 	base := filepath.Dir(filepath.Dir(catalogPath))
 	for _, fixture := range fixtures {
-		path := filepath.Join(output, fixture.ID+".png")
+		extension := ".png"
+		if fixture.MediaType == "application/pdf" {
+			extension = ".pdf"
+		}
+		path := filepath.Join(output, fixture.ID+extension)
 		sha, size, err := materializeFixture(base, fixture, path)
 		if err != nil {
 			return err

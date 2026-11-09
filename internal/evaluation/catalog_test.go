@@ -28,6 +28,26 @@ func TestCatalogRejectsDuplicateID(t *testing.T) {
 	}
 }
 
+func TestJapaneseOCRCatalog(t *testing.T) {
+	catalog, err := LoadCatalog(filepath.Join(repositoryRoot(t), "scripts/fixtures/evaluation/ocr-catalog.json"))
+	if err != nil {
+		t.Fatalf("Japanese copy catalog must support the two-page PDF source: %v", err)
+	}
+	if err := ValidateRequiredCoverage(catalog); err != nil {
+		t.Fatal(err)
+	}
+	for _, fixture := range catalog.Fixtures {
+		if fixture.ID == "fixture_ocr_two_page_001" {
+			_, body, err := ResolveFixture(filepath.Join(repositoryRoot(t), "scripts/fixtures/evaluation/ocr-catalog.json"), "", "", fixture.ID)
+			if err != nil || !bytes.HasPrefix(body, []byte("%PDF-")) || len(fixture.PageIDs) != 2 {
+				t.Fatal("two-page original unavailable")
+			}
+			return
+		}
+	}
+	t.Fatal("missing two-page source")
+}
+
 func TestCatalogRejectsInvalidHashAndRole(t *testing.T) {
 	for name, mutate := range map[string]func(*Catalog){
 		"hash": func(c *Catalog) { c.Fixtures[0].SHA256 = "ABC" },
