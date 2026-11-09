@@ -1,6 +1,8 @@
 export const messages = {
  en:{
   reocr:'Recognize text again',
+  reocrAdopt:'Adopt for whole document',
+  reocrDiscard:'Discard candidate',
   reocrCompare:'Compare recognition results',
   reocrCandidate:'New candidate',
   reocrPrevious:'Previous result',
@@ -185,6 +187,8 @@ export const messages = {
  },
  ja:{
   reocr:'文字をもう一度認識',
+  reocrAdopt:'文書全体に採用',
+  reocrDiscard:'候補を破棄',
   reocrCompare:'認識結果を比較',
   reocrCandidate:'新しい候補',
   reocrPrevious:'以前の結果',

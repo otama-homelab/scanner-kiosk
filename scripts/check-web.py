@@ -13,6 +13,11 @@ if any(native_args) and not all(native_args):p.error('native OCR verification re
 root=Path(__file__).resolve().parents[1]
 files=sorted([*root.glob('cmd/**/*.go'),*root.glob('internal/**/*.go'),*root.glob('internal/**/*.sql'),*root.glob('pkg/**/*.go'),*root.glob('web/src/**/*.*'),*root.glob('web/public/*'),root/'web/package.json',root/'web/package-lock.json',root/'web/astro.config.mjs',root/'go.mod',root/'go.sum',root/'scripts/build-web.py',root/'scripts/check-web.py',root/'scripts/check-web-editor-ux.cjs',root/'scripts/web-controls.cjs',root/'scripts/check-web.cjs',root/'scripts/check-web-ocr.cjs',root/'scripts/check-web-simple.cjs',root/'scripts/check-web-none.cjs',root/'scripts/check-web-capture.cjs',root/'scripts/check-web-correction.cjs',root/'scripts/check-web-placement.cjs',root/'scripts/check-web-import.cjs',root/'scripts/check-web-rate.cjs',root/'scripts/check-web-keyboard.cjs',root/'scripts/check-web-home.cjs',root/'scripts/check-web-ocr-ui.cjs'])
 def hashes():return {str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files}
+def validate_scenario(evidence,scenario):
+ names={'reocr-start':['TestReOCRStartLifecycle'],'reocr-compare':['TestReOCRComparePositions','TestReOCRReadingOrder'],'reocr-adopt':['TestReOCRWholeDocumentAdoption','TestReOCRDiscardRecovery','TestReOCRKeyboardFocus']}[scenario]
+ assert evidence['passed'] and evidence['requests'] and evidence['scenario']==scenario
+ for name in names:
+  for width in [1280,390]:assert name+' '+str(width) in evidence['checks'],'required browser scenario missing'
 before=hashes()
 with tempfile.TemporaryDirectory(prefix='scanner-product-web-') as temporary:
  work=Path(temporary);binary=work/'scanner'
@@ -149,7 +154,7 @@ for index in [1,2]:
    print(focused.stdout,end='');print(focused.stderr,end='')
    if focused.returncode:raise SystemExit(focused.returncode)
    evidence=json.loads(Path(args.receipt).read_text())
-   assert evidence['checks'] and evidence['requests'] and evidence['scenario']==args.scenario
+   validate_scenario(evidence,args.scenario)
    assert before==hashes(),'sources changed during verification'
    evidence.update(source_sha256=before,timestamp_utc=datetime.now(timezone.utc).isoformat())
    Path(args.receipt).write_text(json.dumps(evidence,indent=2)+'\n')
@@ -181,6 +186,13 @@ for index in [1,2]:
   ocr_ui_result=subprocess.run(['node','scripts/check-web-ocr-ui.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
   if ocr_ui_result.returncode:raise RuntimeError(ocr_ui_result.stderr[-12000:])
   ocr_ui_browser=json.loads(ocr_ui_result.stdout)
+  reocr_browser={}
+  for scenario in ['reocr-start','reocr-compare','reocr-adopt']:
+   scenario_receipt=work/(scenario+'.json')
+   outcome=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCENARIO=scenario,SCANNER_TEST_RECEIPT=str(scenario_receipt)),capture_output=True,text=True,timeout=90)
+   if outcome.returncode:raise RuntimeError(outcome.stdout+outcome.stderr)
+   evidence=json.loads(scenario_receipt.read_text());validate_scenario(evidence,scenario)
+   reocr_browser[scenario]=evidence
   editor_result=subprocess.run(['node','scripts/check-web-editor-ux.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
   if editor_result.returncode:raise RuntimeError(editor_result.stderr[-12000:])
   editor_browser=json.loads(editor_result.stdout)
@@ -308,5 +320,5 @@ print(json.dumps(checks))
  assert process.returncode==0 and not out and not error
  assert before==hashes(),'sources changed during verification'
  built={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((root/'internal/webui/dist').rglob('*')) if f.is_file()}
- receipt={'passed':True,'timestamp_utc':datetime.now(timezone.utc).isoformat(),'source_sha256':before,'built_assets_sha256':built,'browser':browser,'native_ocr':native_proof,'simple_auth':simple_browser,'none_auth':none_browser,'capture_ui':capture_browser,'correction_ui':correction_browser,'placement_ui':placement_browser,'import_ui':import_browser,'rate_limit_ui':rate_browser,'keyboard_ui':keyboard_browser,'home_ui':home_browser,'editor_ux':editor_browser,'ocr_ui':ocr_ui_browser,'scope':'Embedded Go binary, real guest/document APIs and private SQLite, headless Chromium through local fixture TLS proxy. Browser ignores only the fixture certificate error. Synthetic image/document/job rows and injected terminal job transition; real plain-PDF/PNG worker invocations and OCR selection/admission with fixture metadata; capture_ui checks scanner UI contracts, correction_ui checks optional correction compare/apply/undo/reprocess with mocked APIs and no correction engine, placement/import/rate/keyboard/home/editor/ocr_ui use their scoped mocked or real API evidence. No scanner hardware, real OIDC browser login, production proxy/mobile/screen-reader acceptance, complete scan workflow or deployment.'}
+ receipt={'passed':True,'timestamp_utc':datetime.now(timezone.utc).isoformat(),'source_sha256':before,'built_assets_sha256':built,'browser':browser,'native_ocr':native_proof,'simple_auth':simple_browser,'none_auth':none_browser,'capture_ui':capture_browser,'correction_ui':correction_browser,'placement_ui':placement_browser,'import_ui':import_browser,'rate_limit_ui':rate_browser,'keyboard_ui':keyboard_browser,'home_ui':home_browser,'editor_ux':editor_browser,'ocr_ui':ocr_ui_browser,'reocr_ui':reocr_browser,'scope':'Embedded Go binary, real guest/document APIs and private SQLite, headless Chromium through local fixture TLS proxy. Browser ignores only the fixture certificate error. Synthetic image/document/job rows and injected terminal job transition; real plain-PDF/PNG worker invocations and OCR selection/admission with fixture metadata; capture_ui checks scanner UI contracts, correction_ui checks optional correction compare/apply/undo/reprocess with mocked APIs and no correction engine, placement/import/rate/keyboard/home/editor/ocr_ui use their scoped mocked or real API evidence. No scanner hardware, real OIDC browser login, production proxy/mobile/screen-reader acceptance, complete scan workflow or deployment.'}
  Path(args.receipt).write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps({'passed':True,'checks':len(browser['checks']),'native_ocr':native_proof is not None,'simple_auth_checks':len(simple_browser['checks']),'none_auth_checks':len(none_browser['checks']),'capture_ui_checks':len(capture_browser['checks']),'correction_ui_checks':len(correction_browser['checks']),'placement_ui_checks':len(placement_browser['checks']),'import_ui_checks':len(import_browser['checks']),'rate_limit_ui_checks':len(rate_browser['checks']),'keyboard_ui_checks':len(keyboard_browser['checks']),'home_ui_checks':len(home_browser['checks']),'ocr_ui_checks':len(ocr_ui_browser['checks'])}))

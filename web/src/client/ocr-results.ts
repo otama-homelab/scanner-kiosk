@@ -1,33 +1,31 @@
 import {ocrControls} from './ocr';
 import {requestKey} from './request-key';
 import type {Key} from './messages';
-type Options={doc:any;locale:string;t:(key:Key)=>string;api:(path:string,method?:string,body?:unknown,key?:string,revision?:number,signal?:AbortSignal)=>Promise<any>;refresh:()=>Promise<void>;current:()=>boolean};
+type Options={doc:any;locale:string;t:(key:Key)=>string;api:(path:string,method?:string,body?:unknown,key?:string,revision?:number,signal?:AbortSignal)=>Promise<any>;refresh:()=>Promise<void>;stopJob:()=>void;current:()=>boolean};
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
-const active=new Set(['queued','running','cancelling','reconciling']);
 export function ocrResults(o:Options){
  const {doc,t,api}=o,base='/api/documents/'+doc.id;
  const element=document.createElement('section');element.className='ocr-results';
  const make=(tag:string,value:string)=>{const e=document.createElement(tag);e.textContent=value;return e};
  const button=(key:Key,action:()=>void)=>{const b=document.createElement('button');b.type='button';b.textContent=t(key);b.addEventListener('click',action);return b};
  const state=make('p','');state.setAttribute('role','status');
- let disposed=false,dialog:HTMLDialogElement|null=null,controls:ReturnType<typeof ocrControls>|null=null,timer:ReturnType<typeof setTimeout>|undefined;
+ let disposed=false,dialog:HTMLDialogElement|null=null,controls:ReturnType<typeof ocrControls>|null=null;
  const controller=new AbortController();const current=()=>!disposed&&o.current();
  const pendingKey='scanner.reocr.'+doc.id;
  const pending=()=>{try{return sessionStorage.getItem(pendingKey)!==null}catch{return true}};
  const clear=()=>{try{sessionStorage.removeItem(pendingKey)}catch{}};
- const refresh=async()=>{await o.refresh();document.querySelector<HTMLButtonElement>('[data-reocr-action]')?.focus()};
+ const refresh=async()=>{if(!current())return;await o.refresh();const heading=document.querySelector<HTMLElement>('[data-reocr-heading]'),action=document.querySelector<HTMLButtonElement>('[data-reocr-action]');(action&&!action.disabled?action:heading)?.focus()};
  const fail=()=>{state.textContent=t('reocrUnknown')};
- async function watch(id:string){
-  if(!opaque(id))return;
-  try{const job=await api('/api/jobs/'+id,'GET',undefined,undefined,undefined,controller.signal);if(!current())return;
-   if(job.id!==id||job.document_id!==doc.id||job.kind!=='render')throw new Error('Invalid recognition job');
-   state.textContent=job.state;
-   if(active.has(job.state))timer=setTimeout(()=>void watch(id),750);
-   else{clear();cancel.hidden=true;if(job.state==='succeeded')await refresh();else start.disabled=false}
-  }catch{if(current())fail()}
- }
- const cancel=button('reocrCancel',()=>void(async()=>{cancel.disabled=true;try{await api('/api/jobs/'+doc.active_job_id+'/cancel','POST',undefined,requestKey(),undefined,controller.signal);if(current())void watch(doc.active_job_id)}catch{if(current())fail()}finally{if(current())cancel.disabled=false}})());cancel.hidden=true;
- const check=button('reocrCheck',()=>void refresh());
+ // app.ts owns all job polling and terminal transitions, including automatic saving.
+ const cancelKey=requestKey();
+ const cancel=button('reocrCancel',()=>void(async()=>{cancel.disabled=true;o.stopJob();try{await api('/api/jobs/'+doc.active_job_id+'/cancel','POST',undefined,cancelKey,undefined,controller.signal);if(current()){clear();await refresh()}}catch{if(current()){fail();check.hidden=false}}finally{if(current())cancel.disabled=false}})());cancel.hidden=true;
+ const dispositionKey='scanner.reocr.disposition.'+doc.id;
+ const readDisposition=()=>{try{const raw=sessionStorage.getItem(dispositionKey);if(!raw)return null;const value=JSON.parse(raw);if(!opaque(value.id)||!['adopt','discard'].includes(value.action)||!opaque(value.key)||!Number.isSafeInteger(value.revision))throw new Error('Invalid intent');return value}catch{return {invalid:true}}};
+ const clearDisposition=()=>{try{sessionStorage.removeItem(dispositionKey)}catch{}};
+ const check=button('reocrCheck',()=>void(async()=>{
+  check.disabled=true;
+  try{const intent=readDisposition();if(intent){if(intent.invalid)throw new Error('Invalid intent');const result=await api(base+'/ocr-results/'+intent.id,'GET',undefined,undefined,undefined,controller.signal);if(result.id!==intent.id||result.state!==(intent.action==='adopt'?'adopted':'discarded'))throw new Error('Uncertain disposition');clearDisposition()}await refresh()}catch{if(current())fail()}finally{if(current())check.disabled=false}
+ })());
  const start=button('reocr',()=>{
   if(dialog||doc.active_job_id||pending())return;
   dialog=document.createElement('dialog');dialog.className='output-settings';dialog.setAttribute('aria-labelledby','reocr-title');
@@ -39,22 +37,28 @@ export function ocrResults(o:Options){
    // Persist uncertainty before sending. A reload may reconcile, never invent a new key.
    try{sessionStorage.setItem(pendingKey,JSON.stringify({key,revision:doc.revision}))}catch{hint.textContent=t('failed');return}
    sending=true;submit.disabled=true;controls.lock(true);
-   try{const job=await api(base+'/reocr','POST',command,key,doc.revision,controller.signal);if(!current())return;if(!opaque(job?.id)||job.document_id!==doc.id||job.kind!=='render')throw new Error('Invalid recognition job');clear();dialog?.close();await refresh()}
-   catch(err){if(current()){hint.textContent=t('reocrUnknown');check.hidden=false;start.disabled=true}}
+   try{const job=await api(base+'/reocr','POST',command,key,doc.revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));if(!current())return;if(!opaque(job?.id)||job.document_id!==doc.id||job.kind!=='render')throw new Error('Invalid recognition job');clear();dialog?.close();await refresh()}
+   catch(err){if(current()){const code=(err as {status?:number}).status;if(code&&code>=400&&code<500){clear();hint.textContent=t(code===412?'changed':code===410?'requestExpired':'failed');start.disabled=false}else{hint.textContent=t('reocrUnknown');start.disabled=true}check.hidden=false}}
   })());submit.className='primary';submit.disabled=true;
   controls=ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},o.locale,()=>{submit.disabled=sending||!controls?.enabled()||!controls.valid()});
   const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);dialog.append(title,hint,controls.element,actions);element.append(dialog);
   dialog.addEventListener('close',()=>{controls?.dispose();controls=null;dialog?.remove();dialog=null;if(current())start.focus()},{once:true});dialog.showModal();controls.start();
  });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();element.append(start,cancel,check,state);
  if(pending())state.textContent=t('reocrUnknown');
- if(doc.active_job_id){cancel.hidden=false;void watch(doc.active_job_id)}
+ if(doc.active_job_id)cancel.hidden=false;
  const summaries=Array.isArray(doc.ocr_results)?doc.ocr_results:[];
+ const candidate=summaries.find((r:any)=>r.state==='candidate');
+ if(candidate||readDisposition())start.disabled=true;
+ if(readDisposition()){check.hidden=false;fail()}
+ const previous=summaries.find((r:any)=>r.state==='adopted');
+ if(previous&&opaque(previous.id)&&doc.output?.revision!==doc.revision){const link=document.createElement('a');link.className='download-link';link.href=base+'/ocr-results/'+previous.id+'/output';link.textContent=t('savePDF');element.prepend(link)}
  let comparisonAbort:AbortController|null=null,comparisonVersion=0;
  if(summaries.length){
   if(summaries.length>2||summaries.some((r:any)=>!opaque(r.id)||!['candidate','adopted'].includes(r.state)||!Number.isSafeInteger(r.input_revision)))throw new Error('Invalid result summaries');
   const title=make('h2',t('reocrCompare'));title.tabIndex=-1;title.dataset.reocrHeading='true';element.append(title);
   const label=make('label',t('page'));const select=document.createElement('select');label.append(select);
   for(const [index,p] of doc.pages.entries()){if(!opaque(p.id))throw new Error('Invalid page');const option=document.createElement('option');option.value=p.id;option.textContent=t('page')+' '+(index+1);select.append(option)}
+  const pageKey='scanner.reocr.page.'+doc.id;try{const saved=sessionStorage.getItem(pageKey);if(doc.pages.some((p:any)=>p.id===saved))select.value=saved!}catch{}
   const panels=document.createElement('div');panels.className='ocr-comparison';element.append(label,panels);
   async function artifact(url:string,expected:string,signal:AbortSignal){
    if(url!==expected)throw new Error('Mismatched result artifact');
@@ -104,7 +108,24 @@ export function ocrResults(o:Options){
     }catch{if(current()&&version===comparisonVersion)panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('reocrTextUnavailable')))}
    }));
   }
-  select.addEventListener('change',()=>void compare());void compare();
+  select.addEventListener('change',()=>{try{sessionStorage.setItem(pageKey,select.value)}catch{}void compare()});void compare();
+  if(candidate){
+   const actions=document.createElement('div');actions.className='output-actions';
+   const adopt=button('reocrAdopt',()=>void disposeCandidate('adopt'));
+   const discard=button('reocrDiscard',()=>void disposeCandidate('discard'));adopt.className='primary';
+   adopt.disabled=!!doc.active_job_id||candidate.input_revision!==doc.revision||!!readDisposition();discard.disabled=!!doc.active_job_id||!!readDisposition();
+   async function disposeCandidate(action:'adopt'|'discard'){
+    if(readDisposition())return;adopt.disabled=discard.disabled=true;
+    const intent={id:candidate.id,action,key:requestKey(),revision:doc.revision};
+    try{sessionStorage.setItem(dispositionKey,JSON.stringify(intent))}catch{state.textContent=t('failed');return}
+    try{await api(base+'/ocr-results/'+intent.id+'/'+action,'POST',{},intent.key,intent.revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));if(!current())return;clearDisposition();clear();await refresh()}
+    catch(err){if(!current())return;const code=(err as {status?:number}).status;
+     if(code&&code>=400&&code<500){clearDisposition();state.textContent=t(code===412||code===409?'changed':code===410?'requestExpired':'failed');check.hidden=false}
+     else{fail();check.hidden=false}
+    }
+   }
+   actions.append(discard,adopt);element.append(actions);
+  }
  }
- return {element,dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();if(timer)clearTimeout(timer);controls?.dispose();dialog?.remove()}};
+ return {element,dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();controls?.dispose();dialog?.remove()}};
 }

@@ -203,7 +203,7 @@ function showDocument(doc:any){
  if(!active&&doc.pages.length&&['review','ready','failed'].includes(doc.state)){const settings=button('outputSettings',()=>outputDialog(doc));other.prepend(settings)}
  if(!active&&['review','ready','failed'].includes(doc.state)&&doc.purpose==='document'){const next=button('scanNext',()=>{next.disabled=true;immediateScan=doc.id;navigate('#/document/'+doc.id+'/scan')});toolbar.append(next)}
  toolbar.append(secondary);
- if(!photo){const results=ocrResults({doc,locale,t,api,refresh:render,current:()=>showGeneration===generation});main.append(results.element);disposePreviews.push(results.dispose)}
+ if(!photo){const results=ocrResults({doc,locale,t,api,refresh:render,stopJob,current:()=>showGeneration===generation});main.append(results.element);disposePreviews.push(results.dispose)}
  const grid=document.createElement('div');grid.className=photo?'preview-grid photo-review':'preview-grid';
  const editable=!active&&['review','ready','failed'].includes(doc.state);
  let editing=false;
