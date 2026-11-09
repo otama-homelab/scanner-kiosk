@@ -19,6 +19,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 )
 
 var ErrUnavailable = errors.New("paperless unavailable")
@@ -45,7 +46,7 @@ type Task struct {
 
 func New(o Options) (*Client, error) {
 	u, err := url.Parse(o.BaseURL)
-	if err != nil || u == nil || u.Host == "" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || strings.ContainsAny(o.BaseURL, "\x00\r\n\t\\?#") || u.Opaque != "" || u.RawPath != "" || u.Path != "" && path.Clean(u.Path) != strings.TrimSuffix(u.Path, "/") {
+	if err != nil || u == nil || u.Host == "" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || strings.ContainsAny(o.BaseURL, "\x00\r\n\t\\?#") || strings.IndexFunc(u.Path, unicode.IsControl) >= 0 || strings.HasSuffix(u.Host, ":") || u.Opaque != "" || u.RawPath != "" || u.Path != "" && u.Path != "/" && path.Clean(u.Path) != strings.TrimSuffix(u.Path, "/") {
 		return nil, ErrUnavailable
 	}
 	if u.Scheme != "https" && !(u.Scheme == "http" && o.AllowHTTP) {

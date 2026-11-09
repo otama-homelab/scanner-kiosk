@@ -63,3 +63,5 @@ WHEN NEW.id!=OLD.id OR NEW.owner_id!=OLD.owner_id OR NEW.document_id!=OLD.docume
 BEGIN SELECT RAISE(ABORT,'immutable delivery evidence'); END;
 CREATE TRIGGER delivery_receipt_immutable BEFORE UPDATE ON delivery_receipts
 BEGIN SELECT RAISE(ABORT,'immutable delivery receipt'); END;
+CREATE TRIGGER delivery_evidence_retained BEFORE DELETE ON deliveries
+BEGIN SELECT RAISE(ABORT,'delivery send evidence must be retained'); END;

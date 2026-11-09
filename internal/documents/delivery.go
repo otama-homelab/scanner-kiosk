@@ -66,7 +66,7 @@ func (s *Store) ReadDelivery(ctx context.Context, owner, deliveryID string) (Del
 
 func (s *Store) AdmitDelivery(ctx context.Context, owner string, r DeliveryRequest) (Delivery, error) {
 	fingerprint, e := hex.DecodeString(r.ConfigFingerprint)
-	if !id(r.DocumentID) || r.Revision < 1 || !label(r.IdempotencyKey) || len(r.IdempotencyKey) > 256 || !label(r.DestinationID) || len(r.DestinationID) > 128 || e != nil || len(fingerprint) != 32 || strings.ToLower(r.ConfigFingerprint) != r.ConfigFingerprint {
+	if !id(r.DocumentID) || r.Revision < 1 || !id(r.IdempotencyKey) || !label(r.DestinationID) || len(r.DestinationID) > 128 || e != nil || len(fingerprint) != 32 || strings.ToLower(r.ConfigFingerprint) != r.ConfigFingerprint {
 		return Delivery{}, ErrInvalid
 	}
 	key := sha256.Sum256([]byte(r.IdempotencyKey))
