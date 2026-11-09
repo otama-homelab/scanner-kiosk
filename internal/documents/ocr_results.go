@@ -31,6 +31,8 @@ type OCRResultPage struct {
 	Rotation, PixelWidth, PixelHeight               int
 	PDFTextOrigin                                   string // recognition or retained-source
 	Text                                            ArtifactRecord
+	TranscriptUnavailable                           bool // legacy layer-only output has no transcript
+	Layer                                           *ArtifactRecord
 	Positions                                       *ArtifactRecord // nil means positions unavailable, never synthesized
 	Preview                                         *ArtifactRecord // optional generated source preview
 	Thumbnail                                       *ArtifactRecord
@@ -52,10 +54,16 @@ func normalizeOCRBundle(b OCRResultBundle) ([]byte, []ocrResultArtifact, int64, 
 			return nil, nil, 0, ErrInvalid
 		}
 		seenPages[p.PageID] = true
-		if p.Text.MediaType != "text/plain" {
+		if p.Text.MediaType != "text/plain" || (p.TranscriptUnavailable && (p.Text.Size != 0 || p.Positions != nil || p.Layer == nil)) {
 			return nil, nil, 0, ErrInvalid
 		}
 		all = append(all, ocrResultArtifact{p.Text, "ocr_text"})
+		if p.Layer != nil {
+			if p.Layer.MediaType != "application/pdf" || p.Layer.Size < 1 {
+				return nil, nil, 0, ErrInvalid
+			}
+			all = append(all, ocrResultArtifact{*p.Layer, "intermediate"})
+		}
 		if p.Positions != nil {
 			if p.Positions.MediaType != "application/json" || p.Positions.Size < 1 || p.Positions.PixelWidth != p.PixelWidth || p.Positions.PixelHeight != p.PixelHeight {
 				return nil, nil, 0, ErrInvalid

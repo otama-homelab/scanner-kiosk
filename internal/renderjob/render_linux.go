@@ -34,6 +34,12 @@ type Records interface {
 	ExportRecorded(context.Context, string, string, string) (bool, error)
 }
 
+// OCRResultRecords completes an immutable candidate, never an adopted output.
+type OCRResultRecords interface {
+	CompleteOCRResult(context.Context, string, string, string, int64, documents.OCRResultBundle) error
+	OCRResultRecorded(context.Context, string, string, documents.OCRResultBundle) (bool, error)
+}
+
 // ThumbnailRecords is a worker-only opt-in extension. Publication remains one
 // transaction with the export, sharing its durable reservation and read-back.
 type ThumbnailRecords interface {
@@ -48,6 +54,7 @@ type Prepared struct {
 	extraScopes                   []*artifactscope.Scope
 	thumbnailScope                *artifactscope.Scope
 	thumbnails                    []documents.ThumbnailRecord
+	candidate                     *documents.OCRResultBundle
 	executionUncertain            bool
 	owner, job, runner            string
 	revision                      int64
@@ -92,7 +99,7 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 			hasScans = true
 		}
 	}
-	ocrEnabled := work.Snapshot.Settings.OCR.Enabled && hasScans
+	ocrEnabled := work.Snapshot.Settings.OCR.Enabled && (hasScans || work.Snapshot.ReOCR)
 	selector, hasOCR := records.(OCRSelector)
 	if ocrEnabled && (format != "pdf" || !hasOCR) {
 		return nil, ErrUnsupported
@@ -159,7 +166,14 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 	pages := make([]pdfassemble.ScopedPage, len(work.Inputs))
 	for i, input := range work.Inputs {
 		page := work.Snapshot.Pages[i]
-		if page.OriginalArtifactID != input.ID {
+		expected := page.OriginalArtifactID
+		if work.Snapshot.ReOCR {
+			if len(work.Snapshot.Sources) != len(work.Inputs) {
+				return nil, documents.ErrInvalid
+			}
+			expected = work.Snapshot.Sources[i].Effective.ID
+		}
+		if expected != input.ID {
 			return nil, documents.ErrInvalid
 		}
 		if input.MediaType == "application/pdf" {
@@ -184,10 +198,18 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 		pages[i] = pdfassemble.ScopedPage{ID: input.ID, MediaType: input.MediaType, Size: page.Size, Color: page.Color, Rotation: page.Rotation, Width: cfg.Width, Height: cfg.Height}
 	}
 	var reference, kind, media string
+	var candidate *documents.OCRResultBundle
 	if ocrEnabled {
 		kind, media = artifactscope.PDF, "application/pdf"
 		var final *artifactscope.Scope
-		final, reference, err = prepareOCR(ctx, selector, root, work, inputs, pages, scope, budget, options)
+		if work.Snapshot.ReOCR {
+			if _, ok := records.(OCRResultRecords); !ok {
+				return nil, ErrUnsupported
+			}
+			final, reference, candidate, err = prepareReOCR(ctx, records, selector, root, work, inputs, pages, scope, budget, options, func(s *artifactscope.Scope) { scopes = append(scopes, s) })
+		} else {
+			final, reference, err = prepareOCR(ctx, selector, root, work, inputs, pages, scope, budget, options)
+		}
 		if final != nil {
 			scope = final
 			failedScope = final
@@ -213,7 +235,7 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 	}
 	var thumbnailScope *artifactscope.Scope
 	var derivatives []documents.ThumbnailRecord
-	if withThumbnails {
+	if withThumbnails && !work.Snapshot.ReOCR {
 		missing := 0
 		for _, input := range work.Inputs {
 			if input.MediaType != "application/pdf" && !work.ThumbnailOriginalIDs[input.ID] {
@@ -276,7 +298,11 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 		}
 	}
 	a := artifacts[0]
-	return &Prepared{stoppedAtMS: time.Now().UnixMilli(), records: records, scope: scope, extraScopes: otherScopes(scopes, scope), thumbnailScope: thumbnailScope, thumbnails: derivatives, owner: owner, job: job, runner: runner, revision: work.Job.Revision, artifact: documents.Export{ID: a.ID, RelativePath: a.RelativePath, MediaType: media, Size: a.Size, SHA256: a.SHA256}}, nil
+	if candidate != nil {
+		candidate.Output = resultArtifact(a, media, 0, 0)
+		candidate.ID = a.ID
+	}
+	return &Prepared{candidate: candidate, stoppedAtMS: time.Now().UnixMilli(), records: records, scope: scope, extraScopes: otherScopes(scopes, scope), thumbnailScope: thumbnailScope, thumbnails: derivatives, owner: owner, job: job, runner: runner, revision: work.Job.Revision, artifact: documents.Export{ID: a.ID, RelativePath: a.RelativePath, MediaType: media, Size: a.Size, SHA256: a.SHA256}}, nil
 }
 
 // Publish conditionally commits the output. On uncertain commit it reads back
@@ -296,7 +322,13 @@ func (p *Prepared) Publish(ctx context.Context) (documents.Export, error) {
 	}
 	if !p.pending {
 		var err error
-		if len(p.thumbnails) > 0 {
+		if p.candidate != nil {
+			publisher, ok := p.records.(OCRResultRecords)
+			if !ok {
+				return documents.Export{}, ErrUnsupported
+			}
+			err = publisher.CompleteOCRResult(ctx, p.owner, p.job, p.runner, p.revision, *p.candidate)
+		} else if len(p.thumbnails) > 0 {
 			publisher, ok := p.records.(ThumbnailRecords)
 			if !ok {
 				return documents.Export{}, documents.ErrInvalid
@@ -318,7 +350,13 @@ func (p *Prepared) Publish(ctx context.Context) (documents.Export, error) {
 	}
 	recovery, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 	defer cancel()
-	recorded, err := p.records.ExportRecorded(recovery, p.owner, p.job, p.artifact.ID)
+	var recorded bool
+	var err error
+	if p.candidate != nil {
+		recorded, err = p.records.(OCRResultRecords).OCRResultRecorded(recovery, p.owner, p.job, *p.candidate)
+	} else {
+		recorded, err = p.records.ExportRecorded(recovery, p.owner, p.job, p.artifact.ID)
+	}
 	if err != nil {
 		return documents.Export{}, errors.Join(ErrPending, err)
 	}
@@ -430,6 +468,13 @@ func (p *Prepared) closeWork() error {
 }
 
 func (p *Prepared) releasePublished() error {
+	if p.candidate != nil {
+		var err error
+		for _, s := range append(append([]*artifactscope.Scope(nil), p.extraScopes...), p.scope) {
+			err = errors.Join(err, s.Release())
+		}
+		return err
+	}
 	err := p.scope.Release()
 	if p.thumbnailScope != nil {
 		err = errors.Join(err, p.thumbnailScope.Release())

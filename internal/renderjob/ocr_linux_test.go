@@ -121,10 +121,6 @@ func testWorkerCandidate(t *testing.T, kind ocrplugin.OutputKind) {
 	if e != nil || current.ID != old.ID {
 		t.Fatal("candidate auto-adopted", e)
 	}
-	// Read the durable bundle through the actual documents database.
-	var raw string
-	// Store is embedded, so use the same read API used by result review.
-	_ = raw
 	if records.provider.calls != 1 {
 		t.Fatal("recognition repeated")
 	}
