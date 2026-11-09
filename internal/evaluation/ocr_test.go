@@ -256,3 +256,16 @@ func TestOCRResourceIdentity(t *testing.T) {
 		})
 	}
 }
+
+func TestOCRPDFAnalyzerRechecksEvidence(t *testing.T) {
+	oracle, manifest, _ := ocrEvidenceTest(t)
+	q, err := AnalyzeOCREvidence(oracle, manifest, []string{"tesseract-5.5.4", "ndlocr-lite-1.3.0"}, true)
+	if err != nil || q.Status != "complete" {
+		t.Fatalf("synthetic evidence incomplete: %v", err)
+	}
+	for _, row := range q.Rows {
+		if row.PDFStatus != "failed" {
+			t.Fatal("trusted candidate receipt for malformed PDF instead of independent validation")
+		}
+	}
+}
