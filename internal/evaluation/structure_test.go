@@ -56,6 +56,44 @@ func TestStructureUnavailablePreservesIndependentAnalysis(t *testing.T) {
 			t.Fatal("missing complete/unavailable gate accepted")
 		}
 	}
+	// Boundary fixtures prove completeness only, never real candidate measurements.
+	oracle, err := LoadOCROracles(filepath.Join("..", "..", "scripts", "fixtures", "evaluation", "ocr-oracles.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	baseline := OCRComparison{}
+	for _, engine := range []string{"tesseract-5.5.4", "ndlocr-lite-1.3.0"} {
+		for _, entry := range oracle.Entries {
+			for _, mode := range []string{"standalone", "cold", "warm", "warm"} {
+				r := OCRComparisonRow{EngineID: engine, FixtureID: entry.FixtureID, FixtureSHA256: entry.FixtureSHA256, CandidateConfigSHA256: hashBytes([]byte(engine)), Mode: mode, ResourceStatus: "measured"}
+				if mode == "standalone" {
+					r.ResourceStatus = "not-measured"
+				}
+				for _, p := range entry.Pages {
+					r.Pages = append(r.Pages, OCRPageQuality{PageID: p.PageID, TextErrors: 7, MatchedRegions: 0, Regions: len(p.Spans), Status: "failed"})
+				}
+				baseline.Rows = append(baseline.Rows, r)
+			}
+		}
+	}
+	rows, err := structureBaselineRows(baseline, oracle)
+	if err != nil || len(rows) != 16 {
+		t.Fatalf("unavailable candidate must retain all 16 measured baseline layout rows: got %d %v", len(rows), err)
+	}
+	for _, row := range rows {
+		if row.Pages[0].TextErrors != 7 || row.CandidateConfigSHA256 == "" {
+			t.Fatal("baseline independent dimensions lost")
+		}
+	}
+	for _, mutate := range []func(*OCRComparison){func(b *OCRComparison) { b.Rows = b.Rows[:len(b.Rows)-1] }, func(b *OCRComparison) { b.Rows[0].FixtureSHA256 = hashBytes([]byte("drift")) }, func(b *OCRComparison) { b.Rows[0].CandidateConfigSHA256 = hashBytes([]byte("changed configuration")) }, func(b *OCRComparison) { b.Rows[1].ResourceStatus = "not-measured" }, func(b *OCRComparison) { b.Rows[0].Pages = nil }, func(b *OCRComparison) { b.Rows[0].EngineID = "extra-candidate" }} {
+		raw, _ := json.Marshal(baseline)
+		var corrupt OCRComparison
+		_ = json.Unmarshal(raw, &corrupt)
+		mutate(&corrupt)
+		if _, err := structureBaselineRows(corrupt, oracle); err == nil {
+			t.Fatal("incomplete or drifted baseline coverage accepted")
+		}
+	}
 }
 
 func structureFixture(t *testing.T) (StructurePayload, []byte) {

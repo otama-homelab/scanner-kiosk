@@ -202,23 +202,36 @@ type StructureManifest struct {
 	Attempts           []StructureAttempt `json:"attempts"`
 }
 type StructureComparison struct {
-	Format                   string             `json:"format"`
-	Version                  int                `json:"version"`
-	Status                   string             `json:"status"`
-	CandidateID              string             `json:"candidate_id"`
-	ManifestSHA256           string             `json:"manifest_sha256"`
-	DispositionSHA256        string             `json:"disposition_sha256"`
-	OracleSHA256             string             `json:"oracle_sha256"`
-	CatalogSHA256            string             `json:"catalog_sha256"`
-	BaselineComparisonSHA256 string             `json:"baseline_comparison_sha256"`
-	BaselineManifestSHA256   string             `json:"baseline_manifest_sha256"`
-	FailureStage             string             `json:"failure_stage"`
-	FailureExitCode          int                `json:"failure_exit_code"`
-	Decision                 string             `json:"decision"`
-	Adopted                  bool               `json:"adopted"`
-	Rows                     []OCRComparisonRow `json:"rows"`
-	Measurements             map[string]string  `json:"measurements"`
-	BaselineGap              []OCRPageQuality   `json:"baseline_gap"`
+	Format                   string                 `json:"format"`
+	Version                  int                    `json:"version"`
+	Status                   string                 `json:"status"`
+	CandidateID              string                 `json:"candidate_id"`
+	ManifestSHA256           string                 `json:"manifest_sha256"`
+	DispositionSHA256        string                 `json:"disposition_sha256"`
+	OracleSHA256             string                 `json:"oracle_sha256"`
+	CatalogSHA256            string                 `json:"catalog_sha256"`
+	BaselineComparisonSHA256 string                 `json:"baseline_comparison_sha256"`
+	BaselineManifestSHA256   string                 `json:"baseline_manifest_sha256"`
+	FailureStage             string                 `json:"failure_stage"`
+	FailureExitCode          int                    `json:"failure_exit_code"`
+	Decision                 string                 `json:"decision"`
+	Adopted                  bool                   `json:"adopted"`
+	Rows                     []OCRComparisonRow     `json:"rows"`
+	Measurements             map[string]string      `json:"measurements"`
+	BaselineGap              []OCRPageQuality       `json:"baseline_gap"`
+	BaselineRows             []StructureBaselineRow `json:"baseline_rows"`
+}
+
+type StructureBaselineRow struct {
+	EngineID              string           `json:"engine_id"`
+	FixtureID             string           `json:"fixture_id"`
+	FixtureSHA256         string           `json:"fixture_sha256"`
+	CandidateConfigSHA256 string           `json:"candidate_config_sha256"`
+	Pages                 []OCRPageQuality `json:"pages"`
+}
+
+func structureBaselineRows(b OCRComparison, oracle OCROracleFile) ([]StructureBaselineRow, error) {
+	return nil, ErrUnavailable
 }
 
 func ValidateStructurePayload(body []byte, source StructureSource, lock string) (StructurePayload, error) {
