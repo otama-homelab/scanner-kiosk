@@ -3,8 +3,10 @@ package renderadmission
 import (
 	"context"
 	"errors"
+	"reflect"
 	"scanner-kiosk/internal/documents"
 	"testing"
+	"time"
 )
 
 type records struct {
@@ -14,6 +16,25 @@ type records struct {
 	request  documents.RenderAdmission
 	limits   documents.AdmissionLimits
 	findHook func(documents.RenderAdmission)
+}
+
+func TestReOCRCatalogPinsOutput(t *testing.T) {
+	record := &records{}
+	snapshot := catalogFixture()
+	service := Service{Records: record, Resolver: &CatalogResolver{Source: catalogSource{snapshot: snapshot}, Now: func() time.Time { return time.UnixMilli(2000) }}, Limits: documents.AdmissionLimits{JobMaxBytes: 100}}
+	request := documents.RenderAdmission{Settings: documents.RenderSettings{Format: "pdf", OCR: selection()}}
+	flag := reflect.ValueOf(&request).Elem().FieldByName("ReOCR")
+	if !flag.IsValid() || flag.Kind() != reflect.Bool {
+		t.Fatal("server-marked reOCR admission must exist independently of browser settings")
+	}
+	flag.SetBool(true)
+	if _, err := service.Admit(context.Background(), "owner", request); err != nil {
+		t.Fatal(err)
+	}
+	output := reflect.ValueOf(record.request).FieldByName("ResolvedOutput")
+	if !output.IsValid() || output.String() != "pdf_text_layer" {
+		t.Fatal("reOCR output was not pinned from the selected model")
+	}
 }
 
 func (r *records) FindRender(_ context.Context, _ string, request documents.RenderAdmission) (documents.Admission, bool, error) {
