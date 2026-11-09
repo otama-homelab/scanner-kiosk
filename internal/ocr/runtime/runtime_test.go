@@ -2,11 +2,16 @@ package runtime
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
+	"io"
+	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 
+	"scanner-kiosk/internal/artifactscope"
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/pkg/ocrplugin"
 )
@@ -102,5 +107,102 @@ func TestDisabledRuntimeAndCancelledStartup(t *testing.T) {
 	cancel()
 	if _, err = Build(ctx, config.OCR{}, nil); !errors.Is(err, context.Canceled) {
 		t.Fatal("cancelled startup accepted")
+	}
+}
+
+func TestDisabledCapabilityDoesNotRun(t *testing.T) {
+	built := 0
+	factories := map[string]Factory{"optional": func(context.Context, any) (Instance, error) {
+		built++
+		t.Fatal("unconfigured factory constructed")
+		return Instance{}, nil
+	}}
+	r, err := Build(context.Background(), config.OCR{}, factories)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer r.Close()
+	for range 3 {
+		if len(r.Registry.Capabilities()) != 0 {
+			t.Fatal("disabled provider advertised")
+		}
+		if p, err := r.Registry.Select("optional", ocrplugin.Request{}); err == nil || p != nil {
+			t.Fatal("disabled provider selected")
+		}
+	}
+	if built != 0 {
+		t.Fatal("metadata built a disabled provider")
+	}
+}
+
+type outputProvider struct{ fixtureProvider }
+
+func (outputProvider) Run(ctx context.Context, request ocrplugin.Request, access ocrplugin.Access) (ocrplugin.Result, error) {
+	if _, err := access.OpenInput(ctx, "foreign_artifact_001"); err == nil {
+		return ocrplugin.Result{}, errors.New("foreign input accessible")
+	}
+	input, err := access.OpenInput(ctx, request.Pages[0].ArtifactID)
+	if err != nil {
+		return ocrplugin.Result{}, err
+	}
+	defer input.Close()
+	output, err := access.CreateOutput(ctx, request.Output)
+	if err != nil {
+		return ocrplugin.Result{}, err
+	}
+	if _, err = io.Copy(output, input); err != nil {
+		return ocrplugin.Result{}, err
+	}
+	if err = output.Close(); err != nil {
+		return ocrplugin.Result{}, err
+	}
+	return ocrplugin.Result{ModelVersion: request.ModelVersion, Pages: []ocrplugin.PageResult{{PageID: request.Pages[0].ID, ArtifactID: output.Reference(), Kind: request.Output}}}, nil
+}
+
+func TestProviderCannotPublish(t *testing.T) {
+	ctx := context.Background()
+	root := t.TempDir()
+	if err := os.Chmod(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	data := []byte("synthetic transcript")
+	if err := os.WriteFile(filepath.Join(root, "source"), data, 0600); err != nil {
+		t.Fatal(err)
+	}
+	scope, err := artifactscope.New(root, map[string]artifactscope.Input{"input_artifact_001": {RelativePath: "source", Size: int64(len(data)), SHA256: sha256.Sum256(data)}}, artifactscope.Limits{MaxInputBytes: 1024, MaxOutputBytes: 1024, MaxTotalOutputBytes: 1024, MaxOutputs: 1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer scope.Close()
+	registry, err := ocrplugin.New(ctx, outputProvider{fixtureProvider{id: "fixture", languages: []string{"ja"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	request := ocrplugin.Request{JobID: "job_000000000001", InputRevision: 1, ModelID: "model", ModelVersion: "fixed", Languages: []string{"ja"}, QualityPreset: "standard", Output: ocrplugin.Text, Pages: []ocrplugin.InputPage{{ID: "page_00000000001", ArtifactID: "input_artifact_001", Width: 100, Height: 100, DPI: 300}}}
+	provider, err := registry.Select("fixture", request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := provider.Run(ctx, request, scope)
+	if err != nil {
+		t.Fatal(err)
+	}
+	artifacts, err := scope.Seal(ctx)
+	if err != nil || len(artifacts) != 1 || result.Pages[0].ArtifactID != artifacts[0].ID {
+		t.Fatal("provider result did not bind scoped output", result, artifacts, err)
+	}
+	outputPath := filepath.Join(root, artifacts[0].RelativePath)
+	if got, err := os.ReadFile(outputPath); err != nil || string(got) != string(data) {
+		t.Fatal("scoped output bytes missing", err)
+	}
+	// Completion cannot release staging; application publication must succeed first.
+	if err := scope.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(outputPath); !os.IsNotExist(err) {
+		t.Fatal("provider output survived aborted application publication", err)
+	}
+	if got, err := os.ReadFile(filepath.Join(root, "source")); err != nil || string(got) != string(data) {
+		t.Fatal("abort changed original", err)
 	}
 }

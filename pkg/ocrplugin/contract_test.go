@@ -35,12 +35,21 @@ func TestPositionedWritingDirection(t *testing.T) {
 	}
 }
 
-type fixture struct{ caps Capabilities }
+type fixture struct {
+	caps              Capabilities
+	discoveries, runs int
+}
 
-func (f *fixture) Capabilities(context.Context) (Capabilities, error)   { return f.caps, nil }
-func (f *fixture) Run(context.Context, Request, Access) (Result, error) { return Result{}, nil }
+func (f *fixture) Capabilities(context.Context) (Capabilities, error) {
+	f.discoveries++
+	return f.caps, nil
+}
+func (f *fixture) Run(context.Context, Request, Access) (Result, error) {
+	f.runs++
+	return Result{}, nil
+}
 func provider(id string, output OutputKind) *fixture {
-	return &fixture{Capabilities{APIVersion: 1, ID: id, Name: id, Version: "plugin-1", Models: []Model{{ID: "model", Name: "Model", Version: "pinned-1", Languages: []string{"ja", "en"}, QualityPresets: []string{"balanced"}, Outputs: []OutputKind{output}, MaxPages: 50, MaxPagePixels: 40_000_000}}}}
+	return &fixture{caps: Capabilities{APIVersion: 1, ID: id, Name: id, Version: "plugin-1", Models: []Model{{ID: "model", Name: "Model", Version: "pinned-1", Languages: []string{"ja", "en"}, QualityPresets: []string{"balanced"}, Outputs: []OutputKind{output}, MaxPages: 50, MaxPagePixels: 40_000_000}}}}
 }
 func request() Request {
 	return Request{JobID: "job-fixture", InputRevision: 1, ModelID: "model", ModelVersion: "pinned-1", Languages: []string{"ja", "en"}, QualityPreset: "balanced", Output: SearchablePDF, Pages: []InputPage{{ID: "page-1", ArtifactID: "artifact-1", Width: 2480, Height: 3508, DPI: 300}}}
@@ -71,11 +80,15 @@ func TestAddProviderWithoutChangingRegistryOrRequest(t *testing.T) {
 	}
 }
 func TestNoImplicitOCRFallback(t *testing.T) {
-	registry, err := New(context.Background(), provider("tesseract", SearchablePDF))
+	selected, alternative := provider("tesseract", SearchablePDF), provider("alternative", Text)
+	registry, err := New(context.Background(), selected, alternative)
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, name := range []string{"model", "version", "language", "duplicate-language", "preset", "output", "pixel-limit", "duplicate-page"} {
+	if got, err := registry.Select("tesseract", request()); err != nil || got != selected {
+		t.Fatal("exact provider not selected", err)
+	}
+	for _, name := range []string{"model", "version", "empty-version", "language", "duplicate-language", "preset", "output", "pixel-limit", "duplicate-page"} {
 		t.Run(name, func(t *testing.T) {
 			r := request()
 			switch name {
@@ -83,6 +96,8 @@ func TestNoImplicitOCRFallback(t *testing.T) {
 				r.ModelID = "missing"
 			case "version":
 				r.ModelVersion = "new"
+			case "empty-version":
+				r.ModelVersion = ""
 			case "language":
 				r.Languages = []string{"fr"}
 			case "duplicate-language":
@@ -103,6 +118,14 @@ func TestNoImplicitOCRFallback(t *testing.T) {
 	}
 	if _, err := registry.Select("unknown", request()); err == nil {
 		t.Fatal("missing provider accepted")
+	}
+	for range 3 {
+		registry.Capabilities()
+	}
+	for _, p := range []*fixture{selected, alternative} {
+		if p.discoveries != 1 || p.runs != 0 {
+			t.Fatalf("selection/metadata rediscovered or processed: discoveries=%d runs=%d", p.discoveries, p.runs)
+		}
 	}
 }
 func TestCapabilitySnapshotsAreIsolated(t *testing.T) {
