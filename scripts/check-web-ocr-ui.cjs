@@ -32,12 +32,17 @@ if(process.env.SCANNER_TEST_SCENARIO){
     const panels=page.locator('.ocr-result-panel');assert.equal(await panels.count(),2,'same-page comparison must render old and candidate');
     await panels.first().getByRole('button',{name:'1. <script>window.ocrInjected=true</script>',exact:true}).click();
     const rect=panels.first().locator('rect.ocr-highlight');assert.equal(await rect.getAttribute('x'),'20');assert.equal(await rect.getAttribute('width'),'40');
+    const geometry=await rect.evaluate(el=>{const m=el.parentElement.getScreenCTM(),p=new DOMPoint(20,10).matrixTransform(m),q=new DOMPoint(60,30).matrixTransform(m),r=el.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,expected:[Math.min(p.x,q.x),Math.min(p.y,q.y),Math.abs(p.x-q.x),Math.abs(p.y-q.y)]}});for(const [i,k] of ['x','y','w','h'].entries())assert(Math.abs(geometry[k]-geometry.expected[i])<1,'rendered highlight must follow rotated source coordinates');
     assert.equal(await panels.first().locator('svg').getAttribute('viewBox'),'0 0 100 200');assert.equal(await panels.last().locator('svg').getAttribute('viewBox'),'0 0 200 100');
     assert((await panels.first().locator('image').getAttribute('href')).includes(old));assert((await panels.last().locator('image').getAttribute('href')).includes(candidate));
     assert.equal(await page.evaluate(()=>window.ocrInjected),undefined);
     await t.test('TestReOCRReadingOrder '+width,async()=>{for(const panel of [panels.first(),panels.last()])assert.deepEqual(await panel.locator('.ocr-spans button').allTextContents(),['1. <script>window.ocrInjected=true</script>','2. 日本語 second'])});
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'comparison must fit viewport');
-    await page.screenshot({path:'/tmp/scanner-kiosk-reocr-compare-'+width+'.png',fullPage:true});checks.push('TestReOCRComparePositions '+width,'TestReOCRReadingOrder '+width);await context.close();continue;
+    await page.evaluate(()=>{document.activeElement.blur();scrollTo(0,0)});await page.screenshot({path:'/tmp/scanner-kiosk-reocr-compare-'+width+'.png',fullPage:true});
+    await page.route('**/ocr-results/**/positions',r=>reply(r,{page_id:'foreign_page',width:200,height:100,spans:[]}));
+    await page.route('**/ocr-results/**/effective',r=>r.fulfill({status:404}));
+    await page.reload();await page.getByText('Text positions are unavailable. No highlights or reading order are inferred.',{exact:true}).first().waitFor();assert.equal(await page.locator('.ocr-spans button').count(),0);assert.equal(await page.locator('.ocr-highlight[visibility="visible"]').count(),0);await page.getByText('The matching source preview is unavailable.',{exact:true}).waitFor();assert.equal(await page.evaluate(()=>window.ocrInjected),undefined);
+    checks.push('TestReOCRComparePositions '+width,'TestReOCRReadingOrder '+width,'Missing preview and foreign positions fail honestly '+width);await context.close();continue;
    }
    const action=page.getByRole('button',{name:'Recognize text again',exact:true});assert.equal(await action.count(),1,'document must offer explicit optional reOCR');
    await action.click();await page.getByRole('switch').check();await page.getByText('Images will be sent to Family OCR server for OCR.',{exact:true}).waitFor();

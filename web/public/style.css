@@ -229,3 +229,15 @@ button:active:not(:disabled){box-shadow:inset 0 0 0 2px var(--accent)}
 .correction-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px;border-top:1px solid var(--line);padding-top:16px}
 .correction-actions button{margin:0;min-height:48px}
 @media(max-width:600px){.correction-compare,.correction-details{grid-template-columns:1fr}.correction-dialog{padding:20px}.correction-actions button{flex:1 1 100%}}
+.ocr-results{margin-block:1.5rem;min-width:0}
+.ocr-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5rem;margin-block:1rem}
+.ocr-result-panel{min-width:0;overflow-wrap:anywhere;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;margin:0;scroll-margin-top:8rem}
+.ocr-result-panel h3{margin-block:.5rem}
+.ocr-source{font-size:.875rem}
+.ocr-source-preview{display:block;width:100%;max-height:28rem;margin-block:1rem}
+.ocr-highlight{fill:transparent;stroke:var(--accent);stroke-width:2;vector-effect:non-scaling-stroke}
+.ocr-spans{list-style:none;padding:0;display:grid;gap:.5rem;max-height:24rem;overflow:auto}
+.ocr-spans button{width:100%;text-align:start;white-space:pre-wrap;overflow-wrap:anywhere}
+.ocr-spans button[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
+.ocr-result-panel pre{white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:48rem){.ocr-comparison{grid-template-columns:minmax(0,1fr)}}
