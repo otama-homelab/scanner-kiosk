@@ -20,7 +20,8 @@ import struct
 spec=importlib.util.spec_from_file_location('native_sbom',Path(__file__).with_name('native-sbom.py'))
 native=importlib.util.module_from_spec(spec);spec.loader.exec_module(native)
 ROOTS={
-    'core':['usr/bin/scanimage','usr/libexec/scanner/sane-parameters','usr/lib/sane/libsane-airscan.so.1'],
+    'core':['usr/bin/scanimage','usr/libexec/scanner/sane-parameters','usr/lib/sane/libsane-airscan.so.1',
+            'usr/bin/pdftoppm','usr/bin/pdftotext','usr/bin/pdfinfo'],
     'tesseract':['usr/bin/tesseract'],
 }
 LOADER='lib/ld-musl-x86_64.so.1'
@@ -166,6 +167,10 @@ def partition(manifest,provenance,root,output):
     for role,roots in ROOTS.items():selections[role],graphs[role]=closure(root,files,roots)
     require('usr/share/scanner-kiosk/ca-certificates.crt' in files,'missing native certificate bundle')
     selections['core'].add('usr/share/scanner-kiosk/ca-certificates.crt')
+    for name in ['usr/share/poppler/cMap/Adobe-Japan1/90ms-RKSJ-H',
+                 'usr/share/poppler/cidToUnicode/Adobe-Japan1']:
+        require(name in files,'missing Japanese PDF character mapping')
+    selections['core'].update(n for n in files if n.startswith('usr/share/poppler/'))
     for name in ['eng','jpn','osd']:
         require('usr/share/tessdata/'+name+'.traineddata' in files,'missing Tesseract dictionary')
     selections['tesseract'].update(n for n in files if n.startswith('usr/share/tessdata/'))

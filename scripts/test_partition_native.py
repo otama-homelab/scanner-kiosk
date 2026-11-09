@@ -139,6 +139,11 @@ class PartitionNativeTest(unittest.TestCase):
                     self.assertFalse(self.output.exists())
                 finally:self.files[name]=entry
 
+    def test_missing_PDF_license_notice_fails_without_output(self):
+        (self.native/'usr/share/scanner-kiosk/notices/native/poppler-25.12.0/COPYING').unlink()
+        with self.assertRaises((ValueError,OSError)):self.partition()
+        self.assertFalse(self.output.exists())
+
     def test_changed_bytes_and_unsafe_elf_or_links_are_rejected(self):
         p=self.native/'usr/share/tessdata/jpn.traineddata';p.chmod(0o644);p.write_bytes(b'changed');p.chmod(0o444)
         with self.assertRaises(ValueError):self.partition()
