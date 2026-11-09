@@ -151,6 +151,9 @@ func TestReOCRBundleBudgetCleanup(t *testing.T) {
 }
 
 func TestMain(m *testing.M) {
+	if len(os.Args) > 1 && os.Args[1] == "__pdf-raster" {
+		os.Exit(PDFRasterChild(os.Args[2:], os.Stdin, os.Stdout))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "__pdf-assemble" {
 		os.Exit(pdfassemble.AssemblyChild(os.Args[2:], os.Stdin, os.Stdout))
 	}

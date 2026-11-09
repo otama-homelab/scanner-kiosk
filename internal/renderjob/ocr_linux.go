@@ -37,13 +37,62 @@ func resultArtifact(a artifactscope.Artifact, media string, width, height int) d
 
 func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, root string, work documents.RenderWork, inputs map[string]artifactscope.Input, pages []pdfassemble.ScopedPage, providerScope *artifactscope.Scope, budget *artifactscope.Budget, options pdfassemble.Options, track func(*artifactscope.Scope)) (*artifactscope.Scope, string, *documents.OCRResultBundle, error) {
 	settings := work.Snapshot.Settings.OCR
-	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, Output: work.Snapshot.OCROutput}
+	recognitionPages := append([]pdfassemble.ScopedPage(nil), pages...)
+	rasterReplies := make(map[int]rasterReply)
+	rasterScope := providerScope
 	for i, p := range pages {
-		// PDF recognition rasterization belongs to the next integration slice.
-		if p.MediaType == "application/pdf" {
-			return nil, "", nil, ErrUnsupported
+		if p.MediaType != "application/pdf" {
+			continue
 		}
-		req.Pages = append(req.Pages, ocrplugin.InputPage{ID: work.Snapshot.Pages[i].ID, ArtifactID: p.ID, Width: p.Width, Height: p.Height, DPI: work.Snapshot.Pages[i].DPI})
+		data, reply, e := rasterPDF(ctx, records, root, rasterScope, p.ID, options, budget)
+		if e != nil {
+			return nil, "", nil, e
+		}
+		w, e := rasterScope.CreateArtifact(ctx, artifactscope.PNG)
+		if e != nil {
+			return nil, "", nil, e
+		}
+		if _, e = w.Write(data); e != nil {
+			return nil, "", nil, e
+		}
+		if e = w.Close(); e != nil {
+			return nil, "", nil, e
+		}
+		recognitionPages[i].ID = w.Reference()
+		recognitionPages[i].MediaType = "image/png"
+		recognitionPages[i].Width = reply.Width
+		recognitionPages[i].Height = reply.Height
+		rasterReplies[i] = reply
+	}
+	var rasterArtifacts []artifactscope.Artifact
+	var err error
+	if len(rasterReplies) > 0 {
+		rasterArtifacts, err = rasterScope.Seal(ctx)
+		if err != nil {
+			return nil, "", nil, err
+		}
+	}
+	recognitionInputs := make(map[string]artifactscope.Input, len(inputs)+len(rasterArtifacts))
+	for id, a := range inputs {
+		recognitionInputs[id] = a
+	}
+	for _, a := range rasterArtifacts {
+		recognitionInputs[a.ID] = artifactscope.Input{RelativePath: a.RelativePath, Size: a.Size, SHA256: a.SHA256}
+	}
+	if len(rasterArtifacts) > 0 {
+		providerScope, err = artifactscope.NewWithBudget(root, recognitionInputs, artifactscope.Limits{MaxInputBytes: options.MaxInputBytes, MaxOutputBytes: options.MaxOutputBytes, MaxTotalOutputBytes: work.ReserveBytes, MaxOutputs: len(pages)}, budget)
+		if err != nil {
+			return nil, "", nil, err
+		}
+		track(providerScope)
+	}
+	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, Output: work.Snapshot.OCROutput}
+	for i, p := range recognitionPages {
+		dpi := work.Snapshot.Pages[i].DPI
+		if _, ok := rasterReplies[i]; ok {
+			dpi = 300
+		}
+		req.Pages = append(req.Pages, ocrplugin.InputPage{ID: work.Snapshot.Pages[i].ID, ArtifactID: p.ID, Width: p.Width, Height: p.Height, DPI: dpi})
 	}
 	provider, err := selector.SelectOCR(ctx, settings.ProviderID, req)
 	if err != nil {
@@ -65,7 +114,7 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		return nil, "", nil, err
 	}
 	combined := map[string]artifactscope.Input{}
-	for id, a := range inputs {
+	for id, a := range recognitionInputs {
 		combined[id] = a
 	}
 	for _, b := range bound {
@@ -118,6 +167,14 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		source := work.Snapshot.Sources[i]
 		p := work.Snapshot.Pages[i]
 		page := documents.OCRResultPage{PageID: p.ID, OriginalArtifactID: source.Original.ID, EffectiveArtifactID: source.Effective.ID, OriginalSHA256: source.Original.SHA256, EffectiveSHA256: source.Effective.SHA256, CorrectionID: source.CorrectionID, TransformJSON: source.TransformJSON, SourceType: "scan", Rotation: p.Rotation, PixelWidth: b.Input.Width, PixelHeight: b.Input.Height, PDFTextOrigin: "recognition"}
+		if raster, ok := rasterReplies[i]; ok {
+			page.SourceType = "pdf"
+			page.PDFWidthPoints = p.PDFWidthPoints
+			page.PDFHeightPoints = p.PDFHeightPoints
+			page.PDFTextOrigin = raster.Origin
+			mapping := raster.Mapping
+			page.PDFRaster = &mapping
+		}
 		data, e := read(b.Artifact.ID, min(options.MaxOutputBytes, 64<<20))
 		if e != nil {
 			return nil, "", nil, e
@@ -145,6 +202,10 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 				return nil, "", nil, e
 			}
 			layer, e := pdftextlayer.RenderPositioned(ctx, positioned, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()))
+			if page.PDFRaster != nil {
+				box := page.PDFRaster.CropBox
+				layer, e = pdftextlayer.RenderPositionedPDF(ctx, positioned, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()), box[2]-box[0], box[3]-box[1])
+			}
 			if e != nil {
 				return nil, "", nil, e
 			}
@@ -174,12 +235,12 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 				return nil, "", nil, err
 			}
 		}
-		preview, e := read(source.Effective.ID, options.MaxInputBytes)
+		preview, e := read(recognitionPages[i].ID, options.MaxInputBytes)
 		if e != nil {
 			return nil, "", nil, e
 		}
 		kind := artifactscope.PNG
-		if source.Effective.MediaType == "image/jpeg" {
+		if recognitionPages[i].MediaType == "image/jpeg" {
 			kind = artifactscope.JPEG
 		}
 		references[i].preview, e = write(kind, preview)
@@ -203,7 +264,7 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		if ref.text != "" {
 			p.Text = resultArtifact(byID[ref.text], "text/plain", 0, 0)
 		}
-		preview := resultArtifact(byID[ref.preview], work.Inputs[i].MediaType, p.PixelWidth, p.PixelHeight)
+		preview := resultArtifact(byID[ref.preview], recognitionPages[i].MediaType, p.PixelWidth, p.PixelHeight)
 		p.Preview = &preview
 		if ref.layer != "" {
 			a := resultArtifact(byID[ref.layer], "application/pdf", 0, 0)

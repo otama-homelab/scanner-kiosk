@@ -46,6 +46,7 @@ var tools = map[string]string{
 	"scanner-native-scanimage":  "usr/bin/scanimage",
 	"scanner-native-parameters": "usr/libexec/scanner/sane-parameters",
 	"scanner-native-tesseract":  "usr/bin/tesseract",
+	"scanner-native-pdftoppm":   "usr/bin/pdftoppm",
 }
 
 func digest(data []byte) string { h := sha256.Sum256(data); return hex.EncodeToString(h[:]) }
@@ -313,6 +314,7 @@ func applicationEnvironment(root string, args, input []string) []string {
 		"SCANNER_SCANIMAGE_PATH":         filepath.Join(root, "tools/scanner-native-scanimage"),
 		"SCANNER_SANE_PARAMETERS_PATH":   filepath.Join(root, "tools/scanner-native-parameters"),
 		"SCANNER_OCR_TESSERACT_PATH":     filepath.Join(root, "tools/scanner-native-tesseract"),
+		"SCANNER_PDF_RASTER_PATH":        filepath.Join(root, "tools/scanner-native-pdftoppm"),
 		"SCANNER_OCR_TESSERACT_DATA_DIR": filepath.Join(root, "usr/share/tessdata"),
 	}
 	libraries, _ := json.Marshal([]string{filepath.Join(root, "lib"), filepath.Join(root, "usr/lib"), filepath.Join(root, "usr/lib/sane")})

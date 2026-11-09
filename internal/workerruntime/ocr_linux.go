@@ -41,6 +41,14 @@ type processingRecords struct {
 	mu        sync.Mutex
 }
 
+func (*processingRecords) PDFRasterCommand() renderjob.PDFRasterCommand {
+	path := os.Getenv("SCANNER_PDF_RASTER_PATH")
+	if path == "" {
+		path = "/usr/bin/pdftoppm"
+	}
+	return renderjob.PDFRasterCommand{Path: path}
+}
+
 func (r *processingRecords) initOCR(ctx context.Context) error {
 	if r.providers == nil {
 		root := filepath.Join(r.config.DocumentDir, ".native")

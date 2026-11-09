@@ -19,6 +19,19 @@ import (
 // image-free invisible-text page. Font licensing and recognition quality remain
 // the caller's responsibility. Text follows provider span order, without shaping.
 func RenderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input ocrplugin.InputPage, fontData []byte, maxBytes int64) ([]byte, error) {
+	return renderPositioned(ctx, page, input, fontData, maxBytes, float64(page.Width), float64(page.Height))
+}
+
+// RenderPositionedPDF maps pixel coordinates independently on each axis to the
+// exact unrotated CropBox dimensions, including the last partial 300dpi pixel.
+func RenderPositionedPDF(ctx context.Context, page ocrplugin.PositionedPage, input ocrplugin.InputPage, fontData []byte, maxBytes int64, widthPoints, heightPoints float64) ([]byte, error) {
+	if math.IsNaN(widthPoints) || math.IsNaN(heightPoints) || math.IsInf(widthPoints, 0) || math.IsInf(heightPoints, 0) || widthPoints <= 0 || heightPoints <= 0 || widthPoints > 20000 || heightPoints > 20000 {
+		return nil, ErrInvalid
+	}
+	return renderPositioned(ctx, page, input, fontData, maxBytes, widthPoints, heightPoints)
+}
+
+func renderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input ocrplugin.InputPage, fontData []byte, maxBytes int64, widthPoints, heightPoints float64) ([]byte, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -81,6 +94,9 @@ func RenderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input 
 		}
 	}
 	content := &bounded{limit: maxBytes}
+	if _, err := fmt.Fprintf(content, "q %.12g 0 0 %.12g 0 0 cm\n", widthPoints/float64(page.Width), heightPoints/float64(page.Height)); err != nil {
+		return nil, err
+	}
 	for _, span := range page.Spans {
 		if err := ctx.Err(); err != nil {
 			return nil, err
@@ -124,6 +140,9 @@ func RenderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input 
 			return nil, err
 		}
 	}
+	if _, err := fmt.Fprint(content, "Q\n"); err != nil {
+		return nil, err
+	}
 	cmap := &bounded{limit: maxBytes}
 	if _, err := fmt.Fprint(cmap, "/CIDInit /ProcSet findresource begin 12 dict begin begincmap /CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def /CMapName /ScannerUnicode def /CMapType 2 def 1 begincodespacerange <0000> <FFFF> endcodespacerange\n"); err != nil {
 		return nil, err
@@ -159,7 +178,7 @@ func RenderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input 
 	objects := []string{
 		"<< /Type /Catalog /Pages 2 0 R >>",
 		"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-		fmt.Sprintf("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 %d %d] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>", page.Width, page.Height),
+		fmt.Sprintf("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 %.12g %.12g] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>", widthPoints, heightPoints),
 		"<< /Type /Font /Subtype /Type0 /BaseFont /ScannerOCR /Encoding /Identity-H /DescendantFonts [6 0 R] /ToUnicode 9 0 R >>",
 		stream(content.data.Bytes()),
 		fmt.Sprintf("<< /Type /Font /Subtype /CIDFontType2 /BaseFont /ScannerOCR /CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >> /FontDescriptor 7 0 R /CIDToGIDMap 10 0 R /W [0 [%s]] >>", w.String()),

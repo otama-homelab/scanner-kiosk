@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"image"
+	"math"
 	"reflect"
 
 	"scanner-kiosk/internal/correction"
@@ -29,13 +30,22 @@ type OCRResultPage struct {
 	SourceType                                      string
 	PDFWidthPoints, PDFHeightPoints                 float64
 	Rotation, PixelWidth, PixelHeight               int
-	PDFTextOrigin                                   string // recognition or retained-source
+	PDFTextOrigin                                   string            // recognition or retained-source
+	PDFRaster                                       *PDFRasterMapping `json:",omitempty"`
 	Text                                            ArtifactRecord
 	TranscriptUnavailable                           bool // legacy layer-only output has no transcript
 	Layer                                           *ArtifactRecord
 	Positions                                       *ArtifactRecord // nil means positions unavailable, never synthesized
 	Preview                                         *ArtifactRecord // optional generated source preview
 	Thumbnail                                       *ArtifactRecord
+}
+
+// PDFRasterMapping binds recognition coordinates to the unrotated original
+// CropBox. Display rotation is a separate page property and is applied once.
+type PDFRasterMapping struct {
+	DPI, SourceRotation int
+	MediaBox, CropBox   [4]float64
+	ScaleX, ScaleY      float64
 }
 
 type ocrResultArtifact struct {
@@ -54,6 +64,22 @@ func normalizeOCRBundle(b OCRResultBundle) ([]byte, []ocrResultArtifact, int64, 
 			return nil, nil, 0, ErrInvalid
 		}
 		seenPages[p.PageID] = true
+		if p.PDFRaster != nil {
+			m := p.PDFRaster
+			b, c := m.MediaBox, m.CropBox
+			if p.SourceType != "pdf" || m.DPI != 300 || (m.SourceRotation != 0 && m.SourceRotation != 90 && m.SourceRotation != 180 && m.SourceRotation != 270) {
+				return nil, nil, 0, ErrInvalid
+			}
+			for _, v := range append(append([]float64{}, b[:]...), c[:]...) {
+				if math.IsNaN(v) || math.IsInf(v, 0) || math.Abs(v) > 20000 {
+					return nil, nil, 0, ErrInvalid
+				}
+			}
+			w, h := c[2]-c[0], c[3]-c[1]
+			if w <= 0 || h <= 0 || c[0] < b[0] || c[1] < b[1] || c[2] > b[2] || c[3] > b[3] || p.PixelWidth != int(math.Ceil(w*300/72)) || p.PixelHeight != int(math.Ceil(h*300/72)) || m.ScaleX != float64(p.PixelWidth)/w || m.ScaleY != float64(p.PixelHeight)/h {
+				return nil, nil, 0, ErrInvalid
+			}
+		}
 		if p.Text.MediaType != "text/plain" || (p.TranscriptUnavailable && (p.Text.Size != 0 || p.Positions != nil || p.Layer == nil)) {
 			return nil, nil, 0, ErrInvalid
 		}

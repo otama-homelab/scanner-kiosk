@@ -18,9 +18,13 @@ import (
 	"scanner-kiosk/internal/importupload"
 	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/pdfimport"
+	"scanner-kiosk/internal/renderjob"
 )
 
 func TestMain(m *testing.M) {
+	if len(os.Args) > 1 && os.Args[1] == "__pdf-raster" {
+		os.Exit(renderjob.PDFRasterChild(os.Args[2:], os.Stdin, os.Stdout))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "__pdf-assemble" {
 		os.Exit(pdfassemble.AssemblyChild(os.Args[2:], os.Stdin, os.Stdout))
 	}

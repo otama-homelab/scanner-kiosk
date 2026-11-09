@@ -13,12 +13,16 @@ import (
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/pdfimport"
+	"scanner-kiosk/internal/renderjob"
 	"scanner-kiosk/internal/staterecovery"
 	"scanner-kiosk/internal/useradmin"
 	"scanner-kiosk/internal/workerruntime"
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "__pdf-raster" {
+		os.Exit(renderjob.PDFRasterChild(os.Args[2:], os.Stdin, os.Stdout))
+	}
 	if len(os.Args) > 1 && os.Args[1] == "__pdf-assemble" {
 		os.Exit(pdfassemble.AssemblyChild(os.Args[2:], os.Stdin, os.Stdout))
 	}
