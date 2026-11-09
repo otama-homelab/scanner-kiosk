@@ -64,6 +64,20 @@ func TestReOCRSchemaUpgrade(t *testing.T) {
 	if scalar(t, f.docs, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='ocr_results'") != 1 {
 		t.Fatal("completed OCR candidates need durable storage separate from published outputs")
 	}
+	// Reopen a populated v20 database through the production upgrader.
+	must(t, f.docs, "DROP TABLE ocr_results")
+	must(t, f.docs, "DELETE FROM schema_migrations WHERE version=21")
+	if err := f.docs.Close(); err != nil {
+		t.Fatal(err)
+	}
+	db, err := storage.Open(f.docsPath, storage.Documents)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	if scalar(t, db, "SELECT count(*) FROM ocr_results") != 0 || scalar(t, db, "SELECT count(*) FROM jobs WHERE id=?", jobA) != 1 || scalar(t, db, "SELECT count(*) FROM reservations") != 1 {
+		t.Fatal("upgrade changed pending work")
+	}
 }
 
 func TestFixtureSchemasRemainPrivateAndIndependent(t *testing.T) {
