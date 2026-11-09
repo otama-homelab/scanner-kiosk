@@ -14,18 +14,19 @@ import (
 // Projection contains public metadata only. Storage paths, owners and provider
 // configuration are deliberately absent. All fields are read in one transaction.
 type Projection struct {
-	ID            string            `json:"id"`
-	Revision      int64             `json:"revision"`
-	ActiveJobID   *string           `json:"active_job_id"`
-	PhotoFormat   *string           `json:"photo_format"`
-	Purpose       string            `json:"purpose"`
-	State         string            `json:"state"`
-	CreatedAt     time.Time         `json:"created_at"`
-	ExpiresAt     time.Time         `json:"expires_at"`
-	PageCount     int               `json:"page_count"`
-	Pages         []PageProjection  `json:"pages"`
-	Output        *OutputProjection `json:"output"`
-	ReadyRevision *int64            `json:"ready_revision"`
+	OCRResults    []OCRResultSummary `json:"ocr_results"`
+	ID            string             `json:"id"`
+	Revision      int64              `json:"revision"`
+	ActiveJobID   *string            `json:"active_job_id"`
+	PhotoFormat   *string            `json:"photo_format"`
+	Purpose       string             `json:"purpose"`
+	State         string             `json:"state"`
+	CreatedAt     time.Time          `json:"created_at"`
+	ExpiresAt     time.Time          `json:"expires_at"`
+	PageCount     int                `json:"page_count"`
+	Pages         []PageProjection   `json:"pages"`
+	Output        *OutputProjection  `json:"output"`
+	ReadyRevision *int64             `json:"ready_revision"`
 }
 type CaptureProjection struct {
 	Size  string `json:"size"`
@@ -260,6 +261,26 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 		output.DownloadURL = "/api/documents/" + document + "/download"
 		values[i].Output = &output
 		values[i].ReadyRevision = &output.Revision
+	}
+	if rows.Err() != nil {
+		return ErrStorage
+	}
+	rows.Close()
+	// At most the candidate and the latest adopted result are advertised. Older
+	// source-labelled results remain accessible by their immutable result identity.
+	rows, err = tx.QueryContext(ctx, `SELECT r.document_id,r.id,r.state,r.input_revision FROM ocr_results r WHERE r.owner_id=? AND r.document_id IN (`+selected+`) AND (r.state='candidate' OR r.state='adopted' AND r.id=(SELECT r2.id FROM ocr_results r2 WHERE r2.document_id=r.document_id AND r2.owner_id=r.owner_id AND r2.state='adopted' ORDER BY r2.adopted_revision DESC LIMIT 1))`, args...)
+	if err != nil {
+		return ErrStorage
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var doc string
+		var result OCRResultSummary
+		if err = rows.Scan(&doc, &result.ID, &result.State, &result.InputRevision); err != nil {
+			return ErrStorage
+		}
+		result.URL = "/api/documents/" + doc + "/ocr-results/" + result.ID
+		values[positions[doc]].OCRResults = append(values[positions[doc]].OCRResults, result)
 	}
 	if rows.Err() != nil {
 		return ErrStorage
