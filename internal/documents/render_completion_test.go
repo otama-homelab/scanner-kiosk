@@ -7,6 +7,27 @@ import (
 	"testing"
 )
 
+func TestReOCRCancelKeepsPrior(t *testing.T) {
+	f, _ := ocrCandidateFixture(t)
+	ctx := context.Background()
+	if err := f.store.RequestCancel(ctx, alice, jobA); err != nil {
+		t.Fatal(err)
+	}
+	if scalar(t, f.docs, `SELECT count(*) FROM reservations WHERE job_id=?`, jobA) != 1 {
+		t.Fatal("cancel prematurely freed reservation")
+	}
+	if err := f.store.FinishStoppedRender(ctx, alice, jobA, RenderStop{RunnerID: runner, ProcessStoppedAtMS: 2000, WorkspaceCleanedAtMS: 2000}, "failed"); err != nil {
+		t.Fatal(err)
+	}
+	p, err := f.store.ReadDocument(ctx, alice, docA)
+	if err != nil || p.State != "ready" || p.Output == nil {
+		t.Fatal("stopped optional OCR did not restore prior ready result", p.State, err)
+	}
+	if ref, err := f.store.ReadCurrentOutput(ctx, alice, docA); err != nil || ref.Artifact.ID != "artifact_prior_output_001" {
+		t.Fatal(ref, err)
+	}
+}
+
 func TestStoppedRenderReleasesOnlyAfterEvidence(t *testing.T) {
 	for _, mode := range []string{"failed", "interrupted", "cancelled", "disabled", "expired", "deleting", "new-revision"} {
 		t.Run(mode, func(t *testing.T) {
