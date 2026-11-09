@@ -4,20 +4,21 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
 if(process.env.SCANNER_TEST_SCENARIO){
  const {test}=require('node:test');
  const scenario=process.env.SCANNER_TEST_SCENARIO;
- test(scenario==='reocr-start'?'TestReOCRStartLifecycle':'TestReOCRComparePositions',async(t)=>{
+ test(scenario==='reocr-start'?'TestReOCRStartLifecycle':scenario==='reocr-adopt'?'TestReOCRWholeDocumentAdoption':'TestReOCRComparePositions',async(t)=>{
   const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE});
   const checks=[],requests=[];
   try{for(const width of [1280,390]){
    const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width,height:844}});const page=await context.newPage();page.setDefaultTimeout(2500);
-   const before=requests.filter(r=>r.path.endsWith('/reocr')).length;const id='document_reocr_001',jobid='job_reocr_0000001',old='result_reocr_old01',candidate='result_reocr_new01',pageid='page_reocr_000001';let active=null,cancelled=false;
+   const before=requests.filter(r=>r.path.endsWith('/reocr')).length;const id='document_reocr_001',jobid='job_reocr_0000001',old='result_reocr_old01',candidate='result_reocr_new01',pageid='page_reocr_000001';let active=null,cancelled=false,disposition='candidate',lose=false,stale=false;
    const summary=(rid,state)=>({id:rid,state,input_revision:1,url:'/api/documents/'+id+'/ocr-results/'+rid});
    const result=rid=>({...summary(rid,rid===old?'adopted':'candidate'),settings:{ocr:{provider_id:'remote',model_id:'model',model_version:'fixture-v1'}},pages:[{page_id:pageid,source_type:rid===old?'scan':'pdf',rotation:90,pixel_width:200,pixel_height:100,original_sha256:'a'.repeat(64),effective_sha256:(rid===old?'a':'b').repeat(64),pdf_text_origin:rid===old?'recognition':'retained-source',...(rid===old?{}:{pdf_raster:{DPI:300,SourceRotation:90}}),artifacts:Object.fromEntries(['effective','preview','text','positions'].map(kind=>[kind,'/api/documents/'+id+'/ocr-results/'+rid+'/pages/'+pageid+'/'+kind]))}]});
    const reply=(r,json,status=200)=>r.fulfill({status,headers:{Date:new Date().toUTCString()},json});
-   await page.route('**/api/**',async r=>{const path=new URL(r.request().url()).pathname;requests.push({path,method:r.request().method(),body:r.request().postDataJSON()});
+   await page.route('**/api/**',async r=>{const path=new URL(r.request().url()).pathname;requests.push({path,method:r.request().method(),body:r.request().postDataJSON(),key:r.request().headers()['idempotency-key'],match:r.request().headers()['if-match']});
     if(path==='/api/session')return reply(r,{authenticated:true,principal_kind:'guest',authenticate_type:'guest'});
     if(path==='/api/capabilities')return reply(r,{ocr_plugins:[{id:'remote',name:'Remote',external_processing:true,models:[{id:'model',name:'OCR model',available:true,outputs:['searchable_pdf'],languages:['ja'],quality_presets:['standard'],default_quality_preset:'standard',processing_destination:'Family OCR server'}]}],defaults:{ocr:{provider_id:'remote',model_id:'model',languages:['ja'],quality_preset:'standard'}}});
-    if(path==='/api/documents/'+id)return reply(r,{id,revision:1,purpose:'document',state:'ready',created_at:'2026-11-07T03:00:00Z',expires_at:'2099-01-01T00:00:00Z',active_job_id:active,output:{revision:1},ocr_results:scenario==='reocr-start'?[]:[summary(old,'adopted'),summary(candidate,'candidate')],pages:[{id:pageid,rotation:0,capture:{size:'a4',color:'gray',dpi:300}}]});
-    if(path.endsWith('/ocr-results/'+old)||path.endsWith('/ocr-results/'+candidate))return reply(r,result(path.endsWith(old)?old:candidate));
+    if(path==='/api/documents/'+id)return reply(r,{id,revision:disposition==='adopted'||stale?2:1,purpose:'document',state:'ready',created_at:'2026-11-07T03:00:00Z',expires_at:'2099-01-01T00:00:00Z',active_job_id:active,output:{revision:disposition==='adopted'?2:1},ocr_results:scenario==='reocr-start'?[]:disposition==='candidate'?[summary(old,'adopted'),summary(candidate,'candidate')]:[summary(disposition==='adopted'?candidate:old,'adopted')],pages:[{id:pageid,rotation:0,capture:{size:'a4',color:'gray',dpi:300}}]});
+    if(path.endsWith('/adopt')||path.endsWith('/discard')){if(stale)return reply(r,{code:'source_changed'},412);disposition=path.endsWith('/adopt')?'adopted':'discarded';await new Promise(resolve=>setTimeout(resolve,50));return lose?r.abort('failed'):reply(r,{id,revision:disposition==='adopted'?2:1})}
+    if(path.endsWith('/ocr-results/'+old)||path.endsWith('/ocr-results/'+candidate))return reply(r,{...result(path.endsWith(old)?old:candidate),state:path.endsWith(candidate)?disposition:'adopted'});
     if(path.includes('/ocr-results/')&&path.endsWith('/positions'))return reply(r,{page_id:pageid,width:200,height:100,spans:[{text:'<script>window.ocrInjected=true</script>',box:{x:20,y:10,width:40,height:20}},{text:'日本語 second',box:{x:100,y:50,width:60,height:10}}]});
     if(path.includes('/ocr-results/')&&path.endsWith('/text'))return r.fulfill({status:200,contentType:'text/plain',body:'<script>window.ocrInjected=true</script>\n日本語 second'});
     if(path.endsWith('/preview')||path.endsWith('/effective')||path.endsWith('/thumbnail'))return r.fulfill({status:200,contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="white"/><path d="M20 10h40v20H20z" fill="black"/></svg>'});
@@ -28,6 +29,19 @@ if(process.env.SCANNER_TEST_SCENARIO){
    });
    page.on('console',e=>{if(e.type()==='error')console.error(e.text())});page.on('pageerror',e=>console.error(e.message));await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);try{await page.locator('h1[data-document-title]').waitFor()}catch(e){console.error(await page.locator('body').innerText(),requests);throw e}
    assert.equal(requests.filter(r=>r.path.endsWith('/reocr')).length,before);
+   if(scenario==='reocr-adopt'){
+    const adopt=page.getByRole('button',{name:'Adopt for whole document',exact:true});assert.equal(await adopt.count(),1,'candidate requires explicit whole-document adoption');
+    assert.equal(requests.filter(r=>r.path.endsWith('/adopt')).length,width===1280?0:2,'opening never adopts');
+    await adopt.click();await page.waitForFunction(()=>document.querySelector('[data-reocr-action]')===document.activeElement);assert.equal(disposition,'adopted');assert.equal(await adopt.count(),0);assert(await page.locator('a.download-link').isVisible());
+    const command=requests.filter(r=>r.path.endsWith('/adopt')).at(-1);assert.deepEqual(command.body,{});assert.equal(command.match,'"1"');assert.match(command.key,/^rq1_/);
+    await t.test('TestReOCRDiscardRecovery '+width,async()=>{
+     disposition='candidate';lose=true;await page.reload();await page.getByRole('button',{name:'Discard candidate',exact:true}).click();await page.getByRole('button',{name:'Check recognition status',exact:true}).click();await page.getByRole('button',{name:'Discard candidate',exact:true}).waitFor({state:'detached'});assert.equal(disposition,'discarded');assert(await page.locator('a.download-link').isVisible());assert.equal(requests.filter(r=>r.path.endsWith('/discard')).length,width===1280?1:2,'lost disposition response must not duplicate command');
+     disposition='candidate';lose=false;stale=true;await page.reload();await page.getByRole('button',{name:'Adopt for whole document',exact:true}).click();await page.getByText('The document changed. Reload before trying again.',{exact:true}).waitFor();assert(await page.locator('a.download-link').isVisible());stale=false;
+    });
+    await t.test('TestReOCRKeyboardFocus '+width,async()=>{
+     disposition='adopted';await page.reload();const action=page.getByRole('button',{name:'Recognize text again',exact:true});await action.click();await page.keyboard.press('Escape');assert(await action.evaluate(e=>document.activeElement===e));await action.click();await page.getByRole('button',{name:'Close',exact:true}).click();assert(await action.evaluate(e=>document.activeElement===e));
+    });checks.push('TestReOCRWholeDocumentAdoption '+width,'TestReOCRDiscardRecovery '+width,'TestReOCRKeyboardFocus '+width);await context.close();continue;
+   }
    if(scenario==='reocr-compare'){
     const panels=page.locator('.ocr-result-panel');assert.equal(await panels.count(),2,'same-page comparison must render old and candidate');
     await panels.first().getByRole('button',{name:'1. <script>window.ocrInjected=true</script>',exact:true}).click();
