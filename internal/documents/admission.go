@@ -76,6 +76,7 @@ type CapturedPage struct {
 	DPI                int     `json:"dpi"`
 }
 type RenderSnapshot struct {
+	ReOCR     bool                 `json:"reocr,omitempty"`
 	Version   int                  `json:"version"`
 	Settings  RenderSettings       `json:"settings"`
 	Pages     []CapturedPage       `json:"pages"`
@@ -154,6 +155,18 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		if active != 0 {
 			return ErrConflict
 		}
+		if request.ReOCR {
+			if purpose != "document" || (request.ResolvedOutput != ocrplugin.PositionedText && request.ResolvedOutput != ocrplugin.Text && request.ResolvedOutput != ocrplugin.PDFTextLayer && request.ResolvedOutput != ocrplugin.SearchablePDF) {
+				return ErrInvalid
+			}
+			var candidates int
+			if err = tx.QueryRowContext(ctx, `SELECT count(*) FROM ocr_results WHERE document_id=? AND owner_id=? AND state='candidate'`, request.DocumentID, owner).Scan(&candidates); err != nil {
+				return ErrStorage
+			}
+			if candidates != 0 {
+				return ErrConflict
+			}
+		}
 		var pageCount int
 		if err = tx.QueryRowContext(ctx, "SELECT count(*) FROM pages WHERE document_id=? AND owner_id=?", request.DocumentID, owner).Scan(&pageCount); err != nil {
 			return ErrStorage
@@ -219,12 +232,14 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		// Every newly requested output is a new document revision. Invalidate the
 		// old pointer before advancing the revision (its FK intentionally restricts
 		// updates). Replay returns earlier, without incrementing again.
-		if revision == 1<<63-1 {
-			return ErrConflict
-		}
-		revision++
-		if _, err = tx.ExecContext(ctx, "DELETE FROM published_outputs WHERE document_id=? AND owner_id=?", request.DocumentID, owner); err != nil {
-			return ErrStorage
+		if !request.ReOCR {
+			if revision == 1<<63-1 {
+				return ErrConflict
+			}
+			revision++
+			if _, err = tx.ExecContext(ctx, "DELETE FROM published_outputs WHERE document_id=? AND owner_id=?", request.DocumentID, owner); err != nil {
+				return ErrStorage
+			}
 		}
 		if _, err = tx.ExecContext(ctx, "UPDATE documents SET revision=?,state='processing' WHERE id=? AND owner_id=?", revision, request.DocumentID, owner); err != nil {
 			return ErrStorage
@@ -233,7 +248,7 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		if err != nil {
 			return ErrStorage
 		}
-		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, Settings: snapshotSettings, Pages: pages, OCROutput: request.ResolvedOutput})
+		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, ReOCR: request.ReOCR, Settings: snapshotSettings, Pages: pages, OCROutput: request.ResolvedOutput})
 		if err != nil {
 			return ErrInvalid
 		}

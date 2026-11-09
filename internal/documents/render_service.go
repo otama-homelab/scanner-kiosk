@@ -89,6 +89,9 @@ func renderIdentity(request RenderAdmission) (RenderSettings, [32]byte, [32]byte
 	if err != nil {
 		return RenderSettings{}, [32]byte{}, [32]byte{}, err
 	}
+	if request.ReOCR && (!settings.OCR.Enabled || settings.Format != "pdf") {
+		return RenderSettings{}, [32]byte{}, [32]byte{}, ErrInvalid
+	}
 	command := settings
 	command.OCR.ModelVersion = ""
 	canonical, err := canonicalCommand(command)
@@ -97,7 +100,11 @@ func renderIdentity(request RenderAdmission) (RenderSettings, [32]byte, [32]byte
 	}
 	key := sha256.Sum256([]byte(request.IdempotencyKey))
 	separator := string(rune(0))
-	digest := sha256.Sum256([]byte("render-v1" + separator + request.DocumentID + separator + strconv.FormatInt(request.Revision, 10) + separator + string(canonical)))
+	operation := "render-v1"
+	if request.ReOCR {
+		operation = "reocr-v1"
+	}
+	digest := sha256.Sum256([]byte(operation + separator + request.DocumentID + separator + strconv.FormatInt(request.Revision, 10) + separator + string(canonical)))
 	return settings, key, digest, nil
 }
 
