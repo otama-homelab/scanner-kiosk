@@ -6,6 +6,7 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--playwright-module',required=True);p.add_argument('--chromium',required=True);p.add_argument('--receipt',required=True);
 for name in ['fixture-python','tesseract-binary','tessdata','font']:p.add_argument('--'+name)
+p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt'])
 args=p.parse_args()
 native_args=[args.fixture_python,args.tesseract_binary,args.tessdata,args.font]
 if any(native_args) and not all(native_args):p.error('native OCR verification requires all four fixture/tool options')
@@ -143,6 +144,16 @@ for index in [1,2]:
    if time.monotonic()>deadline:raise RuntimeError('readiness timed out')
    time.sleep(.05)
   browser_env=dict(os.environ,PLAYWRIGHT_MODULE=args.playwright_module,CHROMIUM_EXECUTABLE=args.chromium,SCANNER_TEST_ORIGIN=origin,SCANNER_TEST_SCREENSHOT='/tmp/scanner-kiosk-product-review.png')
+  if args.scenario:
+   focused=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCENARIO=args.scenario,SCANNER_TEST_RECEIPT=args.receipt),capture_output=True,text=True,timeout=90)
+   print(focused.stdout,end='');print(focused.stderr,end='')
+   if focused.returncode:raise SystemExit(focused.returncode)
+   evidence=json.loads(Path(args.receipt).read_text())
+   assert evidence['checks'] and evidence['requests'] and evidence['scenario']==args.scenario
+   assert before==hashes(),'sources changed during verification'
+   evidence.update(source_sha256=before,timestamp_utc=datetime.now(timezone.utc).isoformat())
+   Path(args.receipt).write_text(json.dumps(evidence,indent=2)+'\n')
+   raise SystemExit(0)
   result=subprocess.run(['node','scripts/check-web.cjs'],cwd=root,env=browser_env,capture_output=True,text=True,timeout=90)
   if result.returncode:raise RuntimeError(result.stderr[-12000:])
   browser=json.loads(result.stdout)
