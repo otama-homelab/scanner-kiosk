@@ -10,6 +10,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -20,7 +21,7 @@ import (
 )
 
 // ProcessPage is a trusted snapshot and a confined immutable input capability.
-// Imported PDFs have no invented raster geometry or OCR layer.
+// Imported PDFs retain their own point geometry; layer geometry is in its PDF.
 type ProcessPage struct {
 	ID, Size, Color, MediaType string
 	Width, Height, Rotation    int
@@ -38,7 +39,30 @@ const maxProcessManifest = 16 << 20
 
 func validProcessRequest(r ProcessRequest) bool {
 	o := r.Options
-	return len(r.Pages) > 0 && len(r.Pages) <= o.MaxPages && o.MaxPages >= 1 && o.MaxPages <= 10000 && o.MaxInputBytes >= 1 && o.MaxInputBytes <= 1<<30 && o.MaxOutputBytes >= 1 && o.MaxOutputBytes <= 1<<30 && o.MaxPagePixels >= 1 && o.JPEGQuality >= 1 && o.JPEGQuality <= 100 && (r.Encoding == "lossless" || r.Encoding == "jpeg")
+	if !(len(r.Pages) > 0 && len(r.Pages) <= o.MaxPages && o.MaxPages >= 1 && o.MaxPages <= 10000 && o.MaxInputBytes >= 1 && o.MaxInputBytes <= 1<<30 && o.MaxOutputBytes >= 1 && o.MaxOutputBytes <= 1<<30 && o.MaxPagePixels >= 1 && o.JPEGQuality >= 1 && o.JPEGQuality <= 100 && (r.Encoding == "lossless" || r.Encoding == "jpeg")) {
+		return false
+	}
+	seen := map[string]bool{}
+	validInput := func(i artifactread.Input) bool {
+		return filepath.IsLocal(i.RelativePath) && i.RelativePath != "." && i.Size > 0 && i.Size <= o.MaxInputBytes && i.SHA256 != [32]byte{}
+	}
+	for _, p := range r.Pages {
+		if p.ID == "" || seen[p.ID] || !validInput(p.Input) || (p.Rotation != 0 && p.Rotation != 90 && p.Rotation != 180 && p.Rotation != 270) {
+			return false
+		}
+		seen[p.ID] = true
+		if p.Layer != nil && (!r.OCR || !validInput(*p.Layer) || p.Layer.RelativePath == p.Input.RelativePath) {
+			return false
+		}
+		if p.MediaType == "application/pdf" {
+			if p.Size != "" || p.Color != "" || p.Width != 0 || p.Height != 0 {
+				return false
+			}
+		} else if p.MediaType != "" && p.MediaType != "image/png" && p.MediaType != "image/jpeg" {
+			return false
+		}
+	}
+	return true
 }
 
 // GenerateIsolated parses/merges only in the same executable's limited child.
@@ -186,7 +210,7 @@ func AssemblyChild(args []string, input, output *os.File) int {
 		bound := p.Input
 		pages[i] = Page{ID: p.ID, Size: p.Size, Color: p.Color, MediaType: p.MediaType, Width: p.Width, Height: p.Height, Rotation: p.Rotation, Open: func(ctx context.Context) (io.ReadCloser, error) { return root.OpenFile(ctx, bound) }}
 		if p.Layer != nil {
-			if !request.OCR || p.MediaType == "application/pdf" {
+			if !request.OCR {
 				return 10
 			}
 			layer := *p.Layer

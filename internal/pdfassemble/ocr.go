@@ -19,8 +19,8 @@ type TextLayer struct {
 	Open   func(context.Context) (io.ReadCloser, error)
 }
 
-// BuildWithLayers adds one OCR layer per scanned image and retains imported
-// PDF text, then rotates and merges complete pages. No partial PDF is returned.
+// BuildWithLayers adds bound OCR layers without rasterizing imported PDFs,
+// then rotates and merges complete pages. No partial PDF is returned.
 func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, encoding string, options Options) ([]byte, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
@@ -39,25 +39,23 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 		byID[layer.PageID] = layer
 	}
 	seen := map[string]bool{}
-	imageCount := 0
+	layerCount := 0
 	for _, page := range pages {
 		if page.ID == "" || seen[page.ID] {
 			return nil, ErrInvalid
 		}
 		_, exists := byID[page.ID]
-		if page.MediaType == "application/pdf" {
-			if exists {
-				return nil, ErrInvalid
-			}
-		} else {
-			imageCount++
+		if page.MediaType != "application/pdf" {
 			if !exists {
 				return nil, ErrInvalid
 			}
 		}
+		if exists {
+			layerCount++
+		}
 		seen[page.ID] = true
 	}
-	if len(byID) != imageCount {
+	if len(byID) != layerCount {
 		return nil, ErrInvalid
 	}
 	inputs := make([]io.ReadSeeker, 0, len(pages))
@@ -70,7 +68,7 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 		if remaining < 1 {
 			return nil, ErrLimit
 		}
-		if page.MediaType == "application/pdf" {
+		if _, exists := byID[page.ID]; page.MediaType == "application/pdf" && !exists {
 			policy := options
 			policy.MaxOutputBytes = remaining
 			retained, err := Build(ctx, []Page{page}, encoding, policy)
@@ -111,7 +109,12 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 		if int64(len(layer)) > options.MaxInputBytes {
 			return nil, ErrLimit
 		}
-		composed, err := pdftextlayer.Overlay(ctx, base, layer, page.Width, page.Height, remaining)
+		var composed []byte
+		if page.MediaType == "application/pdf" {
+			composed, err = pdftextlayer.OverlayPDF(ctx, base, layer, remaining)
+		} else {
+			composed, err = pdftextlayer.Overlay(ctx, base, layer, page.Width, page.Height, remaining)
+		}
 		if errors.Is(err, pdftextlayer.ErrLimit) {
 			return nil, ErrLimit
 		}

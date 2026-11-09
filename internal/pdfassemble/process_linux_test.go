@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/pdfcpu/pdfcpu/pkg/api"
@@ -26,6 +27,61 @@ func TestMain(m *testing.M) {
 		os.Exit(AssemblyChild(os.Args[2:], os.Stdin, os.Stdout))
 	}
 	os.Exit(m.Run())
+}
+
+func TestIsolatedImportedOCR(t *testing.T) {
+	for _, corrupt := range []bool{false, true} {
+		root := t.TempDir()
+		os.Chmod(root, 0700)
+		scope, err := artifactscope.New(root, nil, artifactscope.Limits{MaxInputBytes: 1 << 20, MaxOutputBytes: 1 << 20, MaxTotalOutputBytes: 1 << 20, MaxOutputs: 1})
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer scope.Close()
+		original := importedOCRFixture(200, 300, "10 10 30 40 re f", "")
+		l := pdfLayer("page", 200, 300, "ISOLATED OCR")
+		r, err := l.Open(context.Background())
+		if err != nil {
+			t.Fatal(err)
+		}
+		layer, err := io.ReadAll(r)
+		r.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		capability := func(name string, raw []byte) artifactread.Input {
+			if err := os.WriteFile(filepath.Join(root, name), raw, 0600); err != nil {
+				t.Fatal(err)
+			}
+			return artifactread.Input{RelativePath: name, Size: int64(len(raw)), SHA256: sha256.Sum256(raw)}
+		}
+		input, overlay := capability("source.pdf", original), capability("layer.pdf", layer)
+		if corrupt {
+			overlay.SHA256[0] ^= 1
+		}
+		request := ProcessRequest{OCR: true, Encoding: "lossless", Options: opts(), Pages: []ProcessPage{{ID: "page", MediaType: "application/pdf", Input: input, Layer: &overlay}}}
+		_, err = GenerateIsolated(context.Background(), root, scope, request, 1<<20)
+		if corrupt {
+			if err == nil {
+				t.Fatal("foreign layer capability accepted")
+			}
+			continue
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		sealed, err := scope.Seal(context.Background())
+		if err != nil || len(sealed) != 1 {
+			t.Fatal(sealed, err)
+		}
+		output, err := os.ReadFile(filepath.Join(root, sealed[0].RelativePath))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if text := extractedOCRText(t, output); !strings.Contains(text, "ISOLATED OCR") {
+			t.Fatal(text)
+		}
+	}
 }
 
 func TestIsolatedMixedAssemblyAndFailureCleanup(t *testing.T) {

@@ -40,16 +40,29 @@ func (b *bounded) Write(p []byte) (int, error) {
 // Layers must originate from a trusted invisible-text renderer; image-free PDF
 // structure alone is not proof that arbitrary PDF graphics are invisible.
 func Overlay(ctx context.Context, base, layer []byte, width, height int, maxBytes int64) ([]byte, error) {
+	return overlay(ctx, base, layer, width, height, maxBytes, false)
+}
+
+// OverlayPDF fits a trusted OCR layer to the original PDF's unrotated CropBox.
+// Original content, page boxes and intrinsic rotation are retained.
+func OverlayPDF(ctx context.Context, base, layer []byte, maxBytes int64) ([]byte, error) {
+	return overlay(ctx, base, layer, 0, 0, maxBytes, true)
+}
+
+func overlay(ctx context.Context, base, layer []byte, width, height int, maxBytes int64, imported bool) ([]byte, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if width < 1 || height < 1 || maxBytes < 1 || maxBytes > 1<<30 {
+	if (!imported && (width < 1 || height < 1)) || maxBytes < 1 || maxBytes > 1<<30 {
 		return nil, ErrInvalid
 	}
 	if len(base) == 0 || len(layer) == 0 || int64(len(base)) > maxBytes || int64(len(layer)) > maxBytes {
 		return nil, ErrLimit
 	}
 	conf := model.NewStatelessConfiguration()
+	conf.Optimize = false
+	var rotation int
+	var sourceRatio float64
 	for index, data := range [][]byte{base, layer} {
 		count, err := api.PageCount(ctx, bytes.NewReader(data), conf)
 		if err != nil {
@@ -62,12 +75,21 @@ func Overlay(ctx context.Context, base, layer []byte, width, height int, maxByte
 		if err != nil {
 			return nil, normalize(ctx, err)
 		}
-		if len(boxes) != 1 || boxes[0].Rot != 0 {
+		if len(boxes) != 1 || (boxes[0].Rot%90 != 0) || (index == 1 && boxes[0].Rot != 0) || (!imported && boxes[0].Rot != 0) {
 			return nil, ErrInvalid
 		}
 		media, crop := boxes[0].MediaBox(), boxes[0].CropBox()
-		if media == nil || crop == nil || media.Width() <= 0 || media.Height() <= 0 || media.LL.X != 0 || media.LL.Y != 0 || math.Abs(crop.Width()-media.Width()) > .01 || math.Abs(crop.Height()-media.Height()) > .01 || math.Abs(crop.LL.X-media.LL.X) > .01 || math.Abs(crop.LL.Y-media.LL.Y) > .01 {
+		if media == nil || crop == nil || !validRectangle(media) || !validRectangle(crop) || crop.LL.X < media.LL.X || crop.LL.Y < media.LL.Y || crop.UR.X > media.UR.X || crop.UR.Y > media.UR.Y {
 			return nil, ErrInvalid
+		}
+		if index == 1 || !imported {
+			if media.LL.X != 0 || media.LL.Y != 0 || math.Abs(crop.Width()-media.Width()) > .01 || math.Abs(crop.Height()-media.Height()) > .01 || math.Abs(crop.LL.X-media.LL.X) > .01 || math.Abs(crop.LL.Y-media.LL.Y) > .01 {
+				return nil, ErrInvalid
+			}
+		}
+		if index == 0 && imported {
+			rotation = boxes[0].Rot
+			sourceRatio = crop.Width() / crop.Height()
 		}
 		images, err := api.Images(ctx, bytes.NewReader(data), nil, conf)
 		if err != nil {
@@ -77,15 +99,28 @@ func Overlay(ctx context.Context, base, layer []byte, width, height int, maxByte
 		for _, page := range images {
 			n += len(page)
 		}
-		if (index == 0 && n != 1) || (index == 1 && n != 0) {
+		if (index == 0 && !imported && n != 1) || (index == 1 && n != 0) {
 			return nil, ErrInvalid
 		}
 		if index == 1 {
 			ratio := media.Width() / media.Height()
-			if math.IsNaN(ratio) || math.IsInf(ratio, 0) || math.Abs(ratio/(float64(width)/float64(height))-1) > .001 {
+			expected := float64(width) / float64(height)
+			if imported {
+				expected = sourceRatio
+			}
+			if math.IsNaN(ratio) || math.IsInf(ratio, 0) || math.Abs(ratio/expected-1) > .001 {
 				return nil, ErrInvalid
 			}
 		}
+	}
+	// pdfcpu flattens rotated watermarked pages; remove and restore only the
+	// rotation metadata so the original MediaBox/CropBox remain unchanged.
+	if rotation != 0 {
+		unrotated := &bounded{limit: maxBytes}
+		if err := api.Rotate(ctx, bytes.NewReader(base), unrotated, -rotation, []string{"1"}, conf); err != nil {
+			return nil, normalize(ctx, err)
+		}
+		base = unrotated.data.Bytes()
 	}
 	stamp, err := api.PDFWatermarkForReadSeeker(ctx, bytes.NewReader(layer), 1, "position:c, scalefactor:1 rel, rotation:0, opacity:1", true, false, types.POINTS)
 	if err != nil {
@@ -98,6 +133,13 @@ func Overlay(ctx context.Context, base, layer []byte, width, height int, maxByte
 	if err = api.Validate(ctx, bytes.NewReader(output.data.Bytes()), conf, nil); err != nil {
 		return nil, normalize(ctx, err)
 	}
+	if rotation != 0 {
+		rotated := &bounded{limit: maxBytes}
+		if err = api.Rotate(ctx, bytes.NewReader(output.data.Bytes()), rotated, rotation, []string{"1"}, conf); err != nil {
+			return nil, normalize(ctx, err)
+		}
+		output = rotated
+	}
 	if count, err := api.PageCount(ctx, bytes.NewReader(output.data.Bytes()), conf); err != nil || count != 1 {
 		if err != nil {
 			return nil, normalize(ctx, err)
@@ -108,6 +150,15 @@ func Overlay(ctx context.Context, base, layer []byte, width, height int, maxByte
 		return nil, err
 	}
 	return output.data.Bytes(), nil
+}
+
+func validRectangle(r *types.Rectangle) bool {
+	for _, v := range []float64{r.LL.X, r.LL.Y, r.UR.X, r.UR.Y} {
+		if math.IsNaN(v) || math.IsInf(v, 0) || math.Abs(v) > 14400 {
+			return false
+		}
+	}
+	return r.Width() > 0 && r.Height() > 0 && r.Width() <= 14400 && r.Height() <= 14400
 }
 func normalize(ctx context.Context, err error) error {
 	if ctx.Err() != nil {

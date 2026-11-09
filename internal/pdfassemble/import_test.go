@@ -93,7 +93,7 @@ func TestBuildImportedPDFLimitsAndOCRBoundary(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, mode := range []string{"malformed", "multiple-pages", "input-limit", "output-limit", "cancelled", "ocr"} {
+	for _, mode := range []string{"malformed", "multiple-pages", "input-limit", "output-limit", "cancelled"} {
 		t.Run(mode, func(t *testing.T) {
 			raw := importedTextPDF()
 			policy := opts()
@@ -113,15 +113,7 @@ func TestBuildImportedPDFLimitsAndOCRBoundary(t *testing.T) {
 			}
 			p := Page{ID: "import", MediaType: "application/pdf", Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(raw)), nil }}
 			var output []byte
-			if mode == "ocr" {
-				p.Open = func(context.Context) (io.ReadCloser, error) {
-					t.Fatal("PDF opened through image OCR boundary")
-					return nil, nil
-				}
-				output, err = BuildWithLayers(callCtx, []Page{p}, []TextLayer{layer(p.ID, "EXTRA")}, "jpeg", policy)
-			} else {
-				output, err = Build(callCtx, []Page{p}, "jpeg", policy)
-			}
+			output, err = Build(callCtx, []Page{p}, "jpeg", policy)
 			if err == nil || len(output) != 0 {
 				t.Fatal("invalid import returned output", err)
 			}
