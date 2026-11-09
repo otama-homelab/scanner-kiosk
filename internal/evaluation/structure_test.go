@@ -9,6 +9,55 @@ import (
 	"testing"
 )
 
+func TestStructureGapRequiresMeasuredEvidence(t *testing.T) {
+	b := OCRComparison{Format: "scanner-eval-ocr-comparison", Version: 1, Status: "complete", OracleSHA256: structureOracleSHA, ManifestSHA256: structureBaselineManifestSHA, Normalization: "NFC", Units: "unicode-code-points", Rows: []OCRComparisonRow{{EngineID: "tesseract-5.5.4", FixtureID: "fixture_ocr_table_001", Mode: "standalone", Pages: []OCRPageQuality{{PageID: "page_ocr_table_001", MatchedCells: 3, Cells: 4, ReadingOrderInversions: 12, Status: "failed"}}}, {EngineID: "ndlocr-lite-1.3.0", FixtureID: "fixture_ocr_table_001", Mode: "standalone", Pages: []OCRPageQuality{{PageID: "page_ocr_table_001", MatchedCells: 3, Cells: 4, Status: "failed"}}}}}
+	if gap, err := structureGap(b); err != nil || len(gap) != 2 {
+		t.Fatalf("measured 3/4 table gap rejected: %+v %v", gap, err)
+	}
+	b.Status = "incomplete"
+	if _, err := structureGap(b); err == nil {
+		t.Fatal("incomplete baseline accepted")
+	}
+	b.Status = "complete"
+	b.Rows[0].Pages[0].MatchedCells = 4
+	if _, err := structureGap(b); err == nil {
+		t.Fatal("unproven gap accepted")
+	}
+}
+func TestStructureSingleCandidateCompleteness(t *testing.T) {
+	a := StructureAttempt{CandidateID: structureCandidate, Disposition: OCRFileRef{Path: "disposition.json", SHA256: hashBytes([]byte("receipt"))}}
+	m := StructureManifest{Attempts: []StructureAttempt{a}}
+	if err := structureAttempts(m, structureCandidate); err != nil {
+		t.Fatalf("one exact unavailable attempt rejected: %v", err)
+	}
+	for _, attempts := range [][]StructureAttempt{nil, {a, a}, {{CandidateID: "second-candidate", Disposition: a.Disposition}}, {{CandidateID: structureCandidate}}} {
+		m.Attempts = attempts
+		if err := structureAttempts(m, structureCandidate); err == nil {
+			t.Fatal("missing/mixed/extra candidate accepted")
+		}
+	}
+	if err := structureAttempts(StructureManifest{Attempts: []StructureAttempt{a}}, "other"); err == nil {
+		t.Fatal("candidate requirement ignored")
+	}
+}
+func TestStructureUnavailablePreservesIndependentAnalysis(t *testing.T) {
+	// Unsupported successful evidence cannot authorize an unavailable comparison.
+	for _, raw := range []string{`{"format":"scanner-eval-structure-disposition","version":1,"status":"complete"}`, `{"format":"scanner-eval-structure-disposition","version":1,"status":"unavailable","quality_measured":true}`, `{"format":"scanner-eval-structure-disposition","version":1,"status":"unavailable","adoption":"adopt"}`} {
+		if _, err := validateStructureFailure([]byte(raw)); err == nil {
+			t.Fatal("invented measurements or adoption accepted")
+		}
+	}
+	s, body := structureFixture(t)
+	if _, err := ValidateStructurePayload(body, s.Source, s.RuntimeLockSHA256); err != nil {
+		t.Fatalf("independent schema unavailable because inference is unavailable: %v", err)
+	}
+	for _, flags := range [][2]bool{{false, false}, {false, true}, {true, false}} {
+		if _, err := AnalyzeStructureEvidence("missing", "missing", "missing", structureCandidate, flags[0], flags[1]); err == nil {
+			t.Fatal("missing complete/unavailable gate accepted")
+		}
+	}
+}
+
 func structureFixture(t *testing.T) (StructurePayload, []byte) {
 	t.Helper()
 	text, parent, rows, columns := "日本123", "#/groups/0", 2, 2
