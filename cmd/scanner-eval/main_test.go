@@ -21,6 +21,32 @@ import (
 	"scanner-kiosk/internal/pdfassemble"
 )
 
+func TestAnalyzeOCRCommand(t *testing.T) {
+	oracle := filepath.Join("..", "..", "scripts", "fixtures", "evaluation", "ocr-oracles.json")
+	root := t.TempDir()
+	if err := os.Chmod(root, 0700); err != nil {
+		t.Fatal(err)
+	}
+	manifest := filepath.Join(root, "manifest.json")
+	body, err := os.ReadFile(oracle)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sum := sha256.Sum256(body)
+	partial := map[string]any{"format": "scanner-eval-ocr-run-manifest", "version": 1, "evidence_root": root, "oracle_sha256": hex.EncodeToString(sum[:]), "pairs": []any{}}
+	body, _ = json.Marshal(partial)
+	if err := os.WriteFile(manifest, body, 0600); err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{filepath.Join(root, "missing.json"), manifest} {
+		var stdout, stderr bytes.Buffer
+		code := run(context.Background(), []string{"analyze-ocr", "--oracle", oracle, "--manifest", name, "--require-engine", "tesseract-5.5.4", "--require-engine", "ndlocr-lite-1.3.0", "--require-complete-evidence"}, &stdout, &stderr)
+		if code == 0 || stdout.Len() != 0 || strings.Contains(stderr.String(), root) {
+			t.Fatalf("missing/partial evidence or path disclosure accepted: %d %q %q", code, stdout.String(), stderr.String())
+		}
+	}
+}
+
 func TestCandidateCLIHelper(t *testing.T) {
 	if os.Getenv("EVAL_CANDIDATE_CLI_HELPER") != "1" {
 		return

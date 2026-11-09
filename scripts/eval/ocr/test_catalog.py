@@ -1,11 +1,11 @@
-import hashlib
-import importlib.util
 import json
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFont
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -42,6 +42,14 @@ class CatalogTest(unittest.TestCase):
             self.assertEqual(spans[0]["box"][0], spans[1]["box"][0])
             self.assertLess(spans[0]["box"][1], spans[1]["box"][1])
             self.assertGreater(spans[0]["box"][0], spans[-1]["box"][0])
+            image = Image.open(first / "ocr/page_ocr_vertical_001.png").convert("RGB")
+            box = spans[0]["box"]
+            glyph = image.crop((box[0], box[1], box[0]+box[2], box[1]+box[3]))
+            upright = Image.new("RGB", glyph.size, "white")
+            ImageDraw.Draw(upright).text((0, 0), spans[0]["text"],
+                                        font=ImageFont.truetype(str(FONT), 40), fill="black", anchor="lt")
+            self.assertEqual(glyph.tobytes(), upright.tobytes(), "vertical glyph was rotated")
+            self.assertLess(glyph.convert("L").getextrema()[0], 255)
             table = next(e for e in oracle["entries"] if e["layout"] == "table")
             self.assertTrue(all(s["text"] and s.get("cell") for s in table["pages"][0]["spans"]))
             self.assertEqual(len(next(e for e in oracle["entries"] if e["layout"] == "two-page")["pages"]), 2)

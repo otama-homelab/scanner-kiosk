@@ -26,6 +26,42 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	switch args[0] {
+	case "analyze-ocr":
+		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
+		flags.SetOutput(io.Discard)
+		oracle := flags.String("oracle", "", "")
+		manifest := flags.String("manifest", "", "")
+		output := flags.String("output", "", "")
+		complete := flags.Bool("require-complete-evidence", false, "")
+		var engines stringList
+		flags.Var(&engines, "require-engine", "")
+		if flags.Parse(args[1:]) != nil || *oracle == "" || *manifest == "" || len(flags.Args()) != 0 {
+			fmt.Fprintln(stderr, "scanner-eval: invalid input")
+			return 2
+		}
+		comparison, err := evaluation.AnalyzeOCREvidence(*oracle, *manifest, engines, *complete)
+		if err != nil {
+			fmt.Fprintln(stderr, "scanner-eval: OCR evidence incomplete")
+			return 1
+		}
+		if *output != "" {
+			file, err := os.OpenFile(*output, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+			if err != nil {
+				fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+				return 1
+			}
+			encodeErr := json.NewEncoder(file).Encode(comparison)
+			closeErr := file.Close()
+			if encodeErr != nil || closeErr != nil {
+				fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+				return 1
+			}
+		}
+		if json.NewEncoder(stdout).Encode(comparison) != nil {
+			fmt.Fprintln(stderr, "scanner-eval: output unavailable")
+			return 1
+		}
+		return 0
 	case "generate-fixtures":
 		flags := flag.NewFlagSet(args[0], flag.ContinueOnError)
 		flags.SetOutput(io.Discard)

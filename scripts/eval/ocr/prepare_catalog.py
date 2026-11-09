@@ -102,7 +102,7 @@ def generate(font_path, expected_hash, output_root):
         entries.append({"fixture_id": fixture_id, "fixture_sha256": digest(body),
                         "layout": layout, "pages": pages})
     oracle = {"format": "scanner-eval-ocr-oracles", "version": 1,
-              "normalization": "none", "units": "unicode-code-points",
+              "normalization": "NFC", "units": "unicode-code-points",
               "font": {"name": "IPA Gothic 003.03", "sha256": FONT_SHA256,
                        "source": FONT_SOURCE, "license": "IPA-1"},
               "renderer": {"name": "Pillow", "version": pillow_version}, "entries": entries}

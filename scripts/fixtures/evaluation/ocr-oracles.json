@@ -1,7 +1,7 @@
 {
   "format": "scanner-eval-ocr-oracles",
   "version": 1,
-  "normalization": "none",
+  "normalization": "NFC",
   "units": "unicode-code-points",
   "font": {
     "name": "IPA Gothic 003.03",
