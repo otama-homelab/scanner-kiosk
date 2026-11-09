@@ -17,7 +17,7 @@ def validate_scenario(evidence,scenario):
  names={'reocr-start':['TestReOCRStartLifecycle'],'reocr-compare':['TestReOCRComparePositions','TestReOCRReadingOrder'],'reocr-adopt':['TestReOCRWholeDocumentAdoption','TestReOCRDiscardRecovery','TestReOCRKeyboardFocus'],'structure-suggestion':['TestStructureFilenameSuggestion']}[scenario]
  assert evidence['passed'] and evidence['requests'] and evidence['scenario']==scenario
  for name in names:
-  for width in [1280,390]:assert name+' '+str(width) in evidence['checks'],'required browser scenario missing'
+  for width in ([1280,320,390,768,1440] if scenario=='structure-suggestion' else [1280,390]):assert name+' '+str(width) in evidence['checks'],'required browser scenario missing'
 before=hashes()
 with tempfile.TemporaryDirectory(prefix='scanner-product-web-') as temporary:
  work=Path(temporary);binary=work/'scanner'
