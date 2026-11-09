@@ -69,9 +69,10 @@ type Box struct {
 	Height float64 `json:"height"`
 }
 type Span struct {
-	Text       string   `json:"text"`
-	Box        Box      `json:"box"`
-	Confidence *float64 `json:"confidence,omitempty"`
+	Text             string   `json:"text"`
+	Box              Box      `json:"box"`
+	Confidence       *float64 `json:"confidence,omitempty"`
+	WritingDirection string   `json:"writing_direction,omitempty"`
 }
 type PositionedPage struct {
 	PageID string `json:"page_id"`
@@ -271,6 +272,9 @@ func ValidatePositionedPage(page PositionedPage, input InputPage) error {
 		return errors.New("OCR geometry does not match input")
 	}
 	for _, span := range page.Spans {
+		if span.WritingDirection != "" && span.WritingDirection != "horizontal" && span.WritingDirection != "vertical" {
+			return errors.New("invalid OCR writing direction")
+		}
 		if span.Text == "" || !utf8.ValidString(span.Text) {
 			return errors.New("invalid OCR text")
 		}

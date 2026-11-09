@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 	"unicode/utf16"
+	"unicode/utf8"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/sfnt"
@@ -83,6 +84,26 @@ func RenderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input 
 	for _, span := range page.Spans {
 		if err := ctx.Err(); err != nil {
 			return nil, err
+		}
+		if span.WritingDirection == "vertical" {
+			// Lay out upright search glyphs inside the supplied line region;
+			// recognition geometry remains the provider's original span.
+			advance := span.Box.Height / float64(utf8.RuneCountInString(span.Text))
+			for i, r := range []rune(span.Text) {
+				id := ids[r]
+				if widths[id] <= 0 {
+					return nil, ErrInvalid
+				}
+				sx, sy := span.Box.Width/widths[id], advance/height
+				baseline := float64(page.Height) - span.Box.Y - float64(i+1)*advance + float64(metrics.Descent)/64*sy
+				if math.IsInf(sx, 0) || math.IsInf(sy, 0) || sx <= 0 || sy <= 0 {
+					return nil, ErrInvalid
+				}
+				if _, err := fmt.Fprintf(content, "BT /F1 1000 Tf 3 Tr %.9g 0 0 %.9g %.9g %.9g Tm <%04X> Tj ET\n", sx, sy, span.Box.X, baseline, id); err != nil {
+					return nil, err
+				}
+			}
+			continue
 		}
 		encoded := make([]byte, 0, len(span.Text)*2)
 		width := 0.0
