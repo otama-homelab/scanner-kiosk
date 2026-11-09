@@ -4,6 +4,7 @@
 package tesseract
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -111,7 +112,7 @@ func New(options Options) (*Provider, error) {
 		return nil, errors.New("no Tesseract dictionaries installed")
 	}
 	version := "sha256-" + hex.EncodeToString(hash.Sum(nil))
-	p.caps = ocrplugin.Capabilities{APIVersion: ocrplugin.APIVersion, ID: "tesseract", Name: "Tesseract", Version: "1", Models: []ocrplugin.Model{{ID: "installed", Name: "Installed dictionaries", Version: version, Languages: languages, QualityPresets: []string{"auto", "block"}, Outputs: []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PDFTextLayer}, MaxPages: options.MaxPages, MaxPagePixels: options.MaxPagePixels}}}
+	p.caps = ocrplugin.Capabilities{APIVersion: ocrplugin.APIVersion, ID: "tesseract", Name: "Tesseract", Version: "1", Models: []ocrplugin.Model{{ID: "installed", Name: "Installed dictionaries", Version: version, Languages: languages, QualityPresets: []string{"auto", "block"}, Outputs: []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.PDFTextLayer, ocrplugin.PositionedText}, MaxPages: options.MaxPages, MaxPagePixels: options.MaxPagePixels}}}
 	return p, nil
 }
 func (p *Provider) Capabilities(context.Context) (ocrplugin.Capabilities, error) {
@@ -210,6 +211,9 @@ func (p *Provider) Run(ctx context.Context, request ocrplugin.Request, access oc
 		if request.Output == ocrplugin.PDFTextLayer {
 			args = append(args, "-c", "tessedit_create_pdf=1", "-c", "textonly_pdf=1")
 			extension = ".pdf"
+		} else if request.Output == ocrplugin.PositionedText {
+			args = append(args, "-c", "tessedit_create_tsv=1")
+			extension = ".tsv"
 		} else {
 			args = append(args, "-c", "tessedit_create_txt=1")
 		}
@@ -246,12 +250,21 @@ func (p *Provider) Run(ctx context.Context, request ocrplugin.Request, access oc
 			artifact.Close()
 			return ocrplugin.Result{}, err
 		}
+		var content io.Reader = artifact
+		if request.Output == ocrplugin.PositionedText {
+			encoded, parseErr := positionedTSVJSON(ctx, artifact, page, p.options.MaxResultBytes)
+			if parseErr != nil {
+				artifact.Close()
+				return ocrplugin.Result{}, parseErr
+			}
+			content = bytes.NewReader(encoded)
+		}
 		output, e := access.CreateOutput(ctx, request.Output)
 		if e != nil {
 			artifact.Close()
 			return ocrplugin.Result{}, errors.New("OCR output allocation failed")
 		}
-		_, copyErr = io.Copy(output, io.LimitReader(artifact, p.options.MaxResultBytes+1))
+		_, copyErr = io.Copy(output, io.LimitReader(content, p.options.MaxResultBytes+1))
 		artifact.Close()
 		closeErr = output.Close()
 		if copyErr != nil || closeErr != nil {
