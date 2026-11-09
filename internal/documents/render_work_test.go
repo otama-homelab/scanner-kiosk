@@ -10,20 +10,32 @@ import (
 func reOCRCorrectionWork(t *testing.T) (*fixture, Admission) {
 	t.Helper()
 	f, correction, _ := correctionFixture(t)
-	if _, err := f.store.ApplyCorrection(context.Background(), alice, correction, time.Hour); err != nil { t.Fatal(err) }
+	if _, err := f.store.ApplyCorrection(context.Background(), alice, correction, time.Hour); err != nil {
+		t.Fatal(err)
+	}
+	seedImportedPDFPage(t, f)
+	seedPageAt(t, f, docA, alice, "original_alice_0003", "page_alice_000003", 2)
 	r := reOCRRequest()
 	r.Revision = 2
 	a, err := f.store.AdmitRender(context.Background(), alice, r, admissionLimits())
-	if err != nil { t.Fatal(err) }
-	if _, err = f.store.ClaimExport(context.Background(), alice, a.JobID, runner); err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = f.store.ClaimExport(context.Background(), alice, a.JobID, runner); err != nil {
+		t.Fatal(err)
+	}
 	return f, a
 }
 
 func TestReOCRWorkUsesAppliedCorrection(t *testing.T) {
 	f, a := reOCRCorrectionWork(t)
 	w, err := f.store.LoadRenderWork(context.Background(), alice, a.JobID, runner)
-	if err != nil { t.Fatal(err) }
-	if len(w.Inputs) != 1 || w.Inputs[0].ID != "artifact_correction_one" || w.Snapshot.Pages[0].OriginalArtifactID != "artifact_correction_original" { t.Fatal("effective input lost correction or original lineage") }
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(w.Inputs) != 3 || w.Inputs[0].ID != "artifact_correction_one" || w.Snapshot.Pages[0].OriginalArtifactID != "artifact_correction_original" || len(w.Originals) != 3 || w.Originals[0].ID != "artifact_correction_original" || w.Inputs[1].MediaType != "application/pdf" || w.Inputs[2].ID != w.Originals[2].ID {
+		t.Fatal("effective input lost correction or original lineage")
+	}
 }
 
 func TestReOCRWorkRejectsSourceDrift(t *testing.T) {
@@ -35,14 +47,22 @@ func TestReOCRWorkRejectsSourceDrift(t *testing.T) {
 			must(t, f.docs, "DROP TRIGGER correction_suggestion_immutable")
 			must(t, f.docs, "DROP TRIGGER page_capture_immutable")
 			switch mode {
-			case "hash": must(t, f.docs, "UPDATE artifacts SET sha256=zeroblob(32) WHERE id='artifact_correction_one'")
-			case "original-hash": must(t, f.docs, "UPDATE artifacts SET sha256=zeroblob(32) WHERE id='artifact_correction_original'")
-			case "transform": must(t, f.docs, "UPDATE page_corrections SET transform_json='{}' WHERE state='applied'")
-			case "rotation": must(t, f.docs, "UPDATE pages SET rotation=90 WHERE id=?", correctionPage)
-			case "correction-removed": must(t, f.docs, "UPDATE page_corrections SET state='discarded',applied_at_ms=NULL WHERE state='applied'")
-			case "geometry": must(t, f.docs, "UPDATE pages SET pixel_width=961 WHERE id=?", correctionPage)
+			case "hash":
+				must(t, f.docs, "UPDATE artifacts SET sha256=zeroblob(32) WHERE id='artifact_correction_one'")
+			case "original-hash":
+				must(t, f.docs, "UPDATE artifacts SET sha256=zeroblob(32) WHERE id='artifact_correction_original'")
+			case "transform":
+				must(t, f.docs, "UPDATE page_corrections SET transform_json='{}' WHERE state='applied'")
+			case "rotation":
+				must(t, f.docs, "UPDATE pages SET rotation=90 WHERE id=?", correctionPage)
+			case "correction-removed":
+				must(t, f.docs, "UPDATE page_corrections SET state='discarded',applied_at_ms=NULL WHERE state='applied'")
+			case "geometry":
+				must(t, f.docs, "UPDATE pages SET pixel_width=961 WHERE id=?", correctionPage)
 			}
-			if w, err := f.store.LoadRenderWork(context.Background(), alice, a.JobID, runner); err == nil || len(w.Inputs) != 0 { t.Fatal("changed effective source accepted") }
+			if w, err := f.store.LoadRenderWork(context.Background(), alice, a.JobID, runner); err == nil || len(w.Inputs) != 0 {
+				t.Fatal("changed effective source accepted")
+			}
 		})
 	}
 }

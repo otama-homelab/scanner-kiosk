@@ -101,6 +101,42 @@ func TestReOCRAdmissionWholeDocument(t *testing.T) {
 }
 
 func TestReOCRAdmissionIdentity(t *testing.T) {
+	for _, mode := range []string{"empty", "missing-model", "quota", "active", "expired", "changed-body", "candidate"} {
+		t.Run(mode, func(t *testing.T) {
+			f := renderFixture(t)
+			r, limits := reOCRRequest(), admissionLimits()
+			switch mode {
+			case "empty":
+				must(t, f.docs, "DELETE FROM pages WHERE document_id=?", docA)
+			case "missing-model":
+				r.Settings.OCR.ModelVersion = ""
+			case "quota":
+				limits.UserMaxBytes = 100
+				limits.JobMaxBytes = 100
+				r.ReserveBytes = 100
+			case "expired":
+				f.now += 86400000
+			case "active", "changed-body":
+				if _, err := f.store.AdmitRender(context.Background(), alice, r, limits); err != nil {
+					t.Fatal(err)
+				}
+				if mode == "active" {
+					r.IdempotencyKey = "request_reocr_second_0001"
+				} else {
+					r.Settings.OCR.Languages = []string{"en"}
+				}
+			case "candidate":
+				var bundle OCRResultBundle
+				f, bundle = ocrCandidateFixture(t)
+				if err := f.store.CompleteOCRResult(context.Background(), alice, jobA, runner, 1, bundle); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if _, err := f.store.AdmitRender(context.Background(), alice, r, limits); err == nil {
+				t.Fatal("invalid reOCR admission accepted")
+			}
+		})
+	}
 	f := renderFixture(t)
 	r := reOCRRequest()
 	first, err := f.store.AdmitRender(context.Background(), alice, r, admissionLimits())

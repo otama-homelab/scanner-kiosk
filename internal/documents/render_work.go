@@ -5,10 +5,22 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"image"
 	"io"
 	"reflect"
 	"strings"
+
+	"scanner-kiosk/internal/correction"
 )
+
+// RenderSource freezes both immutable provenance and the exact effective input.
+// Correction metadata never replaces CapturedPage.OriginalArtifactID.
+type RenderSource struct {
+	Original      ArtifactRecord `json:"original"`
+	Effective     ArtifactRecord `json:"effective"`
+	CorrectionID  string         `json:"correction_id,omitempty"`
+	TransformJSON string         `json:"transform_json,omitempty"`
+}
 
 // RenderWork is worker-internal metadata, never an HTTP response. Inputs follow
 // the immutable snapshot order; paths are resolved only by the rooted file scope.
@@ -16,6 +28,7 @@ type RenderWork struct {
 	Job                  Job
 	Snapshot             RenderSnapshot
 	Inputs               []ArtifactRecord
+	Originals            []ArtifactRecord
 	ReserveBytes         int64
 	ThumbnailOriginalIDs map[string]bool
 }
@@ -91,6 +104,26 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 		if len(out.Inputs) != len(out.Snapshot.Pages) {
 			return ErrConflict
 		}
+		out.Originals = append([]ArtifactRecord(nil), out.Inputs...)
+		if out.Snapshot.ReOCR {
+			// Close the original cursor before issuing the source lookup.
+			rows.Close()
+			sources, err := loadReOCRSources(ctx, tx, owner, out.Job.DocumentID, out.Snapshot.Pages)
+			if err != nil {
+				return err
+			}
+			if !reflect.DeepEqual(sources, out.Snapshot.Sources) {
+				return ErrConflict
+			}
+			out.Inputs = nil
+			out.Originals = nil
+			for _, source := range sources {
+				out.Inputs = append(out.Inputs, source.Effective)
+				out.Originals = append(out.Originals, source.Original)
+			}
+		} else if len(out.Snapshot.Sources) != 0 {
+			return ErrInvalid
+		}
 		current := s.now().UnixMilli()
 		if current >= expiry || current >= out.Job.DeadlineAtMS {
 			return ErrConflict
@@ -99,6 +132,66 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 	})
 	if err != nil {
 		return RenderWork{}, err
+	}
+	return out, nil
+}
+
+// loadReOCRSources uses the same transaction as admission/execution. Missing or
+// invalid applied corrections fail closed; they never select the original.
+func loadReOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, pages []CapturedPage) ([]RenderSource, error) {
+	if len(pages) == 0 || len(pages) > 1000 {
+		return nil, ErrInvalid
+	}
+	out := make([]RenderSource, 0, len(pages))
+	for _, page := range pages {
+		var source RenderSource
+		var originalHash []byte
+		err := tx.QueryRowContext(ctx, `SELECT a.id,a.relative_path,a.media_type,a.byte_size,a.sha256,COALESCE(p.pixel_width,0),COALESCE(p.pixel_height,0)
+ FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.owner_id=p.owner_id AND a.document_id=p.document_id
+ WHERE p.id=? AND p.document_id=? AND p.owner_id=? AND a.id=? AND a.kind='original' AND a.state='ready'`, page.ID, doc, owner, page.OriginalArtifactID).Scan(&source.Original.ID, &source.Original.RelativePath, &source.Original.MediaType, &source.Original.Size, &originalHash, &source.Original.PixelWidth, &source.Original.PixelHeight)
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrConflict
+		}
+		if err != nil {
+			return nil, ErrStorage
+		}
+		if !localPath(source.Original.RelativePath) || source.Original.Size < 1 || len(originalHash) != 32 || !validPageSource(page, source.Original.MediaType) {
+			return nil, ErrInvalid
+		}
+		copy(source.Original.SHA256[:], originalHash)
+		source.Effective = source.Original
+		var originalID, effectiveID string
+		var sourceHash, effectiveHash []byte
+		err = tx.QueryRowContext(ctx, `SELECT suggestion_id,original_artifact_id,correction_artifact_id,source_sha256,correction_sha256,transform_json FROM page_corrections WHERE page_id=? AND document_id=? AND owner_id=? AND state='applied'`, page.ID, doc, owner).Scan(&source.CorrectionID, &originalID, &effectiveID, &sourceHash, &effectiveHash, &source.TransformJSON)
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrStorage
+		}
+		if err == nil {
+			if page.SourceType != "" || originalID != source.Original.ID || !sameHash(sourceHash, source.Original.SHA256) {
+				return nil, ErrConflict
+			}
+			var tr correction.Transform
+			if json.Unmarshal([]byte(source.TransformJSON), &tr) != nil || correction.Validate(tr, image.Rect(0, 0, source.Original.PixelWidth, source.Original.PixelHeight)) != nil {
+				return nil, ErrConflict
+			}
+			var digest []byte
+			err = tx.QueryRowContext(ctx, `SELECT id,relative_path,media_type,byte_size,sha256 FROM artifacts WHERE id=? AND document_id=? AND owner_id=? AND kind='intermediate' AND state='ready'`, effectiveID, doc, owner).Scan(&source.Effective.ID, &source.Effective.RelativePath, &source.Effective.MediaType, &source.Effective.Size, &digest)
+			if errors.Is(err, sql.ErrNoRows) {
+				return nil, ErrConflict
+			}
+			if err != nil {
+				return nil, ErrStorage
+			}
+			if len(digest) != 32 || len(effectiveHash) != 32 || !localPath(source.Effective.RelativePath) || source.Effective.Size < 1 || (source.Effective.MediaType != "image/png" && source.Effective.MediaType != "image/jpeg") {
+				return nil, ErrConflict
+			}
+			copy(source.Effective.SHA256[:], digest)
+			if !sameHash(effectiveHash, source.Effective.SHA256) {
+				return nil, ErrConflict
+			}
+			source.Effective.PixelWidth, source.Effective.PixelHeight = tr.OutputWidth, tr.OutputHeight
+		}
+		out = append(out, source)
 	}
 	return out, nil
 }

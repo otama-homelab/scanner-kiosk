@@ -76,6 +76,7 @@ type CapturedPage struct {
 	DPI                int     `json:"dpi"`
 }
 type RenderSnapshot struct {
+	Sources   []RenderSource       `json:"sources,omitempty"`
 	ReOCR     bool                 `json:"reocr,omitempty"`
 	Version   int                  `json:"version"`
 	Settings  RenderSettings       `json:"settings"`
@@ -215,6 +216,13 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		if len(pages) != pageCount {
 			return ErrConflict
 		}
+		var sources []RenderSource
+		if request.ReOCR {
+			sources, err = loadReOCRSources(ctx, tx, owner, request.DocumentID, pages)
+			if err != nil {
+				return err
+			}
+		}
 		if err = s.checkCapacity(ctx, tx, owner, request.ReserveBytes, limits); err != nil {
 			return err
 		}
@@ -248,8 +256,8 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		if err != nil {
 			return ErrStorage
 		}
-		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, ReOCR: request.ReOCR, Settings: snapshotSettings, Pages: pages, OCROutput: request.ResolvedOutput})
-		if err != nil {
+		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, ReOCR: request.ReOCR, Sources: sources, Settings: snapshotSettings, Pages: pages, OCROutput: request.ResolvedOutput})
+		if err != nil || len(snapshot) > 1<<20 {
 			return ErrInvalid
 		}
 		if _, err = tx.ExecContext(ctx, `INSERT INTO jobs(id,document_id,owner_id,kind,state,input_revision,configuration_json,created_at_ms,deadline_at_ms) VALUES(?,?,?,'render','queued',?,?,?,?)`, jobID, request.DocumentID, owner, revision, string(snapshot), now, deadline); err != nil {

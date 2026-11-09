@@ -188,6 +188,15 @@ func (s *Store) CompleteOCRResult(ctx context.Context, owner, job, runner string
 				return ErrConflict
 			}
 		}
+		if snapshot.ReOCR {
+			sources, err := loadReOCRSources(ctx, tx, owner, doc, snapshot.Pages)
+			if err != nil {
+				return err
+			}
+			if !reflect.DeepEqual(sources, snapshot.Sources) {
+				return ErrConflict
+			}
+		}
 		if err = validateOCRSources(ctx, tx, owner, doc, b); err != nil {
 			return err
 		}
