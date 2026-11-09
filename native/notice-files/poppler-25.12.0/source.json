@@ -1,0 +1,39 @@
+{
+  "component": "poppler-25.12.0",
+  "notice_files": [
+    {
+      "file": "AUTHORS",
+      "sha256": "9bb2a2d73128adae6044ccbaa6a477640c4ce86e30771b0efad67ec7385588a4",
+      "source_member": "poppler-25.12.0/AUTHORS"
+    },
+    {
+      "file": "COPYING",
+      "sha256": "ab15fd526bd8dd18a9e77ebc139656bf4d33e97fc7238cd11bf60e2b9b8666c6",
+      "source_member": "poppler-25.12.0/COPYING"
+    },
+    {
+      "file": "COPYING3",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+      "source_member": "poppler-25.12.0/COPYING3"
+    },
+    {
+      "file": "cmake--modules--COPYING-CMAKE-SCRIPTS",
+      "sha256": "46cde7dc11e64c78d650b4851b88f6704b4665ff60f22a1caf68ceb15e217e5b",
+      "source_member": "poppler-25.12.0/cmake/modules/COPYING-CMAKE-SCRIPTS"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/bin/pdfinfo",
+    "usr/bin/pdftoppm",
+    "usr/bin/pdftotext",
+    "usr/lib/libpoppler.so.155",
+    "usr/lib/libpoppler.so.155.0.0"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "poppler-25.12.0.tar.xz",
+  "source_archive_sha512": "4f68713d7efa5003a60773749d3bcff4041b165dfb65104a56cec576559c15164fc4a021244cc91f4ed76aab709757637396d7c5b6fbcf3eed23e3469072e4f3",
+  "source_recipe_origins": [
+    "5e1b822309fb17cc2ebd46d6fbacb1763acbcdd1/main/poppler"
+  ]
+}

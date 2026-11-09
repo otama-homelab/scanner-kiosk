@@ -1,0 +1,31 @@
+{
+  "component": "freetype-2.14.3",
+  "notice_files": [
+    {
+      "file": "docs--GPLv2.TXT",
+      "sha256": "c4120c6752c910c299e3bd9cb3a46ff262c268303ca2069b61f92f10a5656c18",
+      "source_member": "freetype-2.14.3/docs/GPLv2.TXT"
+    },
+    {
+      "file": "docs--FTL.TXT",
+      "sha256": "5a5ee54c5001bbad1cdc1a57cc3dd4c42199b2da09d39c7ee41fab002d02967f",
+      "source_member": "freetype-2.14.3/docs/FTL.TXT"
+    },
+    {
+      "file": "LICENSE.TXT",
+      "sha256": "bd36c8b474855fa294c2ec5c184544478ef3720aad37d65a6296a4f264fd2d3b",
+      "source_member": "freetype-2.14.3/LICENSE.TXT"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libfreetype.so.6",
+    "usr/lib/libfreetype.so.6.20.6"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "freetype-2.14.3.tar.xz",
+  "source_archive_sha512": "43de86ea70b4b47f6efaae67f3440f65a24ffac29dc6d11203a9764e4f1a749ce1ba7645acd23525220b3ba12ddad8687b962b9f1254e2c0a86070854e85d5a0",
+  "source_recipe_origins": [
+    "ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype"
+  ]
+}

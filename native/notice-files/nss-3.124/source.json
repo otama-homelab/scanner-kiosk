@@ -1,0 +1,60 @@
+{
+  "component": "nss-3.124",
+  "notice_files": [
+    {
+      "file": "nss--COPYING",
+      "sha256": "a20c1a32d1f8102432360b42e932869f7c11c7cdbacf9cac554c422132af47f4",
+      "source_member": "nss-3.124/nss/COPYING"
+    },
+    {
+      "file": "nss--gtests--google_test--gtest--LICENSE",
+      "sha256": "9702de7e4117a8e2b20dafab11ffda58c198aede066406496bef670d40a22138",
+      "source_member": "nss-3.124/nss/gtests/google_test/gtest/LICENSE"
+    },
+    {
+      "file": "nss--lib--freebl--mpi--doc--LICENSE",
+      "sha256": "3908bc2b9507e752b633fc3597f60a58b950fa14f81dff8af8a2d716efbe0d23",
+      "source_member": "nss-3.124/nss/lib/freebl/mpi/doc/LICENSE"
+    },
+    {
+      "file": "nss--lib--freebl--mpi--doc--LICENSE-MPL",
+      "sha256": "2bfdca60adf803108d4c7f009000bea76ad00e621e163197881b0eaae91b530e",
+      "source_member": "nss-3.124/nss/lib/freebl/mpi/doc/LICENSE-MPL"
+    },
+    {
+      "file": "nss--lib--freebl--scripts--LICENSE",
+      "sha256": "c2e940a0b67954b8e9284d34adb38ae55ffa38219bc879f0d8dd96cd06318526",
+      "source_member": "nss-3.124/nss/lib/freebl/scripts/LICENSE"
+    },
+    {
+      "file": "nss--lib--zlib--LICENSE",
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2",
+      "source_member": "nss-3.124/nss/lib/zlib/LICENSE"
+    },
+    {
+      "file": "nss--pkg--solaris--common_files--copyright",
+      "sha256": "92da7fb5a95fa0db9807b2577483999fcb5bc5a8d8624a3683763b83dd6cf83f",
+      "source_member": "nss-3.124/nss/pkg/solaris/common_files/copyright"
+    },
+    {
+      "file": "nss--tests--acvp--COPYING",
+      "sha256": "ea80e10061d19f6cfef67910c9d6c5eb305b56bb2267c51f2f3d31b15dd89997",
+      "source_member": "nss-3.124/nss/tests/acvp/COPYING"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libnss3.so",
+    "usr/lib/libnss3.so.124",
+    "usr/lib/libnssutil3.so",
+    "usr/lib/libnssutil3.so.124",
+    "usr/lib/libsmime3.so",
+    "usr/lib/libsmime3.so.124"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "nss-3.124.tar.gz",
+  "source_archive_sha512": "9959977b3cbcb0306c8aeba2c059d4f3646b3144c6401fbc73c14aea364caa92331875354afa79c095b6482b29ae743228d35c1bd510c5124cad5e7c37c5daa2",
+  "source_recipe_origins": [
+    "422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss"
+  ]
+}

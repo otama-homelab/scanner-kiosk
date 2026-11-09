@@ -1,0 +1,26 @@
+{
+  "component": "fontconfig-2.17.1",
+  "notice_files": [
+    {
+      "file": "AUTHORS",
+      "sha256": "db6d73a160bb2de10268f88ef60aae91771fefdeee4992b791c76ce6592a4a4b",
+      "source_member": "fontconfig-2.17.1/AUTHORS"
+    },
+    {
+      "file": "COPYING",
+      "sha256": "51a51aa9823704fd90bccc616cdd17ebabb5b2b3e9cbde886ca02c7002288067",
+      "source_member": "fontconfig-2.17.1/COPYING"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libfontconfig.so.1",
+    "usr/lib/libfontconfig.so.1.16.1"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "fontconfig-2.17.1.tar.xz",
+  "source_archive_sha512": "c09c1f041f61ee0d220ff906a86b5c4b329106dc96f8c04b23f8fdeb480df626717fe3613bccb41cb39e86334078139322710377f5ddaa3abe48569e798161c9",
+  "source_recipe_origins": [
+    "07061cb5a28861b108b09adc09ebd4fd962e549f/main/fontconfig"
+  ]
+}

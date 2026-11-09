@@ -55,6 +55,32 @@
       "version": "1.16.2-r2"
     },
     {
+      "apk_control_checksum": "Q1KigEPCtTgE7pePNWEk/JYw0I71s=",
+      "archive_architecture": "x86_64",
+      "bytes": 163072,
+      "filename": "fontconfig-2.17.1-r1.apk",
+      "name": "fontconfig",
+      "origin": "fontconfig",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "7634cf2fb1066ec97c8f41ec90ec9f036540e056276b7bf9a10dc4ec9e44d238",
+      "source_commit": "07061cb5a28861b108b09adc09ebd4fd962e549f",
+      "version": "2.17.1-r1"
+    },
+    {
+      "apk_control_checksum": "Q1inTeCTllWaiIzsEB0gXPSI2KScY=",
+      "archive_architecture": "x86_64",
+      "bytes": 354367,
+      "filename": "freetype-2.14.3-r0.apk",
+      "name": "freetype",
+      "origin": "freetype",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "09d76fde675a9ca3cfeb83d72fb09cb2e9ccf79b2937daa05a1af9a37a6b7815",
+      "source_commit": "ad16b0afc1a315c4095a75ff72ebbe3cfa29b671",
+      "version": "2.14.3-r0"
+    },
+    {
       "apk_control_checksum": "Q1QNP1/mlTJAIu0CqtKuhxoDEZFqw=",
       "archive_architecture": "x86_64",
       "bytes": 15592,
@@ -94,6 +120,19 @@
       "version": "3.8.13-r0"
     },
     {
+      "apk_control_checksum": "Q1W5Tp72Knc1v0HtRficgyY9Lb0To=",
+      "archive_architecture": "x86_64",
+      "bytes": 153297,
+      "filename": "lcms2-2.19-r0.apk",
+      "name": "lcms2",
+      "origin": "lcms2",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "b4cb038af3c2f02bedd8456ae876c97ac0a9f29789add77871bfd6ce084ff136",
+      "source_commit": "b103184b887bd33a5672484a96704363084b2901",
+      "version": "2.19-r0"
+    },
+    {
       "apk_control_checksum": "Q13zTwpcMiJH4H1SiPQwBK8H+gQH0=",
       "archive_architecture": "x86_64",
       "bytes": 1108364,
@@ -105,6 +144,32 @@
       "sha256": "733d26a5e8860c24f6c0c8ec6fe97c630c35de9788b576b9ffa9cd0488e5d614",
       "source_commit": "65d7583d02d64188863a325a30fff98e0b476e37",
       "version": "1.87.0-r0"
+    },
+    {
+      "apk_control_checksum": "Q1CFZrpcevl8JUdL6LJOi0jwEWtn0=",
+      "archive_architecture": "x86_64",
+      "bytes": 35467,
+      "filename": "libbz2-1.0.8-r6.apk",
+      "name": "libbz2",
+      "origin": "bzip2",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "2737e2b23ed08d4911ee62cd0163b5f4bf0379cacf4dc35b23a00209584c98fd",
+      "source_commit": "33283848034c9885d984c8e8697c645c57324938",
+      "version": "1.0.8-r6"
+    },
+    {
+      "apk_control_checksum": "Q1sJ3mbRK300qoX/3bSQgNsvVLmDY=",
+      "archive_architecture": "x86_64",
+      "bytes": 63634,
+      "filename": "libexpat-2.10.0-r0.apk",
+      "name": "libexpat",
+      "origin": "expat",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "e7e7408ea787ed06d00159b0ff1f9b65a63cf634f36d9e0fa7512ce2c489a503",
+      "source_commit": "af0fa42036cd6e626768c0d65fddaa1d1b30cf21",
+      "version": "2.10.0-r0"
     },
     {
       "apk_control_checksum": "Q1L3smH3/OzE7r2LMw5/b7gHE7/jo=",
@@ -328,6 +393,45 @@
       "version": "3.10.2-r0"
     },
     {
+      "apk_control_checksum": "Q13wb4/JHmWkW3GbArgZb0nKITqhw=",
+      "archive_architecture": "x86_64",
+      "bytes": 126923,
+      "filename": "nspr-4.38.2-r0.apk",
+      "name": "nspr",
+      "origin": "nspr",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "0b918a47c9e625f2b7001424dc64d6738e192594c584cecce4ae67d72199c4b0",
+      "source_commit": "4e10628e0ece580cd8f88bec18b55ddbd0be249a",
+      "version": "4.38.2-r0"
+    },
+    {
+      "apk_control_checksum": "Q1vJybxhWPsYTPkxSCJ95GjjnEO7c=",
+      "archive_architecture": "x86_64",
+      "bytes": 1721257,
+      "filename": "nss-3.124-r0.apk",
+      "name": "nss",
+      "origin": "nss",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "1df40eb4fccf83653c166bd843e8193eb82a969dedb6d1e7760263d1adc078a8",
+      "source_commit": "422faa8d3631e64d35b5b210b698a05cac32f2be",
+      "version": "3.124-r0"
+    },
+    {
+      "apk_control_checksum": "Q1Gf5Tgxwo6ZJ8C0X3q5C0dbSXkGs=",
+      "archive_architecture": "x86_64",
+      "bytes": 135575,
+      "filename": "openjpeg-2.5.4-r2.apk",
+      "name": "openjpeg",
+      "origin": "openjpeg",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "e7d2189cda2725a262e77c60c6306401e149c748aed187ca36a5be0b86ea2c8c",
+      "source_commit": "b6d19fe5cb62ff83b899e224cd2408868fc21e5e",
+      "version": "2.5.4-r2"
+    },
+    {
       "apk_control_checksum": "Q1LnVzyqXTfa2bTyKUwAVGF6UIN8Q=",
       "archive_architecture": "x86_64",
       "bytes": 399735,
@@ -339,6 +443,45 @@
       "sha256": "134d653aeeb4ada32746fbc3e2a7ae4201f584725de9263e4f32503658f3ddd8",
       "source_commit": "922ca1ffc9cc326f7d95b093b365e31da5cba1a9",
       "version": "0.26.2-r0"
+    },
+    {
+      "apk_control_checksum": "Q1VjEoOrdWX8bZoT7dLSKCMlHFMsE=",
+      "archive_architecture": "x86_64",
+      "bytes": 1050098,
+      "filename": "poppler-25.12.0-r1.apk",
+      "name": "poppler",
+      "origin": "poppler",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "27d05f21b2c4b4b3f68185a2f3e87426477bae0cfbd5bf6815b7f3ec93b53fff",
+      "source_commit": "5e1b822309fb17cc2ebd46d6fbacb1763acbcdd1",
+      "version": "25.12.0-r1"
+    },
+    {
+      "apk_control_checksum": "Q1ptDT4FA3B9T2UZD4LF+WoFhb7Gs=",
+      "archive_architecture": "noarch",
+      "bytes": 4420126,
+      "filename": "poppler-data-0.4.12-r0.apk",
+      "name": "poppler-data",
+      "origin": "poppler-data",
+      "repository": "community",
+      "repository_architecture": "x86_64",
+      "sha256": "bd7d8597acda038551bd2f7b48911107b86ea09ec8999f5d5eb758cc5f06bb49",
+      "source_commit": "1543d6c40b88eb15671cfcfd07acc40f12f16b48",
+      "version": "0.4.12-r0"
+    },
+    {
+      "apk_control_checksum": "Q1vigdshs5ixAI0f0v1KJJwHqf9fQ=",
+      "archive_architecture": "x86_64",
+      "bytes": 211524,
+      "filename": "poppler-utils-25.12.0-r1.apk",
+      "name": "poppler-utils",
+      "origin": "poppler",
+      "repository": "main",
+      "repository_architecture": "x86_64",
+      "sha256": "eb7fb9b86491a95a16011fff4581c42939008adcfd4d83c1a35367445d41d766",
+      "source_commit": "5e1b822309fb17cc2ebd46d6fbacb1763acbcdd1",
+      "version": "25.12.0-r1"
     },
     {
       "apk_control_checksum": "Q1D1J2gueobG1cybsCcxmu91LRMLs=",
@@ -493,7 +636,7 @@
     "https://dl-cdn.alpinelinux.org/alpine/v3.24/main",
     "https://dl-cdn.alpinelinux.org/alpine/v3.24/community"
   ],
-  "runtime_provenance_sha256": "0690f396b032af6444050a0f61b9a2243430ab75910c71498fbba8f365ffcdb5",
+  "runtime_provenance_sha256": "98f787cd680b0ba3791764a95715af704b232e83439351d5480fa1f4c53e63ff",
   "scope": "Archive identity and official signature verification required; source-built code, notices, complete source/security/license approval remain separate",
   "trusted_keys_sha256": {
     "alpine-devel@lists.alpinelinux.org-4a6a0840.rsa.pub": "9c102bcc376af1498d549b77bdbfa815ae86faa1d2d82f040e616b18ef2df2d4",

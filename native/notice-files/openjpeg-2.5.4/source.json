@@ -1,0 +1,36 @@
+{
+  "component": "openjpeg-2.5.4",
+  "notice_files": [
+    {
+      "file": "LICENSE",
+      "sha256": "a6af136f3e15038a666b61f376612a07d9a4e48cb7c01adbf3e33b3f14ab49b6",
+      "source_member": "openjpeg-2.5.4/LICENSE"
+    },
+    {
+      "file": "thirdparty--astyle--LICENSE.md",
+      "sha256": "2e8480e753b7a1d100c80920f4250b1bc9f93a18c6a5953c42b11445218cd0fb",
+      "source_member": "openjpeg-2.5.4/thirdparty/astyle/LICENSE.md"
+    },
+    {
+      "file": "thirdparty--liblcms2--COPYING",
+      "sha256": "c725daac91a9259ce5e195683c0eeb797d345035c36ac5ba114c9fa80e11639a",
+      "source_member": "openjpeg-2.5.4/thirdparty/liblcms2/COPYING"
+    },
+    {
+      "file": "thirdparty--libpng--LICENSE",
+      "sha256": "7317e078e2d3b5d7ba5a6159e650945153262b44b76f6700f8e9edb261c5143e",
+      "source_member": "openjpeg-2.5.4/thirdparty/libpng/LICENSE"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libopenjp2.so.2.5.4",
+    "usr/lib/libopenjp2.so.7"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "openjpeg-v2.5.4.tar.gz",
+  "source_archive_sha512": "702a10e20caaf8209684ded7c9fcf32f5ba6a972cf2d9fcf2611cdc6a446d2c3bb60324205758e6b6f92278c8cf4ef0fbae511e6ffb45ed6e8df514db0c6ab25",
+  "source_recipe_origins": [
+    "b6d19fe5cb62ff83b899e224cd2408868fc21e5e/main/openjpeg"
+  ]
+}

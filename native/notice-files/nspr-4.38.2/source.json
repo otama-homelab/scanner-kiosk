@@ -1,0 +1,27 @@
+{
+  "component": "nspr-4.38.2",
+  "notice_files": [
+    {
+      "file": "nspr--LICENSE",
+      "sha256": "fab3dd6bdab226f1c08630b1dd917e11fcb4ec5e1e020e2c16f83a0a13863e85",
+      "source_member": "nspr-4.38.2/nspr/LICENSE"
+    },
+    {
+      "file": "nspr--pkg--solaris--common_files--copyright",
+      "sha256": "92da7fb5a95fa0db9807b2577483999fcb5bc5a8d8624a3683763b83dd6cf83f",
+      "source_member": "nspr-4.38.2/nspr/pkg/solaris/common_files/copyright"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libnspr4.so",
+    "usr/lib/libplc4.so",
+    "usr/lib/libplds4.so"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "nspr-4.38.2.tar.gz",
+  "source_archive_sha512": "f17302b0973ab006f9e6af70199ac6bb40d6266f96ab4d6692f56c24979907a7f0a20cf9d926aa80084f2e0ce7dfd56de89a7547b5e7e8caafa7afa5eb0b7bd8",
+  "source_recipe_origins": [
+    "4e10628e0ece580cd8f88bec18b55ddbd0be249a/main/nspr"
+  ]
+}

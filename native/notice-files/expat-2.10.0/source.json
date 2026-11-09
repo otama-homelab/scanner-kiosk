@@ -1,0 +1,26 @@
+{
+  "component": "expat-2.10.0",
+  "notice_files": [
+    {
+      "file": "COPYING",
+      "sha256": "31b15de82aa19a845156169a17a5488bf597e561b2c318d159ed583139b25e87",
+      "source_member": "expat-2.10.0/COPYING"
+    },
+    {
+      "file": "AUTHORS",
+      "sha256": "59f14371c6b75912cfebb46e6247ee5146766e803a0365b124e5d3011e7d0877",
+      "source_member": "expat-2.10.0/AUTHORS"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/libexpat.so.1",
+    "usr/lib/libexpat.so.1.13.1"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "expat-2.10.0.tar.xz",
+  "source_archive_sha512": "bd61f361d823f67586dad246fa4d4abbe3d22f5a0f9a28401e7a2fc96753d5bae33fbe4068fae72f016998d0da9d8c92edc4abd2fe8a8e4aafc775a8ab547c44",
+  "source_recipe_origins": [
+    "af0fa42036cd6e626768c0d65fddaa1d1b30cf21/main/expat"
+  ]
+}

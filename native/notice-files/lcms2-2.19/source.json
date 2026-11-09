@@ -1,0 +1,41 @@
+{
+  "component": "lcms2-2.19",
+  "notice_files": [
+    {
+      "file": "LICENSE",
+      "sha256": "6dbd60437f8ef91d8de1f08ad75882547fd4931bfcc3566a0735f28db1484d31",
+      "source_member": "lcms2-2.19/LICENSE"
+    },
+    {
+      "file": "plugins--fast_float--COPYING.GPL3",
+      "sha256": "c53a65c2fd561c87eaabf1072ef5dcab8653042bc15308465f52413585eb6271",
+      "source_member": "lcms2-2.19/plugins/fast_float/COPYING.GPL3"
+    },
+    {
+      "file": "plugins--threaded--COPYING.GPL3",
+      "sha256": "c53a65c2fd561c87eaabf1072ef5dcab8653042bc15308465f52413585eb6271",
+      "source_member": "lcms2-2.19/plugins/threaded/COPYING.GPL3"
+    },
+    {
+      "file": "utils--jpgicc--LICENSE_iccjpeg",
+      "sha256": "8baac37d14eed89b82ffcb041677dd701164eb5cc0f26e165fe47eb11afa0dca",
+      "source_member": "lcms2-2.19/utils/jpgicc/LICENSE_iccjpeg"
+    },
+    {
+      "file": "AUTHORS",
+      "sha256": "4847d97cd41e980794939b1d2694bd8f67b92856ec80e95c2fcfc34066f0df93",
+      "source_member": "lcms2-2.19/AUTHORS"
+    }
+  ],
+  "publication_approved": false,
+  "runtime_files": [
+    "usr/lib/liblcms2.so.2",
+    "usr/lib/liblcms2.so.2.0.19"
+  ],
+  "scope": "Exact upstream notice texts and selected runtime association; source identity is retained, not publication or universal license approval",
+  "source_archive": "lcms2-2.19.tar.gz",
+  "source_archive_sha512": "0d282fae9ca16b9cbc75ef8845d6ad1062aca8c8783e39c09ad294050e0574da8ee437b9ac58771f259e3b2dea702d8d094dcc7dba4eeba8453d82f54d06ab9c",
+  "source_recipe_origins": [
+    "b103184b887bd33a5672484a96704363084b2901/main/lcms2"
+  ]
+}
