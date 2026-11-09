@@ -17,6 +17,15 @@ import (
 	"scanner-kiosk/internal/pdfassemble"
 )
 
+func TestOCRPDFOriginalRetention(t *testing.T) {
+	path, err := filepath.Abs("../../scripts/fixtures/ocr/fixture_ocr_two_page_001.pdf")
+	if err != nil { t.Fatal(err) }
+	receipt, err := ValidatePDF(context.Background(), path, []string{"page_ocr_two_page_001", "page_ocr_two_page_002"}, nil, PDFValidationOptions{OriginalImagePath:path, ExpectLossless:true})
+	if err != nil || receipt.Status != "passed" || len(receipt.Pages) != 2 {
+		t.Fatalf("unchanged PDF source must retain per-page pixels: %+v %v",receipt,err)
+	}
+}
+
 func TestOCRPDFPageOracle(t *testing.T) {
 	pdf, ids, options := ocrPDFOracleFixture(t, "correct")
 	receipt, err := ValidatePDF(context.Background(), pdf, ids, []string{"ALPHA ONE", "BRAVO TWO"}, options)
