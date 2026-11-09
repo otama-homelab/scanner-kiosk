@@ -2,9 +2,38 @@ package ocrplugin
 
 import (
 	"context"
+	"encoding/json"
 	"math"
 	"testing"
 )
+
+func TestPositionedWritingDirection(t *testing.T) {
+	input := InputPage{ID: "page", Width: 100, Height: 200}
+	for _, direction := range []string{"", "horizontal", "vertical", "sideways", "Vertical"} {
+		var page PositionedPage
+		data := `{"page_id":"page","width":100,"height":200,"spans":[{"text":"日本語","box":{"x":10,"y":20,"width":30,"height":90},"writing_direction":"` + direction + `"}]}`
+		if err := json.Unmarshal([]byte(data), &page); err != nil {
+			t.Fatal(err)
+		}
+		wantValid := direction == "" || direction == "horizontal" || direction == "vertical"
+		if (ValidatePositionedPage(page, input) == nil) != wantValid {
+			t.Fatalf("writing direction %q validation mismatch", direction)
+		}
+		if wantValid && direction != "" {
+			raw, err := json.Marshal(page)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var fields map[string]any
+			if err = json.Unmarshal(raw, &fields); err != nil {
+				t.Fatal(err)
+			}
+			if fields["spans"].([]any)[0].(map[string]any)["writing_direction"] != direction {
+				t.Fatalf("writing direction %q lost", direction)
+			}
+		}
+	}
+}
 
 type fixture struct{ caps Capabilities }
 

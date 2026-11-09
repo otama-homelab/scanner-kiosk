@@ -3,14 +3,19 @@ package pdftextlayer_test
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"image/png"
 	"math"
 	"os"
 	"os/exec"
 	"strings"
 	"testing"
+	"time"
+	"unicode"
 
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
@@ -18,6 +23,98 @@ import (
 	"scanner-kiosk/internal/pdftextlayer"
 	"scanner-kiosk/pkg/ocrplugin"
 )
+
+func TestPositionedVerticalJapaneseSearch(t *testing.T) {
+	checkJapaneseSearch(t, `[{"text":"日本語","box":{"x":160,"y":20,"width":24,"height":90},"writing_direction":"vertical"},{"text":"東京","box":{"x":110,"y":20,"width":24,"height":60},"writing_direction":"vertical"}]`, "日本語東京")
+}
+
+func TestPositionedMixedJapaneseSearch(t *testing.T) {
+	checkJapaneseSearch(t, `[{"text":"日本 English","box":{"x":10,"y":10,"width":180,"height":24}},{"text":"縦組","box":{"x":160,"y":70,"width":24,"height":60},"writing_direction":"vertical"}]`, "日本English縦組")
+}
+
+func checkJapaneseSearch(t *testing.T, spansJSON, expected string) {
+	t.Helper()
+	fontPath := os.Getenv("SCANNER_TEST_POSITIONED_FONT")
+	if fontPath == "" {
+		fontPath = "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf"
+	}
+	fontData, err := os.ReadFile(fontPath)
+	if err != nil {
+		t.Fatalf("required approved Japanese font: %v", err)
+	}
+	if fmt.Sprintf("%x", sha256.Sum256(fontData)) != "503af4a8b84d1079b8e2e358dc7f7a7fb8cb7a1f212f35eaef6782dbfc75a55e" {
+		t.Fatal("Japanese font differs from the approved IPA Gothic003.03 fixture")
+	}
+	page := ocrplugin.PositionedPage{PageID: "japanese", Width: 220, Height: 240}
+	if err := json.Unmarshal([]byte(spansJSON), &page.Spans); err != nil {
+		t.Fatal(err)
+	}
+	output, err := pdftextlayer.RenderPositioned(context.Background(), page, ocrplugin.InputPage{ID: page.PageID, Width: page.Width, Height: page.Height}, fontData, 32<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	run := func(args ...string) []byte {
+		t.Helper()
+		cmd := exec.CommandContext(ctx, "pdftotext", args...)
+		cmd.Stdin = bytes.NewReader(output)
+		body, err := cmd.Output()
+		if err != nil {
+			t.Fatalf("required independent Poppler search proof: %v", err)
+		}
+		return body
+	}
+	compact := func(s string) string {
+		return strings.Map(func(r rune) rune {
+			if unicode.IsSpace(r) {
+				return -1
+			}
+			return r
+		}, s)
+	}
+	if actual := compact(string(run("-raw", "-", "-"))); actual != expected {
+		t.Fatalf("reading order %q, want %q", actual, expected)
+	}
+	var document struct {
+		Words []struct {
+			Text string  `xml:",chardata"`
+			XMin float64 `xml:"xMin,attr"`
+			YMin float64 `xml:"yMin,attr"`
+			XMax float64 `xml:"xMax,attr"`
+			YMax float64 `xml:"yMax,attr"`
+		} `xml:"body>doc>page>word"`
+	}
+	if err := xml.Unmarshal(run("-bbox", "-", "-"), &document); err != nil {
+		t.Fatal(err)
+	}
+	if len(document.Words) == 0 {
+		t.Fatal("no search regions")
+	}
+	for _, span := range page.Spans {
+		// Source span regions are authoritative; these are PDF search regions,
+		// not invented recognition character boxes.
+		found := ""
+		minY, maxY := math.Inf(1), math.Inf(-1)
+		for _, w := range document.Words {
+			b := span.Box
+			if w.XMin >= b.X-.1 && w.XMax <= b.X+b.Width+.1 && w.YMin >= b.Y-.1 && w.YMax <= b.Y+b.Height+.1 {
+				if b.Height > b.Width {
+					glyphs := []rune(span.Text)
+					index := len([]rune(found))
+					if len([]rune(w.Text)) != 1 || index >= len(glyphs) || math.Abs(w.YMin-(b.Y+float64(index)*b.Height/float64(len(glyphs)))) > .1 || math.Abs(w.YMax-w.YMin-b.Height/float64(len(glyphs))) > .1 {
+						t.Fatalf("vertical glyph search region is horizontal or misplaced: %+v", w)
+					}
+				}
+				found += w.Text
+				minY, maxY = math.Min(minY, w.YMin), math.Max(maxY, w.YMax)
+			}
+		}
+		if compact(found) != compact(span.Text) || math.Abs(minY-span.Box.Y) > .1 || math.Abs(maxY-span.Box.Y-span.Box.Height) > .1 {
+			t.Fatalf("search regions do not cover source span %+v: text=%q y=%g..%g", span, found, minY, maxY)
+		}
+	}
+}
 
 func TestPositionedTextLayer(t *testing.T) {
 	input := ocrplugin.InputPage{ID: "page", Width: 80, Height: 100}
