@@ -3,6 +3,7 @@ package evaluation
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"image"
@@ -15,6 +16,118 @@ import (
 
 	"scanner-kiosk/internal/pdfassemble"
 )
+
+func TestOCRPDFPageOracle(t *testing.T) {
+	pdf, ids, options := ocrPDFOracleFixture(t, "correct")
+	receipt, err := ValidatePDF(context.Background(), pdf, ids, []string{"ALPHA ONE", "BRAVO TWO"}, options)
+	if err != nil || receipt.Status != "passed" || len(receipt.Pages) != 2 {
+		t.Fatalf("page oracle rejected: %+v %v", receipt, err)
+	}
+}
+
+func TestOCRPDFRejectsSwappedPages(t *testing.T) {
+	pdf, ids, options := ocrPDFOracleFixture(t, "swapped-pages")
+	receipt, err := ValidatePDF(context.Background(), pdf, ids, []string{"ALPHA ONE", "BRAVO TWO"}, options)
+	if !errors.Is(err, ErrInvalid) || receipt.Status == "passed" {
+		t.Fatalf("swapped source pages passed: %+v %v", receipt, err)
+	}
+}
+
+func TestOCRPDFRejectsWrongPageText(t *testing.T) {
+	for _, mode := range []string{"wrong-page-text", "wrong-geometry", "wrong-source-hash", "wrong-text-order"} {
+		t.Run(mode, func(t *testing.T) {
+			pdf, ids, options := ocrPDFOracleFixture(t, mode)
+			receipt, err := ValidatePDF(context.Background(), pdf, ids, []string{"ALPHA ONE", "BRAVO TWO"}, options)
+			if !errors.Is(err, ErrInvalid) || receipt.Status == "passed" {
+				t.Fatalf("wrong per-page oracle passed: %+v %v", receipt, err)
+			}
+		})
+	}
+}
+
+func TestOCRPDFRetainsPixels(t *testing.T) {
+	pdf, ids, options := ocrPDFOracleFixture(t, "lost-pixels")
+	receipt, err := ValidatePDF(context.Background(), pdf, ids, []string{"ALPHA ONE", "BRAVO TWO"}, options)
+	if !errors.Is(err, ErrInvalid) || receipt.Status == "passed" {
+		t.Fatalf("changed source pixels passed: %+v %v", receipt, err)
+	}
+}
+
+func ocrPDFOracleFixture(t *testing.T, mode string) (string, []string, PDFValidationOptions) {
+	t.Helper()
+	dir := t.TempDir()
+	ids := []string{"page_ocr_pdf_001", "page_ocr_pdf_002"}
+	texts := []string{"ALPHA ONE", "BRAVO TWO"}
+	sources := make([][]byte, 2)
+	paths := make([]string, 2)
+	for i := range sources {
+		bitmap := image.NewRGBA(image.Rect(0, 0, 80, 100))
+		for y := 0; y < 100; y++ {
+			for x := 0; x < 80; x++ {
+				bitmap.SetRGBA(x, y, color.RGBA{uint8(x * 3), uint8(y * 2), uint8(40 + i*100), 255})
+			}
+		}
+		var source bytes.Buffer
+		if err := png.Encode(&source, bitmap); err != nil {
+			t.Fatal(err)
+		}
+		sources[i] = source.Bytes()
+		paths[i] = filepath.Join(dir, fmt.Sprintf("source%d.png", i))
+		if err := os.WriteFile(paths[i], sources[i], 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var pages []pdfassemble.Page
+	var layers []pdfassemble.TextLayer
+	var oracles []any
+	for i, id := range ids {
+		sourceIndex, textIndex := i, i
+		if mode == "swapped-pages" {
+			sourceIndex, textIndex = 1-i, 1-i
+		}
+		if mode == "wrong-page-text" {
+			textIndex = 1 - i
+		}
+		if mode == "lost-pixels" && i == 0 {
+			sourceIndex = 1
+		}
+		sourceData, layerData := sources[sourceIndex], textLayerPDF(texts[textIndex])
+		pages = append(pages, pdfassemble.Page{ID: id, Size: "a5", Color: "color", Width: 80, Height: 100, Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(sourceData)), nil }})
+		layers = append(layers, pdfassemble.TextLayer{PageID: id, Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(layerData)), nil }})
+		sha := hashBytes(sources[i])
+		if mode == "wrong-source-hash" && i == 0 {
+			sha = hashBytes(sources[1])
+		}
+		spans := []OCROracleSpan{{Text: texts[i], Order: 0, Box: [4]float64{0, 0, 80, 100}}}
+		if mode == "wrong-text-order" && i == 0 {
+			spans = []OCROracleSpan{{Text: "ONE", Order: 0, Box: [4]float64{0, 0, 40, 100}}, {Text: "ALPHA", Order: 1, Box: [4]float64{40, 0, 40, 100}}}
+		}
+		box := [4]float64{0, 0, 148.0 / 25.4 * 72, 210.0 / 25.4 * 72}
+		if mode == "wrong-geometry" && i == 0 {
+			box[2] += 10
+		}
+		oracles = append(oracles, map[string]any{"ocr": OCRPageOracle{PageID: id, SourceSHA256: sha, Width: 80, Height: 100, Spans: spans}, "source_image_path": paths[i], "media_box": box, "rotation": 0})
+	}
+	pdf, err := pdfassemble.BuildWithLayers(context.Background(), pages, layers, "lossless", pdfassemble.Options{MaxInputBytes: 4 << 20, MaxOutputBytes: 8 << 20, MaxPagePixels: 1000000, MaxPages: 8, JPEGQuality: 92})
+	if err != nil {
+		t.Fatal(err)
+	}
+	pdfPath := filepath.Join(dir, "ocr.pdf")
+	if err = os.WriteFile(pdfPath, pdf, 0600); err != nil {
+		t.Fatal(err)
+	}
+	// Decode the additive option as supplied by a caller. Older validators
+	// silently ignore it and incorrectly accept the page-swap negatives.
+	raw, err := json.Marshal(map[string]any{"page_oracles": oracles})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var options PDFValidationOptions
+	if err = json.Unmarshal(raw, &options); err != nil {
+		t.Fatal(err)
+	}
+	return pdfPath, ids, options
+}
 
 func TestIndependentPDFValidation(t *testing.T) {
 	pdfPath, sourcePath := buildValidationPDF(t, "ALPHA ONE")
