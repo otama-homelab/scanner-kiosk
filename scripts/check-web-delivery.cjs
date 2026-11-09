@@ -4,6 +4,10 @@ const fs=require('node:fs');
 const http=require('node:http');
 const path=require('node:path');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
+test('TestDeliveryScenarioAdmission',()=>{
+ const result=require('node:child_process').spawnSync('python3',['scripts/check-web.py','--help'],{encoding:'utf8'});
+ assert.equal(result.status,0);assert.match(result.stdout,/structure-suggestion,delivery/,'real runner must admit the delivery lifecycle scenario');
+});
 test('TestDeliveryExplicitConfirmationAndRecovery',async()=>{
  const root=path.resolve(__dirname,'../internal/webui/dist');
  const server=http.createServer((req,res)=>{const file=path.join(root,req.url.split('?')[0]==='/'?'index.html':req.url.split('?')[0]);try{res.setHeader('Content-Type',file.endsWith('.js')?'application/javascript':file.endsWith('.css')?'text/css':'text/html');res.end(fs.readFileSync(file))}catch{res.writeHead(404);res.end()}});
