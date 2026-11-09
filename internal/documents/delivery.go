@@ -117,6 +117,13 @@ func (s *Store) AdmitDelivery(ctx context.Context, owner string, r DeliveryReque
 			return err
 		}
 		out = Delivery{OwnerID: owner, DocumentID: r.DocumentID, Revision: r.Revision, DestinationID: r.DestinationID, ConfigFingerprint: r.ConfigFingerprint, State: "queued", CreatedAtMS: now}
+		var revision int64
+		if err = tx.QueryRowContext(ctx, `SELECT revision FROM documents WHERE id=? AND owner_id=? AND expires_at_ms>? AND state NOT IN ('expired','deleting')`, r.DocumentID, owner, now).Scan(&revision); err != nil {
+			return readError(err)
+		}
+		if revision != r.Revision {
+			return ErrRevision
+		}
 		var hash []byte
 		err = tx.QueryRowContext(ctx, `SELECT a.id,a.relative_path,a.media_type,a.byte_size,a.sha256,d.expires_at_ms FROM published_outputs p
    JOIN documents d ON d.id=p.document_id AND d.owner_id=p.owner_id AND d.revision=p.revision

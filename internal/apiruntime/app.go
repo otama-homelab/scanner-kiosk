@@ -169,7 +169,12 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	if err != nil {
 		return nil, ErrStorage
 	}
-	documentRoutes := documenthttp.New(documentStore, sessions, c.Durations["SCANNER_RECEIPT_RETENTION_SECONDS"], app.files, transferTimeout, renderService, scanService, app.imports)
+	paperlessState, deliveryService, closePaperless, err := paperlessCapability(c.Paperless, documentStore)
+	if err != nil {
+		return nil, ErrConfig
+	}
+	app.closePaperless = closePaperless
+	documentRoutes := documenthttp.New(documentStore, sessions, c.Durations["SCANNER_RECEIPT_RETENTION_SECONDS"], app.files, transferTimeout, renderService, scanService, app.imports, deliveryService)
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health/live", func(w http.ResponseWriter, r *http.Request) { respond(w, 200, "ok") })
 	mux.HandleFunc("GET /health/ready", func(w http.ResponseWriter, r *http.Request) {
@@ -189,11 +194,6 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	for _, device := range c.Scanners {
 		scanners = append(scanners, capabilityhttp.Scanner{ID: device.ID, Name: device.Name})
 	}
-	paperlessState, closePaperless, err := paperlessCapability(c.Paperless)
-	if err != nil {
-		return nil, ErrConfig
-	}
-	app.closePaperless = closePaperless
 	capabilityRoutes := capabilityhttp.New(catalogReader, catalogReader, documentStore, sessions, scanners, capabilityhttp.Limits{DiscoverScanners: c.ScannerDiscovery, RetentionSeconds: int64(c.Durations["SCANNER_RETENTION_SECONDS"] / time.Second), MaxDocuments: c.Limits["SCANNER_USER_MAX_DOCUMENTS"], UserMaxBytes: c.Limits["SCANNER_USER_MAX_BYTES"], JobMaxPages: int(c.Limits["SCANNER_JOB_MAX_PAGES"]), JobMaxBytes: c.Limits["SCANNER_JOB_MAX_BYTES"], MaxPagePixels: c.Limits["SCANNER_MAX_PAGE_PIXELS"]}, time.Now, paperlessState)
 	mux.Handle("/api/capabilities", capabilityRoutes)
 	mux.Handle("/api/capabilities/", capabilityRoutes)
@@ -202,6 +202,7 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	mux.Handle("/api/documents", documentRoutes)
 	mux.Handle("/api/documents/", documentRoutes)
 	mux.Handle("/api/jobs/", documentRoutes)
+	mux.Handle("/api/deliveries/", documentRoutes)
 	mux.Handle("/auth/", sessions)
 	frontend, frontendErr := webui.New(c.PublicURL)
 	if frontendErr != nil && !errors.Is(frontendErr, fs.ErrNotExist) {
@@ -222,17 +223,17 @@ func New(ctx context.Context, c config.Config) (*App, error) {
 	return app, nil
 }
 
-func paperlessCapability(p config.Paperless) (capabilityhttp.Paperless, func(), error) {
+func paperlessCapability(p config.Paperless, records documenthttp.DeliveryRecords) (capabilityhttp.Paperless, *documenthttp.DeliveryService, func(), error) {
 	state := capabilityhttp.Paperless{Enabled: p.Enabled, Configured: p.Configured, ProcessingDestination: p.DestinationLabel}
 	client, err := p.NewClient()
 	if err != nil {
-		return capabilityhttp.Paperless{}, nil, err
+		return capabilityhttp.Paperless{}, nil, nil, err
 	}
 	if client != nil {
 		state.Health = client.Health
-		return state, client.Close, nil
+		return state, &documenthttp.DeliveryService{Records: records, DestinationID: p.DestinationID, ConfigFingerprint: p.ConfigFingerprint, Task: client.Task, Metadata: client.Metadata}, client.Close, nil
 	}
-	return state, nil, nil
+	return state, nil, nil, nil
 }
 func (a *App) Handler() http.Handler { return a.handler }
 func (a *App) Close() error {

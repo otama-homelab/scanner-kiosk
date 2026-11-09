@@ -9,6 +9,24 @@ import (
 
 type DeliveryCandidate struct{ OwnerID, DeliveryID string }
 
+// ReadCurrentDelivery restores the semantic ledger for the current reviewed payload.
+func (s *Store) ReadCurrentDelivery(ctx context.Context, owner, documentID, destination string) (Delivery, error) {
+	var out Delivery
+	err := s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
+		var deliveryID string
+		err := tx.QueryRowContext(ctx, `SELECT x.id FROM documents d JOIN published_outputs p ON p.document_id=d.id AND p.owner_id=d.owner_id AND p.revision=d.revision JOIN artifacts a ON a.id=p.artifact_id AND a.owner_id=d.owner_id AND a.document_id=d.id JOIN deliveries x ON x.owner_id=d.owner_id AND x.destination_id=? AND x.payload_sha256=a.sha256 WHERE d.id=? AND d.owner_id=? AND d.expires_at_ms>? AND d.state='ready' AND a.state='ready' AND x.expires_at_ms>? AND x.state!='retired'`, destination, documentID, owner, s.now().UnixMilli(), s.now().UnixMilli()).Scan(&deliveryID)
+		if err != nil {
+			return readError(err)
+		}
+		out, err = loadDelivery(ctx, tx, owner, deliveryID)
+		return err
+	})
+	if err != nil {
+		return Delivery{}, err
+	}
+	return out, nil
+}
+
 // NextDelivery observes fixed-destination work; ProcessDelivery rechecks authority.
 // No normal job/active index is involved. Poll reservations survive worker restarts.
 func (s *Store) NextDelivery(ctx context.Context, destination, fingerprint string) (DeliveryCandidate, error) {

@@ -27,11 +27,20 @@ type Handler struct {
 	renderService   RenderAdmission
 	scanService     ScanAdmission
 	importService   ImportAdmission
+	deliveryService *DeliveryService
 }
 
-func New(store Records, sessions *websession.Handler, retention time.Duration, files *artifactread.Root, transferTimeout time.Duration, renderService RenderAdmission, scanService ScanAdmission, importService ImportAdmission) http.Handler {
+func New(store Records, sessions *websession.Handler, retention time.Duration, files *artifactread.Root, transferTimeout time.Duration, renderService RenderAdmission, scanService ScanAdmission, importService ImportAdmission, delivery ...*DeliveryService) http.Handler {
 	h := &Handler{store: store, retention: retention, files: files, sessions: sessions, transferTimeout: transferTimeout, renderService: renderService, scanService: scanService, importService: importService}
 	mux := http.NewServeMux()
+	if len(delivery) > 0 {
+		h.deliveryService = delivery[0]
+	}
+	mux.Handle("POST /api/documents/{document_id}/deliveries", sessions.RequirePrincipal(h.deliver))
+	mux.Handle("GET /api/documents/{document_id}/deliveries/current", sessions.RequirePrincipal(h.currentDelivery))
+	mux.Handle("GET /api/deliveries/{delivery_id}", sessions.RequirePrincipal(h.readDelivery))
+	mux.Handle("POST /api/deliveries/{delivery_id}/reconcile", sessions.RequirePrincipal(h.reconcileDelivery))
+	mux.Handle("POST /api/deliveries/{delivery_id}/cancel", sessions.RequirePrincipal(h.cancelDelivery))
 	mux.Handle("POST /api/documents/import", sessions.RequirePrincipal(h.importPDF))
 	mux.Handle("POST /api/documents", sessions.RequirePrincipal(h.scan))
 	mux.Handle("POST /api/documents/{document_id}/scans", sessions.RequirePrincipal(h.scan))

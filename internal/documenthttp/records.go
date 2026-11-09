@@ -43,3 +43,15 @@ var _ Records = (*documents.Store)(nil)
 type ImportAdmission interface {
 	Receive(context.Context, string, documents.ImportRequest, io.Reader) (documents.Admission, error)
 }
+
+// DeliveryRecords exposes owner-authorized ledger operations without upload or file authority.
+type DeliveryRecords interface {
+	AdmitDelivery(context.Context, string, documents.DeliveryRequest) (documents.Delivery, error)
+	ReadDelivery(context.Context, string, string) (documents.Delivery, error)
+	ReadCurrentDelivery(context.Context, string, string, string) (documents.Delivery, error)
+	CancelDelivery(context.Context, string, string) (documents.Delivery, error)
+	AcceptDelivery(context.Context, string, string, string) error
+	ConfirmDelivery(context.Context, string, string, string, int64, [32]byte) error
+	MarkDeliveryUnknown(context.Context, string, string) error
+	FailDelivery(context.Context, string, string, string) error
+}
