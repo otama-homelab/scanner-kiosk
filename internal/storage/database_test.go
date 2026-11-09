@@ -82,10 +82,11 @@ func TestMigrationIdentityChecksumAndPrivateFiles(t *testing.T) {
 			if e != nil {
 				t.Fatal(e)
 			}
-			expected := 5
-			if kind == Documents {
-				expected = 20
+			files, e := migrations.ReadDir("migrations/" + string(kind))
+			if e != nil {
+				t.Fatal(e)
 			}
+			expected := len(files)
 			var count int
 			if e = db.QueryRow("SELECT count(*) FROM schema_migrations").Scan(&count); e != nil || count != expected {
 				t.Fatal("migration not idempotent", e)

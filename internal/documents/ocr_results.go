@@ -5,7 +5,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"image"
 	"reflect"
+
+	"scanner-kiosk/internal/correction"
 )
 
 // OCRResultBundle is immutable metadata, never inline provider text or geometry.
@@ -23,6 +26,8 @@ type OCRResultPage struct {
 	PageID, OriginalArtifactID, EffectiveArtifactID string
 	OriginalSHA256, EffectiveSHA256                 [32]byte
 	CorrectionID, TransformJSON                     string
+	SourceType                                      string
+	PDFWidthPoints, PDFHeightPoints                 float64
 	Rotation, PixelWidth, PixelHeight               int
 	PDFTextOrigin                                   string // recognition or retained-source
 	Text                                            ArtifactRecord
@@ -52,13 +57,13 @@ func normalizeOCRBundle(b OCRResultBundle) ([]byte, []ocrResultArtifact, int64, 
 		}
 		all = append(all, ocrResultArtifact{p.Text, "ocr_text"})
 		if p.Positions != nil {
-			if p.Positions.MediaType != "application/json" {
+			if p.Positions.MediaType != "application/json" || p.Positions.Size < 1 || p.Positions.PixelWidth != p.PixelWidth || p.Positions.PixelHeight != p.PixelHeight {
 				return nil, nil, 0, ErrInvalid
 			}
 			all = append(all, ocrResultArtifact{*p.Positions, "intermediate"})
 		}
 		if p.Preview != nil {
-			if p.Preview.MediaType != "image/png" && p.Preview.MediaType != "image/jpeg" {
+			if p.Preview.Size < 1 || (p.Preview.MediaType != "image/png" && p.Preview.MediaType != "image/jpeg") {
 				return nil, nil, 0, ErrInvalid
 			}
 			if p.Preview.PixelWidth != p.PixelWidth || p.Preview.PixelHeight != p.PixelHeight {
@@ -68,7 +73,7 @@ func normalizeOCRBundle(b OCRResultBundle) ([]byte, []ocrResultArtifact, int64, 
 		}
 		if p.Thumbnail != nil {
 			a := p.Thumbnail
-			if a.MediaType != "image/jpeg" || a.Size > 1<<20 || a.PixelWidth < 1 || a.PixelWidth > 512 || a.PixelHeight < 1 || a.PixelHeight > 512 {
+			if a.MediaType != "image/jpeg" || a.Size < 1 || a.Size > 1<<20 || a.PixelWidth < 1 || a.PixelWidth > 512 || a.PixelHeight < 1 || a.PixelHeight > 512 {
 				return nil, nil, 0, ErrInvalid
 			}
 			all = append(all, ocrResultArtifact{*a, "thumbnail"})
@@ -103,7 +108,7 @@ func normalizeOCRBundle(b OCRResultBundle) ([]byte, []ocrResultArtifact, int64, 
 
 // validateOCRSources binds order, originals and the currently applied correction.
 func validateOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, b OCRResultBundle) error {
-	rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,a.sha256,COALESCE(c.suggestion_id,''),COALESCE(c.correction_artifact_id,p.original_artifact_id),COALESCE(c.correction_sha256,a.sha256),COALESCE(c.transform_json,''),p.source_type,COALESCE(p.pixel_width,0),COALESCE(p.pixel_height,0)
+	rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,a.sha256,COALESCE(c.suggestion_id,''),COALESCE(c.correction_artifact_id,p.original_artifact_id),COALESCE(c.correction_sha256,a.sha256),COALESCE(c.transform_json,''),p.source_type,COALESCE(p.pixel_width,0),COALESCE(p.pixel_height,0),COALESCE(p.pdf_width_points,0),COALESCE(p.pdf_height_points,0)
  FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id
  LEFT JOIN page_corrections c ON c.page_id=p.id AND c.document_id=p.document_id AND c.owner_id=p.owner_id AND c.state='applied'
  WHERE p.document_id=? AND p.owner_id=? AND a.state='ready'
@@ -114,10 +119,11 @@ func validateOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, b OC
 	defer rows.Close()
 	i := 0
 	for rows.Next() {
-		var page, original, correction, effective, transform, source string
+		var page, original, correctionID, effective, transform, source string
 		var rotation, width, height int
+		var pdfWidth, pdfHeight float64
 		var oh, eh []byte
-		if err = rows.Scan(&page, &original, &rotation, &oh, &correction, &effective, &eh, &transform, &source, &width, &height); err != nil {
+		if err = rows.Scan(&page, &original, &rotation, &oh, &correctionID, &effective, &eh, &transform, &source, &width, &height, &pdfWidth, &pdfHeight); err != nil {
 			return ErrStorage
 		}
 		if i >= len(b.Pages) {
@@ -125,11 +131,17 @@ func validateOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, b OC
 		}
 		p := b.Pages[i]
 		i++
-		if p.PageID != page || p.OriginalArtifactID != original || p.Rotation != rotation || !sameHash(oh, p.OriginalSHA256) || p.CorrectionID != correction || p.EffectiveArtifactID != effective || !sameHash(eh, p.EffectiveSHA256) || p.TransformJSON != transform {
+		if p.PageID != page || p.OriginalArtifactID != original || p.Rotation != rotation || !sameHash(oh, p.OriginalSHA256) || p.CorrectionID != correctionID || p.EffectiveArtifactID != effective || !sameHash(eh, p.EffectiveSHA256) || p.TransformJSON != transform || p.SourceType != source || p.PDFWidthPoints != pdfWidth || p.PDFHeightPoints != pdfHeight {
 			return ErrConflict
 		}
-		if source == "scan" && correction == "" && (p.PixelWidth != width || p.PixelHeight != height) {
+		if source == "scan" && correctionID == "" && (p.PixelWidth != width || p.PixelHeight != height) {
 			return ErrConflict
+		}
+		if correctionID != "" {
+			var tr correction.Transform
+			if json.Unmarshal([]byte(transform), &tr) != nil || correction.Validate(tr, image.Rect(0, 0, width, height)) != nil || p.PixelWidth != tr.OutputWidth || p.PixelHeight != tr.OutputHeight {
+				return ErrConflict
+			}
 		}
 		if source != "pdf" && p.PDFTextOrigin == "retained-source" {
 			return ErrInvalid

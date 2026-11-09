@@ -229,7 +229,7 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 	for i := range values {
 		values[i].PageCount = len(values[i].Pages)
 	}
-	rows, err = tx.QueryContext(ctx, `SELECT o.document_id,o.revision,a.media_type,a.byte_size FROM published_outputs o JOIN artifacts a ON a.id=o.artifact_id AND a.document_id=o.document_id AND a.owner_id=o.owner_id WHERE o.owner_id=? AND o.document_id IN (`+selected+`) AND a.state='ready' AND a.kind='output' AND a.input_revision=o.revision`, args...)
+	rows, err = tx.QueryContext(ctx, `SELECT o.document_id,o.revision,a.media_type,a.byte_size FROM published_outputs o JOIN artifacts a ON a.id=o.artifact_id AND a.document_id=o.document_id AND a.owner_id=o.owner_id WHERE o.owner_id=? AND o.document_id IN (`+selected+`) AND a.state='ready' AND a.kind='output' AND (a.input_revision=o.revision OR EXISTS(SELECT 1 FROM ocr_results r WHERE r.document_id=o.document_id AND r.owner_id=o.owner_id AND r.output_artifact_id=a.id AND r.input_revision=a.input_revision AND r.state='adopted' AND r.adopted_revision=o.revision))`, args...)
 	if err != nil {
 		return ErrStorage
 	}

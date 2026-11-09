@@ -8,6 +8,8 @@ import (
 	"errors"
 	"testing"
 	"time"
+
+	"scanner-kiosk/internal/correction"
 )
 
 func ocrCandidateFixture(t *testing.T) (*fixture, OCRResultBundle) {
@@ -25,7 +27,7 @@ func ocrCandidateFixture(t *testing.T) (*fixture, OCRResultBundle) {
 		must(t, f.docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,'original','ready',?,'image/png',20,?,1,1000)`, original, docA, alice, "original/"+suffix, hash[:])
 		must(t, f.docs, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,capture_size,capture_color,capture_dpi,pixel_width,pixel_height) VALUES(?,?,?,?,?,'a4','color',300,100,200)`, page, docA, alice, i, original)
 		text := ArtifactRecord{ID: "artifact_transcript_00" + suffix, RelativePath: "result/text_" + suffix, MediaType: "text/plain", Size: 4, SHA256: sha256.Sum256([]byte("text"))}
-		b.Pages = append(b.Pages, OCRResultPage{PageID: page, OriginalArtifactID: original, EffectiveArtifactID: original, OriginalSHA256: hash, EffectiveSHA256: hash, PixelWidth: 100, PixelHeight: 200, PDFTextOrigin: "recognition", Text: text})
+		b.Pages = append(b.Pages, OCRResultPage{SourceType: "scan", PageID: page, OriginalArtifactID: original, EffectiveArtifactID: original, OriginalSHA256: hash, EffectiveSHA256: hash, PixelWidth: 100, PixelHeight: 200, PDFTextOrigin: "recognition", Text: text})
 		snapshot.Pages = append(snapshot.Pages, CapturedPage{ID: page, OriginalArtifactID: original, Size: "a4", Color: "color", DPI: 300})
 	}
 	raw, _ := json.Marshal(snapshot)
@@ -41,6 +43,49 @@ func ocrCandidateFixture(t *testing.T) (*fixture, OCRResultBundle) {
 }
 
 func TestReOCRCandidateCompletion(t *testing.T) {
+	t.Run("effective correction identity", func(t *testing.T) {
+		f, b := ocrCandidateFixture(t)
+		p := &b.Pages[0]
+		digest := sha256.Sum256([]byte("corrected"))
+		tr := correction.Transform{CropQuad: [4]correction.Point{{X: 0, Y: 0}, {X: 100, Y: 0}, {X: 100, Y: 200}, {X: 0, Y: 200}}, OutputWidth: 90, OutputHeight: 180, ConfidenceKind: "unavailable"}
+		raw, _ := json.Marshal(tr)
+		must(t, f.docs, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES('artifact_corrected_001',?,?,'intermediate','ready','source/corrected','image/png',20,?,1,1000)`, docA, alice, digest[:])
+		must(t, f.docs, `INSERT INTO page_corrections(suggestion_id,document_id,owner_id,page_id,original_artifact_id,correction_artifact_id,source_sha256,correction_sha256,transform_json,confidence_kind,created_at_ms) VALUES('suggestion_effective_001',?,?,?,?,'artifact_corrected_001',?,?,?,'unavailable',1500)`, docA, alice, p.PageID, p.OriginalArtifactID, p.OriginalSHA256[:], digest[:], string(raw))
+		must(t, f.docs, `UPDATE page_corrections SET state='applied',applied_at_ms=1600 WHERE suggestion_id='suggestion_effective_001'`)
+		if err := f.store.CompleteOCRResult(context.Background(), alice, jobA, runner, 1, b); !errors.Is(err, ErrConflict) {
+			t.Fatal("ignored active correction", err)
+		}
+		p.CorrectionID = "suggestion_effective_001"
+		p.TransformJSON = string(raw)
+		p.EffectiveArtifactID = "artifact_corrected_001"
+		p.EffectiveSHA256 = digest
+		p.PixelWidth = 90
+		p.PixelHeight = 180
+		if err := f.store.CompleteOCRResult(context.Background(), alice, jobA, runner, 1, b); err != nil {
+			t.Fatal("effective source rejected", err)
+		}
+	})
+	t.Run("derivatives included", func(t *testing.T) {
+		f, b := ocrCandidateFixture(t)
+		p := &b.Pages[0]
+		p.Positions = &ArtifactRecord{ID: "artifact_position_0001", RelativePath: "result/positions", MediaType: "application/json", Size: 10, SHA256: sha256.Sum256([]byte("positions")), PixelWidth: 100, PixelHeight: 200}
+		p.Preview = &ArtifactRecord{ID: "artifact_preview_00001", RelativePath: "result/preview", MediaType: "image/png", Size: 10, SHA256: sha256.Sum256([]byte("preview")), PixelWidth: 100, PixelHeight: 200}
+		p.Thumbnail = &ArtifactRecord{ID: "artifact_thumbnail_001", RelativePath: "result/thumbnail", MediaType: "image/jpeg", Size: 10, SHA256: sha256.Sum256([]byte("thumbnail")), PixelWidth: 50, PixelHeight: 100}
+		must(t, f.docs, `UPDATE reservations SET byte_size=40`)
+		if err := f.store.CompleteOCRResult(context.Background(), alice, jobA, runner, 1, b); !errors.Is(err, ErrConflict) {
+			t.Fatal("derivatives not counted", err)
+		}
+		must(t, f.docs, `UPDATE reservations SET byte_size=41`)
+		if err := f.store.CompleteOCRResult(context.Background(), alice, jobA, runner, 1, b); err != nil {
+			t.Fatal(err)
+		}
+		if scalar(t, f.docs, `SELECT count(*) FROM job_artifacts WHERE job_id=?`, jobA) != 6 {
+			t.Fatal("derivative coverage missing")
+		}
+		if ok, err := f.store.OCRResultRecorded(context.Background(), alice, jobA, b); err != nil || !ok {
+			t.Fatal(ok, err)
+		}
+	})
 	f, b := ocrCandidateFixture(t)
 	ctx := context.Background()
 	if err := f.store.CompleteOCRResult(ctx, alice, jobA, runner, 1, b); err != nil {

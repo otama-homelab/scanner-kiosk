@@ -30,3 +30,20 @@ WHEN NEW.id!=OLD.id OR NEW.job_id!=OLD.job_id OR NEW.document_id!=OLD.document_i
  OR NEW.bundle_json!=OLD.bundle_json OR NEW.bundle_sha256!=OLD.bundle_sha256 OR NEW.created_at_ms!=OLD.created_at_ms
  OR NOT (OLD.state='candidate' AND NEW.state IN ('adopted','discarded'))
 BEGIN SELECT RAISE(ABORT,'immutable OCR result'); END;
+-- The exception is tied to one explicit disposition, output, owner and revision;
+-- arbitrary outputs from earlier revisions remain unusable.
+DROP TRIGGER published_output_ready;
+DROP TRIGGER published_output_update_ready;
+CREATE TRIGGER published_output_ready BEFORE INSERT ON published_outputs
+WHEN NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.id=NEW.artifact_id AND a.document_id=NEW.document_id AND a.owner_id=NEW.owner_id AND a.kind='output' AND a.state='ready'
+ AND (a.input_revision=NEW.revision OR EXISTS(SELECT 1 FROM ocr_results r WHERE r.document_id=NEW.document_id AND r.owner_id=NEW.owner_id AND r.output_artifact_id=a.id AND r.input_revision=a.input_revision AND r.state='adopted' AND r.adopted_revision=NEW.revision)))
+BEGIN SELECT RAISE(ABORT,'output artifact is not ready at this revision'); END;
+CREATE TRIGGER published_output_update_ready BEFORE UPDATE ON published_outputs
+WHEN NOT EXISTS(SELECT 1 FROM artifacts a WHERE a.id=NEW.artifact_id AND a.document_id=NEW.document_id AND a.owner_id=NEW.owner_id AND a.kind='output' AND a.state='ready'
+ AND (a.input_revision=NEW.revision OR EXISTS(SELECT 1 FROM ocr_results r WHERE r.document_id=NEW.document_id AND r.owner_id=NEW.owner_id AND r.output_artifact_id=a.id AND r.input_revision=a.input_revision AND r.state='adopted' AND r.adopted_revision=NEW.revision)))
+BEGIN SELECT RAISE(ABORT,'output artifact is not ready at this revision'); END;
+DROP TRIGGER edit_result_owner;
+CREATE TRIGGER edit_result_owner BEFORE INSERT ON edit_results
+WHEN NEW.document_id IS NULL OR NOT EXISTS(SELECT 1 FROM documents WHERE id=NEW.document_id AND owner_id=NEW.owner_id)
+ OR NOT EXISTS(SELECT 1 FROM request_receipts WHERE owner_id=NEW.owner_id AND key_hash=NEW.key_hash AND operation IN ('rotate','reorder','delete_page','apply_correction','undo_correction','adopt_ocr_result','discard_ocr_result') AND result_job_id IS NULL)
+BEGIN SELECT RAISE(ABORT,'invalid edit result binding'); END;

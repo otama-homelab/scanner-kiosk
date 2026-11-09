@@ -370,7 +370,7 @@ func (s *Store) ReadCurrentOutput(ctx context.Context, owner, documentID string)
    JOIN documents d ON d.id=p.document_id AND d.owner_id=p.owner_id AND d.revision=p.revision
    JOIN artifacts a ON a.id=p.artifact_id AND a.document_id=d.id AND a.owner_id=d.owner_id
    WHERE d.id=? AND d.owner_id=? AND d.expires_at_ms>? AND d.state NOT IN ('expired','deleting')
-   AND a.state='ready' AND a.kind='output' AND a.input_revision=d.revision`, documentID, owner, s.now().UnixMilli()).Scan(&out.ID, &out.RelativePath, &out.MediaType, &out.Size, &digest, &reference.ExpiresAtMS)
+   AND a.state='ready' AND a.kind='output' AND (a.input_revision=d.revision OR EXISTS(SELECT 1 FROM ocr_results r WHERE r.document_id=d.id AND r.owner_id=d.owner_id AND r.output_artifact_id=a.id AND r.input_revision=a.input_revision AND r.state='adopted' AND r.adopted_revision=d.revision))`, documentID, owner, s.now().UnixMilli()).Scan(&out.ID, &out.RelativePath, &out.MediaType, &out.Size, &digest, &reference.ExpiresAtMS)
 		if err != nil {
 			return readError(err)
 		}
