@@ -1,5 +1,11 @@
 export const messages = {
  en:{
+  reocr:'Recognize text again',
+  reocrStart:'Start recognition',
+  reocrCancel:'Cancel recognition',
+  reocrCheck:'Check recognition status',
+  reocrHelp:'Recognize the whole document using applied corrections or originals. Compare the candidate before adopting it. Your saved file stays available.',
+  reocrUnknown:'The result is uncertain. Check status before any new recognition request.',
   deletePhoto:'Delete photo',
   deletePhotoConfirm:'Delete this photo?',
   deleteLastPageDescription:'Deleting the last page also removes this document from History.',
@@ -167,6 +173,12 @@ export const messages = {
   failedState:'Failed',
  },
  ja:{
+  reocr:'文字をもう一度認識',
+  reocrStart:'認識を開始',
+  reocrCancel:'認識を取り消す',
+  reocrCheck:'認識の状態を確認',
+  reocrHelp:'適用済みの補正画像（なければ原本）で文書全体を再認識します。候補を比較してから採用してください。保存済みファイルは引き続き使えます。',
+  reocrUnknown:'処理結果を確認できません。新しい認識を始める前に状態を確認してください。',
   deletePhoto:'写真を削除',
   deletePhotoConfirm:'この写真を削除しますか？',
   deleteLastPageDescription:'最後のページを削除すると、書類も履歴から削除されます。',

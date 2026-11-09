@@ -8,19 +8,19 @@ if(process.env.SCANNER_TEST_SCENARIO){
   const checks=[],requests=[];
   try{for(const width of [1280,390]){
    const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width,height:844}});const page=await context.newPage();page.setDefaultTimeout(2500);
-   const id='document_reocr_001',jobid='job_reocr_0000001';let active=null,cancelled=false;
+   const before=requests.filter(r=>r.path.endsWith('/reocr')).length;const id='document_reocr_001',jobid='job_reocr_0000001';let active=null,cancelled=false;
    const reply=(r,json,status=200)=>r.fulfill({status,headers:{Date:new Date().toUTCString()},json});
    await page.route('**/api/**',async r=>{const path=new URL(r.request().url()).pathname;requests.push({path,method:r.request().method(),body:r.request().postDataJSON()});
     if(path==='/api/session')return reply(r,{authenticated:true,principal_kind:'guest',authenticate_type:'guest'});
     if(path==='/api/capabilities')return reply(r,{ocr_plugins:[{id:'remote',name:'Remote',external_processing:true,models:[{id:'model',name:'OCR model',available:true,outputs:['searchable_pdf'],languages:['ja'],quality_presets:['standard'],default_quality_preset:'standard',processing_destination:'Family OCR server'}]}],defaults:{ocr:{provider_id:'remote',model_id:'model',languages:['ja'],quality_preset:'standard'}}});
     if(path==='/api/documents/'+id)return reply(r,{id,revision:1,purpose:'document',state:'ready',created_at:'2026-11-07T03:00:00Z',expires_at:'2099-01-01T00:00:00Z',active_job_id:active,output:{revision:1},pages:[{id:'page_reocr_000001',rotation:0,capture:{size:'a4',color:'gray',dpi:300}}]});
-    if(path.endsWith('/reocr')){active=jobid;return reply(r,{id:jobid,document_id:id,kind:'reocr',state:'queued',input_revision:1},202)}
-    if(path.endsWith('/cancel')){cancelled=true;return reply(r,{id:jobid,document_id:id,kind:'reocr',state:'cancelled',input_revision:1})}
-    if(path==='/api/jobs/'+jobid)return reply(r,{id:jobid,document_id:id,kind:'reocr',state:cancelled?'cancelled':'queued',input_revision:1});
+    if(path.endsWith('/reocr')){active=jobid;return reply(r,{id:jobid,document_id:id,kind:'render',state:'queued',input_revision:1},202)}
+    if(path.endsWith('/cancel')){cancelled=true;return reply(r,{id:jobid,document_id:id,kind:'render',state:'cancelled',input_revision:1})}
+    if(path==='/api/jobs/'+jobid)return reply(r,{id:jobid,document_id:id,kind:'render',state:cancelled?'cancelled':'queued',input_revision:1});
     return r.fulfill({status:404,json:{}});
    });
    page.on('console',e=>{if(e.type()==='error')console.error(e.text())});page.on('pageerror',e=>console.error(e.message));await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);try{await page.locator('h1[data-document-title]').waitFor()}catch(e){console.error(await page.locator('body').innerText(),requests);throw e}
-   assert.equal(requests.filter(r=>r.path.endsWith('/reocr')).length,0);
+   assert.equal(requests.filter(r=>r.path.endsWith('/reocr')).length,before);
    const action=page.getByRole('button',{name:'Recognize text again',exact:true});assert.equal(await action.count(),1,'document must offer explicit optional reOCR');
    await action.click();await page.getByRole('switch').check();await page.getByText('Images will be sent to Family OCR server for OCR.',{exact:true}).waitFor();
    await page.getByRole('button',{name:'Start recognition',exact:true}).click();await page.getByRole('button',{name:'Cancel recognition',exact:true}).waitFor();
