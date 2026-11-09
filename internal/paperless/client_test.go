@@ -8,10 +8,23 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"sync/atomic"
 	"testing"
 )
+
+func TestPaperlessHealthContract(t *testing.T) {
+	client, calls := testClient(t, func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `{"documents":"https://untrusted.invalid/","tasks":"https://untrusted.invalid/"}`)
+	})
+	if !reflect.ValueOf(client).MethodByName("Health").IsValid() {
+		t.Fatal("fixed adapter has no explicit read-only health operation")
+	}
+	if calls.Load() != 0 {
+		t.Fatal("constructing client implicitly contacted remote")
+	}
+}
 
 const testTask = "12345678-1234-4234-8234-123456789abc"
 
