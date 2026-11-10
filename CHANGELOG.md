@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2
+
+- Align corresponding-source recipe roles with the native acquisition contract and validate the actual production lock.
+- Create browser-test receipts on clean checkouts and serialize shared frontend build tests.
+- Refresh the exact native advisory review using clean-build evidence; preserve raw findings and mandatory source vulnerability checks.
+- v0.2.0 and v0.2.1 were unsuccessful CI candidates and were not published.
+
 ## 0.2.1
 
 - Prepare the verified native PDF runtime, Japanese font and pinned Chromium/Playwright dependencies before CI integration tests.

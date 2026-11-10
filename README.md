@@ -13,9 +13,7 @@ API container. The lightweight LLM OCR plugin is compiled into the core and
 connects directly to LiteLLM or a configured Chat Completions endpoint. No local
 model, inference SDK or extra LLM adapter service is required.
 
-**Status:** `v0.1.4` is the current stable release. Automated checks, the G5
-acceptance matrix, formal release assets, public source materials and anonymous
-image starts have been verified. The legacy scanservjs runtime has been retired;
+**Status:** See the [latest published stable release](https://github.com/otama-homelab/scanner-kiosk/releases/latest) for its exact version, assets and image identities. Publication requires automated checks, acceptance, source/license materials and image verification. The legacy scanservjs runtime has been retired;
 its old PVC data remains retained for operator-controlled backup or removal.
 
 ## Run and configure
@@ -65,12 +63,12 @@ public GitHub Release assets and `latest`:
 
 | Image | Package | Stable/release tag | Development tags |
 | --- | --- | --- | --- |
-| Core (`serve` / `worker`) | `ghcr.io/otama-homelab/scanner-kiosk` | `v0.1.4` / `latest` | `sha-<full-source-commit>` / `preview` |
-| Optional Tesseract API | `ghcr.io/otama-homelab/scanner-kiosk-tesseract` | `v0.1.4` / `latest` | `sha-<full-source-commit>` / `preview` |
+| Core (`serve` / `worker`) | `ghcr.io/otama-homelab/scanner-kiosk` | `vMAJOR.MINOR.PATCH` / `latest` | `sha-<full-source-commit>` / `preview` |
+| Optional Tesseract API | `ghcr.io/otama-homelab/scanner-kiosk-tesseract` | `vMAJOR.MINOR.PATCH` / `latest` | `sha-<full-source-commit>` / `preview` |
 
 The image is linked to this repository through its OCI source label and the
 repository's Actions token. Preview aliases are development inputs; stable tags
-only advance after the release gates pass. The formal `v0.1.4` images resolve to:
+only advance after the release gates pass. For the historical `v0.1.4` release, the immutable image digests are:
 
 - Core: `ghcr.io/otama-homelab/scanner-kiosk@sha256:328ca1c8e4c9869ee4a463893e1f4a37c4d40e3f67206a416e62e5a65e6ffcb7`
 - Tesseract API: `ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:dd245059ef1092390dca592822dbda4540ffe68414dddc3e7b7112058c965a10`
