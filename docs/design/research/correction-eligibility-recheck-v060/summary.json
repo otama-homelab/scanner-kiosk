@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-10",
+  "requirements_complete": 6,
+  "requirements_total": 14,
+  "facts": [
+    "FSENet official repository archived; drafted issue destination is read-only. No message sent.",
+    "SyntheticDoc repository MIT unchanged; exact pretrained checkpoint scope remains unresolved.",
+    "FairScan official unmodified Kotlin QuadDetectionEvaluator exists at pinned tree2c5230b12f69f3cee2cc5a970013da20848d1272; invokes detectDocumentQuad and local OpenCV. Not executed.",
+    "FairScan v2.3.0 release offers ARM Android APKs only; no desktop evaluation binary in that release.",
+    "Official Python mask generator uses OpenCV INTER_LINEAR and normalization x/127.5-1. Prior Pillow resize metrics remain explicitly diagnostic; not parity proof."
+  ],
+  "files": [
+    {
+      "file": "DocShadow-SD7K.json",
+      "bytes": 414,
+      "sha256": "8f0f542753185c8bb5866c54e8a7f7116232c5a511bbc5fc881f8bfdfb24cd42"
+    },
+    {
+      "file": "FairScan.json",
+      "bytes": 429,
+      "sha256": "b14b74cd33863fb4ffc271ca9a300f27f22bd59ecbb4a0f6071d5f451af014d3"
+    },
+    {
+      "file": "SyntheticDoc.json",
+      "bytes": 409,
+      "sha256": "06492ba515869b7ccef3589bab24aa81bd9f4fe76f1118fc5ec886e1a7eb89ae"
+    },
+    {
+      "file": "fairscan-release.json",
+      "bytes": 502,
+      "sha256": "cbccfb2171d41bb133bbabe4d8f2458279eb8ab84e128e608a6de7dda20cbf10"
+    },
+    {
+      "file": "fairscan-tree.json",
+      "bytes": 845,
+      "sha256": "f2aaf552f7f492e45eafa0870faa163cc3625052956a08cee62360e515c4b45c"
+    }
+  ]
+}

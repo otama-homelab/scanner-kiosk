@@ -1,0 +1,16 @@
+{
+  "url": "https://api.github.com/repos/pynicolas/FairScan/git/trees/main?recursive=1",
+  "tree_sha": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "paths": [
+    "app/src/main/java/org/fairscan/app/domain/ImageSegmentation.kt",
+    "evaluation/python",
+    "evaluation/python/generate_masks.py",
+    "evaluation/python/requirements.txt",
+    "evaluation/src/main/java/org/fairscan/evaluation/ColorDetectionEvaluator.kt",
+    "evaluation/src/main/java/org/fairscan/evaluation/QuadDetectionEvaluator.kt",
+    "evaluation/src/main/java/org/fairscan/evaluation/SegmentationComparison.kt",
+    "imageprocessing/src/main/java/org/fairscan/imageprocessing/ColorDetection.kt",
+    "imageprocessing/src/main/java/org/fairscan/imageprocessing/DocumentDetection.kt"
+  ],
+  "note": "Tree inspection only; path names are not proof of executable parity."
+}

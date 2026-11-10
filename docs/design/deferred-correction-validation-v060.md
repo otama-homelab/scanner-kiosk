@@ -84,3 +84,11 @@ TRUTH-03 is complete only within the explicitly authorized synthetic alternative
 [Evidence and replay](research/correction-detection-v060/summary.json): the previously fixed6renderer-known full-canvas controls were measured with the existing FairScan LiteRT normalization/clamp/threshold path. IoU>=0.95:0/6. Pillow resize remains unverified against Android; no mask-to-quad or custom detection is added. One diagnostic process peakRSS634,896,384B; forward-only times are not complete detector timing or cold/warm product qualification.
 
 Existing no-op and DocAligner results were reused with source/catalog hashes checked (18samples/arm). Against known page corners, no-op passes6/6; DocAligner passes5/6 but all15passing samples are source-identical fallback. The table's3samples crop inward and fail2%corner error. This does not supply original6real-photo labels or qualify FairScan's complete path. Requirements remain6/14complete,8open. No release/deployment/model adoption.
+
+## Latest upstream eligibility recheck
+
+[Metadata receipts](research/correction-eligibility-recheck-v060/summary.json) verify that FSENet's official repository is archived. The drafted GitHub issue destination cannot accept a new issue; no message was sent. SyntheticDoc remains MIT at repository level, without resolving the planned checkpoint-specific gate.
+
+Correction to the broad unsupported-path description: FairScan **does include** an official JVM/Kotlin `QuadDetectionEvaluator`, calling the real `detectDocumentQuad` with local OpenCV. Pinned tree `2c5230b12f69f3cee2cc5a970013da20848d1272`. It is source, not an executed or distributed desktop evaluation binary. Latest releasev2.3.0 contains only ARM Android APKs. Official Python mask generation uses OpenCV INTER_LINEAR; existing Pillow diagnostic preprocessing is not that exact path. No Kotlin port, new postprocessor, source build, emulator, APK installation or TensorFlow dependency was added. VERIFY01 remains unverified for full execution; the existence of official evaluation source must not be confused with runtime availability or its absence.
+
+Delegation does not supply absent independent real-photo annotations, owner device operation or a rights-holder answer. Current6/14complete; no requirement is checked merely to reach the requested count. Original14requirements and prohibitions remain in force.

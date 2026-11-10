@@ -1,0 +1,16 @@
+{
+  "url": "https://api.github.com/repos/pynicolas/FairScan/releases/latest",
+  "tag": "v2.3.0",
+  "assets": [
+    {
+      "name": "FairScan-2.3.0-arm64-v8a.apk",
+      "bytes": 47013508,
+      "url": "https://github.com/pynicolas/FairScan/releases/download/v2.3.0/FairScan-2.3.0-arm64-v8a.apk"
+    },
+    {
+      "name": "FairScan-2.3.0-armeabi-v7a.apk",
+      "bytes": 34825758,
+      "url": "https://github.com/pynicolas/FairScan/releases/download/v2.3.0/FairScan-2.3.0-armeabi-v7a.apk"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "full_name": "CXH-Research/DocShadow-SD7K",
+  "html_url": "https://github.com/CXH-Research/DocShadow-SD7K",
+  "archived": true,
+  "disabled": false,
+  "has_issues": true,
+  "pushed_at": "2024-06-18T06:42:03Z",
+  "default_branch": "main",
+  "license": {
+    "key": "mit",
+    "name": "MIT License",
+    "spdx_id": "MIT",
+    "url": "https://api.github.com/licenses/mit",
+    "node_id": "MDc6TGljZW5zZTEz"
+  }
+}

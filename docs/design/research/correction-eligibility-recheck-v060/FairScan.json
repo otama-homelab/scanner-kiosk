@@ -1,0 +1,16 @@
+{
+  "full_name": "pynicolas/FairScan",
+  "html_url": "https://github.com/pynicolas/FairScan",
+  "archived": false,
+  "disabled": false,
+  "has_issues": true,
+  "pushed_at": "2026-11-10T09:18:31Z",
+  "default_branch": "main",
+  "license": {
+    "key": "gpl-3.0",
+    "name": "GNU General Public License v3.0",
+    "spdx_id": "GPL-3.0",
+    "url": "https://api.github.com/licenses/gpl-3.0",
+    "node_id": "MDc6TGljZW5zZTk="
+  }
+}
