@@ -173,6 +173,9 @@ func normalize(raw []byte, media string, limit int64) ([]byte, Prepared, error) 
 	if !dimensions(cfg.Width, cfg.Height) {
 		return nil, p, ErrLimit
 	}
+	if format == "jpeg" && (len(raw) < 4 || raw[len(raw)-2] != 0xff || raw[len(raw)-1] != 0xd9) {
+		return nil, p, ErrInvalid
+	}
 	orientation, e := orientation(raw, format)
 	if e != nil {
 		return nil, p, e

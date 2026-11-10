@@ -35,8 +35,15 @@ func executeImport(ctx context.Context, store *documents.Store, root, owner, job
 		}
 		opts := pdfimport.Options{MaxInputBytes: work.Input.Size, MaxOutputBytes: 1, MaxPages: work.Snapshot.MaxPages}
 		overhead := pdfimport.MaxResultBytes(opts) - 1
+		if work.Input.MediaType != "application/pdf" {
+			opts.MaxPages = 1
+			overhead = 64
+		}
 		budget := min((work.ReserveBytes-overhead)/2, int64(1<<30))
 		if overhead < 0 || budget < 1 {
+			if work.Input.MediaType != "application/pdf" {
+				return photonormalize.ErrLimit
+			}
 			return pdfimport.ErrLimit
 		}
 		opts.MaxOutputBytes = budget
