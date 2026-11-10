@@ -143,3 +143,30 @@ Focused tests in the disposable evaluation environment:
 The new sampling convention tests additionally use installed PyTorch, CPU only.
 See [evaluation and non-adoption decision](../../../docs/design/edge-correction-evaluation-v040.md)
 and [nonlinear contract](../../../docs/design/nonlinear-correction-contract.md).
+
+
+## v0.5.0 official UVDoc mesh comparison
+
+`uvdoc_mesh_candidate.py` calls the unmodified installed Transformers5.12.1
+UVDoc model/processor with the official safetensors revision
+`bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4`. Model/config/preprocessor and
+installed upstream source hashes are checked before use. Supply
+`EVAL_UVDOC_MESH_MODEL` as a local directory containing the three pinned model
+files, plus the normal candidate environment. CPU2threads and offline mode
+are required; no production package or model is installed by this script.
+
+The existing `generated` artifact role retains a JSON mesh with normalized
+backward x/y coordinates, shape, little-endian float32 payload hash, source and
+corrected-image hashes, model/source identities, bilinear interpolation,
+`align_corners=True` and zero padding. The official processor owns all sampling.
+`apply_eligible=false` remains mandatory. This is evaluation provenance, not a
+production nonlinear-apply schema or a four-corner approximation.
+
+Run the same focused Python discovery command above. New tests reject invalid
+mesh shape/nonfinite/extreme values and verify official RGB/identity/known-point
+sampling against independent tiny fixtures. These do not establish model quality.
+The nine-image run exceeded the frozen1GiB RSS ceiling for all27process samples;
+outputs were rejected before validation. See the
+[v0.5.0 decision](../../../docs/design/practical-correction-evaluation-v050.md)
+for the complete evidence and limits. The runner's RSS limit rejects after exit,
+not a live memory kill guard; wall-time/temp-disk cancellation are separate.
