@@ -6,12 +6,16 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--playwright-module',required=True);p.add_argument('--chromium',required=True);p.add_argument('--receipt',required=True);
 for name in ['fixture-python','tesseract-binary','tessdata','font']:p.add_argument('--'+name)
-p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion','delivery','photo'])
+p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion','delivery','photo','server-ux'])
 args=p.parse_args()
+# Node resolves require paths from each checker, so normalize CLI paths once.
+args.playwright_module=str(Path(args.playwright_module).resolve())
 native_args=[args.fixture_python,args.tesseract_binary,args.tessdata,args.font]
 if any(native_args) and not all(native_args):p.error('native OCR verification requires all four fixture/tool options')
 root=Path(__file__).resolve().parents[1]
 files=sorted([*root.glob('cmd/**/*.go'),*root.glob('internal/**/*.go'),*root.glob('internal/**/*.sql'),*root.glob('pkg/**/*.go'),*root.glob('web/src/**/*.*'),*root.glob('web/public/*'),root/'web/package.json',root/'web/package-lock.json',root/'web/astro.config.mjs',root/'go.mod',root/'go.sum',root/'scripts/build-web.py',root/'scripts/check-web.py',root/'scripts/check-web-editor-ux.cjs',root/'scripts/web-controls.cjs',root/'scripts/check-web.cjs',root/'scripts/check-web-ocr.cjs',root/'scripts/check-web-simple.cjs',root/'scripts/check-web-none.cjs',root/'scripts/check-web-capture.cjs',root/'scripts/check-web-correction.cjs',root/'scripts/check-web-placement.cjs',root/'scripts/check-web-import.cjs',root/'scripts/check-web-photo.cjs',root/'scripts/check-web-rate.cjs',root/'scripts/check-web-keyboard.cjs',root/'scripts/check-web-home.cjs',root/'scripts/check-web-ocr-ui.cjs'])
+# Every checker is an evidence input, including focused real-backend scenarios.
+files=sorted(set(files)|set((root/'scripts').glob('check-web*.cjs'))|{root/'docs/design/paperless-delivery.md'})
 def hashes():return {str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files}
 def validate_scenario(evidence,scenario):
  names={'reocr-start':['TestReOCRStartLifecycle'],'reocr-compare':['TestReOCRComparePositions','TestReOCRReadingOrder'],'reocr-adopt':['TestReOCRWholeDocumentAdoption','TestReOCRDiscardRecovery','TestReOCRKeyboardFocus'],'structure-suggestion':['TestStructureFilenameSuggestion']}[scenario]
@@ -37,8 +41,22 @@ def check_photo():
  built={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((root/'internal/webui/dist').rglob('*')) if f.is_file()}
  assert built,'embedded assets missing'
  receipt={'passed':True,'scenario':'photo','timestamp_utc':datetime.now(timezone.utc).isoformat(),'command':command,'tests':names,'skipped':0,'browser':scenarios,'source_sha256':before,'built_assets_sha256':built,'scope':'Synthetic Chromium against production serve/worker, private SQLite, bounded image child and local TLS. Physical camera/iPhone/screen reader/live Paperless/deployment unaccepted.'}
- Path(args.receipt).write_text(json.dumps(receipt,indent=2)+'\n')
-if args.scenario=='photo':check_photo();raise SystemExit(0)
+ return receipt
+if args.scenario=='photo':Path(args.receipt).write_text(json.dumps(check_photo(),indent=2)+'\n');raise SystemExit(0)
+def check_server_ux():
+ env=dict(os.environ,SCANNER_TEST_PLAYWRIGHT_MODULE=str(Path(args.playwright_module).resolve()),SCANNER_TEST_CHROMIUM=args.chromium,SCANNER_TEST_PDF_RUNTIME=os.environ.get('SCANNER_TEST_PDF_RUNTIME','/home/yamato/.local/share/scanner46-native-qevx7gil/raster-native'))
+ command=['go','test','-v','-race','-count=1','./internal/workerruntime','-run','^TestServerUXIntegratedSavePrimary$']
+ result=subprocess.run(command,cwd=root,env=env,capture_output=True,text=True,timeout=300)
+ print(result.stdout,end='');print(result.stderr,end='');assert result.returncode==0,'integrated server browser failed'
+ assert '\n--- SKIP:' not in result.stdout and '--- PASS: TestServerUXIntegratedSavePrimary ' in result.stdout,'integrated server test skipped or undiscovered'
+ evidence=json.loads((root/'.planning/phases/49-server-app-completion/49-03-BROWSER.json').read_text())
+ assert evidence['passed'] and evidence['real_backend'] and len(evidence['downloads'])>=5
+ assert evidence['counts']['documents']==3 and evidence['counts']['uploads']==3
+ assert before==hashes(),'source changed during verification'
+ built={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((root/'web/dist').rglob('*')) if f.is_file()}
+ assert built,'embedded assets missing'
+ return {'passed':True,'scenario':'server-ux','timestamp_utc':datetime.now(timezone.utc).isoformat(),'command':command,'skipped':0,'browser':evidence,'source_sha256':before,'built_assets_sha256':built,'scope':evidence['scope']}
+if args.scenario=='server-ux':Path(args.receipt).write_text(json.dumps(check_server_ux(),indent=2)+'\n');raise SystemExit(0)
 def check_delivery():
  """Real application/SQLite/worker, synthetic loopback provider; no private inputs."""
  with tempfile.TemporaryDirectory(prefix='scanner-delivery-web-') as temporary:
@@ -169,11 +187,11 @@ def check_delivery():
    assert all(hashlib.sha256((work/'documents'/(name+'.pdf')).read_bytes()).hexdigest()==value for name,value in digests.items())
    built={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((root/'internal/webui/dist').rglob('*')) if f.is_file()}
    receipt={'passed':True,'scenario':'delivery','timestamp_utc':datetime.now(timezone.utc).isoformat(),'browser':browser,'source_sha256':before,'built_assets_sha256':built,'pdf_sha256':digests,'remote_requests':remote_state['requests'],'remote_uploads':remote_state['uploads'],'scope':'Synthetic loopback Paperless API9, compiled real serve/worker and private SQLite through local TLS. No live service/credentials/private documents/physical phone/screen reader/deployment acceptance.'}
-   Path(args.receipt).write_text(json.dumps(receipt,indent=2)+'\n')
+   return receipt
   finally:
    stop('worker');stop('api');proxy.shutdown();proxy.server_close();thread.join(timeout=5);remote.shutdown();remote.server_close();remote_thread.join(timeout=5)
 if args.scenario=='delivery':
- files.extend([root/'scripts/check-web-delivery.cjs',root/'docs/design/paperless-delivery.md']);before=hashes();check_delivery();raise SystemExit(0)
+ Path(args.receipt).write_text(json.dumps(check_delivery(),indent=2)+'\n');raise SystemExit(0)
 with tempfile.TemporaryDirectory(prefix='scanner-product-web-') as temporary:
  work=Path(temporary);binary=work/'scanner'
  subprocess.run(['python3','scripts/build-web.py','--output',str(binary)],cwd=root,check=True,capture_output=True)
@@ -492,5 +510,10 @@ print(json.dumps(checks))
  assert process.returncode==0 and not out and not error
  assert before==hashes(),'sources changed during verification'
  built={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((root/'internal/webui/dist').rglob('*')) if f.is_file()}
- receipt={'passed':True,'timestamp_utc':datetime.now(timezone.utc).isoformat(),'source_sha256':before,'built_assets_sha256':built,'browser':browser,'native_ocr':native_proof,'simple_auth':simple_browser,'none_auth':none_browser,'capture_ui':capture_browser,'correction_ui':correction_browser,'placement_ui':placement_browser,'import_ui':import_browser,'rate_limit_ui':rate_browser,'keyboard_ui':keyboard_browser,'home_ui':home_browser,'editor_ux':editor_browser,'ocr_ui':ocr_ui_browser,'reocr_ui':reocr_browser,'scope':'Embedded Go binary, real guest/document APIs and private SQLite, headless Chromium through local fixture TLS proxy. Browser ignores only the fixture certificate error. Synthetic image/document/job rows and injected terminal job transition; real plain-PDF/PNG worker invocations and OCR selection/admission with fixture metadata; capture_ui checks scanner UI contracts, correction_ui checks optional correction compare/apply/undo/reprocess with mocked APIs and no correction engine, placement/import/rate/keyboard/home/editor/ocr_ui use their scoped mocked or real API evidence. No scanner hardware, real OIDC browser login, production proxy/mobile/screen-reader acceptance, complete scan workflow or deployment.'}
+ photo_browser=check_photo()
+ server_ux_browser=check_server_ux()
+ delivery_browser=check_delivery()
+ assert before==hashes(),'sources changed during full verification'
+ assert all(evidence['source_sha256']==before and {name.split('/dist/',1)[1]:digest for name,digest in evidence['built_assets_sha256'].items()}=={name.split('/dist/',1)[1]:digest for name,digest in built.items()} for evidence in [photo_browser,server_ux_browser,delivery_browser]),'focused scenario source/build mismatch'
+ receipt={'passed':True,'timestamp_utc':datetime.now(timezone.utc).isoformat(),'source_sha256':before,'built_assets_sha256':built,'browser':browser,'native_ocr':native_proof,'simple_auth':simple_browser,'none_auth':none_browser,'capture_ui':capture_browser,'correction_ui':correction_browser,'placement_ui':placement_browser,'import_ui':import_browser,'rate_limit_ui':rate_browser,'keyboard_ui':keyboard_browser,'home_ui':home_browser,'editor_ux':editor_browser,'ocr_ui':ocr_ui_browser,'reocr_ui':reocr_browser,'photo_ui':photo_browser,'server_ux':server_ux_browser,'delivery_ui':delivery_browser,'scope':'Embedded Go binary, real guest/document APIs and private SQLite, headless Chromium through local fixture TLS proxy. Browser ignores only the fixture certificate error. Synthetic image/document/job rows and injected terminal job transition; real plain-PDF/PNG worker invocations and OCR selection/admission with fixture metadata; capture_ui checks scanner UI contracts, correction_ui checks optional correction compare/apply/undo/reprocess with mocked APIs and no correction engine, placement/import/rate/keyboard/home/editor/ocr_ui use their scoped mocked or real API evidence. photo_ui and server_ux additionally run real SQLite/API/worker/native child intake, correction, reOCR and downloaded output oracles; delivery_ui uses synthetic loopback Paperless with real delivery workers. No scanner hardware, real OIDC browser login, production proxy/mobile/screen-reader acceptance, complete physical scan workflow or deployment.'}
  Path(args.receipt).write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps({'passed':True,'checks':len(browser['checks']),'native_ocr':native_proof is not None,'simple_auth_checks':len(simple_browser['checks']),'none_auth_checks':len(none_browser['checks']),'capture_ui_checks':len(capture_browser['checks']),'correction_ui_checks':len(correction_browser['checks']),'placement_ui_checks':len(placement_browser['checks']),'import_ui_checks':len(import_browser['checks']),'rate_limit_ui_checks':len(rate_browser['checks']),'keyboard_ui_checks':len(keyboard_browser['checks']),'home_ui_checks':len(home_browser['checks']),'ocr_ui_checks':len(ocr_ui_browser['checks'])}))
