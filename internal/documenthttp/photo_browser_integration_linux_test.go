@@ -55,10 +55,10 @@ func photoBrowser(t *testing.T, scenario string) {
 		t.Fatal(err)
 	}
 	address := listener.Addr().String()
-	listener.Close()
 	target, _ := url.Parse("http://" + address)
 	proxy := httptest.NewTLSServer(httputil.NewSingleHostReverseProxy(target))
 	defer proxy.Close()
+	listener.Close() // Keep the backend port reserved until the proxy has its distinct port.
 	work := t.TempDir()
 	for _, name := range []string{"state", "documents"} {
 		if err = os.Mkdir(filepath.Join(work, name), 0700); err != nil {
@@ -113,4 +113,4 @@ func TestPhotoReloadRecovery(t *testing.T)   { photoBrowser(t, "reload") }
 
 func TestPhotoManualCropRotateUndo(t *testing.T) { photoBrowser(t, "manual") }
 
-func TestPhotoResponsiveRecoveryMatrix(t *testing.T){photoBrowser(t,"matrix")}
+func TestPhotoResponsiveRecoveryMatrix(t *testing.T) { photoBrowser(t, "matrix") }

@@ -133,7 +133,14 @@ func (s *Store) QueueExpiredCleanup(ctx context.Context, limit int, retention ti
 		if now < 0 || !ok {
 			return ErrInvalid
 		}
-		rows, err := tx.QueryContext(ctx, `SELECT d.id,d.owner_id,d.revision,CASE WHEN d.expires_at_ms<=? THEN 'expired' ELSE 'deleting' END FROM documents d WHERE (d.expires_at_ms<=? OR `+discardableEmptyDocumentSQL+`) AND NOT EXISTS(SELECT 1 FROM jobs j WHERE j.document_id=d.id AND j.kind='cleanup') ORDER BY d.expires_at_ms,d.id LIMIT ?`, now, now, limit)
+		// A failed photo has no pages, but its private receipt/reason must survive
+		// browser polling and reload until document expiry. History still hides it;
+		// explicit deletion and the ordinary expiry barrier remain authoritative.
+		rows, err := tx.QueryContext(ctx, `SELECT d.id,d.owner_id,d.revision,CASE WHEN d.expires_at_ms<=? THEN 'expired' ELSE 'deleting' END FROM documents d WHERE (d.expires_at_ms<=? OR (`+discardableEmptyDocumentSQL+` AND NOT EXISTS(
+ SELECT 1 FROM jobs j JOIN import_intakes i ON i.job_id=j.id AND i.owner_id=j.owner_id
+ JOIN artifacts a ON a.id=i.artifact_id AND a.document_id=j.document_id AND a.owner_id=j.owner_id
+ WHERE j.document_id=d.id AND j.owner_id=d.owner_id AND j.kind='import' AND j.state='failed'
+ AND a.media_type IN ('image/jpeg','image/png')))) AND NOT EXISTS(SELECT 1 FROM jobs j WHERE j.document_id=d.id AND j.kind='cleanup') ORDER BY d.expires_at_ms,d.id LIMIT ?`, now, now, limit)
 		if err != nil {
 			return storageOperationError(err)
 		}

@@ -6,7 +6,7 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--playwright-module',required=True);p.add_argument('--chromium',required=True);p.add_argument('--receipt',required=True);
 for name in ['fixture-python','tesseract-binary','tessdata','font']:p.add_argument('--'+name)
-p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion','delivery'])
+p.add_argument('--scenario',choices=['reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion','delivery','photo'])
 args=p.parse_args()
 native_args=[args.fixture_python,args.tesseract_binary,args.tessdata,args.font]
 if any(native_args) and not all(native_args):p.error('native OCR verification requires all four fixture/tool options')
@@ -19,6 +19,26 @@ def validate_scenario(evidence,scenario):
  for name in names:
   for width in ([1280,320,390,768,1440] if scenario=='structure-suggestion' else [1280,390]):assert name+' '+str(width) in evidence['checks'],'required browser scenario missing'
 before=hashes()
+def check_photo():
+ env=dict(os.environ,SCANNER_TEST_PLAYWRIGHT_MODULE=args.playwright_module,SCANNER_TEST_CHROMIUM=args.chromium)
+ command=['go','test','-v','-race','-count=1','./internal/documenthttp','-run','^(TestPhotoCaptureAndPicker|TestPhotoReloadRecovery|TestPhotoManualCropRotateUndo|TestPhotoResponsiveRecoveryMatrix)$']
+ result=subprocess.run(command,cwd=root,env=env,capture_output=True,text=True,timeout=300)
+ print(result.stdout,end='');print(result.stderr,end='');assert result.returncode==0,'photo browser failed'
+ assert '\n--- SKIP:' not in result.stdout,'photo browser skipped'
+ names=['TestPhotoCaptureAndPicker','TestPhotoReloadRecovery','TestPhotoManualCropRotateUndo','TestPhotoResponsiveRecoveryMatrix']
+ for name in names:assert '--- PASS: '+name+' ' in result.stdout,'missing named photo browser test'
+ scenarios={}
+ for scenario in ['capture','reload','manual','matrix']:
+  evidence=json.loads((root/('.planning/phases/49-server-app-completion/49-02-'+scenario+'-BROWSER.json')).read_text())
+  assert evidence['passed'] and evidence['real_backend'] and evidence['checks'] and evidence['scenario']==scenario
+  scenarios[scenario]=evidence
+ assert len([check for check in scenarios['matrix']['checks'] if check.startswith('responsive ')])==20
+ assert before==hashes(),'source changed during verification'
+ built={str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted((root/'internal/webui/dist').rglob('*')) if f.is_file()}
+ assert built,'embedded assets missing'
+ receipt={'passed':True,'scenario':'photo','timestamp_utc':datetime.now(timezone.utc).isoformat(),'command':command,'tests':names,'skipped':0,'browser':scenarios,'source_sha256':before,'built_assets_sha256':built,'scope':'Synthetic Chromium against production serve/worker, private SQLite, bounded image child and local TLS. Physical camera/iPhone/screen reader/live Paperless/deployment unaccepted.'}
+ Path(args.receipt).write_text(json.dumps(receipt,indent=2)+'\n')
+if args.scenario=='photo':check_photo();raise SystemExit(0)
 def check_delivery():
  """Real application/SQLite/worker, synthetic loopback provider; no private inputs."""
  with tempfile.TemporaryDirectory(prefix='scanner-delivery-web-') as temporary:

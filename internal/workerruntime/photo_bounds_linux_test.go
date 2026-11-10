@@ -14,6 +14,57 @@ import (
 	"scanner-kiosk/internal/importupload"
 )
 
+func TestFailedPhotoTTLRemovesActualRawBytes(t *testing.T) {
+	c, store, db, root := fixture(t)
+	ctx := context.Background()
+	raw := []byte("corrupt compressed image")
+	request := photoRequest(t, raw)
+	limits := photoLimits()
+	limits.DocumentLifetime = 3 * time.Second
+	limits.JobTimeout = 2 * time.Second
+	service, e := importupload.New(root, store, limits)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer service.Close()
+	a, e := service.Receive(ctx, owner, request, bytes.NewReader(raw))
+	if e != nil {
+		t.Fatal(e)
+	}
+	claim, e := store.ClaimNextImport(ctx, "worker_failed_photo001")
+	if e != nil {
+		t.Fatal(e)
+	}
+	if e = executeImport(ctx, store, root, owner, claim.Job.ID, "worker_failed_photo001"); e != nil {
+		t.Fatal(e)
+	}
+	var path string
+	if e = db.QueryRow("SELECT a.relative_path FROM artifacts a JOIN import_intakes i ON i.artifact_id=a.id WHERE i.job_id=?", a.JobID).Scan(&path); e != nil {
+		t.Fatal(e)
+	}
+	if n, e := store.QueueExpiredCleanup(ctx, 100, 72*time.Hour); e != nil || n != 0 {
+		t.Fatal("private failure removed before TTL", n, e)
+	}
+	if data, e := os.ReadFile(filepath.Join(root, path)); e != nil || !bytes.Equal(data, raw) {
+		t.Fatal("failure raw changed", e)
+	}
+	var expiry int64
+	if e = db.QueryRow("SELECT expires_at_ms FROM documents WHERE id=?", a.DocumentID).Scan(&expiry); e != nil {
+		t.Fatal(e)
+	}
+	time.Sleep(time.Until(time.UnixMilli(expiry).Add(20 * time.Millisecond)))
+	if e = Run(ctx, c, true); e != nil {
+		t.Fatal("TTL cleanup", e)
+	}
+	if _, e = os.Stat(filepath.Join(root, path)); !os.IsNotExist(e) {
+		t.Fatal("expired raw bytes retained", e)
+	}
+	var count int
+	if e = db.QueryRow("SELECT count(*) FROM artifacts WHERE document_id=?", a.DocumentID).Scan(&count); e != nil || count != 0 {
+		t.Fatal("expired artifact graph retained", count, e)
+	}
+}
+
 func TestPhotoNormalizeRejectsInvalidAndBounded(t *testing.T) {
 	for _, mode := range []string{"invalid-child-exit", "wrong-actual-format", "output-limit", "deadline"} {
 		t.Run(mode, func(t *testing.T) {
