@@ -38,6 +38,10 @@ func (i RenderIntent) Request() (RenderAdmission, error) {
 	}
 	request := i.request
 	request.Settings.OCR.Languages = slices.Clone(request.Settings.OCR.Languages)
+	if request.ManualCrop != nil {
+		copy := *request.ManualCrop
+		request.ManualCrop = &copy
+	}
 	return request, nil
 }
 func (i RenderIntent) Hashes() ([32]byte, [32]byte) { return i.key, i.digest }
@@ -56,6 +60,10 @@ func (c RenderCommand) Request() (RenderAdmission, AdmissionLimits, error) {
 func (c RenderCommand) Hashes() ([32]byte, [32]byte) { return c.intent.Hashes() }
 
 func prepareRender(request RenderAdmission) (RenderIntent, error) {
+	if request.ManualCrop != nil {
+		crop := *request.ManualCrop
+		request.ManualCrop = &crop
+	}
 	settings, key, digest, err := renderIdentity(request)
 	if err != nil {
 		return RenderIntent{}, err
@@ -92,6 +100,9 @@ func renderIdentity(request RenderAdmission) (RenderSettings, [32]byte, [32]byte
 	if request.ReOCR && (!settings.OCR.Enabled || settings.Format != "pdf") {
 		return RenderSettings{}, [32]byte{}, [32]byte{}, ErrInvalid
 	}
+	if request.ManualCrop != nil && (request.ReOCR || settings.OCR.Enabled || settings.Format != "pdf" || !request.ManualCrop.valid()) {
+		return RenderSettings{}, [32]byte{}, [32]byte{}, ErrInvalid
+	}
 	command := settings
 	command.OCR.ModelVersion = ""
 	canonical, err := canonicalCommand(command)
@@ -103,6 +114,14 @@ func renderIdentity(request RenderAdmission) (RenderSettings, [32]byte, [32]byte
 	operation := "render-v1"
 	if request.ReOCR {
 		operation = "reocr-v1"
+	}
+	if request.ManualCrop != nil {
+		operation = "photo-crop-v1"
+		crop, err := canonicalCommand(request.ManualCrop)
+		if err != nil {
+			return RenderSettings{}, [32]byte{}, [32]byte{}, ErrInvalid
+		}
+		canonical = append(canonical, crop...)
 	}
 	digest := sha256.Sum256([]byte(operation + separator + request.DocumentID + separator + strconv.FormatInt(request.Revision, 10) + separator + string(canonical)))
 	return settings, key, digest, nil

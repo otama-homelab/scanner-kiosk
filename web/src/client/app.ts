@@ -6,7 +6,7 @@ import {ocrControls} from './ocr';
 import {ocrResults} from './ocr-results';
 import {passwordLogin} from './login';
 import {captureControls} from './capture';
-import {correctionControl} from './correction';
+import {correctionControl,photoCorrectionControl} from './correction';
 import {importControls} from './import';
 import {photoImportControls} from './photo-import';
 import {deliveryControl} from './delivery';
@@ -231,7 +231,11 @@ function showDocument(doc:any){
   const actions=document.createElement('div');actions.className='page-actions';const number=text('span',`${t('page')} ${index+1}`);number.className='page-number';if(!photo)actions.append(number);
   const add=(label:Key,action:()=>void,unavailable=false)=>{const control=button(label,action);control.dataset.pageAction=label;control.disabled=!editable||unavailable;control.dataset.unavailable=String(control.disabled);controls.push(control);actions.append(iconButton(control,label));return control};
   const rotateKey=requestKey();add('rotate',()=>void edit(page.id,'rotate',async()=>{await api('/api/documents/'+doc.id+'/pages/'+page.id,'PATCH',{rotation:(page.rotation+90)%360},rotateKey,doc.revision)}));
-  if(page.correction&&page.source_type!=='pdf'){
+  if(page.source_type==='photo'&&page.photo){
+   const crop=photoCorrectionControl({t,page,current:()=>showGeneration===generation,nextKey:requestKey,changed:render,
+    apply:async(body,rotation,key,signal)=>{const job=await api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction/manual','POST',body,key,doc.revision,signal);if(!opaque(job?.id))throw new Error('Invalid crop job');const deadline=Date.now()+120000;for(;;){const value=await api('/api/jobs/'+job.id,'GET',undefined,undefined,undefined,signal);if(value.state==='succeeded')break;if(!['queued','running'].includes(value.state)||Date.now()>deadline)throw new APIError(409);await new Promise<void>((resolve,reject)=>{const done=()=>{signal.removeEventListener('abort',abort);resolve()};const timer=setTimeout(done,500);const abort=()=>{clearTimeout(timer);reject(new DOMException('Aborted','AbortError'))};signal.addEventListener('abort',abort,{once:true})})}if(rotation!==page.rotation){const current=await api('/api/documents/'+doc.id,'GET',undefined,undefined,undefined,signal);if(current.pages.find((item:any)=>item.id===page.id)?.rotation!==rotation){if(current.revision!==job.input_revision+1)throw new APIError(412);await api('/api/documents/'+doc.id+'/pages/'+page.id,'PATCH',{rotation},requestKey(),current.revision,signal)}}},
+    undo:async(key,signal)=>{await api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction','DELETE',undefined,key,doc.revision,signal)},classify:err=>err instanceof APIError?{message:t(err.status===409||err.status===412?'changed':'correctionFailed'),unknown:false}:{message:t('correctionUnknown'),unknown:true}});crop.button.disabled=!editable;controls.push(crop.button);actions.append(crop.button);disposePreviews.push(crop.dispose);
+  }else if(page.correction&&page.source_type!=='pdf'){
    const correction=correctionControl({documentID:doc.id,pageID:page.id,originalURL:preview.dataset?.preview||page.preview_url,revision:doc.revision,correction:page.correction,current:()=>showGeneration===generation,nextKey:requestKey,
     apply:(suggestion,source,key,signal)=>api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction','POST',{suggestion_id:suggestion,source_sha256:source},key,doc.revision,signal),
     undo:(key,signal)=>api('/api/documents/'+doc.id+'/pages/'+page.id+'/correction','DELETE',undefined,key,doc.revision,signal),

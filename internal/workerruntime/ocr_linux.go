@@ -20,6 +20,7 @@ import (
 // Optional OCR initialization is shared by background capability publication and
 // execution. Initialization failure does not block plain PDF/image processing.
 type renderExecutionRecords interface {
+	renderjob.PhotoCropRecords
 	renderjob.Records
 	renderjob.PulseRecords
 	renderjob.StopRecords

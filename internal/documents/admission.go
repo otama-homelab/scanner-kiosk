@@ -47,6 +47,7 @@ type RenderSettings struct {
 	OCR         RenderOCR `json:"ocr"`
 }
 type RenderAdmission struct {
+	ManualCrop     *PhotoCrop
 	DocumentID     string
 	Revision       int64
 	IdempotencyKey string
@@ -76,12 +77,14 @@ type CapturedPage struct {
 	DPI                int     `json:"dpi"`
 }
 type RenderSnapshot struct {
-	Sources   []RenderSource       `json:"sources,omitempty"`
-	ReOCR     bool                 `json:"reocr,omitempty"`
-	Version   int                  `json:"version"`
-	Settings  RenderSettings       `json:"settings"`
-	Pages     []CapturedPage       `json:"pages"`
-	OCROutput ocrplugin.OutputKind `json:"ocr_output,omitempty"`
+	ManualCrop   *PhotoCrop           `json:"manual_crop,omitempty"`
+	ManualSource *ArtifactRecord      `json:"manual_source,omitempty"`
+	Sources      []RenderSource       `json:"sources,omitempty"`
+	ReOCR        bool                 `json:"reocr,omitempty"`
+	Version      int                  `json:"version"`
+	Settings     RenderSettings       `json:"settings"`
+	Pages        []CapturedPage       `json:"pages"`
+	OCROutput    ocrplugin.OutputKind `json:"ocr_output,omitempty"`
 }
 
 // AdmitRender retains the trusted entry point through the policy service.
@@ -223,6 +226,14 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 				return err
 			}
 		}
+		var manualSource *ArtifactRecord
+		if request.ManualCrop != nil {
+			baseline, err := photoCropBaseline(ctx, tx, owner, request.DocumentID, *request.ManualCrop, pages, sources)
+			if err != nil {
+				return err
+			}
+			manualSource = &baseline
+		}
 		if err = s.checkCapacity(ctx, tx, owner, request.ReserveBytes, limits); err != nil {
 			return err
 		}
@@ -240,7 +251,7 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		// Every newly requested output is a new document revision. Invalidate the
 		// old pointer before advancing the revision (its FK intentionally restricts
 		// updates). Replay returns earlier, without incrementing again.
-		if !request.ReOCR {
+		if !request.ReOCR && request.ManualCrop == nil {
 			if revision == 1<<63-1 {
 				return ErrConflict
 			}
@@ -256,7 +267,7 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		if err != nil {
 			return ErrStorage
 		}
-		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, ReOCR: request.ReOCR, Sources: sources, Settings: snapshotSettings, Pages: pages, OCROutput: request.ResolvedOutput})
+		snapshot, err := json.Marshal(RenderSnapshot{Version: 1, ReOCR: request.ReOCR, ManualCrop: request.ManualCrop, ManualSource: manualSource, Sources: sources, Settings: snapshotSettings, Pages: pages, OCROutput: request.ResolvedOutput})
 		if err != nil || len(snapshot) > 1<<20 {
 			return ErrInvalid
 		}

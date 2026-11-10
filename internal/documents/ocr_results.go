@@ -7,7 +7,6 @@ import (
 	"errors"
 	"math"
 	"reflect"
-
 )
 
 // OCRResultBundle is immutable metadata, never inline provider text or geometry.
@@ -214,7 +213,7 @@ func (s *Store) CompleteOCRResult(ctx context.Context, owner, job, runner string
 			return ErrConflict
 		}
 		var snapshot RenderSnapshot
-		if json.Unmarshal([]byte(config), &snapshot) != nil || snapshot.Version != 1 || !reflect.DeepEqual(snapshot.Settings, b.Settings) || len(snapshot.Pages) != len(b.Pages) {
+		if json.Unmarshal([]byte(config), &snapshot) != nil || snapshot.Version != 1 || snapshot.ManualCrop != nil || snapshot.ManualSource != nil || !reflect.DeepEqual(snapshot.Settings, b.Settings) || len(snapshot.Pages) != len(b.Pages) {
 			return ErrConflict
 		}
 		for i, p := range snapshot.Pages {

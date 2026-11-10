@@ -242,3 +242,4 @@ button:active:not(:disabled){box-shadow:inset 0 0 0 2px var(--accent)}
 .ocr-result-panel pre{white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:48rem){.ocr-comparison{grid-template-columns:minmax(0,1fr)}}
  .photo-import{margin-block:1rem 2rem}.photo-import-actions{display:flex;flex-wrap:wrap;gap:.5rem}.photo-import p{max-width:65ch}
+ .photo-crop{max-width:min(36rem,calc(100vw - 2rem))}.photo-crop-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-block:1rem}.photo-crop-fields label{display:grid;gap:.25rem;min-width:0}.photo-crop-fields input,.photo-crop-fields select{width:100%;min-width:0;font-size:1rem}.photo-crop canvas{max-width:100%;max-height:40dvh;object-fit:contain;margin-block:1rem}.photo-crop a{display:inline-block;margin-bottom:.5rem}

@@ -133,6 +133,20 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 		} else if len(out.Snapshot.Sources) != 0 {
 			return ErrInvalid
 		}
+		if out.Snapshot.ManualCrop != nil {
+			if out.Snapshot.ReOCR || out.Snapshot.Settings.OCR.Enabled || out.Snapshot.Settings.Format != "pdf" {
+				return ErrInvalid
+			}
+			baseline, err := photoCropBaseline(ctx, tx, owner, out.Job.DocumentID, *out.Snapshot.ManualCrop, out.Snapshot.Pages, out.Snapshot.Sources)
+			if err != nil {
+				return err
+			}
+			if out.Snapshot.ManualSource == nil || !reflect.DeepEqual(baseline, *out.Snapshot.ManualSource) {
+				return ErrConflict
+			}
+		} else if out.Snapshot.ManualSource != nil {
+			return ErrInvalid
+		}
 		current := s.now().UnixMilli()
 		if current >= expiry || current >= out.Job.DeadlineAtMS {
 			return ErrConflict

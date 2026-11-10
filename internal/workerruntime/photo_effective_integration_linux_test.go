@@ -188,15 +188,38 @@ func photoCall(t *testing.T, server *httptest.Server, cookie *http.Cookie, metho
 }
 func assertPhotoCorners(t *testing.T, raw []byte) {
 	t.Helper()
+	assertPhotoCornerColors(t, raw, [][3]int{{20, 20, 240}, {240, 20, 20}, {240, 220, 20}, {20, 230, 20}})
+}
+func assertPhotoCornerColors(t *testing.T, raw []byte, expected [][3]int) {
+	t.Helper()
 	im, _, err := image.Decode(bytes.NewReader(raw))
 	if err != nil {
 		t.Fatal(err)
 	}
 	// Orientation 6 rotates TL red/TR green/BL blue/BR yellow clockwise.
-	expected := [][3]int{{20, 20, 240}, {240, 20, 20}, {240, 220, 20}, {20, 230, 20}}
 	b := im.Bounds()
+	// PDF presentation fits narrow crops on A4 with white margins. Locate the
+	// synthetic solid-color image rectangle, independently of renderer metadata.
+	content := image.Rectangle{}
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			r, g, bl, _ := im.At(x, y).RGBA()
+			if r>>8 < 245 || g>>8 < 245 || bl>>8 < 245 {
+				p := image.Rect(x, y, x+1, y+1)
+				if content.Empty() {
+					content = p
+				} else {
+					content = content.Union(p)
+				}
+			}
+		}
+	}
+	if content.Empty() || content.Dx()*content.Dy() < b.Dx()*b.Dy()/10 {
+		t.Fatal("missing synthetic image region")
+	}
+	b = content
 	for i, p := range []image.Point{{b.Dx() / 4, b.Dy() / 4}, {b.Dx() * 3 / 4, b.Dy() / 4}, {b.Dx() / 4, b.Dy() * 3 / 4}, {b.Dx() * 3 / 4, b.Dy() * 3 / 4}} {
-		r, g, bl, _ := im.At(p.X, p.Y).RGBA()
+		r, g, bl, _ := im.At(p.X+b.Min.X, p.Y+b.Min.Y).RGBA()
 		for c, v := range []uint32{r >> 8, g >> 8, bl >> 8} {
 			d := int(v) - expected[i][c]
 			if d < -18 || d > 18 {
@@ -206,6 +229,66 @@ func assertPhotoCorners(t *testing.T, raw []byte) {
 	}
 }
 func TestPhotoEffectivePixelsPlainSavePreviewThumbnailAndReOCR(t *testing.T) {
+	photoConsumerOracle(t, "before")
+}
+func TestPhotoCorrectedPixelsAcrossConsumers(t *testing.T) {
+	for _, phase := range []string{"before", "apply", "undo"} {
+		t.Run(phase, func(t *testing.T) { photoConsumerOracle(t, phase) })
+	}
+}
+
+func TestPhotoCropWorkerFailureCleanup(t *testing.T) {
+	c, store, db, root := fixture(t)
+	server, cookie, principal := photoHTTP(t, c, store, root)
+	raw := photoJPEG(t)
+	digest := sha256.Sum256(raw)
+	code, data := photoCall(t, server, cookie, "POST", "/api/documents/import", raw, map[string]string{"Content-Type": "image/jpeg", "Idempotency-Key": "request_photo_crop_failure1", "X-Content-SHA256": fmt.Sprintf("%x", digest)})
+	if code != 202 {
+		t.Fatal(code, string(data))
+	}
+	var job documents.JobProjection
+	if e := json.Unmarshal(data, &job); e != nil {
+		t.Fatal(e)
+	}
+	if e := Run(context.Background(), c, true); e != nil {
+		t.Fatal(e)
+	}
+	p, e := store.ReadDocument(context.Background(), principal, job.DocumentID)
+	if e != nil {
+		t.Fatal(e)
+	}
+	base, e := store.ReadPhotoBaseline(context.Background(), principal, p.ID, p.Pages[0].ID)
+	if e != nil {
+		t.Fatal(e)
+	}
+	a, e := store.AdmitRender(context.Background(), principal, documents.RenderAdmission{DocumentID: p.ID, Revision: p.Revision, IdempotencyKey: "request_crop_failure_job1", ManualCrop: &documents.PhotoCrop{PageID: p.Pages[0].ID, SourceSHA256: fmt.Sprintf("%x", base.Artifact.SHA256), Width: 24, Height: 80}, Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless"}, ReserveBytes: 4 << 20}, photoLimits().AdmissionLimits)
+	if e != nil {
+		t.Fatal(e)
+	}
+	// A changed descriptor must fail before a child can consume unverified pixels.
+	if e = os.WriteFile(filepath.Join(root, base.Artifact.RelativePath), []byte("corrupted synthetic baseline"), 0600); e != nil {
+		t.Fatal(e)
+	}
+	if e = Run(context.Background(), c, true); e != nil {
+		t.Fatal(e)
+	}
+	j, e := store.ReadJob(context.Background(), principal, a.JobID)
+	if e != nil || j.State != "failed" {
+		t.Fatal("failed crop did not terminalize", j, e)
+	}
+	var reservations, corrections int
+	if e = db.QueryRow("SELECT count(*) FROM reservations WHERE job_id=?", a.JobID).Scan(&reservations); e != nil {
+		t.Fatal(e)
+	}
+	if e = db.QueryRow("SELECT count(*) FROM page_corrections WHERE document_id=?", p.ID).Scan(&corrections); e != nil || reservations != 0 || corrections != 0 {
+		t.Fatal("failure leaked reservation/correction", reservations, corrections, e)
+	}
+	current, e := store.ReadDocument(context.Background(), principal, p.ID)
+	if e != nil || current.Revision != p.Revision {
+		t.Fatal("failed optional crop changed revision", e)
+	}
+}
+func photoConsumerOracle(t *testing.T, phase string) {
 	c, store, db, root := fixture(t)
 	server, cookie, principal := photoHTTP(t, c, store, root)
 	raw := photoJPEG(t)
@@ -227,12 +310,69 @@ func TestPhotoEffectivePixelsPlainSavePreviewThumbnailAndReOCR(t *testing.T) {
 		t.Fatal("photo publication", p, err)
 	}
 	page := p.Pages[0]
+	assertCorners := assertPhotoCorners
+	if phase != "before" {
+		prior, e := store.AdmitRender(context.Background(), principal, documents.RenderAdmission{DocumentID: p.ID, Revision: p.Revision, IdempotencyKey: "request_photo_before_crop001", Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless"}, ReserveBytes: 4 << 20}, photoLimits().AdmissionLimits)
+		if e != nil {
+			t.Fatal(e)
+		}
+		if e = Run(context.Background(), c, true); e != nil {
+			t.Fatal(e)
+		}
+		priorJob, e := store.ReadJob(context.Background(), principal, prior.JobID)
+		if e != nil || priorJob.State != "succeeded" {
+			t.Fatal("pre-crop Save", priorJob, e)
+		}
+		p, e = store.ReadDocument(context.Background(), principal, p.ID)
+		if e != nil {
+			t.Fatal(e)
+		}
+		code, pixels := photoCall(t, server, cookie, "GET", "/api/documents/"+p.ID+"/pages/"+page.ID+"/thumbnail", nil, nil)
+		if code != 200 {
+			t.Fatal("pre-crop thumbnail", code)
+		}
+		assertPhotoCorners(t, pixels)
+		baseline, err := store.ReadPhotoBaseline(context.Background(), principal, p.ID, page.ID)
+		if err != nil {
+			t.Fatal(err)
+		}
+		crop := documents.PhotoCrop{PageID: page.ID, SourceSHA256: fmt.Sprintf("%x", baseline.Artifact.SHA256), Width: 24, Height: 80}
+		a, e := store.AdmitRender(context.Background(), principal, documents.RenderAdmission{DocumentID: p.ID, Revision: p.Revision, IdempotencyKey: "request_photo_crop_pixels001", ManualCrop: &crop, Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless"}, ReserveBytes: 4 << 20}, photoLimits().AdmissionLimits)
+		if e != nil {
+			t.Fatal(e)
+		}
+		if e = Run(context.Background(), c, true); e != nil {
+			t.Fatal(e)
+		}
+		job, e := store.ReadJob(context.Background(), principal, a.JobID)
+		if e != nil || job.State != "succeeded" {
+			t.Fatal("actual crop worker", job, e)
+		}
+		p, e = store.ReadDocument(context.Background(), principal, p.ID)
+		if e != nil {
+			t.Fatal(e)
+		}
+		if phase == "apply" {
+			assertCorners = func(t *testing.T, data []byte) {
+				assertPhotoCornerColors(t, data, [][3]int{{20, 20, 240}, {20, 20, 240}, {240, 220, 20}, {240, 220, 20}})
+			}
+		} else {
+			p, e = store.UndoCorrection(context.Background(), principal, documents.CorrectionRequest{DocumentID: p.ID, PageID: page.ID, Revision: p.Revision, IdempotencyKey: "request_photo_undo_pixels001"}, 72*time.Hour)
+			if e != nil {
+				t.Fatal(e)
+			}
+		}
+		retained, e := store.ReadPhotoBaseline(context.Background(), principal, p.ID, page.ID)
+		if e != nil || retained.Artifact != baseline.Artifact {
+			t.Fatal("normalized provenance mutated", e)
+		}
+	}
 	preview := "/api/documents/" + p.ID + "/pages/" + page.ID + "/preview"
 	code, data = photoCall(t, server, cookie, "GET", preview, nil, nil)
 	if code != 200 {
 		t.Fatalf("effective preview %d %s", code, data)
 	}
-	assertPhotoCorners(t, data)
+	assertCorners(t, data)
 	baseline, err := store.ReadPageEffective(context.Background(), principal, p.ID, page.ID)
 	if err != nil {
 		t.Fatal(err)
@@ -241,7 +381,11 @@ func TestPhotoEffectivePixelsPlainSavePreviewThumbnailAndReOCR(t *testing.T) {
 	if err != nil || original.Artifact.ID == baseline.Artifact.ID || original.Artifact.SHA256 != digest {
 		t.Fatal("raw/effective provenance", err)
 	}
-	if baseline.Artifact.PixelWidth != 48 || baseline.Artifact.PixelHeight != 80 {
+	wantWidth := 48
+	if phase == "apply" {
+		wantWidth = 24
+	}
+	if baseline.Artifact.PixelWidth != wantWidth || baseline.Artifact.PixelHeight != 80 {
 		t.Fatal("normalized dimensions", baseline)
 	}
 	limits := photoLimits().AdmissionLimits
@@ -260,9 +404,9 @@ func TestPhotoEffectivePixelsPlainSavePreviewThumbnailAndReOCR(t *testing.T) {
 	if code != 200 {
 		t.Fatalf("effective thumbnail %d %s", code, data)
 	}
-	assertPhotoCorners(t, data)
+	assertCorners(t, data)
 	var thumbSource string
-	if err = db.QueryRow("SELECT original_artifact_id FROM page_thumbnails WHERE document_id=?", p.ID).Scan(&thumbSource); err != nil || thumbSource != baseline.Artifact.ID {
+	if err = db.QueryRow("SELECT original_artifact_id FROM page_thumbnails WHERE document_id=? AND original_artifact_id=?", p.ID, baseline.Artifact.ID).Scan(&thumbSource); err != nil || thumbSource != baseline.Artifact.ID {
 		t.Fatal("thumbnail bound to raw", thumbSource, err)
 	}
 	output, err := store.GetExport(context.Background(), principal, p.ID)
@@ -274,7 +418,7 @@ func TestPhotoEffectivePixelsPlainSavePreviewThumbnailAndReOCR(t *testing.T) {
 	if err != nil {
 		t.Fatal("independent official Poppler raster", err)
 	}
-	assertPhotoCorners(t, pixels)
+	assertCorners(t, pixels)
 	// Real worker and provider protocol; the synthetic transcript is not OCR quality evidence.
 	ocrServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": "{\"text\":\"SYNTHETIC PHOTO TEXT\"}"}}}})
@@ -326,11 +470,14 @@ func TestPhotoEffectivePixelsPlainSavePreviewThumbnailAndReOCR(t *testing.T) {
 	if resultPage.SourceType != "photo" || resultPage.OriginalArtifactID != original.Artifact.ID || resultPage.EffectiveArtifactID != baseline.Artifact.ID || resultPage.OriginalSHA256 != digest || resultPage.EffectiveSHA256 != baseline.Artifact.SHA256 || resultPage.Preview == nil {
 		t.Fatal("reOCR frozen source", resultPage)
 	}
+	if (phase == "apply") != (resultPage.CorrectionID != "") || (phase == "apply") != (resultPage.TransformJSON != "") || resultPage.PixelWidth != wantWidth || resultPage.PixelHeight != 80 {
+		t.Fatal("reOCR correction/geometry lineage", resultPage)
+	}
 	data, err = os.ReadFile(filepath.Join(root, resultPage.Preview.RelativePath))
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertPhotoCorners(t, data)
+	assertCorners(t, data)
 	adopted, err := store.AdoptOCRResult(context.Background(), principal, documents.OCRResultRequest{DocumentID: p.ID, ResultID: bundle.ID, Revision: p.Revision, IdempotencyKey: "request_photo_adopt001"}, 72*time.Hour)
 	if err != nil {
 		t.Fatal(err)
@@ -343,5 +490,5 @@ func TestPhotoEffectivePixelsPlainSavePreviewThumbnailAndReOCR(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assertPhotoCorners(t, pixels)
+	assertCorners(t, pixels)
 }

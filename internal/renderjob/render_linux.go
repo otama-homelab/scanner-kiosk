@@ -48,6 +48,7 @@ type ThumbnailRecords interface {
 }
 
 type Prepared struct {
+	manualCrop                    bool
 	mu                            sync.Mutex
 	records                       Records
 	scope                         *artifactscope.Scope
@@ -76,6 +77,10 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 	uncertain := false
 	defer func() {
 		if err != nil {
+			var failure *preparationFailure
+			if errors.As(err, &failure) {
+				return
+			}
 			now := time.Now().UnixMilli()
 			err = &preparationFailure{cause: err, clean: clean, stoppedAtMS: now, scope: failedScope, extras: otherScopes(scopes, failedScope), uncertain: uncertain}
 		}
@@ -86,6 +91,9 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 	work, err := records.LoadRenderWork(ctx, owner, job, runner)
 	if err != nil {
 		return nil, err
+	}
+	if work.Snapshot.ManualCrop != nil {
+		return preparePhotoCrop(ctx, records, root, owner, job, runner, work)
 	}
 	format := work.Snapshot.Settings.Format
 	if format != "pdf" && format != "jpeg" && format != "png" {
@@ -333,7 +341,9 @@ func (p *Prepared) Publish(ctx context.Context) (documents.Export, error) {
 	}
 	if !p.pending {
 		var err error
-		if p.candidate != nil {
+		if p.manualCrop {
+			err = p.records.(PhotoCropRecords).CompletePhotoCrop(ctx, p.owner, p.job, p.runner, p.revision, p.artifact)
+		} else if p.candidate != nil {
 			publisher, ok := p.records.(OCRResultRecords)
 			if !ok {
 				return documents.Export{}, ErrUnsupported
@@ -363,7 +373,9 @@ func (p *Prepared) Publish(ctx context.Context) (documents.Export, error) {
 	defer cancel()
 	var recorded bool
 	var err error
-	if p.candidate != nil {
+	if p.manualCrop {
+		recorded, err = p.records.(PhotoCropRecords).PhotoCropRecorded(recovery, p.owner, p.job, p.artifact)
+	} else if p.candidate != nil {
 		recorded, err = p.records.(OCRResultRecords).OCRResultRecorded(recovery, p.owner, p.job, *p.candidate)
 	} else {
 		recorded, err = p.records.ExportRecorded(recovery, p.owner, p.job, p.artifact.ID)

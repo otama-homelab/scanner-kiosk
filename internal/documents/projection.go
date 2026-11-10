@@ -38,6 +38,7 @@ type PDFPageProjection struct {
 	HeightPoints float64 `json:"height_points"`
 }
 type PageProjection struct {
+	Photo        *PhotoProjection      `json:"photo,omitempty"`
 	SourceType   string                `json:"source_type"`
 	PDF          *PDFPageProjection    `json:"pdf,omitempty"`
 	ID           string                `json:"id"`
@@ -47,6 +48,11 @@ type PageProjection struct {
 	ThumbnailURL string                `json:"thumbnail_url"`
 	PreviewURL   string                `json:"preview_url"`
 	Correction   *CorrectionProjection `json:"correction,omitempty"`
+}
+type PhotoProjection struct {
+	Width  int    `json:"width"`
+	Height int    `json:"height"`
+	SHA256 string `json:"sha256"`
 }
 type CorrectionProjection struct {
 	SuggestionID         string               `json:"suggestion_id"`
@@ -234,6 +240,26 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 	}
 	if err = s.projectCorrections(ctx, tx, owner, values); err != nil {
 		return err
+	}
+	for i := range values {
+		for j := range values[i].Pages {
+			p := &values[i].Pages[j]
+			if p.SourceType != "photo" {
+				continue
+			}
+			var a ArtifactRecord
+			var digest []byte
+			err := tx.QueryRowContext(ctx, `SELECT a.id,a.sha256 FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.owner_id=p.owner_id AND a.document_id=p.document_id WHERE p.id=? AND p.owner_id=? AND p.document_id=? AND a.state='ready' AND a.kind='original'`, p.ID, owner, values[i].ID).Scan(&a.ID, &digest)
+			if err != nil || len(digest) != 32 {
+				return ErrConflict
+			}
+			copy(a.SHA256[:], digest)
+			base, e := loadPhotoBaseline(ctx, tx, owner, values[i].ID, p.ID, a)
+			if e != nil {
+				return e
+			}
+			p.Photo = &PhotoProjection{Width: base.PixelWidth, Height: base.PixelHeight, SHA256: hex.EncodeToString(base.SHA256[:])}
+		}
 	}
 	for i := range values {
 		values[i].PageCount = len(values[i].Pages)

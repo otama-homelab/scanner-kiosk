@@ -133,7 +133,7 @@ func TestPhotoSourceSchemaUpgrade(t *testing.T) {
 			t.Fatal("historical graph changed", table)
 		}
 	}
-	for query, want := range map[string]int{"SELECT count(*) FROM pragma_foreign_key_check": 0, "PRAGMA foreign_keys": 1, "PRAGMA legacy_alter_table": 0, "SELECT count(*) FROM schema_migrations": 25} {
+	for query, want := range map[string]int{"SELECT count(*) FROM pragma_foreign_key_check": 0, "PRAGMA foreign_keys": 1, "PRAGMA legacy_alter_table": 0, "SELECT count(*) FROM schema_migrations": 26} {
 		var n int
 		if err = db.QueryRow(query).Scan(&n); err != nil || n != want {
 			t.Fatal("upgrade constraints", query, n, err)

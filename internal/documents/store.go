@@ -227,7 +227,7 @@ func (s *Store) PublishExportWithThumbnails(ctx context.Context, owner, jobID, r
    JOIN reservations r ON r.job_id=j.id AND r.owner_id=j.owner_id
    WHERE j.id=? AND j.owner_id=? AND j.kind='render' AND j.state='running' AND j.runner_id=?
    AND j.input_revision=? AND d.revision=j.input_revision AND j.deadline_at_ms>?
-   AND d.expires_at_ms>? AND d.state='processing'`, jobID, owner, runnerID, revision, now, now).Scan(&documentID, &purpose, &reserved)
+   AND d.expires_at_ms>? AND d.state='processing' AND json_type(j.configuration_json,'$.manual_crop') IS NULL`, jobID, owner, runnerID, revision, now, now).Scan(&documentID, &purpose, &reserved)
 		if errors.Is(err, sql.ErrNoRows) {
 			return ErrConflict
 		}

@@ -6,16 +6,97 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
+	"errors"
 	"hash/crc32"
 	"image"
 	"image/color"
 	"image/jpeg"
 	"image/png"
+	"io"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 )
+
+func TestPhotoCropChildBounds(t *testing.T) {
+	for _, mode := range []string{"pixels", "negative", "outside", "empty", "output-limit", "cancelled"} {
+		t.Run(mode, func(t *testing.T) {
+			dir := t.TempDir()
+			im := image.NewNRGBA(image.Rect(0, 0, 8, 6))
+			for y := 0; y < 6; y++ {
+				for x := 0; x < 8; x++ {
+					im.SetNRGBA(x, y, color.NRGBA{uint8(x * 20), uint8(y * 30), 80, 255})
+				}
+			}
+			var b bytes.Buffer
+			if e := png.Encode(&b, im); e != nil {
+				t.Fatal(e)
+			}
+			input, e := os.OpenFile(filepath.Join(dir, "input.png"), os.O_CREATE|os.O_RDWR, 0600)
+			if e != nil {
+				t.Fatal(e)
+			}
+			defer input.Close()
+			if _, e = input.Write(b.Bytes()); e != nil {
+				t.Fatal(e)
+			}
+			output, e := os.OpenFile(filepath.Join(dir, "output"), os.O_CREATE|os.O_RDWR, 0600)
+			if e != nil {
+				t.Fatal(e)
+			}
+			defer output.Close()
+			rect := image.Rect(2, 1, 6, 5)
+			limit := int64(1 << 20)
+			ctx := context.Background()
+			switch mode {
+			case "negative":
+				rect.Min.X = -1
+			case "outside":
+				rect.Max.X = 9
+			case "empty":
+				rect.Max = rect.Min
+			case "output-limit":
+				limit = 1
+			case "cancelled":
+				cancelled, cancel := context.WithCancel(ctx)
+				cancel()
+				ctx = cancelled
+			}
+			p, e := PrepareCrop(ctx, input, output, rect, limit)
+			if mode != "pixels" {
+				if e == nil {
+					t.Fatal("invalid crop accepted")
+				}
+				if mode == "output-limit" && !errors.Is(e, ErrLimit) {
+					t.Fatal(e)
+				}
+				return
+			}
+			if e != nil {
+				t.Fatal(e)
+			}
+			data, e := io.ReadAll(io.NewSectionReader(output, p.Offset, p.Size))
+			if e != nil {
+				t.Fatal(e)
+			}
+			cropped, e := png.Decode(bytes.NewReader(data))
+			if e != nil {
+				t.Fatal(e)
+			}
+			if p.Width != 4 || p.Height != 4 {
+				t.Fatal(p)
+			}
+			for _, point := range []image.Point{{0, 0}, {3, 0}, {0, 3}, {3, 3}} {
+				got := color.NRGBAModel.Convert(cropped.At(point.X, point.Y))
+				want := im.NRGBAAt(point.X+2, point.Y+1)
+				if got != want {
+					t.Fatal("wrong child crop pixels", point, got, want)
+				}
+			}
+		})
+	}
+}
 
 func TestMain(m *testing.M) {
 	if len(os.Args) > 1 && os.Args[1] == "__photo-normalize" {

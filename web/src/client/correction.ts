@@ -1,3 +1,4 @@
+import type {Key} from './messages';
 type CorrectionView={
  suggestion_id:string;
  correction_artifact_id:string;
@@ -105,4 +106,26 @@ export function correctionControl(options:Options){
  };
  button.addEventListener('click',open);
  return {button,element:button,dispose:()=>{controller?.abort();dialog?.remove();dialog=null}};
+}
+
+export function photoCorrectionControl(options:{t:(key:Key)=>string;page:any;current:()=>boolean;apply:(crop:object,rotation:number,key:string,signal:AbortSignal)=>Promise<void>;undo:(key:string,signal:AbortSignal)=>Promise<void>;changed:()=>Promise<void>;nextKey:()=>string;classify:(error:unknown)=>{message:string;unknown:boolean}}){
+ const {t,page}=options,button=document.createElement('button');button.type='button';button.textContent=t('photoCrop');button.dataset.photoCrop='true';let dialog:HTMLDialogElement|null=null,controller:AbortController|null=null;
+ button.addEventListener('click',()=>{
+  if(dialog||!options.current())return;controller=new AbortController();const signal=controller.signal;dialog=document.createElement('dialog');dialog.className='photo-crop';dialog.setAttribute('aria-labelledby','photo-crop-title');
+  const title=document.createElement('h2');title.id='photo-crop-title';title.textContent=t('photoCrop');
+  const help=document.createElement('p');help.textContent=t('photoCropHelp');const form=document.createElement('form');const fields=document.createElement('div');fields.className='photo-crop-fields';
+  const inputs:HTMLInputElement[]=[];for(const [name,label,value,max] of [['x','cropLeft',0,page.photo.width-1],['y','cropTop',0,page.photo.height-1],['width','cropWidth',page.photo.width,page.photo.width],['height','cropHeight',page.photo.height,page.photo.height]] as const){const wrap=document.createElement('label');wrap.textContent=t(label);const input=document.createElement('input');input.type='number';input.name=name;input.min=name==='width'||name==='height'?'1':'0';input.max=String(max);input.step='1';input.value=String(value);input.required=true;wrap.append(input);fields.append(wrap);inputs.push(input)}
+  const rotationLabel=document.createElement('label');rotationLabel.textContent=t('rotate');const rotation=document.createElement('select');rotation.setAttribute('aria-label',t('rotate'));for(const value of [0,90,180,270]){const option=document.createElement('option');option.value=String(value);option.textContent=value+'°';rotation.append(option)}rotation.value=String(page.rotation);rotationLabel.append(rotation);fields.append(rotationLabel);
+  const canvas=document.createElement('canvas');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',t('preview'));canvas.hidden=true;
+  const original=document.createElement('a');original.href=page.preview_url.replace(/\/preview$/,'/original');original.target='_blank';original.rel='noopener noreferrer';original.textContent=t('photoViewOriginal');
+  const state=document.createElement('p');state.setAttribute('role','status');state.setAttribute('aria-live','polite');
+  const actions=document.createElement('div');actions.className='photo-import-actions';const preview=document.createElement('button');preview.type='submit';preview.textContent=t('photoCropPreview');const cancel=document.createElement('button');cancel.type='button';cancel.textContent=t('cancel');cancel.addEventListener('click',()=>dialog?.close());const apply=document.createElement('button');apply.type='button';apply.textContent=t('photoCropApply');apply.disabled=true;actions.append(preview,cancel,apply);
+  const undo=document.createElement('button');undo.type='button';undo.textContent=t('photoCropUndo');undo.hidden=page.correction?.state!=='applied';actions.append(undo);
+  let pending=false,unknown=false,key=options.nextKey(),ready=false;const image=new Image();image.src=page.preview_url.replace(/\/preview$/,'/photo-baseline');
+  const invalidate=()=>{ready=false;apply.disabled=true;canvas.hidden=true};for(const input of inputs)input.addEventListener('input',invalidate);rotation.addEventListener('change',()=>{canvas.style.transform=`rotate(${rotation.value}deg)`});
+  form.addEventListener('submit',async event=>{event.preventDefault();if(pending||unknown)return;const [x,y,w,h]=inputs.map(i=>i.valueAsNumber);if(!form.reportValidity()||!Number.isSafeInteger(x+y+w+h)||x+w>page.photo.width||y+h>page.photo.height){state.textContent=t('photoCropInvalid');return}try{await image.decode();if(!dialog?.isConnected||signal.aborted)return;canvas.width=w;canvas.height=h;canvas.getContext('2d')!.drawImage(image,x,y,w,h,0,0,w,h);canvas.style.transform=`rotate(${rotation.value}deg)`;canvas.hidden=false;ready=true;apply.disabled=false;state.textContent=t('photoCropReady')}catch{if(!signal.aborted)state.textContent=t('correctionPreviewUnavailable')}});
+  const run=async(isUndo:boolean)=>{if(pending||!isUndo&&!ready)return;pending=true;for(const input of inputs)input.disabled=true;rotation.disabled=preview.disabled=apply.disabled=undo.disabled=true;state.textContent=t('loading');try{if(isUndo)await options.undo(key,signal);else{const [x,y,width,height]=inputs.map(i=>i.valueAsNumber);await options.apply({page_id:page.id,source_sha256:page.photo.sha256,x,y,width,height},Number(rotation.value),key,signal)}if(!options.current()||signal.aborted)return;dialog?.close();await options.changed()}catch(error){if(signal.aborted)return;const result=options.classify(error);unknown=result.unknown;state.textContent=result.message;if(unknown)apply.textContent=t('checkImport');else key=options.nextKey()}finally{pending=false;if(dialog?.isConnected){for(const input of inputs)input.disabled=unknown;rotation.disabled=preview.disabled=unknown;apply.disabled=!ready;undo.disabled=unknown}}};apply.addEventListener('click',()=>void run(false));undo.addEventListener('click',()=>void run(true));
+  form.append(fields,canvas,state,actions);dialog.append(title,help,original,form);document.body.append(dialog);dialog.addEventListener('close',()=>{controller?.abort();dialog?.remove();dialog=null;if(button.isConnected)button.focus()},{once:true});dialog.showModal();inputs[0].focus();
+ });
+ return {button,dispose(){controller?.abort();dialog?.remove();dialog=null}};
 }

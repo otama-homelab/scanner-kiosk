@@ -10,6 +10,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"image"
+	"image/draw"
 	_ "image/jpeg"
 	"image/png"
 	"io"
@@ -22,6 +23,7 @@ import (
 )
 
 const MaxInputBytes int64 = 32 << 20
+const MaxNormalizedBytes int64 = 200 << 20
 const MaxPixels int64 = 40_000_000
 const MaxDimension = 12000
 const maxMetadata = 1 << 20
@@ -40,12 +42,27 @@ type Prepared struct {
 
 // Prepare checks descriptors and framed output; it never decodes source pixels.
 func Prepare(ctx context.Context, input, output *os.File, media string, maxOutput int64) (Prepared, error) {
+	return prepare(ctx, input, output, media, maxOutput, nil)
+}
+
+// PrepareCrop reuses the isolated normalizer protocol; input is a frozen normalized PNG.
+func PrepareCrop(ctx context.Context, input, output *os.File, crop image.Rectangle, maxOutput int64) (Prepared, error) {
+	if crop.Min.X < 0 || crop.Min.Y < 0 || crop.Dx() < 1 || crop.Dy() < 1 || crop.Max.X > MaxDimension || crop.Max.Y > MaxDimension {
+		return Prepared{}, ErrInvalid
+	}
+	return prepare(ctx, input, output, "image/png", maxOutput, []string{strconv.Itoa(crop.Min.X), strconv.Itoa(crop.Min.Y), strconv.Itoa(crop.Dx()), strconv.Itoa(crop.Dy())})
+}
+func prepare(ctx context.Context, input, output *os.File, media string, maxOutput int64, extra []string) (Prepared, error) {
 	var p Prepared
 	if input == nil || output == nil || (media != "image/jpeg" && media != "image/png") || maxOutput < 1 || maxOutput > 1<<30 {
 		return p, ErrInvalid
 	}
 	in, e := input.Stat()
-	if e != nil || !in.Mode().IsRegular() || in.Size() < 1 || in.Size() > MaxInputBytes {
+	inputLimit := MaxInputBytes
+	if len(extra) != 0 {
+		inputLimit = MaxNormalizedBytes
+	}
+	if e != nil || !in.Mode().IsRegular() || in.Size() < 1 || in.Size() > inputLimit {
 		return p, ErrLimit
 	}
 	out, e := output.Stat()
@@ -61,7 +78,7 @@ func Prepare(ctx context.Context, input, output *os.File, media string, maxOutpu
 	}
 	bounded, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
-	r := processrun.Run(bounded, processrun.Spec{Path: exe, Args: []string{"__photo-normalize", media, strconv.FormatInt(maxOutput, 10)}, Env: []string{"GOMAXPROCS=2", "GOMEMLIMIT=512MiB"}, Stdin: input, Stdout: output, Grace: 200 * time.Millisecond})
+	r := processrun.Run(bounded, processrun.Spec{Path: exe, Args: append([]string{"__photo-normalize", media, strconv.FormatInt(maxOutput, 10)}, extra...), Env: []string{"GOMAXPROCS=2", "GOMEMLIMIT=512MiB"}, Stdin: input, Stdout: output, Grace: 200 * time.Millisecond})
 	if !r.GroupStopped {
 		return p, ErrUnstopped
 	}
@@ -109,7 +126,7 @@ func dimensions(w, h int) bool {
 
 // Child changes process-wide limits and must never be called by the API process.
 func Child(args []string, input, output *os.File) int {
-	if len(args) != 2 || input == nil || output == nil {
+	if (len(args) != 2 && len(args) != 6) || input == nil || output == nil {
 		return 10
 	}
 	limit, e := strconv.ParseInt(args[1], 10, 64)
@@ -119,14 +136,52 @@ func Child(args []string, input, output *os.File) int {
 	if processrun.ApplyPDFLimits(limit+headerSize, processrun.PDFImportMemory) != nil {
 		return 14
 	}
-	raw, e := io.ReadAll(io.LimitReader(input, MaxInputBytes+1))
+	inputLimit := MaxInputBytes
+	if len(args) == 6 {
+		inputLimit = MaxNormalizedBytes
+	}
+	raw, e := io.ReadAll(io.LimitReader(input, inputLimit+1))
 	if e != nil {
 		return 10
 	}
-	if int64(len(raw)) > MaxInputBytes {
+	if int64(len(raw)) > inputLimit {
 		return 11
 	}
-	data, p, e := normalize(raw, args[0], limit)
+	var data []byte
+	var p Prepared
+	if len(args) == 2 {
+		data, p, e = normalize(raw, args[0], limit)
+	} else {
+		cfg, format, err := image.DecodeConfig(bytes.NewReader(raw))
+		if err != nil || format != "png" || !dimensions(cfg.Width, cfg.Height) {
+			return 10
+		}
+		p.Width, p.Height = cfg.Width, cfg.Height
+		coords := [4]int{}
+		for i := range coords {
+			v, err := strconv.Atoi(args[i+2])
+			if err != nil || v < 0 || v > MaxDimension {
+				return 10
+			}
+			coords[i] = v
+		}
+		rect := image.Rect(coords[0], coords[1], coords[0]+coords[2], coords[1]+coords[3])
+		if args[0] != "image/png" || rect.Empty() || !rect.In(image.Rect(0, 0, p.Width, p.Height)) {
+			return 10
+		}
+		im, err := png.Decode(bytes.NewReader(raw))
+		if err != nil {
+			return 10
+		}
+		cropped := image.NewNRGBA(image.Rect(0, 0, rect.Dx(), rect.Dy()))
+		draw.Draw(cropped, cropped.Bounds(), im, rect.Min, draw.Src)
+		buffer := &boundedBuffer{limit: limit}
+		e = png.Encode(buffer, cropped)
+		data = buffer.Bytes()
+		p.Width = rect.Dx()
+		p.Height = rect.Dy()
+		p.Orientation = 1
+	}
 	if errors.Is(e, ErrLimit) {
 		return 11
 	}
