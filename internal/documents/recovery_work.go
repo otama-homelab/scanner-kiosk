@@ -138,13 +138,13 @@ func (s *Store) RecoveryImports(ctx context.Context) ([]RecoveryImport, error) {
 		if err = rows.Scan(&item.OwnerID, &item.JobID, &item.ProducerID, &item.RunnerID, &item.IntakeState, &item.CreatedAtMS, &started, &producerStarted, &configuration, &item.Input.ID, &item.Input.RelativePath, &artifactState, &item.Input.MediaType, &item.Input.Size, &digest, &reserved, &produced, &leased); err != nil {
 			return nil, ErrStorage
 		}
-		if len(out) == 100 || !id(item.OwnerID) || !id(item.JobID) || !id(item.ProducerID) || !id(item.Input.ID) || !localPath(item.Input.RelativePath) || item.CreatedAtMS < 0 || reserved < 0 || produced || leased || len(configuration) > 65536 || item.Input.MediaType != "application/pdf" {
+		if len(out) == 100 || !id(item.OwnerID) || !id(item.JobID) || !id(item.ProducerID) || !id(item.Input.ID) || !localPath(item.Input.RelativePath) || item.CreatedAtMS < 0 || reserved < 0 || produced || leased || len(configuration) > 65536 || !validImportMedia(item.Input.MediaType) {
 			return nil, ErrStorage
 		}
 		var snapshot ImportSnapshot
 		decoder := json.NewDecoder(strings.NewReader(configuration))
 		decoder.DisallowUnknownFields()
-		if decoder.Decode(&snapshot) != nil || decoder.Decode(new(any)) != io.EOF || snapshot.Version != 1 || snapshot.InputArtifactID != item.Input.ID || snapshot.InputBytes < 1 || snapshot.InputBytes > 1<<30 || snapshot.SHA256 == ([32]byte{}) || snapshot.MaxPages < 1 || snapshot.MaxPages > 10000 {
+		if decoder.Decode(&snapshot) != nil || decoder.Decode(new(any)) != io.EOF || snapshot.Version != 1 || importMedia(snapshot.MediaType) != item.Input.MediaType || (item.Input.MediaType != "application/pdf" && snapshot.InputBytes > 32<<20) || snapshot.InputArtifactID != item.Input.ID || snapshot.InputBytes < 1 || snapshot.InputBytes > 1<<30 || snapshot.SHA256 == ([32]byte{}) || snapshot.MaxPages < 1 || snapshot.MaxPages > 10000 {
 			return nil, ErrStorage
 		}
 		item.MaxInputBytes = snapshot.InputBytes

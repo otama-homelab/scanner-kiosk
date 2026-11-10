@@ -41,6 +41,7 @@ func New(store Records, sessions *websession.Handler, retention time.Duration, f
 	mux.Handle("GET /api/deliveries/{delivery_id}", sessions.RequirePrincipal(h.readDelivery))
 	mux.Handle("POST /api/deliveries/{delivery_id}/reconcile", sessions.RequirePrincipal(h.reconcileDelivery))
 	mux.Handle("POST /api/deliveries/{delivery_id}/cancel", sessions.RequirePrincipal(h.cancelDelivery))
+	mux.Handle("POST /api/documents/import/reconcile", sessions.RequirePrincipal(h.reconcileImport))
 	mux.Handle("POST /api/documents/import", sessions.RequirePrincipal(h.importPDF))
 	mux.Handle("POST /api/documents", sessions.RequirePrincipal(h.scan))
 	mux.Handle("POST /api/documents/{document_id}/scans", sessions.RequirePrincipal(h.scan))

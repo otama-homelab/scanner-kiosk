@@ -62,9 +62,6 @@ func TestPhotoImportRecoveryMatrix(t *testing.T) {
 			if err = Recover(context.Background(), c, true); err != nil {
 				t.Fatal("stopped photo recovery", err)
 			}
-			if err = Recover(context.Background(), c, true); err != nil {
-				t.Fatal("repeated photo recovery", err)
-			}
 			job, err := store.ReadJob(context.Background(), owner, a.JobID)
 			if err != nil || job.State != "interrupted" {
 				t.Fatal("photo not stopped", job, err)
@@ -92,6 +89,23 @@ func TestPhotoImportRecoveryMatrix(t *testing.T) {
 			receipt, err := store.ReadImportReceipt(context.Background(), owner, request)
 			if err != nil || receipt.JobID != a.JobID {
 				t.Fatal("recovery duplicated receipt", err)
+			}
+			if err = Recover(context.Background(), c, true); err != nil {
+				t.Fatal("repeated photo recovery", err)
+			}
+			// Startup maintenance retires failed empty documents through the
+			// existing cleanup barrier. The stopped import remains terminal even
+			// once its document is no longer available through public reads.
+			var state string
+			if err = db.QueryRow("SELECT state FROM jobs WHERE id=?", a.JobID).Scan(&state); err != nil || state != "interrupted" {
+				t.Fatal("recovery changed stopped job", state, err)
+			}
+			var receipts, reservations int
+			if err = db.QueryRow("SELECT count(*) FROM request_receipts WHERE result_job_id=?", a.JobID).Scan(&receipts); err != nil || receipts != 1 {
+				t.Fatal("recovery duplicated receipt", receipts, err)
+			}
+			if err = db.QueryRow("SELECT count(*) FROM reservations WHERE job_id=?", a.JobID).Scan(&reservations); err != nil || reservations != 0 {
+				t.Fatal("recovery restored reservation", reservations, err)
 			}
 		})
 	}

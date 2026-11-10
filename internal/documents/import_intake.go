@@ -38,29 +38,16 @@ type ImportAdmission struct {
 }
 
 func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportRequest, limits ImportLimits) (ImportAdmission, error) {
-	if request.MediaType == "" {
-		request.MediaType = "application/pdf"
-	}
-	if !validImportMedia(request.MediaType) || (request.MediaType != "application/pdf" && request.InputBytes > 32<<20) {
+	media, operationName, digest, err := importIdentity(request)
+	if err != nil || !validAdmissionLimits(limits.AdmissionLimits) || limits.MaxDocuments < 1 || limits.DocumentLifetime < time.Millisecond || limits.DocumentLifetime > 365*24*time.Hour {
 		return ImportAdmission{}, ErrInvalid
 	}
-	if !id(request.IdempotencyKey) || request.InputBytes < 1 || request.InputBytes > 1<<30 || request.SHA256 == ([32]byte{}) || !validAdmissionLimits(limits.AdmissionLimits) || limits.MaxDocuments < 1 || limits.DocumentLifetime < time.Millisecond || limits.DocumentLifetime > 365*24*time.Hour {
-		return ImportAdmission{}, ErrInvalid
-	}
-	media := request.MediaType
+	request.MediaType = media
 	if media == "application/pdf" {
 		request.MediaType = ""
 	}
-	canonical, err := canonicalCommand(request)
-	if err != nil {
-		return ImportAdmission{}, ErrInvalid
-	}
 	key := sha256.Sum256([]byte(request.IdempotencyKey))
-	operationName, prefix := "pdf_import", "pdf-import-new-v1\x00"
-	if media != "application/pdf" {
-		operationName, prefix = "photo_import", "photo-import-new-v1\x00"
-	}
-	digest := sha256.Sum256(append([]byte(prefix), canonical...))
+
 	var out ImportAdmission
 	err = s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
 		now := s.now().UnixMilli()
@@ -321,4 +308,59 @@ func importMedia(media string) string {
 		return "application/pdf"
 	}
 	return media
+}
+
+// importIdentity retains the historical PDF digest while separating camera intake.
+func importIdentity(request ImportRequest) (string, string, [32]byte, error) {
+	media := importMedia(request.MediaType)
+	if !id(request.IdempotencyKey) || !validImportMedia(media) || request.InputBytes < 1 || request.InputBytes > 1<<30 || request.SHA256 == ([32]byte{}) || (media != "application/pdf" && request.InputBytes > 32<<20) {
+		return "", "", [32]byte{}, ErrInvalid
+	}
+	operation, prefix := "pdf_import", "pdf-import-new-v1\x00"
+	request.MediaType = media
+	if media == "application/pdf" {
+		request.MediaType = ""
+	} else {
+		operation, prefix = "photo_import", "photo-import-new-v1\x00"
+	}
+	canonical, err := canonicalCommand(request)
+	if err != nil {
+		return "", "", [32]byte{}, ErrInvalid
+	}
+	return media, operation, sha256.Sum256(append([]byte(prefix), canonical...)), nil
+}
+
+// ReadImportReceipt never admits work or returns producer/file authority.
+func (s *Store) ReadImportReceipt(ctx context.Context, owner string, request ImportRequest) (Admission, error) {
+	_, operation, digest, err := importIdentity(request)
+	if err != nil {
+		return Admission{}, err
+	}
+	key := sha256.Sum256([]byte(request.IdempotencyKey))
+	var out Admission
+	err = s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
+		var actual string
+		var hash []byte
+		var job sql.NullString
+		var expiry int64
+		if err := tx.QueryRowContext(ctx, `SELECT operation,request_hash,result_job_id,expires_at_ms FROM request_receipts WHERE owner_id=? AND key_hash=?`, owner, key[:]).Scan(&actual, &hash, &job, &expiry); err != nil {
+			return readError(err)
+		}
+		if actual != operation || !sameHash(hash, digest) {
+			return ErrIdempotencyConflict
+		}
+		now := s.now().UnixMilli()
+		if expiry <= now || !job.Valid {
+			return ErrGone
+		}
+		if err := tx.QueryRowContext(ctx, `SELECT j.id,j.document_id,j.input_revision FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND j.kind='import' AND d.expires_at_ms>? AND d.state NOT IN ('expired','deleting')`, job.String, owner, now).Scan(&out.JobID, &out.DocumentID, &out.Revision); err != nil {
+			return readError(err)
+		}
+		out.Replay = true
+		return nil
+	})
+	if err != nil {
+		return Admission{}, err
+	}
+	return out, nil
 }
