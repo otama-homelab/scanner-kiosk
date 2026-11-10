@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import sys
 import tempfile
 import time
 import uuid
@@ -65,6 +66,12 @@ def build(root, output, retain_sources=False):
                                                stdout=subprocess.PIPE if capture else log, stderr=diagnostics)
                 except subprocess.CalledProcessError as exc:
                     entry['exit_code'] = exc.returncode
+                    if label.startswith('fetch-'):
+                        diagnostics.flush()
+                        with (output/(label+'.stderr')).open('rb') as stream:
+                            for line in stream.read(1 << 20).decode('utf-8', errors='replace').splitlines():
+                                if re.fullmatch(r'locked APK failure: [A-Za-z0-9+_.-]{1,256} [A-Za-z]{1,64} status=(?:None|[1-5][0-9]{2})', line):
+                                    print(line, file=sys.stderr)
                     raise
                 except subprocess.TimeoutExpired:
                     entry['timed_out'] = True

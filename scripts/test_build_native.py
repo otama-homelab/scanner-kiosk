@@ -33,6 +33,7 @@ class NativePipelineTests(unittest.TestCase):
                             if source.is_file():
                                 self.assertTrue(source.stat().st_mode & 0o004, 'bound input must be readable by UID10001')
                 if failure and failure in text:
+                    kw['stderr'].write(b'secret-canary response body\nlocked APK failure: zlib-1.3.2-r1.apk HTTPError status=503\n')
                     raise subprocess.CalledProcessError(19, args)
                 stdout = kw.get('stdout')
                 if hasattr(stdout, 'write') and not empty:
@@ -52,6 +53,13 @@ class NativePipelineTests(unittest.TestCase):
                     error = exc
             receipt = json.loads((out/'result.json').read_text())
             return error, calls, receipt, (out/'native.tar').exists()
+
+    def test_fetch_failure_exposes_only_public_package_diagnostic(self):
+        with patch('sys.stderr', new_callable=io.StringIO) as diagnostics:
+            error, _, receipt, artifact = self.invoke(failure='fetch-sane-sdk')
+        self.assertIsInstance(error, subprocess.CalledProcessError)
+        self.assertFalse(receipt['passed'] or artifact)
+        self.assertEqual(diagnostics.getvalue(), 'locked APK failure: zlib-1.3.2-r1.apk HTTPError status=503\n')
 
     def test_retained_sources_are_acquired_separately_and_packed_offline(self):
         error, calls, receipt, artifact = self.invoke(retain_sources=True)
