@@ -128,3 +128,7 @@ later monetization remains an open milestone decision.
 - DewarpNet: <https://github.com/cvlab-stonybrook/DewarpNet/tree/5f9e216535f048d98ca44bbfb5f6ea55f8cdfe13>
 - DocTr: <https://github.com/fh2019ustc/DocTr/tree/044648919b6b28f2cb1b288db6d8fd97749db537>
 - ONNX Runtime Web package: <https://www.npmjs.com/package/onnxruntime-web>
+
+## Follow-up — 2026-11-10
+
+After the owner requested continuation, the fixed DocAligner model completed a CPU-only ONNX Runtime1.23.2 availability smoke in a disposable, network-isolated environment. This supersedes only the current missing-runtime assumption; the2026-11-09 survey and failed/unavailable prototype records remain historical. See [phone photo correction next work](photo-correction-next.md) for exact observations, scope limits and the next same-corpus experiment. No geometric quality, OCR benefit, phone performance or production adoption is asserted.
