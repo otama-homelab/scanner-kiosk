@@ -23,12 +23,12 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    const identity=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('scanner.photo.import')));assert.deepEqual(Object.keys(identity).sort(),['input_bytes','key','media_type','phase','sha256']);assert.equal(identity.sha256,createHash('sha256').update(Buffer.from(images[1].data,'base64')).digest('hex'));
    await page.reload();await page.getByRole('button',{name:'Check import request',exact:true}).waitFor();await page.getByRole('button',{name:'Check import request',exact:true}).click();await review();
    assert.equal(requests.filter(r=>r.path==='/api/documents/import').length,1);assert.equal(requests.filter(r=>r.path.endsWith('/reconcile')).length,1);assert.equal(requests[0].key,requests[1].key);
-   const history=await page.evaluate(async()=>{const r=await fetch('/api/documents');return r.json()});assert.equal(history.documents.length,1);assert.equal(await page.evaluate(()=>sessionStorage.getItem('scanner.photo.import')),null);checks.push('one upload, reload identity-only reconciliation, one document');
+   const history=await page.evaluate(async()=>{const r=await fetch('/api/documents');return r.json()});assert.equal(history.items.length,1);assert.equal(await page.evaluate(()=>sessionStorage.getItem('scanner.photo.import')),null);checks.push('one upload, reload identity-only reconciliation, one document');
   }else{
    await camera.dispatchEvent('cancel');assert(await page.getByRole('button',{name:'Photos / Files',exact:true}).isEnabled());
    await upload(camera,images[1]);await review();
    // Save uses the real render admission/worker and browser download.
-   await page.getByRole('button',{name:'Save PDF',exact:true}).click();await page.locator('#output-settings').waitFor();const download=page.waitForEvent('download');await page.locator('#output-settings').getByRole('button',{name:'Save PDF',exact:true}).click();const saved=await download;assert((await saved.suggestedFilename()).endsWith('.pdf'));
+   const download=page.waitForEvent('download');await page.getByRole('button',{name:'Save PDF',exact:true}).click();const saved=await download;assert((await saved.suggestedFilename()).endsWith('.pdf'));
    await page.getByRole('button',{name:'Home',exact:true}).click();await upload(page.locator('input[data-photo-picker]'),images[0]);await review();checks.push('camera JPEG and independent picker PNG to real review, primary Save and actual PDF download');
   }
   assert.deepEqual(errors,[]);const receipt={passed:true,scenario,real_backend:true,checks,requests,scope:'Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance.'};if(process.env.SCANNER_PHOTO_RECEIPT)fs.writeFileSync(process.env.SCANNER_PHOTO_RECEIPT,JSON.stringify(receipt,null,2)+'\n');process.stdout.write(JSON.stringify(receipt));

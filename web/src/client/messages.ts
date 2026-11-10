@@ -1,5 +1,6 @@
 export const messages = {
  en:{
+  camera:'Camera',photoPicker:'Photos / Files',photoHelp:'Choose a JPEG or PNG to review and save as a document.',photoChooserCancelled:'No photo selected. You can use Photos / Files.',photoHEIC:'HEIC is not supported. Choose a JPEG or PNG.',photoUnsupported:'Choose a JPEG or PNG image.',photoLimit:'This image exceeds the size or processing limits. Choose a smaller image.',photoRejected:'The image could not be imported. Choose another JPEG or PNG.',photoInvalid:'This image is damaged or could not be read.',
   deliverySend:"Send to Paperless",
   deliveryConfirm:"Confirm send",
   deliveryConfirmHelp:"Send this saved PDF to the destination shown above? Your saved file stays available.",
@@ -215,6 +216,7 @@ export const messages = {
   failedState:'Failed',
  },
  ja:{
+  camera:'カメラ',photoPicker:'写真・ファイル',photoHelp:'JPEG・PNGを選び、書類として確認・保存できます。',photoChooserCancelled:'写真は選択されませんでした。写真・ファイルから選択できます。',photoHEIC:'HEICには対応していません。JPEG・PNGを選んでください。',photoUnsupported:'JPEG・PNG画像を選んでください。',photoLimit:'画像がサイズ・処理上限を超えています。小さい画像を選んでください。',photoRejected:'画像を取り込めませんでした。別のJPEG・PNGを選んでください。',photoInvalid:'画像が壊れているか、読み取れません。',
   deliverySend:"Paperlessへ送る",
   deliveryConfirm:"送信を確定",
   deliveryConfirmHelp:"上記の送信先へこの保存済みPDFを送りますか？保存済みファイルは引き続き使えます。",

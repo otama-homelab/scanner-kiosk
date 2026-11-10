@@ -8,6 +8,7 @@ import {passwordLogin} from './login';
 import {captureControls} from './capture';
 import {correctionControl} from './correction';
 import {importControls} from './import';
+import {photoImportControls} from './photo-import';
 import {deliveryControl} from './delivery';
 import {messages,type Key} from './messages';
 let locale:'en'|'ja'='en';try{if(localStorage.getItem('scanner.locale')==='ja')locale='ja'}catch{}
@@ -36,6 +37,7 @@ let disposeDialog:(()=>void)|null=null;
 let disposeLogin:(()=>void)|null=null;
 let disposeCapture:(()=>void)|null=null;
 let disposeImport:(()=>void)|null=null;
+let disposePhotoImport:(()=>void)|null=null;
 let jobViewKey='';
 let saveJob='';
 let saveDocument='';
@@ -69,6 +71,7 @@ async function bootstrap(){
  })().finally(()=>boot=null);return boot;
 }
 async function render(){
+ disposePhotoImport?.();disposePhotoImport=null;
  const requestedScan=immediateScan;immediateScan=null;const hash=location.hash;if(saveJob&&hash!=='#/document/'+saveDocument&&hash!=='#/job/'+saveJob)saveJob='';const moveFocus=renderedHash!==null&&renderedHash!==hash;const focused=document.activeElement;
  for(const dispose of disposePreviews)dispose();disposePreviews=[];disposeImport?.();disposeImport=null;disposeCapture?.();disposeCapture=null;disposeDialog?.();disposeDialog=null;disposeLogin?.();disposeLogin=null;stopJob();jobViewKey='';const version=++generation;status.textContent=nextNotice?t(nextNotice):'';nextNotice=undefined;main.replaceChildren(text('p',t('loading')));main.setAttribute('aria-busy','true');
  try{
@@ -104,7 +107,7 @@ async function render(){
   }
   if(route.startsWith('/document/')){const id=route.slice('/document/'.length);if(!opaque(id))throw new Error('Invalid document');const value=await api('/api/documents/'+id);if(version!==generation)return;showDocument(value);return}
   if(route==='/history'){const header=document.createElement('div');header.className='history-header';heading('history',header);const views=document.createElement('div');views.className='history-layout';views.setAttribute('role','group');views.setAttribute('aria-label',t('historyView'));const list=document.createElement('div');list.className='document-list';list.dataset.layout=historyLayout;for(const layout of ['list','grid'] as const){const key=layout==='list'?'listView':'gridView';const control=iconButton(button(key,()=>{historyLayout=layout;list.dataset.layout=layout;for(const b of Array.from(views.querySelectorAll('button')))b.setAttribute('aria-pressed',String(b.dataset.layout===layout));try{localStorage.setItem('scanner.history.layout',layout)}catch{}}),key);control.dataset.layout=layout;control.setAttribute('aria-pressed',String(layout===historyLayout));views.append(control)}header.append(views);main.append(header,list);await history(list,null,version);return}
-  const homeHeading=document.createElement('div');homeHeading.className='home-heading';heading('home',homeHeading);const file=document.createElement('input');file.type='file';file.accept='.pdf,application/pdf';file.hidden=true;file.addEventListener('change',()=>{const selected=file.files?.[0];file.value='';if(!selected||version!==generation)return;disposeCapture?.();disposeCapture=null;const view=++generation;main.replaceChildren();heading('job');main.append(button('back',()=>navigate('')));mountImport(view,selected)});homeHeading.append(button('importPDF',()=>file.click()),file);main.append(homeHeading);mountCapture(version);
+  const homeHeading=document.createElement('div');homeHeading.className='home-heading';heading('home',homeHeading);const file=document.createElement('input');file.type='file';file.accept='.pdf,application/pdf';file.hidden=true;file.addEventListener('change',()=>{const selected=file.files?.[0];file.value='';if(!selected||version!==generation)return;disposeCapture?.();disposeCapture=null;const view=++generation;main.replaceChildren();heading('job');main.append(button('back',()=>navigate('')));mountImport(view,selected)});homeHeading.append(button('importPDF',()=>file.click()),file);main.append(homeHeading);mountPhotoImport(version);mountCapture(version);
  }catch(err){if(version===generation){main.replaceChildren(button('retry',()=>void render()));error(err)}}finally{
   if(version===generation){main.setAttribute('aria-busy','false');if(location.hash===hash){renderedHash=hash;if(moveFocus&&(document.activeElement===document.body||document.activeElement===focused&&focused instanceof Element&&focused.closest('nav,.brand')))focusHeading()}}
  }
@@ -113,7 +116,9 @@ function mountCapture(view:number,doc?:any,placement?:{insert_before_page_id?:st
 
 function mountImport(view:number,file?:File){const controls=importControls({t,current:()=>view===generation,load:signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),send:(file,key,sha,signal)=>responseDataFromUpload(file,key,sha,signal),accepted:job=>navigate('#/job/'+job.id),history:()=>navigate('#/history'),reload:()=>void render(),classify:err=>err instanceof APIError&&err.status===410?'expired':err instanceof APIError&&err.status>=400&&err.status<500&&![401,404].includes(err.status)?'rejected':'uncertain'});main.append(controls.element);disposeImport=controls.dispose;void controls.start(file)}
 
-async function responseDataFromUpload(file:File,key:string,sha:string,signal:AbortSignal){return responseData(await fetch('/api/documents/import',{method:'POST',headers:{'Content-Type':'application/pdf','Idempotency-Key':key,'X-Content-SHA256':sha},body:file,credentials:'same-origin',cache:'no-store',redirect:'error',signal}))}
+function mountPhotoImport(view:number){const controls=photoImportControls({t,current:()=>view===generation,load:signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),send:(file,key,sha,signal)=>responseDataFromUpload(file,key,sha,signal),reconcile:({key,phase,...identity},signal)=>api('/api/documents/import/reconcile','POST',identity,key,undefined,signal),accepted:job=>navigate('#/job/'+job.id),classify:err=>err instanceof APIError&&[404,410].includes(err.status)?'expired':err instanceof APIError&&err.status>=400&&err.status<500&&err.status!==401?'rejected':'uncertain'});main.append(controls.element);disposePhotoImport=controls.dispose;void controls.start()}
+
+async function responseDataFromUpload(file:File,key:string,sha:string,signal:AbortSignal){return responseData(await fetch('/api/documents/import',{method:'POST',headers:{'Content-Type':file.type==='image/jpeg'||file.type==='image/png'?file.type:'application/pdf','Idempotency-Key':key,'X-Content-SHA256':sha},body:file,credentials:'same-origin',cache:'no-store',redirect:'error',signal}))}
 
 function documentDeleteButton(doc:any,label:'deleteDocument'|'deletePhoto'|'deletePage'='deleteDocument'){
  if(!opaque(doc.id)||!Number.isSafeInteger(doc.revision)||doc.revision<1)throw new Error('Invalid document');
@@ -154,7 +159,7 @@ async function loadJob(id:string,version:number,attempts=0,inline=false){
   if(version!==generation||controller.signal.aborted)return;
   if(!opaque(job.id)||job.id!==id||!opaque(job.document_id)||!jobStates.has(job.state)||!['scan','render','ocr','cleanup','import'].includes(job.kind))throw new Error('Invalid job');
   if(job.kind!=='cleanup'&&job.state==='succeeded'){const download=saveJob===id;saveJob='';if(location.hash==='#/document/'+job.document_id)await render();else{navigate('#/document/'+job.document_id);if(download)await render()}if(download&&location.hash==='#/document/'+job.document_id)location.assign('/api/documents/'+job.document_id+'/download');return}
-  const reason:Key|undefined=job.kind==='import'&&job.state==='failed'?new Map<string,Key>([['pdf_invalid','pdfInvalid'],['pdf_encrypted','pdfEncrypted'],['pdf_unsupported','pdfUnsupported'],['pdf_limit','pdfLimit']]).get(job.error_code):undefined;
+  const reason:Key|undefined=job.kind==='import'&&job.state==='failed'?new Map<string,Key>([['pdf_invalid','pdfInvalid'],['pdf_encrypted','pdfEncrypted'],['pdf_unsupported','pdfUnsupported'],['pdf_limit','pdfLimit'],['photo_invalid','photoInvalid'],['photo_limit','photoLimit']]).get(job.error_code):undefined;
   if(job.kind==='cleanup'){navigate('#/history');return}
   if(job.state==='failed'&&!inline){let target='';if(job.kind!=='import'){try{const doc=await api('/api/documents/'+job.document_id);if(doc.page_count>0)target='#/document/'+job.document_id}catch(err){if(!(err instanceof APIError&&err.status===404))throw err}}if(version!==generation)return;saveJob='';navigate(target,reason||'failed');return}
   const working=['queued','running'].includes(job.state);const progress:Key=working?(job.kind==='scan'?'readingOriginal':job.kind==='import'?'importingPDF':'preparingFile'):job.state==='failed'?'failedState':job.state as Key;
@@ -202,7 +207,7 @@ function showDocument(doc:any){
   }));create.className='primary';toolbar.append(create)
  }
  if(!active&&doc.pages.length&&['review','ready','failed'].includes(doc.state)){const settings=button('outputSettings',()=>outputDialog(doc));other.prepend(settings)}
- if(!active&&['review','ready','failed'].includes(doc.state)&&doc.purpose==='document'){const next=button('scanNext',()=>{next.disabled=true;immediateScan=doc.id;navigate('#/document/'+doc.id+'/scan')});toolbar.append(next)}
+ if(!active&&['review','ready','failed'].includes(doc.state)&&doc.purpose==='document'&&!doc.pages.some((page:any)=>page.source_type==='photo')){const next=button('scanNext',()=>{next.disabled=true;immediateScan=doc.id;navigate('#/document/'+doc.id+'/scan')});toolbar.append(next)}
  toolbar.append(secondary);
  if(!photo&&!active&&doc.output?.revision===doc.revision&&['review','ready'].includes(doc.state)){const delivery=deliveryControl({doc,name:documentName(doc),t,api,current:()=>showGeneration===generation});main.append(delivery.element);disposePreviews.push(delivery.dispose)}
  if(!photo){const results=ocrResults({doc,locale,t,api,refresh:render,stopJob,current:()=>showGeneration===generation});main.append(results.element);disposePreviews.push(results.dispose)}
