@@ -242,8 +242,8 @@
     },
     {
       "file": "illumination-clarification-unsent.md",
-      "bytes": 1640,
-      "sha256": "891ef01b809bb07015dc286d15eeb3acaad9beb3b9bb206cc39d4a8fd3706197"
+      "bytes": 1735,
+      "sha256": "97bded2bcc993073d05cf933a0674dd8fe44f7366bff44a8365ca5ebf77c2252"
     },
     {
       "file": "litert-import-resource.json",
@@ -316,6 +316,21 @@
       "sha256": "4ccb29000ad2a4edc75e2020c7c4712240ff1598acd17d359fcee4b4ca8ba9c9"
     },
     {
+      "file": "resume-gap-research.json",
+      "bytes": 3085,
+      "sha256": "f2213ff423965bfdd0fa610cf167523de0347211cf38da8c39d147302a3f1a71"
+    },
+    {
+      "file": "resume-synthetic-license.txt",
+      "bytes": 1069,
+      "sha256": "28672dccef796c564b4d94ce410270408fe8bee0ee73bcbfc0a549fa0fb2ca66"
+    },
+    {
+      "file": "resume-synthetic-model.txt",
+      "bytes": 237,
+      "sha256": "c4095c0e5d1a83ad5323d106a5189069e5582e79401b353e54ff66ee9d97a648"
+    },
+    {
       "file": "run-corpus.py",
       "bytes": 1479,
       "sha256": "e733554cf9c61d12f1cdb62877ac3f8b3ab131fb3615cc398201e17472b047cb"
@@ -360,5 +375,11 @@
       "bytes": 8012,
       "sha256": "af1d103beaa5db2d15806dfc4980fe00fdc80eeb34b6053c652af99ab5e6ac31"
     }
-  ]
+  ],
+  "resumed_gap_closure": {
+    "new_requirements_completed": 0,
+    "checkpoint_identity_sources_found": true,
+    "checkpoint_terms_resolved": false,
+    "human_review_packet": "../../correction-validation-v060-human-inputs.md"
+  }
 }

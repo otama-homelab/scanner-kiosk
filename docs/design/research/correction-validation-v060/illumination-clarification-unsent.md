@@ -10,6 +10,6 @@ The repository LICENSE is MIT, and the Weights release describes pretrained FSEN
 To: https://github.com/tanguymagne/SyntheticDoc/issues
 Subject: Released illumination checkpoint identity and license
 
-Could you identify the released illumination checkpoint, its hash/model card, exact weight license and local/commercial inference/redistribution permissions? The dataset/generation/training code and rendered/albedo data alone do not establish the pretrained artifact terms. Please identify the official inference/preprocessing path and safe checkpoint loading format.
+Your official training/model/README.md links original_31x45.ckpt and highres_121x177.ckpt at igl.ethz.ch/projects/SyntheticDoc/. Could you confirm their hashes/model cards, exact weight license and local/commercial inference/redistribution permissions? The dataset/generation/training code and rendered/albedo data alone do not establish the pretrained artifact terms. Please identify the official inference/preprocessing path and safe checkpoint loading format.
 
 No ineligible weights downloaded or executed. Public README/release/license reinspection did not provide explicit artifact-specific answers. General source MIT and linked earlier DocShadow exports are not promoted to FSENet weight qualification.

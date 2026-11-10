@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-10",
+  "scope": "Read-only public gap-closure research on resumed autonomous invocation; no checkpoint download/inference, external message or new physical scan.",
+  "sources": [
+    {
+      "name": "sd7k-datasets",
+      "url": "https://huggingface.co/api/datasets?search=SD7K&limit=20",
+      "status": 200,
+      "sha256": "e9e99560d402ef67d38bdc5a87871839cad89c63df5f382f612c60e63bd1a807",
+      "bytes": 964
+    },
+    {
+      "name": "fse-license-issues",
+      "url": "https://api.github.com/search/issues?q=repo%3ACXH-Research%2FDocShadow-SD7K+license",
+      "status": 200,
+      "sha256": "c9938edecb99d754b2d039ac9eec320a94c769b6a6417921e2dcbef9e2fe01a0",
+      "bytes": 79
+    },
+    {
+      "name": "onnx-license-issues",
+      "url": "https://api.github.com/search/issues?q=repo%3Afabio-sim%2FDocShadow-ONNX-TensorRT+license",
+      "status": 200,
+      "sha256": "c9938edecb99d754b2d039ac9eec320a94c769b6a6417921e2dcbef9e2fe01a0",
+      "bytes": 79
+    },
+    {
+      "name": "synthetic-tree",
+      "url": "https://api.github.com/repos/tanguymagne/SyntheticDoc/git/trees/main?recursive=1",
+      "status": 200,
+      "sha256": "4619e0b69832fcfb46fb0b138f92dc8ad1d5ce194c8dd15a48dca3186c3132c7",
+      "bytes": 23791
+    },
+    {
+      "name": "synthetic-training",
+      "url": "https://raw.githubusercontent.com/tanguymagne/SyntheticDoc/main/training/README.md",
+      "status": 200,
+      "sha256": "00434520baceaad9ee39d5cc0309598b15b7c8d332943a50b37bae5232deb5dc",
+      "bytes": 8959
+    },
+    {
+      "name": "synthetic-model",
+      "url": "https://raw.githubusercontent.com/tanguymagne/SyntheticDoc/main/training/model/README.md",
+      "status": 200,
+      "bytes": 237,
+      "sha256": "c4095c0e5d1a83ad5323d106a5189069e5582e79401b353e54ff66ee9d97a648"
+    },
+    {
+      "name": "synthetic-license",
+      "url": "https://raw.githubusercontent.com/tanguymagne/SyntheticDoc/main/LICENSE",
+      "status": 200,
+      "bytes": 1069,
+      "sha256": "28672dccef796c564b4d94ce410270408fe8bee0ee73bcbfc0a549fa0fb2ca66"
+    }
+  ],
+  "findings": {
+    "fse_license_issue_search": "No matching issues returned; not proof of permission.",
+    "onnx_license_issue_search": "No matching issues returned; not proof of permission.",
+    "sd7k_hf_search": "Only jsonjiao/sd7k and sd7k_v1 text/tabular datasets found. Similar name is not document-shadow identity or license; no dataset acquired.",
+    "synthetic_doc_checkpoint_urls": [
+      "https://igl.ethz.ch/projects/SyntheticDoc/original_31x45.ckpt",
+      "https://igl.ethz.ch/projects/SyntheticDoc/highres_121x177.ckpt"
+    ],
+    "synthetic_doc_checkpoint_source": "official training/model/README.md",
+    "synthetic_doc_license": "Repository MIT confirmed; plan requires artifact-specific weight scope, which README does not explicitly state. Weights not downloaded.",
+    "truth_gap": "Original6photos manual corners/content and mandatoryphoto2_2 labels still absent.",
+    "human_packet": "../../correction-validation-v060-human-inputs.md"
+  },
+  "requirement_completion_changed": false
+}
