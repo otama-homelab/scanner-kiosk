@@ -127,17 +127,19 @@ func (s *Store) mutateCorrection(ctx context.Context, owner string, request Corr
 		}
 		if operation == "apply_correction" {
 			var originalID, correctionID, transformJSON, riskJSON string
+			var sourceType, mediaType string
 			var originalSHA, correctionSHA []byte
 			var width, height int
-			err = tx.QueryRowContext(ctx, `SELECT pc.original_artifact_id,pc.correction_artifact_id,pc.source_sha256,pc.correction_sha256,pc.transform_json,pc.risk_flags,p.pixel_width,p.pixel_height
+			err = tx.QueryRowContext(ctx, `SELECT pc.original_artifact_id,pc.correction_artifact_id,pc.source_sha256,pc.correction_sha256,pc.transform_json,pc.risk_flags,p.pixel_width,p.pixel_height,p.source_type,original.media_type
  FROM page_corrections pc JOIN pages p ON p.id=pc.page_id AND p.document_id=pc.document_id AND p.owner_id=pc.owner_id
  JOIN artifacts original ON original.id=pc.original_artifact_id AND original.document_id=pc.document_id AND original.owner_id=pc.owner_id
  JOIN artifacts corrected ON corrected.id=pc.correction_artifact_id AND corrected.document_id=pc.document_id AND corrected.owner_id=pc.owner_id
  WHERE pc.owner_id=? AND pc.document_id=? AND pc.page_id=? AND pc.suggestion_id=? AND pc.state='suggested'
- AND p.original_artifact_id=pc.original_artifact_id AND p.source_type='scan'
+ AND p.original_artifact_id=pc.original_artifact_id AND p.source_type IN ('scan','photo')
  AND original.kind='original' AND original.state='ready'
+ AND original.sha256=pc.source_sha256 AND corrected.sha256=pc.correction_sha256
  AND corrected.kind='intermediate' AND corrected.state='ready' AND corrected.media_type='image/png'`,
-				owner, request.DocumentID, request.PageID, request.SuggestionID).Scan(&originalID, &correctionID, &originalSHA, &correctionSHA, &transformJSON, &riskJSON, &width, &height)
+				owner, request.DocumentID, request.PageID, request.SuggestionID).Scan(&originalID, &correctionID, &originalSHA, &correctionSHA, &transformJSON, &riskJSON, &width, &height, &sourceType, &mediaType)
 			if errors.Is(err, sql.ErrNoRows) {
 				return ErrConflict
 			}
@@ -150,8 +152,12 @@ func (s *Store) mutateCorrection(ctx context.Context, owner string, request Corr
 			if len(originalSHA) != 32 || len(correctionSHA) != 32 || !sameHash(originalSHA, source) || width < 1 || height < 1 {
 				return ErrConflict
 			}
+			baseline, err := loadCorrectionBaseline(ctx, tx, owner, request.DocumentID, CapturedPage{ID: request.PageID, SourceType: sourceType}, ArtifactRecord{ID: originalID, SHA256: source, PixelWidth: width, PixelHeight: height, MediaType: mediaType})
+			if err != nil {
+				return err
+			}
 			var transform correction.Transform
-			if json.Unmarshal([]byte(transformJSON), &transform) != nil || correction.Validate(transform, image.Rect(0, 0, width, height)) != nil {
+			if json.Unmarshal([]byte(transformJSON), &transform) != nil || correction.Validate(transform, image.Rect(0, 0, baseline.PixelWidth, baseline.PixelHeight)) != nil {
 				return ErrInvalid
 			}
 			if _, err = tx.ExecContext(ctx, `UPDATE page_corrections SET state='discarded',applied_at_ms=NULL WHERE owner_id=? AND document_id=? AND page_id=? AND state='applied'`, owner, request.DocumentID, request.PageID); err != nil {

@@ -183,8 +183,8 @@ func loadReOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, pages 
 		}
 		copy(source.Original.SHA256[:], originalHash)
 		source.Effective = source.Original
-		if page.SourceType == "photo" {
-			source.Effective, err = loadPhotoBaseline(ctx, tx, owner, doc, page.ID, source.Original)
+		if page.SourceType != "pdf" {
+			source.Effective, err = loadCorrectionBaseline(ctx, tx, owner, doc, page, source.Original)
 			if err != nil {
 				return nil, err
 			}

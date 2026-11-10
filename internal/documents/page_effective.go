@@ -5,6 +5,21 @@ import (
 	"database/sql"
 )
 
+// loadCorrectionBaseline shares geometry authority without replacing raw provenance.
+func loadCorrectionBaseline(ctx context.Context, tx *sql.Tx, owner, doc string, page CapturedPage, original ArtifactRecord) (ArtifactRecord, error) {
+	switch page.SourceType {
+	case "photo":
+		return loadPhotoBaseline(ctx, tx, owner, doc, page.ID, original)
+	case "", "scan":
+		if original.MediaType != "image/png" && original.MediaType != "image/jpeg" {
+			return ArtifactRecord{}, ErrConflict
+		}
+		return original, nil
+	default:
+		return ArtifactRecord{}, ErrInvalid
+	}
+}
+
 // loadPhotoBaseline binds immutable raw provenance to its normalized pixels.
 func loadPhotoBaseline(ctx context.Context, tx *sql.Tx, owner, doc, page string, original ArtifactRecord) (ArtifactRecord, error) {
 	var a ArtifactRecord

@@ -34,7 +34,7 @@ func photoCropBaseline(ctx context.Context, tx *sql.Tx, owner, doc string, c Pho
 			if p.SourceType != "photo" {
 				return ArtifactRecord{}, ErrInvalid
 			}
-			a, e := loadPhotoBaseline(ctx, tx, owner, doc, p.ID, sources[i].Original)
+			a, e := loadCorrectionBaseline(ctx, tx, owner, doc, p, sources[i].Original)
 			if e != nil {
 				return a, e
 			}
@@ -57,7 +57,7 @@ func (s *Store) ReadPhotoBaseline(ctx context.Context, owner, doc, page string) 
 	out := ArtifactReference{ExpiresAtMS: original.ExpiresAtMS}
 	e = s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
 		var err error
-		out.Artifact, err = loadPhotoBaseline(ctx, tx, owner, doc, page, original.Artifact)
+		out.Artifact, err = loadCorrectionBaseline(ctx, tx, owner, doc, CapturedPage{ID: page, SourceType: "photo"}, original.Artifact)
 		if err != nil {
 			return err
 		}
