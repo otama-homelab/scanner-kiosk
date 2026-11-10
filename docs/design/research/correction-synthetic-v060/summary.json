@@ -1,0 +1,138 @@
+{
+  "scope": "synthetic clean-control validation completed; real-photo/shadow/model-license/device requirements remain explicit",
+  "fixture_count": 6,
+  "arms": [
+    {
+      "arm": "none",
+      "fixtures": 6,
+      "runner_processes": 18,
+      "all_processes_complete": true,
+      "peak_rss_bytes": 22777856,
+      "clean_mae_pass_cases": 6,
+      "same_dimensions_cases": 6,
+      "fallback_cases": 0,
+      "digits_exact_nonempty_cases": 0,
+      "digits_nonempty_cases": 2,
+      "mean_nfc_cer": 1.380808080808081,
+      "fixed_table_line_survival": 1.0,
+      "table_line_scope": "fixed coordinate agreement only; not total line/content survival after geometric shift",
+      "automatic_adoption": false
+    },
+    {
+      "arm": "docaligner",
+      "fixtures": 6,
+      "runner_processes": 18,
+      "all_processes_complete": true,
+      "peak_rss_bytes": 254062592,
+      "clean_mae_pass_cases": 5,
+      "same_dimensions_cases": 5,
+      "fallback_cases": 5,
+      "digits_exact_nonempty_cases": 0,
+      "digits_nonempty_cases": 2,
+      "mean_nfc_cer": 1.380808080808081,
+      "fixed_table_line_survival": null,
+      "table_line_scope": "fixed coordinate agreement only; not total line/content survival after geometric shift",
+      "automatic_adoption": false
+    },
+    {
+      "arm": "old-onnx",
+      "fixtures": 6,
+      "runner_processes": 18,
+      "all_processes_complete": true,
+      "peak_rss_bytes": 232693760,
+      "clean_mae_pass_cases": 0,
+      "same_dimensions_cases": 6,
+      "fallback_cases": 0,
+      "digits_exact_nonempty_cases": 0,
+      "digits_nonempty_cases": 2,
+      "mean_nfc_cer": 1.2194444444444443,
+      "fixed_table_line_survival": 0.12961416402204776,
+      "table_line_scope": "fixed coordinate agreement only; not total line/content survival after geometric shift",
+      "automatic_adoption": false
+    },
+    {
+      "arm": "mesh",
+      "fixtures": 6,
+      "runner_processes": 18,
+      "all_processes_complete": true,
+      "peak_rss_bytes": 514940928,
+      "clean_mae_pass_cases": 0,
+      "same_dimensions_cases": 6,
+      "fallback_cases": 0,
+      "digits_exact_nonempty_cases": 0,
+      "digits_nonempty_cases": 2,
+      "mean_nfc_cer": 1.2861111111111112,
+      "fixed_table_line_survival": 0.12961416402204776,
+      "table_line_scope": "fixed coordinate agreement only; not total line/content survival after geometric shift",
+      "automatic_adoption": false
+    }
+  ],
+  "processes": 72,
+  "mesh_exact_reload_samples": 18,
+  "digit_baseline_warning": "Both2digit-bearing fixtures fail exact-digit OCR even without correction; no correction-only digit loss claim.",
+  "owner_data_uploaded": false,
+  "product_adoption": false,
+  "evidence_files": [
+    {
+      "file": "analyze.py",
+      "bytes": 5608,
+      "sha256": "215404a515d0d91e3f6fec17f6862048d3da2c98207f20621c4552f75c0ef7e7"
+    },
+    {
+      "file": "dataset-access-recheck.json",
+      "bytes": 320,
+      "sha256": "f7976bf51f7df9c45e609a531b8695b31165bd3307f724a910150775a1a361de"
+    },
+    {
+      "file": "mesh-reload.json",
+      "bytes": 4341,
+      "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957"
+    },
+    {
+      "file": "ocr-analyze.go",
+      "bytes": 585,
+      "sha256": "0ef2a2be761ac8376a08f497b699d1647f3174cd725b5ee201642dc6257aa35b"
+    },
+    {
+      "file": "prepare.py",
+      "bytes": 2359,
+      "sha256": "944a9e0f980d3b670b4ec547fb2ced40cc460be552f12f78fda23fefa23282d5"
+    },
+    {
+      "file": "preregistration.json",
+      "bytes": 9650,
+      "sha256": "6ec503a85b815deb96b868ae363a56ed5bc0f262c39c9051656ec5c05fe4d02c"
+    },
+    {
+      "file": "quality.json",
+      "bytes": 33425,
+      "sha256": "4362ee690d3de932bc483eb3ce4673da68e5f41e8ced2dc12111c820797d4062"
+    },
+    {
+      "file": "run.py",
+      "bytes": 1056,
+      "sha256": "b455debbae9c3b0797c8e205010cdf05cc1550c745b48f00d7b14ebf8a452699"
+    },
+    {
+      "file": "scope-amendment.md",
+      "bytes": 873,
+      "sha256": "f4614c75436d560f45ab8f2e43902d72f101a8d535f66023dc6e10067b9c7df3"
+    },
+    {
+      "file": "syntheticdoc-data-terms-recheck.json",
+      "bytes": 1002,
+      "sha256": "aa4d432fcab15bb4de04f0d4ee668a40cfa8b8247c0a206a3a9278424863a103"
+    },
+    {
+      "file": "truth-definition.json",
+      "bytes": 8531,
+      "sha256": "ea70abcab333dd5553bf610bf663451e6ddf975010fa1ba8d77a330f0ea6af93"
+    }
+  ],
+  "dataset_followup": {
+    "dataset": "SyntheticDoc DOI10.3929/ethz-c-000801994",
+    "dataset_rights": "CC-BY-4.0 perDataCite record",
+    "weights_rights": "not inferred from dataset terms",
+    "archive_access": "HTTP429 onofficial landing and API; no bypass/retry loop; paired6/clean3data not acquired"
+  }
+}

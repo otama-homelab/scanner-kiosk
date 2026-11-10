@@ -1,0 +1,29 @@
+{
+  "url": "https://api.datacite.org/dois/10.3929/ethz-c-000801994",
+  "sha256": "7f3e5a745e01853aa651219a1617d52fcd0197d5af5d1df059f02d1cd9dc3548",
+  "title": [
+    {
+      "lang": "",
+      "title": "SyntheticDoc: A Large Synthetic Dataset for Document Unwarping and Illumination Correction"
+    }
+  ],
+  "rights": [
+    {
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "schemeUri": "https://spdx.org/licenses/",
+      "rightsIdentifier": "cc-by-4.0",
+      "rightsIdentifierScheme": "SPDX"
+    },
+    {
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsUri": "https://creativecommons.org/licenses/by/4.0/legalcode",
+      "schemeUri": "https://spdx.org/licenses/",
+      "rightsIdentifier": "cc-by-4.0",
+      "rightsIdentifierScheme": "SPDX"
+    }
+  ],
+  "related": [],
+  "landing": "https://www.research-collection.ethz.ch/handle/20.500.11850/801994",
+  "sizes": []
+}

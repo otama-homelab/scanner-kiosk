@@ -66,3 +66,7 @@ Focused existing correction/photo-manual/reOCR/shared evaluation tests pass in4G
 A further public reinspection identified SyntheticDoc official `training/model/README.md` links for `original_31x45.ckpt` and `highres_121x177.ckpt`; the repository MIT text was confirmed. Exact weight-specific terms remain unresolved under the planned eligibility rule, so no checkpoint was fetched. FSENet and linked ONNX license issue searches returned no matches; this is not permission. Hugging Face SD7K name matches were text/tabular datasets from another publisher and were not assumed to be the document-shadow benchmark. No requirement was newly completed.
 
 The [human input packet](correction-validation-v060-human-inputs.md) now links all6existing original photos and3scan references, binds source hashes, lists pixel-coordinate/corner/content/transcription requirements, and identifies photo2_2 comparison outputs for use only after independent labels are fixed. It also identifies the already captured local Canon baseline, so no repeated scan is needed. Missing labels, eligible shadow pairs and owner-device evidence remain open.
+
+## Owner-authorized generated-input validation completed
+
+本人「お任せ、生成画像でもよい」に基づく[生成画像追補](correction-synthetic-validation-v060.md)。既存renderer6種類の既知truthで72process／24caseの補正・OCR・罫線比較と18mesh再読込を完了。TRUTH-01はこの代替入力範囲で実証し、現在5/14要件完了。元の6実写真への注釈、photo2_2、影paired truth、重み条件、実本人端末の受入は未実証のまま。cleanに対しUVDoc新旧6/6MAE不合格、DocAligner表の寸法変更により不採用を維持。実原稿や権利者回答を生成データで代用していない。

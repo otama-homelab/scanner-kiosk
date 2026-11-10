@@ -1,0 +1,867 @@
+{
+  "scope": "synthetic clean controls only, not real photo or shadow qualification",
+  "rows": [
+    {
+      "arm": "none",
+      "fixture_id": "fixture_ocr_horizontal_001",
+      "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "output_byte_identical": true,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 22708224,
+        "max_wall_millis": 98,
+        "all_complete": true
+      },
+      "reference_text": "日本語の書類検索可能な文書",
+      "ocr_text": "日 本 語 の 書 類\n検 索 可 能 な 文 書\n",
+      "ocr_text_sha256": "af6d91369d35d551686ea00b615803a7942bc1a913f225105b6a7dfec7e3acda",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 13,
+      "reference_code_points": 13,
+      "nfc_cer": 1.0,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "none",
+      "fixture_id": "fixture_ocr_mixed_001",
+      "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "output_byte_identical": true,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 22630400,
+        "max_wall_millis": 76,
+        "all_complete": true
+      },
+      "reference_text": "日本語 OCR Test 2026金額 １２３円 / 123",
+      "ocr_text": "日 本 語 OCR Test 2026\n\n金 額 ① ② ③ 円 / ⑫③\n",
+      "ocr_text_sha256": "84b5907a2dd1dc249156f114f0c7cae3915bbb4bf13a2ccab4270010e6d13834",
+      "digit_sequence_expected": "2026１２３123",
+      "digit_sequence_actual": "2026",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 14,
+      "reference_code_points": 30,
+      "nfc_cer": 0.4666666666666667,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "none",
+      "fixture_id": "fixture_ocr_table_001",
+      "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "output_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "output_byte_identical": true,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 22777856,
+        "max_wall_millis": 73,
+        "all_complete": true
+      },
+      "reference_text": "品名金額書籍1200円",
+      "ocr_text": "金 額\n\n⑫00 円\n\n品 名\n\n書 籍\n\n",
+      "ocr_text_sha256": "d123d8aa2603e0979e041bcbafee42495f0fb0b90857198e9be1576a2f0f48b2",
+      "digit_sequence_expected": "1200",
+      "digit_sequence_actual": "00",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true,
+      "nfc_text_errors": 20,
+      "reference_code_points": 11,
+      "nfc_cer": 1.8181818181818181,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "none",
+      "fixture_id": "fixture_ocr_vertical_001",
+      "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "output_byte_identical": true,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 22765568,
+        "max_wall_millis": 82,
+        "all_complete": true
+      },
+      "reference_text": "日本語縦書右から左へ",
+      "ocr_text": "戸 一 愴 奮 M\n\n世 ち ぺ 会 <\n",
+      "ocr_text_sha256": "9134b09d64bb97a5cf1b081feb861333e17dc0ec7db726d4c8100c76751341e6",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 21,
+      "reference_code_points": 10,
+      "nfc_cer": 2.1,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "none",
+      "fixture_id": "fixture_ocr_columns_001",
+      "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "output_byte_identical": true,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 22753280,
+        "max_wall_millis": 72,
+        "all_complete": true
+      },
+      "reference_text": "右欄の先頭右欄の末尾左欄の先頭左欄の末尾",
+      "ocr_text": "左 欄 の 先 頭 右 欄 の 先 頭\n左 欄 の 末 尾 右 欄 の 末 尾\n",
+      "ocr_text_sha256": "9eda6cfc6b66c885082c0ddceb35e1c306aec2d113e91e63eb785626b83e14dd",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 26,
+      "reference_code_points": 20,
+      "nfc_cer": 1.3,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "none",
+      "fixture_id": "fixture_ocr_wrapped_001",
+      "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "output_byte_identical": true,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 22728704,
+        "max_wall_millis": 78,
+        "all_complete": true
+      },
+      "reference_text": "一文字改行",
+      "ocr_text": "ゼ 休 & に\n",
+      "ocr_text_sha256": "611659f0d4bf9f51a36d03d3a3368f907668c7d6c2572b1231d138aac766365f",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 8,
+      "reference_code_points": 5,
+      "nfc_cer": 1.6,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "docaligner",
+      "fixture_id": "fixture_ocr_horizontal_001",
+      "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "output_byte_identical": true,
+      "fallback_reason": "unsafe-or-missing-corners",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 253235200,
+        "max_wall_millis": 1714,
+        "all_complete": true
+      },
+      "reference_text": "日本語の書類検索可能な文書",
+      "ocr_text": "日 本 語 の 書 類\n検 索 可 能 な 文 書\n",
+      "ocr_text_sha256": "af6d91369d35d551686ea00b615803a7942bc1a913f225105b6a7dfec7e3acda",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 13,
+      "reference_code_points": 13,
+      "nfc_cer": 1.0,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "docaligner",
+      "fixture_id": "fixture_ocr_mixed_001",
+      "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "output_byte_identical": true,
+      "fallback_reason": "unsafe-or-missing-corners",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 253284352,
+        "max_wall_millis": 1051,
+        "all_complete": true
+      },
+      "reference_text": "日本語 OCR Test 2026金額 １２３円 / 123",
+      "ocr_text": "日 本 語 OCR Test 2026\n\n金 額 ① ② ③ 円 / ⑫③\n",
+      "ocr_text_sha256": "84b5907a2dd1dc249156f114f0c7cae3915bbb4bf13a2ccab4270010e6d13834",
+      "digit_sequence_expected": "2026１２３123",
+      "digit_sequence_actual": "2026",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 14,
+      "reference_code_points": 30,
+      "nfc_cer": 0.4666666666666667,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "docaligner",
+      "fixture_id": "fixture_ocr_table_001",
+      "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "output_sha256": "74dc7191837147903085e59b834d41d87875cde617127a388db36f52d390bad9",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        734,
+        278
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 254062592,
+        "max_wall_millis": 1075,
+        "all_complete": true
+      },
+      "reference_text": "品名金額書籍1200円",
+      "ocr_text": "` 金 額\n\n⑫00 円\n\n品 名\n\n書 籍\n\n",
+      "ocr_text_sha256": "ab6cc4c70da363440a8b672c69a336b2e86dd4a0444b0166b7fb4d57d26355b9",
+      "digit_sequence_expected": "1200",
+      "digit_sequence_actual": "00",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "clean_mae_pass": false,
+      "table_line_pass": false,
+      "nfc_text_errors": 20,
+      "reference_code_points": 11,
+      "nfc_cer": 1.8181818181818181,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "docaligner",
+      "fixture_id": "fixture_ocr_vertical_001",
+      "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "output_byte_identical": true,
+      "fallback_reason": "unsafe-or-missing-corners",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 253075456,
+        "max_wall_millis": 1004,
+        "all_complete": true
+      },
+      "reference_text": "日本語縦書右から左へ",
+      "ocr_text": "戸 一 愴 奮 M\n\n世 ち ぺ 会 <\n",
+      "ocr_text_sha256": "9134b09d64bb97a5cf1b081feb861333e17dc0ec7db726d4c8100c76751341e6",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 21,
+      "reference_code_points": 10,
+      "nfc_cer": 2.1,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "docaligner",
+      "fixture_id": "fixture_ocr_columns_001",
+      "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "output_byte_identical": true,
+      "fallback_reason": "unsafe-or-missing-corners",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 253243392,
+        "max_wall_millis": 1004,
+        "all_complete": true
+      },
+      "reference_text": "右欄の先頭右欄の末尾左欄の先頭左欄の末尾",
+      "ocr_text": "左 欄 の 先 頭 右 欄 の 先 頭\n左 欄 の 末 尾 右 欄 の 末 尾\n",
+      "ocr_text_sha256": "9eda6cfc6b66c885082c0ddceb35e1c306aec2d113e91e63eb785626b83e14dd",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 26,
+      "reference_code_points": 20,
+      "nfc_cer": 1.3,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "docaligner",
+      "fixture_id": "fixture_ocr_wrapped_001",
+      "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "output_byte_identical": true,
+      "fallback_reason": "unsafe-or-missing-corners",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 253161472,
+        "max_wall_millis": 1040,
+        "all_complete": true
+      },
+      "reference_text": "一文字改行",
+      "ocr_text": "ゼ 休 & に\n",
+      "ocr_text_sha256": "611659f0d4bf9f51a36d03d3a3368f907668c7d6c2572b1231d138aac766365f",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.0,
+      "clean_mae_pass": true,
+      "nfc_text_errors": 8,
+      "reference_code_points": 5,
+      "nfc_cer": 1.6,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "old-onnx",
+      "fixture_id": "fixture_ocr_horizontal_001",
+      "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "output_sha256": "69824521aecee314a38c78870be229c5c296a00b905f7603b136e861041af9f1",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 232693760,
+        "max_wall_millis": 913,
+        "all_complete": true
+      },
+      "reference_text": "日本語の書類検索可能な文書",
+      "ocr_text": "日 本 語 の 書 類\n検 索 可 能 な 文 書\n",
+      "ocr_text_sha256": "af6d91369d35d551686ea00b615803a7942bc1a913f225105b6a7dfec7e3acda",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.01614705882352941,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 13,
+      "reference_code_points": 13,
+      "nfc_cer": 1.0,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "old-onnx",
+      "fixture_id": "fixture_ocr_mixed_001",
+      "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "output_sha256": "44674f05db6d30c0b6d6880bcee9354ce859a2c62b0565446dee141001db87d3",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 231325696,
+        "max_wall_millis": 920,
+        "all_complete": true
+      },
+      "reference_text": "日本語 OCR Test 2026金額 １２３円 / 123",
+      "ocr_text": "日 本 語 OCR Test 2026\n\n金 額 ① ② ③ 円 / ⑫③\n",
+      "ocr_text_sha256": "84b5907a2dd1dc249156f114f0c7cae3915bbb4bf13a2ccab4270010e6d13834",
+      "digit_sequence_expected": "2026１２３123",
+      "digit_sequence_actual": "2026",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "channel_mae": 0.015950239651416124,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 14,
+      "reference_code_points": 30,
+      "nfc_cer": 0.4666666666666667,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "old-onnx",
+      "fixture_id": "fixture_ocr_table_001",
+      "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "output_sha256": "f8ca4dca5bb9e445f37a906e3f3966d171327c48efc940fe07a8cf69ac48255f",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 231075840,
+        "max_wall_millis": 953,
+        "all_complete": true
+      },
+      "reference_text": "品名金額書籍1200円",
+      "ocr_text": "",
+      "ocr_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "digit_sequence_expected": "1200",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "channel_mae": 0.03483947712418301,
+      "clean_mae_pass": false,
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 776,
+      "table_line_fixed_position_survival": 0.12961416402204776,
+      "table_line_pass": false,
+      "nfc_text_errors": 11,
+      "reference_code_points": 11,
+      "nfc_cer": 1.0,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "old-onnx",
+      "fixture_id": "fixture_ocr_vertical_001",
+      "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "output_sha256": "7f57d2cc88e6b7eef6916b2299aeabde410d39e20db7a54afe21bb972c842847",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 231485440,
+        "max_wall_millis": 907,
+        "all_complete": true
+      },
+      "reference_text": "日本語縦書右から左へ",
+      "ocr_text": "o せ 熙 揚 肘\n\n両 モ ぺ ゃ 会 く\n",
+      "ocr_text_sha256": "50fecaf54060998e68bd55c3c127186151e8f971d094a1bc8ce0cb5ad187a4fe",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.013316059757236227,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 23,
+      "reference_code_points": 10,
+      "nfc_cer": 2.3,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "old-onnx",
+      "fixture_id": "fixture_ocr_columns_001",
+      "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "output_sha256": "9a4aa02899f968114bf37c87609f1266346da67e0a7642586080e87b32c50383",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 230776832,
+        "max_wall_millis": 888,
+        "all_complete": true
+      },
+      "reference_text": "右欄の先頭右欄の末尾左欄の先頭左欄の末尾",
+      "ocr_text": "左 欄 の 先 顔 右 欄 の 先 額\n左 欄 の 未 尾 右 欄 の 末 尾\n",
+      "ocr_text_sha256": "92a9f146a32b7ecea429d53e544485ba48dffbe960dfe4f44c3c68de18bfd298",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.025289231248054777,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 27,
+      "reference_code_points": 20,
+      "nfc_cer": 1.35,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "old-onnx",
+      "fixture_id": "fixture_ocr_wrapped_001",
+      "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "output_sha256": "75bd2060be50884e33213ee611d6e0d362b0cf86a472ef5fe20d4fcf5d401c6b",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 224923648,
+        "max_wall_millis": 887,
+        "all_complete": true
+      },
+      "reference_text": "一文字改行",
+      "ocr_text": "ロ N X\n",
+      "ocr_text_sha256": "60d42cc817108af1ebe3745a9f15a00f2d6cdf677c86cd4e3404cd2c4f9f10d6",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.004975144724556489,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 6,
+      "reference_code_points": 5,
+      "nfc_cer": 1.2,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "mesh",
+      "fixture_id": "fixture_ocr_horizontal_001",
+      "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "output_sha256": "bdeaee9efdf778d20dadde84174133db9c0d8fc987a2b6145770fc49a535d419",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 514699264,
+        "max_wall_millis": 5885,
+        "all_complete": true
+      },
+      "reference_text": "日本語の書類検索可能な文書",
+      "ocr_text": "日 本 語 の 書 類\n検 索 可 能 な 文 書\n",
+      "ocr_text_sha256": "af6d91369d35d551686ea00b615803a7942bc1a913f225105b6a7dfec7e3acda",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.01619289760348584,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 13,
+      "reference_code_points": 13,
+      "nfc_cer": 1.0,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "mesh",
+      "fixture_id": "fixture_ocr_mixed_001",
+      "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "output_sha256": "1914ccc0e58bde91ce698c8ccaea7938e13859d39fc7aef08ac41f790d2f5488",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 503373824,
+        "max_wall_millis": 4701,
+        "all_complete": true
+      },
+      "reference_text": "日本語 OCR Test 2026金額 １２３円 / 123",
+      "ocr_text": "日 本 語 OCR Test 2026\n\n金 額 ① ② ③ 円 / ⑫③\n",
+      "ocr_text_sha256": "84b5907a2dd1dc249156f114f0c7cae3915bbb4bf13a2ccab4270010e6d13834",
+      "digit_sequence_expected": "2026１２３123",
+      "digit_sequence_actual": "2026",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "channel_mae": 0.01599529411764706,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 14,
+      "reference_code_points": 30,
+      "nfc_cer": 0.4666666666666667,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "mesh",
+      "fixture_id": "fixture_ocr_table_001",
+      "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "output_sha256": "25b704cac26d9a395988ec5b15ce79e4c1820d3830161fc6cc32384e2fda6ff6",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 491741184,
+        "max_wall_millis": 4458,
+        "all_complete": true
+      },
+      "reference_text": "品名金額書籍1200円",
+      "ocr_text": "",
+      "ocr_text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "digit_sequence_expected": "1200",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": false,
+      "channel_mae": 0.034883323996265175,
+      "clean_mae_pass": false,
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 776,
+      "table_line_fixed_position_survival": 0.12961416402204776,
+      "table_line_pass": false,
+      "nfc_text_errors": 11,
+      "reference_code_points": 11,
+      "nfc_cer": 1.0,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "mesh",
+      "fixture_id": "fixture_ocr_vertical_001",
+      "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "output_sha256": "c44ecd7ca5a65aac572d4222cd138c2d467dd2d4c9f7646f58d6ad0cbdb42fb2",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 487985152,
+        "max_wall_millis": 4930,
+        "all_complete": true
+      },
+      "reference_text": "日本語縦書右から左へ",
+      "ocr_text": "o せ 熙 摩 地\n\n両 モ ぺ ゃ 会 く\n",
+      "ocr_text_sha256": "07bf94464c40fd4048617abb961d76dc08ad33fc25482093c561f2faf94a9512",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.013363187052598816,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 23,
+      "reference_code_points": 10,
+      "nfc_cer": 2.3,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "mesh",
+      "fixture_id": "fixture_ocr_columns_001",
+      "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "output_sha256": "7d5245c1107a804ed743e43d1af28860a9085ac0b7c22c20d626398c1bb1b3a9",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 514428928,
+        "max_wall_millis": 4677,
+        "all_complete": true
+      },
+      "reference_text": "右欄の先頭右欄の末尾左欄の先頭左欄の末尾",
+      "ocr_text": "左 欄 の 先 顔 右 欄 の 先 額\n左 欄 の 未 尾 右 欄 の 末 尾\n",
+      "ocr_text_sha256": "92a9f146a32b7ecea429d53e544485ba48dffbe960dfe4f44c3c68de18bfd298",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.025333644568938687,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 27,
+      "reference_code_points": 20,
+      "nfc_cer": 1.35,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    },
+    {
+      "arm": "mesh",
+      "fixture_id": "fixture_ocr_wrapped_001",
+      "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "output_sha256": "9e051209748383fc37d0002ef308d19c585fd94068f29ecb8687612dbaae7e26",
+      "output_byte_identical": false,
+      "fallback_reason": "",
+      "output_size": [
+        900,
+        700
+      ],
+      "reference_size": [
+        900,
+        700
+      ],
+      "process_resources": {
+        "samples": 3,
+        "peak_rss_bytes": 514940928,
+        "max_wall_millis": 4939,
+        "all_complete": true
+      },
+      "reference_text": "一文字改行",
+      "ocr_text": "ロ ` N X\n",
+      "ocr_text_sha256": "f6adba1640b95fed3db8dbc6bb36b618d9ff45013b47461b6b0fcb453c19f4ef",
+      "digit_sequence_expected": "",
+      "digit_sequence_actual": "",
+      "pixel_alignment": "fixed renderer coordinates, no realignment/custom warp",
+      "digits_exact": true,
+      "channel_mae": 0.00502286336756925,
+      "clean_mae_pass": false,
+      "nfc_text_errors": 8,
+      "reference_code_points": 5,
+      "nfc_cer": 1.6,
+      "ocr_scope": "Existing AnalyzeOCRPage strict NFC text distance; no positioned spans provided, so matched-region/cell/status verdicts are not used."
+    }
+  ],
+  "ocr": {
+    "binary_sha256": "5cc985582023a51d1ecd15bba88bf5b531607f60a4a68c4bf2b43344fcea3b66",
+    "loader_sha256": "095b047c631447e4fa50401fa7ffce01f678587040d65ba18c574981dc630de5",
+    "prior_onefile_probe": "bundled runtime unavailable or changed; preserved, wrapper not repaired; reused existing extracted native binary via its loader",
+    "eng_sha256": "daa0c97d651c19fba3b25e81317cd697e9908c8208090c94c3905381c23fc047",
+    "jpn_sha256": "6f416b902d129d8cc28e99c33244034b1cf52549e8560f6320b06d317852159a",
+    "engine": "Tesseract5.5.4 jpn+eng psm3 threads2",
+    "oracle_analyzer": "existing evaluation.AnalyzeOCRPage, NFC, all Unicode code points including whitespace; no text cleanup",
+    "selfchecks": "exact and single substitution pass"
+  }
+}

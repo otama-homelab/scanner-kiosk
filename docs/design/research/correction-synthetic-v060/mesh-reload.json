@@ -1,0 +1,92 @@
+[
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "c85e86927b2905f56356d1e13b1c08aa703591f63ca7f1702e836555e4a2fbd7",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "c85e86927b2905f56356d1e13b1c08aa703591f63ca7f1702e836555e4a2fbd7",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "c85e86927b2905f56356d1e13b1c08aa703591f63ca7f1702e836555e4a2fbd7",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "cffd9d22850304dbdfed54472c34cd8103adccbccee5c1f08db4c002eac210c4",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "cffd9d22850304dbdfed54472c34cd8103adccbccee5c1f08db4c002eac210c4",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "cffd9d22850304dbdfed54472c34cd8103adccbccee5c1f08db4c002eac210c4",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "d9d6471a4f8183844bb5c59333993c702f3ad571d67611e82f604d0c00338792",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "d9d6471a4f8183844bb5c59333993c702f3ad571d67611e82f604d0c00338792",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "d9d6471a4f8183844bb5c59333993c702f3ad571d67611e82f604d0c00338792",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "07fb3b37dcff3cfd109e2c4f366cd6e59dc34c8dc66afb52d5a0cd67d782f4e3",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "07fb3b37dcff3cfd109e2c4f366cd6e59dc34c8dc66afb52d5a0cd67d782f4e3",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "07fb3b37dcff3cfd109e2c4f366cd6e59dc34c8dc66afb52d5a0cd67d782f4e3",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "56f2b4a280521fe8277278e38192d998eb005c7d94090f61f728181afca49871",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "56f2b4a280521fe8277278e38192d998eb005c7d94090f61f728181afca49871",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "56f2b4a280521fe8277278e38192d998eb005c7d94090f61f728181afca49871",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "c25f5b28f0b89840703396cf2fe7d4cfceae124eaa84c8e6258608c2bcb6fef5",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "c25f5b28f0b89840703396cf2fe7d4cfceae124eaa84c8e6258608c2bcb6fef5",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "c25f5b28f0b89840703396cf2fe7d4cfceae124eaa84c8e6258608c2bcb6fef5",
+    "sampling_exact": true
+  }
+]

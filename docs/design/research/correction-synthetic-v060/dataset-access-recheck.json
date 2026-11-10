@@ -1,0 +1,12 @@
+[
+  {
+    "i": 0,
+    "url": "https://www.research-collection.ethz.ch/handle/20.500.11850/801994",
+    "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+    "i": 1,
+    "url": "https://www.research-collection.ethz.ch/server/api/pid/find?id=20.500.11850/801994",
+    "error": "HTTP Error 429: Too Many Requests"
+  }
+]

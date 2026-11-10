@@ -25,9 +25,9 @@
     },
     {
       "id": "TRUTH-01",
-      "status": "needs-human",
-      "complete": false,
-      "evidence_scope": "Additional3 independent UVDoc masks/grids fixed; original6photos corners/digits/thinlines unannotated."
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "Owner-authorized generated-input alternative:6known-renderer clean controls with fixed source hashes, text/digit/glyph boxes, full-canvas page boundary and table2px line definitions. No claim of original6DocUNet photo human annotations."
     },
     {
       "id": "TRUTH-02",
@@ -381,5 +381,16 @@
     "checkpoint_identity_sources_found": true,
     "checkpoint_terms_resolved": false,
     "human_review_packet": "../../correction-validation-v060-human-inputs.md"
+  },
+  "synthetic_supplement": {
+    "authorization": "\u304a\u4efb\u305b\u3001\u751f\u6210\u753b\u50cf\u3067\u3082\u3088\u3044",
+    "report": "../../correction-synthetic-validation-v060.md",
+    "summary": "../correction-synthetic-v060/summary.json",
+    "sha256": "78d09893d2fa4c7107f9f2e3ec08fa64c69a5cb71f0510ea335a850e02e5beef",
+    "complete": true,
+    "fixture_count": 6,
+    "runner_processes": 72,
+    "mesh_exact_reload_checks": 18,
+    "remaining_real_world_requirements_open": true
   }
 }

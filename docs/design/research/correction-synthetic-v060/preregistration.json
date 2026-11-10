@@ -1,0 +1,392 @@
+{
+  "authorization": "Owner: お任せ、生成画像でもよい",
+  "scope": "deterministic renderer-known clean controls; not real-photo2_2 truth, owner-device acceptance or paired shadow data",
+  "before_inference": true,
+  "generator": {
+    "path": "scripts/eval/ocr/prepare_catalog.py",
+    "sha256": "455bf3b025761c702246e7c9e5eebb54143f469d7729e534b5c4a5ce5e39c6ec",
+    "font_sha256": "503af4a8b84d1079b8e2e358dc7f7a7fb8cb7a1f212f35eaef6782dbfc75a55e",
+    "pillow": "12.2.0"
+  },
+  "rows": [
+    {
+      "fixture_id": "fixture_ocr_horizontal_001",
+      "fixture_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "layout": "horizontal",
+      "pages": [
+        {
+          "page_id": "page_ocr_horizontal_001",
+          "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+          "width": 900,
+          "height": 700,
+          "blank": false,
+          "spans": [
+            {
+              "text": "日本語の書類",
+              "order": 0,
+              "box": [
+                80,
+                80,
+                240,
+                37
+              ]
+            },
+            {
+              "text": "検索可能な文書",
+              "order": 1,
+              "box": [
+                80,
+                160,
+                280,
+                38
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_mixed_001",
+      "fixture_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "layout": "mixed",
+      "pages": [
+        {
+          "page_id": "page_ocr_mixed_001",
+          "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "width": 900,
+          "height": 700,
+          "blank": false,
+          "spans": [
+            {
+              "text": "日本語 OCR Test 2026",
+              "order": 0,
+              "box": [
+                80,
+                80,
+                400,
+                36
+              ]
+            },
+            {
+              "text": "金額 １２３円 / 123",
+              "order": 1,
+              "box": [
+                80,
+                180,
+                380,
+                37
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_table_001",
+      "fixture_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "layout": "table",
+      "pages": [
+        {
+          "page_id": "page_ocr_table_001",
+          "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "width": 900,
+          "height": 700,
+          "blank": false,
+          "spans": [
+            {
+              "text": "品名",
+              "order": 0,
+              "box": [
+                90,
+                90,
+                80,
+                36
+              ],
+              "cell": "r1c1"
+            },
+            {
+              "text": "金額",
+              "order": 1,
+              "box": [
+                450,
+                90,
+                80,
+                37
+              ],
+              "cell": "r1c2"
+            },
+            {
+              "text": "書籍",
+              "order": 2,
+              "box": [
+                90,
+                230,
+                80,
+                38
+              ],
+              "cell": "r2c1"
+            },
+            {
+              "text": "1200円",
+              "order": 3,
+              "box": [
+                450,
+                230,
+                120,
+                33
+              ],
+              "cell": "r2c2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_vertical_001",
+      "fixture_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "layout": "vertical",
+      "pages": [
+        {
+          "page_id": "page_ocr_vertical_001",
+          "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+          "width": 900,
+          "height": 700,
+          "blank": false,
+          "spans": [
+            {
+              "text": "日",
+              "order": 0,
+              "box": [
+                680,
+                80,
+                40,
+                32
+              ]
+            },
+            {
+              "text": "本",
+              "order": 1,
+              "box": [
+                680,
+                132,
+                40,
+                36
+              ]
+            },
+            {
+              "text": "語",
+              "order": 2,
+              "box": [
+                680,
+                184,
+                40,
+                35
+              ]
+            },
+            {
+              "text": "縦",
+              "order": 3,
+              "box": [
+                680,
+                236,
+                40,
+                38
+              ]
+            },
+            {
+              "text": "書",
+              "order": 4,
+              "box": [
+                680,
+                288,
+                40,
+                36
+              ]
+            },
+            {
+              "text": "右",
+              "order": 5,
+              "box": [
+                560,
+                80,
+                40,
+                35
+              ]
+            },
+            {
+              "text": "か",
+              "order": 6,
+              "box": [
+                560,
+                132,
+                40,
+                33
+              ]
+            },
+            {
+              "text": "ら",
+              "order": 7,
+              "box": [
+                560,
+                184,
+                40,
+                35
+              ]
+            },
+            {
+              "text": "左",
+              "order": 8,
+              "box": [
+                560,
+                236,
+                40,
+                34
+              ]
+            },
+            {
+              "text": "へ",
+              "order": 9,
+              "box": [
+                560,
+                288,
+                40,
+                24
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_columns_001",
+      "fixture_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "layout": "columns",
+      "pages": [
+        {
+          "page_id": "page_ocr_columns_001",
+          "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+          "width": 900,
+          "height": 700,
+          "blank": false,
+          "spans": [
+            {
+              "text": "右欄の先頭",
+              "order": 0,
+              "box": [
+                480,
+                80,
+                200,
+                37
+              ]
+            },
+            {
+              "text": "右欄の末尾",
+              "order": 1,
+              "box": [
+                480,
+                180,
+                200,
+                36
+              ]
+            },
+            {
+              "text": "左欄の先頭",
+              "order": 2,
+              "box": [
+                80,
+                80,
+                200,
+                37
+              ]
+            },
+            {
+              "text": "左欄の末尾",
+              "order": 3,
+              "box": [
+                80,
+                180,
+                200,
+                36
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_wrapped_001",
+      "fixture_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "layout": "wrapped",
+      "pages": [
+        {
+          "page_id": "page_ocr_wrapped_001",
+          "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+          "width": 900,
+          "height": 700,
+          "blank": false,
+          "spans": [
+            {
+              "text": "一",
+              "order": 0,
+              "box": [
+                80,
+                80,
+                40,
+                18
+              ]
+            },
+            {
+              "text": "文",
+              "order": 1,
+              "box": [
+                80,
+                140,
+                40,
+                34
+              ]
+            },
+            {
+              "text": "字",
+              "order": 2,
+              "box": [
+                80,
+                200,
+                40,
+                35
+              ]
+            },
+            {
+              "text": "改",
+              "order": 3,
+              "box": [
+                80,
+                260,
+                40,
+                38
+              ]
+            },
+            {
+              "text": "行",
+              "order": 4,
+              "box": [
+                80,
+                320,
+                40,
+                35
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "budget": {
+    "cpu_threads": 2,
+    "timeout_s": 30,
+    "max_rss_mib": 1024,
+    "temp_mib": 256,
+    "installed_package_mib": 256
+  },
+  "metrics": "strict NFC CER via existing AnalyzeOCRPage; exact digit sequence incl fullwidth; clean output channel MAE<=1/255; known2px table-line pixel survival>=1 (all dark pixels retained at fixed positions); no target threshold tuned after inference",
+  "sampling": "6fixtures x4arms x(cold1,warm2); eachUVDocadapter3internalforwards; applyfalse; image data is public synthetic though private-catalog transport reused"
+}

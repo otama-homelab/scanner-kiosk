@@ -1,0 +1,456 @@
+{
+  "scope": "renderer-known synthetic full-page controls accepted by owner; not physical document-border ground truth",
+  "timing": "Renderer recipe/source hashes and text oracles frozen before inference. Explicit raster-boundary/line metadata serialized after run from those definitions, not predicted output.",
+  "rows": [
+    {
+      "fixture_id": "fixture_ocr_horizontal_001",
+      "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "known_document_mask": "all pixels in900x700full-page canvas; no photographed background",
+      "text_spans": [
+        {
+          "text": "日本語の書類",
+          "order": 0,
+          "box": [
+            80,
+            80,
+            240,
+            37
+          ]
+        },
+        {
+          "text": "検索可能な文書",
+          "order": 1,
+          "box": [
+            80,
+            160,
+            280,
+            38
+          ]
+        }
+      ],
+      "table_lines": null
+    },
+    {
+      "fixture_id": "fixture_ocr_mixed_001",
+      "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "known_document_mask": "all pixels in900x700full-page canvas; no photographed background",
+      "text_spans": [
+        {
+          "text": "日本語 OCR Test 2026",
+          "order": 0,
+          "box": [
+            80,
+            80,
+            400,
+            36
+          ]
+        },
+        {
+          "text": "金額 １２３円 / 123",
+          "order": 1,
+          "box": [
+            80,
+            180,
+            380,
+            37
+          ]
+        }
+      ],
+      "table_lines": null
+    },
+    {
+      "fixture_id": "fixture_ocr_table_001",
+      "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "known_document_mask": "all pixels in900x700full-page canvas; no photographed background",
+      "text_spans": [
+        {
+          "text": "品名",
+          "order": 0,
+          "box": [
+            90,
+            90,
+            80,
+            36
+          ],
+          "cell": "r1c1"
+        },
+        {
+          "text": "金額",
+          "order": 1,
+          "box": [
+            450,
+            90,
+            80,
+            37
+          ],
+          "cell": "r1c2"
+        },
+        {
+          "text": "書籍",
+          "order": 2,
+          "box": [
+            90,
+            230,
+            80,
+            38
+          ],
+          "cell": "r2c1"
+        },
+        {
+          "text": "1200円",
+          "order": 3,
+          "box": [
+            450,
+            230,
+            120,
+            33
+          ],
+          "cell": "r2c2"
+        }
+      ],
+      "table_lines": {
+        "width_pixels": 2,
+        "vertical_x": [
+          70,
+          420,
+          800
+        ],
+        "vertical_y_range": [
+          70,
+          340
+        ],
+        "horizontal_y": [
+          70,
+          200,
+          340
+        ],
+        "horizontal_x_range": [
+          70,
+          800
+        ]
+      }
+    },
+    {
+      "fixture_id": "fixture_ocr_vertical_001",
+      "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "known_document_mask": "all pixels in900x700full-page canvas; no photographed background",
+      "text_spans": [
+        {
+          "text": "日",
+          "order": 0,
+          "box": [
+            680,
+            80,
+            40,
+            32
+          ]
+        },
+        {
+          "text": "本",
+          "order": 1,
+          "box": [
+            680,
+            132,
+            40,
+            36
+          ]
+        },
+        {
+          "text": "語",
+          "order": 2,
+          "box": [
+            680,
+            184,
+            40,
+            35
+          ]
+        },
+        {
+          "text": "縦",
+          "order": 3,
+          "box": [
+            680,
+            236,
+            40,
+            38
+          ]
+        },
+        {
+          "text": "書",
+          "order": 4,
+          "box": [
+            680,
+            288,
+            40,
+            36
+          ]
+        },
+        {
+          "text": "右",
+          "order": 5,
+          "box": [
+            560,
+            80,
+            40,
+            35
+          ]
+        },
+        {
+          "text": "か",
+          "order": 6,
+          "box": [
+            560,
+            132,
+            40,
+            33
+          ]
+        },
+        {
+          "text": "ら",
+          "order": 7,
+          "box": [
+            560,
+            184,
+            40,
+            35
+          ]
+        },
+        {
+          "text": "左",
+          "order": 8,
+          "box": [
+            560,
+            236,
+            40,
+            34
+          ]
+        },
+        {
+          "text": "へ",
+          "order": 9,
+          "box": [
+            560,
+            288,
+            40,
+            24
+          ]
+        }
+      ],
+      "table_lines": null
+    },
+    {
+      "fixture_id": "fixture_ocr_columns_001",
+      "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "known_document_mask": "all pixels in900x700full-page canvas; no photographed background",
+      "text_spans": [
+        {
+          "text": "右欄の先頭",
+          "order": 0,
+          "box": [
+            480,
+            80,
+            200,
+            37
+          ]
+        },
+        {
+          "text": "右欄の末尾",
+          "order": 1,
+          "box": [
+            480,
+            180,
+            200,
+            36
+          ]
+        },
+        {
+          "text": "左欄の先頭",
+          "order": 2,
+          "box": [
+            80,
+            80,
+            200,
+            37
+          ]
+        },
+        {
+          "text": "左欄の末尾",
+          "order": 3,
+          "box": [
+            80,
+            180,
+            200,
+            36
+          ]
+        }
+      ],
+      "table_lines": null
+    },
+    {
+      "fixture_id": "fixture_ocr_wrapped_001",
+      "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "known_document_mask": "all pixels in900x700full-page canvas; no photographed background",
+      "text_spans": [
+        {
+          "text": "一",
+          "order": 0,
+          "box": [
+            80,
+            80,
+            40,
+            18
+          ]
+        },
+        {
+          "text": "文",
+          "order": 1,
+          "box": [
+            80,
+            140,
+            40,
+            34
+          ]
+        },
+        {
+          "text": "字",
+          "order": 2,
+          "box": [
+            80,
+            200,
+            40,
+            35
+          ]
+        },
+        {
+          "text": "改",
+          "order": 3,
+          "box": [
+            80,
+            260,
+            40,
+            38
+          ]
+        },
+        {
+          "text": "行",
+          "order": 4,
+          "box": [
+            80,
+            320,
+            40,
+            35
+          ]
+        }
+      ],
+      "table_lines": null
+    }
+  ]
+}
