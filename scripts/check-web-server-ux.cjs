@@ -7,7 +7,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,chromiumSandbox:true,args:process.env.SCANNER_SERVER_UX_INSPECT_PORT?['--remote-debugging-port='+process.env.SCANNER_SERVER_UX_INSPECT_PORT]:[]});
  const context=await browser.newContext({ignoreHTTPSErrors:true});const page=await context.newPage();page.setDefaultTimeout(15000);
- const origin=process.env.SCANNER_TEST_ORIGIN,output=process.env.SCANNER_SERVER_UX_OUTPUT,checks=[],downloads=[],requests=[],errors=[];
+ const origin=process.env.SCANNER_TEST_ORIGIN,output=process.env.SCANNER_SERVER_UX_OUTPUT,checks=[],downloads=[],requests=[],errors=[],jobs=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(new URL(r.url()).pathname.startsWith('/api/'))requests.push({method:r.method(),path:new URL(r.url()).pathname,key:r.headers()['idempotency-key']})});
  const api=(url,method='GET',data)=>page.evaluate(async({url,method,data})=>{const r=await fetch(url,{method,headers:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});if(!r.ok)throw new Error(url+' '+r.status);return r.json()},{url,method,data});
  const mode=value=>api('/__fixture/mode','POST',{Mode:value});
@@ -16,7 +16,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
  const open=async id=>{await page.goto(origin+'/#/document/'+id);await page.locator('h1[data-document-title]').waitFor()};
  const primary=async()=>{
   const save=page.locator('.document-toolbar').getByRole('button',{name:'Save PDF',exact:true}).or(page.locator('.document-toolbar').getByRole('link',{name:'Save PDF',exact:true}));
-  assert(await save.isEnabled(),'valid Save stays enabled');
+  assert(await save.last().isEnabled(),'valid Save stays enabled');
   const primaries=page.locator('main .primary:visible, main .download-link:visible');assert.equal(await primaries.count(),1,'Save must remain the sole primary action with optional results');
   assert.match(await primaries.innerText(),/^Save PDF$/,'the sole primary action is Save');
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Operate overflows viewport');
@@ -30,7 +30,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   await page.locator('.document-toolbar a.download-link').waitFor();return downloads.at(-1).SHA256;
  };
  const unchanged=async(id,before,hash)=>{const after=await read(id);assert.equal(after.revision,before.revision);assert.deepEqual(after.output,before.output);await primary();const r=await context.request.get(origin+'/api/documents/'+id+'/download');assert.equal(createHash('sha256').update(await r.body()).digest('hex'),hash)};
- const recognition=async()=>{await page.getByRole('button',{name:'Recognize text again',exact:true}).click();await page.getByRole('switch').check();await page.getByRole('button',{name:'Start recognition',exact:true}).click();await page.getByRole('dialog').waitFor({state:'detached'})};
+ const recognition=async()=>{await page.getByRole('button',{name:'Recognize text again',exact:true}).click();await page.getByRole('switch').check();const response=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname.endsWith('/reocr'));await page.getByRole('button',{name:'Start recognition',exact:true}).click();const result=await response;assert.equal(result.status(),202);const job=await result.json();jobs.push(job.id);await page.getByRole('dialog').waitFor({state:'detached'});return job.id};
+ const terminal=async(id,state)=>{const deadline=Date.now()+15000;for(;;){const job=await api('/api/jobs/'+id);if(job.state===state)return;assert(!['failed','cancelled','succeeded','interrupted'].includes(job.state),'unexpected terminal state '+JSON.stringify(job));assert(Date.now()<deadline,'job did not reach '+state);await page.waitForTimeout(100)}};
  const candidate=async()=>{await page.getByRole('button',{name:'Adopt for whole document',exact:true}).waitFor();await primary()};
  try{
   await page.goto(origin);await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
@@ -65,7 +66,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   const candidateOutput=await context.request.get(origin+'/api/documents/'+photo+'/download');const correctedHash=createHash('sha256').update(await candidateOutput.body()).digest('hex');
   await page.getByRole('button',{name:'Discard candidate',exact:true}).click();await page.getByRole('button',{name:'Discard candidate',exact:true}).waitFor({state:'detached'});await unchanged(photo,before,correctedHash);checks.push('real positioned reOCR candidate, generated suggestion and discard preserve Save');
   await recognition();await candidate();await page.getByRole('button',{name:'Adopt for whole document',exact:true}).click();await page.getByRole('button',{name:'Adopt for whole document',exact:true}).waitFor({state:'detached'});await primary();const adoptedHash=await download('adopted',photo);before=await read(photo);checks.push('explicit whole-document adoption uses actual corrected source');
-  await mode(1);await recognition();await page.getByRole('button',{name:'Recognize text again',exact:true}).waitFor({state:'visible'});await page.waitForFunction(async id=>!(await(await fetch('/api/documents/'+id)).json()).active_job_id,photo);await page.reload();await page.locator('h1[data-document-title]').waitFor();await unchanged(photo,before,adoptedHash);await mode(0);checks.push('actual provider failure leaves adopted export unchanged');
+  await mode(2);const cancelled=await recognition();await page.getByRole('button',{name:'Cancel recognition',exact:true}).waitFor();await primary();await page.getByRole('button',{name:'Cancel recognition',exact:true}).click();await terminal(cancelled,'cancelled');await page.reload();await page.locator('h1[data-document-title]').waitFor();await unchanged(photo,before,adoptedHash);checks.push('running optional reOCR cancellation retains enabled primary Save');
+  await mode(1);const failed=await recognition();await terminal(failed,'failed');await page.reload();await page.locator('h1[data-document-title]').waitFor();await unchanged(photo,before,adoptedHash);await mode(0);checks.push('actual provider failure leaves adopted export unchanged');
   // A lost successful disposition is reconciled with GET; never resend its POST.
   await recognition();await candidate();let dispositions=0;
   await page.route('**/ocr-results/*/discard',async r=>{dispositions++;await r.fetch();await r.abort()});
@@ -78,8 +80,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   }
   await mode(0);await page.getByLabel('Exact Paperless task UUID').fill('12345678-1234-4234-8234-123456789abc');await page.getByRole('button',{name:'Reconcile task',exact:true}).click();await page.locator('[data-delivery-state="confirmed"]').waitFor();assert.equal((await observe()).uploads,3);checks.push('unknown exact UUID checksum GET reconciliation no resend');
   const counts=await observe();assert.equal(counts.documents,3);assert.equal(counts.deliveries,3);assert.equal(counts.reservations,0);assert.deepEqual(errors,[]);
-  await open(photo);for(const width of [390,1280]){await page.setViewportSize({width,height:900});await primary();await page.screenshot({path:'/tmp/scanner49-server-ux-'+width+'.png',fullPage:true});checks.push('final sole primary Save '+width)}
+  await open(photo);await page.waitForFunction(()=>{const image=document.querySelector('.preview-card img');return image?.complete&&image.naturalWidth>0});await page.locator('.ocr-spans button').first().waitFor();for(const width of [390,1280]){await page.setViewportSize({width,height:900});await primary();await page.screenshot({path:'/tmp/scanner49-server-ux-'+width+'.png',fullPage:true});checks.push('final sole primary Save '+width)}
   if(process.env.SCANNER_SERVER_UX_INSPECT_PORT){process.stdout.write('INSPECT_READY\n');await new Promise(resolve=>setTimeout(resolve,45000))}
   const receipt={passed:true,real_backend:true,checks,downloads,requests,counts,scope:'Current built Chromium; real SQLite/API/worker and native children; synthetic scan acquisition, OCR and Paperless loopback; no physical/live-service acceptance.'};fs.writeFileSync(path.join(output,'browser.json'),JSON.stringify(receipt,null,2)+'\n');process.stdout.write(JSON.stringify(receipt));
- }catch(e){console.error('FAILURE_STATE',await page.locator('body').innerText());throw e}finally{await context.close();await browser.close()}
+ }catch(e){console.error('FAILURE_STATE',await page.locator('body').innerText());console.error('ACTUAL_JOBS',JSON.stringify(await Promise.all(jobs.map(id=>api('/api/jobs/'+id)))));console.error('MUTATIONS',JSON.stringify(requests.filter(r=>r.method!=='GET')));throw e}finally{await context.close();await browser.close()}
 })().catch(e=>{console.error(e.stack||e.message);process.exit(1)});

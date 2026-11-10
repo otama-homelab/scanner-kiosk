@@ -23,6 +23,7 @@ import (
 
 	"scanner-kiosk/internal/apiruntime"
 	"scanner-kiosk/internal/config"
+	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/storage"
 	"scanner-kiosk/pkg/ocrplugin"
@@ -102,10 +103,6 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 			}
 			marker.Store(header.Filename)
 			uploadedHash.Store(fmt.Sprintf("%x", sha256.Sum256(data)))
-			if mode.Load() == 3 {
-				http.Error(w, "synthetic delivery failure", 400)
-				return
-			}
 			if mode.Load() == 4 {
 				conn, _, e := w.(http.Hijacker).Hijack()
 				if e == nil {
@@ -123,7 +120,11 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 			if r.URL.RawQuery != "task_id="+deliveryTask {
 				t.Error("nonexact remote identity")
 			}
-			fmt.Fprintf(w, `[{"task_id":%q,"task_file_name":%q,"status":"SUCCESS","related_document":42}]`, deliveryTask, marker.Load())
+			status := "SUCCESS"
+			if mode.Load() == 3 {
+				status = "FAILURE"
+			}
+			fmt.Fprintf(w, `[{"task_id":%q,"task_file_name":%q,"status":%q,"related_document":42}]`, deliveryTask, marker.Load(), status)
 		case "/api/documents/42/metadata/":
 			fmt.Fprintf(w, `{"original_checksum":%q}`, uploadedHash.Load())
 		default:
@@ -204,6 +205,9 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 	}
 	values := map[string]string{"SCANNER_STATE_DIR": c.StateDir, "SCANNER_DOCUMENT_DIR": root, "SCANNER_PUBLIC_URL": server.URL, "SCANNER_AUTHENTICATE_TYPE": "none", "SCANNER_SCANNERS_JSON": "[]", "SCANNER_OCR_PLUGINS": "llm", "SCANNER_OCR_DEFAULT_PLUGIN": "llm", "SCANNER_OCR_DEFAULT_LANGUAGES": "en", "SCANNER_OCR_LLM_PROFILES_JSON": string(profiles), "SCANNER_PAPERLESS_ENABLED": "true", "SCANNER_PAPERLESS_DESTINATION": "Synthetic archive", "SCANNER_PAPERLESS_BASE_URL": remote.URL, "SCANNER_PAPERLESS_ALLOW_INSECURE_HTTP": "true", "SCANNER_PAPERLESS_TOKEN_ENV": "SCANNER_PAPERLESS_TOKEN_INTEGRATED", "SCANNER_PAPERLESS_TOKEN_INTEGRATED": "synthetic-integrated-only"}
 	values["SCANNER_OCR_LLM_TEXT_LAYER_FONT"] = fontPath
+	// The composed fixture intentionally performs a burst of identity/source reads.
+	values["SCANNER_API_REQUESTS_PER_MINUTE"] = "10000"
+	values["SCANNER_API_BURST"] = "1024"
 	for k, v := range values {
 		t.Setenv(k, v)
 	}
@@ -258,6 +262,11 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 		if e != nil || fmt.Sprintf("%x", sha256.Sum256(data)) != saved.SHA256 {
 			t.Fatal("browser download hash", saved, e)
 		}
+		digest := sha256.Sum256(data)
+		var recorded int
+		if e = db.QueryRow("SELECT count(*) FROM artifacts WHERE document_id=? AND kind='output' AND sha256=? AND byte_size=?", saved.DocumentID, digest[:], len(data)).Scan(&recorded); e != nil || recorded < 1 {
+			t.Fatal("download not bound to real published artifact", saved.Name, e)
+		}
 		pixels, e := exec.Command(os.Getenv("SCANNER_PDF_RASTER_PATH"), "-singlefile", "-r", "36", "-png", filepath.Join(evidence, saved.Name+".pdf")).Output()
 		if e != nil {
 			t.Fatal("independent Poppler", saved, e)
@@ -273,7 +282,7 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 			if e != nil {
 				t.Fatal(e)
 			}
-			baseline, e := pdfassemble.Build(context.Background(), []pdfassemble.Page{{ID: "scan-baseline", Size: "a4", Color: "gray", Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(original)), nil }}}, "jpeg", pdfassemble.Options{MaxInputBytes: 8 << 20, MaxOutputBytes: 8 << 20, MaxPagePixels: 40000000, MaxPages: 10, JPEGQuality: 92})
+			baseline, e := pdfassemble.Build(context.Background(), []pdfassemble.Page{{ID: "scan-baseline", Size: "a4", Color: "gray", Width: 80, Height: 100, Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(original)), nil }}}, "jpeg", pdfassemble.Options{MaxInputBytes: 8 << 20, MaxOutputBytes: 8 << 20, MaxPagePixels: 40000000, MaxPages: 10, JPEGQuality: 92})
 			if e != nil {
 				t.Fatal(e)
 			}
@@ -295,7 +304,52 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 			if e != nil || !bytes.Equal(want, pixels) {
 				t.Fatal("imported PDF pixels changed", e)
 			}
+			want, e = exec.Command(os.Getenv("SCANNER_PDF_RASTER_PATH"), "-f", "2", "-l", "2", "-singlefile", "-r", "36", "-png", file).Output()
+			second, e2 := exec.Command(os.Getenv("SCANNER_PDF_RASTER_PATH"), "-f", "2", "-l", "2", "-singlefile", "-r", "36", "-png", filepath.Join(evidence, saved.Name+".pdf")).Output()
+			if e != nil || e2 != nil || !bytes.Equal(want, second) {
+				t.Fatal("second imported PDF page pixels changed", e, e2)
+			}
 		}
+	}
+	rows, e := db.Query("SELECT configuration_json FROM jobs WHERE kind='render'")
+	if e != nil {
+		t.Fatal(e)
+	}
+	var frozen []documents.RenderSnapshot
+	for rows.Next() {
+		var raw string
+		if e = rows.Scan(&raw); e != nil {
+			t.Fatal(e)
+		}
+		var snapshot documents.RenderSnapshot
+		if e = json.Unmarshal([]byte(raw), &snapshot); e != nil {
+			t.Fatal(e)
+		}
+		frozen = append(frozen, snapshot)
+	}
+	if e = rows.Err(); e != nil {
+		t.Fatal(e)
+	}
+	rows.Close()
+	photoSources := 0
+	for _, snapshot := range frozen {
+		for _, source := range snapshot.Sources {
+			for _, artifact := range []documents.ArtifactRecord{source.Original, source.Effective} {
+				var hash []byte
+				if e = db.QueryRow("SELECT sha256 FROM artifacts WHERE id=?", artifact.ID).Scan(&hash); e != nil || !bytes.Equal(hash, artifact.SHA256[:]) {
+					t.Fatal("frozen RenderSource identity mismatch", artifact.ID, e)
+				}
+			}
+			if source.Original.MediaType == "image/jpeg" {
+				photoSources++
+				if source.Original.SHA256 != sha256.Sum256(photoJPEG(t)) || source.Original.ID == source.Effective.ID {
+					t.Fatal("photo raw/effective lineage changed")
+				}
+			}
+		}
+	}
+	if photoSources < 4 {
+		t.Fatal("missing normalized/corrected/reOCR frozen source coverage", photoSources)
 	}
 	if e = os.WriteFile(filepath.Join(project, ".planning/phases/49-server-app-completion/49-03-BROWSER.json"), data, 0600); e != nil {
 		t.Fatal(e)

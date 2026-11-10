@@ -138,7 +138,7 @@ export function ocrResults(o:Options){
   if(candidate){
    const actions=document.createElement('div');actions.className='output-actions';
    const adopt=button('reocrAdopt',()=>void disposeCandidate('adopt'));
-   const discard=button('reocrDiscard',()=>void disposeCandidate('discard'));adopt.className='primary';
+   const discard=button('reocrDiscard',()=>void disposeCandidate('discard'));
    adopt.disabled=!!doc.active_job_id||candidate.input_revision!==doc.revision||!!readDisposition();discard.disabled=!!doc.active_job_id||!!readDisposition();
    async function disposeCandidate(action:'adopt'|'discard'){
     if(readDisposition())return;adopt.disabled=discard.disabled=true;
