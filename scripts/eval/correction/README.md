@@ -120,3 +120,26 @@ Invoke with the evaluation Python interpreter plus this script as argv, in a nor
 Tests in that disposable environment: `python -m unittest discover -s scripts/eval/correction -p test_docaligner_candidate.py`. The geometry boundary test needs the evaluation OpenCV package.
 
 Measured result: all10 synthetic model rows fell back with `unsafe-or-missing-corners`; no geometric/OCR quality or adoption proven. See [shared correction decision](../../../docs/design/shared-selective-correction.md). No-correction and the historical OpenCV arm used identical corpus/benchmark conditions. Expected failures stay separate from successful fixture rows.
+
+## v0.4.0 official UVDoc / edge evaluation
+
+`uvdoc_candidate.py` uses the unmodified official PaddlePaddle UVDoc ONNX export,
+revision `3bcf535371727d11e783101f79a504c68848aae3`, SHA256
+`54cab30dc2cf347b4f3d6971c833b1c3d84f5ef17280f1f6d15796bff20e63d6`.
+Supply `EVAL_UVDOC_MODEL`, `EVAL_CANDIDATE_ID` and the normal Phase44 candidate
+environment; the evaluation-only interpreter needs pinned CPU ORT, NumPy, OpenCV
+and Pillow. No production package was added. Use the existing offline bounded
+runner; do not run arbitrary document paths or install dependencies into production.
+
+The graph returns a corrected image with no map. Artifact parameters explicitly
+mark `transform_kind=opaque-nonlinear`, `map_status=unavailable` and
+`apply_eligible=false`. **Do not pass these outputs to the four-corner correction
+analyzer or production apply.** No crop_quad is fabricated. This adapter measures
+three same-session full-image passes; external cold/warm labels still mean separate
+processes, so compare timings with that distinction.
+
+Focused tests in the disposable evaluation environment:
+`python -m unittest discover -s scripts/eval/correction -p 'test_*.py'`.
+The new sampling convention tests additionally use installed PyTorch, CPU only.
+See [evaluation and non-adoption decision](../../../docs/design/edge-correction-evaluation-v040.md)
+and [nonlinear contract](../../../docs/design/nonlinear-correction-contract.md).
