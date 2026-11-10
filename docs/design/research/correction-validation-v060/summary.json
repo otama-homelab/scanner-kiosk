@@ -45,13 +45,13 @@
       "id": "VERIFY-01",
       "status": "not-run",
       "complete": false,
-      "evidence_scope": "3mask diagnostics measured (2fail IoU); complete CPU detection path and original6photo annotations unavailable."
+      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable."
     },
     {
       "id": "VERIFY-02",
       "status": "not-run",
       "complete": false,
-      "evidence_scope": "Additional3DocAligner/no-op crop comparisons measured-fail/allfallback; original6photo content validation missing; FairScan complete path unavailable."
+      "evidence_scope": "Existing completed paths on6synthetic controls: DocAligner5/6cornerpass entirely fallback(15/18samples), table3/3cornerfail; no-op6/6knownfullpagepass. Original6photo validation missing."
     },
     {
       "id": "VERIFY-03",
@@ -396,5 +396,9 @@
   "paired_synthetic_supplement": {
     "summary": "../correction-paired-v060/summary.json",
     "sha256": "2a87d19a7fc6eabc042616a879234400cc682d7d4003743eaad5190a172ae9c5"
+  },
+  "synthetic_detection_supplement": {
+    "summary": "../correction-detection-v060/summary.json",
+    "sha256": "e76abe34ab5bf5ddca6da0cdc4e9a494560e4eecf6ff6177d88debdd919ad319"
   }
 }

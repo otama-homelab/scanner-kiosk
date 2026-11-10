@@ -1,0 +1,1254 @@
+{
+  "rows": [
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "arms": {
+        "none": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_horizontal_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "b6caa85d454be4a15b6bd1e89510cb590378e98c9704ccba8c156541a57c3bce",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_horizontal_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "ebbd21c7bb40959dfe1d723f690a58f2b513e801db44d11161b1df4fda005fdd",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_horizontal_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "ab925de782b513e0c5bed349a1ba43608715fea11d6c50e2badf10b03c4b3889",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          }
+        ],
+        "docaligner": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_horizontal_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "730006806c9cedaf5187c1e72147c2f69f2fe546465d44eb9247ca5887a6ed4c",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_horizontal_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "bf2fb070b05b15cb0ec3b158db5187b8ed47cd6a26c59c8483d5e6358a5a6242",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_horizontal_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "fe9190a38847ecf6b21e42fe9dcb7045622d320b075e1f16e436950964a00e46",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          }
+        ]
+      },
+      "fairscan_mask": {
+        "iou": 0.0888671875,
+        "pass": false,
+        "forward_ms": 26.9172139960574,
+        "raw_sha256": "bd25809294a6aaf29f47fbfc774c21e6f929ec374235b4f910e7ccfefba47384"
+      }
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "arms": {
+        "none": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_mixed_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "e43613ccfed37853d0abed001956adca7244397bd1a45b0153a5743345e1ab69",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_mixed_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "490fc753df2b167734fd44caca8039dea398515831c1a0c709aa31377ed81357",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_mixed_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "2d8c53cfc02a500c582fcf0e25ea0c99915c1994765bc9269f18d7000d91cd5c",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          }
+        ],
+        "docaligner": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_mixed_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "1a2d218e9f9cf5ac550a358561e1da66446b481f498920acd37c9ad866787869",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_mixed_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "2e259cd34a8d70e8217384fb38410d0fccefb3dd92005d6ad509532311b556de",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_mixed_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "7037307f6d6313606e25c451ec41c9fb81f081493928f2007684d26a3c0fcc30",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          }
+        ]
+      },
+      "fairscan_mask": {
+        "iou": 0.109954833984375,
+        "pass": false,
+        "forward_ms": 18.639490997884423,
+        "raw_sha256": "a40db3353db3b74d345cccac750cebd68b8be8e62fc320a55b2f1136c99534db"
+      }
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "arms": {
+        "none": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_table_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "8d8aa459299aa67d27f29befe75cf99afd610b9734a34fcc859608db4c48d951",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_table_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "5d6a7fd8f2a152816610971b1764999886593f7af7b9ca35751269e84b47f73b",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_table_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "6a36929d2a534277bb4d18ff525c02c1f834f067ac2d14e93b5acc2fdc2f14b1",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          }
+        ],
+        "docaligner": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_table_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "3f6037cda05375eb8e42c87317ea276a3e8e31ec71a51393df71f64db0f959d3",
+            "quad": [
+              [
+                66.78526306152344,
+                66.29780578613281
+              ],
+              [
+                801.6804809570312,
+                66.73637390136719
+              ],
+              [
+                799.099609375,
+                343.5550537109375
+              ],
+              [
+                69.64363861083984,
+                344.52197265625
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0825351692601993,
+              0.10349593967605254,
+              0.3238247364161219,
+              0.31684127094769227
+            ],
+            "max_corner_error_diagonal": 0.3238247364161219,
+            "corner_pass": false,
+            "fallback": false,
+            "source_byte_identity": false
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_table_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "950dd10c4b77aee0f33e56a1c1c8daabca54441c2e1f5f5ee5df8305091705a7",
+            "quad": [
+              [
+                66.78526306152344,
+                66.29780578613281
+              ],
+              [
+                801.6804809570312,
+                66.73637390136719
+              ],
+              [
+                799.099609375,
+                343.5550537109375
+              ],
+              [
+                69.64363861083984,
+                344.52197265625
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0825351692601993,
+              0.10349593967605254,
+              0.3238247364161219,
+              0.31684127094769227
+            ],
+            "max_corner_error_diagonal": 0.3238247364161219,
+            "corner_pass": false,
+            "fallback": false,
+            "source_byte_identity": false
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_table_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "84fe7672226b8809b3b09dc5bf59319366d669d79d2f915ee36b743b14f9ee6c",
+            "quad": [
+              [
+                66.78526306152344,
+                66.29780578613281
+              ],
+              [
+                801.6804809570312,
+                66.73637390136719
+              ],
+              [
+                799.099609375,
+                343.5550537109375
+              ],
+              [
+                69.64363861083984,
+                344.52197265625
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0825351692601993,
+              0.10349593967605254,
+              0.3238247364161219,
+              0.31684127094769227
+            ],
+            "max_corner_error_diagonal": 0.3238247364161219,
+            "corner_pass": false,
+            "fallback": false,
+            "source_byte_identity": false
+          }
+        ]
+      },
+      "fairscan_mask": {
+        "iou": 0.3111419677734375,
+        "pass": false,
+        "forward_ms": 18.35497299907729,
+        "raw_sha256": "63de9de39e3b44c9c8f7f18989de6b30685d61907192df96bc91f790b74a3185"
+      }
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "arms": {
+        "none": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_vertical_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "9737b59d055492b4802796399b025cea12910ab89c43f02896ccd4cf5f366fa7",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_vertical_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "4123a3d92f451862782ccc5d442c0473d501eddda8e335da71393dcd4a9ce06d",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_vertical_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "4681a0437a8978eed2961b400a88b951892aa9b6f7a7d714f38c042e76d4580b",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          }
+        ],
+        "docaligner": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_vertical_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "c480b0ca1ad5ef6a382c662c5eb322ffde19eea1737d9dbd2a887aab01f745bb",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_vertical_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "4e2f2e90f59af260193079029ae42d8976ca6fb98f8ee4d987fa90b1b56f1516",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_vertical_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "b5daa2dc0b3b4fc79e949ed88ca9eef7201ba872fef4fc6f008fbf549fe03065",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          }
+        ]
+      },
+      "fairscan_mask": {
+        "iou": 0.0870513916015625,
+        "pass": false,
+        "forward_ms": 19.265794995590113,
+        "raw_sha256": "de5aa8c3a37aa964e3716023ca0866daabdc594f5b47e6ee9deda5c6a918cf07"
+      }
+    },
+    {
+      "id": "fixture_ocr_columns_001",
+      "arms": {
+        "none": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_columns_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "fe4d4e90410fabda28d91b3a0a133b217cee0fe55257d14d25d69da992a636e7",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_columns_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "c8b09f9f281eadfceb6738521e0fba8abb59e13a7b1e6dedbcbfb6c0adc0276d",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_columns_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "501ca8515f4e6040e8ebcbb78a57a01a9b33ca9079d2caf5969b39bc6de0f4fb",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          }
+        ],
+        "docaligner": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_columns_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "08f667e01cc0222a353859653aabdc301cdad98b19b33c14d77aa9a8d55548de",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_columns_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "74f2e4a22bbf3ddaf070d930bec5aeec7debc128f9520dc9784df88469d5d05d",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_columns_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "19f7c05803770f905c4ff9b22bef9f71b60302e6c7e43d67f32dacbb524799b4",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          }
+        ]
+      },
+      "fairscan_mask": {
+        "iou": 0.1926422119140625,
+        "pass": false,
+        "forward_ms": 19.07764699717518,
+        "raw_sha256": "67be1d8a7b19f92696791f73f39ea397824c3665ddfc9a0e3c13f967fd258877"
+      }
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "arms": {
+        "none": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_wrapped_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "8d53e7c7e792fc231fc3258f242faf90e4342de8e1211c1408071932327f6245",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_wrapped_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "4e4ee65c87b0e5c1764f9bb34d36103a13461a90639b36ffab0eb6cba0140ec3",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/none-fixture_ocr_wrapped_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "c1815f7f81125cf941e80113e0b8630dd646ab3dc4c72627dffa69c6705112d1",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                899,
+                0
+              ],
+              [
+                899,
+                699
+              ],
+              [
+                0,
+                699
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "max_corner_error_diagonal": 0.0,
+            "corner_pass": true,
+            "fallback": false,
+            "source_byte_identity": true
+          }
+        ],
+        "docaligner": [
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_wrapped_001/repetitions/001-cold/artifact-catalog.json",
+            "catalog_sha256": "96703f06af5f1a17ae42a77e259c5e045faef31c3fb62342ec55ee246b501fd1",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_wrapped_001/repetitions/002-warm/artifact-catalog.json",
+            "catalog_sha256": "45cd11396477b7f7e847d08e3c18d55ce46b6f0570e5f4274fe71539dd4bb900",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          },
+          {
+            "catalog": "/tmp/scanner-v060-synthetic/docaligner-fixture_ocr_wrapped_001/repetitions/003-warm/artifact-catalog.json",
+            "catalog_sha256": "a11fc2c40fdb22bd7e5e074a1c0f501e5fd109a0195fe6d3f43228a536d8bf1c",
+            "quad": [
+              [
+                0,
+                0
+              ],
+              [
+                900,
+                0
+              ],
+              [
+                900,
+                700
+              ],
+              [
+                0,
+                700
+              ]
+            ],
+            "corner_errors_diagonal": [
+              0.0,
+              0.0008770580193070292,
+              0.0012403473458920847,
+              0.0008770580193070292
+            ],
+            "max_corner_error_diagonal": 0.0012403473458920847,
+            "corner_pass": true,
+            "fallback": true,
+            "source_byte_identity": true
+          }
+        ]
+      },
+      "fairscan_mask": {
+        "iou": 0.0004730224609375,
+        "pass": false,
+        "forward_ms": 23.432112007867545,
+        "raw_sha256": "38e61545000f343a00fbdc80ca4ad04da52b4bd7a1a72fc38d4952ce475cb460"
+      }
+    }
+  ],
+  "mask_process_peak_rss_bytes": 634896384,
+  "scope": "mask diagnostic only; published normalization/clamp/threshold with Pillow resize, not Android parity or full detector. Existing DocAligner runs reused, no rerun.",
+  "summary": {
+    "fairscan_mask_pass": 0,
+    "docaligner_corner_pass_cases": 5,
+    "docaligner_fallback_samples": 15,
+    "samples_per_arm": 18
+  }
+}

@@ -78,3 +78,9 @@ Owner-authorized generated-input route now supplies6aligned shadow/reference pai
 Evidence: [paired manifest and replay helpers](research/correction-paired-v060/summary.json). No-op shadow PSNR16.91–19.72dB; improvement0dB, so it fails the1dB shadow-removal target. Clean identity baseline has MAE0 and exact SSIM1 by identity. No eligible illumination model was executed; these baseline checks are not a model comparison or real-shadow validation.
 
 TRUTH-03 is complete only within the explicitly authorized synthetic alternative. Current ledger6/14complete,8open. Phase65 still lacks mandatoryphoto2_2 content truth. FairScan full detection, original-photo comparisons, eligible illumination weights and owner-device acceptance remain unresolved. No milestone archive, deployment, external message or second physical scan.
+
+## Synthetic detection supplement
+
+[Evidence and replay](research/correction-detection-v060/summary.json): the previously fixed6renderer-known full-canvas controls were measured with the existing FairScan LiteRT normalization/clamp/threshold path. IoU>=0.95:0/6. Pillow resize remains unverified against Android; no mask-to-quad or custom detection is added. One diagnostic process peakRSS634,896,384B; forward-only times are not complete detector timing or cold/warm product qualification.
+
+Existing no-op and DocAligner results were reused with source/catalog hashes checked (18samples/arm). Against known page corners, no-op passes6/6; DocAligner passes5/6 but all15passing samples are source-identical fallback. The table's3samples crop inward and fail2%corner error. This does not supply original6real-photo labels or qualify FairScan's complete path. Requirements remain6/14complete,8open. No release/deployment/model adoption.

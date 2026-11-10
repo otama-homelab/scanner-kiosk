@@ -1,0 +1,52 @@
+{
+  "scope": "synthetic full-page controls only; FairScan mask diagnostic not full detection",
+  "summary": {
+    "fairscan_mask_pass": 0,
+    "docaligner_corner_pass_cases": 5,
+    "docaligner_fallback_samples": 15,
+    "samples_per_arm": 18
+  },
+  "raw_arrays": [
+    {
+      "path": "/tmp/scanner-v060-detection/fixture_ocr_columns_001-mask-raw.npy",
+      "sha256": "67be1d8a7b19f92696791f73f39ea397824c3665ddfc9a0e3c13f967fd258877"
+    },
+    {
+      "path": "/tmp/scanner-v060-detection/fixture_ocr_horizontal_001-mask-raw.npy",
+      "sha256": "bd25809294a6aaf29f47fbfc774c21e6f929ec374235b4f910e7ccfefba47384"
+    },
+    {
+      "path": "/tmp/scanner-v060-detection/fixture_ocr_mixed_001-mask-raw.npy",
+      "sha256": "a40db3353db3b74d345cccac750cebd68b8be8e62fc320a55b2f1136c99534db"
+    },
+    {
+      "path": "/tmp/scanner-v060-detection/fixture_ocr_table_001-mask-raw.npy",
+      "sha256": "63de9de39e3b44c9c8f7f18989de6b30685d61907192df96bc91f790b74a3185"
+    },
+    {
+      "path": "/tmp/scanner-v060-detection/fixture_ocr_vertical_001-mask-raw.npy",
+      "sha256": "de5aa8c3a37aa964e3716023ca0866daabdc594f5b47e6ee9deda5c6a918cf07"
+    },
+    {
+      "path": "/tmp/scanner-v060-detection/fixture_ocr_wrapped_001-mask-raw.npy",
+      "sha256": "38e61545000f343a00fbdc80ca4ad04da52b4bd7a1a72fc38d4952ce475cb460"
+    }
+  ],
+  "files": [
+    {
+      "file": "measure.py",
+      "bytes": 3284,
+      "sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d"
+    },
+    {
+      "file": "metrics.json",
+      "bytes": 35037,
+      "sha256": "3789de648ddd47501f67547d814ec8c446c87ead76f8dbcafecb066044b08fbb"
+    },
+    {
+      "file": "preregistration.json",
+      "bytes": 1282,
+      "sha256": "4eacbc0f5b07721e218917be47ff34de8f57803eb7b4e33afb2f4b23bb56fa8f"
+    }
+  ]
+}
