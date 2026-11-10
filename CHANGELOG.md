@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+- Preserve original documents while previewing, applying and undoing optional image corrections. Normal fixed-area scanning and no-correction defaults remain.
+- Add revision-bound reOCR with source-linked comparison, explicit adoption/discard and cancellation/failure recovery.
+- Import JPEG/PNG photos with immutable originals, orientation normalization, manual crop/rotation and consistent preview, PDF Save and reOCR pixels. Automatic perspective, shadow and curved-page correction are not included.
+- Add explicit reviewed-PDF Paperless delivery with a durable single-attempt ledger, asynchronous task/checksum reconciliation and safe unknown-result recovery.
+- Keep Save primary across phone/desktop scan, PDF and photo workflows; add source-linked filename suggestions.
+- Record reproducible correction/OCR evaluations and browser/native/monetization decisions. Heavy candidate adoption, new clients and billing remain deferred.
+
 ## 0.1.4
 
 - Docker-first Linux amd64 deployment with separate API and worker roles, Compose examples and a Helm chart.
