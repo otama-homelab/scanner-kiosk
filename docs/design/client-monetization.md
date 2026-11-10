@@ -1,6 +1,6 @@
 # Client and monetization comparison
 
-**Evidence reviewed:** 2026-11-10. Requirements: CLIENT-01 / APP-01. This is comparison evidence for the later DEC-01 record; it makes no client or commercial adoption decision.
+**Evidence reviewed:** 2026-11-10. Requirements: CLIENT-01 / APP-01. This is comparison evidence for the [canonical DEC-01 record](v0.2-decisions.md); it makes no client or commercial adoption decision.
 
 ## Scope and evidence classes
 
