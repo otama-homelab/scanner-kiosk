@@ -48,6 +48,9 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if err = os.MkdirAll(filepath.Join(project, ".planning/phases/49-server-app-completion"), 0700); err != nil {
+		t.Fatal(err)
+	}
 	build := exec.Command("npm", "--prefix", "web", "run", "build")
 	build.Dir = project
 	if out, e := build.CombinedOutput(); e != nil {

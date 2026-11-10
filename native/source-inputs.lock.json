@@ -10,14 +10,14 @@
     {
       "bytes": 1579,
       "path": "recipes/07061cb5a28861b108b09adc09ebd4fd962e549f/main/fontconfig/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "4648e5c02e92ebdd7cc0a3cdb837f8054842318cf6708ed3995c871ecb6f0d40",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/07061cb5a28861b108b09adc09ebd4fd962e549f/main/fontconfig/APKBUILD"
     },
     {
       "bytes": 820,
       "path": "recipes/07061cb5a28861b108b09adc09ebd4fd962e549f/main/fontconfig/fix-arithmetic.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "8c8d09c69e6b53519c1ee0a24afe682e84ed838c6aa446c30fa0a89cb1450e12",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/07061cb5a28861b108b09adc09ebd4fd962e549f/main/fontconfig/fix-arithmetic.patch"
     },
@@ -108,7 +108,7 @@
     {
       "bytes": 782,
       "path": "recipes/1543d6c40b88eb15671cfcfd07acc40f12f16b48/community/poppler-data/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "12ab1bfd9e6ab023a0cb21f4b3c91ba67880bbfb2c0ac9553b84f6910aa0d862",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/1543d6c40b88eb15671cfcfd07acc40f12f16b48/community/poppler-data/APKBUILD"
     },
@@ -192,49 +192,49 @@
     {
       "bytes": 2540,
       "path": "recipes/33283848034c9885d984c8e8697c645c57324938/main/bzip2/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "7e046e9c4b1c265af9791a790049ed864c361c0949b9cd68564a48bc0f672de2",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/33283848034c9885d984c8e8697c645c57324938/main/bzip2/APKBUILD"
     },
     {
       "bytes": 6141,
       "path": "recipes/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.2-progress.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "a76f6d082a1a1fef2eff111177d7c7568e1d457fb2b98cde71bbbe6ea1c7c787",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.2-progress.patch"
     },
     {
       "bytes": 165,
       "path": "recipes/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.3-no-test.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "3478e797662d85996c03d3b7612d548d2d377fe7efc3dc190332741a11082ef6",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.3-no-test.patch"
     },
     {
       "bytes": 585,
       "path": "recipes/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.4-makefile-CFLAGS.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "f8cc63dcebef734154cc36c3ef963158ff2be6fc2d183cff49b627d570336628",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.4-makefile-CFLAGS.patch"
     },
     {
       "bytes": 413,
       "path": "recipes/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.4-man-links.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "1fc9d91f3f7bd3eecd86149b9c95b3162d9d7956f7de543aa8bc41cbcd04f88b",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2-1.0.4-man-links.patch"
     },
     {
       "bytes": 230,
       "path": "recipes/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2.pc.in",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "eca9d8cd6376df1fb5442667c603032023fb21d8d183684550da0b96ade39654",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/33283848034c9885d984c8e8697c645c57324938/main/bzip2/bzip2.pc.in"
     },
     {
       "bytes": 728,
       "path": "recipes/33283848034c9885d984c8e8697c645c57324938/main/bzip2/saneso.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "0d6e3221c3db90ccbaec2c3c44afdfdd055093f4650a4e2f1a9b97cf48b69671",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/33283848034c9885d984c8e8697c645c57324938/main/bzip2/saneso.patch"
     },
@@ -248,49 +248,49 @@
     {
       "bytes": 5104,
       "path": "recipes/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "1b7d5f06e78fe976463931af86a3e625bc90f23a524a4e35012f44b30eb06024",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/APKBUILD"
     },
     {
       "bytes": 1955,
       "path": "recipes/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/gyp-config.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "d3627348d29bfef989e75a4f276dc996818caffd66f25f63ddb39680c68ca24e",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/gyp-config.patch"
     },
     {
       "bytes": 300,
       "path": "recipes/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/no-werror.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "7cde9c6eb5fe104e65ed52c9baac3e2eb042a4b1dec48f154396efd00394f356",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/no-werror.patch"
     },
     {
       "bytes": 2488,
       "path": "recipes/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss-config.in",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "e44ac5095b4d88f24ec7b2e6a9f1581560bd3ad41a3d198596d67ef22f67adb9",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss-config.in"
     },
     {
       "bytes": 326,
       "path": "recipes/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss-softokn.pc.in",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "caf627f589517c42c49540ddf41a061bb88d9ee347ff35ea555689e5421c5774",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss-softokn.pc.in"
     },
     {
       "bytes": 266,
       "path": "recipes/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss-util.pc.in",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "cffebbc5d4dbc80ccd9f821a71fb4ea3a09183870b9833d8e0d119d9542f456e",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss-util.pc.in"
     },
     {
       "bytes": 252,
       "path": "recipes/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss.pc.in",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "b9f1428ca2305bf30b109507ff335fa00bce5a7ce0434b50acd26ad7c47dd5bd",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/422faa8d3631e64d35b5b210b698a05cac32f2be/main/nss/nss.pc.in"
     },
@@ -619,21 +619,21 @@
     {
       "bytes": 1929,
       "path": "recipes/4e10628e0ece580cd8f88bec18b55ddbd0be249a/main/nspr/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "571b2779ea2d19bf032ec20e62e7aceca204c5f6060c5823a189a15979ba4099",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/4e10628e0ece580cd8f88bec18b55ddbd0be249a/main/nspr/APKBUILD"
     },
     {
       "bytes": 508,
       "path": "recipes/4e10628e0ece580cd8f88bec18b55ddbd0be249a/main/nspr/lfs64.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "b7a93a454814a3256091c7ced364026128946b73bce2a66035d5cbb5c46473fc",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/4e10628e0ece580cd8f88bec18b55ddbd0be249a/main/nspr/lfs64.patch"
     },
     {
       "bytes": 2518,
       "path": "recipes/5e1b822309fb17cc2ebd46d6fbacb1763acbcdd1/main/poppler/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "6f9c02bad74dada45d80bfdef7c2ab9b4219ffc78c6f93a4530673e3c1eaa4cd",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/5e1b822309fb17cc2ebd46d6fbacb1763acbcdd1/main/poppler/APKBUILD"
     },
@@ -892,35 +892,35 @@
     {
       "bytes": 2275,
       "path": "recipes/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "f3a9cd80e85de497c7811222fbdb2ce5805b8fbc4866b214171e10ee809c8609",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/APKBUILD"
     },
     {
       "bytes": 550,
       "path": "recipes/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/pcf-family-names.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "5fc0fa5b1ea27721df648e3b1510b89f749f3a8a381c83a4324471efa46be0a1",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/pcf-family-names.patch"
     },
     {
       "bytes": 586,
       "path": "recipes/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/subpixel.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "2842df91ec228e40e34ffaea5f60137a311106e1e1a125a5af67fcf530eeb5e0",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/subpixel.patch"
     },
     {
       "bytes": 558,
       "path": "recipes/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/table-validation-modules.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "90a6a88e59ad8dabfe8e66145e77d6a7c648b0c3439ac341766e3667d144f33f",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/ad16b0afc1a315c4095a75ff72ebbe3cfa29b671/main/freetype/table-validation-modules.patch"
     },
     {
       "bytes": 2663,
       "path": "recipes/af0fa42036cd6e626768c0d65fddaa1d1b30cf21/main/expat/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "8f6b72616d400bf56d24b6577a7843901e2a4d4da29339693e19f76e928646ed",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/af0fa42036cd6e626768c0d65fddaa1d1b30cf21/main/expat/APKBUILD"
     },
@@ -934,28 +934,28 @@
     {
       "bytes": 1323,
       "path": "recipes/b103184b887bd33a5672484a96704363084b2901/main/lcms2/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "4358dd9c19c5dc38346963bd02efaa1d74d367826f4d326b6f06556a2e99060a",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/b103184b887bd33a5672484a96704363084b2901/main/lcms2/APKBUILD"
     },
     {
       "bytes": 2320,
       "path": "recipes/b6d19fe5cb62ff83b899e224cd2408868fc21e5e/main/openjpeg/APKBUILD",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "7bee256f2d6fd4b80e583eb34aef808df77bdb1fc2a7930de265bfedc1ab2e39",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/b6d19fe5cb62ff83b899e224cd2408868fc21e5e/main/openjpeg/APKBUILD"
     },
     {
       "bytes": 1294,
       "path": "recipes/b6d19fe5cb62ff83b899e224cd2408868fc21e5e/main/openjpeg/CVE-2026-6192.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "11629189432e52a0325b047ad0b8aa396434d0088ff8f545039121751b88f0fc",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/b6d19fe5cb62ff83b899e224cd2408868fc21e5e/main/openjpeg/CVE-2026-6192.patch"
     },
     {
       "bytes": 1689,
       "path": "recipes/b6d19fe5cb62ff83b899e224cd2408868fc21e5e/main/openjpeg/OSV-2025-219.patch",
-      "role": "apk-recipe-input",
+      "role": "apk-recipe",
       "sha256": "233bf4c149d7740dd802c36c3e78e80352454b27d5579c1a4ef3260c2f4e90a1",
       "url": "https://raw.githubusercontent.com/alpinelinux/aports/b6d19fe5cb62ff83b899e224cd2408868fc21e5e/main/openjpeg/OSV-2025-219.patch"
     },

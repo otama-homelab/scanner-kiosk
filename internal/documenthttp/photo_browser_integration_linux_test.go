@@ -31,6 +31,9 @@ func photoBrowser(t *testing.T, scenario string) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if err = os.MkdirAll(filepath.Join(root, ".planning/phases/49-server-app-completion"), 0700); err != nil {
+		t.Fatal(err)
+	}
 	photoBuild.Do(func() {
 		dir, e := os.MkdirTemp("", "scanner-photo-browser-build-")
 		if e != nil {

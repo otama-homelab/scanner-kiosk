@@ -154,7 +154,7 @@ jobs:
           node -e 'const p=require(process.argv[1]); console.log("SCANNER_TEST_CHROMIUM="+p.chromium.executablePath())' "$RUNNER_TEMP/browser-test/node_modules/playwright-core" >> "$GITHUB_ENV"
           python3 scripts/build-web.py --output "$RUNNER_TEMP/test-scanner"
       - name: Go contracts and race checks
-        run: go test -race -count=1 ./...
+        run: go test -race -p 1 -count=1 ./...
       - name: Release-profile large color PDF regression
         env:
           CGO_ENABLED: '0'

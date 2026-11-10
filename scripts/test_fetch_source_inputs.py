@@ -30,6 +30,14 @@ class FetchSourceInputsTest(unittest.TestCase):
             self.requested = factory.return_value.open.call_count
             return result
 
+    def test_production_lock_matches_fetch_contract(self):
+        root = Path(__file__).resolve().parents[1]
+        spec = importlib.util.spec_from_file_location('fetch_sources', root/'scripts/fetch-source-inputs.py')
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        lock = json.loads((root/'native/source-inputs.lock.json').read_text())
+        self.assertEqual(module.validate(lock), lock['files'])
+
     def test_downloads_only_verified_bytes_and_finishes_receipt(self):
         result = self.fetch()
         self.assertTrue(result['complete'])
