@@ -24,6 +24,15 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    await page.reload();await page.getByRole('button',{name:'Check import request',exact:true}).waitFor();await page.getByRole('button',{name:'Check import request',exact:true}).click();await review();
    assert.equal(requests.filter(r=>r.path==='/api/documents/import').length,1);assert.equal(requests.filter(r=>r.path.endsWith('/reconcile')).length,1);assert.equal(requests[0].key,requests[1].key);
    const history=await page.evaluate(async()=>{const r=await fetch('/api/documents');return r.json()});assert.equal(history.items.length,1);assert.equal(await page.evaluate(()=>sessionStorage.getItem('scanner.photo.import')),null);checks.push('one upload, reload identity-only reconciliation, one document');
+  }else if(scenario==='manual'){
+   await upload(picker,images[0]);const doc=await review();
+   assert.equal(await page.getByRole('button',{name:'Crop photo',exact:true}).count(),1,'manual normalized crop control must exist');
+   await page.getByRole('button',{name:'Crop photo',exact:true}).click();await page.getByLabel('Left',{exact:true}).fill('8');await page.getByLabel('Width',{exact:true}).fill('64');await page.getByRole('button',{name:'Preview crop',exact:true}).click();
+   const canvas=page.locator('.photo-crop canvas');assert.equal(await canvas.getAttribute('width'),'64');await page.getByRole('button',{name:'Cancel',exact:true}).click();
+   const read=()=>page.evaluate(async id=>(await fetch('/api/documents/'+id)).json(),doc.id);assert.equal((await read()).revision,doc.revision);
+   await page.getByRole('button',{name:'Crop photo',exact:true}).click();await page.getByLabel('Left',{exact:true}).fill('8');await page.getByLabel('Width',{exact:true}).fill('64');await page.getByRole('button',{name:'Preview crop',exact:true}).click();await page.getByRole('button',{name:'Apply crop',exact:true}).click();
+   await page.waitForFunction(async id=>(await (await fetch('/api/documents/'+id)).json()).revision>1,doc.id);await page.locator('h1[data-document-title]').waitFor();await page.getByRole('button',{name:'Crop photo',exact:true}).click();await page.getByRole('button',{name:'Undo crop',exact:true}).click();await page.waitForFunction(async id=>(await (await fetch('/api/documents/'+id)).json()).revision>2,doc.id);
+   assert.equal((await read()).pages[0].correction?.state,undefined);checks.push('numeric crop preview/cancel/apply/undo preserves baseline and revision');
   }else{
    await camera.dispatchEvent('cancel');assert(await page.getByRole('button',{name:'Photos / Files',exact:true}).isEnabled());
    await upload(camera,images[1]);await review();
