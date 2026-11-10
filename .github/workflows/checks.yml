@@ -151,10 +151,25 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/browser-test" --ignore-scripts --no-audit --no-fund playwright-core@1.63.0
           node "$RUNNER_TEMP/browser-test/node_modules/playwright-core/cli.js" install --with-deps chromium
           echo "SCANNER_TEST_PLAYWRIGHT_MODULE=$RUNNER_TEMP/browser-test/node_modules/playwright-core" >> "$GITHUB_ENV"
-          node -e 'const p=require(process.argv[1]); console.log("SCANNER_TEST_CHROMIUM="+p.chromium.executablePath())' "$RUNNER_TEMP/browser-test/node_modules/playwright-core" >> "$GITHUB_ENV"
+          chromium=$(node -e 'console.log(require(process.argv[1]).chromium.executablePath())' "$RUNNER_TEMP/browser-test/node_modules/playwright-core")
+          echo "SCANNER_TEST_CHROMIUM=$chromium" >> "$GITHUB_ENV"
+          # Keep Chromium's namespace sandbox; allow only this runner's pinned executable.
+          printf 'profile scanner-ci-chromium "%s" flags=(unconfined) { userns, }\n' "$chromium" | sudo tee /etc/apparmor.d/scanner-ci-chromium
+          sudo apparmor_parser -r /etc/apparmor.d/scanner-ci-chromium
           python3 scripts/build-web.py --output "$RUNNER_TEMP/test-scanner"
       - name: Go contracts and race checks
-        run: go test -race -p 1 -count=1 ./...
+        run: |
+          go list ./... > "$RUNNER_TEMP/go-packages.txt"
+          packages=()
+          while IFS= read -r package; do
+            case "$package" in
+              scanner-kiosk/internal/documenthttp|scanner-kiosk/internal/workerruntime) ;;
+              *) packages+=("$package") ;;
+            esac
+          done < "$RUNNER_TEMP/go-packages.txt"
+          test "${#packages[@]}" -gt 0
+          go test -race -count=1 "${packages[@]}"
+          go test -race -p 1 -count=1 ./internal/documenthttp ./internal/workerruntime
       - name: Release-profile large color PDF regression
         env:
           CGO_ENABLED: '0'

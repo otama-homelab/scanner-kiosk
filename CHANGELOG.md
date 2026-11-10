@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3
+
+- Allow the pinned test Chromium executable to create its sandbox on Ubuntu AppArmor runners; keep Chromium sandboxing enabled.
+- Serialize only the two integration packages that share frontend builds; retain race checks across every Go package.
+- Earlier v0.2.x candidate tags did not produce a published release.
+
 ## 0.2.2
 
 - Align corresponding-source recipe roles with the native acquisition contract and validate the actual production lock.
