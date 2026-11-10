@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- Prepare the verified native PDF runtime, Japanese font and pinned Chromium/Playwright dependencies before CI integration tests.
+- Preserve safe package-specific diagnostics when locked APK acquisition fails.
+- v0.2.0 candidate failed CI and was not published; this release includes its document-processing and UX changes below.
+
 ## 0.2.0
 
 - Preserve original documents while previewing, applying and undoing optional image corrections. Normal fixed-area scanning and no-correction defaults remain.

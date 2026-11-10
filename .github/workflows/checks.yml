@@ -28,6 +28,10 @@ jobs:
         run: python3 scripts/check-release-ref.py --ref "$GITHUB_REF" --sha "$GITHUB_SHA"
 
   test-and-build:
+    needs: candidate-build
+    permissions:
+      contents: read
+      actions: read
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -134,6 +138,21 @@ jobs:
         run: python3 -m unittest discover -s scripts -p test_build_standalone.py -v
       - name: Single-file packager and tagged launcher safety checks
         run: python3 -m unittest discover -s scripts -p test_pack_standalone.py -v
+      - name: Download the same-run verified native test runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$GITHUB_RUN_ID" --name "native-test-runtime-$GITHUB_SHA-$GITHUB_RUN_ATTEMPT" --dir "$RUNNER_TEMP/native-test"
+      - name: Prepare PDF and browser test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends poppler-utils fonts-ipafont-gothic
+          tar -xf "$RUNNER_TEMP/native-test/native.tar" -C "$RUNNER_TEMP/native-test"
+          echo "SCANNER_TEST_PDF_RUNTIME=$RUNNER_TEMP/native-test/native" >> "$GITHUB_ENV"
+          npm install --prefix "$RUNNER_TEMP/browser-test" --ignore-scripts --no-audit --no-fund playwright-core@1.63.0
+          node "$RUNNER_TEMP/browser-test/node_modules/playwright-core/cli.js" install --with-deps chromium
+          echo "SCANNER_TEST_PLAYWRIGHT_MODULE=$RUNNER_TEMP/browser-test/node_modules/playwright-core" >> "$GITHUB_ENV"
+          node -e 'const p=require(process.argv[1]); console.log("SCANNER_TEST_CHROMIUM="+p.chromium.executablePath())' "$RUNNER_TEMP/browser-test/node_modules/playwright-core" >> "$GITHUB_ENV"
+          python3 scripts/build-web.py --output "$RUNNER_TEMP/test-scanner"
       - name: Go contracts and race checks
         run: go test -race -count=1 ./...
       - name: Release-profile large color PDF regression
@@ -216,6 +235,13 @@ jobs:
           node-version: '24.22.2'
       - name: Build locked native payload from cold official inputs
         run: python3 scripts/build-native.py --output-dir "$RUNNER_TEMP/native" --retain-sources
+      - name: Retain verified native runtime for source integration tests
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: native-test-runtime-${{ github.sha }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: ${{ runner.temp }}/native/native.tar
       - name: Build frontend, API, internal onefile and both runtime images
         run: |
           if [ "$GITHUB_EVENT_NAME" = push ]; then

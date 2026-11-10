@@ -97,6 +97,15 @@ class NativeAPKFetchTests(unittest.TestCase):
                     self.fetch()
                 self.assertFalse(self.output.exists())
 
+    def test_failure_diagnostic_contains_only_public_identity_and_status(self):
+        self.fail = 'fetch'
+        stderr = io.StringIO()
+        with patch.object(module.sys, 'stderr', stderr):
+            with self.assertRaises(urllib.error.HTTPError):
+                self.fetch()
+        self.assertEqual(stderr.getvalue(), 'locked APK failure: fixture-1.0-r0.apk HTTPError status=503\n')
+        self.assertFalse(self.output.exists())
+
     def test_invalid_lock_is_rejected_before_external_tool(self):
         original = copy.deepcopy(self.lock)
         variants = []

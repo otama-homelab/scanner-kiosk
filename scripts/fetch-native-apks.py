@@ -13,9 +13,11 @@ from pathlib import Path
 import re
 import shutil
 import stat
+import sys
 import subprocess
 import tempfile
 import urllib.request
+import urllib.error
 
 spec = importlib.util.spec_from_file_location('prepare_native', Path(__file__).with_name('prepare-native-apks.py'))
 prepare = importlib.util.module_from_spec(spec)
@@ -98,9 +100,15 @@ def fetch(lock_path, keys, apk, output):
             url = ('https://dl-cdn.alpinelinux.org/alpine/v3.24/'+package['repository']
                    +'/x86_64/'+package['filename'])
             request = urllib.request.Request(url, headers={'User-Agent': 'scanner-kiosk-build-inputs'})
-            with opener.open(request, timeout=30) as response:
-                prepare.write_verified(response, work/'verified'/package['filename'],
-                                       package['bytes'], package['sha256'], 0o444)
+            try:
+                with opener.open(request, timeout=30) as response:
+                    prepare.write_verified(response, work/'verified'/package['filename'],
+                                           package['bytes'], package['sha256'], 0o444)
+            except (OSError, ValueError) as exc:
+                # Public lock identity only; never print response bodies or exception paths.
+                status = exc.code if isinstance(exc, urllib.error.HTTPError) else None
+                print(f"locked APK failure: {package['filename']} {type(exc).__name__} status={status}", file=sys.stderr)
+                raise
         subprocess.run([str(apk), '--no-network', '--keys-dir', str(work/'keys'), 'verify',
                         *[str(work/'verified'/package['filename']) for package in packages]],
                        stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
