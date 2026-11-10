@@ -1,0 +1,771 @@
+{
+  "milestone": "v0.5.0",
+  "date": "2026-11-10",
+  "decision": "no-adoption",
+  "live_version": "v0.2.5",
+  "custom_correction_algorithm": false,
+  "new_production_dependencies": false,
+  "model_acquisition": [
+    {
+      "name": "fairscan-segmentation-model.tflite",
+      "url": "https://github.com/pynicolas/fairscan-segmentation-model/releases/download/v1.2.0/fairscan-segmentation-model.tflite",
+      "bytes": 4921040,
+      "sha256": "96e14d7e610dd0c27b768b228fbc553b4ec119ebe68f3a3594029a25400691d2",
+      "publisher_digest_verified": true
+    },
+    {
+      "name": "LICENSE.txt",
+      "url": "https://github.com/pynicolas/fairscan-segmentation-model/releases/download/v1.2.0/LICENSE.txt",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "publisher_digest_verified": true
+    },
+    {
+      "name": "uvdoc-README.md",
+      "url": "https://huggingface.co/PaddlePaddle/UVDoc_safetensors/resolve/bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4/README.md",
+      "bytes": 1224,
+      "sha256": "71a5cdeacc6cd30bc6c79de9c23193629c14cacde6a666cea5b6163f27d6dd44",
+      "publisher_digest_verified": false
+    },
+    {
+      "name": "uvdoc-config.json",
+      "url": "https://huggingface.co/PaddlePaddle/UVDoc_safetensors/resolve/bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4/config.json",
+      "bytes": 1421,
+      "sha256": "7cab8c18905afaca325792ddba0dfc73a13dcadd886a5a7c008dabcb7fae7dd1",
+      "publisher_digest_verified": false
+    },
+    {
+      "name": "uvdoc-model.safetensors",
+      "url": "https://huggingface.co/PaddlePaddle/UVDoc_safetensors/resolve/bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4/model.safetensors",
+      "bytes": 31667380,
+      "sha256": "65f980e3083b4919d962d7b4c8ddb42a926dc8b36f4909944746cf2d7b7325dc",
+      "publisher_digest_verified": true
+    },
+    {
+      "name": "uvdoc-preprocessor_config.json",
+      "url": "https://huggingface.co/PaddlePaddle/UVDoc_safetensors/resolve/bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4/preprocessor_config.json",
+      "bytes": 240,
+      "sha256": "d117e9226a945206cfb76a9d75d3ae5483080d90b48a34253626444b61771436",
+      "publisher_digest_verified": false
+    }
+  ],
+  "corpus_manifest": [
+    {
+      "id": "fixture_docunet_crop_1_1_copy",
+      "source_archive": "crop.zip",
+      "member": "crop/1_1 copy.png",
+      "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+      "width": 1137,
+      "height": 1521,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_crop_1_2_copy",
+      "source_archive": "crop.zip",
+      "member": "crop/1_2 copy.png",
+      "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+      "width": 1265,
+      "height": 1636,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_crop_2_1_copy",
+      "source_archive": "crop.zip",
+      "member": "crop/2_1 copy.png",
+      "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+      "width": 1155,
+      "height": 2352,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_crop_2_2_copy",
+      "source_archive": "crop.zip",
+      "member": "crop/2_2 copy.png",
+      "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "width": 1365,
+      "height": 2421,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_crop_3_1_copy",
+      "source_archive": "crop.zip",
+      "member": "crop/3_1 copy.png",
+      "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+      "width": 1117,
+      "height": 1701,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_crop_3_2_copy",
+      "source_archive": "crop.zip",
+      "member": "crop/3_2 copy.png",
+      "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+      "width": 950,
+      "height": 1604,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_scan_1",
+      "source_archive": "scan.zip",
+      "member": "scan/1.png",
+      "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "width": 1265,
+      "height": 1770,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_scan_2",
+      "source_archive": "scan.zip",
+      "member": "scan/2.png",
+      "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "width": 944,
+      "height": 2702,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    },
+    {
+      "id": "fixture_docunet_scan_3",
+      "source_archive": "scan.zip",
+      "member": "scan/3.png",
+      "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "width": 938,
+      "height": 1901,
+      "public_source": "DocUNet evaluation benchmark",
+      "ingestion_label": "owner-private only as local protected-file transport, not actual provenance"
+    }
+  ],
+  "frozen_contract_sha256": "48f3518928e8082905016837d3b903cf6376373732414eee3232a404c767a3a3",
+  "uvdoc_resource_summary": {
+    "benchmark_count": 9,
+    "process_samples": 27,
+    "status": "resource-rejected",
+    "failure": "rss",
+    "accepted_artifacts": 0,
+    "exit_zero_count": 27,
+    "wall_ms_range": [
+      6784,
+      8739
+    ],
+    "peak_rss_bytes_range": [
+      1080369152,
+      1194582016
+    ],
+    "temp_bytes_max": 4855029,
+    "sampled_timing": "whole Python process including imports/model setup and3same-session images; rejected before artifact validation",
+    "ocr_and_geometry": "unmeasured: resource-gated artifacts rejected; no independent real geometry/content truth"
+  },
+  "uvdoc_process_samples": [
+    {
+      "fixture_id": "fixture_docunet_crop_1_1_copy",
+      "fixture_sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 7652,
+      "peak_rss_bytes": 1109147648,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2840942,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_1_1_copy",
+      "fixture_sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 7519,
+      "peak_rss_bytes": 1080369152,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2840942,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_1_1_copy",
+      "fixture_sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 7357,
+      "peak_rss_bytes": 1095221248,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2840942,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_1_2_copy",
+      "fixture_sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 7556,
+      "peak_rss_bytes": 1110908928,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3039950,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_1_2_copy",
+      "fixture_sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 7380,
+      "peak_rss_bytes": 1110994944,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3039951,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_1_2_copy",
+      "fixture_sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 8125,
+      "peak_rss_bytes": 1110011904,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3039950,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_2_1_copy",
+      "fixture_sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 8739,
+      "peak_rss_bytes": 1172516864,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3958797,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_2_1_copy",
+      "fixture_sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 8176,
+      "peak_rss_bytes": 1172238336,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3958797,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_2_1_copy",
+      "fixture_sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 8028,
+      "peak_rss_bytes": 1139781632,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3958797,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_2_2_copy",
+      "fixture_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 8493,
+      "peak_rss_bytes": 1173258240,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 4497028,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_2_2_copy",
+      "fixture_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 8492,
+      "peak_rss_bytes": 1187291136,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 4497029,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_2_2_copy",
+      "fixture_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 8319,
+      "peak_rss_bytes": 1187450880,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 4497028,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_3_1_copy",
+      "fixture_sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 7764,
+      "peak_rss_bytes": 1112469504,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2703961,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_3_1_copy",
+      "fixture_sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 7340,
+      "peak_rss_bytes": 1108406272,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2703961,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_3_1_copy",
+      "fixture_sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 7512,
+      "peak_rss_bytes": 1129443328,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2703959,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_3_2_copy",
+      "fixture_sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 7275,
+      "peak_rss_bytes": 1094303744,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2512710,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_3_2_copy",
+      "fixture_sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 7276,
+      "peak_rss_bytes": 1094643712,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2512709,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_crop_3_2_copy",
+      "fixture_sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 7447,
+      "peak_rss_bytes": 1094475776,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 2512709,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_1",
+      "fixture_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 7722,
+      "peak_rss_bytes": 1125761024,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 4855029,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_1",
+      "fixture_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 8059,
+      "peak_rss_bytes": 1125650432,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 4855028,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_1",
+      "fixture_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 8028,
+      "peak_rss_bytes": 1146019840,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 4855029,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_2",
+      "fixture_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 7440,
+      "peak_rss_bytes": 1153507328,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3525434,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_2",
+      "fixture_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 7465,
+      "peak_rss_bytes": 1153384448,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3525435,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_2",
+      "fixture_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 7497,
+      "peak_rss_bytes": 1194582016,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 3525435,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_3",
+      "fixture_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "mode": "cold",
+      "sequence": 1,
+      "wall_millis": 7285,
+      "peak_rss_bytes": 1084764160,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 1595219,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_3",
+      "fixture_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "mode": "warm",
+      "sequence": 2,
+      "wall_millis": 6784,
+      "peak_rss_bytes": 1109544960,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 1595218,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    },
+    {
+      "fixture_id": "fixture_docunet_scan_3",
+      "fixture_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "mode": "warm",
+      "sequence": 3,
+      "wall_millis": 6821,
+      "peak_rss_bytes": 1084747776,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 1595219,
+      "status": "incomplete",
+      "failure_class": "rss",
+      "candidate_config_sha256": "f2daa116bdb589452543c5591547dd6eebd20467a827ef4604815e831eaaf3f2"
+    }
+  ],
+  "diagnostic": {
+    "fixture": "16x16knownRGBcontrol",
+    "preflight_failures": 2,
+    "successful_processes": 1,
+    "accepted_outputs": 0,
+    "rss_bytes": 1094782976,
+    "failure": "rss",
+    "quality_evidence": false
+  },
+  "python_tests": {
+    "passed": 18,
+    "skipped": 0,
+    "log_sha256": "f8ba13ddf5411509cb7facf86cde999d25d67f2fc315ebb048c6a450ce5b1b29"
+  },
+  "go_tests": {
+    "go-eval-tests": {
+      "top_level_pass": 101,
+      "pass_including_subtests": 167,
+      "fail": 0,
+      "skip": 0,
+      "log_sha256": "42d61870a50593dd89eecc096b61d8db1e7cd4f10f1f493ef1c7ce3fd7b7aa68"
+    },
+    "go-shared-race": {
+      "top_level_pass": 33,
+      "pass_including_subtests": 117,
+      "fail": 0,
+      "skip": 0,
+      "log_sha256": "f6ad7003cf04d12417a9dc283366002ea07a1e27787f782f4a05ee5593738ce3"
+    }
+  },
+  "fairscan": {
+    "candidate": "FairScan v1.2.0",
+    "model_sha256": "96e14d7e610dd0c27b768b228fbc553b4ec119ebe68f3a3594029a25400691d2",
+    "bytes": 4921040,
+    "license": "GPL-3.0; commercial use permitted subject to obligations",
+    "runtime": "ai_edge_litert / tflite_runtime / tensorflow unavailable",
+    "upstream_path": "Android Kotlin ImageSegmentation.kt -> GPL Kotlin DocumentDetection.kt and quad helpers -> OpenCV Java; not a packaged Linux/Python pipeline",
+    "decision": "deferred-no-existing-complete-runtime",
+    "inference_count": 0,
+    "quality": null,
+    "latency_ms": null,
+    "fallback_rate": null,
+    "baseline_reference": "v0.4 no-op9/9 byte copies; DocAligner4/9 transformed5/9fallback; not a FairScan result",
+    "distribution": "No model/code added to Apache-2.0 application; no GPL relicensing or claim of incompatibility"
+  },
+  "illumination": {
+    "candidate": "DocShadow / FSENet",
+    "original_source_license": "MIT",
+    "original_checkpoint": {
+      "release": "Weights",
+      "asset": "SD7K.pth",
+      "metadata_bytes": 117980483,
+      "publisher_digest": null,
+      "downloaded": false
+    },
+    "converted_checkpoint": {
+      "publisher": "fabio-sim (author-linked community port)",
+      "release": "v1.0.0",
+      "asset": "docshadow_sd7k.onnx",
+      "metadata_bytes": 120041674,
+      "publisher_digest": null,
+      "downloaded": false
+    },
+    "weight_terms": "unknown; inspected code licenses, README, release bodies do not explicitly bind checkpoint usage/redistribution",
+    "cpu": "static DocShadowRunner supports CPUExecutionProvider; no local forward",
+    "preprocess": "official float32 RGB/255 NCHW",
+    "converted_parity": null,
+    "paired_illumination_and_content_truth": "not available in existing local corpus/repo fixtures",
+    "inference_count": 0,
+    "decision": "deferred-checkpoint-terms-and-truth",
+    "syntheticdoc": "external checkpoint terms still unknown; not downloaded or executed"
+  },
+  "package_footprint": {
+    "scope": "installed distribution files, not a minimal CPU wheel or deployable closure; shared CUDA dependencies excluded",
+    "packages": {
+      "torch": {
+        "version": "2.12.1",
+        "installed_bytes": 1180071505,
+        "license": "BSD-3-Clause"
+      },
+      "torchvision": {
+        "version": "0.27.1",
+        "installed_bytes": 23722159,
+        "license": "BSD"
+      },
+      "transformers": {
+        "version": "5.12.1",
+        "installed_bytes": 95224515,
+        "license": "Apache 2.0 License"
+      },
+      "numpy": {
+        "version": "2.5.0",
+        "installed_bytes": 68911028,
+        "license": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0"
+      },
+      "pillow": {
+        "version": "12.2.0",
+        "installed_bytes": 20905105,
+        "license": "MIT-CMU"
+      },
+      "safetensors": {
+        "version": "0.8.0",
+        "installed_bytes": 1400733,
+        "license": "unknown"
+      }
+    }
+  },
+  "watchlist": [
+    {
+      "model": "ReWarp",
+      "trigger": "official local checkpoint + terms + CPU path",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "BookNet",
+      "trigger": "clear weight distribution + product-compatible data/model terms",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "AADD / ArbDR",
+      "trigger": "promised code/checkpoints actually released",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "TADoc / MatteViT / DR-Mamba",
+      "trigger": "usable checkpoint + relevant task + whole-path CPU evidence",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "DocRes",
+      "trigger": "all required weights eligible + full RAM/package budget",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "DvD",
+      "trigger": "AGPL distribution assessment + CPU resource evidence; coordinate diffusion not pixel redraw",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "MODNet / U2NETP",
+      "trigger": "existing document-trained complete pipeline, no new training",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "SyntheticDoc",
+      "trigger": "external checkpoint terms explicit",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    },
+    {
+      "model": "Scanbot Linux/Web",
+      "trigger": "explicit commercial evaluation scope and terms; no automatic signup/purchase",
+      "checked": "2026-11-10",
+      "evidence": "correction-models-and-products-survey-2026-11.md"
+    }
+  ],
+  "proof_limits": [
+    "No accepted end-to-end predicted mesh/image artifacts under fixed budgets",
+    "No new OCR/geometry/illumination-quality comparison",
+    "No real iPhone/Canon/browser acceptance",
+    "No release/push/deployment",
+    "Final dtype validation was tested but not benchmarked; run configs retain exact prior adapter identities"
+  ],
+  "current_source_hashes": {
+    "scripts/eval/correction/uvdoc_mesh_candidate.py": "d6912662491cd9ca8049b977259bfdb00511cedba4b6e71b4fbfd2d19f102358",
+    "scripts/eval/correction/test_uvdoc_mesh_candidate.py": "26f488c06019d716f7f25666d6f7ad3f1a2ad147ed243ef7569960cbbdd1aa1b"
+  },
+  "requirement_dispositions": [
+    {
+      "requirement": "QUAL-01",
+      "phase": 59,
+      "assessment_status": "closed",
+      "capability_disposition": "delivered"
+    },
+    {
+      "requirement": "QUAL-02",
+      "phase": 59,
+      "assessment_status": "closed",
+      "capability_disposition": "delivered"
+    },
+    {
+      "requirement": "QUAL-03",
+      "phase": 59,
+      "assessment_status": "closed",
+      "capability_disposition": "delivered"
+    },
+    {
+      "requirement": "DETECT-01",
+      "phase": 60,
+      "assessment_status": "closed",
+      "capability_disposition": "conditional-unavailable: runtime unavailable"
+    },
+    {
+      "requirement": "DETECT-02",
+      "phase": 60,
+      "assessment_status": "closed",
+      "capability_disposition": "conditional-unavailable: comparison unavailable"
+    },
+    {
+      "requirement": "MESH-01",
+      "phase": 61,
+      "assessment_status": "closed",
+      "capability_disposition": "conditional-unavailable: no accepted source-bound predicted mesh artifact"
+    },
+    {
+      "requirement": "MESH-02",
+      "phase": 61,
+      "assessment_status": "closed",
+      "capability_disposition": "conditional-unavailable: real quality/truth comparison unavailable"
+    },
+    {
+      "requirement": "MESH-03",
+      "phase": 61,
+      "assessment_status": "closed",
+      "capability_disposition": "delivered"
+    },
+    {
+      "requirement": "LIGHT-01",
+      "phase": 62,
+      "assessment_status": "closed",
+      "capability_disposition": "conditional-unavailable: checkpoint eligibility unresolved"
+    },
+    {
+      "requirement": "LIGHT-02",
+      "phase": 62,
+      "assessment_status": "closed",
+      "capability_disposition": "conditional-unavailable: paired illumination comparison unavailable"
+    },
+    {
+      "requirement": "ADOPT-01",
+      "phase": 63,
+      "assessment_status": "closed",
+      "capability_disposition": "delivered"
+    },
+    {
+      "requirement": "ADOPT-02",
+      "phase": 63,
+      "assessment_status": "closed",
+      "capability_disposition": "delivered"
+    },
+    {
+      "requirement": "ADOPT-03",
+      "phase": 63,
+      "assessment_status": "closed",
+      "capability_disposition": "delivered"
+    }
+  ]
+}
