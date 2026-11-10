@@ -1,0 +1,59 @@
+{
+  "scope": "Identity baseline only. No illumination model inference. SSIM=1 follows exact identity; no approximate SSIM implementation.",
+  "rows": [
+    {
+      "id": "mixed",
+      "shadow_noop_psnr_db": 16.90852875030306,
+      "shadow_noop_psnr_improvement_db": 0,
+      "shadow_target_pass": false,
+      "clean_noop_channel_mae": 0,
+      "clean_noop_ssim": 1,
+      "clean_identity_pass": true
+    },
+    {
+      "id": "table",
+      "shadow_noop_psnr_db": 16.92327958563268,
+      "shadow_noop_psnr_improvement_db": 0,
+      "shadow_target_pass": false,
+      "clean_noop_channel_mae": 0,
+      "clean_noop_ssim": 1,
+      "clean_identity_pass": true
+    },
+    {
+      "id": "faint_mixed",
+      "shadow_noop_psnr_db": 16.9051970408514,
+      "shadow_noop_psnr_improvement_db": 0,
+      "shadow_target_pass": false,
+      "clean_noop_channel_mae": 0,
+      "clean_noop_ssim": 1,
+      "clean_identity_pass": true
+    },
+    {
+      "id": "faint_table",
+      "shadow_noop_psnr_db": 16.911116228884474,
+      "shadow_noop_psnr_improvement_db": 0,
+      "shadow_target_pass": false,
+      "clean_noop_channel_mae": 0,
+      "clean_noop_ssim": 1,
+      "clean_identity_pass": true
+    },
+    {
+      "id": "blue",
+      "shadow_noop_psnr_db": 19.252285358202993,
+      "shadow_noop_psnr_improvement_db": 0,
+      "shadow_target_pass": false,
+      "clean_noop_channel_mae": 0,
+      "clean_noop_ssim": 1,
+      "clean_identity_pass": true
+    },
+    {
+      "id": "peach",
+      "shadow_noop_psnr_db": 19.721086488394178,
+      "shadow_noop_psnr_improvement_db": 0,
+      "shadow_target_pass": false,
+      "clean_noop_channel_mae": 0,
+      "clean_noop_ssim": 1,
+      "clean_identity_pass": true
+    }
+  ]
+}

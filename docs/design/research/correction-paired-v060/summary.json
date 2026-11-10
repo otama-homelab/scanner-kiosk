@@ -1,0 +1,36 @@
+{
+  "format": "scanner-synthetic-shadow-truth",
+  "complete_requirement": "TRUTH-03",
+  "scope": "owner-authorized synthetic alternative; no real illumination or model-quality claim",
+  "pair_count": 6,
+  "clean_count": 6,
+  "coverage": {
+    "thin-text": 2,
+    "digits": 4,
+    "photograph": 2,
+    "colored-paper": 2,
+    "stamp": 2
+  },
+  "files": [
+    {
+      "file": "materialize.go",
+      "bytes": 453,
+      "sha256": "8a7a5acd685e51d341a000c3dd6677925f661440d7b4a3c8aef3ecc4ab00beef"
+    },
+    {
+      "file": "noop-baseline.json",
+      "bytes": 1718,
+      "sha256": "6cb4fdd217d584ea81ac66129dd9cc6df32a6720902eb621771681ebe0ac4bb1"
+    },
+    {
+      "file": "paired-truth.json",
+      "bytes": 5374,
+      "sha256": "9f5124ee66de0cd778204a1583387694582b361172d53d29e1c30bbad32641e2"
+    },
+    {
+      "file": "prepare.py",
+      "bytes": 3793,
+      "sha256": "4a30146bbba642ce51db92d05e995dbc60bee849981a5c95498de4a587dc1840"
+    }
+  ]
+}

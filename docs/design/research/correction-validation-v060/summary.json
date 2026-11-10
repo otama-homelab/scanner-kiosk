@@ -37,9 +37,9 @@
     },
     {
       "id": "TRUTH-03",
-      "status": "not-run",
-      "complete": false,
-      "evidence_scope": "6aligned shadow pairs/3clean controls and required content coverage not acquired/verified."
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "Owner-authorized synthetic alternative:6pixel-aligned shadow/reference pairs and6clean controls; faint text2,digits4,photographs2,colored paper2,seals2. Existing unchanged fixture recipes; deterministic replay. No real-shadow validation."
     },
     {
       "id": "VERIFY-01",
@@ -75,7 +75,7 @@
       "id": "ILL-02",
       "status": "not-run",
       "complete": false,
-      "evidence_scope": "No eligible checkpoint or complete paired truth; no illumination quality inference."
+      "evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference."
     },
     {
       "id": "ACCEPT-01",
@@ -392,5 +392,9 @@
     "runner_processes": 72,
     "mesh_exact_reload_checks": 18,
     "remaining_real_world_requirements_open": true
+  },
+  "paired_synthetic_supplement": {
+    "summary": "../correction-paired-v060/summary.json",
+    "sha256": "2a87d19a7fc6eabc042616a879234400cc682d7d4003743eaad5190a172ae9c5"
   }
 }

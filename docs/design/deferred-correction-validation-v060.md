@@ -70,3 +70,11 @@ The [human input packet](correction-validation-v060-human-inputs.md) now links a
 ## Owner-authorized generated-input validation completed
 
 本人「お任せ、生成画像でもよい」に基づく[生成画像追補](correction-synthetic-validation-v060.md)。既存renderer6種類の既知truthで72process／24caseの補正・OCR・罫線比較と18mesh再読込を完了。TRUTH-01はこの代替入力範囲で実証し、現在5/14要件完了。元の6実写真への注釈、photo2_2、影paired truth、重み条件、実本人端末の受入は未実証のまま。cleanに対しUVDoc新旧6/6MAE不合格、DocAligner表の寸法変更により不採用を維持。実原稿や権利者回答を生成データで代用していない。
+
+## Synthetic paired truth supplement — 2026-11-10
+
+Owner-authorized generated-input route now supplies6aligned shadow/reference pairs and6clean controls. Existing `evaluation.ResolveFixture` pattern/faint and pattern/shadow are reused unchanged, with no coordinate warp or new synthesis algorithm. Repeated generation is byte-identical; hashes, generator source identity, dimensions, budgets and thresholds are fixed before any illumination-model inference. Coverage: faint text2, digits4, photograph2, colored paper2, seals2. The two generated reference pages are retained at `scripts/fixtures/generated-correction/`; prompts/provenance are in its README. Printed-photo lighting and paper variation are reference content, not artifacts to flatten.
+
+Evidence: [paired manifest and replay helpers](research/correction-paired-v060/summary.json). No-op shadow PSNR16.91–19.72dB; improvement0dB, so it fails the1dB shadow-removal target. Clean identity baseline has MAE0 and exact SSIM1 by identity. No eligible illumination model was executed; these baseline checks are not a model comparison or real-shadow validation.
+
+TRUTH-03 is complete only within the explicitly authorized synthetic alternative. Current ledger6/14complete,8open. Phase65 still lacks mandatoryphoto2_2 content truth. FairScan full detection, original-photo comparisons, eligible illumination weights and owner-device acceptance remain unresolved. No milestone archive, deployment, external message or second physical scan.
