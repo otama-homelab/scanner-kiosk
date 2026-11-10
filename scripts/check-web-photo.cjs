@@ -24,6 +24,12 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    await page.reload();await page.getByRole('button',{name:'Check import request',exact:true}).waitFor();await page.getByRole('button',{name:'Check import request',exact:true}).click();await review();
    assert.equal(requests.filter(r=>r.path==='/api/documents/import').length,1);assert.equal(requests.filter(r=>r.path.endsWith('/reconcile')).length,1);assert.equal(requests[0].key,requests[1].key);
    const history=await page.evaluate(async()=>{const r=await fetch('/api/documents');return r.json()});assert.equal(history.items.length,1);assert.equal(await page.evaluate(()=>sessionStorage.getItem('scanner.photo.import')),null);checks.push('one upload, reload identity-only reconciliation, one document');
+  }else if(scenario==='matrix'){
+   await upload(picker,images[0]);const doc=await review();
+   // A failed thumbnail and failed authorized preview must terminate in readable text.
+   await page.route('**/pages/*/thumbnail',r=>r.fulfill({status:404}));await page.route('**/pages/*/preview',r=>r.fulfill({status:404}));await page.reload();await page.locator('h1[data-document-title]').waitFor();
+   await page.getByText('The image preview is unavailable. You can still save the document.',{exact:true}).waitFor();
+   checks.push('terminal accessible image fallback');
   }else if(scenario==='manual'){
    await upload(picker,images[0]);const doc=await review();
    assert.equal(await page.getByRole('button',{name:'Crop photo',exact:true}).count(),1,'manual normalized crop control must exist');

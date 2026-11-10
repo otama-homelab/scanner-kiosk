@@ -112,3 +112,5 @@ func TestPhotoCaptureAndPicker(t *testing.T) { photoBrowser(t, "capture") }
 func TestPhotoReloadRecovery(t *testing.T)   { photoBrowser(t, "reload") }
 
 func TestPhotoManualCropRotateUndo(t *testing.T) { photoBrowser(t, "manual") }
+
+func TestPhotoResponsiveRecoveryMatrix(t *testing.T){photoBrowser(t,"matrix")}
