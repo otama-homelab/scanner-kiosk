@@ -110,3 +110,13 @@ DewarpNet is not run because its final weights have no immutable hash or explici
 weight redistribution terms. DocTr is rejected by its non-commercial license.
 Record these as unavailable/rejected; do not install a package, substitute a
 similarly named model or invent measurements.
+
+## v0.3.0 bounded DocAligner follow-up
+
+The missing-runtime statement above describes the historical Phase45 run. A later disposable CPU environment ran `docaligner_candidate.py` using DocAligner1.1.1 official preprocess/postprocess (source revision3275b0f07f8e99d8c01cb0774dea2549be1416b6), capybara-docsaid0.12.0, onnxruntime1.23.2, NumPy2.5.0, Pillow12.2.0 and opencv-python-headless4.12.0.88. No production dependency was added. The adapter validates pinned upstream-module/model hashes before inference and calls the library's perspective transform; it does not implement a detection or warp algorithm. Bounds validation uses OpenCV contour APIs.
+
+Invoke with the evaluation Python interpreter plus this script as argv, in a normal CandidateConfig, with `EVAL_DOCALIGNER_MODEL` pointing to the verified lcnet100 artifact. Run in the existing bounded, network-isolated evaluation environment. Upstream Linux dependencies can request GPU runtime and visualization downloads; never install them blindly into the product. Keep exact installed versions/licenses in local receipts. `EVAL_CORRECTION_MODE=none` explicitly skips model loading/inference/warp and copies the immutable PNG only because the evaluation protocol requires an output artifact. Production no-op must reuse its artifact instead.
+
+Tests in that disposable environment: `python -m unittest discover -s scripts/eval/correction -p test_docaligner_candidate.py`. The geometry boundary test needs the evaluation OpenCV package.
+
+Measured result: all10 synthetic model rows fell back with `unsafe-or-missing-corners`; no geometric/OCR quality or adoption proven. See [shared correction decision](../../../docs/design/shared-selective-correction.md). No-correction and the historical OpenCV arm used identical corpus/benchmark conditions. Expected failures stay separate from successful fixture rows.

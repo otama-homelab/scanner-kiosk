@@ -13,7 +13,7 @@ Owner-approved2026-11-10: photo and Canon scan use one correction workflow. Do n
 | Save | normalized or explicitly applied photo pixels | existing plain Save uses original; applied pixels are available to explicit reOCR | existing render admission/snapshot |
 | ReOCR | selected effective artifact | selected effective artifact | loadReOCRSources/RenderWork |
 
-Callers: documenthttp/correction.go -> RenderService or ApplyCorrection/UndoCorrection; documents/render_work.go resolves baseline/effective artifacts; workerruntime and documentrender execute frozen work. web/src/client/correction.ts and app.ts expose only available operations. Evaluation uses internal/evaluation and scripts/eval/correction; it is not runtime authority.
+Callers: documenthttp/correction.go -> RenderService or ApplyCorrection/UndoCorrection; documents/render_work.go resolves baseline/effective artifacts; workerruntime and renderjob execute frozen work. web/src/client/correction.ts and app.ts expose only available operations. Evaluation uses internal/evaluation and scripts/eval/correction; it is not runtime authority.
 
 ## Decision contract
 
@@ -41,3 +41,17 @@ Input provenance may inform an engine but never substitutes for geometric eviden
 Phase52 freezes thresholds before integration and records candidate adoption separately from successful execution. Public synthetic fixtures are not representative phone/scanner quality proof. Missing real fixtures or OCR-benefit evidence defers model adoption; common plumbing and existing manual/no-op workflow can still ship without claiming automatic correction. No new runtime/service/GPU/model distribution until bounded execution and corresponding terms/security/packaging requirements pass.
 
 Curved-page, illumination/shadow correction and LLM repainting are outside this milestone. Current live v0.2.5 is unchanged by this design.
+
+## 2026-11-10 measured candidate decision
+
+Three arms used the same10 public synthetic fixtures through existing benchmark/analyzer (cold1/warm2,90 process samples). All30 pixel-retention rows passed, but **all10 DocAligner rows were unsafe/missing-corner fallbacks, zero actual corrections**. Copying the original preserves content; it does not demonstrate geometric/OCR improvement. Nine declared failure combinations were pre-invocation catalog validations, not inference samples.
+
+| Arm | Cold wall ms range | Max sampled RSS bytes | Decision |
+|---|---|---|---|
+| No correction | 64–133 | 55,140,352 | Keep default |
+| Historical OpenCV helper | 48–234 | 218,075,136 | Comparison only; do not port custom detector |
+| Official DocAligner + capybara | 951–1212 | 402,706,432 | Defer; all fallbacks |
+
+Separate-process warm DocAligner samples were952–1195ms, including import/session setup. This is not persistent-service or phone performance. Model-only timing omits substantial runtime overhead. Experiment ceilings30s/1GiBRSS/256MiBtemporary were observational runner bounds, not production SLOs. No private real-phone/Canon corpus, numeric truth or OCR-benefit evidence was supplied; do not infer those acceptances. Existing pixel oracle uses bilinear source mapping; future true projective outputs need library-backed mapping alignment before acceptance, without a new custom correction algorithm.
+
+Production remains without an automatic engine. Shared baseline/apply/undo integration can proceed using existing proven manual/no-op paths; do not install Python/weights or add a service to product images from this result. Capybara's disposable installation imported a visualization font downloader (public asset fetched during setup); measured candidate runs had network isolation. Packaging must avoid that side effect before any future deployment. Local GSD52 receipts contain hash-bound measurements.

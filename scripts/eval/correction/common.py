@@ -4,12 +4,12 @@ from pathlib import Path
 
 
 def write_result(algorithm, version, width, height, confidence_kind="unavailable",
-                 confidence_value=None, fallback_reason=""):
+                 confidence_value=None, fallback_reason="", crop_quad=None):
     original = os.environ["SCANNER_EVAL_ORIGINAL_ID"]
     pages = [page for page in os.environ["SCANNER_EVAL_SOURCE_PAGES"].split(",") if page]
     output = Path(os.environ["SCANNER_EVAL_OUTPUT"])
     candidate = os.environ.get("EVAL_CANDIDATE_ID", "candidate_correction_001")
-    quad = [[0, 0], [width, 0], [width, height], [0, height]]
+    quad = crop_quad if crop_quad is not None else [[0, 0], [width, 0], [width, height], [0, height]]
     parameters = {
         "crop_quad": json.dumps(quad, separators=(",", ":")),
         "rotation_degrees": "0",
