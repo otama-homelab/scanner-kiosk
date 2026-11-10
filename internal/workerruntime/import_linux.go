@@ -15,6 +15,7 @@ import (
 	"scanner-kiosk/internal/artifactscope"
 	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/internal/pdfimport"
+	"scanner-kiosk/internal/photonormalize"
 	"scanner-kiosk/internal/workwatch"
 )
 
@@ -84,8 +85,18 @@ func executeImport(ctx context.Context, store *documents.Store, root, owner, job
 			clean = cleanupErr == nil && !uncertainScope
 			result = errors.Join(result, cleanupErr)
 		}()
-		prepared, err := pdfimport.Prepare(ctx, input, output, opts)
-		if errors.Is(err, pdfimport.ErrUnstopped) {
+		var prepared []pdfimport.PreparedPage
+		var normalized photonormalize.Prepared
+		if work.Input.MediaType == "application/pdf" {
+			prepared, err = pdfimport.Prepare(ctx, input, output, opts)
+		} else {
+			normalized, err = photonormalize.Prepare(ctx, input, output, work.Input.MediaType, budget)
+			if err == nil {
+				prepared = []pdfimport.PreparedPage{{Offset: normalized.Offset, Size: normalized.Size, SHA256: normalized.SHA256}}
+			}
+		}
+
+		if errors.Is(err, pdfimport.ErrUnstopped) || errors.Is(err, photonormalize.ErrUnstopped) {
 			unstopped = true
 		}
 		if err != nil {
@@ -97,7 +108,11 @@ func executeImport(ctx context.Context, store *documents.Store, root, owner, job
 			return err
 		}
 		for _, page := range prepared {
-			writer, err := scope.CreateArtifact(ctx, artifactscope.PDF)
+			kind := artifactscope.PDF
+			if work.Input.MediaType != "application/pdf" {
+				kind = artifactscope.PNG
+			}
+			writer, err := scope.CreateArtifact(ctx, kind)
 			if err != nil {
 				return err
 			}
@@ -119,7 +134,11 @@ func executeImport(ctx context.Context, store *documents.Store, root, owner, job
 			if artifact.Size != page.Size || artifact.SHA256 != page.SHA256 {
 				return pdfimport.ErrProcess
 			}
-			pages = append(pages, documents.ImportedPage{Artifact: documents.ArtifactRecord{ID: artifact.ID, RelativePath: artifact.RelativePath, MediaType: "application/pdf", Size: artifact.Size, SHA256: artifact.SHA256}, WidthPoints: page.WidthPoints, HeightPoints: page.HeightPoints})
+			media := "application/pdf"
+			if work.Input.MediaType != "application/pdf" {
+				media = "image/png"
+			}
+			pages = append(pages, documents.ImportedPage{Orientation: normalized.Orientation, Artifact: documents.ArtifactRecord{ID: artifact.ID, RelativePath: artifact.RelativePath, MediaType: media, Size: artifact.Size, SHA256: artifact.SHA256, PixelWidth: normalized.Width, PixelHeight: normalized.Height}, WidthPoints: page.WidthPoints, HeightPoints: page.HeightPoints})
 		}
 		return nil
 	})
@@ -157,6 +176,10 @@ func executeImport(ctx context.Context, store *documents.Store, root, owner, job
 	}
 	if outcome == "failed" {
 		switch {
+		case errors.Is(err, photonormalize.ErrInvalid):
+			stop.ErrorCode = "photo_invalid"
+		case errors.Is(err, photonormalize.ErrLimit):
+			stop.ErrorCode = "photo_limit"
 		case errors.Is(err, pdfimport.ErrEncrypted):
 			stop.ErrorCode = "pdf_encrypted"
 		case errors.Is(err, pdfimport.ErrUnsafe):

@@ -7,6 +7,7 @@ import (
 )
 
 type ImportedPage struct {
+	Orientation               int
 	Artifact                  ArtifactRecord
 	WidthPoints, HeightPoints float64
 }
@@ -21,7 +22,7 @@ type ImportStop struct {
 
 func validImportFailure(code string) bool {
 	switch code {
-	case "pdf_invalid", "pdf_encrypted", "pdf_unsupported", "pdf_limit":
+	case "pdf_invalid", "pdf_encrypted", "pdf_unsupported", "pdf_limit", "photo_invalid", "photo_limit":
 		return true
 	}
 	return false
@@ -39,7 +40,7 @@ func (s *Store) CommitImportPages(ctx context.Context, owner, job string, stop I
 	var total int64
 	for _, p := range pages {
 		a := p.Artifact
-		if !id(a.ID) || !localPath(a.RelativePath) || seenIDs[a.ID] || seenPaths[a.RelativePath] || a.MediaType != "application/pdf" || a.Size < 1 || a.Size > 1<<30 || a.SHA256 == ([32]byte{}) || a.PixelWidth != 0 || a.PixelHeight != 0 || !(p.WidthPoints > 0 && p.WidthPoints <= 14400 && p.HeightPoints > 0 && p.HeightPoints <= 14400) {
+		if !id(a.ID) || !localPath(a.RelativePath) || seenIDs[a.ID] || seenPaths[a.RelativePath] || (a.MediaType != "application/pdf" && a.MediaType != "image/png") || a.Size < 1 || a.Size > 1<<30 || a.SHA256 == ([32]byte{}) || !validImportedGeometry(p) {
 			return ErrInvalid
 		}
 		seenIDs[a.ID] = true
@@ -68,15 +69,32 @@ func (s *Store) CommitImportPages(ctx context.Context, owner, job string, stop I
 		}
 		for ordinal, p := range pages {
 			a := p.Artifact
+			photo := work.Input.MediaType != "application/pdf"
+			if photo != (p.Orientation != 0) || (photo && len(pages) != 1) {
+				return ErrConflict
+			}
+			kind := "original"
+			if photo {
+				kind = "intermediate"
+			}
 			page, err := opaqueID("page_")
 			if err != nil {
 				return ErrStorage
 			}
-			if _, err = tx.ExecContext(ctx, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,'original','ready',?,'application/pdf',?,?,?,?)`, a.ID, work.Job.DocumentID, owner, a.RelativePath, a.Size, a.SHA256[:], work.Job.Revision, now); err != nil {
+			if _, err = tx.ExecContext(ctx, `INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,sha256,input_revision,created_at_ms) VALUES(?,?,?,?,'ready',?,?,?,?,?,?)`, a.ID, work.Job.DocumentID, owner, kind, a.RelativePath, a.MediaType, a.Size, a.SHA256[:], work.Job.Revision, now); err != nil {
 				return ErrStorage
 			}
 			if _, err = tx.ExecContext(ctx, "INSERT INTO job_artifacts(job_id,document_id,owner_id,artifact_id) VALUES(?,?,?,?)", job, work.Job.DocumentID, owner, a.ID); err != nil {
 				return ErrStorage
+			}
+			if photo {
+				if _, err = tx.ExecContext(ctx, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,source_type,pixel_width,pixel_height) VALUES(?,?,?,?,?,'photo',?,?)`, page, work.Job.DocumentID, owner, ordinal, work.Input.ID, a.PixelWidth, a.PixelHeight); err != nil {
+					return ErrStorage
+				}
+				if _, err = tx.ExecContext(ctx, `INSERT INTO photo_sources(page_id,document_id,owner_id,raw_artifact_id,normalized_artifact_id,raw_sha256,normalized_sha256,pixel_width,pixel_height,orientation) VALUES(?,?,?,?,?,?,?,?,?,?)`, page, work.Job.DocumentID, owner, work.Input.ID, a.ID, work.Input.SHA256[:], a.SHA256[:], a.PixelWidth, a.PixelHeight, p.Orientation); err != nil {
+					return ErrStorage
+				}
+				continue
 			}
 			if _, err = tx.ExecContext(ctx, `INSERT INTO pages(id,document_id,owner_id,ordinal,original_artifact_id,source_type,pdf_width_points,pdf_height_points) VALUES(?,?,?,?,?,'pdf',?,?)`, page, work.Job.DocumentID, owner, ordinal, a.ID, p.WidthPoints, p.HeightPoints); err != nil {
 				return ErrStorage
@@ -126,7 +144,7 @@ func (s *Store) ImportPagesRecorded(ctx context.Context, owner, job, runner stri
 		}
 		seen[a.ID] = true
 		var exists int
-		err = tx.QueryRowContext(ctx, `SELECT 1 FROM job_artifacts x JOIN artifacts a ON a.id=x.artifact_id AND a.document_id=x.document_id AND a.owner_id=x.owner_id JOIN import_intakes i ON i.job_id=x.job_id AND i.owner_id=x.owner_id WHERE a.id!=i.artifact_id AND x.job_id=? AND x.owner_id=? AND a.id=? AND a.relative_path=? AND a.byte_size=? AND a.sha256=? AND a.media_type='application/pdf' AND a.kind='original' AND a.state IN ('ready','deleting')`, job, owner, a.ID, a.RelativePath, a.Size, a.SHA256[:]).Scan(&exists)
+		err = tx.QueryRowContext(ctx, `SELECT 1 FROM job_artifacts x JOIN artifacts a ON a.id=x.artifact_id AND a.document_id=x.document_id AND a.owner_id=x.owner_id JOIN import_intakes i ON i.job_id=x.job_id AND i.owner_id=x.owner_id WHERE a.id!=i.artifact_id AND x.job_id=? AND x.owner_id=? AND a.id=? AND a.relative_path=? AND a.byte_size=? AND a.sha256=? AND ((a.media_type='application/pdf' AND a.kind='original') OR (a.media_type='image/png' AND a.kind='intermediate' AND EXISTS(SELECT 1 FROM photo_sources ps WHERE ps.normalized_artifact_id=a.id AND ps.document_id=a.document_id AND ps.owner_id=a.owner_id))) AND a.state IN ('ready','deleting')`, job, owner, a.ID, a.RelativePath, a.Size, a.SHA256[:]).Scan(&exists)
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, nil
 		}
@@ -200,4 +218,12 @@ func (s *Store) ImportStoppedRecorded(ctx context.Context, owner, job, runner st
 		return false, ErrStorage
 	}
 	return true, nil
+}
+
+func validImportedGeometry(p ImportedPage) bool {
+	a := p.Artifact
+	if p.Orientation == 0 {
+		return a.MediaType == "application/pdf" && a.PixelWidth == 0 && a.PixelHeight == 0 && p.WidthPoints > 0 && p.WidthPoints <= 14400 && p.HeightPoints > 0 && p.HeightPoints <= 14400
+	}
+	return a.MediaType == "image/png" && p.Orientation >= 1 && p.Orientation <= 8 && p.WidthPoints == 0 && p.HeightPoints == 0 && a.PixelWidth > 0 && a.PixelWidth <= 12000 && a.PixelHeight > 0 && a.PixelHeight <= 12000 && int64(a.PixelWidth)*int64(a.PixelHeight) <= 40000000
 }

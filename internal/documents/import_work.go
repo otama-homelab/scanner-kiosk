@@ -107,12 +107,12 @@ func (s *Store) loadImportWork(ctx context.Context, tx *sql.Tx, owner, job, runn
 	if err != nil {
 		return ImportWork{}, storageOperationError(err)
 	}
-	if len(out.Job.Configuration) > 65536 || started > now || started < 0 || out.ReserveBytes < 1 || !id(out.Input.ID) || !localPath(out.Input.RelativePath) || out.Input.MediaType != "application/pdf" || out.Input.Size < 1 || out.Input.Size > 1<<30 || len(digest) != 32 {
+	if len(out.Job.Configuration) > 65536 || started > now || started < 0 || out.ReserveBytes < 1 || !id(out.Input.ID) || !localPath(out.Input.RelativePath) || !validImportMedia(out.Input.MediaType) || out.Input.Size < 1 || out.Input.Size > 1<<30 || len(digest) != 32 {
 		return ImportWork{}, ErrInvalid
 	}
 	decoder := json.NewDecoder(strings.NewReader(out.Job.Configuration))
 	decoder.DisallowUnknownFields()
-	if decoder.Decode(&out.Snapshot) != nil || decoder.Decode(new(any)) != io.EOF || out.Snapshot.Version != 1 || out.Snapshot.InputArtifactID != out.Input.ID || out.Snapshot.InputBytes != out.Input.Size || !sameHash(digest, out.Snapshot.SHA256) || out.Snapshot.MaxPages < 1 || out.Snapshot.MaxPages > 10000 {
+	if decoder.Decode(&out.Snapshot) != nil || decoder.Decode(new(any)) != io.EOF || out.Snapshot.Version != 1 || importMedia(out.Snapshot.MediaType) != out.Input.MediaType || out.Snapshot.InputArtifactID != out.Input.ID || out.Snapshot.InputBytes != out.Input.Size || !sameHash(digest, out.Snapshot.SHA256) || out.Snapshot.MaxPages < 1 || out.Snapshot.MaxPages > 10000 {
 		return ImportWork{}, ErrInvalid
 	}
 	copy(out.Input.SHA256[:], digest)

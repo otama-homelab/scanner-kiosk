@@ -166,12 +166,19 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 	pages := make([]pdfassemble.ScopedPage, len(work.Inputs))
 	for i, input := range work.Inputs {
 		page := work.Snapshot.Pages[i]
+		if (page.SourceType != "photo" && page.SourceType != "pdf" && page.SourceType != "") || (page.SourceType == "pdf" && input.MediaType != "application/pdf") {
+			return nil, documents.ErrInvalid
+		}
 		expected := page.OriginalArtifactID
-		if work.Snapshot.ReOCR {
+		if work.Snapshot.ReOCR || page.SourceType == "photo" {
 			if len(work.Snapshot.Sources) != len(work.Inputs) {
 				return nil, documents.ErrInvalid
 			}
-			expected = work.Snapshot.Sources[i].Effective.ID
+			source := work.Snapshot.Sources[i]
+			if len(work.Originals) != len(work.Inputs) || source.Original != work.Originals[i] || source.Original.ID != page.OriginalArtifactID || source.Effective != input || (page.SourceType == "photo" && (source.Effective.ID == source.Original.ID || source.Effective.MediaType != "image/png")) {
+				return nil, documents.ErrInvalid
+			}
+			expected = source.Effective.ID
 		}
 		if expected != input.ID {
 			return nil, documents.ErrInvalid
@@ -195,7 +202,11 @@ func Prepare(ctx context.Context, records Records, root, owner, job, runner stri
 		if readErr != nil || closeErr != nil || cfg.Width < 1 || cfg.Height < 1 || int64(cfg.Width) > options.MaxPagePixels/int64(max(cfg.Height, 1)) || (format != "png" && format != "jpeg") || "image/"+format != input.MediaType {
 			return nil, documents.ErrInvalid
 		}
-		pages[i] = pdfassemble.ScopedPage{ID: input.ID, MediaType: input.MediaType, Size: page.Size, Color: page.Color, Rotation: page.Rotation, Width: cfg.Width, Height: cfg.Height}
+		size, color := page.Size, page.Color
+		if page.SourceType == "photo" {
+			size, color = "a4", "color"
+		}
+		pages[i] = pdfassemble.ScopedPage{ID: input.ID, MediaType: input.MediaType, Size: size, Color: color, Rotation: page.Rotation, Width: cfg.Width, Height: cfg.Height}
 	}
 	var reference, kind, media string
 	var candidate *documents.OCRResultBundle

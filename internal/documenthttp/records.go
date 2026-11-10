@@ -19,6 +19,7 @@ type Records interface {
 	CancelJob(context.Context, string, string, string, time.Duration) (documents.JobProjection, error)
 	Edit(context.Context, string, documents.EditRequest, time.Duration) (documents.Projection, error)
 	RequestDelete(context.Context, string, documents.DeleteRequest, time.Duration) (documents.JobProjection, error)
+	ReadPageEffective(context.Context, string, string, string) (documents.ArtifactReference, error)
 	ReadPageOriginal(context.Context, string, string, string) (documents.PageOriginal, error)
 	ReadCorrectionArtifact(context.Context, string, string, string) (documents.ArtifactReference, error)
 	ReadPageThumbnail(context.Context, string, string, string) (documents.ArtifactReference, error)

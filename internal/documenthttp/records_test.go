@@ -378,3 +378,7 @@ func TestDocumentHTTPRecordsInjectionCommandsAndFileReauthorization(t *testing.T
 		}
 	}
 }
+
+func (m *memoryDocuments) ReadPageEffective(_ context.Context, owner, doc, page string) (documents.ArtifactReference, error) {
+	return m.file(owner)
+}

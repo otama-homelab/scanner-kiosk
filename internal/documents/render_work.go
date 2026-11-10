@@ -66,7 +66,7 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 		if err != nil || !reflect.DeepEqual(settings, out.Snapshot.Settings) {
 			return ErrInvalid
 		}
-		rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,COALESCE(p.capture_size,''),COALESCE(p.capture_color,''),COALESCE(p.capture_dpi,0),CASE p.source_type WHEN 'pdf' THEN 'pdf' ELSE '' END,COALESCE(p.pdf_width_points,0),COALESCE(p.pdf_height_points,0),a.relative_path,a.media_type,a.byte_size,a.sha256,EXISTS(SELECT 1 FROM page_thumbnails t JOIN artifacts thumb ON thumb.id=t.artifact_id AND thumb.document_id=t.document_id AND thumb.owner_id=t.owner_id WHERE t.original_artifact_id=a.id AND thumb.kind='thumbnail' AND thumb.state='ready')
+		rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,COALESCE(p.capture_size,''),COALESCE(p.capture_color,''),COALESCE(p.capture_dpi,0),CASE p.source_type WHEN 'scan' THEN '' ELSE p.source_type END,COALESCE(p.pdf_width_points,0),COALESCE(p.pdf_height_points,0),a.relative_path,a.media_type,a.byte_size,a.sha256,EXISTS(SELECT 1 FROM page_thumbnails t JOIN artifacts thumb ON thumb.id=t.artifact_id AND thumb.document_id=t.document_id AND thumb.owner_id=t.owner_id WHERE t.original_artifact_id=(CASE WHEN p.source_type='photo' THEN COALESCE((SELECT c.correction_artifact_id FROM page_corrections c WHERE c.page_id=p.id AND c.document_id=p.document_id AND c.owner_id=p.owner_id AND c.state='applied'),(SELECT ps.normalized_artifact_id FROM photo_sources ps WHERE ps.page_id=p.id AND ps.document_id=p.document_id AND ps.owner_id=p.owner_id)) ELSE p.original_artifact_id END) AND thumb.kind='thumbnail' AND thumb.state='ready')
  FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id
  WHERE p.document_id=? AND p.owner_id=? AND a.kind='original' AND a.state='ready' ORDER BY p.ordinal`, out.Job.DocumentID, owner)
 		if err != nil {
@@ -105,7 +105,7 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 			return ErrConflict
 		}
 		out.Originals = append([]ArtifactRecord(nil), out.Inputs...)
-		if out.Snapshot.ReOCR {
+		if out.Snapshot.ReOCR || hasPhotoPages(out.Snapshot.Pages) {
 			// Close the original cursor before issuing the source lookup.
 			rows.Close()
 			sources, err := loadReOCRSources(ctx, tx, owner, out.Job.DocumentID, out.Snapshot.Pages)
@@ -115,10 +115,19 @@ func (s *Store) LoadRenderWork(ctx context.Context, owner, jobID, runnerID strin
 			if !reflect.DeepEqual(sources, out.Snapshot.Sources) {
 				return ErrConflict
 			}
+			oldThumbs := out.ThumbnailOriginalIDs
+			out.ThumbnailOriginalIDs = map[string]bool{}
 			out.Inputs = nil
 			out.Originals = nil
 			for _, source := range sources {
-				out.Inputs = append(out.Inputs, source.Effective)
+				effective := source.Effective
+				if !out.Snapshot.ReOCR && out.Snapshot.Pages[len(out.Inputs)].SourceType != "photo" {
+					effective = source.Original
+				}
+				if oldThumbs[source.Original.ID] {
+					out.ThumbnailOriginalIDs[effective.ID] = true
+				}
+				out.Inputs = append(out.Inputs, effective)
 				out.Originals = append(out.Originals, source.Original)
 			}
 		} else if len(out.Snapshot.Sources) != 0 {
@@ -160,6 +169,12 @@ func loadReOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, pages 
 		}
 		copy(source.Original.SHA256[:], originalHash)
 		source.Effective = source.Original
+		if page.SourceType == "photo" {
+			source.Effective, err = loadPhotoBaseline(ctx, tx, owner, doc, page.ID, source.Original)
+			if err != nil {
+				return nil, err
+			}
+		}
 		var originalID, effectiveID string
 		var sourceHash, effectiveHash []byte
 		err = tx.QueryRowContext(ctx, `SELECT suggestion_id,original_artifact_id,correction_artifact_id,source_sha256,correction_sha256,transform_json FROM page_corrections WHERE page_id=? AND document_id=? AND owner_id=? AND state='applied'`, page.ID, doc, owner).Scan(&source.CorrectionID, &originalID, &effectiveID, &sourceHash, &effectiveHash, &source.TransformJSON)
@@ -167,11 +182,11 @@ func loadReOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, pages 
 			return nil, ErrStorage
 		}
 		if err == nil {
-			if page.SourceType != "" || originalID != source.Original.ID || !sameHash(sourceHash, source.Original.SHA256) {
+			if (page.SourceType != "" && page.SourceType != "photo") || originalID != source.Original.ID || !sameHash(sourceHash, source.Original.SHA256) {
 				return nil, ErrConflict
 			}
 			var tr correction.Transform
-			if json.Unmarshal([]byte(source.TransformJSON), &tr) != nil || correction.Validate(tr, image.Rect(0, 0, source.Original.PixelWidth, source.Original.PixelHeight)) != nil {
+			if json.Unmarshal([]byte(source.TransformJSON), &tr) != nil || correction.Validate(tr, image.Rect(0, 0, source.Effective.PixelWidth, source.Effective.PixelHeight)) != nil {
 				return nil, ErrConflict
 			}
 			var digest []byte
@@ -197,6 +212,9 @@ func loadReOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, pages 
 }
 
 func validPageSource(page CapturedPage, media string) bool {
+	if page.SourceType == "photo" {
+		return (media == "image/png" || media == "image/jpeg") && page.Size == "" && page.Color == "" && page.DPI == 0 && page.PDFWidthPoints == 0 && page.PDFHeightPoints == 0
+	}
 	if page.SourceType == "pdf" {
 		return media == "application/pdf" && page.Size == "" && page.Color == "" && page.DPI == 0 && page.PDFWidthPoints > 0 && page.PDFWidthPoints <= 20000 && page.PDFHeightPoints > 0 && page.PDFHeightPoints <= 20000
 	}

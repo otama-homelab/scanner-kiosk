@@ -23,7 +23,7 @@ func (s *Store) ReadPageOriginal(ctx context.Context, owner, documentID, pageID 
 		if err != nil {
 			return readError(err)
 		}
-		if len(digest) != 32 || !(source == "pdf" && out.Artifact.MediaType == "application/pdf" || source == "scan" && (out.Artifact.MediaType == "image/png" || out.Artifact.MediaType == "image/jpeg")) {
+		if len(digest) != 32 || !(source == "pdf" && out.Artifact.MediaType == "application/pdf" || (source == "scan" || source == "photo") && (out.Artifact.MediaType == "image/png" || out.Artifact.MediaType == "image/jpeg")) {
 			return ErrStorage
 		}
 		copy(out.Artifact.SHA256[:], digest)

@@ -10,6 +10,7 @@ import (
 )
 
 type ImportRequest struct {
+	MediaType      string   `json:"media_type,omitempty"`
 	IdempotencyKey string   `json:"-"`
 	InputBytes     int64    `json:"input_bytes"`
 	SHA256         [32]byte `json:"sha256"`
@@ -20,6 +21,7 @@ type ImportLimits struct {
 	DocumentLifetime time.Duration
 }
 type ImportSnapshot struct {
+	MediaType       string   `json:"media_type,omitempty"`
 	Version         int      `json:"version"`
 	InputArtifactID string   `json:"input_artifact_id"`
 	InputBytes      int64    `json:"input_bytes"`
@@ -36,15 +38,29 @@ type ImportAdmission struct {
 }
 
 func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportRequest, limits ImportLimits) (ImportAdmission, error) {
+	if request.MediaType == "" {
+		request.MediaType = "application/pdf"
+	}
+	if !validImportMedia(request.MediaType) || (request.MediaType != "application/pdf" && request.InputBytes > 32<<20) {
+		return ImportAdmission{}, ErrInvalid
+	}
 	if !id(request.IdempotencyKey) || request.InputBytes < 1 || request.InputBytes > 1<<30 || request.SHA256 == ([32]byte{}) || !validAdmissionLimits(limits.AdmissionLimits) || limits.MaxDocuments < 1 || limits.DocumentLifetime < time.Millisecond || limits.DocumentLifetime > 365*24*time.Hour {
 		return ImportAdmission{}, ErrInvalid
+	}
+	media := request.MediaType
+	if media == "application/pdf" {
+		request.MediaType = ""
 	}
 	canonical, err := canonicalCommand(request)
 	if err != nil {
 		return ImportAdmission{}, ErrInvalid
 	}
 	key := sha256.Sum256([]byte(request.IdempotencyKey))
-	digest := sha256.Sum256(append([]byte("pdf-import-new-v1\x00"), canonical...))
+	operationName, prefix := "pdf_import", "pdf-import-new-v1\x00"
+	if media != "application/pdf" {
+		operationName, prefix = "photo_import", "photo-import-new-v1\x00"
+	}
+	digest := sha256.Sum256(append([]byte(prefix), canonical...))
 	var out ImportAdmission
 	err = s.withEnabled(ctx, owner, func(tx *sql.Tx) error {
 		now := s.now().UnixMilli()
@@ -57,7 +73,7 @@ func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportReq
 		var receiptExpiry int64
 		err := tx.QueryRowContext(ctx, "SELECT operation,request_hash,result_job_id,expires_at_ms FROM request_receipts WHERE owner_id=? AND key_hash=?", owner, key[:]).Scan(&operation, &priorHash, &result, &receiptExpiry)
 		if err == nil {
-			if operation != "pdf_import" || !sameHash(priorHash, digest) {
+			if operation != operationName || !sameHash(priorHash, digest) {
 				return ErrIdempotencyConflict
 			}
 			if !result.Valid || receiptExpiry <= now {
@@ -126,7 +142,7 @@ func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportReq
 		if err != nil {
 			return ErrStorage
 		}
-		snapshot, err := json.Marshal(ImportSnapshot{Version: 1, InputArtifactID: artifact, InputBytes: request.InputBytes, SHA256: request.SHA256, MaxPages: limits.MaxPages})
+		snapshot, err := json.Marshal(ImportSnapshot{Version: 1, InputArtifactID: artifact, InputBytes: request.InputBytes, SHA256: request.SHA256, MaxPages: limits.MaxPages, MediaType: request.MediaType})
 		if err != nil {
 			return ErrStorage
 		}
@@ -138,10 +154,10 @@ func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportReq
 			{"INSERT INTO owners(id) VALUES(?) ON CONFLICT(id) DO NOTHING", []any{owner}},
 			{`INSERT INTO documents(id,owner_id,purpose,state,revision,created_at_ms,expires_at_ms) VALUES(?,?,'document','processing',1,?,?)`, []any{document, owner, now, expiry}},
 			{`INSERT INTO jobs(id,document_id,owner_id,kind,state,input_revision,configuration_json,created_at_ms,deadline_at_ms) VALUES(?,?,?,'import','queued',1,?,?,?)`, []any{job, document, owner, string(snapshot), now, deadline}},
-			{`INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,input_revision,created_at_ms) VALUES(?,?,?,'original','staging',?,'application/pdf',0,1,?)`, []any{artifact, document, owner, path, now}},
+			{`INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,input_revision,created_at_ms) VALUES(?,?,?,'original','staging',?,?,0,1,?)`, []any{artifact, document, owner, path, media, now}},
 			{"INSERT INTO reservations(job_id,owner_id,byte_size) VALUES(?,?,?)", []any{job, owner, limits.JobMaxBytes}},
 			{"INSERT INTO import_intakes(job_id,document_id,owner_id,artifact_id,producer_id) VALUES(?,?,?,?,?)", []any{job, document, owner, artifact, producer}},
-			{`INSERT INTO request_receipts(owner_id,key_hash,operation,request_hash,result_job_id,expires_at_ms,key_expires_at_ms) VALUES(?,?,'pdf_import',?,?,?,?)`, []any{owner, key[:], digest[:], job, receiptDeadline, keyExpiry}},
+			{`INSERT INTO request_receipts(owner_id,key_hash,operation,request_hash,result_job_id,expires_at_ms,key_expires_at_ms) VALUES(?,?,?,?,?,?,?)`, []any{owner, key[:], operationName, digest[:], job, receiptDeadline, keyExpiry}},
 		} {
 			if _, err = tx.ExecContext(ctx, q.sql, q.args...); err != nil {
 				return ErrStorage
@@ -150,7 +166,7 @@ func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportReq
 		if current := s.now().UnixMilli(); current < now || current >= deadline {
 			return ErrConflict
 		}
-		out = ImportAdmission{Admission: Admission{JobID: job, DocumentID: document, Revision: 1}, ProducerID: producer, Input: ArtifactRecord{ID: artifact, RelativePath: path, MediaType: "application/pdf"}, DeadlineAtMS: deadline}
+		out = ImportAdmission{Admission: Admission{JobID: job, DocumentID: document, Revision: 1}, ProducerID: producer, Input: ArtifactRecord{ID: artifact, RelativePath: path, MediaType: media}, DeadlineAtMS: deadline}
 		return nil
 	})
 	if err != nil {
@@ -197,7 +213,7 @@ func (s *Store) FinishStoppedImportUpload(ctx context.Context, owner, job, produ
 	return s.finishImportUpload(ctx, owner, job, producer, artifact, closedAt, outcome)
 }
 func (s *Store) finishImportUpload(ctx context.Context, owner, job, producer string, artifact ArtifactRecord, closedAt int64, outcome string) error {
-	if !id(owner) || !id(job) || !id(producer) || !id(artifact.ID) || !localPath(artifact.RelativePath) || artifact.MediaType != "application/pdf" || artifact.Size < 0 || artifact.SHA256 == ([32]byte{}) || artifact.PixelWidth != 0 || artifact.PixelHeight != 0 || closedAt <= 0 {
+	if !id(owner) || !id(job) || !id(producer) || !id(artifact.ID) || !localPath(artifact.RelativePath) || !validImportMedia(artifact.MediaType) || artifact.Size < 0 || artifact.SHA256 == ([32]byte{}) || artifact.PixelWidth != 0 || artifact.PixelHeight != 0 || closedAt <= 0 {
 		return ErrInvalid
 	}
 	return s.withPrincipalSnapshot(ctx, func(guard *sql.Conn, tx *sql.Tx) error {
@@ -218,6 +234,9 @@ func (s *Store) finishImportUpload(ctx context.Context, owner, job, producer str
 		var snapshot ImportSnapshot
 		if json.Unmarshal([]byte(configuration), &snapshot) != nil || snapshot.Version != 1 || snapshot.InputArtifactID != artifactID || snapshot.InputBytes < 1 || snapshot.InputBytes > 1<<30 || snapshot.SHA256 == ([32]byte{}) {
 			return ErrStorage
+		}
+		if importMedia(snapshot.MediaType) != artifact.MediaType {
+			return ErrConflict
 		}
 		if closedAt < created || artifact.ID != artifactID || artifact.RelativePath != path || artifact.Size > snapshot.InputBytes || artifact.Size > reserved || start.Valid && closedAt < start.Int64 {
 			return ErrConflict
@@ -292,4 +311,14 @@ func (s *Store) ImportUploadRecorded(ctx context.Context, owner, job, producer s
 		return "", ErrConflict
 	}
 	return state, nil
+}
+
+func validImportMedia(media string) bool {
+	return media == "application/pdf" || media == "image/jpeg" || media == "image/png"
+}
+func importMedia(media string) string {
+	if media == "" {
+		return "application/pdf"
+	}
+	return media
 }

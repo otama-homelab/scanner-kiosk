@@ -20,7 +20,7 @@ func (h *Handler) preview(w http.ResponseWriter, r *http.Request, p websession.P
 		return
 	}
 	document, page := r.PathValue("document_id"), r.PathValue("page_id")
-	reference, err := h.store.ReadPageOriginal(r.Context(), p.ID, document, page)
+	reference, err := h.store.ReadPageEffective(r.Context(), p.ID, document, page)
 	if err != nil {
 		failure(w, err)
 		return
@@ -30,7 +30,7 @@ func (h *Handler) preview(w http.ResponseWriter, r *http.Request, p websession.P
 		w.Header().Set("Content-Security-Policy", "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
 	}
 	h.stream(w, r, reference, func(ctx context.Context) (documents.ArtifactReference, error) {
-		return h.store.ReadPageOriginal(ctx, p.ID, document, page)
+		return h.store.ReadPageEffective(ctx, p.ID, document, page)
 	}, "inline", reference.Artifact.MediaType == "application/pdf")
 }
 

@@ -5,11 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"image"
 	"math"
 	"reflect"
 
-	"scanner-kiosk/internal/correction"
 )
 
 // OCRResultBundle is immutable metadata, never inline provider text or geometry.
@@ -149,50 +147,46 @@ func normalizeOCRBundle(b OCRResultBundle) ([]byte, []ocrResultArtifact, int64, 
 
 // validateOCRSources binds order, originals and the currently applied correction.
 func validateOCRSources(ctx context.Context, tx *sql.Tx, owner, doc string, b OCRResultBundle) error {
-	rows, err := tx.QueryContext(ctx, `SELECT p.id,p.original_artifact_id,p.rotation,a.sha256,COALESCE(c.suggestion_id,''),COALESCE(c.correction_artifact_id,p.original_artifact_id),COALESCE(c.correction_sha256,a.sha256),COALESCE(c.transform_json,''),p.source_type,COALESCE(p.pixel_width,0),COALESCE(p.pixel_height,0),COALESCE(p.pdf_width_points,0),COALESCE(p.pdf_height_points,0)
- FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id
- LEFT JOIN page_corrections c ON c.page_id=p.id AND c.document_id=p.document_id AND c.owner_id=p.owner_id AND c.state='applied'
- WHERE p.document_id=? AND p.owner_id=? AND a.state='ready'
- AND (c.suggestion_id IS NULL OR EXISTS(SELECT 1 FROM artifacts e WHERE e.id=c.correction_artifact_id AND e.document_id=p.document_id AND e.owner_id=p.owner_id AND e.state='ready' AND e.sha256=c.correction_sha256)) ORDER BY p.ordinal LIMIT 1001`, doc, owner)
+	rows, err := tx.QueryContext(ctx, `SELECT id,original_artifact_id,CASE source_type WHEN 'scan' THEN '' ELSE source_type END,rotation,COALESCE(capture_size,''),COALESCE(capture_color,''),COALESCE(capture_dpi,0),COALESCE(pdf_width_points,0),COALESCE(pdf_height_points,0) FROM pages WHERE document_id=? AND owner_id=? ORDER BY ordinal LIMIT 1001`, doc, owner)
 	if err != nil {
 		return ErrStorage
 	}
-	defer rows.Close()
-	i := 0
+	var pages []CapturedPage
 	for rows.Next() {
-		var page, original, correctionID, effective, transform, source string
-		var rotation, width, height int
-		var pdfWidth, pdfHeight float64
-		var oh, eh []byte
-		if err = rows.Scan(&page, &original, &rotation, &oh, &correctionID, &effective, &eh, &transform, &source, &width, &height, &pdfWidth, &pdfHeight); err != nil {
+		var p CapturedPage
+		if err = rows.Scan(&p.ID, &p.OriginalArtifactID, &p.SourceType, &p.Rotation, &p.Size, &p.Color, &p.DPI, &p.PDFWidthPoints, &p.PDFHeightPoints); err != nil {
+			rows.Close()
 			return ErrStorage
 		}
-		if i >= len(b.Pages) {
-			return ErrConflict
-		}
-		p := b.Pages[i]
-		i++
-		if p.PageID != page || p.OriginalArtifactID != original || p.Rotation != rotation || !sameHash(oh, p.OriginalSHA256) || p.CorrectionID != correctionID || p.EffectiveArtifactID != effective || !sameHash(eh, p.EffectiveSHA256) || p.TransformJSON != transform || p.SourceType != source || p.PDFWidthPoints != pdfWidth || p.PDFHeightPoints != pdfHeight {
-			return ErrConflict
-		}
-		if source == "scan" && correctionID == "" && (p.PixelWidth != width || p.PixelHeight != height) {
-			return ErrConflict
-		}
-		if correctionID != "" {
-			var tr correction.Transform
-			if json.Unmarshal([]byte(transform), &tr) != nil || correction.Validate(tr, image.Rect(0, 0, width, height)) != nil || p.PixelWidth != tr.OutputWidth || p.PixelHeight != tr.OutputHeight {
-				return ErrConflict
-			}
-		}
-		if source != "pdf" && p.PDFTextOrigin == "retained-source" {
-			return ErrInvalid
-		}
+		pages = append(pages, p)
 	}
-	if rows.Err() != nil {
+	err = rows.Err()
+	rows.Close()
+	if err != nil {
 		return ErrStorage
 	}
-	if i != len(b.Pages) {
+	if len(pages) != len(b.Pages) {
 		return ErrConflict
+	}
+	sources, err := loadReOCRSources(ctx, tx, owner, doc, pages)
+	if err != nil {
+		return err
+	}
+	for i, page := range pages {
+		p, source := b.Pages[i], sources[i]
+		kind := page.SourceType
+		if kind == "" {
+			kind = "scan"
+		}
+		if p.PageID != page.ID || p.OriginalArtifactID != source.Original.ID || p.OriginalSHA256 != source.Original.SHA256 || p.EffectiveArtifactID != source.Effective.ID || p.EffectiveSHA256 != source.Effective.SHA256 || p.SourceType != kind || p.Rotation != page.Rotation || p.CorrectionID != source.CorrectionID || p.TransformJSON != source.TransformJSON || p.PDFWidthPoints != page.PDFWidthPoints || p.PDFHeightPoints != page.PDFHeightPoints {
+			return ErrConflict
+		}
+		if kind != "pdf" && (p.PixelWidth != source.Effective.PixelWidth || p.PixelHeight != source.Effective.PixelHeight) {
+			return ErrConflict
+		}
+		if kind != "pdf" && p.PDFTextOrigin == "retained-source" {
+			return ErrInvalid
+		}
 	}
 	return nil
 }

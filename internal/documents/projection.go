@@ -214,7 +214,7 @@ func (s *Store) projectContent(ctx context.Context, tx *sql.Tx, owner string, va
 		}
 		if page.SourceType == "pdf" {
 			page.PDF = &PDFPageProjection{WidthPoints: width, HeightPoints: height}
-		} else {
+		} else if page.SourceType == "scan" {
 			page.Capture = &capture
 		}
 		i, ok := positions[document]

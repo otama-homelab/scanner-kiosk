@@ -96,7 +96,7 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 	}
 	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, Output: work.Snapshot.OCROutput}
 	for i, p := range recognitionPages {
-		dpi := work.Snapshot.Pages[i].DPI
+		dpi := ocrDensity(work.Snapshot.Pages[i])
 		if _, ok := rasterReplies[i]; ok {
 			dpi = 300
 		}
@@ -188,6 +188,9 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		source := work.Snapshot.Sources[i]
 		p := work.Snapshot.Pages[i]
 		page := documents.OCRResultPage{PageID: p.ID, OriginalArtifactID: source.Original.ID, EffectiveArtifactID: source.Effective.ID, OriginalSHA256: source.Original.SHA256, EffectiveSHA256: source.Effective.SHA256, CorrectionID: source.CorrectionID, TransformJSON: source.TransformJSON, SourceType: "scan", Rotation: p.Rotation, PixelWidth: b.Input.Width, PixelHeight: b.Input.Height, PDFTextOrigin: "recognition"}
+		if p.SourceType == "photo" {
+			page.SourceType = "photo"
+		}
 		if raster, ok := rasterReplies[i]; ok {
 			page.SourceType = "pdf"
 			page.PDFWidthPoints = p.PDFWidthPoints
@@ -334,7 +337,7 @@ func prepareOCR(ctx context.Context, selector OCRSelector, root string, work doc
 		if page.MediaType == "application/pdf" {
 			continue
 		}
-		req.Pages = append(req.Pages, ocrplugin.InputPage{ID: work.Snapshot.Pages[i].ID, ArtifactID: page.ID, Width: page.Width, Height: page.Height, DPI: work.Snapshot.Pages[i].DPI})
+		req.Pages = append(req.Pages, ocrplugin.InputPage{ID: work.Snapshot.Pages[i].ID, ArtifactID: page.ID, Width: page.Width, Height: page.Height, DPI: ocrDensity(work.Snapshot.Pages[i])})
 	}
 	provider, err := selector.SelectOCR(ctx, settings.ProviderID, req)
 	if err != nil {
@@ -393,4 +396,13 @@ func prepareOCR(ctx context.Context, selector OCRSelector, root string, work doc
 		return final, "", err
 	}
 	return final, reference, nil
+}
+
+// Camera sources have no measured capture DPI. This is only the existing OCR
+// port's required density hint; it is never stored as page/capture provenance.
+func ocrDensity(p documents.CapturedPage) int {
+	if p.SourceType == "photo" {
+		return 300
+	}
+	return p.DPI
 }

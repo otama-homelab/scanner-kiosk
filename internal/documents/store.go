@@ -248,7 +248,7 @@ func (s *Store) PublishExportWithThumbnails(ctx context.Context, owner, jobID, r
 		}
 		for _, thumbnail := range thumbnails {
 			var found int
-			err = tx.QueryRowContext(ctx, `SELECT 1 FROM pages p JOIN artifacts a ON a.id=p.original_artifact_id AND a.document_id=p.document_id AND a.owner_id=p.owner_id WHERE p.document_id=? AND p.owner_id=? AND a.id=? AND a.kind='original' AND a.state='ready' AND NOT EXISTS(SELECT 1 FROM page_thumbnails t WHERE t.original_artifact_id=a.id) LIMIT 1`, documentID, owner, thumbnail.OriginalID).Scan(&found)
+			err = tx.QueryRowContext(ctx, `SELECT 1 FROM pages p JOIN artifacts a ON a.id=(CASE WHEN p.source_type='photo' THEN COALESCE((SELECT c.correction_artifact_id FROM page_corrections c WHERE c.page_id=p.id AND c.document_id=p.document_id AND c.owner_id=p.owner_id AND c.state='applied'),(SELECT ps.normalized_artifact_id FROM photo_sources ps WHERE ps.page_id=p.id AND ps.document_id=p.document_id AND ps.owner_id=p.owner_id)) ELSE p.original_artifact_id END) AND a.document_id=p.document_id AND a.owner_id=p.owner_id WHERE p.document_id=? AND p.owner_id=? AND a.id=? AND a.kind IN ('original','intermediate') AND a.state='ready' AND NOT EXISTS(SELECT 1 FROM page_thumbnails t WHERE t.original_artifact_id=a.id) LIMIT 1`, documentID, owner, thumbnail.OriginalID).Scan(&found)
 			if errors.Is(err, sql.ErrNoRows) {
 				return ErrConflict
 			}
