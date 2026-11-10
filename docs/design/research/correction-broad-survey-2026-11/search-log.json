@@ -1,0 +1,678 @@
+{
+  "searched_at": "2026-11-10",
+  "review_type": "single-reviewer narrative/scoping; not systematic or exhaustive",
+  "question": "Which existing models/libraries/SDKs support document detection, geometry and illumination correction, and which products publicly use them?",
+  "web_search_queries": [
+    {
+      "batch": 1,
+      "queries": [
+        "2026 document image rectification dewarping restoration lightweight model benchmark",
+        "MODNet document scanner OpenScan OpenNoteScanner segmentation model",
+        "OSS document scanner OSS Document Scanner models tflite OpenCV",
+        "Adobe Scan Microsoft Lens Genius Scan SwiftScan machine learning dewarp technology"
+      ],
+      "local_result_file": "broad1.json",
+      "result_sha256": "f48aa5ca8854b4d482142e83b516c6dee39d56148abeaccec8ff0f0f54e81650"
+    },
+    {
+      "batch": 2,
+      "queries": [
+        "MODNet official github portrait matting document scanner",
+        "Genius Scan engineering document detection neural network dewarping",
+        "Scanbot SDK document scanner machine learning model on device",
+        "Adobe Scan dewarping machine learning book curved pages official"
+      ],
+      "local_result_file": "broad2.json",
+      "result_sha256": "75a9cad232ab6a1e22dc768d0d2077270ab24ae37e924b8af228382a6a2ddd54"
+    },
+    {
+      "batch": 3,
+      "queries": [
+        "site:github.com document scanner U2Net MODNet segmentation",
+        "site:github.com ossappscollective OSS-DocumentScanner opencv",
+        "2026 document dewarping ReWarp DocDewarp model github",
+        "2026 document shadow removal illumination restoration model github"
+      ],
+      "local_result_file": "broad3.json",
+      "result_sha256": "923e4816f9a63bdbbb3e3dc82b902fafff678c85d4438c021027dd96535e05c3"
+    },
+    {
+      "batch": 4,
+      "queries": [
+        "site:blog.thegrizzlylabs.com 2024 document detection 2025 2026 neural network",
+        "site:research.google blog document scanner Google Drive shadow removal",
+        "site:developer.apple.com VisionKit document camera rectangle detection perspective",
+        "site:github.com ZZZHANG-jx DocRes DocTr DocScanner document restoration 2026"
+      ],
+      "local_result_file": "broad4.json",
+      "result_sha256": "e21158c9cef0c270354f9d4381a25e1bb70424a3e174f48f1c5ea6f6018e2d51"
+    },
+    {
+      "batch": 5,
+      "queries": [
+        "site:developers.googleblog.com document scanner API Google Drive machine learning 2024",
+        "site:scantailor.org dewarping illumination equalization",
+        "site:github.com document shadow removal 2026 DocShaDiffusion CrossMamba",
+        "site:blog.geniusscan.com 2026 SDK 6 document detection"
+      ],
+      "local_result_file": "broad5.json",
+      "result_sha256": "81ae6c787daf2234c32d2ea21e828b27c05e1326c80603dbb79f39ee3db115a9"
+    },
+    {
+      "batch": 6,
+      "queries": [
+        "document scanner BiRefNet U2NET MODNet MobileNet github document segmentation",
+        "site:github.com CXH-Research DocShadow-SD7K FSENet",
+        "site:github.com ReWarp document dewarping 2026",
+        "site:blog.thegrizzlylabs.com \"Announcing Genius Scan SDK 6\""
+      ],
+      "local_result_file": "broad6.json",
+      "result_sha256": "4674e6d3a24d739496d90d53c47bf7c70b4803c9ebd0b415e7326e9c6bc8e45b"
+    },
+    {
+      "batch": 7,
+      "queries": [
+        "\"ReWarp\" \"document\" 2026",
+        "\"document\" \"shadow removal\" \"2026\" lightweight",
+        "\"CamScanner\" \"model\" \"dewarping\" official",
+        "\"Scanner Pro\" \"Neural\" \"dewarping\""
+      ],
+      "local_result_file": "broad7.json",
+      "result_sha256": "a3a27cd89a79c027008dc7079c9f9a2eb8646bbd4c39a652f1c48ec72f561d3a"
+    },
+    {
+      "batch": 8,
+      "queries": [
+        "site:readdle.com/scannerpro shadows distortion neural network",
+        "site:intsig.com image enhancement document correction deep learning CamScanner",
+        "site:scanbot.io document scanner linux sdk dewarping shadow",
+        "\"Efficient Document Shadow Removal with Contrast-Aware Guidance\""
+      ],
+      "local_result_file": "broad8.json",
+      "result_sha256": "051f1f2032ca9475a7bd0f73486dfde8ad449cefecd7ce746a0fe393666cc43c"
+    },
+    {
+      "batch": 9,
+      "queries": [
+        "\"ML Kit\" \"document scanner\" \"Google Drive\" 2024",
+        "\"MODNet\" \"document\" scanner model",
+        "site:readdle.com/blog scanner pro borders MobileNet",
+        "\"ReWarp\" \"github\" document dewarping"
+      ],
+      "local_result_file": "broad9.json",
+      "result_sha256": "18b0410dfdb47189a1982faadf1ca453600e8c29506be475cea96e849d4a21a6"
+    }
+  ],
+  "api_and_http_retrieval": [
+    {
+      "id": "collection",
+      "url": "https://raw.githubusercontent.com/ZZZHANG-jx/Recommendations-Document-Image-Processing/master/README.md",
+      "status": 200,
+      "bytes": 65626,
+      "sha256": "dcdb0b72d85a3e0efeeec944e37c3951e1a701605f19ff08106f1e6e9e90f230"
+    },
+    {
+      "id": "modnet",
+      "url": "https://raw.githubusercontent.com/ZHKKKe/MODNet/master/README.md",
+      "status": 200,
+      "bytes": 6475,
+      "sha256": "be9f8603539c2e1820e1eb0d58eb75b348e30bfd2de45799500b2cd6aa2ad9ed"
+    },
+    {
+      "id": "u2net",
+      "url": "https://raw.githubusercontent.com/xuebinqin/U-2-Net/master/README.md",
+      "status": 200,
+      "bytes": 17846,
+      "sha256": "2dda6120b8fde9efc40f342db96087c1827b8657f98bb16b668ebe3c34f66c8f"
+    },
+    {
+      "id": "docscanner",
+      "url": "https://raw.githubusercontent.com/fh2019ustc/DocScanner/main/README.md",
+      "status": 200,
+      "bytes": 7249,
+      "sha256": "6b4fb05eb3447ccd10693ee087091f8f04541e5ec100fdeaa83b8cc00b2ce350"
+    },
+    {
+      "id": "oss-scanner",
+      "url": "https://raw.githubusercontent.com/ossappscollective/OSS-DocumentScanner/main/README.md",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "openscan",
+      "url": "https://raw.githubusercontent.com/alexeygrigorev/openscan/main/README.md",
+      "status": 200,
+      "bytes": 6567,
+      "sha256": "919c9c15c7920e77430e4df1a4ec523ec003a13ee1cd69da9ef8ed79ed4ef6b6"
+    },
+    {
+      "id": "genius",
+      "url": "https://blog.thegrizzlylabs.com/2024/10/document-detection.html",
+      "status": 200,
+      "bytes": 14394,
+      "sha256": "d9fc9d6fc1866aa2aa1aa06576c928394c0e50d3ac63b62f64767a781ebd98de"
+    },
+    {
+      "id": "genius-rotate",
+      "url": "https://blog.thegrizzlylabs.com/2024/01/genius-scan-auto-rotate-technology.html",
+      "status": 200,
+      "bytes": 11167,
+      "sha256": "aa4847f5444494f53b80ccd7d82bef4862913b2626530262b6b132cb10eb7671"
+    },
+    {
+      "id": "oss-readme",
+      "url": "https://raw.githubusercontent.com/ossappscollective/OSS-DocumentScanner/main/Readme.md",
+      "status": 200,
+      "bytes": 29379,
+      "sha256": "5a4b79054f2b401d37b3adba2657b9d90d0fd55721bb39c40677ee17465669bb"
+    },
+    {
+      "id": "oss-tree",
+      "url": "https://api.github.com/repos/ossappscollective/OSS-DocumentScanner/git/trees/main?recursive=1",
+      "status": 200,
+      "bytes": 471638,
+      "sha256": "6d68f64472d7e0d1230f6bdb8e4d5418f8523d555426b75909e3d45157e554c2"
+    },
+    {
+      "id": "docscanner-infer",
+      "url": "https://raw.githubusercontent.com/fh2019ustc/DocScanner/main/inference.py",
+      "status": 200,
+      "bytes": 3661,
+      "sha256": "7acf0db2a3947b3c5fb5c963df5922bb9fdbd3f2c488d341b49447f78dcdb424"
+    },
+    {
+      "id": "docres",
+      "url": "https://raw.githubusercontent.com/ZZZHANG-jx/DocRes/master/README.md",
+      "status": 200,
+      "bytes": 3668,
+      "sha256": "394a208036a692b64c2472671de98c3a5d6481ba720eba38dc167847404340ed"
+    },
+    {
+      "id": "docres-license",
+      "url": "https://raw.githubusercontent.com/ZZZHANG-jx/DocRes/master/LICENSE",
+      "status": 200,
+      "bytes": 1069,
+      "sha256": "2fa58d878abc9ea7b2e4780e736eb45c904ace4cb167504b8549210f3d32df1e"
+    },
+    {
+      "id": "booknet",
+      "url": "https://raw.githubusercontent.com/Liu-Shaokai/BookNet/main/README.md",
+      "status": 200,
+      "bytes": 2835,
+      "sha256": "794ce0a130af241075dda93ebc43801aebc29a9659475b651e819bffb667d26e"
+    },
+    {
+      "id": "textflow",
+      "url": "https://raw.githubusercontent.com/Liu-Shaokai/TextFlow/main/README.md",
+      "status": 200,
+      "bytes": 1504,
+      "sha256": "e730ba950a67467dd9de66912a7771e47300eb35399fb37e39c9fadec8cf32fc"
+    },
+    {
+      "id": "mmdir",
+      "url": "https://raw.githubusercontent.com/xiaomore/MMDIR/main/README.md",
+      "status": 200,
+      "bytes": 1409,
+      "sha256": "f3ae474bcc5dea84c3f02475e47b54e2d31a0925ba44358576b2932d74bfba55"
+    },
+    {
+      "id": "dvd",
+      "url": "https://raw.githubusercontent.com/hanquansanren/DvD/main/README.md",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "aadd",
+      "url": "https://raw.githubusercontent.com/chaoyunwang/AADD/main/README.md",
+      "status": 200,
+      "bytes": 2694,
+      "sha256": "c433989dbf8874ca62a29fddde6c943f2e1f3d043a1d35b8bc46934127fed05f"
+    },
+    {
+      "id": "scan-tailor",
+      "url": "https://raw.githubusercontent.com/4lex4/scantailor-advanced/master/README.md",
+      "status": 200,
+      "bytes": 24423,
+      "sha256": "f4a02a8f75e31fd43acd6f63b0ece655ec30246de88e11f56dda96d35ab40fa3"
+    },
+    {
+      "id": "opencv-zoo",
+      "url": "https://raw.githubusercontent.com/opencv/opencv_zoo/main/README.md",
+      "status": 200,
+      "bytes": 7313,
+      "sha256": "a8418a86917ed51da8cb9a443e9fd7048f2218275f9fbf98262d452a5a043ca3"
+    },
+    {
+      "id": "docshadow",
+      "url": "https://raw.githubusercontent.com/ZZZHANG-jx/DocRes/master/inference.py",
+      "status": 200,
+      "bytes": 13207,
+      "sha256": "32dcebbebb98f55a1b1e1022f61519662489807ddf146e76d4fa7b09c55b6ded"
+    },
+    {
+      "id": "fairscan-model",
+      "url": "https://raw.githubusercontent.com/pynicolas/fairscan-segmentation-model/main/README.md",
+      "status": 200,
+      "bytes": 2360,
+      "sha256": "96580cda2c4e94b695d484bd60ade09d65874326025546e956836c98b8b935ea"
+    },
+    {
+      "id": "fairscan-tree",
+      "url": "https://api.github.com/repos/pynicolas/FairScan/git/trees/main?recursive=1",
+      "status": 200,
+      "bytes": 95109,
+      "sha256": "264c0646c0007617f74415ce11f27afb11310275f06c23fa8e52d21c16447a8c"
+    },
+    {
+      "id": "oss-detect",
+      "url": "https://raw.githubusercontent.com/ossappscollective/OSS-DocumentScanner/main/cpp/src/DocumentDetector.cpp",
+      "status": 200,
+      "bytes": 27266,
+      "sha256": "820ef99268ff359c2b43fce7bbecdefd34586f6bff4fbc9f5be3abbc438f3169"
+    },
+    {
+      "id": "oss-white",
+      "url": "https://raw.githubusercontent.com/ossappscollective/OSS-DocumentScanner/main/cpp/src/WhitePaperTransform.cpp",
+      "status": 200,
+      "bytes": 11344,
+      "sha256": "d4eeebdf6a55160d771e70c6a57b5cff0c361793a797b428a77c2265b2eaeeb1"
+    },
+    {
+      "id": "fsenet",
+      "url": "https://raw.githubusercontent.com/CXH-Research/DocShadow-SD7K/main/README.md",
+      "status": 200,
+      "bytes": 5155,
+      "sha256": "acc02f60adc6119bbe6c879c81aa10b3af175a97c5009e721670d8fe8dbac7a2"
+    },
+    {
+      "id": "dvd",
+      "url": "https://raw.githubusercontent.com/hanquansanren/DvD/master/README.md",
+      "status": 200,
+      "bytes": 4600,
+      "sha256": "8e088cd8dc2a56fe91f2b3257a3b828bf049b0fa3f47228ad6917f47292f318e"
+    },
+    {
+      "id": "dvd-infer",
+      "url": "https://raw.githubusercontent.com/hanquansanren/DvD/master/run_sampling.py",
+      "status": 200,
+      "bytes": 3276,
+      "sha256": "1c327996a0b96a2de176cb7c8a7ede3c1d00891738269edb3af9b69c8b5e73b3"
+    },
+    {
+      "id": "docres-paper",
+      "url": "https://arxiv.org/abs/2405.04408",
+      "status": 200,
+      "bytes": 41916,
+      "sha256": "b0091607e66e89e311ea50b0f97d056d60e05419492eb2bc4a1c3c5910503eeb"
+    },
+    {
+      "id": "rewrap",
+      "url": "https://diglib.cgv.tugraz.at/items/8cf8b915-871b-4020-821b-b870b4e2e870",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'diglib.cgv.tugraz.at'. (_ssl.c:1010)>"
+    },
+    {
+      "id": "lit-skill-paper",
+      "url": "https://arxiv.org/abs/2609.00065",
+      "status": 200,
+      "bytes": 42868,
+      "sha256": "87e5d6378d900a1a9299aaf8c9e13ea37db5de5bebd0c7f7af29255b457402d7"
+    },
+    {
+      "id": "fairscan-infer",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/main/app/src/main/java/org/fairscan/app/domain/ImageSegmentation.kt",
+      "status": 200,
+      "bytes": 5586,
+      "sha256": "8dea3a1e140cff28dae66787d90d66d38a674006d125db70386d48e4b54fe205"
+    },
+    {
+      "id": "fairscan-gradle",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/main/app/build.gradle.kts",
+      "status": 200,
+      "bytes": 7414,
+      "sha256": "aca73699fad925449179a5ffb2d989e47511749a3c673ad40b6b8a28dc8efd31"
+    },
+    {
+      "id": "fairscan-model-releases",
+      "url": "https://api.github.com/repos/pynicolas/fairscan-segmentation-model/releases",
+      "status": 200,
+      "bytes": 71294,
+      "sha256": "6cba3fffee240dc7129cab2e39cde74e2cfa689daa65bd3464ccd45efa5dec47"
+    },
+    {
+      "id": "docshadow-onnx",
+      "url": "https://raw.githubusercontent.com/fabio-sim/DocShadow-ONNX-TensorRT/main/README.md",
+      "status": 200,
+      "bytes": 3898,
+      "sha256": "562a863a611ca31582e914e4827bcf7af3a2574ee544418b4bbb9bb10c95e68a"
+    },
+    {
+      "id": "docshadow-release",
+      "url": "https://api.github.com/repos/CXH-Research/DocShadow-SD7K/releases/tags/Weights",
+      "status": 200,
+      "bytes": 6015,
+      "sha256": "0eea0f4dce77e86c1a8a4546e7759956cf2be6380644443a4128bfc07f56241b"
+    },
+    {
+      "id": "jscanify",
+      "url": "https://raw.githubusercontent.com/puffinsoft/jscanify/master/README.md",
+      "status": 200,
+      "bytes": 4388,
+      "sha256": "972549043bb6345aeaaf71f22154b01861f6f97e6e84e11a0d5a913e6b717ba4"
+    },
+    {
+      "id": "birefnet",
+      "url": "https://raw.githubusercontent.com/ZhengPeng7/BiRefNet/main/README.md",
+      "status": 200,
+      "bytes": 42942,
+      "sha256": "6accb0f21f93ae44946278928d12a5d0544b147fff0d2d1bdc13c869a59e5136"
+    },
+    {
+      "id": "genius-sdk6",
+      "url": "https://blog.thegrizzlylabs.com/2026/05/announcing-genius-scan-sdk-6.html",
+      "status": 200,
+      "bytes": 12233,
+      "sha256": "453404ab8eb0a6dfe01e8e554d823149bb1d124fe3794d709410a8fe72927c1b"
+    },
+    {
+      "id": "docshadow-license",
+      "url": "https://raw.githubusercontent.com/CXH-Research/DocShadow-SD7K/main/LICENSE",
+      "status": 200,
+      "bytes": 1066,
+      "sha256": "8bc89f3f97bce52fc3f3446ef6ee29834c7b7724cf7f47341cf92aaa765eb151"
+    },
+    {
+      "id": "uvdoc-transformers",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/main/src/transformers/models/uvdoc/modeling_uvdoc.py",
+      "status": 200,
+      "bytes": 13483,
+      "sha256": "6807cb9e158701459de210140b3ad95c7741dddac90a9fd49eb1b2e818d1e877"
+    },
+    {
+      "id": "fairscan-quads",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/main/imageprocessing/src/main/java/org/fairscan/imageprocessing/DocumentDetection.kt",
+      "status": 200,
+      "bytes": 8219,
+      "sha256": "98357ef9e309a077867f426b6204a3ca14e9084ad849ada3eafb89431d1b8784"
+    },
+    {
+      "id": "docshadow-onnx-releases",
+      "url": "https://api.github.com/repos/fabio-sim/DocShadow-ONNX-TensorRT/releases",
+      "status": 200,
+      "bytes": 6776,
+      "sha256": "413d8c9b47d0845d11a8de86ca7541fdf1505924b7f5846cb1c14d5d1269ff5e"
+    },
+    {
+      "id": "scantailor-license",
+      "url": "https://raw.githubusercontent.com/4lex4/scantailor-advanced/master/COPYING",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "id": "scannerpro-2026",
+      "url": "https://readdle.com/blog/why-scanner-pro-scans-look-better-than-ever",
+      "status": 200,
+      "bytes": 49162,
+      "sha256": "7cc3f11282f33c9689bc25fdc6e6e7b858e6602be545f3c4a5a44a125509f9a9"
+    },
+    {
+      "id": "scannerpro-tech",
+      "url": "https://readdle.com/blog/scanner-pro-shadow",
+      "status": 200,
+      "bytes": 43150,
+      "sha256": "4a394577de74f357d1907e27a1c797ecca1e2188b3448c8d6a888bfee831af94"
+    },
+    {
+      "id": "scantailor-tree",
+      "url": "https://api.github.com/repos/4lex4/scantailor-advanced/git/trees/master?recursive=1",
+      "status": 200,
+      "bytes": 252346,
+      "sha256": "5b6fc094f75bcb84ab1a16454e380e254d5db78f5b479d91ab57650ef07885bd"
+    },
+    {
+      "id": "arxiv-search",
+      "url": "https://export.arxiv.org/api/query?search_query=all:document+AND+(ti:dewarping+OR+ti:shadow)+AND+submittedDate:[202601010000+TO+202611102359]&start=0&max_results=50&sortBy=submittedDate&sortOrder=descending",
+      "status": 200,
+      "bytes": 8354,
+      "sha256": "4afec899df5a4734023e8058e6e8d3f0b9de68c2897e3dcf4eba54e5cde972c3"
+    },
+    {
+      "id": "dblp-search",
+      "url": "https://dblp.org/search/publ/api?q=document%20dewarping%202026&format=json&h=50",
+      "status": 202,
+      "bytes": 2929,
+      "sha256": "a709523131949b1dfb0a00dd9936a8841f7f6fc7ec938c22da06947d16cdc237"
+    },
+    {
+      "id": "uvdoc-prepost",
+      "url": "https://raw.githubusercontent.com/huggingface/transformers/main/src/transformers/models/uvdoc/image_processing_uvdoc.py",
+      "status": 200,
+      "bytes": 6536,
+      "sha256": "f03b9c993d3ea5faa8c15f7dc4b13dc9a4e75b76e41e7e071e0349d342a06356"
+    },
+    {
+      "id": "scannerpro-borders",
+      "url": "https://readdle.com/blog/scanner-pro-border-detection",
+      "status": 200,
+      "bytes": 43351,
+      "sha256": "4d0cbb6429e7e6d4394119f132c18f45f143a1c683baf19b843296e458cb3fb8"
+    },
+    {
+      "id": "apple-vision",
+      "url": "https://developer.apple.com/videos/play/wwdc2021/10041/",
+      "status": 200,
+      "bytes": 175221,
+      "sha256": "57da3c86b8edcfb2297b13f83f2ca8539f8b6e1c9c54a3dbe1f47aaf40b31dad"
+    },
+    {
+      "id": "google-drive",
+      "url": "https://android-developers.googleblog.com/2024/02/ml-kit-document-scanner-api.html",
+      "status": 200,
+      "bytes": 148889,
+      "sha256": "da1f2fcbcbc88fcff539d192d3fdd985c0f19e3c6248ac15428018512b50d598"
+    },
+    {
+      "id": "scanbot-linux",
+      "url": "https://docs.scanbot.io/linux/document-scanner-sdk/introduction/",
+      "status": 200,
+      "bytes": 93391,
+      "sha256": "eb8e2df9dd315dffe10e4f2e5739c59083ee49fef7c67415f5310e35197d68aa"
+    },
+    {
+      "id": "adobe-scan",
+      "url": "https://www.adobe.com/devnet-docs/adobescan/ios/en/scan.html",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "id": "arxiv-search-expanded",
+      "url": "https://export.arxiv.org/api/query?search_query=ti%3Adocument+AND+%28all%3Adewarping+OR+all%3Aunwarping+OR+all%3Arectification+OR+all%3Ashadow%29+AND+submittedDate%3A%5B202501010000+TO+202611102359%5D&max_results=50&sortBy=submittedDate&sortOrder=descending",
+      "status": 200,
+      "bytes": 43236,
+      "sha256": "b4a3464598a85bb813b2bb93ed7adcfff62a107002022344472944f56c6b6049"
+    }
+  ],
+  "arxiv_records": [
+    {
+      "retrieval_id": "arxiv-search",
+      "total_returned": 3,
+      "entries": [
+        {
+          "title": "Shadow Queries for Private Retrieval in Vector Databases",
+          "id": "http://arxiv.org/abs/2609.04767v1",
+          "submitted": "2026-09-04T05:59:54Z"
+        },
+        {
+          "title": "Shadows of Transparency: Signaling Transparency-Impeding Behavior Using Public Data",
+          "id": "http://arxiv.org/abs/2606.14377v1",
+          "submitted": "2026-06-12T12:09:57Z"
+        },
+        {
+          "title": "Internal APIs Are All You Need: Shadow APIs, Shared Discovery, and the Case Against Browser-First Agent Architectures",
+          "id": "http://arxiv.org/abs/2604.00694v1",
+          "submitted": "2026-04-01T09:51:46Z"
+        }
+      ]
+    },
+    {
+      "retrieval_id": "arxiv-search-expanded",
+      "total_returned": 18,
+      "entries": [
+        {
+          "title": "Rethinking Supervision in Document Unwarping: A Self-consistent Flow-free Approach",
+          "id": "http://arxiv.org/abs/2610.15445v1",
+          "submitted": "2026-10-11T08:47:41Z"
+        },
+        {
+          "title": "SyntheticDoc: A Large Synthetic Dataset for Document Unwarping and Illumination Correction",
+          "id": "http://arxiv.org/abs/2609.15503v1",
+          "submitted": "2026-09-14T12:54:47Z"
+        },
+        {
+          "title": "DocIntent: Answerability-Guided Agentic Restoration for Real-World Document Visual Question Answering",
+          "id": "http://arxiv.org/abs/2608.29037v1",
+          "submitted": "2026-08-29T04:07:41Z"
+        },
+        {
+          "title": "DR-Mamba: Automatic Inference-Time Domain Adaptation for Document Image Binarization via Sample-Conditioned Detail-Background Suppression",
+          "id": "http://arxiv.org/abs/2606.22625v1",
+          "submitted": "2026-06-21T18:09:28Z"
+        },
+        {
+          "title": "MFE-GAN: Efficient GAN-based Framework for Document Image Enhancement and Binarization with Multi-scale Feature Extraction",
+          "id": "http://arxiv.org/abs/2512.14114v1",
+          "submitted": "2025-12-16T05:54:27Z"
+        },
+        {
+          "title": "MatteViT: High-Frequency-Aware Document Shadow Removal with Shadow Matte Guidance",
+          "id": "http://arxiv.org/abs/2512.08789v1",
+          "submitted": "2025-12-09T16:40:10Z"
+        },
+        {
+          "title": "Delete and Retain: Efficient Unlearning for Document Classification",
+          "id": "http://arxiv.org/abs/2512.13711v1",
+          "submitted": "2025-12-06T18:57:06Z"
+        },
+        {
+          "title": "Cascaded Robust Rectification for Arbitrary Document Images",
+          "id": "http://arxiv.org/abs/2511.23150v1",
+          "submitted": "2025-11-28T12:56:16Z"
+        },
+        {
+          "title": "Exploring Light-Weight Object Recognition for Real-Time Document Detection",
+          "id": "http://arxiv.org/abs/2509.06246v1",
+          "submitted": "2025-09-07T23:58:28Z"
+        },
+        {
+          "title": "TADoc: Robust Time-Aware Document Image Dewarping",
+          "id": "http://arxiv.org/abs/2508.06988v1",
+          "submitted": "2025-08-09T13:55:55Z"
+        },
+        {
+          "title": "ForCenNet: Foreground-Centric Network for Document Image Rectification",
+          "id": "http://arxiv.org/abs/2507.19804v1",
+          "submitted": "2025-07-26T05:36:48Z"
+        },
+        {
+          "title": "Axis-Aligned Document Dewarping",
+          "id": "http://arxiv.org/abs/2507.15000v2",
+          "submitted": "2025-07-20T15:12:57Z"
+        },
+        {
+          "title": "D2Dewarp: Dual Dimensions Geometric Representation Learning Based Document Image Dewarping",
+          "id": "http://arxiv.org/abs/2507.08492v3",
+          "submitted": "2025-07-11T11:16:58Z"
+        },
+        {
+          "title": "DocShaDiffusion: Diffusion Model in Latent Space for Document Image Shadow Removal",
+          "id": "http://arxiv.org/abs/2507.01422v1",
+          "submitted": "2025-07-02T07:22:09Z"
+        },
+        {
+          "title": "DvD: Unleashing a Generative Paradigm for Document Dewarping via Coordinates-based Diffusion Model",
+          "id": "http://arxiv.org/abs/2505.21975v2",
+          "submitted": "2025-05-28T05:05:51Z"
+        },
+        {
+          "title": "Document Image Rectification Bases on Self-Adaptive Multitask Fusion",
+          "id": "http://arxiv.org/abs/2505.06038v1",
+          "submitted": "2025-05-09T13:35:25Z"
+        },
+        {
+          "title": "Leveraging Contrast Information for Efficient Document Shadow Removal",
+          "id": "http://arxiv.org/abs/2504.00385v2",
+          "submitted": "2025-04-01T03:06:20Z"
+        },
+        {
+          "title": "Efficient Document Image Dewarping via Hybrid Deep Learning and Cubic Polynomial Geometry Restoration",
+          "id": "http://arxiv.org/abs/2501.03145v3",
+          "submitted": "2025-01-06T17:12:19Z"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "DBLP HTTP202 challenge, not usable database results",
+    "No new inference, model weight download, app binary reverse engineering or private document upload",
+    "GitHub API asset digest is publisher metadata, not a downloaded-file verification",
+    "Only selected primary source abstracts, README and implementations inspected; not all full texts",
+    "Raw snapshots are temporary local files, not a permanent distributed evidence bundle"
+  ],
+  "web_primary_source_retrievals": [
+    {
+      "local_result_file": "primary1.json",
+      "sha256": "885caf519889aebcfb82a7b59a9b4620a635452c3afdcbc2bb26053813d1e7ab",
+      "source_urls": [
+        "https://blog.thegrizzlylabs.com/2024/10/document-detection.html",
+        "https://developer.apple.com/videos/play/wwdc2021/10041/",
+        "https://developers.google.com/ml-kit/vision/doc-scanner",
+        "https://github.com/ossappscollective/OSS-DocumentScanner"
+      ]
+    },
+    {
+      "local_result_file": "primary2.json",
+      "sha256": "ca6262b2199c9d4fb25b638a21fee35b5d14b77b24610cd7a78555ebc11ad8d7",
+      "source_urls": [
+        "https://blog.thegrizzlylabs.com/2024/10/document-detection.html",
+        "https://github.com/xiaomore/MMDIR",
+        "https://github.com/chaoyunwang/ArbDR",
+        "https://github.com/Liu-Shaokai/BookNet"
+      ]
+    },
+    {
+      "local_result_file": "primary3.json",
+      "sha256": "8485793ebaf7bae3655eb6d4ed8f7fef4dd1baf81b38910f5d3e3015654eb777",
+      "source_urls": [
+        "https://github.com/pynicolas/fairscan-segmentation-model",
+        "https://github.com/pynicolas/FairScan",
+        "https://github.com/CXH-Research/DocShadow-SD7K",
+        "https://github.com/hanquansanren/DvD"
+      ]
+    },
+    {
+      "local_result_file": "primary4.json",
+      "sha256": "1c77b5dfcee5ce4c81b2471800141f8b91bb90c2b740722b18a0c2dc63117298",
+      "source_urls": [
+        "https://readdle.com/blog/scanner-pro-shadow",
+        "https://readdle.com/blog/why-scanner-pro-scans-look-better-than-ever",
+        "https://github.com/fabio-sim/DocShadow-ONNX-TensorRT",
+        "https://blog.thegrizzlylabs.com/2026/05/announcing-genius-scan-sdk-6.html"
+      ]
+    },
+    {
+      "local_result_file": "primary5.json",
+      "sha256": "4f551377985d0732c27eb4927e7f7fe800ba4e6b95986274295d6f1a32f97346",
+      "source_urls": [
+        "https://huggingface.co/docs/transformers/en/model_doc/uvdoc",
+        "https://readdle.com/blog/scanner-pro-border-detection",
+        "https://docs.scanbot.io/linux/document-scanner-sdk/introduction/",
+        "https://github.com/pynicolas/fairscan-segmentation-model/releases/tag/v1.2.0"
+      ]
+    },
+    {
+      "local_result_file": "primary6.json",
+      "sha256": "dd6cde62dc1d5fcb47ab4f8d4f6f72642b667c2e968fc0b0c01b5dcc4bb40fb4",
+      "source_urls": [
+        "https://arxiv.org/abs/2512.08789",
+        "https://arxiv.org/abs/2606.22625",
+        "https://arxiv.org/abs/2608.29037",
+        "https://arxiv.org/abs/2610.15445"
+      ]
+    }
+  ]
+}
