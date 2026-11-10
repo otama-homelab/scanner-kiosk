@@ -1,0 +1,61 @@
+{
+  "format": "scanner-v060-detector-runtime",
+  "source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "status": "waiting_external_implementation",
+  "complete_runtime": false,
+  "complete": false,
+  "complete_measurement": false,
+  "quality_pass": false,
+  "binary_path": null,
+  "binary_sha256": null,
+  "invocation": null,
+  "source_build": false,
+  "emulator": false,
+  "source": {
+    "path": "evaluation/src/main/java/org/fairscan/evaluation/QuadDetectionEvaluator.kt",
+    "sha256": "34395a16752b913ac5b66dd3664fccd86f52836a52d9a76183a2b18f376543fe",
+    "interfaces": [
+      "nu.pattern.OpenCV.loadLocally",
+      "org.fairscan.imageprocessing.detectDocumentQuad",
+      "org.opencv.core.Mat"
+    ],
+    "evaluation_inputs": "evaluation/dataset/images JPEG and dataset/masks PNG; uses official detectDocumentQuad; source alone does not provide a supported executable"
+  },
+  "distributed_assets": [
+    {
+      "name": "FairScan-2.3.0-arm64-v8a.apk",
+      "bytes": 47013508,
+      "url": "https://github.com/pynicolas/FairScan/releases/download/v2.3.0/FairScan-2.3.0-arm64-v8a.apk"
+    },
+    {
+      "name": "FairScan-2.3.0-armeabi-v7a.apk",
+      "bytes": 34825758,
+      "url": "https://github.com/pynicolas/FairScan/releases/download/v2.3.0/FairScan-2.3.0-armeabi-v7a.apk"
+    }
+  ],
+  "absence_scope": "Existing captured official v2.3.0 metadata distributes ARM Android APKs only; no compatible official desktop evaluation binary or supported invocation was established. No new network polling, build, port, emulator or APK execution.",
+  "automatic_retries": 0,
+  "resume_trigger": "New publisher-distributed compatible evaluator binary with immutable hash and supported invocation; unchanged source metadata is not retried.",
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-eligibility-recheck-v060/fairscan-tree.json",
+      "sha256": "f2aaf552f7f492e45eafa0870faa163cc3625052956a08cee62360e515c4b45c",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-eligibility-recheck-v060/fairscan-release.json",
+      "sha256": "cbccfb2171d41bb133bbabe4d8f2458279eb8ab84e128e608a6de7dda20cbf10",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-eligibility/QuadDetectionEvaluator.kt",
+      "sha256": "34395a16752b913ac5b66dd3664fccd86f52836a52d9a76183a2b18f376543fe",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-eligibility-recheck-v060/summary.json",
+      "sha256": "b71b504c7c83ee0cc7aac42f6f1342c59a6be915d0624965440cffcbadc6fac2",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    }
+  ]
+}

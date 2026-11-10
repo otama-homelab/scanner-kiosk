@@ -1,0 +1,153 @@
+testing: warning: no tests to run
+PASS
+ok  	scanner-kiosk/internal/correction	1.010s [no tests to run]
+=== RUN   TestCorrectionApplyUndo
+--- PASS: TestCorrectionApplyUndo (1.34s)
+=== RUN   TestCorrectionRejectsStaleOrForeign
+--- PASS: TestCorrectionRejectsStaleOrForeign (0.17s)
+=== RUN   TestCorrectionReprocessKeepsOriginal
+--- PASS: TestCorrectionReprocessKeepsOriginal (0.27s)
+=== RUN   TestPhotoManualEditRevisionAndUndo
+=== RUN   TestPhotoManualEditRevisionAndUndo/owner
+=== RUN   TestPhotoManualEditRevisionAndUndo/expired
+=== RUN   TestPhotoManualEditRevisionAndUndo/revision
+=== RUN   TestPhotoManualEditRevisionAndUndo/hash
+=== RUN   TestPhotoManualEditRevisionAndUndo/bounds
+=== RUN   TestPhotoManualEditRevisionAndUndo/negative
+=== RUN   TestPhotoManualEditRevisionAndUndo/overflow
+=== RUN   TestPhotoManualEditRevisionAndUndo/wrong-page
+=== RUN   TestPhotoManualEditRevisionAndUndo/reocr
+=== RUN   TestPhotoManualEditRevisionAndUndo/ocr
+=== RUN   TestPhotoManualEditRevisionAndUndo/scan
+=== RUN   TestPhotoManualEditRevisionAndUndo/quota
+--- PASS: TestPhotoManualEditRevisionAndUndo (3.10s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/owner (0.20s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/expired (0.21s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/revision (0.26s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/hash (0.27s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/bounds (0.23s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/negative (0.23s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/overflow (0.22s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/wrong-page (0.24s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/reocr (0.24s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/ocr (0.24s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/scan (0.23s)
+    --- PASS: TestPhotoManualEditRevisionAndUndo/quota (0.22s)
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/apply
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/normalized-drift
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/original-drift
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/correction-drift
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/invalid-transform
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/foreign
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/stale
+=== RUN   TestPhotoUsesSharedSuggestionApplyAndUndo/expired
+--- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo (2.58s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/apply (0.35s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/normalized-drift (0.30s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/original-drift (0.30s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/correction-drift (0.42s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/invalid-transform (0.30s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/foreign (0.29s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/stale (0.30s)
+    --- PASS: TestPhotoUsesSharedSuggestionApplyAndUndo/expired (0.31s)
+PASS
+ok  	scanner-kiosk/internal/documents	8.475s
+=== RUN   TestPhotoManualCropRotateUndo
+    photo_browser_integration_linux_test.go:121: real photo browser manual: exit status 1
+        browserType.launch: Target page, context or browser has been closed
+        Browser logs:
+        
+        <launching> local-evidence:phase68-public-locator-2 --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --user-data-dir=local-evidence:phase68-public-locator-8/runtime-tmp-corrected/playwright_chromiumdev_profile-Fy31mo --remote-debugging-pipe --no-startup-window
+        <launched> pid=1063275
+        [pid=1063275][err] [1063275:1063275:1111/010237.696836:FATAL:chrome/browser/process_singleton_posix.cc:313] Socket path too long: local-evidence:phase68-public-locator-8/runtime-tmp-corrected/org.chromium.Chromium.AP1kfz/SingletonSocket.
+        [pid=1063275][err] [1111/010237.705562:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open local-evidence:phase68-public-locator-11: No such file or directory (2)
+        [pid=1063275][err] [1111/010237.705627:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open local-evidence:phase68-public-locator-12: No such file or directory (2)
+        [pid=1063275][err] Received signal 6
+        [pid=1063275][err] #0 0x5e38c2c10c83 (local-evidence:phase68-public-locator-2+0x6b0dc82)
+        [pid=1063275][err] #1 0x5e38c7be6b24 (local-evidence:phase68-public-locator-2+0xbae3b23)
+        [pid=1063275][err] #2 0x74179c245330 (local-evidence:phase68-public-locator-10+0x4532f)
+        [pid=1063275][err] #3 0x74179c24527e (local-evidence:phase68-public-locator-10+0x4527d)
+        [pid=1063275][err] #4 0x74179c2288ff (local-evidence:phase68-public-locator-10+0x288fe)
+        [pid=1063275][err] #5 0x5e38c7bdd8a5 (local-evidence:phase68-public-locator-2+0xbada8a4)
+        [pid=1063275][err] #6 0x5e38c7b9dd9d (local-evidence:phase68-public-locator-2+0xba9ad9c)
+        [pid=1063275][err] #7 0x5e38c7b9dced (local-evidence:phase68-public-locator-2+0xba9acec)
+        [pid=1063275][err] #8 0x5e38c29010a2 (local-evidence:phase68-public-locator-2+0x67fe0a1)
+        [pid=1063275][err] #9 0x5e38c1fc0ba9 (local-evidence:phase68-public-locator-2+0x5ebdba8)
+        [pid=1063275][err] #10 0x5e38c225d176 (local-evidence:phase68-public-locator-2+0x615a175)
+        [pid=1063275][err] #11 0x5e38c225d6a1 (local-evidence:phase68-public-locator-2+0x615a6a0)
+        [pid=1063275][err] #12 0x5e38c225d634 (local-evidence:phase68-public-locator-2+0x615a633)
+        [pid=1063275][err] #13 0x5e38c224a2d9 (local-evidence:phase68-public-locator-2+0x61472d8)
+        [pid=1063275][err] #14 0x5e38c2249713 (local-evidence:phase68-public-locator-2+0x6146712)
+        [pid=1063275][err] #15 0x5e38c2245af0 (local-evidence:phase68-public-locator-2+0x6142aef)
+        [pid=1063275][err] #16 0x5e38c224297e (local-evidence:phase68-public-locator-2+0x613f97d)
+        [pid=1063275][err] #17 0x5e38c2241b80 (local-evidence:phase68-public-locator-2+0x613eb7f)
+        [pid=1063275][err] #18 0x74179c22a1ca (local-evidence:phase68-public-locator-10+0x2a1c9)
+        [pid=1063275][err] #19 0x74179c22a28b (local-evidence:phase68-public-locator-10+0x2a28a)
+        [pid=1063275][err] #20 0x5e38c2ed8a2a (local-evidence:phase68-public-locator-2+0x6dd5a29)
+        [pid=1063275][err]   r8: 000002f8000082c9  r9: 0000000000000001 r10: 0000000000000008 r11: 0000000000000246
+        [pid=1063275][err]  r12: 0000000000000006 r13: 000002f8000081e0 r14: 0000000000000016 r15: 00007ffd03a1aaf0
+        [pid=1063275][err]   di: 000000000010396b  si: 000000000010396b  bp: 00007ffd03a1a470  bx: 000000000010396b
+        [pid=1063275][err]   dx: 0000000000000006  ax: 0000000000000000  cx: 000074179c29ec0c  sp: 00007ffd03a1a430
+        [pid=1063275][err]   ip: 000074179c29ec0c efl: 0000000000000246 cgf: 002b000000000033 erf: 0000000000000000
+        [pid=1063275][err]  trp: 0000000000000000 msk: 0000000000000000 cr2: 0000000000000000
+        [pid=1063275][err] [end of stack trace]
+        Call log:
+        [2m  - <launching> local-evidence:phase68-public-locator-2 --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --user-data-dir=local-evidence:phase68-public-locator-8/runtime-tmp-corrected/playwright_chromiumdev_profile-Fy31mo --remote-debugging-pipe --no-startup-window[22m
+        [2m  - <launched> pid=1063275[22m
+        [2m  - [pid=1063275][err] [1063275:1063275:1111/010237.696836:FATAL:chrome/browser/process_singleton_posix.cc:313] Socket path too long: local-evidence:phase68-public-locator-8/runtime-tmp-corrected/org.chromium.Chromium.AP1kfz/SingletonSocket.[22m
+        [2m  - [pid=1063275][err] [1111/010237.705562:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open local-evidence:phase68-public-locator-11: No such file or directory (2)[22m
+        [2m  - [pid=1063275][err] [1111/010237.705627:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open local-evidence:phase68-public-locator-12: No such file or directory (2)[22m
+        [2m  - [pid=1063275][err] Received signal 6[22m
+        [2m  - [pid=1063275][err] #0 0x5e38c2c10c83 (local-evidence:phase68-public-locator-2+0x6b0dc82)[22m
+        [2m  - [pid=1063275][err] #1 0x5e38c7be6b24 (local-evidence:phase68-public-locator-2+0xbae3b23)[22m
+        [2m  - [pid=1063275][err] #2 0x74179c245330 (local-evidence:phase68-public-locator-10+0x4532f)[22m
+        [2m  - [pid=1063275][err] #3 0x74179c24527e (local-evidence:phase68-public-locator-10+0x4527d)[22m
+        [2m  - [pid=1063275][err] #4 0x74179c2288ff (local-evidence:phase68-public-locator-10+0x288fe)[22m
+        [2m  - [pid=1063275][err] #5 0x5e38c7bdd8a5 (local-evidence:phase68-public-locator-2+0xbada8a4)[22m
+        [2m  - [pid=1063275][err] #6 0x5e38c7b9dd9d (local-evidence:phase68-public-locator-2+0xba9ad9c)[22m
+        [2m  - [pid=1063275][err] #7 0x5e38c7b9dced (local-evidence:phase68-public-locator-2+0xba9acec)[22m
+        [2m  - [pid=1063275][err] #8 0x5e38c29010a2 (local-evidence:phase68-public-locator-2+0x67fe0a1)[22m
+        [2m  - [pid=1063275][err] #9 0x5e38c1fc0ba9 (local-evidence:phase68-public-locator-2+0x5ebdba8)[22m
+        [2m  - [pid=1063275][err] #10 0x5e38c225d176 (local-evidence:phase68-public-locator-2+0x615a175)[22m
+        [2m  - [pid=1063275][err] #11 0x5e38c225d6a1 (local-evidence:phase68-public-locator-2+0x615a6a0)[22m
+        [2m  - [pid=1063275][err] #12 0x5e38c225d634 (local-evidence:phase68-public-locator-2+0x615a633)[22m
+        [2m  - [pid=1063275][err] #13 0x5e38c224a2d9 (local-evidence:phase68-public-locator-2+0x61472d8)[22m
+        [2m  - [pid=1063275][err] #14 0x5e38c2249713 (local-evidence:phase68-public-locator-2+0x6146712)[22m
+        [2m  - [pid=1063275][err] #15 0x5e38c2245af0 (local-evidence:phase68-public-locator-2+0x6142aef)[22m
+        [2m  - [pid=1063275][err] #16 0x5e38c224297e (local-evidence:phase68-public-locator-2+0x613f97d)[22m
+        [2m  - [pid=1063275][err] #17 0x5e38c2241b80 (local-evidence:phase68-public-locator-2+0x613eb7f)[22m
+        [2m  - [pid=1063275][err] #18 0x74179c22a1ca (local-evidence:phase68-public-locator-10+0x2a1c9)[22m
+        [2m  - [pid=1063275][err] #19 0x74179c22a28b (local-evidence:phase68-public-locator-10+0x2a28a)[22m
+        [2m  - [pid=1063275][err] #20 0x5e38c2ed8a2a (local-evidence:phase68-public-locator-2+0x6dd5a29)[22m
+        [2m  - [pid=1063275][err]   r8: 000002f8000082c9  r9: 0000000000000001 r10: 0000000000000008 r11: 0000000000000246[22m
+        [2m  - [pid=1063275][err]  r12: 0000000000000006 r13: 000002f8000081e0 r14: 0000000000000016 r15: 00007ffd03a1aaf0[22m
+        [2m  - [pid=1063275][err]   di: 000000000010396b  si: 000000000010396b  bp: 00007ffd03a1a470  bx: 000000000010396b[22m
+        [2m  - [pid=1063275][err]   dx: 0000000000000006  ax: 0000000000000000  cx: 000074179c29ec0c  sp: 00007ffd03a1a430[22m
+        [2m  - [pid=1063275][err]   ip: 000074179c29ec0c efl: 0000000000000246 cgf: 002b000000000033 erf: 0000000000000000[22m
+        [2m  - [pid=1063275][err]  trp: 0000000000000000 msk: 0000000000000000 cr2: 0000000000000000[22m
+        [2m  - [pid=1063275][err] [end of stack trace][22m
+        [2m  - [pid=1063275] <gracefully close start>[22m
+        [2m  - [pid=1063275] <kill>[22m
+        [2m  - [pid=1063275] <will force kill>[22m
+        [2m  - [pid=1063275] <process did exit: exitCode=null, signal=SIGABRT>[22m
+        [2m  - [pid=1063275] starting temporary directories cleanup[22m
+        [2m  - [pid=1063275] finished temporary directories cleanup[22m
+        [2m  - [pid=1063275] <gracefully close end>[22m
+        
+            at local-evidence:phase68-public-locator-9/scripts/check-web-photo.cjs:7:31
+            at Object.<anonymous> (local-evidence:phase68-public-locator-9/scripts/check-web-photo.cjs:74:3)
+--- FAIL: TestPhotoManualCropRotateUndo (8.66s)
+FAIL
+FAIL	scanner-kiosk/internal/documenthttp	8.675s
+=== RUN   TestPhotoCorrectedPixelsAcrossConsumers
+=== RUN   TestPhotoCorrectedPixelsAcrossConsumers/before
+=== RUN   TestPhotoCorrectedPixelsAcrossConsumers/apply
+=== RUN   TestPhotoCorrectedPixelsAcrossConsumers/undo
+--- PASS: TestPhotoCorrectedPixelsAcrossConsumers (21.27s)
+    --- PASS: TestPhotoCorrectedPixelsAcrossConsumers/before (5.52s)
+    --- PASS: TestPhotoCorrectedPixelsAcrossConsumers/apply (7.90s)
+    --- PASS: TestPhotoCorrectedPixelsAcrossConsumers/undo (7.85s)
+PASS
+ok  	scanner-kiosk/internal/workerruntime	22.294s
+FAIL

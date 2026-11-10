@@ -1,0 +1,151 @@
+{
+  "format": "scanner-v060-illumination-eligibility",
+  "artifacts": [
+    {
+      "family": "FSENet",
+      "identity": {
+        "publisher": "CXH-Research/DocShadow-SD7K",
+        "release": "Weights",
+        "names": [
+          "SD7K.pth",
+          "Jung.pth",
+          "Kligler.pth"
+        ],
+        "immutable_hash": "unresolved",
+        "revision": "release metadata recorded 2026-11-10"
+      },
+      "scope": {
+        "acquisition": "unresolved checkpoint-specific scope",
+        "execution": "unresolved",
+        "commercial": "unresolved",
+        "redistribution": "unresolved",
+        "source_license": "Repository MIT does not settle exact artifact terms"
+      },
+      "conversion": "Original-to-export checkpoint identity unresolved; earlier linked ONNX is not promoted to FSENet",
+      "parity": "No exact original/export parity evidence",
+      "status": "waiting_external_rights_holder",
+      "predicates": {
+        "publisher": true,
+        "revision": true,
+        "hash": false,
+        "acquisition": false,
+        "execution": false,
+        "commercial": false,
+        "redistribution": false,
+        "conversion_identity": false,
+        "parity": false,
+        "official_loading": false
+      },
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-eligibility-recheck-v060/DocShadow-SD7K.json",
+          "sha256": "8f0f542753185c8bb5866c54e8a7f7116232c5a511bbc5fc881f8bfdfb24cd42",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/research-acquisition.json",
+          "sha256": "4ccb29000ad2a4edc75e2020c7c4712240ff1598acd17d359fcee4b4ca8ba9c9",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "family": "DocShadow-ONNX",
+      "identity": {
+        "publisher": "fabio-sim/DocShadow-ONNX-TensorRT",
+        "release": "v1.0.0",
+        "immutable_hash": "unresolved",
+        "revision": "author-linked earlier ONNX release metadata recorded 2026-11-10"
+      },
+      "scope": {
+        "acquisition": "unresolved checkpoint-specific scope",
+        "execution": "unresolved",
+        "commercial": "unresolved",
+        "redistribution": "unresolved",
+        "source_license": "Repository MIT does not settle exact artifact terms"
+      },
+      "conversion": "Original-to-export checkpoint identity unresolved; earlier linked ONNX is not promoted to FSENet",
+      "parity": "No exact original/export parity evidence",
+      "status": "waiting_external_rights_holder",
+      "predicates": {
+        "publisher": true,
+        "revision": true,
+        "hash": false,
+        "acquisition": false,
+        "execution": false,
+        "commercial": false,
+        "redistribution": false,
+        "conversion_identity": false,
+        "parity": false,
+        "official_loading": false
+      },
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-validation-v060/research-acquisition.json",
+          "sha256": "4ccb29000ad2a4edc75e2020c7c4712240ff1598acd17d359fcee4b4ca8ba9c9",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/illumination-clarification-unsent.md",
+          "sha256": "97bded2bcc993073d05cf933a0674dd8fe44f7366bff44a8365ca5ebf77c2252",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "family": "SyntheticDoc",
+      "identity": {
+        "publisher": "tanguymagne/SyntheticDoc",
+        "names": [
+          "original_31x45.ckpt",
+          "highres_121x177.ckpt"
+        ],
+        "immutable_hash": "unresolved",
+        "revision": "official checkpoint-link metadata recorded 2026-11-10"
+      },
+      "scope": {
+        "acquisition": "unresolved checkpoint-specific scope",
+        "execution": "unresolved",
+        "commercial": "unresolved",
+        "redistribution": "unresolved",
+        "source_license": "Repository MIT does not settle exact artifact terms"
+      },
+      "conversion": "Original-to-export checkpoint identity unresolved; earlier linked ONNX is not promoted to FSENet",
+      "parity": "No exact original/export parity evidence",
+      "status": "waiting_external_rights_holder",
+      "predicates": {
+        "publisher": true,
+        "revision": true,
+        "hash": false,
+        "acquisition": false,
+        "execution": false,
+        "commercial": false,
+        "redistribution": false,
+        "conversion_identity": false,
+        "parity": false,
+        "official_loading": false
+      },
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-eligibility-recheck-v060/SyntheticDoc.json",
+          "sha256": "06492ba515869b7ccef3589bab24aa81bd9f4fe76f1118fc5ec886e1a7eb89ae",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/resume-gap-research.json",
+          "sha256": "f2213ff423965bfdd0fa610cf167523de0347211cf38da8c39d147302a3f1a71",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/resume-synthetic-model.txt",
+          "sha256": "c4095c0e5d1a83ad5323d106a5189069e5582e79401b353e54ff66ee9d97a648",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    }
+  ],
+  "messages_sent": 0,
+  "downloads": 0,
+  "model_executions": 0,
+  "source_revision_scope": "Previously captured authoritative records rehashed; no unchanged network survey repeated."
+}

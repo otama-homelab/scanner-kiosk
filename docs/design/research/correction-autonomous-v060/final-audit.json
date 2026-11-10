@@ -1,0 +1,281 @@
+{
+  "format": "scanner-v060-final-audit",
+  "status": "automation_queue_exhausted",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "requirements": [
+    {
+      "id": "ENV-01",
+      "status": "measured-pass",
+      "complete": true,
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "ENV-02",
+      "status": "measured-pass",
+      "complete": true,
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "TRUTH-01",
+      "status": "measured-pass",
+      "complete": true,
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "TRUTH-02",
+      "status": "waiting_external_input",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "TRUTH-03",
+      "status": "measured-pass",
+      "complete": true,
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-01",
+      "status": "waiting_external_implementation",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-runtime.json",
+          "sha256": "a1a53735a19c68b33f6ca59bf3e122b8d8566c3cb0ebc16738f4c8340e847b48",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-02",
+      "status": "waiting_external_input",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-03",
+      "status": "measured-pass",
+      "complete": true,
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/all-reload.json",
+          "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/control-reload.json",
+          "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+          "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-04",
+      "status": "waiting_external_input",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "id": "ILL-01",
+      "status": "waiting_external_rights_holder",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase67-resume.json",
+          "sha256": "6688ffe4075f00a71646fa31075e64ae89dca5f0010730990838d3d0dd8678d0",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "ILL-02",
+      "status": "waiting_external_rights_holder",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase67-measurement.json",
+          "sha256": "279c46f23cf12c13f6707a9984164d52b7edec03a407ece8c75c763377387163",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "ACCEPT-01",
+      "status": "waiting_external_owner_operation",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase68-owner-evidence.json",
+          "sha256": "d87cc038f952c37a8eadd265d0fcc9c34ffc1c92d820cbb1a9d94633d613df83",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "ACCEPT-02",
+      "status": "not-run",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase68-candidate-shared-path.json",
+          "sha256": "ddf93c0b7133cf145d638c68035d3a674aec8eafcb4071cb1fbca2408d6723f9",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    },
+    {
+      "id": "ACCEPT-03",
+      "status": "measured-pass",
+      "complete": true,
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
+    }
+  ],
+  "producer_receipts": {
+    "phase65-truth-gate.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+      "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase66-disposition.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase66-disposition.json",
+      "sha256": "5840af837de4d392712e66f3f6b284ea525133435798d6942b481efb268db11a",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase67-resume.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-resume.json",
+      "sha256": "6688ffe4075f00a71646fa31075e64ae89dca5f0010730990838d3d0dd8678d0",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase67-measurement.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-measurement.json",
+      "sha256": "279c46f23cf12c13f6707a9984164d52b7edec03a407ece8c75c763377387163",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase68-qualification.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-qualification.json",
+      "sha256": "e42c87fe8b63d039d9f73b3d2ef2495a658d1f985a2d6869c8edd3470a78cc48",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase68-candidate-shared-path.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-candidate-shared-path.json",
+      "sha256": "ddf93c0b7133cf145d638c68035d3a674aec8eafcb4071cb1fbca2408d6723f9",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase68-owner-evidence.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-owner-evidence.json",
+      "sha256": "d87cc038f952c37a8eadd265d0fcc9c34ffc1c92d820cbb1a9d94633d613df83",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  },
+  "verified_requirements": 6,
+  "original_requirement_count": 14,
+  "owner_checkpoint": "68-02-T3: blocking-human; waiting_external_owner_operation",
+  "canonical_projection": "Root alone validates and projects this proposal; coordinator has not changed canonical state or ledger.",
+  "resume_triggers": {
+    "truth": "Changed independent reviewer/date/source-bound original photo2_2 digits and thin lines truth.",
+    "detector": "Compatible official complete FairScan binary and invocation with immutable identity.",
+    "illumination": "Changed authoritative checkpoint-specific rights, conversion identity and parity; then supported existing metrics.",
+    "candidate": "Every qualification gate true, then actual candidate-bound shared path.",
+    "owner": "Changed actual same-original iPhone and PC operation evidence revision."
+  }
+}

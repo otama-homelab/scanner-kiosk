@@ -1,0 +1,128 @@
+{
+  "format": "scanner-v060-product-regression",
+  "status": "measured-fail",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "started_at": "2026-11-10T16:02:27.500069+00:00",
+  "duration_seconds": 26.126,
+  "complete_measurement": true,
+  "quality_pass": false,
+  "expected_tests": [
+    "TestPhotoManualCropRotateUndo",
+    "TestPhotoManualEditRevisionAndUndo",
+    "TestPhotoCorrectedPixelsAcrossConsumers",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo",
+    "TestCorrectionApplyUndo",
+    "TestCorrectionRejectsStaleOrForeign",
+    "TestCorrectionReprocessKeepsOriginal"
+  ],
+  "tests_run": [
+    "TestCorrectionApplyUndo",
+    "TestCorrectionRejectsStaleOrForeign",
+    "TestCorrectionReprocessKeepsOriginal",
+    "TestPhotoManualEditRevisionAndUndo",
+    "TestPhotoManualEditRevisionAndUndo/owner",
+    "TestPhotoManualEditRevisionAndUndo/expired",
+    "TestPhotoManualEditRevisionAndUndo/revision",
+    "TestPhotoManualEditRevisionAndUndo/hash",
+    "TestPhotoManualEditRevisionAndUndo/bounds",
+    "TestPhotoManualEditRevisionAndUndo/negative",
+    "TestPhotoManualEditRevisionAndUndo/overflow",
+    "TestPhotoManualEditRevisionAndUndo/wrong-page",
+    "TestPhotoManualEditRevisionAndUndo/reocr",
+    "TestPhotoManualEditRevisionAndUndo/ocr",
+    "TestPhotoManualEditRevisionAndUndo/scan",
+    "TestPhotoManualEditRevisionAndUndo/quota",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/apply",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/normalized-drift",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/original-drift",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/correction-drift",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/invalid-transform",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/foreign",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/stale",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo/expired",
+    "TestPhotoManualCropRotateUndo",
+    "TestPhotoCorrectedPixelsAcrossConsumers",
+    "TestPhotoCorrectedPixelsAcrossConsumers/before",
+    "TestPhotoCorrectedPixelsAcrossConsumers/apply",
+    "TestPhotoCorrectedPixelsAcrossConsumers/undo"
+  ],
+  "top_level_tests_passed": [
+    "TestCorrectionApplyUndo",
+    "TestCorrectionRejectsStaleOrForeign",
+    "TestCorrectionReprocessKeepsOriginal",
+    "TestPhotoManualEditRevisionAndUndo",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo",
+    "TestPhotoCorrectedPixelsAcrossConsumers"
+  ],
+  "skips": [],
+  "failures": [
+    "TestPhotoManualCropRotateUndo"
+  ],
+  "exit_code": 1,
+  "exception": null,
+  "retry_count": 1,
+  "semantic_test_retry_count": 0,
+  "mesh_unit_tests": {
+    "tests": 2,
+    "passed": true,
+    "inference_performed": false
+  },
+  "historical_receipt_restored": true,
+  "invariants": {
+    "original_retention": false,
+    "normalized_baseline_retention": false,
+    "preview_apply_undo_save_reocr": false,
+    "clean_canon_no_inference": false,
+    "clean_canon_no_resampling": false
+  },
+  "limitations": [
+    "Clean Canon no-inference/no-resampling is not covered by these seven named tests; false records an unproven qualification gate.",
+    "This is existing-path synthetic regression only; no new correction candidate is bound or qualified.",
+    "Automated Chromium and synthetic OCR are not owner iPhone/PC acceptance or OCR quality."
+  ],
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-command.json",
+      "sha256": "caa53378c9a427ffbc53695721b0c8e5a742000b173249692eed3760cf911df7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression.log",
+      "sha256": "02d637052d1566ca863b6ac3c3cc43beadfcf1c899964b37d057b8f5e87f3d1e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-runtime-preflight.json",
+      "sha256": "04e726c5b77cb5d6d463e176e057d88f1de416a54d91a47c9a5dec7826690e52",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-source-inventory.json",
+      "sha256": "c67a6eb47a41690dd3256eabe441ef6b8a0fa0b317fd1148cbf8b7de774b78e7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-mesh-tests.log",
+      "sha256": "219548cb994598ed761838bf14f584be119a24925e3b1f2b1a6ab471785bd50e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-environment-launch-failure.json",
+      "sha256": "03401399ed6b30abd779fc61cee2095e17c1c676f14c298c83229f567684ca1e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-raw.log",
+      "sha256": "1d6945413456595724b8a981ca5a90bd9bd94472e37fdf1a1c3d0652a093b85f",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ],
+  "classification": "known-browser-launch-setup-failure",
+  "failure_reason": "Chromium Unix socket path exceeded its limit under the long isolated TMPDIR; no browser UI assertions executed."
+}

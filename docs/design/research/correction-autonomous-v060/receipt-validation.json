@@ -1,0 +1,171 @@
+{
+  "format": "scanner-v060-receipt-validation",
+  "validators_run": 15,
+  "success_count": 15,
+  "failed_count": 0,
+  "negative_rejections": 6,
+  "plan_hashes": {
+    ".planning/phases/65-independent-correction-ground-truth/65-02-PLAN.md": "d6895781a63c2247c326a25f92f6fd68f74cfc777453a91f3dc83443feedefae",
+    ".planning/phases/66-detection-and-mesh-verification/66-01-PLAN.md": "01c86520ad41bd75f7b6ed784b4af636b1c97ed85c0e6ce5add34a53bac5e6df",
+    ".planning/phases/67-illumination-eligibility-and-verification/67-01-PLAN.md": "4b07879536fe05b40a15c3d46b8d497350203d2c7e211cb91b3c88653fe900a8",
+    ".planning/phases/67-illumination-eligibility-and-verification/67-02-PLAN.md": "7e487f2d147b7afa3933bbbb0e9559a2711afd489b6180184c1f5ff57985939e",
+    ".planning/phases/68-owner-validation-and-final-qualification/68-01-PLAN.md": "d88a2af459d1864c56abe85faf9e77c11532fa81c0fcaa8d7f6094bfd0a984ca",
+    ".planning/phases/68-owner-validation-and-final-qualification/68-02-PLAN.md": "ffe19b02b898e9abc926dc64ffd0047c672e054783051c0eed79822229d7bb2f"
+  },
+  "original_receipts_unchanged": true,
+  "results": [
+    {
+      "plan": "65-02-PLAN",
+      "task": 1,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "65-02-PLAN",
+      "task": 2,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "66-01-PLAN",
+      "task": 1,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "66-01-PLAN",
+      "task": 2,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "66-01-PLAN",
+      "task": 3,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-01-PLAN",
+      "task": 1,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-01-PLAN",
+      "task": 2,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-02-PLAN",
+      "task": 1,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-02-PLAN",
+      "task": 2,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "68-01-PLAN",
+      "task": 1,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "68-01-PLAN",
+      "task": 2,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "68-01-PLAN",
+      "task": 3,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "68-02-PLAN",
+      "task": 1,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "68-02-PLAN",
+      "task": 2,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "68-02-PLAN",
+      "task": 3,
+      "kind": "success",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "65-02-PLAN",
+      "task": 2,
+      "kind": "negative",
+      "case": "empty-predicates",
+      "returncode": 1,
+      "rejected": true
+    },
+    {
+      "plan": "65-02-PLAN",
+      "task": 2,
+      "kind": "negative",
+      "case": "empty-evidence",
+      "returncode": 1,
+      "rejected": true
+    },
+    {
+      "plan": "65-02-PLAN",
+      "task": 2,
+      "kind": "negative",
+      "case": "waiting-complete",
+      "returncode": 1,
+      "rejected": true
+    },
+    {
+      "plan": "66-01-PLAN",
+      "task": 3,
+      "kind": "negative",
+      "case": "failed-quality",
+      "returncode": 1,
+      "rejected": true
+    },
+    {
+      "plan": "68-01-PLAN",
+      "task": 2,
+      "kind": "negative",
+      "case": "false-qualified",
+      "returncode": 1,
+      "rejected": true
+    },
+    {
+      "plan": "68-02-PLAN",
+      "task": 2,
+      "kind": "negative",
+      "case": "waiting-complete-audit",
+      "returncode": 1,
+      "rejected": true
+    }
+  ]
+}

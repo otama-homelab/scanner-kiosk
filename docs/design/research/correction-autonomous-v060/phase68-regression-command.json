@@ -1,0 +1,56 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-v",
+    "-race",
+    "-count=1",
+    "./internal/correction",
+    "./internal/documents",
+    "./internal/documenthttp",
+    "./internal/workerruntime",
+    "-run",
+    "^(TestPhotoManualCropRotateUndo|TestPhotoManualEditRevisionAndUndo|TestPhotoCorrectedPixelsAcrossConsumers|TestPhotoUsesSharedSuggestionApplyAndUndo|TestCorrectionApplyUndo|TestCorrectionRejectsStaleOrForeign|TestCorrectionReprocessKeepsOriginal)$"
+  ],
+  "cwd": "scanner-kiosk",
+  "environment": {
+    "SCANNER_TEST_PLAYWRIGHT_MODULE": "local-evidence:phase68-public-locator-1",
+    "SCANNER_TEST_CHROMIUM": "local-evidence:phase68-public-locator-2",
+    "SCANNER_TEST_PDF_RUNTIME": "local-evidence:phase68-public-locator-3",
+    "NPM_CONFIG_OFFLINE": "true",
+    "NPM_CONFIG_UPDATE_NOTIFIER": "false",
+    "ASTRO_TELEMETRY_DISABLED": "1",
+    "GOPROXY": "off",
+    "GOTOOLCHAIN": "go1.27.3",
+    "GOFLAGS": "-buildvcs=false",
+    "TMPDIR": "local-evidence:phase68-public-locator-4"
+  },
+  "build_exception": "Root authorized the existing build-web.py npm ci --ignore-scripts --no-audit --no-fund using only the exact lockfile and offline cache; no shim, network fallback, package change or third-party build.",
+  "mesh_command": [
+    "env",
+    "PYTHONDONTWRITEBYTECODE=1",
+    "HF_HUB_OFFLINE=1",
+    "TRANSFORMERS_OFFLINE=1",
+    "OMP_NUM_THREADS=2",
+    "MKL_NUM_THREADS=2",
+    "local-evidence:phase68-public-locator-5",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "scripts/eval/correction",
+    "-p",
+    "test_uvdoc_mesh_candidate.py",
+    "-v"
+  ],
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "retry_count": 1,
+  "semantic_test_retry_count": 0,
+  "initial_environment_failure": {
+    "path": "docs/design/research/correction-autonomous-v060/phase68-environment-launch-failure.json",
+    "sha256": "03401399ed6b30abd779fc61cee2095e17c1c676f14c298c83229f567684ca1e",
+    "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+  },
+  "locator_resolution": "docs/design/research/correction-autonomous-v060/phase68-runtime-resolution.json",
+  "command_identity": "argv unchanged; absolute environment/runtime arguments are opaque IDs resolved by the public runtime inventory"
+}

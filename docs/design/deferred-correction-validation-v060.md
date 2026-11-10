@@ -92,3 +92,12 @@ Existing no-op and DocAligner results were reused with source/catalog hashes che
 Correction to the broad unsupported-path description: FairScan **does include** an official JVM/Kotlin `QuadDetectionEvaluator`, calling the real `detectDocumentQuad` with local OpenCV. Pinned tree `2c5230b12f69f3cee2cc5a970013da20848d1272`. It is source, not an executed or distributed desktop evaluation binary. Latest releasev2.3.0 contains only ARM Android APKs. Official Python mask generation uses OpenCV INTER_LINEAR; existing Pillow diagnostic preprocessing is not that exact path. No Kotlin port, new postprocessor, source build, emulator, APK installation or TensorFlow dependency was added. VERIFY01 remains unverified for full execution; the existence of official evaluation source must not be confused with runtime availability or its absence.
 
 Delegation does not supply absent independent real-photo annotations, owner device operation or a rights-holder answer. Current6/14complete; no requirement is checked merely to reach the requested count. Original14requirements and prohibitions remain in force.
+
+
+## 2026-11-11 自律実行の最終状態
+
+EGMレビュー済み6計画の自動14タスクを実施し、独立検証も自動処理の証拠をPASSと判定。状態は `automation_queue_exhausted`。元の能力要件は6/14完了・8未完で、Phase64のみ完了。追加6計画のSUMMARYはpartial、最後の68-02-T3はblocking-human。milestoneの完成・archive・公開・デプロイは行わない。常用はv0.2.5。
+
+実行記録: [自律実行結果](correction-autonomous-execution-v060.md)。正本: docs/design/research/correction-validation-v060/summary.json。独立検証: docs/design/research/correction-autonomous-v060/independent-verification.md。
+
+再開は変更された証拠revisionがある枝のみ: 元photo2_2の独立数字/細線正解と元実写真注釈、互換性のある公式FairScan完成binary/起動経路、checkpoint固有の権利/変換同一性/parity、全gate合格候補、同一原稿のiPhone入力と本人PC/iPhone操作。条件未変更で調査・試験・質問を反復しない。既存receiptを保持し、新revisionで再開する。候補未適格とclean Canon無推論保証の未証明はACCEPT-02未完に保持する。

@@ -1,0 +1,404 @@
+{
+  "format": "scanner-deferred-validation",
+  "version": 1,
+  "milestone": "v0.6.0",
+  "date": "2026-11-10",
+  "status": "incomplete",
+  "completed_phases": [
+    64
+  ],
+  "source_before": "ca1789fc888e620eceee7a334b65ff626edceef5",
+  "product_model_adopted": false,
+  "release_or_deployment": false,
+  "requirements": [
+    {
+      "id": "ENV-01",
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "Official clean CPU environment, GPU-free dependency inventory, disk/import/load/forward measured. Product installed size fails separately."
+    },
+    {
+      "id": "ENV-02",
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "Separate official LiteRT CPU input/output/quantization/forward measured."
+    },
+    {
+      "id": "TRUTH-01",
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "Owner-authorized generated-input alternative:6known-renderer clean controls with fixed source hashes, text/digit/glyph boxes, full-canvas page boundary and table2px line definitions. No claim of original6DocUNet photo human annotations."
+    },
+    {
+      "id": "TRUTH-02",
+      "status": "needs-human",
+      "complete": false,
+      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing."
+    },
+    {
+      "id": "TRUTH-03",
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "Owner-authorized synthetic alternative:6pixel-aligned shadow/reference pairs and6clean controls; faint text2,digits4,photographs2,colored paper2,seals2. Existing unchanged fixture recipes; deterministic replay. No real-shadow validation."
+    },
+    {
+      "id": "VERIFY-01",
+      "status": "not-run",
+      "complete": false,
+      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable."
+    },
+    {
+      "id": "VERIFY-02",
+      "status": "not-run",
+      "complete": false,
+      "evidence_scope": "Existing completed paths on6synthetic controls: DocAligner5/6cornerpass entirely fallback(15/18samples), table3/3cornerfail; no-op6/6knownfullpagepass. Original6photo validation missing."
+    },
+    {
+      "id": "VERIFY-03",
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "Tinycontrol3 + original9x3x2 + truth3x3 retained mesh/source/output/model/prepost bindings and exact official reloading verified."
+    },
+    {
+      "id": "VERIFY-04",
+      "status": "needs-human",
+      "complete": false,
+      "evidence_scope": "3official mesh/no-op grid metrics measured-pass; oldONNX has no exposed map, photo2_2 content/OCR/diagnosis missing."
+    },
+    {
+      "id": "ILL-01",
+      "status": "needs-human",
+      "complete": false,
+      "evidence_scope": "Explicit checkpoint scope and exact FSENet/older DocShadow conversion identity unresolved; concrete unsent questions retained."
+    },
+    {
+      "id": "ILL-02",
+      "status": "not-run",
+      "complete": false,
+      "evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference."
+    },
+    {
+      "id": "ACCEPT-01",
+      "status": "needs-human",
+      "complete": false,
+      "evidence_scope": "One authorized Canon direct experimental scan captured locally; iPhone/PC product operation and acceptance missing."
+    },
+    {
+      "id": "ACCEPT-02",
+      "status": "not-run",
+      "complete": false,
+      "evidence_scope": "UVDoc corpus process resources pass but installed package gate fails; quality/owner gates incomplete. No integration; existing focused regressions pass only automated scope."
+    },
+    {
+      "id": "ACCEPT-03",
+      "status": "measured-pass",
+      "complete": true,
+      "evidence_scope": "All14requirement dispositions retain unmet capabilities open; no milestone completion/archive claimed."
+    }
+  ],
+  "observations": {
+    "uvdoc_corpus_processes": 54,
+    "uvdoc_all_processes_complete": true,
+    "uvdoc_peak_rss_range_bytes": [
+      645312512,
+      771555328
+    ],
+    "uvdoc_installed_distribution_bytes": 1125589908,
+    "uvdoc_installed_without_pip_setuptools_bytes": 1105674590,
+    "product_installed_size_gate": "measured-fail",
+    "retained_exact_reload_checks": 66,
+    "reload_includes_control": true,
+    "geometry_3docs": "measured-pass",
+    "digits_thinlines_ocr_quality": "not-run",
+    "fairscan_3mask_diagnostic": "measured-fail",
+    "fairscan_full_detection": "not-run",
+    "docaligner_3crop_diagnostic": "measured-fail",
+    "docaligner_timing_qualification": false,
+    "owner_canon_capture": "measured-pass",
+    "owner_canon_capture_scope": "experimental direct eSCL; one page; normalized PNG retained locally, wire JPEG identity only; no UI/product admission or correction",
+    "owner_iphone_pc_acceptance": "needs-human",
+    "mesh_unit_tests": 2,
+    "focused_go_packages_passed": 4,
+    "earlier_test_environment_failure_retained": true
+  },
+  "quality_thresholds": {
+    "date": "2026-11-10",
+    "before_new_model_inference": true,
+    "runtime_installation": "official pinned binary wheels, no system site packages, no GPU dependency, no source patch/build/exporter",
+    "product": {
+      "cpu_threads": 2,
+      "timeout_s": 30,
+      "max_rss_bytes": 1073741824,
+      "temp_bytes": 268435456,
+      "incremental_installed_package_bytes": 268435456
+    },
+    "diagnostic": {
+      "cpu_threads": 2,
+      "timeout_s": 30,
+      "max_rss_bytes": 2147483648,
+      "temp_bytes": 268435456,
+      "apply_eligible": false
+    },
+    "corpus": "same9DocUNet images fromv040 manifest incl2_2; no substitution; smallknown16x16control is provenance diagnostic only",
+    "truth": "dataset-supplied independent GT or human-reviewed annotations only; missing truth not a pass",
+    "scope": "segmentation forward not full document detection; map retention not predicted-geometry quality; actual owner input/device acceptance never inferred",
+    "rss_enforcement": "existing runner rejects measured peak after exit; wall/temp cancel; do not claim live RSS kill guard"
+  },
+  "evidence_files": [
+    {
+      "file": "all-reload.json",
+      "bytes": 14844,
+      "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e"
+    },
+    {
+      "file": "check-retained.py",
+      "bytes": 1640,
+      "sha256": "648052daf0491f47568ca5c12e07a069e03b1240a289f891f3a81b1f384dd53e"
+    },
+    {
+      "file": "control-reload.json",
+      "bytes": 666,
+      "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6"
+    },
+    {
+      "file": "corpus-hash-check.json",
+      "bytes": 4304,
+      "sha256": "e497d080cacfdd6ba2cb5f05262bc48aa284ecac2f29d322de0f7f8bae436aa7"
+    },
+    {
+      "file": "corpus-resource-summary.json",
+      "bytes": 20303,
+      "sha256": "82d49106b9000b93cec595d795c162e17ecb3caff6c3c9ef141524e402e2968b"
+    },
+    {
+      "file": "cpu-import-resource.json",
+      "bytes": 38,
+      "sha256": "a103f77dcfabb2b32547a48452736c410e61736a06ef6a70743c9cbdf8dd3aa0"
+    },
+    {
+      "file": "cpu-import.json",
+      "bytes": 272,
+      "sha256": "32a745645f427b0664acab5950229fcce3d6ec3bffa91ebe4be601f51552955f"
+    },
+    {
+      "file": "cpu-inventory.json",
+      "bytes": 5490,
+      "sha256": "dc9e33371128c74d8c96c390ceafbdc056d2d0fe45fd58a699baf9d19073a4f2"
+    },
+    {
+      "file": "cpu-license-inventory.json",
+      "bytes": 22399,
+      "sha256": "8eae42690e301f3be6cae1fe3b31e2cf42c48e7d5a882845d10c6079fb76d498"
+    },
+    {
+      "file": "cpu-load-resource.json",
+      "bytes": 38,
+      "sha256": "6801478df9b47e2dd3b98d3642df115d54c7f3b7f2d3b4f033681cea51bc9a2e"
+    },
+    {
+      "file": "cpu-load.json",
+      "bytes": 111,
+      "sha256": "29531c75a3a6f0fbba31738efea92821cebe144839fb2d154922ff607523ce01"
+    },
+    {
+      "file": "cpu-resolved-wheels.json",
+      "bytes": 2226,
+      "sha256": "0764405a1b1e8f5ee6360700b6e8732ccf8ea11165470d4fdceecb3b280bd88b"
+    },
+    {
+      "file": "diagnostic-candidate.json",
+      "bytes": 1607,
+      "sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834"
+    },
+    {
+      "file": "docaligner-metrics.json",
+      "bytes": 1868,
+      "sha256": "481134a802957df6d10d34e3c7b1a77a35bfe023b2ea09732ed35ad1f70f5843"
+    },
+    {
+      "file": "docaligner-metrics.py",
+      "bytes": 1442,
+      "sha256": "ae676b5b7afeaa0546b144e58bb82db7a08d96ca89a4a31789dd496f0ddcc926"
+    },
+    {
+      "file": "fairscan-truth.json",
+      "bytes": 1075,
+      "sha256": "e88fa9c617a8fceeaac3e0624c5d99d7e38d4814702fd0a28426e982260cb9ac"
+    },
+    {
+      "file": "fairscan-truth.py",
+      "bytes": 1601,
+      "sha256": "124feac036c0d22aa8c51f6086fa38ef5782fd1a2b21eeadf4cf3e0258c46dd3"
+    },
+    {
+      "file": "geometry-metrics.json",
+      "bytes": 1410,
+      "sha256": "b03bb3acc40494f4952493edd9db7c55eadccea752630759de2963008ff86182"
+    },
+    {
+      "file": "geometry-metrics.py",
+      "bytes": 1817,
+      "sha256": "f0a6902f57b33cd8488477988c3342f2e73997b736d217b99587899328f060f5"
+    },
+    {
+      "file": "illumination-clarification-unsent.md",
+      "bytes": 1735,
+      "sha256": "97bded2bcc993073d05cf933a0674dd8fe44f7366bff44a8365ca5ebf77c2252"
+    },
+    {
+      "file": "litert-import-resource.json",
+      "bytes": 37,
+      "sha256": "70994bc2205015520478a92c6d55eb4ff6a302e11d9ada4595785cbb727289c9"
+    },
+    {
+      "file": "litert-import.json",
+      "bytes": 51,
+      "sha256": "48a5d7a770062c87a7ef0282fe021d06d26b3cd8bbe8cd8c8cad027968c55da6"
+    },
+    {
+      "file": "litert-inventory.json",
+      "bytes": 1546,
+      "sha256": "bff86701ac058bae09824d89a3eda57d8794343ead9d47bba3c20e6b877d1736"
+    },
+    {
+      "file": "litert-license-inventory.json",
+      "bytes": 6898,
+      "sha256": "b40b9cbe38e00f92ac661ff47751bfa8be9e22b6f2347f34d8c5096c3e816a4d"
+    },
+    {
+      "file": "litert-probe-resource.json",
+      "bytes": 37,
+      "sha256": "a1b00bf207af8d7529c48d41e2eb67f51b36e8678b83deebea7c96ad96b6de3f"
+    },
+    {
+      "file": "litert-probe.json",
+      "bytes": 817,
+      "sha256": "30fcfb9073d4bd55d487e39b608395fbca5af1aee7b108841593a24f836767a5"
+    },
+    {
+      "file": "litert-resolved-wheels.json",
+      "bytes": 1558,
+      "sha256": "dff1f34bdd6bdba784817ccf8c23227b92dbf7a6f87eb820e699353f5134e0e2"
+    },
+    {
+      "file": "mesh-tests.log",
+      "bytes": 100,
+      "sha256": "727677154b17f1111ee007db24b678613cbbe57b6d827e7318428b2439bfec53"
+    },
+    {
+      "file": "prepare-truth.py",
+      "bytes": 1455,
+      "sha256": "0961c94003b43e5c7c04f0a7b44811c334cc799bd99262eee015a25a5b8d16f1"
+    },
+    {
+      "file": "preregistration.json",
+      "bytes": 957,
+      "sha256": "ac0d3e146c890e26cd29d01a617b358da8acb7e1ccfe845ee4f0d481f95d669a"
+    },
+    {
+      "file": "product-candidate.json",
+      "bytes": 1604,
+      "sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d"
+    },
+    {
+      "file": "regressions-with-runtime.log",
+      "bytes": 186,
+      "sha256": "3941d18e83d952429392d91e84ce0a2c3e09315a23c31a1a1ada769ee1aee495"
+    },
+    {
+      "file": "regressions.log",
+      "bytes": 349,
+      "sha256": "b2e9e3e186c06fdb51da3563cf2ee1e45c135a2996c8eec7f92dde6b77533af2"
+    },
+    {
+      "file": "research-acquisition.json",
+      "bytes": 3283,
+      "sha256": "4ccb29000ad2a4edc75e2020c7c4712240ff1598acd17d359fcee4b4ca8ba9c9"
+    },
+    {
+      "file": "resume-gap-research.json",
+      "bytes": 3085,
+      "sha256": "f2213ff423965bfdd0fa610cf167523de0347211cf38da8c39d147302a3f1a71"
+    },
+    {
+      "file": "resume-synthetic-license.txt",
+      "bytes": 1069,
+      "sha256": "28672dccef796c564b4d94ce410270408fe8bee0ee73bcbfc0a549fa0fb2ca66"
+    },
+    {
+      "file": "resume-synthetic-model.txt",
+      "bytes": 237,
+      "sha256": "c4095c0e5d1a83ad5323d106a5189069e5582e79401b353e54ff66ee9d97a648"
+    },
+    {
+      "file": "run-corpus.py",
+      "bytes": 1479,
+      "sha256": "e733554cf9c61d12f1cdb62877ac3f8b3ab131fb3615cc398201e17472b047cb"
+    },
+    {
+      "file": "run-docaligner-truth.py",
+      "bytes": 801,
+      "sha256": "c9caec7e7fe6eaba67584d8eedc7754c7e24d731fec6228d2a8cae60e97d55d6"
+    },
+    {
+      "file": "run-truth.py",
+      "bytes": 778,
+      "sha256": "ac5d1e7a9b33ac6120cf73ca4a88ee24c6921e818e26cf63d62c8cbb4e9f8387"
+    },
+    {
+      "file": "runtime-wheel-inventory.json",
+      "bytes": 9694,
+      "sha256": "4e0ef2a2a2669a60cfaf1e2c7a0cc7560eb46608b34d1d9a8abea49cc5f650d8"
+    },
+    {
+      "file": "truth-manifest.json",
+      "bytes": 1569,
+      "sha256": "2e3ab77390f80ba1b190f37a1be4d0422def0271327bc5d3b0302f5cc79b10a5"
+    },
+    {
+      "file": "truth-source-acquisition.json",
+      "bytes": 1392,
+      "sha256": "ca3991ec6358a16e275ef14f6744036319e8148321a8d925a293f71f7f0b9606"
+    },
+    {
+      "file": "upstream-snapshot-hashes.json",
+      "bytes": 3641,
+      "sha256": "2e653ccddb348fccf52ef31020e7d78c70385e3a8eee8da48d335061fbf9dffc"
+    },
+    {
+      "file": "uvdoc-eval-source.json",
+      "bytes": 613,
+      "sha256": "b2350c8d7835535ff32182b32ddbd84c342a0a55fe927270c6606cffe1765286"
+    },
+    {
+      "file": "uvdoc-subset-acquisition.json",
+      "bytes": 8012,
+      "sha256": "af1d103beaa5db2d15806dfc4980fe00fdc80eeb34b6053c652af99ab5e6ac31"
+    }
+  ],
+  "resumed_gap_closure": {
+    "new_requirements_completed": 0,
+    "checkpoint_identity_sources_found": true,
+    "checkpoint_terms_resolved": false,
+    "human_review_packet": "../../correction-validation-v060-human-inputs.md"
+  },
+  "synthetic_supplement": {
+    "authorization": "\u304a\u4efb\u305b\u3001\u751f\u6210\u753b\u50cf\u3067\u3082\u3088\u3044",
+    "report": "../../correction-synthetic-validation-v060.md",
+    "summary": "../correction-synthetic-v060/summary.json",
+    "sha256": "78d09893d2fa4c7107f9f2e3ec08fa64c69a5cb71f0510ea335a850e02e5beef",
+    "complete": true,
+    "fixture_count": 6,
+    "runner_processes": 72,
+    "mesh_exact_reload_checks": 18,
+    "remaining_real_world_requirements_open": true
+  },
+  "paired_synthetic_supplement": {
+    "summary": "../correction-paired-v060/summary.json",
+    "sha256": "2a87d19a7fc6eabc042616a879234400cc682d7d4003743eaad5190a172ae9c5"
+  },
+  "synthetic_detection_supplement": {
+    "summary": "../correction-detection-v060/summary.json",
+    "sha256": "e76abe34ab5bf5ddca6da0cdc4e9a494560e4eecf6ff6177d88debdd919ad319"
+  }
+}

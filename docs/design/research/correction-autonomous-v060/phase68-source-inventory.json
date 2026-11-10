@@ -1,0 +1,2101 @@
+{
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "files": [
+    {
+      "path": "cmd/sane-parameters/main_linux.go",
+      "sha256": "c00cc3e473c29a60dfcbe8b579e8bc146adc4f50504300a3a62f4b3fa3f5cbb7"
+    },
+    {
+      "path": "cmd/scanner/main.go",
+      "sha256": "38fe4f4b002a2f54d1b77454be13430048e29f83ce0f0fd6ec7c3a407c65205d"
+    },
+    {
+      "path": "cmd/scanner/main_test.go",
+      "sha256": "ed80848a70467e292d8b83205b7234647f78c9e52e6ee2f723589991b30357c7"
+    },
+    {
+      "path": "cmd/scanner-escl-eval/main.go",
+      "sha256": "c6d097cc08eb5d1fd3b8bd06b3cb97a26d29857ed2642b2cd52c93ab444e8256"
+    },
+    {
+      "path": "cmd/scanner-escl-eval/main_test.go",
+      "sha256": "d8628e710f412d48d54e07bbb74a1c48444430125899627f3623783369bd44f8"
+    },
+    {
+      "path": "cmd/scanner-eval/main.go",
+      "sha256": "ff9c5f49c018b942324eaa67aaae2e70dc526c83279606d5d3c013236c50ca2a"
+    },
+    {
+      "path": "cmd/scanner-eval/main_test.go",
+      "sha256": "33ccf1e3abbe123ea51db109de4b56f54eaf22ad4be78be583f244ff0789a392"
+    },
+    {
+      "path": "cmd/scanner-standalone/main.go",
+      "sha256": "d9cfa38cc5a1fa755d9baec70025ab9eeaea362f322c696528e2645f80e37068"
+    },
+    {
+      "path": "cmd/scanner-standalone/main_test.go",
+      "sha256": "403496f579d255c52788ca7d92fae44c3cd88b662461aa80fb7c94008d303b2d"
+    },
+    {
+      "path": "cmd/scanner-standalone/manifest.json",
+      "sha256": "4db32ce6301d590620bf5557f2cb6785a4b62b79cd76a04508ee49b816ce7cc7"
+    },
+    {
+      "path": "cmd/scanner-standalone/payload.tar.gz",
+      "sha256": "d4a22d2b7929bdf7f90d556f06583c581e5cf36f2eeea3f01ce108a8eb0faeb2"
+    },
+    {
+      "path": "cmd/scanner-tesseract-api/main.go",
+      "sha256": "4f9932a6dc01049d67ce6a7f18fcbed4e6867211efaf3a29f147aeaf408afc13"
+    },
+    {
+      "path": "go.mod",
+      "sha256": "068469a3c3d27be6255c523ca0ef9469efc400ffbafd9597e6d48bdcd1d92a85"
+    },
+    {
+      "path": "go.sum",
+      "sha256": "888f8070d4e21b84090aa5b0eed23b20b75c8247a0390a025f519ff859e2e605"
+    },
+    {
+      "path": "internal/apiruntime/aged_request_test.go",
+      "sha256": "d8b15fca9e45f389e295b828aa9f8049043f73ee4bfeb871c980f9bbbce362bc"
+    },
+    {
+      "path": "internal/apiruntime/app.go",
+      "sha256": "a02132288164e10bbcf4a124f356f235dbd4fec12a01e0844637f87368ce6b5f"
+    },
+    {
+      "path": "internal/apiruntime/app_test.go",
+      "sha256": "3b387c51bfc10e8f0c1a912371c7a78d20658dc2264f0a7a112dfadc287e44cb"
+    },
+    {
+      "path": "internal/apiruntime/capabilities_test.go",
+      "sha256": "e3dab803b3f3a1fd7e7fb565fa3ae655a1226ddb24bf72bad751ff726b78a77b"
+    },
+    {
+      "path": "internal/apiruntime/capture_thumbnail_test.go",
+      "sha256": "c125cf920b111698755330dc80ba2ffe644fa39d2473c47754efacd433e98b4d"
+    },
+    {
+      "path": "internal/apiruntime/deletion_test.go",
+      "sha256": "f36295250cb88cc0a74b770c8bd82c550b3b6dfa7a1c2fc51ff56566112b85fb"
+    },
+    {
+      "path": "internal/apiruntime/delivery_test.go",
+      "sha256": "f87537e24c092522b520db9a62959af13dbe645ba1b1483011fecf3728d5721a"
+    },
+    {
+      "path": "internal/apiruntime/documents_test.go",
+      "sha256": "1451013c24837ee65f8380650050004fa9378c008af6e61f6436bb60e1077944"
+    },
+    {
+      "path": "internal/apiruntime/download_test.go",
+      "sha256": "8fa6bac805d05f9a105fe85e26ea70995ddfc8fd19b3fdbd074faad3f718fe6b"
+    },
+    {
+      "path": "internal/apiruntime/edit_test.go",
+      "sha256": "dc652293e6a078b759b250da80a10ea0e1dafb4c98b8b95ca6f3c3fdc94572eb"
+    },
+    {
+      "path": "internal/apiruntime/import_test.go",
+      "sha256": "4f46a3d22f23f532ab362a4d45de1fb640674af927a031a828baaac72a2db279"
+    },
+    {
+      "path": "internal/apiruntime/jobs_test.go",
+      "sha256": "bd6b8a6b3a64952c54be6a024be442c881e3dff08def21bf21305eb85f06d218"
+    },
+    {
+      "path": "internal/apiruntime/ocr_catalog_test.go",
+      "sha256": "488da6eefa5d8a4097246d114c5bba9e9d98169e1e330fdec81a4e8065b372f1"
+    },
+    {
+      "path": "internal/apiruntime/paperless_test.go",
+      "sha256": "c7f76a50711ef2030b3820ccf79352d2c786b5491a1c62ce60eca0480847cec7"
+    },
+    {
+      "path": "internal/apiruntime/pdf_preview_test.go",
+      "sha256": "cddc71808128d4a8ed7dcb7484395fb059336de05d73579b62a5dd87d8de5ead"
+    },
+    {
+      "path": "internal/apiruntime/preview_test.go",
+      "sha256": "a0b49c3aab9a539a791c7d9a35d773cc9125dac7d5e9521d8d65b39be5cdb8be"
+    },
+    {
+      "path": "internal/apiruntime/render_test.go",
+      "sha256": "689602b28ca72c8d268a9edca009587b9ce3eb74872c95944fb0845c7343ee1e"
+    },
+    {
+      "path": "internal/apiruntime/scan_test.go",
+      "sha256": "ae31bf36e70e3143dad5eabd3a35636a44884b958b8441add80726341527145b"
+    },
+    {
+      "path": "internal/apiruntime/scanner_metadata_test.go",
+      "sha256": "71471311dee1d6682a4c4222cb50855ec98c0507b2785321b9ccd140c7173f3f"
+    },
+    {
+      "path": "internal/apiruntime/scanner_status_test.go",
+      "sha256": "9e7a11e089f231c0d8c64a797dc3383d28f9f7b6d9e43b7dc5d308091bffc476"
+    },
+    {
+      "path": "internal/apiruntime/server.go",
+      "sha256": "4de15f43c0cd2c7f4062062b1a7cb36bad195aec55e6b2e6fb678083c9ff76fd"
+    },
+    {
+      "path": "internal/apiruntime/thumbnail_test.go",
+      "sha256": "443eb3f0f563a9d7f3ea8627d0b026fc4a9ee4e722cb2cd0c05c458c3de172e0"
+    },
+    {
+      "path": "internal/artifactgc/directories_linux_test.go",
+      "sha256": "4b969ba3f2b16d3a445463acd43b44bd1f153866c95eacfc4faebaad20d01652"
+    },
+    {
+      "path": "internal/artifactgc/recovery_linux.go",
+      "sha256": "65ce31661c5b0d4b2a39623a7f9d7b535606a58b42da9ba05ce7c4abc8fb6ff1"
+    },
+    {
+      "path": "internal/artifactgc/recovery_linux_test.go",
+      "sha256": "c148f7229494306f54ceb893061d59754d080b09c18526fb4ab4dfaebdd6ccca"
+    },
+    {
+      "path": "internal/artifactgc/remove_linux.go",
+      "sha256": "064b2ed204c0b081919f60f0ba18e9cf65c3eb9ba8e8fc5dd240db6cf6f831d0"
+    },
+    {
+      "path": "internal/artifactgc/remove_linux_test.go",
+      "sha256": "0f0648a07ab83391c4d6fc9e7e1a3283a59c77d152f8598ec088517b62fd5181"
+    },
+    {
+      "path": "internal/artifactgc/sweep_linux.go",
+      "sha256": "bfb28f28491f922a7c569ddec70ff82903f3289c87a77a39db9c45ab8350b3f2"
+    },
+    {
+      "path": "internal/artifactgc/sweep_linux_test.go",
+      "sha256": "c1735ad95e46955f6c18a8742856616189cc3395d97a24b6b690192d7288c087"
+    },
+    {
+      "path": "internal/artifactread/read_linux.go",
+      "sha256": "5a1b1f7697befd07d9a0fb57ceb56121b9bd44d08be0819eca3a131178885457"
+    },
+    {
+      "path": "internal/artifactread/read_linux_test.go",
+      "sha256": "7aecf4813411481d03a5a4f9cd655496d1c6baf9d82b52b550fba3b9aa07c5d4"
+    },
+    {
+      "path": "internal/artifactscope/budget_linux.go",
+      "sha256": "a9559c8206398c016621dbf88bafe6e5dde0f32ebd5ece3123c444da16fc3f52"
+    },
+    {
+      "path": "internal/artifactscope/budget_linux_test.go",
+      "sha256": "ed01a21d56ab866687292363b06f80077ad091ec5972b50b9d365028cbe6dc92"
+    },
+    {
+      "path": "internal/artifactscope/file_linux.go",
+      "sha256": "ed07762e61aad209e05adfe2101c48d5a7f7b1b24d86cb013268b795aa03f686"
+    },
+    {
+      "path": "internal/artifactscope/file_linux_test.go",
+      "sha256": "d882f53b0f9dd5a863625cd8ee0eacbd134e0c4c70329ed747a007506ac86fbf"
+    },
+    {
+      "path": "internal/artifactscope/ocr_integration_linux_test.go",
+      "sha256": "595546930f2b8b97e4e95e77adabc1e1b233a2f8ec41b170cd54efc0cb132010"
+    },
+    {
+      "path": "internal/artifactscope/scope_linux.go",
+      "sha256": "51d2e7a3ddfa2aea22e4ad3929d8b2c524a0ad6531b2938567c61549d3116fb9"
+    },
+    {
+      "path": "internal/artifactscope/scope_linux_test.go",
+      "sha256": "2edcf0ef0b5d1020e7032800fd6b8f3b38ac45ca2b9691231b7f2d42b060f449"
+    },
+    {
+      "path": "internal/artifactscope/scratch_linux.go",
+      "sha256": "d6ce776298c464384cba81b9723b4d46f28fb00ed74bbffc8b172076989befa6"
+    },
+    {
+      "path": "internal/artifactscope/scratch_linux_test.go",
+      "sha256": "ae8df87be9533e5f57eb73acecef7223be82db49b786c6282f28d29e8121d831"
+    },
+    {
+      "path": "internal/authport/oidc.go",
+      "sha256": "1e60c2127a9046ffce36fa7c83ade773d05ae6e46e382b6c087e66f2f13e299c"
+    },
+    {
+      "path": "internal/authport/password.go",
+      "sha256": "a94cc1ceb74893effba556eaa04d8da057fb1deaf1dfb4827bec4d61b8e23a3d"
+    },
+    {
+      "path": "internal/buildinfo/info.go",
+      "sha256": "16d0df976da5fd23e0380642cf4e853b32218ee612d2e022a0f623024d34d346"
+    },
+    {
+      "path": "internal/capabilityhttp/handler.go",
+      "sha256": "69e20d20cf6631865bfc32269add13d75d8155418eb6402290ded529f59bfcc7"
+    },
+    {
+      "path": "internal/capabilityhttp/handler_test.go",
+      "sha256": "4fc62a27aaa9efc5519b58c1b81e01ba6b8fc9ede21157bcd81352af602db5f0"
+    },
+    {
+      "path": "internal/captureimage/validate.go",
+      "sha256": "ee5a5e8760032de31561eb8e33b340969600e42526d28928e18b8cb1d1965822"
+    },
+    {
+      "path": "internal/captureimage/validate_test.go",
+      "sha256": "f633f9eb161634c1ee0b8ba8ecb4a88746673e74a32c450ca1fbfd3e92562350"
+    },
+    {
+      "path": "internal/cleanupjob/execute_linux.go",
+      "sha256": "0357fe7d6105a2df32c377fb155440503fc4167ae5fa81f29392d87c4fd324f0"
+    },
+    {
+      "path": "internal/cleanupjob/execute_linux_test.go",
+      "sha256": "39ab6e4d25feb93a131c6ff26b1bccd388afb9c9a79d65a2eeba2c77d58089af"
+    },
+    {
+      "path": "internal/config/config.go",
+      "sha256": "5bf462c29dcbd64c7462df07cf75075d14a9ba51edbcbf540ebf689cc9b3c192"
+    },
+    {
+      "path": "internal/config/config_test.go",
+      "sha256": "bca6ff99979eb247fdf3c73846fa21c341b474a08a79a51f447f07315727d570"
+    },
+    {
+      "path": "internal/config/llm.go",
+      "sha256": "22a9460c23973d9547f47e778a1687bf83e182f1c1be7366040db39d19148e60"
+    },
+    {
+      "path": "internal/config/llm_test.go",
+      "sha256": "152735e0b532610309d9c64cbc194023e3b3966849ec67117e4039ac930d3d4b"
+    },
+    {
+      "path": "internal/config/ocr.go",
+      "sha256": "e6545368ed08526ef27eb65536a81d58f2b8a1332e6580468bb90523a64ef9a7"
+    },
+    {
+      "path": "internal/config/ocr_test.go",
+      "sha256": "9cc64a69fffba5b7232ed87ca4d4d4155de3bb671e8a7cef020ea7ab91600860"
+    },
+    {
+      "path": "internal/config/paperless.go",
+      "sha256": "847de609e286f279f8b09c629dbb62b8bae078d74bcd140de8d2d8febedb6231"
+    },
+    {
+      "path": "internal/config/paperless_test.go",
+      "sha256": "ce3c76048743200dacb59d2a53a359750d698d5b160ce7dae055bff8d6aad7e4"
+    },
+    {
+      "path": "internal/config/scanner_endpoints.go",
+      "sha256": "2a832d68dd8524cbb089e2fd1e171a2393384a5abe9cd7ef8bff6098e6a90be0"
+    },
+    {
+      "path": "internal/config/scanner_endpoints_test.go",
+      "sha256": "53a5485b609fa3d59abcb3a45f44ede7d1f6b346b388ae65c0f19647e5e82972"
+    },
+    {
+      "path": "internal/config/scanner_names_test.go",
+      "sha256": "fb62378b421c22a1528d987a44fdc819a50862c58d9c4b687351298cfded4d97"
+    },
+    {
+      "path": "internal/config/scanner_tools.go",
+      "sha256": "5e905db433045fb77b979e61dc0c48785dcfde684199e7e7d8ff0f4ecf63b49a"
+    },
+    {
+      "path": "internal/config/scanner_tools_test.go",
+      "sha256": "606981ff53c312d59b92d03ae189b5a0506335e33aa835e4ec4c202842f2a09f"
+    },
+    {
+      "path": "internal/correction/transform.go",
+      "sha256": "503dbc24916846ca626fa5ac23ad5d15f03dee2a60d06ab40f9f0358506eb932"
+    },
+    {
+      "path": "internal/correction/transform_test.go",
+      "sha256": "0c28e087ca93dc0080314969bcf2f41a9aefec560705c7fb931b37c20a3f6958"
+    },
+    {
+      "path": "internal/diskspace/meter_linux.go",
+      "sha256": "3955be1077174d207c9cfe581f296fe97f21db4ff5a95fe1e002831c3b33605f"
+    },
+    {
+      "path": "internal/diskspace/meter_linux_test.go",
+      "sha256": "ad4fc72c5e85e2492c35f9b5b9262fc4299600f2eebc641d6efb2531f36ea76c"
+    },
+    {
+      "path": "internal/documenthttp/correction.go",
+      "sha256": "b6661db477be38fa0256c6b4a2ddd29b7aed0ef9e045bf4d28c6001b46e7f901"
+    },
+    {
+      "path": "internal/documenthttp/correction_test.go",
+      "sha256": "4ce2d83c200f2ac2bc2e9f46290ca0084a4d942b7a61ff81536b8d7f1faffced"
+    },
+    {
+      "path": "internal/documenthttp/deletion.go",
+      "sha256": "dbf97c4e4d2014e628911d7161e63a39dbc13b1b9de9b790be9362309b35a0b7"
+    },
+    {
+      "path": "internal/documenthttp/delivery.go",
+      "sha256": "ed416ff6655123f3c3233da74e23ac3efea13ec21f7c0605a264a8da7118d615"
+    },
+    {
+      "path": "internal/documenthttp/delivery_test.go",
+      "sha256": "80dddef2b9c99f96008d381709c2feaecef28c0565380c3f96ea5d748cd6103e"
+    },
+    {
+      "path": "internal/documenthttp/edit.go",
+      "sha256": "370e17b56181b8e55140580d87ea2d7e9b2939016ca870a5fc27997bcfcfb7e0"
+    },
+    {
+      "path": "internal/documenthttp/handler.go",
+      "sha256": "6cc27db8e5c3d539570519baf12e356d4bd23ebe397d412982d167708adddd5d"
+    },
+    {
+      "path": "internal/documenthttp/import.go",
+      "sha256": "2f6cd3cdb5f89ad4b496b16df17785463e8b9d396ca7272316455d2cecc3708b"
+    },
+    {
+      "path": "internal/documenthttp/jobs.go",
+      "sha256": "d19d6acc7f680ce79da104388ededfdb6106dfc6e600f787ceef07f1d6cc5451"
+    },
+    {
+      "path": "internal/documenthttp/ocr_results.go",
+      "sha256": "22d8597ea432b9aa8b42ddb47e5f6ca9f844360d9f03c1e70bafebf42116ccfd"
+    },
+    {
+      "path": "internal/documenthttp/ocr_results_test.go",
+      "sha256": "9a6d80588910578cd8a1320fd9ef70a279c93d01dceccead19d6bb938cba4b38"
+    },
+    {
+      "path": "internal/documenthttp/photo_browser_integration_linux_test.go",
+      "sha256": "d6bd313ec40d65f1a24510e4b892ae550c16dbe5644ea8235d3563f2fa17e724"
+    },
+    {
+      "path": "internal/documenthttp/preview.go",
+      "sha256": "d833c1a0c09d9523a41464efdf56992e7fdc71f62f637f19100250bf9878d9e0"
+    },
+    {
+      "path": "internal/documenthttp/range.go",
+      "sha256": "4b77f27c6802428f8bedaa2314ca013ce62d5dafbfe2461488ec3bf16864cc1f"
+    },
+    {
+      "path": "internal/documenthttp/range_test.go",
+      "sha256": "b250e65add4f1cfe9f4758a21b921424fb465d236d2d15fc8f1ea6c468aa1fa5"
+    },
+    {
+      "path": "internal/documenthttp/records.go",
+      "sha256": "6b72cb551188725896c616b12252447c97b2fb7af92557502c1ac8786f1fdb91"
+    },
+    {
+      "path": "internal/documenthttp/records_test.go",
+      "sha256": "c282d77c63c4deb761da93da11b7e71cc1f323555ea795a790e9b8cf34a3d3a7"
+    },
+    {
+      "path": "internal/documenthttp/render.go",
+      "sha256": "6b3c1d76d3ab5d06bf62cad48ef2af4daaed1d6d23b047d6627a002d9a372804"
+    },
+    {
+      "path": "internal/documenthttp/scan.go",
+      "sha256": "3e557d4fb2fbe36c3b4a977efc16a695a20ebd1a3ecfbfa18e8f56f766c0b7f8"
+    },
+    {
+      "path": "internal/documents/admission.go",
+      "sha256": "4d030646def092fffd084a290c56a90cb997ea2fc394e63870ac105501bb27dc"
+    },
+    {
+      "path": "internal/documents/admission_test.go",
+      "sha256": "c75ee74ec9a158d204dc30d93574fbe74f93a1bd8e99439334ed29962d69a0e0"
+    },
+    {
+      "path": "internal/documents/artifact_integration_linux_test.go",
+      "sha256": "98b48241ef3e245898c7681e8013755c577bfdb7a119bf40dacce223a276e538"
+    },
+    {
+      "path": "internal/documents/backend_contract_test.go",
+      "sha256": "c1df67d76f00adff20066aed75cb561c473de096f4f13dc0e97a1b6b9dc18038"
+    },
+    {
+      "path": "internal/documents/capture_bundle.go",
+      "sha256": "5786446af5384c267bd1670a67c77b9ef5e775851baf18d5807bb25502e4c343"
+    },
+    {
+      "path": "internal/documents/capture_image_integration_test.go",
+      "sha256": "20035d9ba4c6cc70230e4b3ee30d9bdb1552316c8cb0e03576e554b3260b90c5"
+    },
+    {
+      "path": "internal/documents/cleanup_completion.go",
+      "sha256": "3b8d7c04b46e76eb15b24a8b737c57999645b6d8f920554f28d2aa057c92d160"
+    },
+    {
+      "path": "internal/documents/cleanup_completion_test.go",
+      "sha256": "ad37c8d75e79968686dbceddc68063bfce3b119c9a10f948137ac9e707d40bd0"
+    },
+    {
+      "path": "internal/documents/cleanup_file_integration_linux_test.go",
+      "sha256": "8b452e7618c732f43e21181e8c0ff0517deb1162f7791c238757aa7351817470"
+    },
+    {
+      "path": "internal/documents/cleanup_recovery_test.go",
+      "sha256": "810a1bba27cdc3a4837ea81f93b50d18b4650549196bf17844ce1fa22390ccc7"
+    },
+    {
+      "path": "internal/documents/cleanup_retirement.go",
+      "sha256": "a62cc588a31dae1e27ec1691c103d4c61f1ef9ac7213d4333af5942b3c471162"
+    },
+    {
+      "path": "internal/documents/cleanup_retirement_test.go",
+      "sha256": "f1ef7d8b3254d31b6e6fa19060e302635e7f175ac99a5802b8011e1a74e089eb"
+    },
+    {
+      "path": "internal/documents/cleanup_work.go",
+      "sha256": "542a97c4dcde60a5e014032b6b70365179d0eaa40261c90e58c54720dfbc7f43"
+    },
+    {
+      "path": "internal/documents/cleanup_work_test.go",
+      "sha256": "16de84aed2de2782c7aa73bdeb47e8049953912e07a484e6dd1cf33bac5789ce"
+    },
+    {
+      "path": "internal/documents/contract_fault_test.go",
+      "sha256": "c90b0e71b5c968481f88d5b3dbcc239ae4bf9b85efec9ef76a741f10e0f07e29"
+    },
+    {
+      "path": "internal/documents/correction.go",
+      "sha256": "b169e8797789c03ae47e93900aad570e8e104069025d2f3c8703019009132ed0"
+    },
+    {
+      "path": "internal/documents/correction_test.go",
+      "sha256": "6d9dcf7a1e1a2344841f6b8551ac2cdb1320f842d3f5c160c9d623fc316b9181"
+    },
+    {
+      "path": "internal/documents/deletion.go",
+      "sha256": "d0cdd674bf4b9713ac08675dc2f37396c16759e232a932936671cc8dc6a46d2a"
+    },
+    {
+      "path": "internal/documents/deletion_test.go",
+      "sha256": "73bb6e039ddb84a4b255f7ea74c7ca4a63b5928e266e1e5bf25b7958da46253e"
+    },
+    {
+      "path": "internal/documents/delivery.go",
+      "sha256": "2f008ba877c778af471003542dfebf0bce45bd173de02fd50ac0fe25a3b906ac"
+    },
+    {
+      "path": "internal/documents/delivery_schedule_test.go",
+      "sha256": "1bb0766bfd8889429a7a4e046e250823c4b291699e3d7bc736410316621bcdb0"
+    },
+    {
+      "path": "internal/documents/delivery_test.go",
+      "sha256": "a5a1cac8cb9ab2fc35eb0519732ea14c35bfc2b17e0828e89a2dbb305712421c"
+    },
+    {
+      "path": "internal/documents/delivery_work.go",
+      "sha256": "6435cb2387837e81e1b088e0a4cb8aa3aac22b43aef6fa2591747c404e2236d8"
+    },
+    {
+      "path": "internal/documents/delivery_worker_test.go",
+      "sha256": "81ba3f41d6dab6e3d6f055561785a4d62af46c5e1fc4555a7ff6d1b7da294c9a"
+    },
+    {
+      "path": "internal/documents/disk_capacity_test.go",
+      "sha256": "da52956001e84d8303b9b3f2d1907a5fd4e754fddff1a14ca1165fc96681d181"
+    },
+    {
+      "path": "internal/documents/dispatch.go",
+      "sha256": "d02bca718b4e0fbb7561a8d56208c702a80db92f844a3a4f80d7d89b3faa19d5"
+    },
+    {
+      "path": "internal/documents/dispatch_cancellation_test.go",
+      "sha256": "5460b588d24d843706c7d58c3594444fbef9bcbdc98fbffc95748cc0c7924376"
+    },
+    {
+      "path": "internal/documents/dispatch_test.go",
+      "sha256": "1dfe4e3bb67b1bfbcf12caef954b99154af70f07b89253a169e92492e0cce156"
+    },
+    {
+      "path": "internal/documents/document_slots_test.go",
+      "sha256": "c05e7147ea0f6b0d567d86b898b3aa1e74ddfb3980f7124fc57b0522bb531f9b"
+    },
+    {
+      "path": "internal/documents/edit.go",
+      "sha256": "78541f0c28c20995200e2f76d65079129ffa130b0f322cf68f573aecf64fc14a"
+    },
+    {
+      "path": "internal/documents/edit_service.go",
+      "sha256": "671cad38d9c79c234dd12d4dcf24454be998503a01b375dba4d65bd9bcc5874b"
+    },
+    {
+      "path": "internal/documents/edit_service_test.go",
+      "sha256": "ceab06fad05bd333eb23eefbe758d727df5301d7423c9e83864c48e68504a44d"
+    },
+    {
+      "path": "internal/documents/edit_test.go",
+      "sha256": "94b1d5338d58548bd2733448993c9beecbbd52d572486f849713536214a972e0"
+    },
+    {
+      "path": "internal/documents/execution_capacity_test.go",
+      "sha256": "cfd48a46e7a0986243f6a624ca4c80ab542afbde7c316701594fb8e207148d0a"
+    },
+    {
+      "path": "internal/documents/history_batch_test.go",
+      "sha256": "9f86706f7e0bf1650123f1e64c21b42985fec28b5505bdf16982fc07cc5b3451"
+    },
+    {
+      "path": "internal/documents/import_completion.go",
+      "sha256": "b979ad3e0abb81385fa7973e46433450e5056f792179ea01acb6cd23584a4371"
+    },
+    {
+      "path": "internal/documents/import_intake.go",
+      "sha256": "4776cd4c4bcf82ccaef1ee4fd211aab6e4384d690bd92a90c297335922234723"
+    },
+    {
+      "path": "internal/documents/import_intake_test.go",
+      "sha256": "497ce6a76918eb1cce1c0754b4f660c63b33ca17c32c6ef17a630e88a0d53d9c"
+    },
+    {
+      "path": "internal/documents/import_recovery.go",
+      "sha256": "c6ac59b32328ba243ff472571b2b91733f7017e710848e651da89c790411fd50"
+    },
+    {
+      "path": "internal/documents/import_recovery_test.go",
+      "sha256": "9fdda635facff64d2c6185dcb29a2a0e6d082072098bf7eb6c5814d928b9faa8"
+    },
+    {
+      "path": "internal/documents/import_work.go",
+      "sha256": "5664a56f95f4f01ce0bc78a4ad3f2e4c39ce3a41030397ecc552052a12bf70cb"
+    },
+    {
+      "path": "internal/documents/import_work_test.go",
+      "sha256": "3d707189c62ff046eaf2aa92fcd0142c46163879d1cdec358d53284a25460842"
+    },
+    {
+      "path": "internal/documents/job_projection.go",
+      "sha256": "4f3bb3c9ece75e67cc3ea4382c2811b4cad2cf13f3cdd20f19b5f982f3f64da0"
+    },
+    {
+      "path": "internal/documents/job_projection_test.go",
+      "sha256": "315898c006083cb16ef1dbc4d8d344a845677d12aadfdeef5581b57bc4a38682"
+    },
+    {
+      "path": "internal/documents/lifecycle_service.go",
+      "sha256": "b81c74391d95e3347889895c5be16269907446d6af887533b9aee25ec3a29536"
+    },
+    {
+      "path": "internal/documents/lifecycle_service_test.go",
+      "sha256": "a2f4482139dafbc9e2b63fdb2cb368b26e4b18b451c929086cb04edf4f68ffd8"
+    },
+    {
+      "path": "internal/documents/live_disk_meter_integration_linux_test.go",
+      "sha256": "206378bd31e576a72f59a82c905901f0faa8a432448998b2d4af7934a2c7abc6"
+    },
+    {
+      "path": "internal/documents/ocr_result_commands.go",
+      "sha256": "399a3afc2c160f5f37d87978d7995af08d1e17b3bd31234851ccb80fc9382466"
+    },
+    {
+      "path": "internal/documents/ocr_result_commands_test.go",
+      "sha256": "fcde7b448943e667bbc6ca16feba4261a988097a14005ea009aafc636d9e139b"
+    },
+    {
+      "path": "internal/documents/ocr_result_reads.go",
+      "sha256": "69ab24cf4cf7d542c40868dc3ab7061ed5e7fde026c5d234a4b435356689a730"
+    },
+    {
+      "path": "internal/documents/ocr_result_reads_test.go",
+      "sha256": "e6fe80eed1d251bc08306a7a78b136bee8c8c8a50468cc90397d72d9eef0aa7f"
+    },
+    {
+      "path": "internal/documents/ocr_results.go",
+      "sha256": "723c30ca8c6076edcc28a891cd86af5dc2c1ef17027c58a22c89049cff0d6d65"
+    },
+    {
+      "path": "internal/documents/ocr_results_test.go",
+      "sha256": "f5fc5d8ad510bb6e5e59a0c5482e6939d69f33e354e89c54ff8f5aa91910ca5d"
+    },
+    {
+      "path": "internal/documents/page_effective.go",
+      "sha256": "e93262b2ee7874d372dd4bea609321fd82ee131df733cc40a77afa2f47a2d1d4"
+    },
+    {
+      "path": "internal/documents/page_original.go",
+      "sha256": "07b4eaaaf677bd32bb372ca5a7c23091c3466b3a834a60740823a0fb5f14cac4"
+    },
+    {
+      "path": "internal/documents/page_original_test.go",
+      "sha256": "1b0e8aa5006e53e4dee819c3882844fa9ddc84d2a9f54db927e1821d71666ee8"
+    },
+    {
+      "path": "internal/documents/pdf_integration_linux_test.go",
+      "sha256": "dcec9c75ec97377f829075d8f263f9ae06a3b40e37dd123f8294eef214edd31a"
+    },
+    {
+      "path": "internal/documents/pdf_source_test.go",
+      "sha256": "4c75735ebe12d94220420df198cef15c016b59101413b77e7843ee5cc9cf00dd"
+    },
+    {
+      "path": "internal/documents/photo_correction.go",
+      "sha256": "484d8b5335daa45b394b9d5a7cfebfc274eca47c03fa141c714df1e069eb9120"
+    },
+    {
+      "path": "internal/documents/photo_correction_test.go",
+      "sha256": "823f040c1dca8d9b24fe320d175cbb118bf844bb85ca37a21de23dbbae6f86c6"
+    },
+    {
+      "path": "internal/documents/photo_failure_retention_test.go",
+      "sha256": "364209732bfc696dccff25399539df108cb890d0b443c996ec77178d16f59251"
+    },
+    {
+      "path": "internal/documents/photo_import_integration_linux_test.go",
+      "sha256": "84e132dc60a6faf43d30bdfa96cdc3cde8e6f9c50267abb69f4d42c98ec03b05"
+    },
+    {
+      "path": "internal/documents/projection.go",
+      "sha256": "ca409dc9e044add952f8312aec43af6275ca92dd563075c9d8439ccacf8cc795"
+    },
+    {
+      "path": "internal/documents/projection_queries_test.go",
+      "sha256": "adf1cba34ac54a6367db830da91e09955567e4efe13372358ca8c2d8ad423dd0"
+    },
+    {
+      "path": "internal/documents/projection_test.go",
+      "sha256": "c066999f016cb206d3e45c17fa2772ff1834c06f89b3b646a88b9e69fd3dedba"
+    },
+    {
+      "path": "internal/documents/recovery.go",
+      "sha256": "74f3c2a72c41b2312042c9c928b700674d8c902df9774420777d7926a2a65016"
+    },
+    {
+      "path": "internal/documents/recovery_test.go",
+      "sha256": "5d2cef53b4777804aab37821832f02ed5176fcd7e6a9d09461d61b3baa4595ae"
+    },
+    {
+      "path": "internal/documents/recovery_work.go",
+      "sha256": "6252ebf666cc3a52408acf24fc26cd3e18ba19c9c9d405b33566d3d19986fedc"
+    },
+    {
+      "path": "internal/documents/recovery_work_test.go",
+      "sha256": "97f7b91e1fa83fb0590d0d44758a50444e977cef89d98c786a32f85ed09a7586"
+    },
+    {
+      "path": "internal/documents/render_completion.go",
+      "sha256": "baa5562c3c6b1e1d6b9786c4b2699f382c282d6d2c981232e1bcc8b9cbef967d"
+    },
+    {
+      "path": "internal/documents/render_completion_test.go",
+      "sha256": "5ac5e225628a83962d097df10c506788d5929bd1888b1644eac2fd0c221afbb5"
+    },
+    {
+      "path": "internal/documents/render_pulse.go",
+      "sha256": "c37c7bd989b915afb1c1978e08c2f2275bd303b0daa07e4003cd8bf725e92ad3"
+    },
+    {
+      "path": "internal/documents/render_pulse_test.go",
+      "sha256": "696eb9f3c5fc04c0e25f3b6dee66864bc1492ea6f5296819a0eb971c1a251391"
+    },
+    {
+      "path": "internal/documents/render_receipt.go",
+      "sha256": "274e0e13195b083607961b825710fcab79d131bcd2e55013a9445611e890e7f6"
+    },
+    {
+      "path": "internal/documents/render_receipt_test.go",
+      "sha256": "35b437bb4b30cf1000337b856ea23bb86f172f71dafa55d9cf292e9557c6be7a"
+    },
+    {
+      "path": "internal/documents/render_service.go",
+      "sha256": "f0811623e4d9ece23c91ee047a22a7078d566e35c197c0a3bf81ea937048f649"
+    },
+    {
+      "path": "internal/documents/render_service_test.go",
+      "sha256": "ba1f381d7101391c01175a95f5d9bf5582721a82048543dbbf14e3d6bd2d5bcb"
+    },
+    {
+      "path": "internal/documents/render_work.go",
+      "sha256": "68a8041e5dd26beb81f75aac3c0070f8c02ec13e5c202a8624e06906c8fecdde"
+    },
+    {
+      "path": "internal/documents/render_work_test.go",
+      "sha256": "43a5d4a2d7189dbdcbf38624d99a8f03677496339a90bf0407b29780783c1723"
+    },
+    {
+      "path": "internal/documents/request_keys.go",
+      "sha256": "013004f998c08251fcbe9660d2563b7402acc3d825b138a93936b591885c6413"
+    },
+    {
+      "path": "internal/documents/request_keys_test.go",
+      "sha256": "499bbb17c292c18474d91dce010ec15e51ba8c4a190d1e49acef2dc7cbcf5f71"
+    },
+    {
+      "path": "internal/documents/scan_admission.go",
+      "sha256": "3d42b0d79331572041457c74b89280c7cf127348983291793696e934a5288545"
+    },
+    {
+      "path": "internal/documents/scan_admission_test.go",
+      "sha256": "7b5d853b0ad18c8a9d6f44f8d9ffcc79720148c1ff630dc9844b61a973f8befd"
+    },
+    {
+      "path": "internal/documents/scan_completion.go",
+      "sha256": "51c465a1368913e566c853fbd59224f83f0bb83d9ddb8355e2a2b1440933b991"
+    },
+    {
+      "path": "internal/documents/scan_completion_test.go",
+      "sha256": "09295a9a9fb42c1b93b10f3168eb9279d3b55edc93f2698f8e214ff453acdd1e"
+    },
+    {
+      "path": "internal/documents/scan_dispatch_test.go",
+      "sha256": "edd138ce16ac02c2d066a062a568a3bf2a3f78e27363cbcc1bd59d93aa129d6b"
+    },
+    {
+      "path": "internal/documents/scan_placement.go",
+      "sha256": "808ca3ea3d5f6a73fc3d65e15698911c93fa9fc30d63b68c00d2d804284ec390"
+    },
+    {
+      "path": "internal/documents/scan_placement_test.go",
+      "sha256": "0cbc8a60bb6188187c9b29ce0464e1bbe3e7c417ff74c1416eff567995c9c0ab"
+    },
+    {
+      "path": "internal/documents/scan_readiness.go",
+      "sha256": "58e13e64c2d226bdda18ee5e1e543dba0077b3a3f97fdbaf932c4dfcaacfb549"
+    },
+    {
+      "path": "internal/documents/scan_service.go",
+      "sha256": "3e05b8decff28dc8b25562c5c4a1a8a930a675ec10fcbe6df3ba3f05389a8451"
+    },
+    {
+      "path": "internal/documents/scan_service_test.go",
+      "sha256": "2b3ea99bc8d9b67af951588073f5e0e41be65775f3a43308664e86178aaf0e04"
+    },
+    {
+      "path": "internal/documents/scan_slots.go",
+      "sha256": "c6024b876ad44d51a8fef2fdaa583b017b9b543d8700dcdbc30361b7c0279ef7"
+    },
+    {
+      "path": "internal/documents/scan_slots_test.go",
+      "sha256": "5ff0fef7168ae213ce5fac8028087fb6f187ca05b71e2ff2f9393a725fa81fcd"
+    },
+    {
+      "path": "internal/documents/scan_thumbnail_test.go",
+      "sha256": "4d35eb0cbb4f3d222bfde45647910cea395cffea6be84c62ddebdcb79d9dad07"
+    },
+    {
+      "path": "internal/documents/scan_work.go",
+      "sha256": "ea22c49ab2df96d5b172a7fe448d32bebf31465bcd1a2565462ada1f8c7be083"
+    },
+    {
+      "path": "internal/documents/scan_work_test.go",
+      "sha256": "6d7d2d6172abd17ed7a6d8148b1ee0473c05935078fc743cc1a589aaa08ad5f6"
+    },
+    {
+      "path": "internal/documents/scanner_status.go",
+      "sha256": "112eb8fb617c0fb3e0d5d725a07139ce40ead8a74d98278431e1ef1af517aaf0"
+    },
+    {
+      "path": "internal/documents/scanner_status_test.go",
+      "sha256": "6b85c52271eb1b281126809e013533d7d422641c61393177a0c74bfc924d1a7b"
+    },
+    {
+      "path": "internal/documents/schema_fixture_test.go",
+      "sha256": "ac432e0f653da9708ce550a3a851763e8ef77e2a9eb92b560ed7bcf5f4830035"
+    },
+    {
+      "path": "internal/documents/shared_correction_test.go",
+      "sha256": "3e926af649358e22d99cc0d4cb609d50f09d58230dfae17bf94737c6de9be93c"
+    },
+    {
+      "path": "internal/documents/store.go",
+      "sha256": "0d262c9b6154ffbe550869230e8a674e6419cdf80083916a944f0292bfd22611"
+    },
+    {
+      "path": "internal/documents/store_test.go",
+      "sha256": "fa995656e778a339c78869a7eb8ddbfadd7b05bedb1099c39a52b4c63d8b9b35"
+    },
+    {
+      "path": "internal/documents/thumbnail.go",
+      "sha256": "ee29e3c9a76b5d99220cccb98e85832e9cbab51ae95ccbe7da88fadc3a540e2b"
+    },
+    {
+      "path": "internal/documents/thumbnail_test.go",
+      "sha256": "72876ebcf90296f3e91b7f178d6c5a3c7481acb5449e1506ddaefdb5d8bafda0"
+    },
+    {
+      "path": "internal/documents/withdrawn_scan_test.go",
+      "sha256": "d83110843563ee0b05b23cac490b6952cbabccc6535e9c0d87a49b5ad06c2d3b"
+    },
+    {
+      "path": "internal/documents/worker_identity_integration_linux_test.go",
+      "sha256": "07bad1136f3a5361f3e53ae77a8a89a3b85cdc9b0d1633bf7d2eea7415a0dc6b"
+    },
+    {
+      "path": "internal/esclcapture/client.go",
+      "sha256": "1c028d499f51cc4f4ac1762d57bbede97aa8b7882779d078476a3fbc6f1fa22d"
+    },
+    {
+      "path": "internal/esclcapture/client_test.go",
+      "sha256": "dc006d0cbd25099fa8e6ba244ef1a2c85e5f8114931c956dffcc7dff04224ae6"
+    },
+    {
+      "path": "internal/evaluation/artifact.go",
+      "sha256": "5e1bdff3cd591480246e93f58611453b122a45c0199ef7b2b2c81e5374d95b47"
+    },
+    {
+      "path": "internal/evaluation/benchmark.go",
+      "sha256": "d7905756643d01213aad7ed381641ef88399de206a2ad9785a627354d0abde86"
+    },
+    {
+      "path": "internal/evaluation/benchmark_test.go",
+      "sha256": "8401d17cfc6fbe6fca85d8e3820831a4f37cd67dda4dd32fc6f3796ad504ca4f"
+    },
+    {
+      "path": "internal/evaluation/candidate.go",
+      "sha256": "b5024cd1f9f52aa06b0580e38a78fdecac8c0a31ba0857d88e4dad2da53d664b"
+    },
+    {
+      "path": "internal/evaluation/candidate_test.go",
+      "sha256": "39882b759d33c749866388c42e9c145f6c3936739dc6c3d7c40c8683d9369293"
+    },
+    {
+      "path": "internal/evaluation/catalog.go",
+      "sha256": "1bb36a05d6d59b75753c8a0db3432b95ec0718306ea52e55eceaf47aa66ad75f"
+    },
+    {
+      "path": "internal/evaluation/catalog_test.go",
+      "sha256": "6e095759194cc70c63b2f44e65fb4091f91a4fe8cd87710e12ce692cd9da0795"
+    },
+    {
+      "path": "internal/evaluation/correction.go",
+      "sha256": "89301f9a766dc17bbb1f6b48c3f57b464f543e43d879f5c94c9ae1bac99d3a5a"
+    },
+    {
+      "path": "internal/evaluation/correction_test.go",
+      "sha256": "d2093cd03c1c92a5b3da3fc3d111927a4384a0aece1ffa333cef5fced7e6b2d0"
+    },
+    {
+      "path": "internal/evaluation/model.go",
+      "sha256": "98b5820cb29f9ace22a0f873f6a1e2f68b6ac4f163f86dbf151fc59eb1b9f6e1"
+    },
+    {
+      "path": "internal/evaluation/ocr.go",
+      "sha256": "151bdc78befbb31c14f8cc542e28a3497a4673401a09f24424e51a85e7fefc5d"
+    },
+    {
+      "path": "internal/evaluation/ocr_test.go",
+      "sha256": "efbbdd909c7d51ebeb2a78569a22647f8e46507c3f1242277fe23fb70ce60611"
+    },
+    {
+      "path": "internal/evaluation/receipt.go",
+      "sha256": "4af269bbc75c0f84f3992768606c49c0c98ef73b2133fb17b5e88466b7259667"
+    },
+    {
+      "path": "internal/evaluation/receipt_test.go",
+      "sha256": "53e7d7b9271ca50e7840cbc83390d98a15c0db6e0078768d998172beaa3276fc"
+    },
+    {
+      "path": "internal/evaluation/structure.go",
+      "sha256": "e74a9b1b1d86b354ff63616102bafb1f2ab51de99b78efce32d26ef2e395a4f3"
+    },
+    {
+      "path": "internal/evaluation/structure_test.go",
+      "sha256": "5d39a038445ac49f3a11c933589afb063fb39f22753d7758f054bed2a3473733"
+    },
+    {
+      "path": "internal/evaluation/validate.go",
+      "sha256": "e4ad4f0f83d180156d8bcc110085719b8cd2fea378b60c242fe4716ed9df9c07"
+    },
+    {
+      "path": "internal/evaluation/validate_test.go",
+      "sha256": "947c44c964446957ef2f67db930dbb7bf3fd79dc7c58d54149c24918a66ee7f8"
+    },
+    {
+      "path": "internal/imageexport/image.go",
+      "sha256": "8186614182729b7965394b536fb33864caacb51001f8eb91df7fbd2b81051586"
+    },
+    {
+      "path": "internal/imageexport/image_test.go",
+      "sha256": "c7ac92b06f35ab7d7ca37aa5f3476479f43e1732f36e4f4176115022488ee597"
+    },
+    {
+      "path": "internal/imageexport/scoped_linux.go",
+      "sha256": "cb6c35bb19f42d96078187bece6cd95eee31c330afa36787e3fcb8d8ee6ed606"
+    },
+    {
+      "path": "internal/importupload/recovery_linux.go",
+      "sha256": "625e3a1d356bf2cf3be2f025fe51d4856ce97620f846ba0c6925052f8889df0d"
+    },
+    {
+      "path": "internal/importupload/upload_linux.go",
+      "sha256": "21d7a8920261b3fa4129aeb1deab62558cc66b760c91a4fd2048f070ba0e604a"
+    },
+    {
+      "path": "internal/importupload/upload_linux_test.go",
+      "sha256": "21c9ab0acacbfc007dd844a29cd48081ca31f866239b7faa0a852f0e17f187db"
+    },
+    {
+      "path": "internal/ocr/llm/provider.go",
+      "sha256": "ab91efc2d9d4c34d19d8a3de727f2e4be416e75542ea5a4140f4987ac49a6d3f"
+    },
+    {
+      "path": "internal/ocr/llm/provider_test.go",
+      "sha256": "b45f7e3f02b36ece78dac31f4a96996e2666226bfda30ca1438536844da07610"
+    },
+    {
+      "path": "internal/ocr/runtime/builtins_linux.go",
+      "sha256": "affbc367620692b033b9098b7f146d74fb3324790ed1ce2481e3fa56d2d39c73"
+    },
+    {
+      "path": "internal/ocr/runtime/builtins_linux_test.go",
+      "sha256": "accca8fcc45d8faebd66d45b60147487b179406f84a63dbc269ed9e365ab1d8f"
+    },
+    {
+      "path": "internal/ocr/runtime/runtime.go",
+      "sha256": "e344c01e4fb7d0036bab406a63882e0ede7eefa01155b902dada049d4150ba1b"
+    },
+    {
+      "path": "internal/ocr/runtime/runtime_test.go",
+      "sha256": "ebd50cfe7275ff0b5451fa32fccaef3d8e3a873dae13b5963bed6f7230877a2f"
+    },
+    {
+      "path": "internal/ocr/tesseract/positioned.go",
+      "sha256": "2b5f53ad848bc6ad7f21d8872d490e97ddca177a9c1f854919b20bb9a855df1f"
+    },
+    {
+      "path": "internal/ocr/tesseract/positioned_test.go",
+      "sha256": "4d104517f3fea936361461898ed475d4f1cc5ea1824d0f5b8aa353db98a2dfdd"
+    },
+    {
+      "path": "internal/ocr/tesseract/provider_linux.go",
+      "sha256": "9f245315f763f37b39ec753d95141057bd67526a9d57bef214c1c448ebeaf0d7"
+    },
+    {
+      "path": "internal/ocr/tesseract/provider_linux_test.go",
+      "sha256": "157426797c35e1c089f504d3b34e1a2c441304d1898ec34036ab44acc312eb7e"
+    },
+    {
+      "path": "internal/ocr/tesseractapi/api_test.go",
+      "sha256": "ec3de225a5ab1c3ec01f9d8d952a6609714c7c6af25485864248a531070da3c5"
+    },
+    {
+      "path": "internal/ocr/tesseractapi/client.go",
+      "sha256": "f067f58e4f9c9b94845737abd3c97c12d96b15a35f418a11dbb728ae4ecffb6d"
+    },
+    {
+      "path": "internal/ocr/tesseractapi/handler.go",
+      "sha256": "1d82b438e35299301b0f45eeb95226de56e0929f5c49edf23719b8b2c3ec3892"
+    },
+    {
+      "path": "internal/ocr/tesseractapi/protocol.go",
+      "sha256": "a49317da35ae2905d03cd08b2fbb9697bfb419ac8d7594116237ce09c7edede5"
+    },
+    {
+      "path": "internal/ocr/tesseractapi/run_linux.go",
+      "sha256": "c87412186cc7aafe8ae884985c8eab2f8e5b9a1218952bbff3314600eeef9919"
+    },
+    {
+      "path": "internal/ocrcomposition/composition_linux_test.go",
+      "sha256": "102f32d44cd33b9249b841542ddd869ce07a2a700672de4bb89d232062e3affc"
+    },
+    {
+      "path": "internal/ocrresult/bind_linux.go",
+      "sha256": "508077ef0a06d50c44ce57b63b23c4d64ba5959281d3e67905daea7ccb392d5e"
+    },
+    {
+      "path": "internal/ocrresult/bind_linux_test.go",
+      "sha256": "febd1b62e72e50bbd7c77349e53a0a8ebed78817f09d2cfe0641cf5aa7dca0d0"
+    },
+    {
+      "path": "internal/oidcattempt/records_test.go",
+      "sha256": "84a3d8f3f8d59eece151e3b47e5f737ab17a46b98c8a5a332068857fc0a0dec6"
+    },
+    {
+      "path": "internal/oidcattempt/sqlite.go",
+      "sha256": "e841d02725bcdd9bfd1d82308165591cc102cd0c8c1268a904cc973208640818"
+    },
+    {
+      "path": "internal/oidcattempt/store.go",
+      "sha256": "b8601722c653d1a3fc09ee9e8e4eab82b5ee859f5559f2872121884442f51630"
+    },
+    {
+      "path": "internal/oidcattempt/store_test.go",
+      "sha256": "be2e23a95a0e5ad654878875e61937577266807af6c32fb7e872da1a48c2189e"
+    },
+    {
+      "path": "internal/oidcflow/flow.go",
+      "sha256": "813e962b513bb3058e606593fb40e91032fd97a536cb405eb60240fa4b3f3d80"
+    },
+    {
+      "path": "internal/oidcidentity/sqlite.go",
+      "sha256": "3a8c7331361ec76aaba0adc449340b9822384f9d617de39e9d46d0b200658070"
+    },
+    {
+      "path": "internal/oidcidentity/store.go",
+      "sha256": "c9a0306e195f243675c7ff41ad24f776279794f32fe7a8e25d42172886ee79f0"
+    },
+    {
+      "path": "internal/oidcprovider/http.go",
+      "sha256": "a20653547a836ab1a0938c7a1e99d5ec44ac017c4caeb42d1b38ab27f36af24c"
+    },
+    {
+      "path": "internal/oidcprovider/identity_records_test.go",
+      "sha256": "440835d53a7953ceb749a4d2c9bdfc677fd32b0c19ea5e4e1c24ea6417c14a21"
+    },
+    {
+      "path": "internal/oidcprovider/provider.go",
+      "sha256": "3ef377b28f1b5009ae324c7b34253a32fd5a2256fd8c891473122c429fc0d3fc"
+    },
+    {
+      "path": "internal/oidcprovider/provider_test.go",
+      "sha256": "cb2601e14746b6b8ade85f7808c5fbe182b5ed5b441fbff9d03f6eee904a6432"
+    },
+    {
+      "path": "internal/paperless/client.go",
+      "sha256": "8252752fef842bd1ff3082d53868d03ebfff4661b49e55a0117dc19e61d97bab"
+    },
+    {
+      "path": "internal/paperless/client_test.go",
+      "sha256": "4a80b0897928d9896cf5bff43aec6f46d10f4ea4ff97f15fffc16e56d10dda29"
+    },
+    {
+      "path": "internal/pdfassemble/assemble.go",
+      "sha256": "6bd9155b7ed4236c132d26db863f5734a361eef396903a5dd43269488f8a21bf"
+    },
+    {
+      "path": "internal/pdfassemble/assemble_test.go",
+      "sha256": "8a689e403589e9b61880c4675a49513d2c8699563010c9abd39acd6c9166c33b"
+    },
+    {
+      "path": "internal/pdfassemble/fixtures_test.go",
+      "sha256": "00784fde8715d76783d173cc3d4f776d2a78dfacbea7b4d5394f4b0ccb14a557"
+    },
+    {
+      "path": "internal/pdfassemble/import_test.go",
+      "sha256": "559330367d4aeb443def6fb6b23bcabfbaca942d9a2fae6346b19b4faead4669"
+    },
+    {
+      "path": "internal/pdfassemble/large_process_linux_test.go",
+      "sha256": "576f81980bb49c4cab1135d65b5ff8b3f403d7b55240899e03e81f11fcf1d812"
+    },
+    {
+      "path": "internal/pdfassemble/ocr.go",
+      "sha256": "35bad4c91c9f81d58b77035d163a969d0ccfe30a990a68733e54c771c4fcbd87"
+    },
+    {
+      "path": "internal/pdfassemble/ocr_test.go",
+      "sha256": "47b8260eb85e2b6fe2dc1ad3405a8d1134edfdd1ca7750db4fbc4b8987728eca"
+    },
+    {
+      "path": "internal/pdfassemble/process_linux.go",
+      "sha256": "2857c2a1ed4eaa071c63f3292b9533eba655882d72e74e7739cebfe67f5743b9"
+    },
+    {
+      "path": "internal/pdfassemble/process_linux_test.go",
+      "sha256": "4621d8ad5cf73690e281760989e3e7978b308d57bc8226c640097e37e665fb1d"
+    },
+    {
+      "path": "internal/pdfassemble/raster.go",
+      "sha256": "91ed20df3da6dfee9b91d77516df0fc386a9eeaec848e5f2f175d9e99ff18b37"
+    },
+    {
+      "path": "internal/pdfassemble/raster_test.go",
+      "sha256": "31cab490942d827c1cf358cd3d7cfdffd169d7d5b7dd1a1fd313eea9ca91d0ca"
+    },
+    {
+      "path": "internal/pdfassemble/scoped_linux.go",
+      "sha256": "8e589a4fd31d0a11b77e93315acdba2f9271f68fe9d6bd71e58fade3da433f25"
+    },
+    {
+      "path": "internal/pdfassemble/scoped_linux_test.go",
+      "sha256": "ffe06a95aa62b0251d6e916f26d3aad04cade729ba24743c4497b482930cfd31"
+    },
+    {
+      "path": "internal/pdfimport/import.go",
+      "sha256": "950faee2fe721e795b4362782c92a116a741bfd4d8d0530e17c8d0369fc651ca"
+    },
+    {
+      "path": "internal/pdfimport/import_test.go",
+      "sha256": "b0b9108c1fbc7eae2aeaaabbae0b3e6e740c183e06518e67044c47dd94323895"
+    },
+    {
+      "path": "internal/pdfimport/process_linux.go",
+      "sha256": "2bfdc37db1ddaa5950e9965bb3dc9cdc313222ccb843cc2caf555f6bc2793fdf"
+    },
+    {
+      "path": "internal/pdfimport/process_linux_test.go",
+      "sha256": "10911d214d72f19ca8bf53d242dd6b46751ce877b5a31e932a5ec2c6f7083c71"
+    },
+    {
+      "path": "internal/pdftextlayer/config_test.go",
+      "sha256": "99b53ddba44479efb70d5470ffb1d121455ca6673b8bd7ca40beda07154ad605"
+    },
+    {
+      "path": "internal/pdftextlayer/overlay.go",
+      "sha256": "c2459ff68ab0b96785f918f79334784d49a3539b3a8e6913e05e78d36a5c8f44"
+    },
+    {
+      "path": "internal/pdftextlayer/overlay_test.go",
+      "sha256": "28adcff41c8339b72796e8546551cb05e36033207d44223ec88f8c7506e67edf"
+    },
+    {
+      "path": "internal/pdftextlayer/positioned.go",
+      "sha256": "9d0d0b9235aa46cbd3803c913f1c6e82d8ed5b76b1f875c2261ba0c3d820b250"
+    },
+    {
+      "path": "internal/pdftextlayer/positioned_test.go",
+      "sha256": "0155e590beea8ccc95569624bd4a19701fde0efc37f88ded05aa6245aaa792d6"
+    },
+    {
+      "path": "internal/photonormalize/normalize.go",
+      "sha256": "b14f0ff2b11f43ec135573505c0d1657275430a16155bb2038ff92311b80f7b6"
+    },
+    {
+      "path": "internal/photonormalize/normalize_test.go",
+      "sha256": "8db1471a235ef6569059ca6afca1418ac29a950cfe9d502494ba4711b363bca8"
+    },
+    {
+      "path": "internal/processrun/pdf_limits_linux.go",
+      "sha256": "d4dad82903e4dd0bf98177d7a502f286234d6dffaaf1a14b2687bab0eff5c4a9"
+    },
+    {
+      "path": "internal/processrun/run_linux.go",
+      "sha256": "e03a3435de3c2aa2f147b5db450bf5cf0f39510ff71893b55fe570b496d061e8"
+    },
+    {
+      "path": "internal/processrun/run_linux_test.go",
+      "sha256": "9d0944f09cb7ff8945f7f45023ff896c4a1d0b298773e1700a69d179a5a1ec38"
+    },
+    {
+      "path": "internal/renderadmission/catalog.go",
+      "sha256": "6c27672f94f5b6766fd25d9e0cb4da1fd7753ca4ee8328f32c711b5a250a04ea"
+    },
+    {
+      "path": "internal/renderadmission/catalog_test.go",
+      "sha256": "57bb9edd7b1c4764e6009f82b491b7d026a84df4cb977349e9717eed1ef394b8"
+    },
+    {
+      "path": "internal/renderadmission/service.go",
+      "sha256": "30912d61853256de16f5494035a81d3c452636c153e9262728c5e0a088b2d873"
+    },
+    {
+      "path": "internal/renderadmission/service_test.go",
+      "sha256": "7b120817b62a8e3910e21cfb06491951d8b9101f9f12997e16c10e85d3a44a03"
+    },
+    {
+      "path": "internal/renderjob/assembly_linux.go",
+      "sha256": "b2cd5762ac7e2f002300a91a296442aa252d4e99b32a0c21b569109fa600d87e"
+    },
+    {
+      "path": "internal/renderjob/execute_linux.go",
+      "sha256": "abbb1a7da0b37899b076e0a9c5b228645007f6bc73c3ae4ddab8ceac6792aa64"
+    },
+    {
+      "path": "internal/renderjob/ocr_linux.go",
+      "sha256": "60416b1efac797701d9b803398653762a386e5e293809fcba5fbe8fd53c37c95"
+    },
+    {
+      "path": "internal/renderjob/ocr_linux_test.go",
+      "sha256": "a5ebfa91fe31997a2ecb9185ce3c82e917bf6fc1bdf86267484a66d17bbdf327"
+    },
+    {
+      "path": "internal/renderjob/pdf_ocr_linux.go",
+      "sha256": "98a1fc6ce0830db50c9834abf7f82f5f715809104d8808f3e7d3d5221dc36db8"
+    },
+    {
+      "path": "internal/renderjob/pdf_ocr_linux_test.go",
+      "sha256": "a6ed97efb6ed1b4a7639c0cca3be8f2e010e4cfb238cc3569d09211b924ae791"
+    },
+    {
+      "path": "internal/renderjob/photo_crop_linux.go",
+      "sha256": "02958c998c532a4d79b8d6eca775adf13b9e787afb573f7da7b3b2884c5c408a"
+    },
+    {
+      "path": "internal/renderjob/photo_source_linux_test.go",
+      "sha256": "4c21ca590c09d3a54bac70b670757fc4692df14d90aaa8f83ade4d61be9817b9"
+    },
+    {
+      "path": "internal/renderjob/process_linux_test.go",
+      "sha256": "aadf4e8a55d9eaac01d45e1b3d2c75a54756f69dd25059a9156d665928beee4f"
+    },
+    {
+      "path": "internal/renderjob/render_linux.go",
+      "sha256": "be188ff8b793596f2c350395c7e643fbd702f235bc9f895c866854d07799ffea"
+    },
+    {
+      "path": "internal/renderjob/render_linux_test.go",
+      "sha256": "591fafb99d1b44370b4a81955039170568907f8e98532a61fdffba49ac85ea97"
+    },
+    {
+      "path": "internal/renderjob/thumbnail_linux_test.go",
+      "sha256": "a2bda0b3fc8f987263739c68b69f5d586a9d49cbbf8000ce515861e5883c93df"
+    },
+    {
+      "path": "internal/renderjob/watch_linux.go",
+      "sha256": "e39d141069643c230f04cb0d981dff2d9d4c4ba1455c1938e4291843a13ed825"
+    },
+    {
+      "path": "internal/requestkey/key.go",
+      "sha256": "ce3318cb5df4659124c1d3c6326d987c288f6b487240796e21bedff08dc38a35"
+    },
+    {
+      "path": "internal/requestkey/key_test.go",
+      "sha256": "74082a1f1db7a4993dd686d6383dab23190054ad58641b729484ff45230c0f82"
+    },
+    {
+      "path": "internal/scanadmission/service.go",
+      "sha256": "df1608e3a8abde5f158836bf70ec53433cdb90e7a39ed2535d392fc7d8e991ac"
+    },
+    {
+      "path": "internal/scanadmission/service_test.go",
+      "sha256": "c04203d47075107ef29ab9e2099db8eaffb922a8b7d98bd7e0b0a306d2f1c60c"
+    },
+    {
+      "path": "internal/scanjob/execute.go",
+      "sha256": "7f12258dcd6a9d43552ccecafc6031bd1f69b1e88e4a8b3ad267c4e5b4da1fce"
+    },
+    {
+      "path": "internal/scanjob/execute_linux_test.go",
+      "sha256": "963026ba0b3fa56c10f30bf5c0be0ad53d5204014e730c1bfe6f099224d705e9"
+    },
+    {
+      "path": "internal/scanjob/lifecycle_linux_test.go",
+      "sha256": "9f98f791ed4d651f13392111b62f9a1c21c3de2c7f3256dda2d25c47723e848a"
+    },
+    {
+      "path": "internal/scanjob/registered_driver_installed_linux_test.go",
+      "sha256": "7a0650859e1dd305e9888e0f5ebf33d32a582b953126b5c5cbdf86ac613f50df"
+    },
+    {
+      "path": "internal/scanner/escl/identity.go",
+      "sha256": "b7e53fa26656b29bb18b6479e048b66add6d75cd616aefede1d5139fb5de8f42"
+    },
+    {
+      "path": "internal/scanner/escl/identity_test.go",
+      "sha256": "528c600dd284eac09e55d0d4a049c40421b32d52d4606ea2e039da31c15c17a6"
+    },
+    {
+      "path": "internal/scanner/escl/status.go",
+      "sha256": "e403a70a2dbb78052d5ade1a8bcc0ea8ee3d01467008c6a250a4053f6c00d12d"
+    },
+    {
+      "path": "internal/scanner/escl/status_test.go",
+      "sha256": "6984560ddeb87bc5943f5af85b4205b16440c4230d5b254faed1638106ac4b50"
+    },
+    {
+      "path": "internal/scanner/escl/xml.go",
+      "sha256": "7bf2d3133a9a0e041d597fbb420305e846ea3e0a7f2ff05365e9b856dead8404"
+    },
+    {
+      "path": "internal/scanner/port.go",
+      "sha256": "d0ab898aa0187913e9f9af9e948c4fd2f36241cd288f20ef738cb1f2f3d0bb51"
+    },
+    {
+      "path": "internal/scanner/sane/capabilities.go",
+      "sha256": "89f55d02ac85180471b3abc3747bf28e84e6cba14f0b32d6fb9eeffdf2477e77"
+    },
+    {
+      "path": "internal/scanner/sane/capture_linux.go",
+      "sha256": "1c8ce1db9b32e0a5153fc3157e6e8343b20e23bc0bf30025be6d8bbe501a44b6"
+    },
+    {
+      "path": "internal/scanner/sane/capture_linux_test.go",
+      "sha256": "91b6e3fe81a1539d4af458d41321608ccddee61bc35a8b2836bbef8c1956550b"
+    },
+    {
+      "path": "internal/scanner/sane/config_linux.go",
+      "sha256": "489ecb6336deb3eee55fab55f09aa7759da5ff57e0082bf6803a06a5b9d0048f"
+    },
+    {
+      "path": "internal/scanner/sane/config_linux_test.go",
+      "sha256": "1c132d7d148b99e3bb9bdd27e309f5554924dbdc22a75a1df71e6be01d899415"
+    },
+    {
+      "path": "internal/scanner/sane/installed_linux_test.go",
+      "sha256": "018583983e4d2dd04e1ee3196d524651e1019624da61a2df05fe6ddf73a2cdd1"
+    },
+    {
+      "path": "internal/scanner/sane/parameters_installed_linux_test.go",
+      "sha256": "ebc65ec1891e63b0e7fc6d6464d1ae6b7446e9ba3c78b143707436e72ff7f7cc"
+    },
+    {
+      "path": "internal/scanner/sane/parameters_linux.go",
+      "sha256": "28e952cf579a5843bdcd2371aa21ccbdd8e6f057e1aa4f9e36b608a5c00d2b3d"
+    },
+    {
+      "path": "internal/scanner/sane/parameters_linux_test.go",
+      "sha256": "4be5403cc14787b2bb85ee88baeabe9cbca0f3f0adce2cf92a9024392360c527"
+    },
+    {
+      "path": "internal/scanner/sane/probe_linux.go",
+      "sha256": "b36fe40a7cf0fd027b8add25d44f7f02d54051f5e765cd22b8784d3b3f2b1232"
+    },
+    {
+      "path": "internal/scanner/sane/probe_linux_test.go",
+      "sha256": "a6111752f632e4988cfb5dc1efc88f454d36ee618fd12a0a351285b3c9f95256"
+    },
+    {
+      "path": "internal/scanner/sane/selection_linux.go",
+      "sha256": "fd897f109a3b8d04015fe84d1f32d3f7253c2eb09030a08214a06e36eaba8cc3"
+    },
+    {
+      "path": "internal/scanner/sane/selection_linux_test.go",
+      "sha256": "ceea7ffa81fcacca54067b16f1dc7f6ab14eeb9ee03c8f327dcddac8a2df3820"
+    },
+    {
+      "path": "internal/scannerdiscovery/mdns.go",
+      "sha256": "53325cb3a2f90e73635d12c12dc86ce27cc65034f9842d401f0455e0f4c00d71"
+    },
+    {
+      "path": "internal/scannerdiscovery/mdns_test.go",
+      "sha256": "e2ae6b10126bf9f52c0e35bc61104ad76deaa88e4c282e05f44e771049d4f3b6"
+    },
+    {
+      "path": "internal/scannerdriver/concurrency_linux_test.go",
+      "sha256": "45cfee1bc2cff3ae8fdbaae609b36f5ba0d76aa0decc87c2c50c12510274c532"
+    },
+    {
+      "path": "internal/scannerdriver/config_integrity_boundary_linux_test.go",
+      "sha256": "c0c13fb11c51517d1e5e2215ef24eef2c82979439e49dce4772bc55814835d9d"
+    },
+    {
+      "path": "internal/scannerdriver/config_workspace_linux.go",
+      "sha256": "b5e3989a21548215e747467ed22d649a4cb29b20256a647e70769a0bdc513ca2"
+    },
+    {
+      "path": "internal/scannerdriver/configured_linux.go",
+      "sha256": "908ee59528a88ac645702ea63d12b987e19ddc5392c75aae0ea0a8aa74bfc1ab"
+    },
+    {
+      "path": "internal/scannerdriver/configured_linux_test.go",
+      "sha256": "d50a395cdafd1bdf29e9171d0b0ee54224bf75669c087d5bb94d0164a3663959"
+    },
+    {
+      "path": "internal/scannerdriver/discovery_linux.go",
+      "sha256": "0d912b0677f7141cc01e84ae944bba9b483ee36cb19da2153b81b1637fe8b267"
+    },
+    {
+      "path": "internal/scannerdriver/discovery_linux_test.go",
+      "sha256": "8e966db77b14af39c99336cf35b964156058ff557d1aef7cb9f3f6625fdfb453"
+    },
+    {
+      "path": "internal/scannerdriver/driver_linux.go",
+      "sha256": "3c4850669289c1c24bea71afbf1d8a530ef82be24ebd901420fce7f941ba9569"
+    },
+    {
+      "path": "internal/scannerdriver/driver_linux_test.go",
+      "sha256": "ea9004653e4cdbfcac1d820085a20177c07e2426a8a53aa5bf95387bf63b4220"
+    },
+    {
+      "path": "internal/scannerdriver/identity_linux_test.go",
+      "sha256": "285b0d333c5ad59e3d1be1a7f221638519494f0d574443cfc6412434ec69cd3d"
+    },
+    {
+      "path": "internal/scannerdriver/metadata_linux_test.go",
+      "sha256": "76d1c9e6be52050771dac97c7de7c6016d8e120ef7765b37f2098de4a14d6769"
+    },
+    {
+      "path": "internal/scannerdriver/native_linux.go",
+      "sha256": "760735eb6b38d4402efae678e8067eae6661ebced500c7dbfff2afea1a7039b4"
+    },
+    {
+      "path": "internal/scannerdriver/readiness_linux_test.go",
+      "sha256": "2aedc084b5ca4bd3b35bb23554eb568530bdd8b81ebe24f0ddccecd6f324588b"
+    },
+    {
+      "path": "internal/scannermetadata/catalog.go",
+      "sha256": "0643b7f4ed5719892b11550b5b6575dd93a94c729a9b23ccd7108c3a7470df4a"
+    },
+    {
+      "path": "internal/scannerreadiness/evidence.go",
+      "sha256": "9022d16251092a24ee1055591bf03c7a73090bdf268112a418e38ff4030672c6"
+    },
+    {
+      "path": "internal/scanthumbnail/publisher_linux.go",
+      "sha256": "07f03e907d90d1b897e4a1c3c590e477d39fa0eb0006c502fa1685aa01e928d2"
+    },
+    {
+      "path": "internal/scanthumbnail/publisher_linux_test.go",
+      "sha256": "df0161662da02b8d627ff74a7e14afc0ec3897be981b2b44a881ef880da3fe8d"
+    },
+    {
+      "path": "internal/simpleauth/password.go",
+      "sha256": "55b1c7fcad69f0ee2a44491fa06194f8f6efc352332f4758f277b6c137cbd9f0"
+    },
+    {
+      "path": "internal/simpleauth/service.go",
+      "sha256": "02d3c075796f3a526658c5799f5ef3aa9cdcab069b3c4f748936392f72b7d4f5"
+    },
+    {
+      "path": "internal/simpleauth/service_test.go",
+      "sha256": "27dd3785f9dc7162d75aa7d3453284dcff142fa83d7600998d1c11977fed509e"
+    },
+    {
+      "path": "internal/simpleauth/sqlite.go",
+      "sha256": "8300f835239ba1ab72e58cb190b77f140746470b1cbd925540004ad979b62ab4"
+    },
+    {
+      "path": "internal/staterecovery/archive.go",
+      "sha256": "3c10e52b340c110f178775bd1444007aa06d507f32bb7d8dcb6e80062a5b38b8"
+    },
+    {
+      "path": "internal/staterecovery/archive_test.go",
+      "sha256": "9699856da5eeb270121564b984957c1a2d6a532f28f3cfa7eb92ea7a232dd684"
+    },
+    {
+      "path": "internal/staterecovery/run.go",
+      "sha256": "266b91c66249dcd4bb1c7711bbc09f072e74590076fe0427e948aff43e44e321"
+    },
+    {
+      "path": "internal/storage/cleanup_upgrade_test.go",
+      "sha256": "1d519fffd147b08f4e0a96b48924a39c8e889132e041ab39dfc1a31cb61ffe7d"
+    },
+    {
+      "path": "internal/storage/database.go",
+      "sha256": "666fd7fdbe743b84a3140347a9f3670592e1f1e433f2bee036c68997f86dddd5"
+    },
+    {
+      "path": "internal/storage/database_test.go",
+      "sha256": "eb3f695ef0c28166fb335c6a7ea53818b10b263418caa6eca4e93767fe5dc413"
+    },
+    {
+      "path": "internal/storage/delivery_upgrade_test.go",
+      "sha256": "4f20663342d63c204c246fa63eb488cdfa0d78a9fc201ccfa4e0e9386591a360"
+    },
+    {
+      "path": "internal/storage/import_jobs_upgrade_test.go",
+      "sha256": "1819fb8bb6651192c3db159b871f38808608d15632c8fd4c32d2d75af84f7f51"
+    },
+    {
+      "path": "internal/storage/local_credentials_test.go",
+      "sha256": "e9f5be8014a20e7ae14865c6a411543be5fcffdfa300c2f8490742fef1c7f778"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0001_initial.sql",
+      "sha256": "510474cd032118bf715b08a295b9618b56cb698c0c7c901aa48bc247897dc6a8"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0002_job_artifacts.sql",
+      "sha256": "04975b45bb794dc01eed7ff23d7aa213a9a9b3e769bdc0faaa9841a10391be77"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0003_job_started_at.sql",
+      "sha256": "bbf72ff67e1eb49c67892c8feda6ea1bef25006621ada5010eebcaadbd9d48fd"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0004_edit_results.sql",
+      "sha256": "820a106079b914fda4a82e8a7c88cb6fb897a6961a123becd16c14a0b0bc9b7c"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0005_processing_catalog.sql",
+      "sha256": "4de62c5abcd5e9da3d7a24b38d7e07723067b476f1e086a29237855827abb267"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0006_capture_dimensions.sql",
+      "sha256": "4faed76acd22663257d81e79157b0fd41a6175be813e9fa308d3fa0089e9bef6"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0007_scanner_metadata.sql",
+      "sha256": "b57d57c331a156b5ddd00fe6e4409ec31356adb2272d8f18b6d7f675d5bc767f"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0008_scanner_readiness.sql",
+      "sha256": "aa95bf78366e74d4bc1c4a79788a97ce4e1baaafcd769951fc242c9dd88923c4"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0009_document_job_projection.sql",
+      "sha256": "971868f4dded9f11b1364ed42065390f6641e8bdf8764dc1e4b58b4f7ca37f32"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0010_page_thumbnails.sql",
+      "sha256": "2a85eefe815d57aa7e06ce89748939a425db828515f2494acaa6663b61cf49ab"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0011_cleanup_identity.sql",
+      "sha256": "72b22a710fccfd52a6b2dfc7b0f2b523534a80f37c6be91ea8cca07e8f77c685"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0012_cleanup_files.sql",
+      "sha256": "59ddc34b5de438dd427413d2b44ff40da4a0efd3bc96bd55387f4cbef8f733ff"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0013_artifact_document_lookup.sql",
+      "sha256": "71261dfbda0b737af970364938e252500f2e1cd91d093a13684fd8ebdabffd16"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0014_cleanup_attempts.sql",
+      "sha256": "81b1d1b0ad86c2e3e533d9ae1f1c71b90703fac3531268e96b14483320b19af8"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0015_cleanup_retirement.sql",
+      "sha256": "bcd08260eca70d85ed9db8ce4a79b7dd44151c898d077c983fb7d84411d2175e"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0016_aged_request_receipts.sql",
+      "sha256": "3da7dc31503a98bfdfc6cf1451ed178128ea9d9ac8130e8f66c9a0abf842afae"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0017_pdf_page_sources.sql",
+      "sha256": "616cb4e34aae776b770fde50674c75e2515b58cc0d8ffef191f109bb5966bf5e"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0018_import_jobs.sql",
+      "sha256": "ca15df6066d6af42f3571a7c75145254f942f9725e6ee579d5d3039f4de5cfda"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0019_import_intakes.sql",
+      "sha256": "713363e833cf6091da9d06f22fb82c3ef2e845c6c684035171d8c5c44d8c1143"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0020_page_corrections.sql",
+      "sha256": "91081b8ee093450b73879653e1398497157772bd4206747dd631014af38a5d30"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0021_ocr_results.sql",
+      "sha256": "ee79adf3f4d1fb3a29555da5cc277b06c67507d8578420d425dd5d950646349e"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0022_delivery_ledger.sql",
+      "sha256": "8fe05725342ef9d2a039a38195de5fdea0be5780e5b1859235c7f15dc40cc8b9"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0023_delivery_claim.sql",
+      "sha256": "ff50d70b5bd6db84afe74609568981c2aec19335f6cd68ee32be59a9e5f73017"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0024_delivery_retirement.sql",
+      "sha256": "27895904bb6ed8ae01f20414f1e0b2d4c196828c25232ffd83ff0234c894c08e"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0025_photo_sources.sql",
+      "sha256": "fe0d9f96ff0e973126710601b4a9ace95452ca12e52440c1e353cea36b4aafea"
+    },
+    {
+      "path": "internal/storage/migrations/documents/0026_photo_corrections.sql",
+      "sha256": "bed0eb1a86ab6438490ebc1b05fd1b85c944fb1b2b9048012a01a455f523983e"
+    },
+    {
+      "path": "internal/storage/migrations/state/0001_initial.sql",
+      "sha256": "96684b5372387e4150d3d9be4d3f86b98940dacd5ddb64725e2980c11b30ec40"
+    },
+    {
+      "path": "internal/storage/migrations/state/0002_session_revocations.sql",
+      "sha256": "ead153c88a1745c261bcd2f353a7944d5f33a34daf007d99829bca0d70ca4825"
+    },
+    {
+      "path": "internal/storage/migrations/state/0003_oidc_browser_flow.sql",
+      "sha256": "372656d2874b4be9c20862ae5f206a990be7270f79350cdf751ed5c2b4ee1473"
+    },
+    {
+      "path": "internal/storage/migrations/state/0004_local_credentials.sql",
+      "sha256": "d6b394578a627d0ee48731b81515d29a088f704559fe40aeb905c4f30cdf3e9b"
+    },
+    {
+      "path": "internal/storage/migrations/state/0005_simple_sessions.sql",
+      "sha256": "68eef25fb699508900b7f8bf8d43e225e893c8b6cc3a22690c1a5a04ca30c5a7"
+    },
+    {
+      "path": "internal/storage/pdf_pages_test.go",
+      "sha256": "b718c3ed4ad7a82f94a8444a35ca252debc2e8df44dde056a5b93762bb59d700"
+    },
+    {
+      "path": "internal/storage/photo_sources_upgrade_test.go",
+      "sha256": "f3742aa464dd6ea59028267ca3a1e6025203c4c5a6e83d593d568332e2606fb8"
+    },
+    {
+      "path": "internal/storage/readonly.go",
+      "sha256": "f00156869ad2444092e5f8d7f1f68cf148a346d075d0be6082d25c3e8196646d"
+    },
+    {
+      "path": "internal/storage/request_keys_upgrade_test.go",
+      "sha256": "9b894db2ac6284e9aae47106ddfd8779f3b4212090a0d40a495e0aa1fae24a7c"
+    },
+    {
+      "path": "internal/storage/scanner_readiness_test.go",
+      "sha256": "ea5f9156e476ab6a6e6192159891a0c868cc35bedfa8f297c3f55ad28270117c"
+    },
+    {
+      "path": "internal/testsupport/catalogcontract/catalog_linux.go",
+      "sha256": "522ab7aed488571424c5154e651ea5f71c312b1065dc485449054e215777a692"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/dispatch.go",
+      "sha256": "3eaadac5eab3fc66e2e94c86d237273f2c2ae3f7f84af8c83457f55707039642"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/edit.go",
+      "sha256": "1333733988036b2f4c35a456dcf55e72106104787b021d000a2b9e33bd20610e"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/lifecycle.go",
+      "sha256": "e1c0cd3f5a9b748fbf3e60f2383699c40356dbc0f3fc4a9bbe1262e53a0538ff"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/publication.go",
+      "sha256": "78cc630fb61b39a2a0b0f742d8c12e71417bcb6a06dc95a3c9d4f1b77b55619e"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/render.go",
+      "sha256": "2a6b9dc684fdbc0e4603910ea3e8829c4a54d442feb5e5d8e2f041cd5c0f91f0"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/reopen.go",
+      "sha256": "5fbd1ff79ad2c3768e7e3f9987417f1bab40c493eba4f2317e4812b4b89b17ef"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/scan.go",
+      "sha256": "438ffc69c660ebd58cc498d7ee87dd857fe0d79ebeaa5df23fd8226bdfc11c79"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/stopped.go",
+      "sha256": "173369b525343e77cd401a5d6af68c82200532bc4b5ce260e72bdc119448fe1b"
+    },
+    {
+      "path": "internal/testsupport/documentcontract/uncertain.go",
+      "sha256": "c11c945ac34b0f73f547db0ca5399382b35a3b84964fe9f54c0b7e4c442096bf"
+    },
+    {
+      "path": "internal/thumbnail/build.go",
+      "sha256": "f177b0602335359fd6621b98e27224e55774aa17e534c3efe4dae7248925446d"
+    },
+    {
+      "path": "internal/thumbnail/build_test.go",
+      "sha256": "5fd085126b593843adc14fbbd17665d5de9a35e2d3d1af2147d777b319005d1e"
+    },
+    {
+      "path": "internal/thumbnail/scoped_linux.go",
+      "sha256": "da141012e30a5cb7151be49b2d8538c6e328e274eec9546ed55a23a0c797e09f"
+    },
+    {
+      "path": "internal/thumbnail/scoped_linux_test.go",
+      "sha256": "4e817449d01c093e63e8599173542edbe67e90c1976d32eb9d7a3f9b88524cd3"
+    },
+    {
+      "path": "internal/useradmin/run.go",
+      "sha256": "c4b13f85534ba71fa00ff89ac19c1d88e708f8560ead989cd5ef8f80997f7454"
+    },
+    {
+      "path": "internal/useradmin/run_test.go",
+      "sha256": "fc38a8fd310bfe206389b66d17ad434d77be3731597d17c8b61b73163d3eedb8"
+    },
+    {
+      "path": "internal/websession/authorize.go",
+      "sha256": "997e1a92f8e0cad7db8c3914d0a11e20e4be687d69ecd7d10c93e2fe456e83e8"
+    },
+    {
+      "path": "internal/websession/authorize_test.go",
+      "sha256": "22d27d49f92f1ab13e78b50b2f4203c3ed47c791d28ce35e91ae62f241d3bde1"
+    },
+    {
+      "path": "internal/websession/grant.go",
+      "sha256": "bb4c51bb12a6e1702dc0e94cef16c81f928203087919ebed41e57bb0071fcf84"
+    },
+    {
+      "path": "internal/websession/grant_test.go",
+      "sha256": "90599a97cf6821bcc4d1573255ff8b6312339d83d53268a063346b14b6b7110b"
+    },
+    {
+      "path": "internal/websession/handler.go",
+      "sha256": "b6c03dc8ee9f16a5c53bf72bbc167d5dbc77fe78471b556f5ad2c993bbd66bfd"
+    },
+    {
+      "path": "internal/websession/handler_test.go",
+      "sha256": "072f9bc0e1c746d6e8c907c83c8656b5abb75d314167e8b0c464f1d07450895a"
+    },
+    {
+      "path": "internal/websession/identity.go",
+      "sha256": "031fc16ca857ebca3fdb5007fd8e3d4f73ab7f7e1312d805919e5f318464f466"
+    },
+    {
+      "path": "internal/websession/oidc.go",
+      "sha256": "0515db20262571e82bdc7325d3c0c15ca3ce712eed80dd508bedcde2aeacbc28"
+    },
+    {
+      "path": "internal/websession/oidc_browser_test.go",
+      "sha256": "418b6624c1674cae209abe4330f0a1662a260f20abfd4bfa0c05ac8c8464f706"
+    },
+    {
+      "path": "internal/websession/password.go",
+      "sha256": "dedef206cb0c7dd113f0439b4fd16fa73ba26e8406399a8dae87a6feca981cce"
+    },
+    {
+      "path": "internal/websession/password_test.go",
+      "sha256": "d63cc430119c6104eca22b2d05978b385a3da91d52cc5b66bc9a84927b986fba"
+    },
+    {
+      "path": "internal/websession/records.go",
+      "sha256": "761c9070169fa5a20776ecaeeb02a42916fcfc190db98f8700b16fa72286e393"
+    },
+    {
+      "path": "internal/websession/records_sqlite.go",
+      "sha256": "ffc8531bd8ef35fdcd18ad3b7f324f89c64fc88e5cd1008174403b10f7465c95"
+    },
+    {
+      "path": "internal/websession/records_test.go",
+      "sha256": "2fdd88e814f446ee16855162ba0ec305af95e01b9c178443f85111bcb34c1955"
+    },
+    {
+      "path": "internal/websession/reset_test.go",
+      "sha256": "219f0cc8a341d1429f0d4d3b8aa922b82228015711b1ce954b7730c92a3d5572"
+    },
+    {
+      "path": "internal/websession/store.go",
+      "sha256": "72857f6972100890fcd93d08e02a7a67da62ad466531fb57c1d5687182d568dc"
+    },
+    {
+      "path": "internal/webui/embedded.go",
+      "sha256": "1e6fcac960b8cc39e96abaeb5bac9f746625a9d6bbf0d1d7be9dfbecf9fc89d6"
+    },
+    {
+      "path": "internal/webui/embedded_test.go",
+      "sha256": "7b7a44540ccbbfa89daa3a98238e8f96c6669245f096d9f1d0a2956349c1bf8e"
+    },
+    {
+      "path": "internal/webui/handler.go",
+      "sha256": "bf2790d3e86b7a6ef8d98c36deb4dff9244dfa8a650095010b24ef8e85b15509"
+    },
+    {
+      "path": "internal/webui/handler_test.go",
+      "sha256": "3920e3367f9c15f5dbfcde11e3b853e4852c081a262fb068cb6b8fed14ef1f16"
+    },
+    {
+      "path": "internal/webui/noassets.go",
+      "sha256": "7729010cb960c11d4dc02dddd2c8e6ffb768ad8241534dab68bfec9da491aefb"
+    },
+    {
+      "path": "internal/workercatalog/backend_contract_linux_test.go",
+      "sha256": "57817d9f2c75c24d77957383bae146cf0129821ec3d14f145e57516e4aafc8e1"
+    },
+    {
+      "path": "internal/workercatalog/publisher_linux.go",
+      "sha256": "b798f20e8d0c52dc1f633b14339d3570cd4502b98255710a6f04bf46df27f5fa"
+    },
+    {
+      "path": "internal/workercatalog/readiness_linux.go",
+      "sha256": "e63615787af0b8f2d478b3353d4651b69393cf1abb0c982c462cf3a3955a596e"
+    },
+    {
+      "path": "internal/workercatalog/readiness_linux_test.go",
+      "sha256": "3d464bbe890b025627c1f965957a87a9b770c08d80af8e606a27196b1d705f27"
+    },
+    {
+      "path": "internal/workercatalog/readiness_publisher_linux_test.go",
+      "sha256": "4caab15557a92a0a3ef2ca6386e8fbf5f247cdaff38368348b26404ceb49ea5d"
+    },
+    {
+      "path": "internal/workercatalog/scanner_linux.go",
+      "sha256": "83d143f541e8d8e26f60e7980d1c815335e127be5df5f421a4c729fe44023343"
+    },
+    {
+      "path": "internal/workercatalog/scanner_linux_test.go",
+      "sha256": "22cf08bfdbdfceb17a7e250cdb1592f75f29dd0cde67b72471248d3799a81179"
+    },
+    {
+      "path": "internal/workercatalog/store_linux.go",
+      "sha256": "397dbce8f7264420b88235f30ec0ec346a6adc170fb802eec05e5c1fa5b3a199"
+    },
+    {
+      "path": "internal/workercatalog/store_linux_test.go",
+      "sha256": "fdb83b378ab5984fdeaa936df9ba44a6cc67da5438f9a93bb44ebc44b6aab29a"
+    },
+    {
+      "path": "internal/workercatalog/withdraw_linux.go",
+      "sha256": "fd0cd9b44705b04ba28320dfabb3ab446548cc24cd0533d0fb405a732a1609cb"
+    },
+    {
+      "path": "internal/workercatalog/withdraw_linux_test.go",
+      "sha256": "00df52e6f49cfb451e9995facf5ed34920df6c318e99e46881b2fd43784601bf"
+    },
+    {
+      "path": "internal/workeridentity/guard_linux.go",
+      "sha256": "8dee2b201b80ab8780833af3aebcd04e36dbd87a73c979ae238a18383b30a625"
+    },
+    {
+      "path": "internal/workeridentity/guard_linux_test.go",
+      "sha256": "d52ea97e989efb1182429a2189e7331de054b8adeb86cab472a00a3efdca7e70"
+    },
+    {
+      "path": "internal/workerruntime/catalog_clock_linux_test.go",
+      "sha256": "e4916e932977caa9cdc23d5736e82d0025838fcbaf7a2ee828dc1221d70aacee"
+    },
+    {
+      "path": "internal/workerruntime/catalog_linux.go",
+      "sha256": "6783c123cd3913a1d636c19378215afc4fd806ff72e0b4968a36234f3a8e5063"
+    },
+    {
+      "path": "internal/workerruntime/catalog_linux_test.go",
+      "sha256": "c953535b178f9b2a5b31ffea40a043ef57ebf66371ec2a22e37ad76eade410a6"
+    },
+    {
+      "path": "internal/workerruntime/catalog_records_linux_test.go",
+      "sha256": "b69a4700b690cf980366ad96dee894a7ab9e62cc9d99b6f3c24d040043de9270"
+    },
+    {
+      "path": "internal/workerruntime/cleanup_batches_linux_test.go",
+      "sha256": "bffb1cb1408732096738551db73a8aabcc95298d82f174e0caac8ce20ccf2583"
+    },
+    {
+      "path": "internal/workerruntime/cleanup_linux.go",
+      "sha256": "7e3eb9fe16f49f9db7831b41df582a07450c464a7556401e178427674e315e13"
+    },
+    {
+      "path": "internal/workerruntime/cleanup_records_linux_test.go",
+      "sha256": "e419df3a70c4738ce32a40ff665df6d954647780c524a7263f43dd8f1d611b34"
+    },
+    {
+      "path": "internal/workerruntime/cleanup_recovery_linux_test.go",
+      "sha256": "56e6ed1557f8ce94bc501246c9ffa585765e35a11b670922a883c7ac4ec368a4"
+    },
+    {
+      "path": "internal/workerruntime/concurrent_scan_linux_test.go",
+      "sha256": "32c6a057d4cd16377e86b557448c0f1589ad17a221c5865fb7d5f7eb5ed76c5c"
+    },
+    {
+      "path": "internal/workerruntime/delivery_linux.go",
+      "sha256": "63b7f51ea4e985eb63c0989dacaf89bae085d1196f2b2d833a5943174c312cb0"
+    },
+    {
+      "path": "internal/workerruntime/delivery_linux_test.go",
+      "sha256": "2fd83b08b7746406522f356f67b43490378853b45c910b6a2d6d20c99b68f629"
+    },
+    {
+      "path": "internal/workerruntime/directories_linux.go",
+      "sha256": "07850db384e4d4d207fca191c657d057fa89e01d877a9df499a623155d7342ef"
+    },
+    {
+      "path": "internal/workerruntime/directories_linux_test.go",
+      "sha256": "b19f8266ad2cfee2c89458d5dd17a100ba4714fde9169290d94730d00bcccfb9"
+    },
+    {
+      "path": "internal/workerruntime/import_linux.go",
+      "sha256": "d8b19eb36d27d1c8be0aca488ee3fdf4c02d676326887dbd28469b270c8e110b"
+    },
+    {
+      "path": "internal/workerruntime/import_linux_test.go",
+      "sha256": "33c068d03f38d7d53b82622df4d1d4a68d7e38c6ad3a0d29b27aaaf225f1b2c6"
+    },
+    {
+      "path": "internal/workerruntime/llm_command_linux_test.go",
+      "sha256": "e91a0299bddad422b28adfdd0c5c7f8774a12e4015b87d30d0ccb419e937ae0c"
+    },
+    {
+      "path": "internal/workerruntime/metadata_concurrency_linux_test.go",
+      "sha256": "62c80f5aa1ace062ad276b0ad6154d2d42838d8f98a8b1435b570e2c1bbfa96e"
+    },
+    {
+      "path": "internal/workerruntime/ocr_integration_linux_test.go",
+      "sha256": "f095f9ef5fdcbccbe3832dce1002319b9cbeed272096cdf92cf3a0dd68d79cfc"
+    },
+    {
+      "path": "internal/workerruntime/ocr_linux.go",
+      "sha256": "176c52838fbc5de2541062b07166e541d99787b7758621efc287d521139b0502"
+    },
+    {
+      "path": "internal/workerruntime/paperless_linux_test.go",
+      "sha256": "b3621834d897dc5ea76c328335a2d14a933cb75f75e22b77d33fd80c9e25d556"
+    },
+    {
+      "path": "internal/workerruntime/photo_bounds_linux_test.go",
+      "sha256": "b62068e884a632eee1a1d489ab1565d23232565e21b15de9b8b8f719e6a871ae"
+    },
+    {
+      "path": "internal/workerruntime/photo_effective_integration_linux_test.go",
+      "sha256": "6c7b34b8ae06b284cdae0bcf59c7fabfd83d92e5a32fe1d264baec1042fb81da"
+    },
+    {
+      "path": "internal/workerruntime/photo_recovery_linux_test.go",
+      "sha256": "f42891123274a06f3ba54ea5d9c37d4d939411bd8ba5c18b89ebbd6f9eda452f"
+    },
+    {
+      "path": "internal/workerruntime/recovery_command_linux.go",
+      "sha256": "dca16a80a33f5cd18df6204b574445ecaaa7427f5e43432c238a390b43f49745"
+    },
+    {
+      "path": "internal/workerruntime/recovery_command_linux_test.go",
+      "sha256": "f043ebc786f54b236f55abc558cc75ff40e94ed60f6795f03737b31a41bcccc0"
+    },
+    {
+      "path": "internal/workerruntime/run_linux.go",
+      "sha256": "a3290246b5337d0885e576c19a5580c5d9e487589cd8d2590f9f1e9188850035"
+    },
+    {
+      "path": "internal/workerruntime/run_linux_test.go",
+      "sha256": "06f23c98a35f5859cd9bfe0f56161f216e14d039c3c1ae8c11ad42fc5b32391e"
+    },
+    {
+      "path": "internal/workerruntime/scan_linux.go",
+      "sha256": "06449b5105dc12d7de5d7a0957e83f82a19636f9d38704bc9a8ee37c42e860f8"
+    },
+    {
+      "path": "internal/workerruntime/scan_linux_test.go",
+      "sha256": "27ed4125e7ff5ab86573af5e9b032c00b84a6a48ae6845c16a5b5e788868db2b"
+    },
+    {
+      "path": "internal/workerruntime/scan_tasks_linux.go",
+      "sha256": "39dd1ecd0e2221373f699fdbbed9afb02c336d05e7c7f487aeff1bce5f9751e8"
+    },
+    {
+      "path": "internal/workerruntime/scan_tasks_linux_test.go",
+      "sha256": "019dd93f4011ae2a8d8c0bed79dbd788fb57da87976958a94430dfc8ddb6b032"
+    },
+    {
+      "path": "internal/workerruntime/scanner_discovery_linux.go",
+      "sha256": "8756c0052eb8c0a561ac46c3e0e47b7d8dc7c1a332792a6fcdf1becac20f234f"
+    },
+    {
+      "path": "internal/workerruntime/scanner_metadata_linux.go",
+      "sha256": "8830fa70b0afcb84150edb77852e9c65075c7efa02af2790072540fa7d1b5e05"
+    },
+    {
+      "path": "internal/workerruntime/scanner_metadata_linux_test.go",
+      "sha256": "c89535e0c079393f52d6ed115d353e635e6bca95c62bdb2baa9d441b5560afc4"
+    },
+    {
+      "path": "internal/workerruntime/scanner_readiness_linux.go",
+      "sha256": "e92952dfd8b976d5d2e6b1fa7853951dfd6d29e6ae1dc8564b9e4e56bc8035a4"
+    },
+    {
+      "path": "internal/workerruntime/scanner_readiness_linux_test.go",
+      "sha256": "f159275f955a1d887c83a72acabd366c5d7389187b835b7e4097fe6b893a2e1a"
+    },
+    {
+      "path": "internal/workerruntime/server_ux_integration_linux_test.go",
+      "sha256": "0097b99866be97d6ac76979a80c5a59c56d3f59230ed45aaa4833543abeb9278"
+    },
+    {
+      "path": "internal/workerruntime/startup_records_linux_test.go",
+      "sha256": "7b9baa0a2f49fdb93b06359e2bb2d7a7c3c01acba7a53a5151ec3ff3b7b0d68e"
+    },
+    {
+      "path": "internal/workerruntime/startup_withdraw_linux_test.go",
+      "sha256": "e16967ed6132dd8159e5e1feaf0623c06f767c44dd1301d8797f723ddcf4b017"
+    },
+    {
+      "path": "internal/workerruntime/storage_linux.go",
+      "sha256": "dd228029a0112c8990f8d7eae7c4ce562fb5a9fb68e57942a7a1c662ee512b88"
+    },
+    {
+      "path": "internal/workerruntime/withdrawn_scan_linux_test.go",
+      "sha256": "afd9fa0fc192b561f2d9cde6dd2f369e495d9557c455ba850a53ecd52853c7b8"
+    },
+    {
+      "path": "internal/workwatch/watch.go",
+      "sha256": "528d5b121faa401bd6fad4415bcb311fa39177556baa56690ee5e992a7e74b69"
+    },
+    {
+      "path": "internal/workwatch/watch_test.go",
+      "sha256": "575d9f6969ebb2efe556e4c967482230319ae4fc035f67d7a56db6740993a645"
+    },
+    {
+      "path": "pkg/ocrplugin/contract.go",
+      "sha256": "5eeb1f00b3b3f33a2dbae51b0a1bb749779d6ba78f952001a3de8c848a190d2c"
+    },
+    {
+      "path": "pkg/ocrplugin/contract_test.go",
+      "sha256": "bb31cc3a3b62627a5867db365ce6820e79a7df5560695a93abdadd815ce7829a"
+    },
+    {
+      "path": "pkg/ocrplugin/result.go",
+      "sha256": "c9da3a561064fe6803b5304c8c0605a700d13aa0d5a5249a4765e37921b99797"
+    },
+    {
+      "path": "pkg/ocrplugin/result_test.go",
+      "sha256": "cccffb57cafd749c4351c069188b1dad7aa2c16d20df1cc82c46634275889bb5"
+    },
+    {
+      "path": "pkg/ocrplugin/scratch.go",
+      "sha256": "83f07d78dc2a8df57b846c9fbb68826ffe24ba2401b3940d9920697c4963db3a"
+    },
+    {
+      "path": "scripts/build-web.py",
+      "sha256": "84213e8b484f35b471d2d60f13d0c20e0be8fb606f8ae8fffdae73d5fc4acf8e"
+    },
+    {
+      "path": "scripts/check-web-photo.cjs",
+      "sha256": "33319c58650ed41c45672f9cde9d3bfdae1a44e539c1babe34b338eb898d9374"
+    },
+    {
+      "path": "scripts/eval/correction/test_uvdoc_mesh_candidate.py",
+      "sha256": "26f488c06019d716f7f25666d6f7ad3f1a2ad147ed243ef7569960cbbdd1aa1b"
+    },
+    {
+      "path": "scripts/eval/correction/uvdoc_mesh_candidate.py",
+      "sha256": "d6912662491cd9ca8049b977259bfdb00511cedba4b6e71b4fbfd2d19f102358"
+    },
+    {
+      "path": "web/package-lock.json",
+      "sha256": "dda43f6d9913cbe52d8f5bfcbdf50b188bfaa5f95f5036511665b49ea3cff085"
+    },
+    {
+      "path": "web/package.json",
+      "sha256": "580b56ae2290e0098ed77cafee5b518cf09e23b15df4eada5e1ea60f45f029e4"
+    },
+    {
+      "path": "web/public/logo.svg",
+      "sha256": "1bfda2a10a4e2a7bf83c225d27e8444d1773b9abb86d5cdceff88788c5271890"
+    },
+    {
+      "path": "web/public/style.css",
+      "sha256": "cf18f7f01ddb275f02ab7a09ea55ec85b5c958a25a18f6cab897277650f11f2e"
+    },
+    {
+      "path": "web/public/theme.js",
+      "sha256": "588f5a379dfc46c1eb0cf2d46e4b878772d439398914baeb46cba6b8ef5667ba"
+    },
+    {
+      "path": "web/src/client/app.ts",
+      "sha256": "5f1b6fe1b78459e5115f2625099ac8ca23d7e37398fca6a279a56d336d188656"
+    },
+    {
+      "path": "web/src/client/capture.ts",
+      "sha256": "79ff272e6c8cee21a55972e44502f6e0d48a09a053a02ae1c52212f17e962df3"
+    },
+    {
+      "path": "web/src/client/correction.ts",
+      "sha256": "7da4f93008a7f1e43ed5d54245a09a729731fc2f1c78d8ee581bb0f1ede52ff4"
+    },
+    {
+      "path": "web/src/client/deletion.ts",
+      "sha256": "ad00db062a55e0cd9343800f1f2eb5fb64dd9a098339a574bef856f0dda363d1"
+    },
+    {
+      "path": "web/src/client/delivery.ts",
+      "sha256": "baba6a35858d89ddcdec4a1b6f209f0cb03ff5973b5adabbb014a07e64a6eb39"
+    },
+    {
+      "path": "web/src/client/file-sha256.ts",
+      "sha256": "9e5b00a937e23b43c95b32663605fc3a027aac367d6ef05648b13c18d0d825f8"
+    },
+    {
+      "path": "web/src/client/icons.ts",
+      "sha256": "87fbcd8219a453b758c29dcad0536523b3059e95cbf66d9f4fded432738aa3ca"
+    },
+    {
+      "path": "web/src/client/import.ts",
+      "sha256": "d938e922288eeaa4ba341f487aaf624dc7f5966c3329162d9300d64e2b3605ae"
+    },
+    {
+      "path": "web/src/client/login.ts",
+      "sha256": "5e399a282a042eb68a241e18cd1d49c9c560b2f49b5ed4a0c05f09cb981c95c8"
+    },
+    {
+      "path": "web/src/client/messages.ts",
+      "sha256": "d8aecd8bbc544391ee3c58e641bb98dcc541fcd194d4a1fc2b122ad00492fe05"
+    },
+    {
+      "path": "web/src/client/ocr-results.ts",
+      "sha256": "66be89beb4bf2b3b53b1665e57248d4c079d13ee925112bf56f35d62495c87aa"
+    },
+    {
+      "path": "web/src/client/ocr.ts",
+      "sha256": "6759e9a7aa6438a994d06dc15169dfb539ddf8b93a9e92b64e9c14a86c7bf740"
+    },
+    {
+      "path": "web/src/client/pdf-preview.ts",
+      "sha256": "1b27b544be023b1e50ffde2d132221892f6022723761db1fa6f40d1496dc215c"
+    },
+    {
+      "path": "web/src/client/photo-import.ts",
+      "sha256": "946d4134b73cf1b5e1dcc802dd00e184ca88c2c08c68ec5b52994e1443afed05"
+    },
+    {
+      "path": "web/src/client/request-key.ts",
+      "sha256": "d035f1f87764a849586a3eed3ac94a11292818784b1c926bb8a17ba82fe55c8e"
+    },
+    {
+      "path": "web/src/pages/index.astro",
+      "sha256": "2798dfe877111b0b810eddeabd0ae76ff2a4abdc87af5a4822f35ab8e1a142de"
+    }
+  ]
+}

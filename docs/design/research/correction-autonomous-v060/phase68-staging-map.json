@@ -1,0 +1,116 @@
+{
+  "intended_prefix": "docs/design/research/correction-autonomous-v060/",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "files": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective-command.json",
+      "sha256": "3362243df110e6b15a869e2f39590e0ec0c65ef80bba0a219933a7a29e5a7839",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective-raw.log",
+      "sha256": "2c59fa3bf68449177f7f6b34e6291480770671f2cbd703fb1d308cffd3499d5e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective.json",
+      "sha256": "b209eb1072f6811fc4635fe6aa7f041248207f589c77dedde9daf2689bcb56ba",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective.log",
+      "sha256": "2c59fa3bf68449177f7f6b34e6291480770671f2cbd703fb1d308cffd3499d5e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-receipt.json",
+      "sha256": "45aa3699077117c237a05497d4928f49861ee67fccc5428f9040d7d66d55ce3a",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-environment-launch-failure.json",
+      "sha256": "03401399ed6b30abd779fc61cee2095e17c1c676f14c298c83229f567684ca1e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-full-attempt.json",
+      "sha256": "93ffdf6bac8d0d5cd50d10d943cfb943a1ff944bf5e9b3973b2341ddacdf82d3",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-historical-browser-snapshot.json",
+      "sha256": "25d8e2d0d6e9a78364afd8ba653bf8ecf5b085a19fd4fc97487405f7d3d6d77e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-mesh-tests.log",
+      "sha256": "219548cb994598ed761838bf14f584be119a24925e3b1f2b1a6ab471785bd50e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-playwright-inventory.json",
+      "sha256": "2855b8868f233824126f7a27a16cc1c2ad2216db4f61f79aa28ea5d0180b5c20",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-command.json",
+      "sha256": "caa53378c9a427ffbc53695721b0c8e5a742000b173249692eed3760cf911df7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-raw.log",
+      "sha256": "1d6945413456595724b8a981ca5a90bd9bd94472e37fdf1a1c3d0652a093b85f",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-setup-failure-command.json",
+      "sha256": "4a1985bc33dab9e1a7ae931db31c046948d5fecf777d777372cc5810bc7d18c2",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-setup-failure.log",
+      "sha256": "939599fb7b982adc8b2cf6b956dd24028b2059d9365c8e3b8f951d5635606b08",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression.json",
+      "sha256": "6c46c9221b1cceefd1e3b71f6f64a950b5af77be63c841c7db22cd1f3559ce63",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression.log",
+      "sha256": "02d637052d1566ca863b6ac3c3cc43beadfcf1c899964b37d057b8f5e87f3d1e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-runtime-preflight.json",
+      "sha256": "04e726c5b77cb5d6d463e176e057d88f1de416a54d91a47c9a5dec7826690e52",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-runtime-resolution.json",
+      "sha256": "87109abe094f4d6a598454597de8a23dbc5092b14ecdfc754d68e116d01bd0a7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-setup-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-source-inventory.json",
+      "sha256": "c67a6eb47a41690dd3256eabe441ef6b8a0fa0b317fd1148cbf8b7de774b78e7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-targeted-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ]
+}

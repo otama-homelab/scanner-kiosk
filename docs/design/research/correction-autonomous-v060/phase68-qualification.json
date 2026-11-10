@@ -1,0 +1,85 @@
+{
+  "format": "scanner-v060-product-qualification",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "status": "measured-fail",
+  "gates": {
+    "eligibility": false,
+    "truth": false,
+    "quality": false,
+    "product_rss": true,
+    "installed_size": false,
+    "regression": true,
+    "original_retention": true,
+    "clean_canon_no_inference": false
+  },
+  "producer_receipts": {
+    "phase65-truth-gate.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+      "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase66-disposition.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase66-disposition.json",
+      "sha256": "5840af837de4d392712e66f3f6b284ea525133435798d6942b481efb268db11a",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase67-resume.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-resume.json",
+      "sha256": "6688ffe4075f00a71646fa31075e64ae89dca5f0010730990838d3d0dd8678d0",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase67-measurement.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-measurement.json",
+      "sha256": "279c46f23cf12c13f6707a9984164d52b7edec03a407ece8c75c763377387163",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase68-runtime-preflight.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-runtime-preflight.json",
+      "sha256": "04e726c5b77cb5d6d463e176e057d88f1de416a54d91a47c9a5dec7826690e52",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "phase68-regression.json": {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression.json",
+      "sha256": "6c46c9221b1cceefd1e3b71f6f64a950b5af77be63c841c7db22cd1f3559ce63",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  },
+  "candidate_id": null,
+  "candidate_config_sha256": null,
+  "candidate_qualified": false,
+  "integration_performed": false,
+  "requirement_complete": false,
+  "product": {
+    "cpu_threads": 2,
+    "timeout_s": 30,
+    "max_rss_bytes": 1073741824,
+    "temp_bytes": 268435456,
+    "incremental_installed_package_bytes": 268435456
+  },
+  "diagnostic": {
+    "cpu_threads": 2,
+    "timeout_s": 30,
+    "max_rss_bytes": 2147483648,
+    "temp_bytes": 268435456,
+    "apply_eligible": false
+  },
+  "retained_uvdoc": {
+    "peak_rss_bytes": 771555328,
+    "installed_distribution_bytes": 1125589908,
+    "diagnostic_budget_is_not_product_qualification": true
+  },
+  "gate_scope": "Original retention is covered by named automated regression. Clean Canon no-inference is not exercised by those seven tests and remains false/unknown; candidate-specific verification remains unexecuted.",
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+      "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression.json",
+      "sha256": "6c46c9221b1cceefd1e3b71f6f64a950b5af77be63c841c7db22cd1f3559ce63",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ],
+  "resume": "Changed producer revision proves exact eligibility, independent original-photo truth, passing quality and product installed size; then verify candidate-bound shared path."
+}

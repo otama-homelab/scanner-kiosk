@@ -1,0 +1,25 @@
+{
+  "format": "scanner-v060-candidate-shared-path",
+  "status": "not-run",
+  "predicates": {
+    "candidate_bound": false,
+    "photo_original_retained": false,
+    "photo_baseline_retained": false,
+    "old_ocr_retained": false,
+    "apply_undo_save_reocr": false,
+    "clean_canon_no_inference": false,
+    "clean_canon_no_resampling": false
+  },
+  "complete_measurement": false,
+  "requirement_complete": false,
+  "quality_pass": false,
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-qualification.json",
+      "sha256": "e42c87fe8b63d039d9f73b3d2ef2495a658d1f985a2d6869c8edd3470a78cc48",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ],
+  "reason": "No qualified candidate; no integration performed. Existing product regression is not candidate-bound acceptance.",
+  "resume": "A changed qualification receipt names candidate-qualified and an already supported candidate binding seam."
+}

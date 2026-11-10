@@ -1,0 +1,2996 @@
+{
+  "format": "scanner-v060-detection-mesh-comparison",
+  "predicates": {
+    "retained_hashes": true,
+    "source_hashes": true,
+    "runtime_bound": false,
+    "truth_bound": false,
+    "official_processor": true
+  },
+  "heavy_benchmarks": 0,
+  "arms": {
+    "no-op": {
+      "synthetic_controls": 6,
+      "clean_mae_pass_cases": 6,
+      "known_full_page_pass": 6,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-synthetic-v060/summary.json",
+          "sha256": "78d09893d2fa4c7107f9f2e3ec08fa64c69a5cb71f0510ea335a850e02e5beef",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    "DocAligner": {
+      "synthetic_controls": 6,
+      "corner_pass_cases": 5,
+      "fallback_samples": 15,
+      "samples": 18,
+      "scope": "5/6 corner pass entirely fallback; table3/3 failure; original photo content comparison unavailable",
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-detection-v060/summary.json",
+          "sha256": "e76abe34ab5bf5ddca6da0cdc4e9a494560e4eecf6ff6177d88debdd919ad319",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-detection-v060/metrics.json",
+          "sha256": "3789de648ddd47501f67547d814ec8c446c87ead76f8dbcafecb066044b08fbb",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    "UVDoc": {
+      "prior_exact_reloads": 66,
+      "additional_synthetic_exact_reloads": 18,
+      "current_hash_bound_catalogs": 84,
+      "geometry_documents": 3,
+      "geometry_status": "measured-pass",
+      "clean_mae_pass_cases": 0,
+      "scope": "Current rehash validates retained bindings and prior replay evidence; no newly executed processor replay or inference.",
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-validation-v060/all-reload.json",
+          "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/control-reload.json",
+          "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+          "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/geometry-metrics.json",
+          "sha256": "b03bb3acc40494f4952493edd9db7c55eadccea752630759de2963008ff86182",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    "FairScan-mask-diagnostic": {
+      "synthetic_iou_pass_cases": 0,
+      "synthetic_cases": 6,
+      "full_detector": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-detection-v060/summary.json",
+          "sha256": "e76abe34ab5bf5ddca6da0cdc4e9a494560e4eecf6ff6177d88debdd919ad319",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    }
+  },
+  "photo2_2": {
+    "status": "waiting_external_input",
+    "complete": false,
+    "complete_measurement": false,
+    "quality_pass": false,
+    "source_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+    "missing": [
+      "original-six-photo independent corners/content labels",
+      "photo2_2 digit transcription/regions",
+      "photo2_2 thin-line regions",
+      "independent reviewer identity/date/scope",
+      "annotation source hashes"
+    ],
+    "retained_in_scope": true,
+    "cause": "unavailable: independent digits/thin-lines/OCR truth absent; crop/geometry/sampling/segmentation cause not established"
+  },
+  "retained_bindings": [
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "2e34091efb1fdaea48fca2501ce66916e5bd8659f800400c3fb3935fe5bffa72",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifacts/artifact_original_b79e6059ccdf0684f782432df3661748",
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "6a03a92140b763aaf7a6b5b6c8d0ed17dba3b3575df33533a9b3ebc026a1d008",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "4ea765aeba12e75807e7a6cf6bfa765d37de58d2e99038f4e04cec8ff6c4e02b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "f02e1f6e3957475ce1261e68901c34915803fc9efca33b62e97112b631aab44e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifacts/artifact_original_17e6e67ddb56f1a4180589166735a8bb",
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "6a03a92140b763aaf7a6b5b6c8d0ed17dba3b3575df33533a9b3ebc026a1d008",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "4ea765aeba12e75807e7a6cf6bfa765d37de58d2e99038f4e04cec8ff6c4e02b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "e6caaff51706f07df4039c92329adaf5fd05a95d55d550ad954bcc485b2fb20c",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifacts/artifact_original_05f17b2a468230d4de155873ea152c51",
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "6a03a92140b763aaf7a6b5b6c8d0ed17dba3b3575df33533a9b3ebc026a1d008",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "4ea765aeba12e75807e7a6cf6bfa765d37de58d2e99038f4e04cec8ff6c4e02b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "f3ebc7797db34d41aff01a17df8666f760675ddb7e6f98d3719febe709167ced",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifacts/artifact_original_71e98042794a72b187d32791c2d518b6",
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "fbc4cf27343a4a069f28db62f1bc205676f022e82213839391a2c2514ed345a8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "6bf997940ff2c4e3a18f9a611ec95c1eea0f347cef7c0f06529b3ca7d5c50381",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "2a3321c886a46fb06226d647839323d32af7653b60cd7fba7f837be654afa3ce",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifacts/artifact_original_c17a599670030b3b96ce74a21f739b0c",
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "fbc4cf27343a4a069f28db62f1bc205676f022e82213839391a2c2514ed345a8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "6bf997940ff2c4e3a18f9a611ec95c1eea0f347cef7c0f06529b3ca7d5c50381",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "9f4c461d9e2b59231065712d2ded647fd5766285e04ef595aae55285a87d24c1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifacts/artifact_original_5729b4fbd6107a6673a936d44515c405",
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "fbc4cf27343a4a069f28db62f1bc205676f022e82213839391a2c2514ed345a8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "6bf997940ff2c4e3a18f9a611ec95c1eea0f347cef7c0f06529b3ca7d5c50381",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "c99a103e9515bef943e3e938e93c2192c5b22948439b77a9d9a53741df5efe9c",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifacts/artifact_original_ab5353b7b36b95e641e8c5bd4ee0d2b1",
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "523765e35d7853a145dc035b3199043e2fb1aea757f287a388ee92649f738c01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f2068e1d153bcf661f62b7ad9600de33b49359cf39f240c009d7a0e99af23270",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "59e657763a5f4342891f3a47254c127acf1c209bc8564850c21e0779e9acbd16",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifacts/artifact_original_e78b3543836541ae9d3f1e3684a3b208",
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "523765e35d7853a145dc035b3199043e2fb1aea757f287a388ee92649f738c01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f2068e1d153bcf661f62b7ad9600de33b49359cf39f240c009d7a0e99af23270",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "bbdb6b9d54e0633d29cbb5abebf7a8765ebbdc9d0d5af87bc155bdda9c8fc65d",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifacts/artifact_original_fa86285dc46481cf7a91c47f82a773b1",
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "523765e35d7853a145dc035b3199043e2fb1aea757f287a388ee92649f738c01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f2068e1d153bcf661f62b7ad9600de33b49359cf39f240c009d7a0e99af23270",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "ea5295aa6e4a00c6a5bfdc6c3574cafd428612facd6d1b0231a29ff85c9e43cd",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifacts/artifact_original_fd03f0eabab3df291d5e31a8e28b45b0",
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "78978a80632144ad16e7005f0b67d900141bfb08fc68221b84f6334d3e3cd651",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "c3d8d5b07c3d026319dfd671a8edc444bbe6d67d4370d6f0078d8a87d91595e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "7b666e31992836c3b0ddb7dced4d03598d9ad028c98bb7672bc6527af2ed451f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifacts/artifact_original_bfeb447564546aad88d01d63aae25c13",
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "78978a80632144ad16e7005f0b67d900141bfb08fc68221b84f6334d3e3cd651",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "c3d8d5b07c3d026319dfd671a8edc444bbe6d67d4370d6f0078d8a87d91595e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "df93083d2f4cc4d12490c4f4a238fc2acdee8222f28abc57f11f5ee8d05b5996",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifacts/artifact_original_077942b3bfd2fe35e9e71299cba75ebb",
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "78978a80632144ad16e7005f0b67d900141bfb08fc68221b84f6334d3e3cd651",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "c3d8d5b07c3d026319dfd671a8edc444bbe6d67d4370d6f0078d8a87d91595e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "e1547c24b64ccc2568b8a61efc0c48bbe61285a25c4c6a59bfe482c5e3fbdb91",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifacts/artifact_original_a40f91072a7b5dcf9ea4be0483fa828c",
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "4be5a17275c9dcba89d152a0da3253f13dd81ef351c91bd11ce66ad9ec089088",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7b655feb7f87fe3f65d1791f0cfb20ab4f0f375d24bcaec1982a687370ccfea3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "c79cb6f0e17539a71e7ac7604779aed76c10bda367e662c0ae925344b1cd3fcd",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifacts/artifact_original_9a1f24b923e01f31568f3d98158f13bb",
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "4be5a17275c9dcba89d152a0da3253f13dd81ef351c91bd11ce66ad9ec089088",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7b655feb7f87fe3f65d1791f0cfb20ab4f0f375d24bcaec1982a687370ccfea3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "1c2b22d5617e99b936f52c4103d3abd13ed487f7ecb88b10c031ced3f92c80c0",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifacts/artifact_original_dd7c743806679d7ed556aaaf902e23ec",
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "4be5a17275c9dcba89d152a0da3253f13dd81ef351c91bd11ce66ad9ec089088",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7b655feb7f87fe3f65d1791f0cfb20ab4f0f375d24bcaec1982a687370ccfea3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "15f4647f549d4da8939ba191cc9bf730b9056f24bed202d18234628ac14ff520",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifacts/artifact_original_5d4e1534e78cbcb1547afc66b0674d1d",
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "9d0a39d6598840209d60e3ca93f03d935cc5f89a0b9e1aed7510366c42ee4caa",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a0f7ab03b9a392704884d9360ef1cfb904ede8d1813160529f2cbe3b6a090b8e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "e9b9a076d3597cf7a85851f95eee92b675c3350541b7b903b1b4fe3fe0468102",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifacts/artifact_original_3436c05f91e0d4d01cb1cbf1dc7f8916",
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "9d0a39d6598840209d60e3ca93f03d935cc5f89a0b9e1aed7510366c42ee4caa",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a0f7ab03b9a392704884d9360ef1cfb904ede8d1813160529f2cbe3b6a090b8e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "41d88c028d1d2301c6289a89994ade62ca4f469b297f37a212e1b52032bdc6c8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifacts/artifact_original_ea7a9d25afa50baf17c74be5db1e0956",
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "9d0a39d6598840209d60e3ca93f03d935cc5f89a0b9e1aed7510366c42ee4caa",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a0f7ab03b9a392704884d9360ef1cfb904ede8d1813160529f2cbe3b6a090b8e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "c886480d8722c9010b69ac0570dc6b1dc91deeafd69178702cfcf884dd756b22",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/001-cold/artifacts/artifact_original_42a828a0cd7d933cd89a8ce9fc7960b0",
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "3de7a83514548fb5d342cc1161931693ee1c599334f395cf3e2df51bb7f2adb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "ad777359863df5c6548106783204369ab8fd3cff2f9c39d5ca0a4ac1023d9b29",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "5b6eb21e8b70a44fea3c10bd96f29ad99f5ff2de554b72464c4ba2484ac3ae80",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/002-warm/artifacts/artifact_original_a3ce97303d3333ec5ef3142299f22225",
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "3de7a83514548fb5d342cc1161931693ee1c599334f395cf3e2df51bb7f2adb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "ad777359863df5c6548106783204369ab8fd3cff2f9c39d5ca0a4ac1023d9b29",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "2217b11713413c6c919512d37a326243b2a4df3f427828413452deafbf7246a2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/003-warm/artifacts/artifact_original_9faca4d371c7193fedd9b7ad468eb3f0",
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "3de7a83514548fb5d342cc1161931693ee1c599334f395cf3e2df51bb7f2adb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "ad777359863df5c6548106783204369ab8fd3cff2f9c39d5ca0a4ac1023d9b29",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "f44a06973fe07b58ec956497396baaeb9ac40b5b8d542a40441032a94b701da8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/001-cold/artifacts/artifact_original_ff34024f48698f8e119bc1430cc31437",
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "a8f770aeb1ec504496d3474c59c986db9d701d26ea4b227138eaa8467d4e4da3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9f06dc423c62b1afb1c543a9b12a985b93ec444580118506d420ccd88f84df82",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "11a614612e6b87c0239a36c2bd563634592688df0269b088b6f9fb3c0699dd2a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/002-warm/artifacts/artifact_original_325fe83719ce1163379152ac914da7da",
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "a8f770aeb1ec504496d3474c59c986db9d701d26ea4b227138eaa8467d4e4da3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9f06dc423c62b1afb1c543a9b12a985b93ec444580118506d420ccd88f84df82",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "ac81809aa6264411f25df844a35d46a3185bc6be8ce357ee85082e0921562fa1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/003-warm/artifacts/artifact_original_7d8c91ef945501b3da7892b05bf63126",
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "a8f770aeb1ec504496d3474c59c986db9d701d26ea4b227138eaa8467d4e4da3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9f06dc423c62b1afb1c543a9b12a985b93ec444580118506d420ccd88f84df82",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "08211fd9bb8df68909b35c99d1237844ecb5d2dc7be4816ebc9af0196b8eac12",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/001-cold/artifacts/artifact_original_574439b5c240d152a5c1c757f5684aa6",
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "7b656c5e15d30715537c4f850afed61818dc467c641421e008c124f6ab0a2d54",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "cb59e8811e7e595184e5fc84167612cc14cc1cfeaae920b6c73f150ea8fa0ef4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "38bb453e17fc08bf4a2f515f552bcc2715934b14d0eef7f138f9f2057b5ff593",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/002-warm/artifacts/artifact_original_0650afd69a0bbe774141b27703ed1e10",
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "7b656c5e15d30715537c4f850afed61818dc467c641421e008c124f6ab0a2d54",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "cb59e8811e7e595184e5fc84167612cc14cc1cfeaae920b6c73f150ea8fa0ef4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "72b9fbd95dea4c66da1078a675cd715829f61dfe5f5394e288264e07e63d8401",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/003-warm/artifacts/artifact_original_bb68797958e6e1fc3242cdcd2c6059a1",
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "7b656c5e15d30715537c4f850afed61818dc467c641421e008c124f6ab0a2d54",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "cb59e8811e7e595184e5fc84167612cc14cc1cfeaae920b6c73f150ea8fa0ef4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "9156a4bbfaa883aa8df71ca1f72b9d8275f976a4029d92382a915d0715921746",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifacts/artifact_original_02376b555811d6cb0689b63397cd42ed",
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "6a03a92140b763aaf7a6b5b6c8d0ed17dba3b3575df33533a9b3ebc026a1d008",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "4ea765aeba12e75807e7a6cf6bfa765d37de58d2e99038f4e04cec8ff6c4e02b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "931baa79b45741de3573be3883d527cac1deaf2916d34ff975ed8eb442bdd3ac",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifacts/artifact_original_df97a141d0315d59d803377b9c40f2bf",
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "6a03a92140b763aaf7a6b5b6c8d0ed17dba3b3575df33533a9b3ebc026a1d008",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "4ea765aeba12e75807e7a6cf6bfa765d37de58d2e99038f4e04cec8ff6c4e02b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "69088ed0d5397b0aead356faf8398eb0f5aa9a1ddab841de20b8577187f13c28",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifacts/artifact_original_d00db16c369e2becfd3e41352983ba97",
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "6a03a92140b763aaf7a6b5b6c8d0ed17dba3b3575df33533a9b3ebc026a1d008",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "4ea765aeba12e75807e7a6cf6bfa765d37de58d2e99038f4e04cec8ff6c4e02b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "e488b078e02d42a952f1ae1e2852ba79408d5234fbb23349e5404629d16ee4fe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifacts/artifact_original_ffe51e0d3e974343d8747515f27c4423",
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "fbc4cf27343a4a069f28db62f1bc205676f022e82213839391a2c2514ed345a8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "6bf997940ff2c4e3a18f9a611ec95c1eea0f347cef7c0f06529b3ca7d5c50381",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "2be03ca845b2295799a319a3674040c9477df88493622973d88d0216bd3f1391",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifacts/artifact_original_f70a7881b5b7ed6349cdc2e63965eefb",
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "fbc4cf27343a4a069f28db62f1bc205676f022e82213839391a2c2514ed345a8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "6bf997940ff2c4e3a18f9a611ec95c1eea0f347cef7c0f06529b3ca7d5c50381",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "7f8cf3f613ed3e73539543226df4739e7ba9b933285684e51874fa9d0991e92a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifacts/artifact_original_62c8b83614481f5f63809e7cd14f3d06",
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "fbc4cf27343a4a069f28db62f1bc205676f022e82213839391a2c2514ed345a8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "6bf997940ff2c4e3a18f9a611ec95c1eea0f347cef7c0f06529b3ca7d5c50381",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "6355f30c8ba94ac7b272473a61e0ef77d421f7a8a3e8d87ce312d6ba762cff8f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifacts/artifact_original_707538c7523ef6f6fa0009718b0e830c",
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "523765e35d7853a145dc035b3199043e2fb1aea757f287a388ee92649f738c01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f2068e1d153bcf661f62b7ad9600de33b49359cf39f240c009d7a0e99af23270",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "d4df7c9e740808d55699c194b7b96211635bd55656285b8ec33a91c1307bf8b8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifacts/artifact_original_739e0d28c412624b93483d4d3e543deb",
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "523765e35d7853a145dc035b3199043e2fb1aea757f287a388ee92649f738c01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f2068e1d153bcf661f62b7ad9600de33b49359cf39f240c009d7a0e99af23270",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "30140198801f9111160b6616022c430e65ad5fda364a0e47c378f4fa12042e66",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifacts/artifact_original_95a9056324c4b2de6ef551525485fff5",
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "523765e35d7853a145dc035b3199043e2fb1aea757f287a388ee92649f738c01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f2068e1d153bcf661f62b7ad9600de33b49359cf39f240c009d7a0e99af23270",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "7b89b25413c69aca4b76769f84de05bf387e4b01bb189490f3a4e85d5c3992b6",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifacts/artifact_original_a91fd636ca55f5af439760dc6f516cea",
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "78978a80632144ad16e7005f0b67d900141bfb08fc68221b84f6334d3e3cd651",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "c3d8d5b07c3d026319dfd671a8edc444bbe6d67d4370d6f0078d8a87d91595e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "86af339077e6c65cb5b1b2088019e5858469012df8474c56561bcd0fd17b2ebf",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifacts/artifact_original_f5777eff1aa4875e41ac99b6fb8b7bff",
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "78978a80632144ad16e7005f0b67d900141bfb08fc68221b84f6334d3e3cd651",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "c3d8d5b07c3d026319dfd671a8edc444bbe6d67d4370d6f0078d8a87d91595e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "1958994698e5c038f0de6c11381a065d77c18c8a0e5b2c7f9ea931201cbe0d38",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifacts/artifact_original_a5f8922218f60cc37d21f523cba0db07",
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "78978a80632144ad16e7005f0b67d900141bfb08fc68221b84f6334d3e3cd651",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "c3d8d5b07c3d026319dfd671a8edc444bbe6d67d4370d6f0078d8a87d91595e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "9de012d226505c970456944db0b39623f4e72d41fb5a14949ae7aa28d5bd01d4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifacts/artifact_original_b75b0b11e738eaf38decc6d424f9015d",
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "4be5a17275c9dcba89d152a0da3253f13dd81ef351c91bd11ce66ad9ec089088",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7b655feb7f87fe3f65d1791f0cfb20ab4f0f375d24bcaec1982a687370ccfea3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "da51e917f330a6c3f3b823ba5491404aa7b0abd4c52316821ef1f9a97758d13b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifacts/artifact_original_16d491677c2ead8d6df550f128ed5102",
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "4be5a17275c9dcba89d152a0da3253f13dd81ef351c91bd11ce66ad9ec089088",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7b655feb7f87fe3f65d1791f0cfb20ab4f0f375d24bcaec1982a687370ccfea3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "ded76762ab93025f21c329dd6d2ba3d61c03760be81ff28ff63243bba74fbbd1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifacts/artifact_original_6d81b9ab1017da4b56052c61d6eee40d",
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "4be5a17275c9dcba89d152a0da3253f13dd81ef351c91bd11ce66ad9ec089088",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7b655feb7f87fe3f65d1791f0cfb20ab4f0f375d24bcaec1982a687370ccfea3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "deaf4a8ab7be2297b58b31f8d4f59f7f173bfa3dc1ebe0311dca8b3ab7820d3d",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifacts/artifact_original_55715dacff2b3d01b4c0135271b35d4d",
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "9d0a39d6598840209d60e3ca93f03d935cc5f89a0b9e1aed7510366c42ee4caa",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a0f7ab03b9a392704884d9360ef1cfb904ede8d1813160529f2cbe3b6a090b8e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "5012a3962b2458204294d206bf2a3c35550ea1936d9220854832d0f3b3357279",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifacts/artifact_original_60afdd149599cb7e6d8e8fefaf4dcef5",
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "9d0a39d6598840209d60e3ca93f03d935cc5f89a0b9e1aed7510366c42ee4caa",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a0f7ab03b9a392704884d9360ef1cfb904ede8d1813160529f2cbe3b6a090b8e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "ff71dcc6695b347def8ca174c52a9ace4c55d2df72219a5ebabe8caf950b7b01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifacts/artifact_original_653bec807f301e8f66fec4518815cc01",
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "9d0a39d6598840209d60e3ca93f03d935cc5f89a0b9e1aed7510366c42ee4caa",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a0f7ab03b9a392704884d9360ef1cfb904ede8d1813160529f2cbe3b6a090b8e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "e8c211b28764b12c2b864c22716af22330104ce7c1ef9614826ccb6b34872f06",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/001-cold/artifacts/artifact_original_43131488ff5480e82de53047153b4dbb",
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "3de7a83514548fb5d342cc1161931693ee1c599334f395cf3e2df51bb7f2adb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "ad777359863df5c6548106783204369ab8fd3cff2f9c39d5ca0a4ac1023d9b29",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "76755d0d96b689eefa9309ee419c25ab72422b3b80c766a8da2f05633fef40a0",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/002-warm/artifacts/artifact_original_ef7bc1483f68cd3218054118e9109ab1",
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "3de7a83514548fb5d342cc1161931693ee1c599334f395cf3e2df51bb7f2adb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "ad777359863df5c6548106783204369ab8fd3cff2f9c39d5ca0a4ac1023d9b29",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "9acae280b373a4c56fabce826be706aefb948cd35f455df0f19196284139b82f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/003-warm/artifacts/artifact_original_404bb7f75ec5601873c8bcc20340c9d2",
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "3de7a83514548fb5d342cc1161931693ee1c599334f395cf3e2df51bb7f2adb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_1/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "ad777359863df5c6548106783204369ab8fd3cff2f9c39d5ca0a4ac1023d9b29",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "a346e275de6befe219fd8afb37414d43318f7a8f05acc7a9ea81561f2d43e681",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/001-cold/artifacts/artifact_original_6c8294bdc5f9cc372c4a3e74e8ec83e5",
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "a8f770aeb1ec504496d3474c59c986db9d701d26ea4b227138eaa8467d4e4da3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9f06dc423c62b1afb1c543a9b12a985b93ec444580118506d420ccd88f84df82",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "9da4d133f1422f56164112f22aa577cba8ffcd7c8d10ba199d1752a4be9b032e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/002-warm/artifacts/artifact_original_c3a8247bf8f24ef136920407d847bbd2",
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "a8f770aeb1ec504496d3474c59c986db9d701d26ea4b227138eaa8467d4e4da3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9f06dc423c62b1afb1c543a9b12a985b93ec444580118506d420ccd88f84df82",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "94262a92626a94835c13aa6b9eab1f54d30c5c7b247a6c4140ae0d547357e313",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/003-warm/artifacts/artifact_original_34b729c5bd9cabce67f4a117f5741d66",
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "a8f770aeb1ec504496d3474c59c986db9d701d26ea4b227138eaa8467d4e4da3",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_2/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9f06dc423c62b1afb1c543a9b12a985b93ec444580118506d420ccd88f84df82",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "b50cf96e6d0e03da4ebcdd8187a29b1f83e501df17e6c6cde9333e312b14ec90",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/001-cold/artifacts/artifact_original_f44f22c66b641e0afe5246f54ee6309e",
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "7b656c5e15d30715537c4f850afed61818dc467c641421e008c124f6ab0a2d54",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "cb59e8811e7e595184e5fc84167612cc14cc1cfeaae920b6c73f150ea8fa0ef4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "bb5b1cdf8a85bfe0ba12ebb51eb7a8a789688790abb44afe0b6e8f47fad5b031",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/002-warm/artifacts/artifact_original_f54d8082642f79df3197172850a134d7",
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "7b656c5e15d30715537c4f850afed61818dc467c641421e008c124f6ab0a2d54",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "cb59e8811e7e595184e5fc84167612cc14cc1cfeaae920b6c73f150ea8fa0ef4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "f38970ebb98ef80a1ab81ec1294ed5c7338b15ea063df4f45dc8c78779a3158f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/003-warm/artifacts/artifact_original_cb04bcdfc8d4d968ade800eee2c6f292",
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "7b656c5e15d30715537c4f850afed61818dc467c641421e008c124f6ab0a2d54",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/product-fixture_docunet_scan_3/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "cb59e8811e7e595184e5fc84167612cc14cc1cfeaae920b6c73f150ea8fa0ef4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "903b0a31e1f7baa5f6849c126f6cd2dabd4226ad198c52ba68c76a5bbae77658",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/001-cold/artifacts/artifact_original_513aaf821b5186b68e8b929585f6901d",
+        "sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "bf7d8f2f00933e71b02603aae37c391832dad52ef4a5162c829868c6a39bc7a1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "5e48480a723d5766d7fceca9bd95dca51ebd860f0793d6c4a09872090049c5d4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "8e877b14095cb0196f30e578c15929cda59a079685fdf062a03c7681f008b703",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "d2d0da3d1a0770aa15dda123602eff24d0a294ebc91b65510fa1f5c61a8a8eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/002-warm/artifacts/artifact_original_fbc0d9d5a48f77d7ad796a8c6d1f8b0b",
+        "sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "bf7d8f2f00933e71b02603aae37c391832dad52ef4a5162c829868c6a39bc7a1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "5e48480a723d5766d7fceca9bd95dca51ebd860f0793d6c4a09872090049c5d4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "8e877b14095cb0196f30e578c15929cda59a079685fdf062a03c7681f008b703",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "fd89f96d1d28d265221488d648953e0f0eb609b9ff89db613a7286c66272cf9f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/003-warm/artifacts/artifact_original_8ba2091978e19a9e062f0a986cee225f",
+        "sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "bf7d8f2f00933e71b02603aae37c391832dad52ef4a5162c829868c6a39bc7a1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00000/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "5e48480a723d5766d7fceca9bd95dca51ebd860f0793d6c4a09872090049c5d4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "8e877b14095cb0196f30e578c15929cda59a079685fdf062a03c7681f008b703",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "126e6b052dd30b1dce9bf565bcb6d6e40f1b7013522e1ca27781dfc1a91293af",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/001-cold/artifacts/artifact_original_559c0515e11b69ece4068a90f87ad170",
+        "sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "e4bd500ca93c0f2ef6ee2d583e760466c49c6266a952d28030d6899cb5efd03b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f988aa304116cb263c9e67a0316d840254e24d7220d12286d5b84ab5701aa6e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "a12c4d1837fbf2b695add8d3c4fd0d5c9ec6d0e5b1150d6304e5900f530471bd",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "5f518bce9a53534ab31e475378277f4c7c67bab331e8bf2367ca51f293e64966",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/002-warm/artifacts/artifact_original_7dafb9bcd9307d62ea6bd78f40f1bd3e",
+        "sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "e4bd500ca93c0f2ef6ee2d583e760466c49c6266a952d28030d6899cb5efd03b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f988aa304116cb263c9e67a0316d840254e24d7220d12286d5b84ab5701aa6e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "a12c4d1837fbf2b695add8d3c4fd0d5c9ec6d0e5b1150d6304e5900f530471bd",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "00fbf1169a9a74e619cb99d9bfaa2c6a5a4189f4bc2a7611d98a7c1678f480f1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/003-warm/artifacts/artifact_original_f52f6fe2dcc3accdc428b460ca59f647",
+        "sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "e4bd500ca93c0f2ef6ee2d583e760466c49c6266a952d28030d6899cb5efd03b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00001/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "f988aa304116cb263c9e67a0316d840254e24d7220d12286d5b84ab5701aa6e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "a12c4d1837fbf2b695add8d3c4fd0d5c9ec6d0e5b1150d6304e5900f530471bd",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "b5b95392677974802867d9025d8ff342c5e836bd145da65243e2def0e38d8d95",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/001-cold/artifacts/artifact_original_33b9db5a34eb26a19b10bc66dca922c4",
+        "sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "1798d758c06b45a3ba47957420708c837c05924586ae39dcd455770d6bd8f7cf",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "02558937b211a0c60c97f01b82337317167ba005c5f6921cb3a9ee93c8c46b5e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "4772068202610f9ef45dfc25db4470a3b6ff0186b100833faf78d2e029331c47",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "4e7edc35bd1afe1b9127b97a52f44a476af281dd0ac42bd60be7c4b01a4de756",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/002-warm/artifacts/artifact_original_3b9e3a2e7e77d04bd75f66fd90e84a04",
+        "sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "1798d758c06b45a3ba47957420708c837c05924586ae39dcd455770d6bd8f7cf",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "02558937b211a0c60c97f01b82337317167ba005c5f6921cb3a9ee93c8c46b5e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "4772068202610f9ef45dfc25db4470a3b6ff0186b100833faf78d2e029331c47",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "ec12f1726863d44b80b212ca0d3c4d277f9a457554a266c2b3e17e01c7483c5e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/003-warm/artifacts/artifact_original_7dbd357e15a30b88d4285167392b8274",
+        "sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "1798d758c06b45a3ba47957420708c837c05924586ae39dcd455770d6bd8f7cf",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/truth-00002/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "02558937b211a0c60c97f01b82337317167ba005c5f6921cb3a9ee93c8c46b5e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "4772068202610f9ef45dfc25db4470a3b6ff0186b100833faf78d2e029331c47",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/all-reload.json",
+        "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "03b009d6fee683eef808aad5c80121c4452a94d37625582ab14484668b76cb48",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/001-cold/artifacts/artifact_original_410643a12ebc1a07dd7e5f7d440a2dfb",
+        "sha256": "94020e01a4fd00c0d60d6bf6b7d86f87dd4bd27c3c59091dcc1adb53d3a019ba",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "fd98385f031bbc045a17f39b380c9834352af218d49641e01ec80e40ef1d8004",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "0f23263c3be54b103aa2bbc7ee90b957d17ec0c9ae9cd600739e60d97fa2c763",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bb2a8acda5e8fd1747cdc7a7f6b04a8ca86a97753ba8a0e3a4442ae16e403bf5",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/control-reload.json",
+        "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "6f51aaace5d2c225205614feff8ed4a80355d6788225925b17d32210796ff6c8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/002-warm/artifacts/artifact_original_22976200f48b8f9639cf46ebcdc8fa18",
+        "sha256": "94020e01a4fd00c0d60d6bf6b7d86f87dd4bd27c3c59091dcc1adb53d3a019ba",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "fd98385f031bbc045a17f39b380c9834352af218d49641e01ec80e40ef1d8004",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "0f23263c3be54b103aa2bbc7ee90b957d17ec0c9ae9cd600739e60d97fa2c763",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bb2a8acda5e8fd1747cdc7a7f6b04a8ca86a97753ba8a0e3a4442ae16e403bf5",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/control-reload.json",
+        "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "37a62123df78ae8446fd9ed2a2313f82093c984a3cc246dab30c2732e78d46da",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/003-warm/artifacts/artifact_original_0208e7f1acf2ee5c64a545cb224abca0",
+        "sha256": "94020e01a4fd00c0d60d6bf6b7d86f87dd4bd27c3c59091dcc1adb53d3a019ba",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "fd98385f031bbc045a17f39b380c9834352af218d49641e01ec80e40ef1d8004",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060/control-diagnostic/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "0f23263c3be54b103aa2bbc7ee90b957d17ec0c9ae9cd600739e60d97fa2c763",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "bb2a8acda5e8fd1747cdc7a7f6b04a8ca86a97753ba8a0e3a4442ae16e403bf5",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-validation-v060/control-reload.json",
+        "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "8d1610e93ebfdd94d480ff4b570c4965874ccd8f2365f6132adb766c9882712e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/001-cold/artifacts/artifact_original_773e1e5824ecc6f92514d9be00b01934",
+        "sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "7d5245c1107a804ed743e43d1af28860a9085ac0b7c22c20d626398c1bb1b3a9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "41ceb2a7629d01d61b43f3d241b8262d6f97451b2d522b1a769f95778b43001f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c85e86927b2905f56356d1e13b1c08aa703591f63ca7f1702e836555e4a2fbd7",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "94c8ee176846bcc1c2e9f4a2272d58f0d57719fd9ef0385101b01924f407237b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/002-warm/artifacts/artifact_original_9a4a346987925e62481706198fab1652",
+        "sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "7d5245c1107a804ed743e43d1af28860a9085ac0b7c22c20d626398c1bb1b3a9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "41ceb2a7629d01d61b43f3d241b8262d6f97451b2d522b1a769f95778b43001f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c85e86927b2905f56356d1e13b1c08aa703591f63ca7f1702e836555e4a2fbd7",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "c3de4d8b20ccb61920afc955cd8966ac8be266b125e2513aedd39dd6f9529354",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/003-warm/artifacts/artifact_original_59f726b84dd0f49406a0153378e6504d",
+        "sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "7d5245c1107a804ed743e43d1af28860a9085ac0b7c22c20d626398c1bb1b3a9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_columns_001/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "41ceb2a7629d01d61b43f3d241b8262d6f97451b2d522b1a769f95778b43001f",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c85e86927b2905f56356d1e13b1c08aa703591f63ca7f1702e836555e4a2fbd7",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "2c8e5239aa1689bb1a95a7becd8c7ee316720a4bb958cf5fdd0349971d8237e2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/001-cold/artifacts/artifact_original_b57be9f4a2ce19836c63fde1fbc6b57d",
+        "sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "bdeaee9efdf778d20dadde84174133db9c0d8fc987a2b6145770fc49a535d419",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "3097a63a23f332311893ea66abc25ee73dc7e81c2864833094eaef20e88cf890",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "cffd9d22850304dbdfed54472c34cd8103adccbccee5c1f08db4c002eac210c4",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "d4bc5231f649e2ddedc40ec306d1e4d3a55b7b43e1f6ac8f7b891d82424251f1",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/002-warm/artifacts/artifact_original_3d93899a286f652499d79f346963c7bb",
+        "sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "bdeaee9efdf778d20dadde84174133db9c0d8fc987a2b6145770fc49a535d419",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "3097a63a23f332311893ea66abc25ee73dc7e81c2864833094eaef20e88cf890",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "cffd9d22850304dbdfed54472c34cd8103adccbccee5c1f08db4c002eac210c4",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "f6a9f33d4dc2581ee5ae0e6e4858b10dd87444d694f2d7c2fc5dfd9975de5b6b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/003-warm/artifacts/artifact_original_97c55bdbc66b8b5c92d80c7e2d44f20b",
+        "sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "bdeaee9efdf778d20dadde84174133db9c0d8fc987a2b6145770fc49a535d419",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_horizontal_001/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "3097a63a23f332311893ea66abc25ee73dc7e81c2864833094eaef20e88cf890",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "cffd9d22850304dbdfed54472c34cd8103adccbccee5c1f08db4c002eac210c4",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "71dcb475e0b52888a75b1588e63ce2f0cb9ec2ae56d7aa4afe98e5f1a6343dde",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/001-cold/artifacts/artifact_original_61169781cc6155d7108b584f911c5551",
+        "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "1914ccc0e58bde91ce698c8ccaea7938e13859d39fc7aef08ac41f790d2f5488",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a56703392f2ac7b09ca0c5b550d16ce4638152004ea1b479cbef1315f824a844",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d9d6471a4f8183844bb5c59333993c702f3ad571d67611e82f604d0c00338792",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "52e554c13839a5fb0d61df8414d5bae5563a853dd0875c01f8085359534f6136",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/002-warm/artifacts/artifact_original_bcdc05adbc2f78cb973bbe30bc57309e",
+        "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "1914ccc0e58bde91ce698c8ccaea7938e13859d39fc7aef08ac41f790d2f5488",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a56703392f2ac7b09ca0c5b550d16ce4638152004ea1b479cbef1315f824a844",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d9d6471a4f8183844bb5c59333993c702f3ad571d67611e82f604d0c00338792",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "c714fa31bcc3a2582f4c450e98538efe1d677c60d17e727c4303ebb928c88677",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/003-warm/artifacts/artifact_original_a84c0f7fa7c95c92d0dc3ffe2cf0b98c",
+        "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "1914ccc0e58bde91ce698c8ccaea7938e13859d39fc7aef08ac41f790d2f5488",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_mixed_001/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "a56703392f2ac7b09ca0c5b550d16ce4638152004ea1b479cbef1315f824a844",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "d9d6471a4f8183844bb5c59333993c702f3ad571d67611e82f604d0c00338792",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "870352e665a768517d752dc566dbdcb5d4c76aa35baca37059cf0a9959a47c17",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/001-cold/artifacts/artifact_original_6a455bef3d7e2283288a0ead2b8f5cb0",
+        "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "25b704cac26d9a395988ec5b15ce79e4c1820d3830161fc6cc32384e2fda6ff6",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9b8566983dde947658ea202649d0575683df8e5919a9114211bcdfa35465ac5e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "07fb3b37dcff3cfd109e2c4f366cd6e59dc34c8dc66afb52d5a0cd67d782f4e3",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "0dcbe3e2cfd9f9bb1b2b542571baea874b0c3b4242b6c0e926b06c55d6b9899c",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/002-warm/artifacts/artifact_original_7695149f01b95b35ae3ca70bd764ea7a",
+        "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "25b704cac26d9a395988ec5b15ce79e4c1820d3830161fc6cc32384e2fda6ff6",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9b8566983dde947658ea202649d0575683df8e5919a9114211bcdfa35465ac5e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "07fb3b37dcff3cfd109e2c4f366cd6e59dc34c8dc66afb52d5a0cd67d782f4e3",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "ce640bee95cf06f2845d4a944cd7118b586739337ab2b791311ae0f8d7979ef0",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/003-warm/artifacts/artifact_original_c06e167bed8e4fccac8ee2ed5d59d149",
+        "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "25b704cac26d9a395988ec5b15ce79e4c1820d3830161fc6cc32384e2fda6ff6",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_table_001/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "9b8566983dde947658ea202649d0575683df8e5919a9114211bcdfa35465ac5e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "07fb3b37dcff3cfd109e2c4f366cd6e59dc34c8dc66afb52d5a0cd67d782f4e3",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "d3dc6934f1ef3fc7886be52b120b20720331d7cb4ea9f85f2b74e1347c93b002",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/001-cold/artifacts/artifact_original_6ef799acfa1685a84d66efb27643fe8f",
+        "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "c44ecd7ca5a65aac572d4222cd138c2d467dd2d4c9f7646f58d6ad0cbdb42fb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7d3b1d219431936bfb3549ea6a1bdf057f4211a21d91652e714f3495cab727c8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "56f2b4a280521fe8277278e38192d998eb005c7d94090f61f728181afca49871",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "c5f27af55b67942b970c0942f5335426171d0283bd9910acab2c58a3fad2814b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/002-warm/artifacts/artifact_original_0950d7419d865c6003dee2f00380c8f9",
+        "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "c44ecd7ca5a65aac572d4222cd138c2d467dd2d4c9f7646f58d6ad0cbdb42fb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7d3b1d219431936bfb3549ea6a1bdf057f4211a21d91652e714f3495cab727c8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "56f2b4a280521fe8277278e38192d998eb005c7d94090f61f728181afca49871",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "1d4bbbb263d8ade8447661304e0300b30c0e60d745654c721f86fc284ecc849e",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/003-warm/artifacts/artifact_original_aa33786c76e77f3c5dfc76a9d320fafa",
+        "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "c44ecd7ca5a65aac572d4222cd138c2d467dd2d4c9f7646f58d6ad0cbdb42fb2",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_vertical_001/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "7d3b1d219431936bfb3549ea6a1bdf057f4211a21d91652e714f3495cab727c8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "56f2b4a280521fe8277278e38192d998eb005c7d94090f61f728181afca49871",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "938b682f45659d1918bb5f0f75684e81c486ddf8dc4f953e1e6f90331bf1a782",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/001-cold/artifacts/artifact_original_649c9b804471d6b61ab653c96311690c",
+        "sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/001-cold/artifacts/artifact_candidate_correction_001",
+        "sha256": "9e051209748383fc37d0002ef308d19c585fd94068f29ecb8687612dbaae7e26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/001-cold/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "02ce3ad24cd6ff272d35a3441e17d48946371ecb870b3f606f0e7d1995366fd9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c25f5b28f0b89840703396cf2fe7d4cfceae124eaa84c8e6258608c2bcb6fef5",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/002-warm/artifact-catalog.json",
+        "sha256": "7e43ee84a7e7d2d83ba1f45c66080a5a58d12e4dde97cd25b8ce526d1ec6f591",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/002-warm/artifacts/artifact_original_2aaa252080fc9034e079eebfe147177d",
+        "sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/002-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "9e051209748383fc37d0002ef308d19c585fd94068f29ecb8687612dbaae7e26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/002-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "02ce3ad24cd6ff272d35a3441e17d48946371ecb870b3f606f0e7d1995366fd9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c25f5b28f0b89840703396cf2fe7d4cfceae124eaa84c8e6258608c2bcb6fef5",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    },
+    {
+      "catalog": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/003-warm/artifact-catalog.json",
+        "sha256": "29ac72bbedc193b328bbb5f3bd46684a5b60d13a8548f04d5aca5a8ded4507d5",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "source": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/003-warm/artifacts/artifact_original_7fbded6974cbb61185df4368e712c478",
+        "sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "output": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/003-warm/artifacts/artifact_candidate_correction_001",
+        "sha256": "9e051209748383fc37d0002ef308d19c585fd94068f29ecb8687612dbaae7e26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "binding": {
+        "path": "local-evidence:scanner-v060-synthetic/mesh-fixture_ocr_wrapped_001/repetitions/003-warm/artifacts/artifact_candidate_mesh_binding_001",
+        "sha256": "02ce3ad24cd6ff272d35a3441e17d48946371ecb870b3f606f0e7d1995366fd9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "mesh_sha256": "c25f5b28f0b89840703396cf2fe7d4cfceae124eaa84c8e6258608c2bcb6fef5",
+      "prior_exact_replay": {
+        "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+        "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      },
+      "prior_sampling_exact": true,
+      "current_method": "hash/source-output-map-model binding check only; no new sampling or inference"
+    }
+  ],
+  "additional_synthetic_catalogs": [
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_columns_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "fe4d4e90410fabda28d91b3a0a133b217cee0fe55257d14d25d69da992a636e7",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_columns_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "c8b09f9f281eadfceb6738521e0fba8abb59e13a7b1e6dedbcbfb6c0adc0276d",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_columns_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "501ca8515f4e6040e8ebcbb78a57a01a9b33ca9079d2caf5969b39bc6de0f4fb",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_horizontal_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "b6caa85d454be4a15b6bd1e89510cb590378e98c9704ccba8c156541a57c3bce",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_horizontal_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "ebbd21c7bb40959dfe1d723f690a58f2b513e801db44d11161b1df4fda005fdd",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_horizontal_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "ab925de782b513e0c5bed349a1ba43608715fea11d6c50e2badf10b03c4b3889",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_mixed_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "e43613ccfed37853d0abed001956adca7244397bd1a45b0153a5743345e1ab69",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_mixed_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "490fc753df2b167734fd44caca8039dea398515831c1a0c709aa31377ed81357",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_mixed_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "2d8c53cfc02a500c582fcf0e25ea0c99915c1994765bc9269f18d7000d91cd5c",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_table_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "8d8aa459299aa67d27f29befe75cf99afd610b9734a34fcc859608db4c48d951",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_table_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "5d6a7fd8f2a152816610971b1764999886593f7af7b9ca35751269e84b47f73b",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_table_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "6a36929d2a534277bb4d18ff525c02c1f834f067ac2d14e93b5acc2fdc2f14b1",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_vertical_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "9737b59d055492b4802796399b025cea12910ab89c43f02896ccd4cf5f366fa7",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_vertical_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "4123a3d92f451862782ccc5d442c0473d501eddda8e335da71393dcd4a9ce06d",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_vertical_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "4681a0437a8978eed2961b400a88b951892aa9b6f7a7d714f38c042e76d4580b",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_wrapped_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "8d53e7c7e792fc231fc3258f242faf90e4342de8e1211c1408071932327f6245",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_wrapped_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "4e4ee65c87b0e5c1764f9bb34d36103a13461a90639b36ffab0eb6cba0140ec3",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/none-fixture_ocr_wrapped_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "c1815f7f81125cf941e80113e0b8630dd646ab3dc4c72627dffa69c6705112d1",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_columns_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "08f667e01cc0222a353859653aabdc301cdad98b19b33c14d77aa9a8d55548de",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_columns_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "74f2e4a22bbf3ddaf070d930bec5aeec7debc128f9520dc9784df88469d5d05d",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_columns_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "19f7c05803770f905c4ff9b22bef9f71b60302e6c7e43d67f32dacbb524799b4",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_horizontal_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "730006806c9cedaf5187c1e72147c2f69f2fe546465d44eb9247ca5887a6ed4c",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_horizontal_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "bf2fb070b05b15cb0ec3b158db5187b8ed47cd6a26c59c8483d5e6358a5a6242",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_horizontal_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "fe9190a38847ecf6b21e42fe9dcb7045622d320b075e1f16e436950964a00e46",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_mixed_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "1a2d218e9f9cf5ac550a358561e1da66446b481f498920acd37c9ad866787869",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_mixed_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "2e259cd34a8d70e8217384fb38410d0fccefb3dd92005d6ad509532311b556de",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_mixed_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "7037307f6d6313606e25c451ec41c9fb81f081493928f2007684d26a3c0fcc30",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_table_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "3f6037cda05375eb8e42c87317ea276a3e8e31ec71a51393df71f64db0f959d3",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_table_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "950dd10c4b77aee0f33e56a1c1c8daabca54441c2e1f5f5ee5df8305091705a7",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_table_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "84fe7672226b8809b3b09dc5bf59319366d669d79d2f915ee36b743b14f9ee6c",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_vertical_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "c480b0ca1ad5ef6a382c662c5eb322ffde19eea1737d9dbd2a887aab01f745bb",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_vertical_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "4e2f2e90f59af260193079029ae42d8976ca6fb98f8ee4d987fa90b1b56f1516",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_vertical_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "b5daa2dc0b3b4fc79e949ed88ca9eef7201ba872fef4fc6f008fbf549fe03065",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_wrapped_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "96703f06af5f1a17ae42a77e259c5e045faef31c3fb62342ec55ee246b501fd1",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_wrapped_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "45cd11396477b7f7e847d08e3c18d55ce46b6f0570e5f4274fe71539dd4bb900",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/docaligner-fixture_ocr_wrapped_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "a11fc2c40fdb22bd7e5e074a1c0f501e5fd109a0195fe6d3f43228a536d8bf1c",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_columns_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "ff9ea371616f4fbdd69baa83e402e73c26fa77cb7a76992d9f71421535b1fffa",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_columns_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "bd5766e9e01cb3dc77121818dd4711c81a35bc064493249364caacf549833ae0",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_columns_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "150fab691a9a276fd6824b4c56e331e3fda023cff5ffa47f2de4ebe3e80013c0",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_horizontal_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "df2d1373ce239d67148461fa93a10c8e476e1056ffc8b2a0cffc36f87f94823f",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_horizontal_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "053eb77d843a091c2b5faeb1b77a17b955657c316b4ad517bfdcbdb1455f3dce",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_horizontal_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "e7bb9f0be6ce4ed71070eb43b65c027e3ea5aacd0de1c5de09fc9b11769d874d",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_mixed_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "6ceb2840f4f1b5c475e316b92654d7f75c9b45e5d060d6c8be3f1c43f9c0ebc8",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_mixed_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "1727c2254b2a2761ff25c7acd35a7e3d18491ae870bdc737fe0c04034297e02d",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_mixed_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "1d08175f2791597f7292523cf4fa76a261fbd36ab0327d94d219f15bb9990732",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_table_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "b1674392c9578a20da60c9d44234d0fabe0138b4785ecc9960532253950f9559",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_table_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "bce73d5f6efebab5db1f8179da9ff8359a33f622b06c448d5324940257fa9351",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_table_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "46aaca9a8f4208e4e9baf5928709c7deb1b00affa96a332c9acc725cc1ed4c36",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_vertical_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "55a1d7755bb488c8b4090a573a02d669c2ad24952f4f2dbb00cf2c55093d0b0c",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_vertical_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "9b5fffa63c1f65d82bfa639ef64a9f29c39e52b847803c67f8ac2bdf2a9719c4",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_vertical_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "0e84388f697b785671cdccdf67d35880fb9e5365616fc13e527e02c50e117994",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_wrapped_001/repetitions/001-cold/artifact-catalog.json",
+      "sha256": "637b69b2cba064cbd7a3be252154124a0648a3b05e97f51e8f7ce1566aec439a",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_wrapped_001/repetitions/002-warm/artifact-catalog.json",
+      "sha256": "8673649bfaa54ff73e3049f08ab9287fbc19e7457388dd34820a11afa498dd6c",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "local-evidence:scanner-v060-synthetic/old-onnx-fixture_ocr_wrapped_001/repetitions/003-warm/artifact-catalog.json",
+      "sha256": "f97f4b834d7ab543b6271924a68debc50e199084eeb94daef42ca82b0f75c90e",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    }
+  ],
+  "mask_arrays": [
+    {
+      "id": "local-evidence:scanner-v060-detection/fixture_ocr_columns_001-mask-raw.npy",
+      "availability": "available",
+      "bytes": 262272,
+      "sha256": "67be1d8a7b19f92696791f73f39ea397824c3665ddfc9a0e3c13f967fd258877",
+      "expected_sha256": "67be1d8a7b19f92696791f73f39ea397824c3665ddfc9a0e3c13f967fd258877",
+      "origin": "retained diagnostic mask only",
+      "restore": "Restore matching retained diagnostic output; absent bytes cannot prove full detector parity.",
+      "durability": "ephemeral"
+    },
+    {
+      "id": "local-evidence:scanner-v060-detection/fixture_ocr_horizontal_001-mask-raw.npy",
+      "availability": "available",
+      "bytes": 262272,
+      "sha256": "bd25809294a6aaf29f47fbfc774c21e6f929ec374235b4f910e7ccfefba47384",
+      "expected_sha256": "bd25809294a6aaf29f47fbfc774c21e6f929ec374235b4f910e7ccfefba47384",
+      "origin": "retained diagnostic mask only",
+      "restore": "Restore matching retained diagnostic output; absent bytes cannot prove full detector parity.",
+      "durability": "ephemeral"
+    },
+    {
+      "id": "local-evidence:scanner-v060-detection/fixture_ocr_mixed_001-mask-raw.npy",
+      "availability": "available",
+      "bytes": 262272,
+      "sha256": "a40db3353db3b74d345cccac750cebd68b8be8e62fc320a55b2f1136c99534db",
+      "expected_sha256": "a40db3353db3b74d345cccac750cebd68b8be8e62fc320a55b2f1136c99534db",
+      "origin": "retained diagnostic mask only",
+      "restore": "Restore matching retained diagnostic output; absent bytes cannot prove full detector parity.",
+      "durability": "ephemeral"
+    },
+    {
+      "id": "local-evidence:scanner-v060-detection/fixture_ocr_table_001-mask-raw.npy",
+      "availability": "available",
+      "bytes": 262272,
+      "sha256": "63de9de39e3b44c9c8f7f18989de6b30685d61907192df96bc91f790b74a3185",
+      "expected_sha256": "63de9de39e3b44c9c8f7f18989de6b30685d61907192df96bc91f790b74a3185",
+      "origin": "retained diagnostic mask only",
+      "restore": "Restore matching retained diagnostic output; absent bytes cannot prove full detector parity.",
+      "durability": "ephemeral"
+    },
+    {
+      "id": "local-evidence:scanner-v060-detection/fixture_ocr_vertical_001-mask-raw.npy",
+      "availability": "available",
+      "bytes": 262272,
+      "sha256": "de5aa8c3a37aa964e3716023ca0866daabdc594f5b47e6ee9deda5c6a918cf07",
+      "expected_sha256": "de5aa8c3a37aa964e3716023ca0866daabdc594f5b47e6ee9deda5c6a918cf07",
+      "origin": "retained diagnostic mask only",
+      "restore": "Restore matching retained diagnostic output; absent bytes cannot prove full detector parity.",
+      "durability": "ephemeral"
+    },
+    {
+      "id": "local-evidence:scanner-v060-detection/fixture_ocr_wrapped_001-mask-raw.npy",
+      "availability": "available",
+      "bytes": 262272,
+      "sha256": "38e61545000f343a00fbdc80ca4ad04da52b4bd7a1a72fc38d4952ce475cb460",
+      "expected_sha256": "38e61545000f343a00fbdc80ca4ad04da52b4bd7a1a72fc38d4952ce475cb460",
+      "origin": "retained diagnostic mask only",
+      "restore": "Restore matching retained diagnostic output; absent bytes cannot prove full detector parity.",
+      "durability": "ephemeral"
+    }
+  ],
+  "resource_scope": "Prior product1GiB and diagnostic2GiB receipts remain separate; installed1125589908B fails256MiB; no diagnostic qualification or adoption.",
+  "resume_inputs": {
+    "full_detector": "New publisher-distributed compatible evaluator binary with immutable hash and supported invocation; unchanged source metadata is not retried.",
+    "original_photo_quality": "New independently reviewed original-photo annotations bound to these source SHA256 values change input_revision; unchanged revision is not re-requested."
+  },
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase66-runtime.json",
+      "sha256": "a1a53735a19c68b33f6ca59bf3e122b8d8566c3cb0ebc16738f4c8340e847b48",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+      "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase65-inputs.json",
+      "sha256": "e51c333cc10eaa50407ab9639fdd79fb6c316f9d33574c3c79924142dc68415a",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-validation-v060/geometry-metrics.json",
+      "sha256": "b03bb3acc40494f4952493edd9db7c55eadccea752630759de2963008ff86182",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-synthetic-v060/quality.json",
+      "sha256": "4362ee690d3de932bc483eb3ce4673da68e5f41e8ced2dc12111c820797d4062",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-detection-v060/metrics.json",
+      "sha256": "3789de648ddd47501f67547d814ec8c446c87ead76f8dbcafecb066044b08fbb",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "format": "scanner-v060-private-proposal-report",
+  "corpus_hashes_checked": 9,
+  "geometry_grid_documents": 3,
+  "geometry_archive_members_checked": 21,
+  "synthetic_controls_checked": 6,
+  "synthetic_pairs_checked": 6,
+  "paired_rasters_checked": 12,
+  "retained_mesh_bindings_checked": 84,
+  "prior_exact_replays_rehashed": 84,
+  "new_replays": 0,
+  "additional_synthetic_catalogs_checked": 54,
+  "diagnostic_raw_masks_checked": 6,
+  "indexed_evidence_files_checked": 69,
+  "unique_files_hashed": 641,
+  "model_and_processor_files_checked": 5,
+  "owner_reference_available": true,
+  "owner_reference_rendered_or_copied": false,
+  "heavy_benchmarks": 0,
+  "network_requests": 0,
+  "gates": {
+    "TRUTH-02": "waiting_external_input",
+    "VERIFY-01": "waiting_external_implementation",
+    "VERIFY-02": "waiting_external_input",
+    "VERIFY-03": "measured-pass",
+    "VERIFY-04": "waiting_external_input",
+    "ILL-01": "waiting_external_rights_holder",
+    "ILL-02": "waiting_external_rights_holder"
+  },
+  "sanitation": {
+    "public_absolute_path_strings_remaining": 0,
+    "underlying_files_rehashed": 0,
+    "plan_validators_passed": 9,
+    "public_resolution_only": true,
+    "private_owner_locator_present": false
+  }
+}

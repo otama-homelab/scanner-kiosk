@@ -1,0 +1,91 @@
+{
+  "format": "scanner-v060-detection-mesh-disposition",
+  "requirements": [
+    {
+      "id": "VERIFY-01",
+      "status": "waiting_external_implementation",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-runtime.json",
+          "sha256": "a1a53735a19c68b33f6ca59bf3e122b8d8566c3cb0ebc16738f4c8340e847b48",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-02",
+      "status": "waiting_external_input",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-03",
+      "status": "measured-pass",
+      "complete": true,
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/all-reload.json",
+          "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/control-reload.json",
+          "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+          "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-04",
+      "status": "waiting_external_input",
+      "complete": false,
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
+    }
+  ]
+}

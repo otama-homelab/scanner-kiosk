@@ -158,3 +158,9 @@ This document is a draft for fresh-context EGM review. It does not claim that re
 ---
 
 *Drafted with EGM*
+
+## Execution clarification: existing application build
+
+The existing browser test calls scripts/build-web.py, which restores web/package-lock.json dependencies via npm ci --ignore-scripts before building the application. Run that unmodified path with NPM_CONFIG_OFFLINE=true: no new dependency/version, no network fallback, and no npm shim. Cache misses fail closed. This is part of the already authorized application build, not a third-party model/runtime build or an added dependency. Keep lockfiles and tracked source bytes unchanged and retain historical receipts.
+
+The execution harness also requires the cached project Go toolchain and a short private TMPDIR for Chromium Unix sockets. A long evidence-directory TMPDIR caused browser launch failure before UI assertions. Preserve that failure and perform one targeted corrected-environment browser check; the six already passed tests are reused. This does not waive a product assertion or add a package.

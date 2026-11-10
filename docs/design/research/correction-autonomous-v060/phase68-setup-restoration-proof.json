@@ -1,0 +1,28 @@
+{
+  "historical_receipt": ".planning/phases/49-server-app-completion/49-02-manual-BROWSER.json",
+  "before_sha256": "25d8e2d0d6e9a78364afd8ba653bf8ecf5b085a19fd4fc97487405f7d3d6d77e",
+  "after_sha256": "25d8e2d0d6e9a78364afd8ba653bf8ecf5b085a19fd4fc97487405f7d3d6d77e",
+  "bytes_before": 602,
+  "bytes_after": 602,
+  "exact_bytes_restored": true,
+  "generated_directories": [
+    {
+      "path": "web/dist",
+      "existed_before": true,
+      "exact_file_identities_restored": true
+    },
+    {
+      "path": "internal/webui/dist",
+      "existed_before": true,
+      "exact_file_identities_restored": true
+    },
+    {
+      "path": "web/.astro",
+      "existed_before": true,
+      "exact_file_identities_restored": true
+    }
+  ],
+  "source_inventory_checked": 524,
+  "source_or_lockfile_changes": [],
+  "exception": null
+}

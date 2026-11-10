@@ -1,0 +1,37 @@
+{
+  "format": "scanner-v060-runtime-preflight",
+  "status": "measured-pass",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "predicates": {
+    "playwright": true,
+    "chromium": true,
+    "pdf_runtime": true,
+    "source_revision": true,
+    "historical_receipt_snapshot": true
+  },
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-runtime-resolution.json",
+      "sha256": "87109abe094f4d6a598454597de8a23dbc5092b14ecdfc754d68e116d01bd0a7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-playwright-inventory.json",
+      "sha256": "2855b8868f233824126f7a27a16cc1c2ad2216db4f61f79aa28ea5d0180b5c20",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-source-inventory.json",
+      "sha256": "c67a6eb47a41690dd3256eabe441ef6b8a0fa0b317fd1148cbf8b7de774b78e7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-historical-browser-snapshot.json",
+      "sha256": "25d8e2d0d6e9a78364afd8ba653bf8ecf5b085a19fd4fc97487405f7d3d6d77e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ],
+  "complete_measurement": true,
+  "quality_pass": true,
+  "scope": "Retained local runtime identities and current source bytes only; no model or owner operation acceptance."
+}

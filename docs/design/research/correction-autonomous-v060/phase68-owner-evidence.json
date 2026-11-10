@@ -1,0 +1,23 @@
+{
+  "format": "scanner-v060-owner-evidence",
+  "status": "waiting_external_owner_operation",
+  "owner_confirmed": false,
+  "complete": false,
+  "complete_measurement": false,
+  "quality_pass": false,
+  "input_revision": "owner-observations-not-supplied",
+  "observations": [],
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-owner-packet.md",
+      "sha256": "9bfe31e4251bda35f39cd8f0c649802246d2f3298b9ce0bc795572454b732ba5",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-candidate-shared-path.json",
+      "sha256": "ddf93c0b7133cf145d638c68035d3a674aec8eafcb4071cb1fbca2408d6723f9",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ],
+  "resume": "Changed owner-evidence revision covering both actual iPhone and PC same-original operations; no new scan required."
+}

@@ -1,0 +1,117 @@
+{
+  "format": "scanner-v060-product-regression",
+  "status": "measured-pass",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "complete_measurement": true,
+  "quality_pass": true,
+  "execution_strategy": "Six named tests passed in the full seven-test attempt; the sole browser test then passed in one explicitly authorized targeted corrective run. Seven passes were not observed in one attempt.",
+  "single_attempt_all_seven_passed": false,
+  "tests_passed": [
+    "TestCorrectionApplyUndo",
+    "TestCorrectionRejectsStaleOrForeign",
+    "TestCorrectionReprocessKeepsOriginal",
+    "TestPhotoManualEditRevisionAndUndo",
+    "TestPhotoUsesSharedSuggestionApplyAndUndo",
+    "TestPhotoCorrectedPixelsAcrossConsumers",
+    "TestPhotoManualCropRotateUndo"
+  ],
+  "tests_passed_count": 7,
+  "tests_skipped_count": 0,
+  "mesh_unit_tests_passed": 2,
+  "attempts": [
+    {
+      "kind": "environment-launch",
+      "status": "failed-before-tests",
+      "evidence": {
+        "path": "docs/design/research/correction-autonomous-v060/phase68-environment-launch-failure.json",
+        "sha256": "03401399ed6b30abd779fc61cee2095e17c1c676f14c298c83229f567684ca1e",
+        "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+      }
+    },
+    {
+      "kind": "full-seven-test-command",
+      "exit_code": 1,
+      "passed": 6,
+      "failed": 1,
+      "skipped": 0,
+      "evidence": {
+        "path": "docs/design/research/correction-autonomous-v060/phase68-full-attempt.json",
+        "sha256": "93ffdf6bac8d0d5cd50d10d943cfb943a1ff944bf5e9b3973b2341ddacdf82d3",
+        "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+      }
+    },
+    {
+      "kind": "targeted-browser-harness-correction",
+      "exit_code": 0,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": {
+        "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective.json",
+        "sha256": "b209eb1072f6811fc4635fe6aa7f041248207f589c77dedde9daf2689bcb56ba",
+        "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+      }
+    }
+  ],
+  "semantic_test_retry_count": 0,
+  "historical_receipt_restored": true,
+  "invariants": {
+    "original_retention": true,
+    "normalized_baseline_retention": true,
+    "preview_apply_undo_save_reocr": true,
+    "clean_canon_no_inference": false,
+    "clean_canon_no_resampling": false
+  },
+  "limitations": [
+    "Clean Canon no-inference/no-resampling is not covered by these seven named tests; false records an unproven qualification gate.",
+    "This is existing-path synthetic regression only; no new correction candidate is bound or qualified.",
+    "Automated Chromium and synthetic OCR are not owner iPhone/PC acceptance or OCR quality."
+  ],
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-runtime-preflight.json",
+      "sha256": "04e726c5b77cb5d6d463e176e057d88f1de416a54d91a47c9a5dec7826690e52",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-source-inventory.json",
+      "sha256": "c67a6eb47a41690dd3256eabe441ef6b8a0fa0b317fd1148cbf8b7de774b78e7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-full-attempt.json",
+      "sha256": "93ffdf6bac8d0d5cd50d10d943cfb943a1ff944bf5e9b3973b2341ddacdf82d3",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective.json",
+      "sha256": "b209eb1072f6811fc4635fe6aa7f041248207f589c77dedde9daf2689bcb56ba",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-receipt.json",
+      "sha256": "45aa3699077117c237a05497d4928f49861ee67fccc5428f9040d7d66d55ce3a",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-targeted-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-mesh-tests.log",
+      "sha256": "219548cb994598ed761838bf14f584be119a24925e3b1f2b1a6ab471785bd50e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-environment-launch-failure.json",
+      "sha256": "03401399ed6b30abd779fc61cee2095e17c1c676f14c298c83229f567684ca1e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ]
+}

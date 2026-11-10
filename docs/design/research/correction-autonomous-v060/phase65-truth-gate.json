@@ -1,0 +1,43 @@
+{
+  "format": "scanner-v060-truth-gate",
+  "requirement": "TRUTH-02",
+  "input_revision": "d6f079915f9393629e011e9f6515413d7e2bc71e242b0922d66f58161bc6805a",
+  "status": "waiting_external_input",
+  "complete": false,
+  "complete_measurement": false,
+  "quality_pass": false,
+  "predicates": {
+    "existing9_hashes": true,
+    "geometry_min3": true,
+    "photo2_2_digits": false,
+    "photo2_2_thin_lines": false,
+    "independent_reviewer": false,
+    "reviewer_date": false,
+    "source_bindings": false
+  },
+  "missing_fields": [
+    "original-six-photo independent corners/content labels",
+    "photo2_2 digit transcription/regions",
+    "photo2_2 thin-line regions",
+    "independent reviewer identity/date/scope",
+    "annotation source hashes"
+  ],
+  "resume_trigger": "New independently reviewed original-photo annotations bound to these source SHA256 values change input_revision; unchanged revision is not re-requested.",
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase65-inputs.json",
+      "sha256": "e51c333cc10eaa50407ab9639fdd79fb6c316f9d33574c3c79924142dc68415a",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-validation-v060/truth-manifest.json",
+      "sha256": "2e3ab77390f80ba1b190f37a1be4d0422def0271327bc5d3b0302f5cc79b10a5",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+      "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    }
+  ]
+}

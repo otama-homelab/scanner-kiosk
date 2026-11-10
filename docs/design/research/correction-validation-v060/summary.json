@@ -2,7 +2,7 @@
   "format": "scanner-deferred-validation",
   "version": 1,
   "milestone": "v0.6.0",
-  "date": "2026-11-10",
+  "date": "2026-11-11",
   "status": "incomplete",
   "completed_phases": [
     64
@@ -15,85 +15,241 @@
       "id": "ENV-01",
       "status": "measured-pass",
       "complete": true,
-      "evidence_scope": "Official clean CPU environment, GPU-free dependency inventory, disk/import/load/forward measured. Product installed size fails separately."
+      "evidence_scope": "Official clean CPU environment, GPU-free dependency inventory, disk/import/load/forward measured. Product installed size fails separately.",
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "ENV-02",
       "status": "measured-pass",
       "complete": true,
-      "evidence_scope": "Separate official LiteRT CPU input/output/quantization/forward measured."
+      "evidence_scope": "Separate official LiteRT CPU input/output/quantization/forward measured.",
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "TRUTH-01",
       "status": "measured-pass",
       "complete": true,
-      "evidence_scope": "Owner-authorized generated-input alternative:6known-renderer clean controls with fixed source hashes, text/digit/glyph boxes, full-canvas page boundary and table2px line definitions. No claim of original6DocUNet photo human annotations."
+      "evidence_scope": "Owner-authorized generated-input alternative:6known-renderer clean controls with fixed source hashes, text/digit/glyph boxes, full-canvas page boundary and table2px line definitions. No claim of original6DocUNet photo human annotations.",
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "TRUTH-02",
-      "status": "needs-human",
+      "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing."
+      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "TRUTH-03",
       "status": "measured-pass",
       "complete": true,
-      "evidence_scope": "Owner-authorized synthetic alternative:6pixel-aligned shadow/reference pairs and6clean controls; faint text2,digits4,photographs2,colored paper2,seals2. Existing unchanged fixture recipes; deterministic replay. No real-shadow validation."
+      "evidence_scope": "Owner-authorized synthetic alternative:6pixel-aligned shadow/reference pairs and6clean controls; faint text2,digits4,photographs2,colored paper2,seals2. Existing unchanged fixture recipes; deterministic replay. No real-shadow validation.",
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "VERIFY-01",
-      "status": "not-run",
+      "status": "waiting_external_implementation",
       "complete": false,
-      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable."
+      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-runtime.json",
+          "sha256": "a1a53735a19c68b33f6ca59bf3e122b8d8566c3cb0ebc16738f4c8340e847b48",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
     },
     {
       "id": "VERIFY-02",
-      "status": "not-run",
+      "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "Existing completed paths on6synthetic controls: DocAligner5/6cornerpass entirely fallback(15/18samples), table3/3cornerfail; no-op6/6knownfullpagepass. Original6photo validation missing."
+      "evidence_scope": "Existing completed paths on6synthetic controls: DocAligner5/6cornerpass entirely fallback(15/18samples), table3/3cornerfail; no-op6/6knownfullpagepass. Original6photo validation missing.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
     },
     {
       "id": "VERIFY-03",
       "status": "measured-pass",
       "complete": true,
-      "evidence_scope": "Tinycontrol3 + original9x3x2 + truth3x3 retained mesh/source/output/model/prepost bindings and exact official reloading verified."
+      "evidence_scope": "Tinycontrol3 + original9x3x2 + truth3x3 retained mesh/source/output/model/prepost bindings and exact official reloading verified.",
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/all-reload.json",
+          "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-validation-v060/control-reload.json",
+          "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+          "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
     },
     {
       "id": "VERIFY-04",
-      "status": "needs-human",
+      "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "3official mesh/no-op grid metrics measured-pass; oldONNX has no exposed map, photo2_2 content/OCR/diagnosis missing."
+      "evidence_scope": "3official mesh/no-op grid metrics measured-pass; oldONNX has no exposed map, photo2_2 content/OCR/diagnosis missing.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+          "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+          "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
+          "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        }
+      ]
     },
     {
       "id": "ILL-01",
-      "status": "needs-human",
+      "status": "waiting_external_rights_holder",
       "complete": false,
-      "evidence_scope": "Explicit checkpoint scope and exact FSENet/older DocShadow conversion identity unresolved; concrete unsent questions retained."
+      "evidence_scope": "Explicit checkpoint scope and exact FSENet/older DocShadow conversion identity unresolved; concrete unsent questions retained.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase67-resume.json",
+          "sha256": "6688ffe4075f00a71646fa31075e64ae89dca5f0010730990838d3d0dd8678d0",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "ILL-02",
-      "status": "not-run",
+      "status": "waiting_external_rights_holder",
       "complete": false,
-      "evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference."
+      "evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase67-measurement.json",
+          "sha256": "279c46f23cf12c13f6707a9984164d52b7edec03a407ece8c75c763377387163",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "ACCEPT-01",
-      "status": "needs-human",
+      "status": "waiting_external_owner_operation",
       "complete": false,
-      "evidence_scope": "One authorized Canon direct experimental scan captured locally; iPhone/PC product operation and acceptance missing."
+      "evidence_scope": "One authorized Canon direct experimental scan captured locally; iPhone/PC product operation and acceptance missing.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase68-owner-evidence.json",
+          "sha256": "d87cc038f952c37a8eadd265d0fcc9c34ffc1c92d820cbb1a9d94633d613df83",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "ACCEPT-02",
       "status": "not-run",
       "complete": false,
-      "evidence_scope": "UVDoc corpus process resources pass but installed package gate fails; quality/owner gates incomplete. No integration; existing focused regressions pass only automated scope."
+      "evidence_scope": "UVDoc corpus process resources pass but installed package gate fails; quality/owner gates incomplete. No integration; existing focused regressions pass only automated scope.",
+      "complete_measurement": false,
+      "quality_pass": false,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/phase68-candidate-shared-path.json",
+          "sha256": "ddf93c0b7133cf145d638c68035d3a674aec8eafcb4071cb1fbca2408d6723f9",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     },
     {
       "id": "ACCEPT-03",
       "status": "measured-pass",
       "complete": true,
-      "evidence_scope": "All14requirement dispositions retain unmet capabilities open; no milestone completion/archive claimed."
+      "evidence_scope": "All14requirement dispositions retain unmet capabilities open; no milestone completion/archive claimed.",
+      "complete_measurement": true,
+      "quality_pass": true,
+      "evidence": [
+        {
+          "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+          "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
+          "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        }
+      ]
     }
   ],
   "observations": {
@@ -383,7 +539,7 @@
     "human_review_packet": "../../correction-validation-v060-human-inputs.md"
   },
   "synthetic_supplement": {
-    "authorization": "\u304a\u4efb\u305b\u3001\u751f\u6210\u753b\u50cf\u3067\u3082\u3088\u3044",
+    "authorization": "お任せ、生成画像でもよい",
     "report": "../../correction-synthetic-validation-v060.md",
     "summary": "../correction-synthetic-v060/summary.json",
     "sha256": "78d09893d2fa4c7107f9f2e3ec08fa64c69a5cb71f0510ea335a850e02e5beef",
@@ -400,5 +556,20 @@
   "synthetic_detection_supplement": {
     "summary": "../correction-detection-v060/summary.json",
     "sha256": "e76abe34ab5bf5ddca6da0cdc4e9a494560e4eecf6ff6177d88debdd919ad319"
+  },
+  "autonomous_execution": {
+    "summary": "../correction-autonomous-v060/summary.json",
+    "sha256": "491ac438bde487e16f9a71fdf861d198d93dcdb63b70112d9abbf7813424d09e",
+    "status": "automation_queue_exhausted",
+    "new_requirements_completed": 0,
+    "verified_requirements": 6,
+    "owner_checkpoint": "68-02-T3: blocking-human; waiting_external_owner_operation",
+    "resume_triggers": {
+      "truth": "Changed independent reviewer/date/source-bound original photo2_2 digits and thin lines truth.",
+      "detector": "Compatible official complete FairScan binary and invocation with immutable identity.",
+      "illumination": "Changed authoritative checkpoint-specific rights, conversion identity and parity; then supported existing metrics.",
+      "candidate": "Every qualification gate true, then actual candidate-bound shared path.",
+      "owner": "Changed actual same-original iPhone and PC operation evidence revision."
+    }
   }
 }

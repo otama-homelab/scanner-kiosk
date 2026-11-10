@@ -1,0 +1,81 @@
+{
+  "requirement": "ILL-01",
+  "status": "waiting_external_rights_holder",
+  "requirement_complete": false,
+  "complete": false,
+  "complete_measurement": false,
+  "quality_pass": false,
+  "eligible_for_illumination": false,
+  "eligible_artifacts": [],
+  "automatic_retries": 0,
+  "evidence_revision": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+  "mandatory_fsenet_export_predicates": {
+    "fsenet_checkpoint_identity": false,
+    "fsenet_checkpoint_scope": false,
+    "onnx_conversion_identity": false,
+    "onnx_parity": false,
+    "acquisition_scope": false,
+    "execution_scope": false,
+    "commercial_scope": false,
+    "redistribution_scope": false
+  },
+  "evidence_bindings": {
+    "fsenet_checkpoint_identity": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    "fsenet_checkpoint_scope": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    "onnx_conversion_identity": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    "onnx_parity": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    "acquisition_scope": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    "execution_scope": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    "commercial_scope": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    "redistribution_scope": {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-eligibility.json",
+      "sha256": "06514e34b1378277fdb315f754fc2dec7b60ce0f892dacfac6735aa4ca13ad07",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    }
+  },
+  "unsent_questions": {
+    "path": "docs/design/research/correction-validation-v060/illumination-clarification-unsent.md",
+    "sha256": "97bded2bcc993073d05cf933a0674dd8fe44f7366bff44a8365ca5ebf77c2252",
+    "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+  },
+  "contact_routes": [
+    {
+      "publisher": "CXH-Research/DocShadow-SD7K",
+      "route": "Archived repository issue destination is read-only; no usable issue route established by retained records."
+    },
+    {
+      "publisher": "tanguymagne/SyntheticDoc",
+      "route": "https://github.com/tanguymagne/SyntheticDoc/issues",
+      "usable": true
+    }
+  ],
+  "resume_trigger": "New authoritative publication, rights-holder answer, or changed eligibility evidence revision. At most one transient metadata retry; no periodic unchanged MIT recheck. External messages remain unsent."
+}

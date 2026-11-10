@@ -1,0 +1,23 @@
+{
+  "classification": "environment-launch-setup-failure",
+  "test_bodies_started": false,
+  "reason": "Added GOTOOLCHAIN=local selected base Go1.25.7 instead of the already cached project Go1.27.3; project launch rejected before tests.",
+  "corrective_action": "Use already cached go1.27.3 with GOPROXY=off; coordinator authorized one corrected attempt, zero semantic retries.",
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-setup-failure.log",
+      "sha256": "939599fb7b982adc8b2cf6b956dd24028b2059d9365c8e3b8f951d5635606b08",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-setup-failure-command.json",
+      "sha256": "4a1985bc33dab9e1a7ae931db31c046948d5fecf777d777372cc5810bc7d18c2",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-setup-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+=== RUN   TestPhotoManualCropRotateUndo
+2026/11/11 01:04:57 http: TLS handshake error from 127.0.0.1:41293: remote error: tls: unknown certificate
+2026/11/11 01:04:57 http: TLS handshake error from 127.0.0.1:41311: remote error: tls: unknown certificate
+2026/11/11 01:04:57 http: TLS handshake error from 127.0.0.1:41321: remote error: tls: unknown certificate
+2026/11/11 01:04:57 http: TLS handshake error from 127.0.0.1:41331: remote error: tls: unknown certificate
+2026/11/11 01:04:57 http: TLS handshake error from 127.0.0.1:41343: remote error: tls: unknown certificate
+    photo_browser_integration_linux_test.go:121: {"passed":true,"scenario":"manual","real_backend":true,"checks":["numeric crop actual preview pixels/cancel/apply/undo, separate page 90-degree rotation and immutable raw upload"],"requests":[{"path":"/api/documents/import","method":"POST","key":"rq1_1794326697060_dce74ff4956746dba5a254fb18d7d563","sha":"6fdb5cd69ae41f8468154ce2a08a13cb08cf680403489802efd5131ad5078614"}],"scope":"Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance."}
+--- PASS: TestPhotoManualCropRotateUndo (10.87s)
+PASS
+ok  	scanner-kiosk/internal/documenthttp	11.886s

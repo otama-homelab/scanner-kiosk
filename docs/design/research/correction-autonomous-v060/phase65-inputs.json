@@ -1,0 +1,707 @@
+{
+  "format": "scanner-v060-input-reconciliation",
+  "date": "2026-11-11",
+  "input_revision": "d6f079915f9393629e011e9f6515413d7e2bc71e242b0922d66f58161bc6805a",
+  "sources": [
+    {
+      "id": "photo1_1",
+      "availability": "available",
+      "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/crop_1_1_copy.png",
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "photo1_2",
+      "availability": "available",
+      "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/crop_1_2_copy.png",
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "photo2_1",
+      "availability": "available",
+      "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/crop_2_1_copy.png",
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "photo2_2",
+      "availability": "available",
+      "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/crop_2_2_copy.png",
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "photo3_1",
+      "availability": "available",
+      "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/crop_3_1_copy.png",
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "photo3_2",
+      "availability": "available",
+      "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/crop_3_2_copy.png",
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "scan_1",
+      "availability": "available",
+      "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/scan_1.png",
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "scan_2",
+      "availability": "available",
+      "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/scan_2.png",
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    },
+    {
+      "id": "scan_3",
+      "availability": "available",
+      "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+      "evidence": {
+        "path": "local-evidence:scanner-v040/corpus/scan_3.png",
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+      }
+    }
+  ],
+  "availability_details": {
+    "corpus": [
+      {
+        "id": "photo1_1",
+        "availability": "available",
+        "bytes": 1439196,
+        "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "expected_sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "photo1_2",
+        "availability": "available",
+        "bytes": 1581870,
+        "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "expected_sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "photo2_1",
+        "availability": "available",
+        "bytes": 2019020,
+        "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "expected_sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "photo2_2",
+        "availability": "available",
+        "bytes": 2394380,
+        "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "expected_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "photo3_1",
+        "availability": "available",
+        "bytes": 1422168,
+        "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "expected_sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "photo3_2",
+        "availability": "available",
+        "bytes": 1457205,
+        "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "expected_sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "scan_1",
+        "availability": "available",
+        "bytes": 2479249,
+        "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "expected_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "scan_2",
+        "availability": "available",
+        "bytes": 1684825,
+        "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "expected_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "scan_3",
+        "availability": "available",
+        "bytes": 747101,
+        "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "expected_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "origin": "DocUNet publisher archive recorded by prior dataset acquisition; crop.zip / scan.zip",
+        "restore": "If local corpus is lost, restore the exact member of the recorded DocUNet crop.zip or scan.zip; require the existing corpus-hash-check.json SHA256 and byte length before use. Plain HTTP publisher links have no authenticated publisher checksum; never substitute another image.",
+        "durability": "ephemeral"
+      }
+    ],
+    "geometry_documents": [
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/metadata_sample/00000.json",
+        "availability": "available",
+        "bytes": 139,
+        "sha256": "ccf4ef6747a7e040fe0dfa92281b16117c78fb587afc2b9de73df4dbf78b7b55",
+        "expected_sha256": "ccf4ef6747a7e040fe0dfa92281b16117c78fb587afc2b9de73df4dbf78b7b55",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/img/00000.png",
+        "availability": "available",
+        "bytes": 1856062,
+        "sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b",
+        "expected_sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/warped_textures/00000.png",
+        "availability": "available",
+        "bytes": 646917,
+        "sha256": "c5d9658211f00da09cdd06ca240f4557812348f705aa34ca328117937788be11",
+        "expected_sha256": "c5d9658211f00da09cdd06ca240f4557812348f705aa34ca328117937788be11",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/grid2d/09_00000_1_0_0.mat",
+        "availability": "available",
+        "bytes": 40701,
+        "sha256": "1563eed6dcf4dc21e53908143977bd572d9d42fa15ab19f3851fffc552200805",
+        "expected_sha256": "1563eed6dcf4dc21e53908143977bd572d9d42fa15ab19f3851fffc552200805",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/seg/09_00000_1_0_0.mat",
+        "availability": "available",
+        "bytes": 11417,
+        "sha256": "6bf7627d03d71eedfae2fd66ef2397502ef4ee252a7be5a96e9a3d4edeb14511",
+        "expected_sha256": "6bf7627d03d71eedfae2fd66ef2397502ef4ee252a7be5a96e9a3d4edeb14511",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/metadata_geom/09_00000_1_0_0.json",
+        "availability": "available",
+        "bytes": 539,
+        "sha256": "2dff6e3aa160d786db6fac4220922a0fb88ac451281a2d2d70803e3a90ce807d",
+        "expected_sha256": "2dff6e3aa160d786db6fac4220922a0fb88ac451281a2d2d70803e3a90ce807d",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/textures/libregraphicsmag_2_2-15.png",
+        "availability": "available",
+        "bytes": 878524,
+        "sha256": "94c3c29530c4855aa87b57c712f22b5a7d68148a52a51a2ac64d8fa3df166777",
+        "expected_sha256": "94c3c29530c4855aa87b57c712f22b5a7d68148a52a51a2ac64d8fa3df166777",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/metadata_sample/00001.json",
+        "availability": "available",
+        "bytes": 142,
+        "sha256": "6acbc514db7fb2df8f12133c9bce7b555b61747c8c9dbce7abfd9fde7af62583",
+        "expected_sha256": "6acbc514db7fb2df8f12133c9bce7b555b61747c8c9dbce7abfd9fde7af62583",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/img/00001.png",
+        "availability": "available",
+        "bytes": 1957797,
+        "sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4",
+        "expected_sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/warped_textures/00001.png",
+        "availability": "available",
+        "bytes": 515461,
+        "sha256": "a755c38fdcdff64db74f076401931cbf0a74b19bb74c58d95b08c917749579e1",
+        "expected_sha256": "a755c38fdcdff64db74f076401931cbf0a74b19bb74c58d95b08c917749579e1",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/grid2d/09_00004_1_0_0.mat",
+        "availability": "available",
+        "bytes": 40066,
+        "sha256": "1f59b1ac83d59dbf6e7a4f648b844e020fe3da4ae9abe9724af92e2d4de1ab1b",
+        "expected_sha256": "1f59b1ac83d59dbf6e7a4f648b844e020fe3da4ae9abe9724af92e2d4de1ab1b",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/seg/09_00004_1_0_0.mat",
+        "availability": "available",
+        "bytes": 10712,
+        "sha256": "7aac68b3dcbfa2405c2808be481ebe199b972e86a0c0d508a1080d6971461d63",
+        "expected_sha256": "7aac68b3dcbfa2405c2808be481ebe199b972e86a0c0d508a1080d6971461d63",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/metadata_geom/09_00004_1_0_0.json",
+        "availability": "available",
+        "bytes": 539,
+        "sha256": "61c8d6b78cca61eb89d171e4fc0e97800691817700a521844871e406dde1d00e",
+        "expected_sha256": "61c8d6b78cca61eb89d171e4fc0e97800691817700a521844871e406dde1d00e",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/textures/01_stagedancing_p0027.png",
+        "availability": "available",
+        "bytes": 629144,
+        "sha256": "916a23d0f0b7a0f08859f5dd231cd481bf0f43bbfa8f4d57883cbda2d86e54f0",
+        "expected_sha256": "916a23d0f0b7a0f08859f5dd231cd481bf0f43bbfa8f4d57883cbda2d86e54f0",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/metadata_sample/00002.json",
+        "availability": "available",
+        "bytes": 122,
+        "sha256": "6ea2ba9b7ee91d63a68133e5c25433872e32b34c3afb2b26bbe973b70c97657a",
+        "expected_sha256": "6ea2ba9b7ee91d63a68133e5c25433872e32b34c3afb2b26bbe973b70c97657a",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/img/00002.png",
+        "availability": "available",
+        "bytes": 2029190,
+        "sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+        "expected_sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/warped_textures/00002.png",
+        "availability": "available",
+        "bytes": 888851,
+        "sha256": "e432790b635c1d9b7745cceb11e601e39a0f081f25a8723c6fa300976e5399ec",
+        "expected_sha256": "e432790b635c1d9b7745cceb11e601e39a0f081f25a8723c6fa300976e5399ec",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/grid2d/09_00005_1_0_0.mat",
+        "availability": "available",
+        "bytes": 40507,
+        "sha256": "073a764a25baa2b878ce61c451e2ddbcd9dde8c81f02c4b2c3e49a5a7ee49226",
+        "expected_sha256": "073a764a25baa2b878ce61c451e2ddbcd9dde8c81f02c4b2c3e49a5a7ee49226",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/seg/09_00005_1_0_0.mat",
+        "availability": "available",
+        "bytes": 10486,
+        "sha256": "6351e00a43849873067e8ec021c53335081631d525127046613a58a123fe3fd6",
+        "expected_sha256": "6351e00a43849873067e8ec021c53335081631d525127046613a58a123fe3fd6",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/metadata_geom/09_00005_1_0_0.json",
+        "availability": "available",
+        "bytes": 539,
+        "sha256": "78c389b5869da45fe4802e4f221c64e6f0819be9bc39d61cd2f58694fccfbeb3",
+        "expected_sha256": "78c389b5869da45fe4802e4f221c64e6f0819be9bc39d61cd2f58694fccfbeb3",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/uvdoc-subset/textures/05-09.png",
+        "availability": "available",
+        "bytes": 1132041,
+        "sha256": "6a462611d87d4420609f6f8fcff82e2e832021a1ee23a0b6c0b1a782774598b9",
+        "expected_sha256": "6a462611d87d4420609f6f8fcff82e2e832021a1ee23a0b6c0b1a782774598b9",
+        "origin": "official UVDoc benchmark; acquisition ledger fixes first3 IDs and archive members",
+        "restore": "Restore only exact recorded members from the official UVDoc benchmark ZIP using the prior bounded range-acquisition recipe; require recorded SHA256 before use. Acquisition is not performed by this receipt.",
+        "durability": "ephemeral"
+      }
+    ],
+    "synthetic_controls": [
+      {
+        "id": "local-evidence:home/yamato/otama-homelab/scanner-kiosk/scripts/fixtures/ocr/page_ocr_horizontal_001.png",
+        "availability": "available",
+        "bytes": 13931,
+        "sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+        "expected_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+        "origin": "unchanged renderer-known repository fixture",
+        "restore": "Use the existing committed scripts/fixtures/ocr raster; verify its truth-definition.json hash. If reconstruction is needed use the pinned existing prepare_catalog.py/font/version recipe; no new rendering algorithm.",
+        "durability": "repository"
+      },
+      {
+        "id": "local-evidence:home/yamato/otama-homelab/scanner-kiosk/scripts/fixtures/ocr/page_ocr_mixed_001.png",
+        "availability": "available",
+        "bytes": 15152,
+        "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+        "expected_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+        "origin": "unchanged renderer-known repository fixture",
+        "restore": "Use the existing committed scripts/fixtures/ocr raster; verify its truth-definition.json hash. If reconstruction is needed use the pinned existing prepare_catalog.py/font/version recipe; no new rendering algorithm.",
+        "durability": "repository"
+      },
+      {
+        "id": "local-evidence:home/yamato/otama-homelab/scanner-kiosk/scripts/fixtures/ocr/page_ocr_table_001.png",
+        "availability": "available",
+        "bytes": 10010,
+        "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+        "expected_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+        "origin": "unchanged renderer-known repository fixture",
+        "restore": "Use the existing committed scripts/fixtures/ocr raster; verify its truth-definition.json hash. If reconstruction is needed use the pinned existing prepare_catalog.py/font/version recipe; no new rendering algorithm.",
+        "durability": "repository"
+      },
+      {
+        "id": "local-evidence:home/yamato/otama-homelab/scanner-kiosk/scripts/fixtures/ocr/page_ocr_vertical_001.png",
+        "availability": "available",
+        "bytes": 10850,
+        "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+        "expected_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+        "origin": "unchanged renderer-known repository fixture",
+        "restore": "Use the existing committed scripts/fixtures/ocr raster; verify its truth-definition.json hash. If reconstruction is needed use the pinned existing prepare_catalog.py/font/version recipe; no new rendering algorithm.",
+        "durability": "repository"
+      },
+      {
+        "id": "local-evidence:home/yamato/otama-homelab/scanner-kiosk/scripts/fixtures/ocr/page_ocr_columns_001.png",
+        "availability": "available",
+        "bytes": 13122,
+        "sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+        "expected_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+        "origin": "unchanged renderer-known repository fixture",
+        "restore": "Use the existing committed scripts/fixtures/ocr raster; verify its truth-definition.json hash. If reconstruction is needed use the pinned existing prepare_catalog.py/font/version recipe; no new rendering algorithm.",
+        "durability": "repository"
+      },
+      {
+        "id": "local-evidence:home/yamato/otama-homelab/scanner-kiosk/scripts/fixtures/ocr/page_ocr_wrapped_001.png",
+        "availability": "available",
+        "bytes": 6415,
+        "sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+        "expected_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+        "origin": "unchanged renderer-known repository fixture",
+        "restore": "Use the existing committed scripts/fixtures/ocr raster; verify its truth-definition.json hash. If reconstruction is needed use the pinned existing prepare_catalog.py/font/version recipe; no new rendering algorithm.",
+        "durability": "repository"
+      }
+    ],
+    "synthetic_pairs": [
+      {
+        "id": "mixed",
+        "clean": {
+          "id": "local-evidence:scanner-v060-paired/clean/mixed.png",
+          "availability": "available",
+          "bytes": 15152,
+          "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "expected_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "origin": "existing paired synthetic truth",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        },
+        "shadow": {
+          "id": "local-evidence:scanner-v060-paired/shadow/mixed.png",
+          "availability": "available",
+          "bytes": 26458,
+          "sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+          "expected_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+          "origin": "existing deterministic shadow recipe",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        }
+      },
+      {
+        "id": "table",
+        "clean": {
+          "id": "local-evidence:scanner-v060-paired/clean/table.png",
+          "availability": "available",
+          "bytes": 10010,
+          "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "expected_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "origin": "existing paired synthetic truth",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        },
+        "shadow": {
+          "id": "local-evidence:scanner-v060-paired/shadow/table.png",
+          "availability": "available",
+          "bytes": 20883,
+          "sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+          "expected_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+          "origin": "existing deterministic shadow recipe",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        }
+      },
+      {
+        "id": "faint_mixed",
+        "clean": {
+          "id": "local-evidence:scanner-v060-paired/clean/faint_mixed.png",
+          "availability": "available",
+          "bytes": 21821,
+          "sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+          "expected_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+          "origin": "existing paired synthetic truth",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        },
+        "shadow": {
+          "id": "local-evidence:scanner-v060-paired/shadow/faint_mixed.png",
+          "availability": "available",
+          "bytes": 24306,
+          "sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+          "expected_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+          "origin": "existing deterministic shadow recipe",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        }
+      },
+      {
+        "id": "faint_table",
+        "clean": {
+          "id": "local-evidence:scanner-v060-paired/clean/faint_table.png",
+          "availability": "available",
+          "bytes": 17302,
+          "sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+          "expected_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+          "origin": "existing paired synthetic truth",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        },
+        "shadow": {
+          "id": "local-evidence:scanner-v060-paired/shadow/faint_table.png",
+          "availability": "available",
+          "bytes": 19864,
+          "sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+          "expected_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+          "origin": "existing deterministic shadow recipe",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        }
+      },
+      {
+        "id": "blue",
+        "clean": {
+          "id": "local-evidence:scanner-v060-paired/clean/blue.png",
+          "availability": "available",
+          "bytes": 1731218,
+          "sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+          "expected_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+          "origin": "existing paired synthetic truth",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        },
+        "shadow": {
+          "id": "local-evidence:scanner-v060-paired/shadow/blue.png",
+          "availability": "available",
+          "bytes": 1663257,
+          "sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+          "expected_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+          "origin": "existing deterministic shadow recipe",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        }
+      },
+      {
+        "id": "peach",
+        "clean": {
+          "id": "local-evidence:scanner-v060-paired/clean/peach.png",
+          "availability": "available",
+          "bytes": 2457340,
+          "sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+          "expected_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+          "origin": "existing paired synthetic truth",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        },
+        "shadow": {
+          "id": "local-evidence:scanner-v060-paired/shadow/peach.png",
+          "availability": "available",
+          "bytes": 2312318,
+          "sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+          "expected_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+          "origin": "existing deterministic shadow recipe",
+          "restore": "Restore from unchanged paired prepare.py and existing materialize.go/evaluation.ResolveFixture recipe; exact paired-truth.json hash must match.",
+          "durability": "ephemeral"
+        }
+      }
+    ],
+    "owner_reference": {
+      "id": "local-evidence:owner-canon-baseline-v060",
+      "availability": "available",
+      "bytes": 12580851,
+      "sha256": "0710a89f1c053fa9af207559e5101f33aaab643e887a433aeac44b28a6834bba",
+      "expected_sha256": null,
+      "origin": "one previously owner-authorized Canon direct capture; opaque local identity only",
+      "restore": "If missing, unavailable: no second physical capture is authorized by this reconciliation; obtain a separately authorized owner restore. Never render/copy/upload owner pixels.",
+      "durability": "local-persistent-private"
+    },
+    "model_and_processor": [
+      {
+        "id": "local-evidence:scanner-v050/model/model.safetensors",
+        "availability": "available",
+        "bytes": 31667380,
+        "sha256": "65f980e3083b4919d962d7b4c8ddb42a926dc8b36f4909944746cf2d7b7325dc",
+        "expected_sha256": "65f980e3083b4919d962d7b4c8ddb42a926dc8b36f4909944746cf2d7b7325dc",
+        "origin": "official pinned UVDoc model",
+        "restore": "Restore exact publisher revision bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4 and pinned file hashes without conversion.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v050/model/config.json",
+        "availability": "available",
+        "bytes": 1421,
+        "sha256": "7cab8c18905afaca325792ddba0dfc73a13dcadd886a5a7c008dabcb7fae7dd1",
+        "expected_sha256": "7cab8c18905afaca325792ddba0dfc73a13dcadd886a5a7c008dabcb7fae7dd1",
+        "origin": "official pinned UVDoc model",
+        "restore": "Restore exact publisher revision bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4 and pinned file hashes without conversion.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v050/model/preprocessor_config.json",
+        "availability": "available",
+        "bytes": 240,
+        "sha256": "d117e9226a945206cfb76a9d75d3ae5483080d90b48a34253626444b61771436",
+        "expected_sha256": "d117e9226a945206cfb76a9d75d3ae5483080d90b48a34253626444b61771436",
+        "origin": "official pinned UVDoc model",
+        "restore": "Restore exact publisher revision bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4 and pinned file hashes without conversion.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/cpu-venv/lib/python3.12/site-packages/transformers/models/uvdoc/modeling_uvdoc.py",
+        "availability": "available",
+        "bytes": 13453,
+        "sha256": "a544aa46d28b8d7aa5a41c78e3a9f0df770939baba3f1cfc4c34aa01294effb1",
+        "expected_sha256": "a544aa46d28b8d7aa5a41c78e3a9f0df770939baba3f1cfc4c34aa01294effb1",
+        "origin": "official Transformers5.12.1 installed source",
+        "restore": "Restore existing pinned official runtime and require this exact source hash; no build/patch.",
+        "durability": "ephemeral"
+      },
+      {
+        "id": "local-evidence:scanner-v060/cpu-venv/lib/python3.12/site-packages/transformers/models/uvdoc/image_processing_uvdoc.py",
+        "availability": "available",
+        "bytes": 6608,
+        "sha256": "61399ca76db9ce5b9f475e730f9484ccd46fa16c2195e5394b45d97d8c2c2187",
+        "expected_sha256": "61399ca76db9ce5b9f475e730f9484ccd46fa16c2195e5394b45d97d8c2c2187",
+        "origin": "official Transformers5.12.1 installed source",
+        "restore": "Restore existing pinned official runtime and require this exact source hash; no build/patch.",
+        "durability": "ephemeral"
+      }
+    ]
+  },
+  "photo2_2_annotation_contract": {
+    "source_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+    "reviewer_identity": "not supplied",
+    "review_date": "not supplied",
+    "scope": "original photo independent digits and thin-line pixel regions; labels fixed before candidate inspection",
+    "label_artifact": "unavailable",
+    "source_binding": "crop_2_2_copy.png remains the mandatory source; scan_2 is a reference, not automatically aligned pixel GT"
+  },
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-validation-v060/corpus-hash-check.json",
+      "sha256": "e497d080cacfdd6ba2cb5f05262bc48aa284ecac2f29d322de0f7f8bae436aa7",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-validation-v060/truth-manifest.json",
+      "sha256": "2e3ab77390f80ba1b190f37a1be4d0422def0271327bc5d3b0302f5cc79b10a5",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-synthetic-v060/truth-definition.json",
+      "sha256": "ea70abcab333dd5553bf610bf663451e6ddf975010fa1ba8d77a330f0ea6af93",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-paired-v060/paired-truth.json",
+      "sha256": "9f5124ee66de0cd778204a1583387694582b361172d53d29e1c30bbad32641e2",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    }
+  ],
+  "restoration_policy": "All /tmp records are currently available, never durable. Recipes are recorded, not executed. Exact hash verification is mandatory after restore."
+}

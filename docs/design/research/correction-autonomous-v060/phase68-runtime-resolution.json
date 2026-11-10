@@ -1,0 +1,142 @@
+{
+  "recorded_at": "2026-11-10T15:59:11.425632+00:00",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "playwright": {
+    "path": "/home/yamato/otama-homelab/steward/node_modules/playwright-core",
+    "type": "directory",
+    "version": "1.63.0",
+    "inventory": {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-playwright-inventory.json",
+      "sha256": "2855b8868f233824126f7a27a16cc1c2ad2216db4f61f79aa28ea5d0180b5c20",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  },
+  "chromium": {
+    "path": "/home/yamato/.cache/ms-playwright/chromium-1247/chrome-linux64/chrome",
+    "type": "executable-file",
+    "sha256": "adf078f8f80eb9e980a07b4418af23b0f4008a83bc5756d5588055bc4d76c5a0",
+    "version": "Google Chrome for Testing 155.0.8059.12"
+  },
+  "pdf_runtime": {
+    "path": "/home/yamato/.local/share/scanner46-native-qevx7gil/raster-native",
+    "type": "directory",
+    "manifest": {
+      "path": "local-runtime:retained-phase49-poppler-manifest",
+      "sha256": "0cc2f8fb5b5b1964d497caeb212338345f64b098f337440fb12e9e1af20fa36f",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    "verified_file_count": 542,
+    "pdftoppm_sha256": "e969e55d7e2229f1e438284f9e8cfd666313e45a9b7b6265ccbf8b4ade5f2070",
+    "upstream_version": "25.12.0",
+    "version_source": {
+      "path": "local-runtime:retained-phase49-poppler-source-identity",
+      "sha256": "3c6d5c61f4bf815153557f995dcb008f8a06848c53b95594234442a6c45499ca",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  },
+  "locator_clarification": "Obsolete /tmp/scanner46-native-qevx7gil/raster-native is absent; retained Phase49 and exact Phase68 command use the verified persistent path above.",
+  "historical_receipt": {
+    "path": ".planning/phases/49-server-app-completion/49-02-manual-BROWSER.json",
+    "sha256_before": "25d8e2d0d6e9a78364afd8ba653bf8ecf5b085a19fd4fc97487405f7d3d6d77e",
+    "bytes_before": 602,
+    "snapshot": {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-historical-browser-snapshot.json",
+      "sha256": "25d8e2d0d6e9a78364afd8ba653bf8ecf5b085a19fd4fc97487405f7d3d6d77e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  },
+  "tools": {
+    "node": "v24.22.2",
+    "go": "go version go1.27.3 linux/amd64",
+    "python": "Python 3.12.9"
+  },
+  "locator_map": [
+    {
+      "id": "local-evidence:phase68-public-locator-1",
+      "public_path": "/home/yamato/otama-homelab/steward/node_modules/playwright-core"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-2",
+      "public_path": "/home/yamato/.cache/ms-playwright/chromium-1247/chrome-linux64/chrome"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-3",
+      "public_path": "/home/yamato/.local/share/scanner46-native-qevx7gil/raster-native"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-4",
+      "public_path": "/tmp/scanner-v060-autonomous-execution.6gPhXd/worker-b/runtime-tmp-corrected"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-5",
+      "public_path": "/tmp/scanner-v060/cpu-venv/bin/python"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-6",
+      "public_path": "/tmp/scanner-v060-autonomous-execution.6gPhXd/worker-b/runtime-tmp"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-7",
+      "public_path": "/tmp/s68-hao_u_5q"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-8",
+      "public_path": "/tmp/scanner-v060-autonomous-execution.6gPhXd/worker-b"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-9",
+      "public_path": "/home/yamato/otama-homelab/scanner-kiosk"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-10",
+      "public_path": "/usr/lib/x86_64-linux-gnu/libc.so.6"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-11",
+      "public_path": "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+    },
+    {
+      "id": "local-evidence:phase68-public-locator-12",
+      "public_path": "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq"
+    }
+  ],
+  "opaque_runtime_evidence": [
+    {
+      "id": "local-runtime:retained-phase49-poppler-manifest",
+      "public_path": "/home/yamato/.local/share/scanner46-native-qevx7gil/raster-input/manifest.json"
+    },
+    {
+      "id": "local-runtime:retained-phase49-poppler-source-identity",
+      "public_path": "/home/yamato/.local/share/scanner46-native-qevx7gil/raster-input/notice-files/poppler-25.12.0/source.json"
+    }
+  ],
+  "raw_logs": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-regression-raw.log",
+      "sha256": "1d6945413456595724b8a981ca5a90bd9bd94472e37fdf1a1c3d0652a093b85f",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective-raw.log",
+      "sha256": "2c59fa3bf68449177f7f6b34e6291480770671f2cbd703fb1d308cffd3499d5e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ],
+  "public_path_boundary": "Only this runtime inventory and explicitly retained byte-exact raw command logs contain public absolute paths; no owner-document locator or pixels are included.",
+  "mapping": {
+    "local-evidence:phase68-public-locator-1": "/home/yamato/otama-homelab/steward/node_modules/playwright-core",
+    "local-evidence:phase68-public-locator-2": "/home/yamato/.cache/ms-playwright/chromium-1247/chrome-linux64/chrome",
+    "local-evidence:phase68-public-locator-3": "/home/yamato/.local/share/scanner46-native-qevx7gil/raster-native",
+    "local-evidence:phase68-public-locator-4": "/tmp/scanner-v060-autonomous-execution.6gPhXd/worker-b/runtime-tmp-corrected",
+    "local-evidence:phase68-public-locator-5": "/tmp/scanner-v060/cpu-venv/bin/python",
+    "local-evidence:phase68-public-locator-6": "/tmp/scanner-v060-autonomous-execution.6gPhXd/worker-b/runtime-tmp",
+    "local-evidence:phase68-public-locator-7": "/tmp/s68-hao_u_5q",
+    "local-evidence:phase68-public-locator-8": "/tmp/scanner-v060-autonomous-execution.6gPhXd/worker-b",
+    "local-evidence:phase68-public-locator-9": "/home/yamato/otama-homelab/scanner-kiosk",
+    "local-evidence:phase68-public-locator-10": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+    "local-evidence:phase68-public-locator-11": "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq",
+    "local-evidence:phase68-public-locator-12": "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq",
+    "local-runtime:retained-phase49-poppler-manifest": "/home/yamato/.local/share/scanner46-native-qevx7gil/raster-input/manifest.json",
+    "local-runtime:retained-phase49-poppler-source-identity": "/home/yamato/.local/share/scanner46-native-qevx7gil/raster-input/notice-files/poppler-25.12.0/source.json"
+  }
+}

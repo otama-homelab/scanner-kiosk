@@ -1,0 +1,90 @@
+{
+  "format": "scanner-v060-product-regression",
+  "status": "measured-pass",
+  "source_revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124",
+  "started_at": "2026-11-10T16:04:48.906291+00:00",
+  "duration_seconds": 13.017,
+  "complete_measurement": true,
+  "quality_pass": true,
+  "expected_tests": [
+    "TestPhotoManualCropRotateUndo"
+  ],
+  "tests_run": [
+    "TestPhotoManualCropRotateUndo"
+  ],
+  "top_level_tests_passed": [
+    "TestPhotoManualCropRotateUndo"
+  ],
+  "skips": [],
+  "failures": [],
+  "exit_code": 0,
+  "exception": null,
+  "retry_count": 1,
+  "semantic_test_retry_count": 0,
+  "mesh_unit_tests": {
+    "tests": 2,
+    "passed": true,
+    "inference_performed": false
+  },
+  "historical_receipt_restored": true,
+  "invariants": {
+    "original_retention": true,
+    "normalized_baseline_retention": true,
+    "preview_apply_undo_save_reocr": true,
+    "clean_canon_no_inference": false,
+    "clean_canon_no_resampling": false
+  },
+  "limitations": [
+    "Clean Canon no-inference/no-resampling is not covered by these seven named tests; false records an unproven qualification gate.",
+    "This is existing-path synthetic regression only; no new correction candidate is bound or qualified.",
+    "Automated Chromium and synthetic OCR are not owner iPhone/PC acceptance or OCR quality."
+  ],
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective-command.json",
+      "sha256": "3362243df110e6b15a869e2f39590e0ec0c65ef80bba0a219933a7a29e5a7839",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective.log",
+      "sha256": "2c59fa3bf68449177f7f6b34e6291480770671f2cbd703fb1d308cffd3499d5e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-runtime-preflight.json",
+      "sha256": "04e726c5b77cb5d6d463e176e057d88f1de416a54d91a47c9a5dec7826690e52",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-targeted-restoration-proof.json",
+      "sha256": "ea093164e6e1b3b909fc46bc65c6ba1f5ce1f3566e6d6baed0414ce53bd55132",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-source-inventory.json",
+      "sha256": "c67a6eb47a41690dd3256eabe441ef6b8a0fa0b317fd1148cbf8b7de774b78e7",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-mesh-tests.log",
+      "sha256": "219548cb994598ed761838bf14f584be119a24925e3b1f2b1a6ab471785bd50e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-environment-launch-failure.json",
+      "sha256": "03401399ed6b30abd779fc61cee2095e17c1c676f14c298c83229f567684ca1e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-receipt.json",
+      "sha256": "45aa3699077117c237a05497d4928f49861ee67fccc5428f9040d7d66d55ce3a",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase68-browser-corrective-raw.log",
+      "sha256": "2c59fa3bf68449177f7f6b34e6291480770671f2cbd703fb1d308cffd3499d5e",
+      "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+    }
+  ],
+  "targeted_corrective_run": true
+}

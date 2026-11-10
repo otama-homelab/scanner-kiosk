@@ -1,0 +1,7 @@
+test_official_sampling_preserves_rgb_and_known_source_positions (test_uvdoc_mesh_candidate.MeshBoundaryTest.test_official_sampling_preserves_rgb_and_known_source_positions) ... ok
+test_rejects_bad_shape_nonfinite_and_excessive_coordinates (test_uvdoc_mesh_candidate.MeshBoundaryTest.test_rejects_bad_shape_nonfinite_and_excessive_coordinates) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 4.058s
+
+OK

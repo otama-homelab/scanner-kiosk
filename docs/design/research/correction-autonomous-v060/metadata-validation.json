@@ -1,0 +1,58 @@
+{
+  "plan_validators": [
+    {
+      "plan": "65-02-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "65-02-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "66-01-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "66-01-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "66-01-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-01-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-01-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-02-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    },
+    {
+      "plan": "67-02-PLAN.md",
+      "returncode": 0,
+      "stderr": ""
+    }
+  ],
+  "exact_evidence_bindings_checked": 542,
+  "sanitation": {
+    "public_absolute_path_strings_remaining": 0,
+    "underlying_files_rehashed": 0,
+    "plan_validators_passed": 9,
+    "public_resolution_only": true,
+    "private_owner_locator_present": false
+  },
+  "exact_evidence_bindings_checked_scope": "542 bindings verified before sanitation; only path strings and dependent receipt hashes changed; underlying bytes not rehashed."
+}

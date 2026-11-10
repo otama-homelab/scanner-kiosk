@@ -1,0 +1,89 @@
+{
+  "format": "scanner-v060-illumination-measurement",
+  "requirement": "ILL-02",
+  "status": "waiting_external_rights_holder",
+  "complete": false,
+  "complete_measurement": false,
+  "qualified_quality": false,
+  "quality_pass": false,
+  "results": {
+    "psnr_improvement_db": {
+      "status": "not-run",
+      "value": null,
+      "reason": "No exact eligible illumination artifact or supported invocation; rights-holder gate stops execution."
+    },
+    "clean_ssim": {
+      "status": "not-run",
+      "value": null,
+      "reason": "No exact eligible illumination artifact or supported invocation; rights-holder gate stops execution."
+    },
+    "channel_mae": {
+      "status": "not-run",
+      "value": null,
+      "reason": "No exact eligible illumination artifact or supported invocation; rights-holder gate stops execution."
+    },
+    "digit_loss": {
+      "status": "not-run",
+      "value": null,
+      "reason": "No exact eligible illumination artifact or supported invocation; rights-holder gate stops execution."
+    },
+    "thin_line_loss": {
+      "status": "not-run",
+      "value": null,
+      "reason": "No exact eligible illumination artifact or supported invocation; rights-holder gate stops execution."
+    },
+    "seal_loss": {
+      "status": "not-run",
+      "value": null,
+      "reason": "No exact eligible illumination artifact or supported invocation; rights-holder gate stops execution."
+    },
+    "cpu_resources": {
+      "status": "not-run",
+      "value": null,
+      "reason": "No exact eligible illumination artifact or supported invocation; rights-holder gate stops execution."
+    }
+  },
+  "heavy_benchmarks": 0,
+  "product_budget": {
+    "cpu_threads": 2,
+    "timeout_s": 30,
+    "rss_bytes": 1073741824,
+    "temp_bytes": 268435456,
+    "installed_bytes": 268435456
+  },
+  "diagnostic_budget": {
+    "cpu_threads": 2,
+    "timeout_s": 30,
+    "rss_bytes": 2147483648,
+    "temp_bytes": 268435456,
+    "apply_eligible": false
+  },
+  "thresholds": {
+    "shadow_psnr_improvement_db": 1,
+    "clean_ssim_min": 0.99,
+    "clean_channel_mae_max": 0.00392156862745098
+  },
+  "resume_trigger": "New authoritative publication, rights-holder answer, or changed eligibility evidence revision. At most one transient metadata retry; no periodic unchanged MIT recheck. External messages remain unsent.",
+  "evidence": [
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-measurement-preflight.json",
+      "sha256": "f82e4cef9498ff4c1b82df70cec6f7d4353e9a1bea085a37940caec94a73405e",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-autonomous-v060/phase67-resume.json",
+      "sha256": "6688ffe4075f00a71646fa31075e64ae89dca5f0010730990838d3d0dd8678d0",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-paired-v060/paired-truth.json",
+      "sha256": "9f5124ee66de0cd778204a1583387694582b361172d53d29e1c30bbad32641e2",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    },
+    {
+      "path": "docs/design/research/correction-paired-v060/noop-baseline.json",
+      "sha256": "6cb4fdd217d584ea81ac66129dd9cc6df32a6720902eb621771681ebe0ac4bb1",
+      "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+    }
+  ]
+}
