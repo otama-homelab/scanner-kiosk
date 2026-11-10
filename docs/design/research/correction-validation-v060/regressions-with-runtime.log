@@ -1,0 +1,4 @@
+ok  	scanner-kiosk/internal/correction	0.003s
+ok  	scanner-kiosk/internal/documents	3.593s
+ok  	scanner-kiosk/internal/documenthttp	17.821s
+ok  	scanner-kiosk/internal/evaluation	0.535s

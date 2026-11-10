@@ -1,0 +1,17 @@
+[
+  {
+    "catalog": "/tmp/scanner-v060/control-diagnostic/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "bb2a8acda5e8fd1747cdc7a7f6b04a8ca86a97753ba8a0e3a4442ae16e403bf5",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/control-diagnostic/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "bb2a8acda5e8fd1747cdc7a7f6b04a8ca86a97753ba8a0e3a4442ae16e403bf5",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/control-diagnostic/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "bb2a8acda5e8fd1747cdc7a7f6b04a8ca86a97753ba8a0e3a4442ae16e403bf5",
+    "sampling_exact": true
+  }
+]

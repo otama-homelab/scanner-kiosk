@@ -1,0 +1,43 @@
+{
+  "model_sha256": "96e14d7e610dd0c27b768b228fbc553b4ec119ebe68f3a3594029a25400691d2",
+  "input": {
+    "name": "serving_default_args_0:0",
+    "shape": [
+      1,
+      256,
+      256,
+      3
+    ],
+    "dtype": "float32",
+    "quantization": [
+      0.0,
+      0
+    ]
+  },
+  "output": {
+    "name": "StatefulPartitionedCall:0",
+    "shape": [
+      1,
+      256,
+      256,
+      1
+    ],
+    "dtype": "float32",
+    "quantization": [
+      0.0,
+      0
+    ]
+  },
+  "setup_ms": 9.368408005684614,
+  "forward_ms": [
+    26.28059301059693,
+    20.243072998709977,
+    18.410213000606745
+  ],
+  "output_range": [
+    -11.617605209350586,
+    -4.767663478851318
+  ],
+  "rss_after_load_forward_bytes": 91312128,
+  "proof": "offline zero-tensor CPU compatibility only, no segmentation quality or complete detector"
+}

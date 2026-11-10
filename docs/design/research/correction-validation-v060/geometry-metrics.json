@@ -1,0 +1,30 @@
+{
+  "rows": [
+    {
+      "id": "00000",
+      "uvdoc_mean_error_fraction_diagonal": 0.004584961281576274,
+      "noop_mean_error_fraction_diagonal": 0.0732969148609941,
+      "uvdoc_max_error_fraction_diagonal": 0.011314475139036651,
+      "gt_points": 5429,
+      "scope": "dataset grid correspondence only; no OCR/digits/thin-line annotation; old ONNX comparison not included"
+    },
+    {
+      "id": "00001",
+      "uvdoc_mean_error_fraction_diagonal": 0.0019444081017690122,
+      "noop_mean_error_fraction_diagonal": 0.057679382085293565,
+      "uvdoc_max_error_fraction_diagonal": 0.007631620072520135,
+      "gt_points": 5429,
+      "scope": "dataset grid correspondence only; no OCR/digits/thin-line annotation; old ONNX comparison not included"
+    },
+    {
+      "id": "00002",
+      "uvdoc_mean_error_fraction_diagonal": 0.00360871259307724,
+      "noop_mean_error_fraction_diagonal": 0.0523537702257658,
+      "uvdoc_max_error_fraction_diagonal": 0.007467440375411685,
+      "gt_points": 5429,
+      "scope": "dataset grid correspondence only; no OCR/digits/thin-line annotation; old ONNX comparison not included"
+    }
+  ],
+  "coordinate_convention": "official grid2d HDF5 transpose, absolute source pixels; predicted normalized backward xy via align_corners_true to pixel(width-1,height-1); bilinear89x61 comparison; metric selfcheck passed",
+  "threshold_mean_error_fraction_diagonal": 0.02
+}

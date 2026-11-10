@@ -1,0 +1,132 @@
+[
+  {
+    "file": "data_UVDoc.py",
+    "bytes": 4216,
+    "sha256": "d6d6a6082ada8e6dcda85e275ebee83d48ab3280a066a32bde04f26b39902b31"
+  },
+  {
+    "file": "data_mixDataset.py",
+    "bytes": 695,
+    "sha256": "318f00671286f916af78f262021e35b41b5e78cd8132168b7734a7219384f5e6"
+  },
+  {
+    "file": "data_utils.py",
+    "bytes": 5216,
+    "sha256": "1ee9bc1acc58f69b2ff5e0be5cfc35bbec51a0f9eed2e1fceba3354a20e449e6"
+  },
+  {
+    "file": "doc3d-hf-api",
+    "bytes": 36021,
+    "sha256": "81600f93367837288a13824b4993590e60a2b8476cdd33d2951d5c8ebd0a44d5"
+  },
+  {
+    "file": "doc3d-license",
+    "bytes": 1073,
+    "sha256": "cd6ad23fa5f3d9f447928599a6062a249e3d7399c416cea6bb96923b07dc384f"
+  },
+  {
+    "file": "doc3d-readme",
+    "bytes": 3631,
+    "sha256": "4778676164a0f015f89e95ce27a298bc6b59b1fd9d5af2b77b8e6f93209da7d4"
+  },
+  {
+    "file": "fairscan-inference",
+    "bytes": 5586,
+    "sha256": "8dea3a1e140cff28dae66787d90d66d38a674006d125db70386d48e4b54fe205"
+  },
+  {
+    "file": "fairscan-model-readme",
+    "bytes": 2360,
+    "sha256": "96580cda2c4e94b695d484bd60ade09d65874326025546e956836c98b8b935ea"
+  },
+  {
+    "file": "fse-license",
+    "bytes": 1066,
+    "sha256": "8bc89f3f97bce52fc3f3446ef6ee29834c7b7724cf7f47341cf92aaa765eb151"
+  },
+  {
+    "file": "fse-onnx-readme",
+    "bytes": 3898,
+    "sha256": "562a863a611ca31582e914e4827bcf7af3a2574ee544418b4bbb9bb10c95e68a"
+  },
+  {
+    "file": "fse-onnx-release",
+    "bytes": 6774,
+    "sha256": "67b63e4fdcba0af92bdcb450b875700ecc64cd5332dca110a279658fa7f5e458"
+  },
+  {
+    "file": "fse-readme",
+    "bytes": 5155,
+    "sha256": "acc02f60adc6119bbe6c879c81aa10b3af175a97c5009e721670d8fe8dbac7a2"
+  },
+  {
+    "file": "fse-release",
+    "bytes": 6015,
+    "sha256": "0eea0f4dce77e86c1a8a4546e7759956cf2be6380644443a4128bfc07f56241b"
+  },
+  {
+    "file": "sd7k-project",
+    "bytes": 16447,
+    "sha256": "50978486afafb707a5f9d3d4b871cf3924fa560f65862a89d56463d0adceb197"
+  },
+  {
+    "file": "synthetic-readme",
+    "bytes": 2773,
+    "sha256": "8d9527594cb9aab99a45fcd2e03ac8da1df8c7eacf6a12cc92d74fb0635cbf66"
+  },
+  {
+    "file": "utils.py",
+    "bytes": 2186,
+    "sha256": "64909e09e7493dcef1cd356b833c316e87c8ce31a544c567dee4b95ece78d3c2"
+  },
+  {
+    "file": "uvdoc-data-license",
+    "bytes": 1069,
+    "sha256": "cf80bdbde76b47756c7fa62b56854ae54902979016bb08a6ba2edbebf93e9b90"
+  },
+  {
+    "file": "uvdoc-data-readme",
+    "bytes": 16411,
+    "sha256": "5e7eee1bbe26d32daecae4c3a25f6f61c5e243c6a3376ea1766a9f197836b71b"
+  },
+  {
+    "file": "uvdoc-data-tree",
+    "bytes": 8525,
+    "sha256": "0d6b6d678851cc872d08c3d1f2fa5cd16755425f3cc3ff4e6aa48cd056f2ef18"
+  },
+  {
+    "file": "uvdoc-license",
+    "bytes": 1069,
+    "sha256": "cf80bdbde76b47756c7fa62b56854ae54902979016bb08a6ba2edbebf93e9b90"
+  },
+  {
+    "file": "uvdoc-project",
+    "bytes": 12924,
+    "sha256": "67307b6b0a8b15c285075f299a3798e28bf54a1cc794fa28510575561aa14c09"
+  },
+  {
+    "file": "uvdoc-readme",
+    "bytes": 6411,
+    "sha256": "f45e92b02a6153e93e06bd32a5ac61646279bfece53cb14efcdd69e0a68b6ac0"
+  },
+  {
+    "file": "uvdoc-tree",
+    "bytes": 20424,
+    "sha256": "9fec9bc2bcccb3c8fc5ea382015a1a34f0b3318f7fa65fca9183dbdaaaa92607"
+  },
+  {
+    "file": "uvdocBenchmark_eval.py",
+    "bytes": 4165,
+    "sha256": "bf3c48fcd736103b7e6e77615f0fcafc15b8add21d49e8c5a0e5b5635a3fa7c7"
+  },
+  {
+    "file": "uvdocBenchmark_metric.py",
+    "bytes": 5330,
+    "sha256": "e2c3b9b7b26e893ac51f389cf4dbd9a2e27cbe3d4e25b2f6f68a2da5c6f446b7"
+  },
+  {
+    "file": "uvdocBenchmark_pred.py",
+    "bytes": 4817,
+    "sha256": "fbbb669fecc2af7b8d4dbcc80e817056d5792fc83da7c000c77eb780b0bbeb01"
+  }
+]

@@ -1,0 +1,317 @@
+[
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_1/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_2/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/diagnostic-fixture_docunet_scan_3/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_1_1_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "1c69fd9c050363d4cc27a22804d89093fa7d6bb8444c689929325b7075bcfbd0",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_1_2_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "d2317b5ff7ba618e68a93859baf47aea9f5722ea193e973308276f21c438586e",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_2_1_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "623f196f00c081fb409c9f7a0e48ebfcba8cad22b9f4fc4b1908fac2f691b135",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_2_2_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "7a7c422fa7e5ddef1f022af49a8e91032447cdd494a364ae19f42792c5aecd3c",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_3_1_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "bd285d2ab08e1e7a52daf5672e3f8e3f97c216c4b65e937d147c7af45f052908",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_crop_3_2_copy/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "5d0aae37ad5ec0cefd37804a7ec6628a13cd369303757e75f2ba5c77b1e6230b",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_1/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_1/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_1/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "2232407c2a1e7def15d35c5b79ca023d908d89d83dac48538f73683de08b138f",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_2/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_2/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_2/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "3b5520f02bdacec7654ea063b66b51deaafded097c22357d5b3a9cee14f863ae",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_3/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_3/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/product-fixture_docunet_scan_3/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "c00ac332a1cbdce3c24acb59c24d6ccaa6eaf591313e28f336322791508e4688",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00000/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "8e877b14095cb0196f30e578c15929cda59a079685fdf062a03c7681f008b703",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00000/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "8e877b14095cb0196f30e578c15929cda59a079685fdf062a03c7681f008b703",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00000/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "8e877b14095cb0196f30e578c15929cda59a079685fdf062a03c7681f008b703",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00001/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "a12c4d1837fbf2b695add8d3c4fd0d5c9ec6d0e5b1150d6304e5900f530471bd",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00001/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "a12c4d1837fbf2b695add8d3c4fd0d5c9ec6d0e5b1150d6304e5900f530471bd",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00001/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "a12c4d1837fbf2b695add8d3c4fd0d5c9ec6d0e5b1150d6304e5900f530471bd",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00002/repetitions/001-cold/artifact-catalog.json",
+    "mesh_sha256": "4772068202610f9ef45dfc25db4470a3b6ff0186b100833faf78d2e029331c47",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00002/repetitions/002-warm/artifact-catalog.json",
+    "mesh_sha256": "4772068202610f9ef45dfc25db4470a3b6ff0186b100833faf78d2e029331c47",
+    "sampling_exact": true
+  },
+  {
+    "catalog": "/tmp/scanner-v060/truth-00002/repetitions/003-warm/artifact-catalog.json",
+    "mesh_sha256": "4772068202610f9ef45dfc25db4470a3b6ff0186b100833faf78d2e029331c47",
+    "sampling_exact": true
+  }
+]

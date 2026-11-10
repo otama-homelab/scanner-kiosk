@@ -1,0 +1,8 @@
+ok  	scanner-kiosk/internal/correction	0.002s
+ok  	scanner-kiosk/internal/documents	3.800s
+--- FAIL: TestPhotoManualCropRotateUndo (7.43s)
+    photo_browser_integration_linux_test.go:121: required runtime SCANNER_TEST_PLAYWRIGHT_MODULE missing
+FAIL
+FAIL	scanner-kiosk/internal/documenthttp	10.954s
+ok  	scanner-kiosk/internal/evaluation	0.582s
+FAIL

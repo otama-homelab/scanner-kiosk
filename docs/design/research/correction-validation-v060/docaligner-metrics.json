@@ -1,0 +1,53 @@
+{
+  "rows": [
+    {
+      "id": "00000",
+      "fallback_samples": 3,
+      "total_samples": 3,
+      "output_byte_identical_to_source": true,
+      "full_image_noop_mask_iou": 0.6504669189453125,
+      "corner_error_fraction_diagonal": [
+        0.15076057344087282,
+        0.10011469188257775,
+        0.14979308588760729,
+        0.07108702743377888
+      ],
+      "corner_mean_error_fraction_diagonal": 0.11793884466120917,
+      "resource_metrics_qualified": false,
+      "resource_note": "overlapped automated regression; timings/RSS not used for qualification"
+    },
+    {
+      "id": "00001",
+      "fallback_samples": 3,
+      "total_samples": 3,
+      "output_byte_identical_to_source": true,
+      "full_image_noop_mask_iou": 0.7216339111328125,
+      "corner_error_fraction_diagonal": [
+        0.12338184123586365,
+        0.10190968175360193,
+        0.11256263135064805,
+        0.07727973758513938
+      ],
+      "corner_mean_error_fraction_diagonal": 0.10378347298131325,
+      "resource_metrics_qualified": false,
+      "resource_note": "overlapped automated regression; timings/RSS not used for qualification"
+    },
+    {
+      "id": "00002",
+      "fallback_samples": 3,
+      "total_samples": 3,
+      "output_byte_identical_to_source": true,
+      "full_image_noop_mask_iou": 0.7324371337890625,
+      "corner_error_fraction_diagonal": [
+        0.11585100125003864,
+        0.0891244832467937,
+        0.06547752837628526,
+        0.06730923638383005
+      ],
+      "corner_mean_error_fraction_diagonal": 0.08444056231423691,
+      "resource_metrics_qualified": false,
+      "resource_note": "overlapped automated regression; timings/RSS not used for qualification"
+    }
+  ],
+  "scope": "existing complete DocAligner path on3additional UVDoc cases; all fallback to no-op. Does not satisfy original6photo annotations/content requirements."
+}

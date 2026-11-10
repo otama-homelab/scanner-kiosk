@@ -1,0 +1,40 @@
+{
+  "rows": [
+    {
+      "id": "00000",
+      "iou": 0.9360080664071659,
+      "raw_range": [
+        -17.118410110473633,
+        12.232142448425293
+      ],
+      "forward_ms": 31.162847997620702,
+      "decode_preprocess_forward_ms": 77.01583299785852,
+      "threshold": 0.5
+    },
+    {
+      "id": "00001",
+      "iou": 0.8399568765061515,
+      "raw_range": [
+        -15.531224250793457,
+        14.155003547668457
+      ],
+      "forward_ms": 19.266799004981294,
+      "decode_preprocess_forward_ms": 51.388136998866685,
+      "threshold": 0.5
+    },
+    {
+      "id": "00002",
+      "iou": 0.9842350785122246,
+      "raw_range": [
+        -19.899518966674805,
+        14.16471004486084
+      ],
+      "forward_ms": 18.63110699923709,
+      "decode_preprocess_forward_ms": 48.879187990678474,
+      "threshold": 0.5
+    }
+  ],
+  "rss_bytes": 102526976,
+  "whole_process_ms": 194.16025400278158,
+  "scope": "mask diagnostic only; published normalization/clamp/threshold; Pillow bilinear not verified Android ResizeOp parity; not complete detector or product pass"
+}

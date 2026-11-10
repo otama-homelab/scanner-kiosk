@@ -1,0 +1,383 @@
+{
+  "selection": "lexicographic first3image IDs fixed before new inference; no replacement ofDocUNet9",
+  "ids": [
+    "00000",
+    "00001",
+    "00002"
+  ],
+  "scope": "local benchmark evaluation only; publisher dataset repo MIT, third-party textures acknowledged; no redistribution/training/product bundling",
+  "network_bytes": 9513629,
+  "range_requests": [
+    {
+      "offset": 775129572,
+      "bytes": 22
+    },
+    {
+      "offset": 775129552,
+      "bytes": 20
+    },
+    {
+      "offset": 775056907,
+      "bytes": 72665
+    },
+    {
+      "offset": 593977101,
+      "bytes": 30
+    },
+    {
+      "offset": 593977131,
+      "bytes": 42
+    },
+    {
+      "offset": 593977205,
+      "bytes": 106
+    },
+    {
+      "offset": 657340575,
+      "bytes": 30
+    },
+    {
+      "offset": 657340605,
+      "bytes": 29
+    },
+    {
+      "offset": 657340666,
+      "bytes": 1736878
+    },
+    {
+      "offset": 693595858,
+      "bytes": 30
+    },
+    {
+      "offset": 693595888,
+      "bytes": 41
+    },
+    {
+      "offset": 693595961,
+      "bytes": 560159
+    },
+    {
+      "offset": 697448809,
+      "bytes": 30
+    },
+    {
+      "offset": 697448839,
+      "bytes": 41
+    },
+    {
+      "offset": 697448912,
+      "bytes": 36087
+    },
+    {
+      "offset": 734725945,
+      "bytes": 30
+    },
+    {
+      "offset": 734725975,
+      "bytes": 38
+    },
+    {
+      "offset": 734726045,
+      "bytes": 5338
+    },
+    {
+      "offset": 40202166,
+      "bytes": 30
+    },
+    {
+      "offset": 40202196,
+      "bytes": 49
+    },
+    {
+      "offset": 40202277,
+      "bytes": 318
+    },
+    {
+      "offset": 33700367,
+      "bytes": 30
+    },
+    {
+      "offset": 33700397,
+      "bytes": 52
+    },
+    {
+      "offset": 33700481,
+      "bytes": 767757
+    },
+    {
+      "offset": 593975968,
+      "bytes": 30
+    },
+    {
+      "offset": 593975998,
+      "bytes": 42
+    },
+    {
+      "offset": 593976072,
+      "bytes": 109
+    },
+    {
+      "offset": 655452890,
+      "bytes": 30
+    },
+    {
+      "offset": 655452920,
+      "bytes": 29
+    },
+    {
+      "offset": 655452981,
+      "bytes": 1887578
+    },
+    {
+      "offset": 693199463,
+      "bytes": 30
+    },
+    {
+      "offset": 693199493,
+      "bytes": 41
+    },
+    {
+      "offset": 693199566,
+      "bytes": 396276
+    },
+    {
+      "offset": 698619239,
+      "bytes": 30
+    },
+    {
+      "offset": 698619269,
+      "bytes": 41
+    },
+    {
+      "offset": 698619342,
+      "bytes": 35455
+    },
+    {
+      "offset": 734857056,
+      "bytes": 30
+    },
+    {
+      "offset": 734857086,
+      "bytes": 38
+    },
+    {
+      "offset": 734857156,
+      "bytes": 4743
+    },
+    {
+      "offset": 40194577,
+      "bytes": 30
+    },
+    {
+      "offset": 40194607,
+      "bytes": 49
+    },
+    {
+      "offset": 40194688,
+      "bytes": 318
+    },
+    {
+      "offset": 20191747,
+      "bytes": 30
+    },
+    {
+      "offset": 20191777,
+      "bytes": 50
+    },
+    {
+      "offset": 20191859,
+      "bytes": 395280
+    },
+    {
+      "offset": 593968228,
+      "bytes": 30
+    },
+    {
+      "offset": 593968258,
+      "bytes": 42
+    },
+    {
+      "offset": 593968332,
+      "bytes": 93
+    },
+    {
+      "offset": 646569534,
+      "bytes": 30
+    },
+    {
+      "offset": 646569564,
+      "bytes": 29
+    },
+    {
+      "offset": 646569625,
+      "bytes": 1945299
+    },
+    {
+      "offset": 689762201,
+      "bytes": 30
+    },
+    {
+      "offset": 689762231,
+      "bytes": 41
+    },
+    {
+      "offset": 689762304,
+      "bytes": 707026
+    },
+    {
+      "offset": 698123411,
+      "bytes": 30
+    },
+    {
+      "offset": 698123441,
+      "bytes": 41
+    },
+    {
+      "offset": 698123514,
+      "bytes": 35900
+    },
+    {
+      "offset": 734801835,
+      "bytes": 30
+    },
+    {
+      "offset": 734801865,
+      "bytes": 38
+    },
+    {
+      "offset": 734801935,
+      "bytes": 4337
+    },
+    {
+      "offset": 40207076,
+      "bytes": 30
+    },
+    {
+      "offset": 40207106,
+      "bytes": 49
+    },
+    {
+      "offset": 40207187,
+      "bytes": 318
+    },
+    {
+      "offset": 26100788,
+      "bytes": 30
+    },
+    {
+      "offset": 26100818,
+      "bytes": 34
+    },
+    {
+      "offset": 26100884,
+      "bytes": 920061
+    }
+  ],
+  "members": [
+    {
+      "member": "UVDoc_benchmark/metadata_sample/00000.json",
+      "bytes": 139,
+      "sha256": "ccf4ef6747a7e040fe0dfa92281b16117c78fb587afc2b9de73df4dbf78b7b55"
+    },
+    {
+      "member": "UVDoc_benchmark/img/00000.png",
+      "bytes": 1856062,
+      "sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b"
+    },
+    {
+      "member": "UVDoc_benchmark/warped_textures/00000.png",
+      "bytes": 646917,
+      "sha256": "c5d9658211f00da09cdd06ca240f4557812348f705aa34ca328117937788be11"
+    },
+    {
+      "member": "UVDoc_benchmark/grid2d/09_00000_1_0_0.mat",
+      "bytes": 40701,
+      "sha256": "1563eed6dcf4dc21e53908143977bd572d9d42fa15ab19f3851fffc552200805"
+    },
+    {
+      "member": "UVDoc_benchmark/seg/09_00000_1_0_0.mat",
+      "bytes": 11417,
+      "sha256": "6bf7627d03d71eedfae2fd66ef2397502ef4ee252a7be5a96e9a3d4edeb14511"
+    },
+    {
+      "member": "UVDoc_benchmark/metadata_geom/09_00000_1_0_0.json",
+      "bytes": 539,
+      "sha256": "2dff6e3aa160d786db6fac4220922a0fb88ac451281a2d2d70803e3a90ce807d"
+    },
+    {
+      "member": "UVDoc_benchmark/textures/libregraphicsmag_2_2-15.png",
+      "bytes": 878524,
+      "sha256": "94c3c29530c4855aa87b57c712f22b5a7d68148a52a51a2ac64d8fa3df166777"
+    },
+    {
+      "member": "UVDoc_benchmark/metadata_sample/00001.json",
+      "bytes": 142,
+      "sha256": "6acbc514db7fb2df8f12133c9bce7b555b61747c8c9dbce7abfd9fde7af62583"
+    },
+    {
+      "member": "UVDoc_benchmark/img/00001.png",
+      "bytes": 1957797,
+      "sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4"
+    },
+    {
+      "member": "UVDoc_benchmark/warped_textures/00001.png",
+      "bytes": 515461,
+      "sha256": "a755c38fdcdff64db74f076401931cbf0a74b19bb74c58d95b08c917749579e1"
+    },
+    {
+      "member": "UVDoc_benchmark/grid2d/09_00004_1_0_0.mat",
+      "bytes": 40066,
+      "sha256": "1f59b1ac83d59dbf6e7a4f648b844e020fe3da4ae9abe9724af92e2d4de1ab1b"
+    },
+    {
+      "member": "UVDoc_benchmark/seg/09_00004_1_0_0.mat",
+      "bytes": 10712,
+      "sha256": "7aac68b3dcbfa2405c2808be481ebe199b972e86a0c0d508a1080d6971461d63"
+    },
+    {
+      "member": "UVDoc_benchmark/metadata_geom/09_00004_1_0_0.json",
+      "bytes": 539,
+      "sha256": "61c8d6b78cca61eb89d171e4fc0e97800691817700a521844871e406dde1d00e"
+    },
+    {
+      "member": "UVDoc_benchmark/textures/01_stagedancing_p0027.png",
+      "bytes": 629144,
+      "sha256": "916a23d0f0b7a0f08859f5dd231cd481bf0f43bbfa8f4d57883cbda2d86e54f0"
+    },
+    {
+      "member": "UVDoc_benchmark/metadata_sample/00002.json",
+      "bytes": 122,
+      "sha256": "6ea2ba9b7ee91d63a68133e5c25433872e32b34c3afb2b26bbe973b70c97657a"
+    },
+    {
+      "member": "UVDoc_benchmark/img/00002.png",
+      "bytes": 2029190,
+      "sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01"
+    },
+    {
+      "member": "UVDoc_benchmark/warped_textures/00002.png",
+      "bytes": 888851,
+      "sha256": "e432790b635c1d9b7745cceb11e601e39a0f081f25a8723c6fa300976e5399ec"
+    },
+    {
+      "member": "UVDoc_benchmark/grid2d/09_00005_1_0_0.mat",
+      "bytes": 40507,
+      "sha256": "073a764a25baa2b878ce61c451e2ddbcd9dde8c81f02c4b2c3e49a5a7ee49226"
+    },
+    {
+      "member": "UVDoc_benchmark/seg/09_00005_1_0_0.mat",
+      "bytes": 10486,
+      "sha256": "6351e00a43849873067e8ec021c53335081631d525127046613a58a123fe3fd6"
+    },
+    {
+      "member": "UVDoc_benchmark/metadata_geom/09_00005_1_0_0.json",
+      "bytes": 539,
+      "sha256": "78c389b5869da45fe4802e4f221c64e6f0819be9bc39d61cd2f58694fccfbeb3"
+    },
+    {
+      "member": "UVDoc_benchmark/textures/05-09.png",
+      "bytes": 1132041,
+      "sha256": "6a462611d87d4420609f6f8fcff82e2e832021a1ee23a0b6c0b1a782774598b9"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "rows": [
+    {
+      "id": "00000",
+      "source_sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b",
+      "width": 1041,
+      "height": 1330,
+      "grid_shape": [
+        2,
+        89,
+        61
+      ],
+      "truth": "dataset-supplied independent grid2d/seg, loader orientation from official data_UVDoc.py; pixel coordinates; no content transcription",
+      "split": "diagnostic-only-first3"
+    },
+    {
+      "id": "00001",
+      "source_sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4",
+      "width": 969,
+      "height": 1252,
+      "grid_shape": [
+        2,
+        89,
+        61
+      ],
+      "truth": "dataset-supplied independent grid2d/seg, loader orientation from official data_UVDoc.py; pixel coordinates; no content transcription",
+      "split": "diagnostic-only-first3"
+    },
+    {
+      "id": "00002",
+      "source_sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+      "width": 1021,
+      "height": 1286,
+      "grid_shape": [
+        2,
+        89,
+        61
+      ],
+      "truth": "dataset-supplied independent grid2d/seg, loader orientation from official data_UVDoc.py; pixel coordinates; no content transcription",
+      "split": "diagnostic-only-first3"
+    }
+  ],
+  "metric": "mean Euclidean pixel correspondence error / image diagonal; bilinear align_corners interpolation to89x61; no-op identity baseline. FairScan256IoU uses nearest-neighbor GT and published clamp/0.5; Pillow resize not Android parity.",
+  "content_truth_complete": false
+}

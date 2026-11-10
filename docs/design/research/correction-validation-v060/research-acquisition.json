@@ -1,0 +1,93 @@
+[
+  {
+    "name": "uvdoc-readme",
+    "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/main/README.md",
+    "sha256": "f45e92b02a6153e93e06bd32a5ac61646279bfece53cb14efcdd69e0a68b6ac0",
+    "bytes": 6411,
+    "status": 200
+  },
+  {
+    "name": "uvdoc-license",
+    "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/main/LICENSE",
+    "sha256": "cf80bdbde76b47756c7fa62b56854ae54902979016bb08a6ba2edbebf93e9b90",
+    "bytes": 1069,
+    "status": 200
+  },
+  {
+    "name": "uvdoc-tree",
+    "url": "https://api.github.com/repos/tanguymagne/UVDoc/git/trees/main?recursive=1",
+    "sha256": "9fec9bc2bcccb3c8fc5ea382015a1a34f0b3318f7fa65fca9183dbdaaaa92607",
+    "bytes": 20424,
+    "status": 200
+  },
+  {
+    "name": "doc3d-readme",
+    "url": "https://raw.githubusercontent.com/cvlab-stonybrook/doc3D-dataset/master/README.md",
+    "sha256": "4778676164a0f015f89e95ce27a298bc6b59b1fd9d5af2b77b8e6f93209da7d4",
+    "bytes": 3631,
+    "status": 200
+  },
+  {
+    "name": "doc3d-license",
+    "url": "https://raw.githubusercontent.com/cvlab-stonybrook/doc3D-dataset/master/LICENSE",
+    "sha256": "cd6ad23fa5f3d9f447928599a6062a249e3d7399c416cea6bb96923b07dc384f",
+    "bytes": 1073,
+    "status": 200
+  },
+  {
+    "name": "fse-readme",
+    "url": "https://raw.githubusercontent.com/CXH-Research/DocShadow-SD7K/main/README.md",
+    "sha256": "acc02f60adc6119bbe6c879c81aa10b3af175a97c5009e721670d8fe8dbac7a2",
+    "bytes": 5155,
+    "status": 200
+  },
+  {
+    "name": "fse-license",
+    "url": "https://raw.githubusercontent.com/CXH-Research/DocShadow-SD7K/main/LICENSE",
+    "sha256": "8bc89f3f97bce52fc3f3446ef6ee29834c7b7724cf7f47341cf92aaa765eb151",
+    "bytes": 1066,
+    "status": 200
+  },
+  {
+    "name": "fse-release",
+    "url": "https://api.github.com/repos/CXH-Research/DocShadow-SD7K/releases/tags/Weights",
+    "sha256": "0eea0f4dce77e86c1a8a4546e7759956cf2be6380644443a4128bfc07f56241b",
+    "bytes": 6015,
+    "status": 200
+  },
+  {
+    "name": "fse-onnx-readme",
+    "url": "https://raw.githubusercontent.com/fabio-sim/DocShadow-ONNX-TensorRT/main/README.md",
+    "sha256": "562a863a611ca31582e914e4827bcf7af3a2574ee544418b4bbb9bb10c95e68a",
+    "bytes": 3898,
+    "status": 200
+  },
+  {
+    "name": "fse-onnx-release",
+    "url": "https://api.github.com/repos/fabio-sim/DocShadow-ONNX-TensorRT/releases/tags/v1.0.0",
+    "sha256": "67b63e4fdcba0af92bdcb450b875700ecc64cd5332dca110a279658fa7f5e458",
+    "bytes": 6774,
+    "status": 200
+  },
+  {
+    "name": "synthetic-readme",
+    "url": "https://raw.githubusercontent.com/tanguymagne/SyntheticDoc/main/README.md",
+    "sha256": "8d9527594cb9aab99a45fcd2e03ac8da1df8c7eacf6a12cc92d74fb0635cbf66",
+    "bytes": 2773,
+    "status": 200
+  },
+  {
+    "name": "fairscan-inference",
+    "url": "https://raw.githubusercontent.com/pynicolas/FairScan/main/app/src/main/java/org/fairscan/app/domain/ImageSegmentation.kt",
+    "sha256": "8dea3a1e140cff28dae66787d90d66d38a674006d125db70386d48e4b54fe205",
+    "bytes": 5586,
+    "status": 200
+  },
+  {
+    "name": "fairscan-model-readme",
+    "url": "https://raw.githubusercontent.com/pynicolas/fairscan-segmentation-model/main/README.md",
+    "sha256": "96580cda2c4e94b695d484bd60ade09d65874326025546e956836c98b8b935ea",
+    "bytes": 2360,
+    "status": 200
+  }
+]

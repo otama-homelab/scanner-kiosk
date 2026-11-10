@@ -1,0 +1,7 @@
+{
+  "torch": "2.12.1+cpu",
+  "torch_cuda_version": null,
+  "transformers": "5.12.1",
+  "model_code_sha256": "a544aa46d28b8d7aa5a41c78e3a9f0df770939baba3f1cfc4c34aa01294effb1",
+  "processor_code_sha256": "61399ca76db9ce5b9f475e730f9484ccd46fa16c2195e5394b45d97d8c2c2187"
+}

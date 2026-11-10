@@ -1,0 +1,51 @@
+{
+  "format": "scanner-eval-candidate",
+  "version": 1,
+  "candidate_id": "correction_uvdoc_mesh_060",
+  "candidate_version": "v0.6.0-eval",
+  "executable": "/tmp/scanner-v060/uvdoc-cpu",
+  "executable_sha256": "88f745fe07eb58fdc6e84f96b95b0274d860a2d27f6e1a8ce0b804beb058454d",
+  "argv": [],
+  "environment": [
+    "EVAL_CANDIDATE_ID=correction_uvdoc_mesh_060",
+    "EVAL_UVDOC_MESH_MODEL=/tmp/scanner-v050/model",
+    "OPENBLAS_NUM_THREADS=2",
+    "OMP_NUM_THREADS=2",
+    "HF_HUB_OFFLINE=1",
+    "TRANSFORMERS_OFFLINE=1",
+    "CUDA_VISIBLE_DEVICES=",
+    "HF_HUB_DISABLE_PROGRESS_BARS=1"
+  ],
+  "parameters": {},
+  "sources": [
+    {
+      "name": "scanner-kiosk evaluation adapter",
+      "version": "v0.5.0",
+      "license": "Apache-2.0",
+      "sha256": "4a3088570120ba36c38ea29350ac343a249c0d4865d7657e4eb56affa373dec9"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "modeling",
+      "version": "5.12.1",
+      "license": "Apache-2.0",
+      "sha256": "a544aa46d28b8d7aa5a41c78e3a9f0df770939baba3f1cfc4c34aa01294effb1"
+    },
+    {
+      "name": "processor",
+      "version": "5.12.1",
+      "license": "Apache-2.0",
+      "sha256": "61399ca76db9ce5b9f475e730f9484ccd46fa16c2195e5394b45d97d8c2c2187"
+    },
+    {
+      "name": "official UVDoc safetensors",
+      "version": "bfa6aad03b549c7e2cf89cefd2fb02ba3bef2ae4",
+      "license": "Apache-2.0",
+      "sha256": "65f980e3083b4919d962d7b4c8ddb42a926dc8b36f4909944746cf2d7b7325dc"
+    }
+  ],
+  "operator_steps": [
+    "CPU-only offline2threads; product RSS1024MiB; no apply; installed package gate separate; quality truth incomplete."
+  ]
+}

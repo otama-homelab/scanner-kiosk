@@ -1,0 +1,17 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/main/uvdocBenchmark_eval.py",
+    "sha256": "bf3c48fcd736103b7e6e77615f0fcafc15b8add21d49e8c5a0e5b5635a3fa7c7",
+    "bytes": 4165
+  },
+  {
+    "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/main/uvdocBenchmark_metric.py",
+    "sha256": "e2c3b9b7b26e893ac51f389cf4dbd9a2e27cbe3d4e25b2f6f68a2da5c6f446b7",
+    "bytes": 5330
+  },
+  {
+    "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/main/uvdocBenchmark_pred.py",
+    "sha256": "fbbb669fecc2af7b8d4dbcc80e817056d5792fc83da7c000c77eb780b0bbeb01",
+    "bytes": 4817
+  }
+]

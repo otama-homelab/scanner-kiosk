@@ -1,0 +1,42 @@
+[
+  {
+    "name": "uvdoc-data-readme",
+    "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc-Dataset/main/README.md",
+    "status": 200,
+    "bytes": 16411,
+    "sha256": "5e7eee1bbe26d32daecae4c3a25f6f61c5e243c6a3376ea1766a9f197836b71b"
+  },
+  {
+    "name": "uvdoc-data-license",
+    "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc-Dataset/main/LICENSE",
+    "status": 200,
+    "bytes": 1069,
+    "sha256": "cf80bdbde76b47756c7fa62b56854ae54902979016bb08a6ba2edbebf93e9b90"
+  },
+  {
+    "name": "uvdoc-data-tree",
+    "url": "https://api.github.com/repos/tanguymagne/UVDoc-Dataset/git/trees/main?recursive=1",
+    "status": 200,
+    "bytes": 8525,
+    "sha256": "0d6b6d678851cc872d08c3d1f2fa5cd16755425f3cc3ff4e6aa48cd056f2ef18"
+  },
+  {
+    "name": "doc3d-hf-card",
+    "url": "https://huggingface.co/datasets/StonyBrook-CVLab/doc3D-dataset/raw/main/README.md",
+    "error": "HTTP Error 401: Unauthorized"
+  },
+  {
+    "name": "doc3d-hf-api",
+    "url": "https://huggingface.co/api/datasets/StonyBrook-CVLab/doc3D-dataset?blobs=true",
+    "status": 200,
+    "bytes": 36021,
+    "sha256": "81600f93367837288a13824b4993590e60a2b8476cdd33d2951d5c8ebd0a44d5"
+  },
+  {
+    "name": "uvdoc-project",
+    "url": "https://igl.ethz.ch/projects/uvdoc/",
+    "status": 200,
+    "bytes": 12924,
+    "sha256": "67307b6b0a8b15c285075f299a3798e28bf54a1cc794fa28510575561aa14c09"
+  }
+]

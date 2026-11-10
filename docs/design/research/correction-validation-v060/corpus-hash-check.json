@@ -1,0 +1,167 @@
+{
+  "verified": 9,
+  "fixtures": [
+    {
+      "id": "fixture_docunet_crop_1_1_copy",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_crop_1_1_copy"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-crop",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "crop_1_1_copy.png",
+      "sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+      "bytes": 1439196
+    },
+    {
+      "id": "fixture_docunet_crop_1_2_copy",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_crop_1_2_copy"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-crop",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "crop_1_2_copy.png",
+      "sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+      "bytes": 1581870
+    },
+    {
+      "id": "fixture_docunet_crop_2_1_copy",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_crop_2_1_copy"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-crop",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "crop_2_1_copy.png",
+      "sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+      "bytes": 2019020
+    },
+    {
+      "id": "fixture_docunet_crop_2_2_copy",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_crop_2_2_copy"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-crop",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "crop_2_2_copy.png",
+      "sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "bytes": 2394380
+    },
+    {
+      "id": "fixture_docunet_crop_3_1_copy",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_crop_3_1_copy"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-crop",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "crop_3_1_copy.png",
+      "sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+      "bytes": 1422168
+    },
+    {
+      "id": "fixture_docunet_crop_3_2_copy",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_crop_3_2_copy"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-crop",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "crop_3_2_copy.png",
+      "sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+      "bytes": 1457205
+    },
+    {
+      "id": "fixture_docunet_scan_1",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_scan_1"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-scan",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "scan_1.png",
+      "sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "bytes": 2479249
+    },
+    {
+      "id": "fixture_docunet_scan_2",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_scan_2"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-scan",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "scan_2.png",
+      "sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "bytes": 1684825
+    },
+    {
+      "id": "fixture_docunet_scan_3",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_scan_3"
+      ],
+      "languages": [
+        "en"
+      ],
+      "document_type": "public-docunet-scan",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "scan_3.png",
+      "sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "bytes": 747101
+    }
+  ]
+}

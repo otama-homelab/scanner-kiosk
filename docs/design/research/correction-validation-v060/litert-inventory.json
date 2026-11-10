@@ -1,0 +1,69 @@
+{
+  "python": "3.12.9",
+  "prefix": "/tmp/scanner-v060/litert-venv",
+  "system_site_packages": false,
+  "user_site_enabled": false,
+  "distributions": [
+    {
+      "name": "ai-edge-litert",
+      "version": "2.3.0",
+      "installed_bytes": 61369950,
+      "license": "unknown"
+    },
+    {
+      "name": "backports.strenum",
+      "version": "1.2.8",
+      "installed_bytes": 22282,
+      "license": "MIT"
+    },
+    {
+      "name": "flatbuffers",
+      "version": "25.12.19",
+      "installed_bytes": 220438,
+      "license": "Apache 2.0"
+    },
+    {
+      "name": "ml_dtypes",
+      "version": "0.6.0",
+      "installed_bytes": 1847781,
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "numpy",
+      "version": "2.5.4",
+      "installed_bytes": 68390600,
+      "license": "BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0"
+    },
+    {
+      "name": "pillow",
+      "version": "12.2.0",
+      "installed_bytes": 20904611,
+      "license": "MIT-CMU"
+    },
+    {
+      "name": "pip",
+      "version": "24.3.1",
+      "installed_bytes": 10928881,
+      "license": "MIT"
+    },
+    {
+      "name": "protobuf",
+      "version": "7.36.2",
+      "installed_bytes": 2424187,
+      "license": "3-Clause BSD License"
+    },
+    {
+      "name": "tqdm",
+      "version": "4.70.1",
+      "installed_bytes": 448470,
+      "license": "MPL-2.0 AND MIT"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0",
+      "installed_bytes": 349456,
+      "license": "PSF-2.0"
+    }
+  ],
+  "installed_distribution_bytes": 166906656
+}

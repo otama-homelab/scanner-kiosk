@@ -1,0 +1,758 @@
+[
+  {
+    "directory": "diagnostic-fixture_docunet_crop_1_1_copy",
+    "fixture": "fixture_docunet_crop_1_1_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5787,
+        "peak_rss_bytes": 645312512,
+        "sampled_temp_disk_bytes": 2918530,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5738,
+        "peak_rss_bytes": 664530944,
+        "sampled_temp_disk_bytes": 2918532,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5735,
+        "peak_rss_bytes": 671739904,
+        "sampled_temp_disk_bytes": 2918532,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_crop_1_2_copy",
+    "fixture": "fixture_docunet_crop_1_2_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5739,
+        "peak_rss_bytes": 694767616,
+        "sampled_temp_disk_bytes": 3117473,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5769,
+        "peak_rss_bytes": 694857728,
+        "sampled_temp_disk_bytes": 3117473,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5832,
+        "peak_rss_bytes": 694788096,
+        "sampled_temp_disk_bytes": 3117473,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_crop_2_1_copy",
+    "fixture": "fixture_docunet_crop_2_1_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 6765,
+        "peak_rss_bytes": 753422336,
+        "sampled_temp_disk_bytes": 4036485,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 6558,
+        "peak_rss_bytes": 748515328,
+        "sampled_temp_disk_bytes": 4036487,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 6336,
+        "peak_rss_bytes": 719958016,
+        "sampled_temp_disk_bytes": 4036481,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_crop_2_2_copy",
+    "fixture": "fixture_docunet_crop_2_2_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 7006,
+        "peak_rss_bytes": 758505472,
+        "sampled_temp_disk_bytes": 4574816,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 6801,
+        "peak_rss_bytes": 766808064,
+        "sampled_temp_disk_bytes": 4574814,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 6538,
+        "peak_rss_bytes": 767000576,
+        "sampled_temp_disk_bytes": 4574812,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_crop_3_1_copy",
+    "fixture": "fixture_docunet_crop_3_1_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5651,
+        "peak_rss_bytes": 679608320,
+        "sampled_temp_disk_bytes": 2781722,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5837,
+        "peak_rss_bytes": 687702016,
+        "sampled_temp_disk_bytes": 2781720,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5657,
+        "peak_rss_bytes": 697032704,
+        "sampled_temp_disk_bytes": 2781716,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_crop_3_2_copy",
+    "fixture": "fixture_docunet_crop_3_2_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5621,
+        "peak_rss_bytes": 654536704,
+        "sampled_temp_disk_bytes": 2590400,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5323,
+        "peak_rss_bytes": 650354688,
+        "sampled_temp_disk_bytes": 2590398,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5381,
+        "peak_rss_bytes": 645713920,
+        "sampled_temp_disk_bytes": 2590400,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_scan_1",
+    "fixture": "fixture_docunet_scan_1",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 6082,
+        "peak_rss_bytes": 710316032,
+        "sampled_temp_disk_bytes": 4932349,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 6289,
+        "peak_rss_bytes": 709767168,
+        "sampled_temp_disk_bytes": 4932351,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 6057,
+        "peak_rss_bytes": 710479872,
+        "sampled_temp_disk_bytes": 4932351,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_scan_2",
+    "fixture": "fixture_docunet_scan_2",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5662,
+        "peak_rss_bytes": 737996800,
+        "sampled_temp_disk_bytes": 3602806,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5629,
+        "peak_rss_bytes": 734461952,
+        "sampled_temp_disk_bytes": 3602806,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5743,
+        "peak_rss_bytes": 741859328,
+        "sampled_temp_disk_bytes": 3602806,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "diagnostic-fixture_docunet_scan_3",
+    "fixture": "fixture_docunet_scan_3",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 2147483648,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "e1428a681b2fd81f81df846cc3e527af1397c5866d56a936f00fb1d25644d834",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5113,
+        "peak_rss_bytes": 687828992,
+        "sampled_temp_disk_bytes": 1672571,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5005,
+        "peak_rss_bytes": 668553216,
+        "sampled_temp_disk_bytes": 1672573,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5460,
+        "peak_rss_bytes": 669106176,
+        "sampled_temp_disk_bytes": 1672571,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_crop_1_1_copy",
+    "fixture": "fixture_docunet_crop_1_1_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5657,
+        "peak_rss_bytes": 653352960,
+        "sampled_temp_disk_bytes": 2918532,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5618,
+        "peak_rss_bytes": 682094592,
+        "sampled_temp_disk_bytes": 2918532,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5599,
+        "peak_rss_bytes": 664584192,
+        "sampled_temp_disk_bytes": 2918532,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_crop_1_2_copy",
+    "fixture": "fixture_docunet_crop_1_2_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5693,
+        "peak_rss_bytes": 694763520,
+        "sampled_temp_disk_bytes": 3117473,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5605,
+        "peak_rss_bytes": 694767616,
+        "sampled_temp_disk_bytes": 3117471,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5605,
+        "peak_rss_bytes": 683167744,
+        "sampled_temp_disk_bytes": 3117467,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_crop_2_1_copy",
+    "fixture": "fixture_docunet_crop_2_1_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 6224,
+        "peak_rss_bytes": 756662272,
+        "sampled_temp_disk_bytes": 4036483,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 6272,
+        "peak_rss_bytes": 754073600,
+        "sampled_temp_disk_bytes": 4036485,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 6229,
+        "peak_rss_bytes": 748658688,
+        "sampled_temp_disk_bytes": 4036481,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_crop_2_2_copy",
+    "fixture": "fixture_docunet_crop_2_2_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 6730,
+        "peak_rss_bytes": 764313600,
+        "sampled_temp_disk_bytes": 4574818,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 6478,
+        "peak_rss_bytes": 771555328,
+        "sampled_temp_disk_bytes": 4574814,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 6432,
+        "peak_rss_bytes": 766943232,
+        "sampled_temp_disk_bytes": 4574814,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_crop_3_1_copy",
+    "fixture": "fixture_docunet_crop_3_1_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5684,
+        "peak_rss_bytes": 679788544,
+        "sampled_temp_disk_bytes": 2781722,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5600,
+        "peak_rss_bytes": 696901632,
+        "sampled_temp_disk_bytes": 2781720,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5718,
+        "peak_rss_bytes": 674340864,
+        "sampled_temp_disk_bytes": 2781722,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_crop_3_2_copy",
+    "fixture": "fixture_docunet_crop_3_2_copy",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5356,
+        "peak_rss_bytes": 664223744,
+        "sampled_temp_disk_bytes": 2590400,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5401,
+        "peak_rss_bytes": 664186880,
+        "sampled_temp_disk_bytes": 2590400,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5378,
+        "peak_rss_bytes": 654532608,
+        "sampled_temp_disk_bytes": 2590398,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_scan_1",
+    "fixture": "fixture_docunet_scan_1",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 6035,
+        "peak_rss_bytes": 709926912,
+        "sampled_temp_disk_bytes": 4932351,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 6047,
+        "peak_rss_bytes": 709693440,
+        "sampled_temp_disk_bytes": 4932351,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 6162,
+        "peak_rss_bytes": 709967872,
+        "sampled_temp_disk_bytes": 4932351,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_scan_2",
+    "fixture": "fixture_docunet_scan_2",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 5648,
+        "peak_rss_bytes": 742125568,
+        "sampled_temp_disk_bytes": 3602802,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 5490,
+        "peak_rss_bytes": 742289408,
+        "sampled_temp_disk_bytes": 3602806,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 5576,
+        "peak_rss_bytes": 742035456,
+        "sampled_temp_disk_bytes": 3602806,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  },
+  {
+    "directory": "product-fixture_docunet_scan_3",
+    "fixture": "fixture_docunet_scan_3",
+    "status": "complete",
+    "settings": {
+      "cold_repetitions": 1,
+      "warm_repetitions": 2,
+      "timeout_seconds": 30,
+      "max_rss_bytes": 1073741824,
+      "max_temp_disk_bytes": 268435456
+    },
+    "config_sha256": "7f8fa23c0694302a2573bfec430aaf0b7ccc733b50895d0664c6e314c4f1848d",
+    "samples": [
+      {
+        "mode": "cold",
+        "sequence": 1,
+        "wall_millis": 4890,
+        "peak_rss_bytes": 669315072,
+        "sampled_temp_disk_bytes": 1672573,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 2,
+        "wall_millis": 4915,
+        "peak_rss_bytes": 671924224,
+        "sampled_temp_disk_bytes": 1672571,
+        "status": "complete",
+        "timed_out": false
+      },
+      {
+        "mode": "warm",
+        "sequence": 3,
+        "wall_millis": 4863,
+        "peak_rss_bytes": 669425664,
+        "sampled_temp_disk_bytes": 1672573,
+        "status": "complete",
+        "timed_out": false
+      }
+    ]
+  }
+]
