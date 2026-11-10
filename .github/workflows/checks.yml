@@ -156,6 +156,7 @@ jobs:
           # Keep Chromium's namespace sandbox; allow only this runner's pinned executable.
           printf 'profile scanner-ci-chromium "%s" flags=(unconfined) { userns, }\n' "$chromium" | sudo tee /etc/apparmor.d/scanner-ci-chromium
           sudo apparmor_parser -r /etc/apparmor.d/scanner-ci-chromium
+          node -e 'const p=require(process.argv[1]); p.chromium.launch({headless:true,chromiumSandbox:true}).then(b=>b.close()).catch(e=>{console.error(e);process.exitCode=1})' "$RUNNER_TEMP/browser-test/node_modules/playwright-core"
           python3 scripts/build-web.py --output "$RUNNER_TEMP/test-scanner"
       - name: Go contracts and race checks
         run: |

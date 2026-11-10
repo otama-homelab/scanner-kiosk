@@ -69,6 +69,10 @@ func photoBrowser(t *testing.T, scenario string) {
 		}
 	}
 	env := append(os.Environ(), "SCANNER_STATE_DIR="+filepath.Join(work, "state"), "SCANNER_DOCUMENT_DIR="+filepath.Join(work, "documents"), "SCANNER_PUBLIC_URL="+proxy.URL, "SCANNER_LISTEN_ADDR="+address, "SCANNER_AUTHENTICATE_TYPE=none", "SCANNER_SCANNERS_JSON=[]", "SCANNER_OCR_PLUGINS=", "SCANNER_PAPERLESS_ENABLED=false")
+	// The viewport matrix deliberately exceeds normal navigation burst limits.
+	if scenario == "matrix" {
+		env = append(env, "SCANNER_API_REQUESTS_PER_MINUTE=60000", "SCANNER_API_BURST=1024")
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	var logs bytes.Buffer

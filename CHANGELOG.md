@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4
+
+- Give the rapid viewport/reload test matrix its own explicit API rate budget while preserving production limits and separate rate-limit coverage.
+- Wait for actual photo-input readiness before browser tests set hidden file inputs; retain response-status diagnostics for failures.
+- Verify sandboxed Chromium startup before running the full CI race suite.
+
 ## 0.2.3
 
 - Allow the pinned test Chromium executable to create its sandbox on Ubuntu AppArmor runners; keep Chromium sandboxing enabled.

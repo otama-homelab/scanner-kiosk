@@ -6,7 +6,7 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,chromiumSandbox:true,args:process.env.SCANNER_PHOTO_INSPECT_PORT?['--remote-debugging-port='+process.env.SCANNER_PHOTO_INSPECT_PORT]:[]});
  const context=await browser.newContext({ignoreHTTPSErrors:true});const page=await context.newPage();page.setDefaultTimeout(15000);
- const checks=[],requests=[],errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const checks=[],requests=[],errors=[],failedResponses=[];page.on('response',r=>{if(r.status()>=400)failedResponses.push({path:new URL(r.url()).pathname,status:r.status()})});page.on('pageerror',e=>errors.push(e.message));
  page.on('request',r=>{if(r.url().includes('/api/documents/import'))requests.push({path:new URL(r.url()).pathname,method:r.method(),key:r.headers()['idempotency-key'],sha:r.headers()['x-content-sha256']})});
  try{
   await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
@@ -15,7 +15,7 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
   assert.equal(await camera.getAttribute('accept'),'image/jpeg,image/png');assert.equal(await picker.getAttribute('capture'),null);
   // Generate actual PNG/JPEG bytes through the browser encoder, with asymmetric corners.
   const images=await page.evaluate(()=>{const c=document.createElement('canvas');c.width=80;c.height=48;const x=c.getContext('2d');['#f01414','#14e614','#1414f0','#f0dc14'].forEach((v,i)=>{x.fillStyle=v;x.fillRect(i%2*40,Math.floor(i/2)*24,40,24)});return ['image/png','image/jpeg'].map(type=>({type,data:c.toDataURL(type,1).split(',')[1]}))});
-  const upload=async(input,image)=>{await input.setInputFiles({name:'synthetic.'+(image.type==='image/png'?'png':'jpg'),mimeType:image.type,buffer:Buffer.from(image.data,'base64')})};
+  const upload=async(input,image)=>{await page.waitForFunction(el=>el.isConnected&&!el.disabled,await input.elementHandle());await input.setInputFiles({name:'synthetic.'+(image.type==='image/png'?'png':'jpg'),mimeType:image.type,buffer:Buffer.from(image.data,'base64')})};
   const review=async()=>{await page.locator('h1[data-document-title]').waitFor();await page.getByRole('button',{name:'Save PDF',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Scan next',exact:true}).count(),0);assert.equal(await page.locator('button.primary:visible').count(),1);const d=await page.evaluate(async()=>{const r=await fetch('/api/documents/'+location.hash.split('/').pop());return r.json()});assert.equal(d.purpose,'document');assert.equal(d.pages[0].source_type,'photo');assert.equal(d.pages[0].capture,null);return d};
   if(scenario==='reload'){
    let lost=false;await page.route('**/api/documents/import',async route=>{const response=await route.fetch();assert.equal(response.status(),202);lost=true;await route.abort('failed')});
@@ -26,7 +26,7 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    const history=await page.evaluate(async()=>{const r=await fetch('/api/documents');return r.json()});assert.equal(history.items.length,1);assert.equal(await page.evaluate(()=>sessionStorage.getItem('scanner.photo.import')),null);checks.push('one upload, reload identity-only reconciliation, one document');
   }else if(scenario==='matrix'){
    await upload(picker,images[0]);const doc=await review();
-   const keyboardReach=async locator=>{for(let i=0;i<80;i++){if(await locator.evaluate(e=>e===document.activeElement))return;await page.keyboard.press('Tab')}assert.fail('keyboard could not reach '+await locator.textContent())};
+   const keyboardReach=async locator=>{await page.waitForFunction(el=>el.isConnected&&!el.disabled,await locator.elementHandle());for(let i=0;i<80;i++){if(await locator.evaluate(e=>e===document.activeElement))return;await page.keyboard.press('Tab')}assert.fail('keyboard could not reach '+await locator.textContent())};
    const overflow=async selector=>{const failures=await page.locator(selector).evaluateAll(elements=>elements.filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.left<-.5||r.right>innerWidth+.5||e.scrollWidth>e.clientWidth+1)}).map(e=>e.tagName+'.'+e.className));assert.deepEqual(failures,[],'horizontal overflow')};
    // A missing thumbnail falls back exactly once to the authorized preview.
    let thumbnails=0,previews=0;await page.route('**/pages/*/thumbnail',r=>{thumbnails++;return r.fulfill({status:404})});await page.route('**/pages/*/preview',r=>{previews++;return r.continue()});await page.reload();await page.locator('.preview-card img').waitFor();await page.waitForFunction(()=>document.querySelector('.preview-card img')?.naturalWidth===80);assert.equal(thumbnails,1);assert.equal(previews,1);
@@ -70,5 +70,5 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    await page.getByRole('button',{name:'Home',exact:true}).click();await upload(page.locator('input[data-photo-picker]'),images[0]);await review();checks.push('camera JPEG and independent picker PNG to real review, primary Save and actual PDF download');
   }
   assert.deepEqual(errors,[]);const receipt={passed:true,scenario,real_backend:true,checks,requests,scope:'Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance.'};if(process.env.SCANNER_PHOTO_RECEIPT)fs.writeFileSync(process.env.SCANNER_PHOTO_RECEIPT,JSON.stringify(receipt,null,2)+'\n');process.stdout.write(JSON.stringify(receipt));
- }catch(e){console.error('FAILURE_STATE',await page.locator('body').innerText(),await page.evaluate(()=>document.visibilityState));throw e}finally{await context.close();await browser.close()}
+ }catch(e){console.error('FAILURE_STATE',await page.locator('body').innerText(),await page.evaluate(()=>document.visibilityState),JSON.stringify(failedResponses));throw e}finally{await context.close();await browser.close()}
 })().catch(e=>{console.error(e.stack||e.message);process.exit(1)});
