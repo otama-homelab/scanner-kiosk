@@ -16,28 +16,32 @@ func TestPhotoNormalizeChildDispatch(t *testing.T) {
 	if err := png.Encode(&imageBytes, image.NewNRGBA(image.Rect(0, 0, 3, 2))); err != nil {
 		t.Fatal(err)
 	}
-	self, err := os.Executable()
-	if err != nil {
-		t.Fatal(err)
+	// Parser limits describe the production executable, not the race runtime's shadow memory.
+	self := filepath.Join(t.TempDir(), "scanner")
+	build := exec.Command("go", "build", "-o", self, ".")
+	if diagnostics, err := build.CombinedOutput(); err != nil {
+		t.Fatal("build production child", err, string(diagnostics))
 	}
 	root := t.TempDir()
 	for _, valid := range []bool{true, false} {
-		command := exec.Command(self, "-test.run=^TestScannerCLIProcess$")
-		command.Env = []string{"SCANNER_CLI_TEST=1", "SCANNER_CLI_TEST_ARGS=__photo-normalize image/png 1048576", "SCANNER_STATE_DIR=" + filepath.Join(root, "state"), "SCANNER_DOCUMENT_DIR=" + filepath.Join(root, "documents")}
+		command := exec.Command(self, "__photo-normalize", "image/png", "1048576")
+		command.Env = []string{"SCANNER_STATE_DIR=" + filepath.Join(root, "state"), "SCANNER_DOCUMENT_DIR=" + filepath.Join(root, "documents")}
 		if valid {
 			command.Stdin = bytes.NewReader(imageBytes.Bytes())
 		} else {
 			command.Stdin = bytes.NewReader([]byte("premature invalid child input"))
 		}
+		var diagnostics bytes.Buffer
+		command.Stderr = &diagnostics
 		result, err := command.Output()
 		if valid {
 			if err != nil || len(result) < 64 || string(result[:8]) != "PHOTO001" {
-				t.Fatal("production child dispatch", err)
+				t.Fatal("production child dispatch", err, diagnostics.String())
 			}
 		} else {
 			exit, ok := err.(*exec.ExitError)
 			if !ok || exit.ExitCode() != 10 || len(result) != 0 {
-				t.Fatal("invalid child publication", err)
+				t.Fatal("invalid child publication", err, diagnostics.String())
 			}
 		}
 	}

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.6
+
+- Verify photo child dispatch with the production executable under its unchanged parser limits; retain race coverage for normalization code.
+- Surface only bounded public package acquisition diagnostics on native build failure.
+- Keep sandbox smoke tests on the same explicitly authorized Chromium executable as the browser suite.
+- Earlier v0.2.x tags were unreleased CI candidates.
+
 ## 0.2.4
 
 - Give the rapid viewport/reload test matrix its own explicit API rate budget while preserving production limits and separate rate-limit coverage.
