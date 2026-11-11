@@ -598,5 +598,15 @@
     "reused_forward_count": 3,
     "apply_eligible": false,
     "requirements_newly_completed": 0
+  },
+  "old_docshadow_ocr_evaluation": {
+    "summary": "../correction-docshadow-ocr-v060/summary.json",
+    "sha256": "d87b4c485d72b8869fd3a426af7da98316d5afc76c889fab3399459e4067a40a",
+    "requirements_newly_completed": 0
+  },
+  "fairscan_official_jvm_attempt": {
+    "summary": "../correction-fairscan-jvm-v060/summary.json",
+    "sha256": "cccd7ec00bd1ed70a60fd9104fc26df6e7ebe02b228e98bf1ffb8176a3165783",
+    "requirements_newly_completed": 0
   }
 }

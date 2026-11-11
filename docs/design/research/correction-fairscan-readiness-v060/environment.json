@@ -1,0 +1,36 @@
+{
+  "format": "scanner-fairscan-build-readiness",
+  "date": "2026-11-11",
+  "read_only": true,
+  "commands": {
+    "java": "/usr/bin/java",
+    "javac": null,
+    "gradle": null,
+    "kotlinc": null,
+    "adb": null
+  },
+  "java_version": "openjdk version \"1.8.0_512\"\nOpenJDK Runtime Environment (build 1.8.0_512-8u512-b09~us1-0ubuntu1~24.04.1-b09)\nOpenJDK 64-Bit Server VM (build 25.512-b09, mixed mode)",
+  "inspected_locations": {
+    "/usr/lib/jvm": true,
+    "/opt": true,
+    "/home/yamato/.gradle": false,
+    "/home/yamato/.sdkman/candidates": false,
+    "/home/yamato/Android/Sdk": false
+  },
+  "model": {
+    "path": "/tmp/scanner-v050/upstream/fairscan-segmentation-model.tflite",
+    "bytes": 4921040,
+    "sha256": "96e14d7e610dd0c27b768b228fbc553b4ec119ebe68f3a3594029a25400691d2"
+  },
+  "source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "no_build_origin": "Local design and66-01 PLAN restriction; user instruction prohibits custom correction algorithms, not unmodified official compilation. Parent AGENTS prioritizes official artifacts and minimizes self-build rather than universally prohibiting it.",
+  "build_ready_now": false,
+  "missing": [
+    "Modern JDK with javac",
+    "Gradle wrapper distribution/plugin/dependency resolution",
+    "Verified evaluator startup and OpenCV native loading"
+  ],
+  "installs": 0,
+  "builds": 0,
+  "model_executions": 0
+}

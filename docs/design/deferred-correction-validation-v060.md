@@ -124,3 +124,12 @@ FSENetはMIT repoが推論用として重みを直接配布し、確認資料に
 公開合成6shadow+6cleanを元寸法で評価。新規33forward＋hash/config一致の先行3forward再利用、全12case成功。独自resize/paddingなし。forward1.560–6.171秒、RSS706609152–1356152832 bytes、診断2GiB全件内・製品1GiBは4/12超過。影PSNR+1dB0/6、clean MAE≤1/255は0/6。薄文字2件とblueはno-opより悪化。512縮小を除いても不合格・apply不可で、旧DocShadowのこの構成は採用候補から外す。将来再開は別artifact/公式改訂/独立した新入力等の変更がある場合のみ。同条件の再実行はしない。
 
 証拠: docs/design/research/correction-docshadow-native-v060/report.md・summary.json。30証拠hashを照合。SSIM/実写真/OCR/現FSENet/parity未測定、元要件の完了数6/14を保持。新規依存・製品変更・公開・配備なし。
+
+
+## 2026-11-11 OCR保持とFairScan公式ビルドの実行
+
+旧DocShadow保存出力をTesseract5.5.4 jpn+engで36件OCR、全件成功。既存AnalyzeOCRPageでrenderer正解がある24件を採点し、色紙12件はrawのみ。native対no-opは改善0/同じ5/悪化3、薄文字table影の文字誤り2→8。512は改善3/同じ2/悪化3。baseline自身もstrict quality不合格で、文字品質の全体合格は主張しない。新モデル推論ゼロ。証拠: docs/design/research/correction-docshadow-ocr-v060/report.md。
+
+前回計画の全面build禁止を改訂し、無変更の公式FairScan JVM評価を試行。公式Temurin21/Gradle9.8.2のdigest固定、source272件無変更。実compileはKotlin設定checkまで到達したが、101.57秒で隔離全tree1GiB監視により停止（観測1116906697 bytes、sampling overshoot、exit−9）。SDK不在やモデル不合格とは断定しない。未完downloadのみ記録後削除、同条件再試行なし。quad評価未実行。証拠: docs/design/research/correction-fairscan-jvm-v060/report.md。次回はtoolchain容量と実行tempを区別した計画へ改訂する必要がある。
+
+現在6/14要件完了を維持。既存画像や失敗を成功として置き換えず、実写真truth/本人操作/現FSENet CPU固定loader等は未解決。製品変更・公開・配備なし。

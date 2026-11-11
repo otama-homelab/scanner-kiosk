@@ -1,0 +1,86 @@
+{
+  "total_bytes": 1122267516,
+  "largest_files": [
+    {
+      "path": "jdk-21.0.13+9/lib/modules",
+      "bytes": 142521986
+    },
+    {
+      "path": "gradle-home/.tmp/gradle_download274942014158302905bin",
+      "bytes": 109460896
+    },
+    {
+      "path": "gradle-home/caches/9.8.2/transforms/0dab59cfc83fa4df17be9d5f278c1943/transformed/instrumented/instrumented-kotlin-gradle-plugin-2.4.21-gradle96.jar",
+      "bytes": 67326804
+    },
+    {
+      "path": "gradle-9.8.2/lib/kotlin-compiler-embeddable-2.4.10.jar",
+      "bytes": 60352373
+    },
+    {
+      "path": "jdk-21.0.13+9/lib/src.zip",
+      "bytes": 53670875
+    },
+    {
+      "path": "gradle-home/caches/9.8.2/transforms/1ac5e0c8fe0a70f8988fc4c0844750a6/transformed/instrumented/instrumented-protos-32.5.0.jar",
+      "bytes": 37891432
+    },
+    {
+      "path": "gradle-home/caches/9.8.2/transforms/e71e4dd727d5c2d60360f8ac173c909f/transformed/instrumented/instrumented-builder-9.5.0.jar",
+      "bytes": 35295826
+    },
+    {
+      "path": "gradle-home/caches/9.8.2/transforms/cd716522eb59299174ea04526a36fca2/transformed/instrumented/instrumented-bundletool-1.18.3.jar",
+      "bytes": 32480646
+    },
+    {
+      "path": "gradle-home/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-gradle-plugin/2.4.21/d2b2862980453fbeb168a03dddd488d6191924df/kotlin-gradle-plugin-2.4.21-gradle96.jar",
+      "bytes": 30672980
+    },
+    {
+      "path": "gradle-home/caches/9.8.2/transforms/9836df707efb554defaf90e2ccf2d93f/transformed/instrumented/instrumented-gradle-9.5.0.jar",
+      "bytes": 30644011
+    },
+    {
+      "path": "jdk-21.0.13+9/lib/server/libjvm.so",
+      "bytes": 27056488
+    },
+    {
+      "path": "jdk-21.0.13+9/jmods/java.base.jmod",
+      "bytes": 24683914
+    },
+    {
+      "path": "gradle-home/caches/modules-2/files-2.1/com.android.tools.build/builder/9.5.0/a4c80a399819c3b217c52608a7d9efe96a1e937b/builder-9.5.0.jar",
+      "bytes": 17901541
+    },
+    {
+      "path": "jdk-21.0.13+9/lib/server/classes_nocoops.jsa",
+      "bytes": 14983168
+    },
+    {
+      "path": "jdk-21.0.13+9/lib/server/classes.jsa",
+      "bytes": 14581760
+    },
+    {
+      "path": "jdk-21.0.13+9/jmods/java.desktop.jmod",
+      "bytes": 14187850
+    },
+    {
+      "path": "gradle-home/caches/9.8.2/transforms/fcfd56d162506baabca4b30b43b792ee/transformed/instrumented/instrumented-bcprov-jdk18on-1.80.2.jar",
+      "bytes": 13836804
+    },
+    {
+      "path": "gradle-home/caches/modules-2/files-2.1/com.android.tools.build/bundletool/1.18.3/8d7bee8e57a4158a872ed99190a60a498c2adc8d/bundletool-1.18.3.jar",
+      "bytes": 13371507
+    },
+    {
+      "path": "gradle-home/caches/modules-2/files-2.1/com.android.tools.analytics-library/protos/32.5.0/71131cf58e8f12eadfa5a9ae2f7844dd1a938ac9/protos-32.5.0.jar",
+      "bytes": 12503269
+    },
+    {
+      "path": "gradle-home/caches/modules-2/files-2.1/com.android.tools.build/gradle/9.5.0/65fbc058e1a93257cff17f72abd94a7ba6dcb375/gradle-9.5.0.jar",
+      "bytes": 12343675
+    }
+  ],
+  "download_archives_remaining": []
+}

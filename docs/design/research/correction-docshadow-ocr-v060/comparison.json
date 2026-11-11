@@ -1,0 +1,93 @@
+{
+  "scope": "NFC/codepoint/region scores from existing evaluation.AnalyzeOCRPage, four renderer cases only; no new CER implementation",
+  "rows": [
+    {
+      "id": "mixed_clean",
+      "reference_codepoints": 30,
+      "noop_text_errors": 12,
+      "native_text_errors": 12,
+      "native_error_delta_vs_noop": 0,
+      "native_matched_regions": 0,
+      "512_text_errors": 11,
+      "512_error_delta_vs_noop": -1,
+      "512_matched_regions": 0
+    },
+    {
+      "id": "mixed_shadow",
+      "reference_codepoints": 30,
+      "noop_text_errors": 12,
+      "native_text_errors": 12,
+      "native_error_delta_vs_noop": 0,
+      "native_matched_regions": 0,
+      "512_text_errors": 13,
+      "512_error_delta_vs_noop": 1,
+      "512_matched_regions": 0
+    },
+    {
+      "id": "table_clean",
+      "reference_codepoints": 11,
+      "noop_text_errors": 10,
+      "native_text_errors": 10,
+      "native_error_delta_vs_noop": 0,
+      "native_matched_regions": 3,
+      "512_text_errors": 2,
+      "512_error_delta_vs_noop": -8,
+      "512_matched_regions": 3
+    },
+    {
+      "id": "table_shadow",
+      "reference_codepoints": 11,
+      "noop_text_errors": 10,
+      "native_text_errors": 10,
+      "native_error_delta_vs_noop": 0,
+      "native_matched_regions": 3,
+      "512_text_errors": 6,
+      "512_error_delta_vs_noop": -4,
+      "512_matched_regions": 1
+    },
+    {
+      "id": "faint_mixed_clean",
+      "reference_codepoints": 30,
+      "noop_text_errors": 12,
+      "native_text_errors": 13,
+      "native_error_delta_vs_noop": 1,
+      "native_matched_regions": 0,
+      "512_text_errors": 12,
+      "512_error_delta_vs_noop": 0,
+      "512_matched_regions": 0
+    },
+    {
+      "id": "faint_mixed_shadow",
+      "reference_codepoints": 30,
+      "noop_text_errors": 12,
+      "native_text_errors": 13,
+      "native_error_delta_vs_noop": 1,
+      "native_matched_regions": 0,
+      "512_text_errors": 12,
+      "512_error_delta_vs_noop": 0,
+      "512_matched_regions": 0
+    },
+    {
+      "id": "faint_table_clean",
+      "reference_codepoints": 11,
+      "noop_text_errors": 10,
+      "native_text_errors": 10,
+      "native_error_delta_vs_noop": 0,
+      "native_matched_regions": 3,
+      "512_text_errors": 11,
+      "512_error_delta_vs_noop": 1,
+      "512_matched_regions": 0
+    },
+    {
+      "id": "faint_table_shadow",
+      "reference_codepoints": 11,
+      "noop_text_errors": 2,
+      "native_text_errors": 8,
+      "native_error_delta_vs_noop": 6,
+      "native_matched_regions": 2,
+      "512_text_errors": 11,
+      "512_error_delta_vs_noop": 9,
+      "512_matched_regions": 0
+    }
+  ]
+}

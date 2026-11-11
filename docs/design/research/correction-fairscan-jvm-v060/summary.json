@@ -1,0 +1,53 @@
+{
+  "format": "scanner-fairscan-official-jvm-attempt",
+  "status": "setup-storage-limit",
+  "evaluation_executed": false,
+  "upstream_source_modified": false,
+  "evidence_files": [
+    {
+      "file": "build-command.py",
+      "bytes": 2701,
+      "sha256": "7b226700fff8ba87d36b5e1fab40dcd4cf5aa526363f0464d8e7e112ebc5c565"
+    },
+    {
+      "file": "build.json",
+      "bytes": 785,
+      "sha256": "814e8b05db5d9996f042f86c9302f73245c97a6140124f70bc8abbed9f2d107e"
+    },
+    {
+      "file": "build.log",
+      "bytes": 801,
+      "sha256": "70581d09f2da98358effa529fb3e79e92ba051615ea9dae39218d81782959eb0"
+    },
+    {
+      "file": "cleanup.json",
+      "bytes": 492,
+      "sha256": "e3cade0add550af679adaf6cbbfb6713cb9c6b0e589cfcbeb54025a1cee4e2f3"
+    },
+    {
+      "file": "downloads.json",
+      "bytes": 748,
+      "sha256": "a0e4550a4e8f5520b6b195a1caf3da23878d788e3ff841f67a1b702871c6cea3"
+    },
+    {
+      "file": "evaluate.init.gradle",
+      "bytes": 477,
+      "sha256": "e6925e59ebbaf444b20bef90b36fbefa4278326a8eb3100f3e22c3fa0f931d4f"
+    },
+    {
+      "file": "report.md",
+      "bytes": 3805,
+      "sha256": "36eebd57d54d0a055584745945ebe2651cccb2bf789ae05cbc3d40b909022136"
+    },
+    {
+      "file": "source-before.json",
+      "bytes": 32333,
+      "sha256": "b4daf986863b67ab41c2a70be5cdbcb37b84a1ba4c8b891ccd44c38aefb7a226"
+    },
+    {
+      "file": "storage.json",
+      "bytes": 3043,
+      "sha256": "1926130493f59244132d8a5b99fd270dcf35fb41cef661df5691cec2669d5362"
+    }
+  ]
+}

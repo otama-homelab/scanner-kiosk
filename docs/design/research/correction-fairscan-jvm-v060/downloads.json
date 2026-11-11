@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jdk_x64_linux_hotspot_21.0.13_9.tar.gz",
+    "file": "jdk.tar.gz",
+    "bytes": 207858352,
+    "sha256": "d7f5d5cf865a2902b70ff549b97586a7d3f234e016f041ab447ea740c7d66d1c"
+  },
+  {
+    "url": "https://codeload.github.com/pynicolas/FairScan/zip/2c5230b12f69f3cee2cc5a970013da20848d1272",
+    "file": "source.zip",
+    "bytes": 3562024,
+    "sha256": "18d7bee5581dda262d55252e231f664f02782cb3f890ca02d7e9261665f86c2b"
+  },
+  {
+    "url": "https://services.gradle.org/distributions/gradle-9.8.2-bin.zip",
+    "file": "gradle.zip",
+    "bytes": 151620138,
+    "sha256": "21bd5da2de49b642904077f38c0efdc7778e92b3ed0889392dca61b97e389607"
+  }
+]

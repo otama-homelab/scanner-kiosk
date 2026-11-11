@@ -1,0 +1,13 @@
+{
+  "removed_partial_downloads": [
+    {
+      "path": "/tmp/scanner-fairscan-jvm.k0rsMW/gradle-home/.tmp/gradle_download274942014158302905bin",
+      "bytes": 109460896,
+      "sha256": "39ccb3f4593c2f13a615d497aa90d43899e2eff61403ba53fc529796ab447a5b",
+      "kind": "interrupted unverified Gradle dependency download",
+      "action": "removed exact owned partial after process group terminated"
+    }
+  ],
+  "remaining_temp_tree_bytes": 1012806620,
+  "no_process_group_remaining": true
+}
