@@ -1,0 +1,43 @@
+=== RUN   TestPhotoCaptureAndPicker
+2026/11/11 23:14:21 http: TLS handshake error from 127.0.0.1:41209: remote error: tls: unknown certificate
+2026/11/11 23:14:21 http: TLS handshake error from 127.0.0.1:41225: remote error: tls: unknown certificate
+2026/11/11 23:14:21 http: TLS handshake error from 127.0.0.1:41229: remote error: tls: unknown certificate
+    photo_browser_integration_linux_test.go:118: {"passed":true,"scenario":"capture","real_backend":true,"checks":["camera JPEG and independent picker PNG to real review, primary Save and actual PDF download"],"requests":[{"path":"/api/documents/import","method":"POST","key":"rq1_1794406461076_1967e8906a89482ba367b4b7271cc348","sha":"89029da4acbef1b31392ca4339f71873fd6ebad4d68f83f62d83c24170745460"},{"path":"/api/documents/import","method":"POST","key":"rq1_1794406463013_613e5e909e21442aa6258c4428238f7b","sha":"6fdb5cd69ae41f8468154ce2a08a13cb08cf680403489802efd5131ad5078614"}],"scope":"Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance."}
+--- PASS: TestPhotoCaptureAndPicker (11.78s)
+=== RUN   TestPhotoReloadRecovery
+2026/11/11 23:14:25 http: TLS handshake error from 127.0.0.1:41869: remote error: tls: unknown certificate
+2026/11/11 23:14:25 http: TLS handshake error from 127.0.0.1:41895: remote error: tls: unknown certificate
+2026/11/11 23:14:25 http: TLS handshake error from 127.0.0.1:41911: remote error: tls: unknown certificate
+2026/11/11 23:14:25 http: TLS handshake error from 127.0.0.1:41925: remote error: tls: unknown certificate
+    photo_browser_integration_linux_test.go:119: {"passed":true,"scenario":"reload","real_backend":true,"checks":["one upload, reload identity-only reconciliation, one document"],"requests":[{"path":"/api/documents/import","method":"POST","key":"rq1_1794406465049_6b77ee9068f0405e87728956c849a94b","sha":"89029da4acbef1b31392ca4339f71873fd6ebad4d68f83f62d83c24170745460"},{"path":"/api/documents/import/reconcile","method":"POST","key":"rq1_1794406465049_6b77ee9068f0405e87728956c849a94b"}],"scope":"Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance."}
+--- PASS: TestPhotoReloadRecovery (2.43s)
+=== RUN   TestPhotoManualCropRotateUndo
+2026/11/11 23:14:28 http: TLS handshake error from 127.0.0.1:42093: remote error: tls: unknown certificate
+2026/11/11 23:14:28 http: TLS handshake error from 127.0.0.1:42117: remote error: tls: unknown certificate
+2026/11/11 23:14:28 http: TLS handshake error from 127.0.0.1:42133: remote error: tls: unknown certificate
+    photo_browser_integration_linux_test.go:121: {"passed":true,"scenario":"manual","real_backend":true,"checks":["numeric crop actual preview pixels/cancel/apply/undo, separate page 90-degree rotation and immutable raw upload"],"requests":[{"path":"/api/documents/import","method":"POST","key":"rq1_1794406468049_b291196961e54cfd97c4d77d2fbfb141","sha":"6fdb5cd69ae41f8468154ce2a08a13cb08cf680403489802efd5131ad5078614"}],"scope":"Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance."}
+--- PASS: TestPhotoManualCropRotateUndo (4.05s)
+=== RUN   TestPhotoResponsiveRecoveryMatrix
+2026/11/11 23:14:32 http: TLS handshake error from 127.0.0.1:44185: remote error: tls: unknown certificate
+2026/11/11 23:14:32 http: TLS handshake error from 127.0.0.1:44199: remote error: tls: unknown certificate
+2026/11/11 23:14:32 http: TLS handshake error from 127.0.0.1:44209: remote error: tls: unknown certificate
+2026/11/11 23:14:32 http: TLS handshake error from 127.0.0.1:44241: remote error: tls: unknown certificate
+2026/11/11 23:14:42 http: TLS handshake error from 127.0.0.1:43165: remote error: tls: unknown certificate
+    photo_browser_integration_linux_test.go:123: real photo browser matrix: exit status 1
+        locator.innerText: Timeout 15000ms exceeded.
+        Call log:
+        [2m  - waiting for locator('body')[22m
+        
+            at /tmp/scanner-photo-import-hotfix/scripts/check-web-photo.cjs:73:69
+--- FAIL: TestPhotoResponsiveRecoveryMatrix (43.91s)
+FAIL
+FAIL	scanner-kiosk/internal/documenthttp	62.186s
+FAIL
+Traceback (most recent call last):
+  File "/tmp/scanner-photo-import-hotfix/scripts/check-web.py", line 513, in <module>
+    photo_browser=check_photo()
+                  ^^^^^^^^^^^^^
+  File "/tmp/scanner-photo-import-hotfix/scripts/check-web.py", line 30, in check_photo
+    print(result.stdout,end='');print(result.stderr,end='');assert result.returncode==0,'photo browser failed'
+                                                                   ^^^^^^^^^^^^^^^^^^^^
+AssertionError: photo browser failed

@@ -733,5 +733,11 @@
     "sha256": "a2f40c2fcfc36b5cdb0075f882b6868107bcb6dd2ea1d4149365cd022de7392d",
     "requirements_newly_completed": 0,
     "semantic_zero_missing_proven": false
+  },
+  "owner_operation_ui_unblock": {
+    "summary": "../photo-import-purpose-v027/summary.json",
+    "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
+    "status": "local-verification-passed-deployment-approval-pending",
+    "owner_acceptance_complete": false
   }
 }

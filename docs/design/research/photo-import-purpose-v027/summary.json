@@ -1,0 +1,97 @@
+{
+  "format": "scanner-photo-import-purpose-verification",
+  "status": "local-verification-passed-deployment-approval-pending",
+  "baseline_tag": "v0.2.5",
+  "candidate_source_revision": "04d9006d5c7a1ef20a09ca48da3884eddf0315ee",
+  "candidate_branch": "fix/photo-import-purpose-v025",
+  "proposed_release": "v0.2.7",
+  "production_changed": false,
+  "database_upgrade": {
+    "from": 26,
+    "to": 27,
+    "table_data_rewrite": false,
+    "old_binary_only_rollback_supported": false,
+    "consistent_backup_required": true
+  },
+  "checks": {
+    "isolated_build": true,
+    "frontend_browser_groups": 11,
+    "hotfix_full_browser": true,
+    "focused_race_packages": 3,
+    "real_jpeg_png_download": true,
+    "png_crop_undo_format_retained": true,
+    "responsive_matrix": true,
+    "source_review": "no material finding",
+    "native_ocr": false,
+    "real_oidc_owner_acceptance": false
+  },
+  "goal_original_requirements_complete": 7,
+  "goal_original_requirement_count": 14,
+  "evidence_files": [
+    {
+      "file": "frontend-browser.log",
+      "bytes": 1192,
+      "sha256": "9992d0d11bd36b615be1fe67415a609089470418f1fad399de0c88e4c48a2a25"
+    },
+    {
+      "file": "home-en-desktop.png",
+      "bytes": 154576,
+      "sha256": "00e59bdc94c031107e6cd93bb901009d11b2e3ea4633bebb28eae10a4e4e9dad"
+    },
+    {
+      "file": "home-en-mobile.png",
+      "bytes": 92049,
+      "sha256": "550018253b5ab4144d786fbaca8f3fe349cd0cf7b1637f7d3963439889c29f5c"
+    },
+    {
+      "file": "home-ja-desktop.png",
+      "bytes": 167890,
+      "sha256": "60651063f564d1f2f422200b0fc8485abe84d9f7a554ae3cb3eb2cc4a6382e82"
+    },
+    {
+      "file": "home-ja-mobile.png",
+      "bytes": 104430,
+      "sha256": "f7074de6ec0d448bae639b6d8f1e21c1f22aefa1a7c74504c4029cfca8774206"
+    },
+    {
+      "file": "hotfix-go.log",
+      "bytes": 136,
+      "sha256": "8cadc45696abe311b1ca05964c73b288d6a255581c6778c7478166a37d500fa3"
+    },
+    {
+      "file": "hotfix-web.json",
+      "bytes": 686761,
+      "sha256": "695866b2a154ef0591fee0984336437be038fb51d3a4dd27c850d03a05a6fd77"
+    },
+    {
+      "file": "hotfix-web.log",
+      "bytes": 46908,
+      "sha256": "b9c21152ff4df8e4157b733be8304ed0be76f55cf610b4209b4a7cd8e38e5454"
+    },
+    {
+      "file": "initial-full-browser-fail.log",
+      "bytes": 4765,
+      "sha256": "68c5a68371a1560d1e873b52bac6e7e25f037b5591e601340960067f88a4a5a9"
+    },
+    {
+      "file": "initial-purpose-pass-matrix-fail.log",
+      "bytes": 7496,
+      "sha256": "6d973e5ddaf6e7e3b0a3f69c307471de74a99b7ee61b6ec255656966c58fd7da"
+    },
+    {
+      "file": "matrix-final.log",
+      "bytes": 3538,
+      "sha256": "f343db1a59488df663ec0ef7af2ea8ec25332f0d1c384b5afeba635c8d559303"
+    },
+    {
+      "file": "owner-operation-initial-failure.json",
+      "bytes": 743,
+      "sha256": "1fdcef384def79127d588ae57bb55a92b2abeb8434c70ec26c6030b96fd10a97"
+    },
+    {
+      "file": "source-review.md",
+      "bytes": 3721,
+      "sha256": "7ba6668989d3976ff149806a4f5b3f9c69df9ce6ac911cdff38fbe9f3dad154e"
+    }
+  ]
+}

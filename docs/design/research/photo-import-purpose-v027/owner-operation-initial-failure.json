@@ -1,0 +1,19 @@
+{
+  "status": "owner_operation_blocked_by_live_home_import_metadata",
+  "live_version": "v0.2.5",
+  "reported_location": "home camera/photos/files block",
+  "owner_report": "The request could not be completed. Try again.",
+  "owner_authenticated_api_result": {
+    "code": "provider_unavailable",
+    "message": "Service Unavailable"
+  },
+  "device_browser": "not supplied",
+  "observed_acceptance": false,
+  "public_session_read": 200,
+  "api_worker_ready": true,
+  "api_worker_restarts": 0,
+  "authenticated_tesseract_capabilities": 200,
+  "catalog_initialization_root_cause": "not established; Tesseract reachable, optional shared OCR initialization remains unavailable",
+  "cluster_changes": false,
+  "credential_values_recorded": false
+}

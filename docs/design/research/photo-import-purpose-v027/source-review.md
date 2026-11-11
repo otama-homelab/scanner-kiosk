@@ -1,0 +1,18 @@
+What this change does: Image import now offers Document/PDF and Photo/JPEG/PNG before upload. The choice is bound to the stored request and replay identity, and photo output uses the existing single-page image and crop/undo path. Existing import limits come from /api/scanners without depending on the OCR catalog.
+
+Looks good. No material bug, security finding or scope-breaking behavior found in this bounded source review.
+
+Checked the final frontend diff after its terminal handoff and the current backend diff against 8defb6f, including connected callers, storage triggers and new tests. Assumed the existing household workload and transactional single-page photo flow.
+
+- Legacy/default identity: omitted purpose and explicit document normalize to the same omitted stored fields. PDF's prior digest remains byte-compatible; photo defaults to JPEG and both purpose and format enter the receipt hash. Same key with different purpose/format conflicts in admission and reconciliation.
+- HTTP boundary: unsupported purposes/formats, PDF-as-photo, document-plus-image-format, duplicate/empty headers and null/empty/duplicate JSON fields fail before admission. Reconciliation stays an identity lookup with no upload or new work.
+- Frontend intent: selection is captured before hashing, persisted with the request, locked while pending/uncertain, restored on reload and passed unchanged to reconciliation. Legacy uncertain image receipts restore Document; malformed purpose/format combinations cannot replay. Document and PDF uploads omit the new fields.
+- Producer/worker: the stored snapshot is validated against the document's purpose; normalization retains original upload identity and separate PNG baseline provenance. The photo format is projected from import/scan/render intent, including retry of an empty photo. Import publication still requires one image page and owner/source/hash bindings.
+- Crop/output: the photo exception for PDF format is restricted to the server's manual-crop job marker. Existing identity/work/completion checks require crop metadata and OCR off; the single-page photo guard remains. Ordinary Photo PDF/OCR output remains rejected, crop completion creates only the intermediate correction, and normal output publication excludes manual-crop jobs.
+- Migration27: changes only page_photo_source's document-purpose allowance. The original-ready/owner/media checks, photo_sources hash binding/immutability and single-page trigger remain. The v26 upgrade test reopens twice, preserves existing data and checks provenance/second-page rejection; the older upgrade expectation is updated to27.
+- Tests inspected: exact legacy PDF digest, explicit/default normalization, purpose/format conflicts, JPEG/PNG crop→undo→publication, invalid manual-output/OCR guards, HTTP options/reconciliation, v26 migration, browser pending/reload/legacy receipts, JA/EN labels, keyboard focus and narrow-width/touch checks. Browser import checks use mocks; they do not prove the production backend integration or iPhone behavior.
+
+Deployment constraint: opening the documents DB with migration27 prevents a schema26-only executable from reopening it (internal/storage/database.go rejects unknown/newer migrations). A binary-only rollback after migration is insufficient; retain a consistent pre-upgrade DB backup or a schema27-compatible rollback binary. This review does not approve or claim live deployment.
+
+Verdict: Ship from this bounded source review; parent-owned fresh integrated tests are still required before release.
+Not checked: test execution, model runs, builds, live home provider, iPhone/Safari and deployment; no source or Git changes made by the reviewer. Only this /tmp report was written.
