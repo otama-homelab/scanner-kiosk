@@ -101,3 +101,12 @@ EGMレビュー済み6計画の自動14タスクを実施し、独立検証も�
 実行記録: [自律実行結果](correction-autonomous-execution-v060.md)。正本: docs/design/research/correction-validation-v060/summary.json。独立検証: docs/design/research/correction-autonomous-v060/independent-verification.md。
 
 再開は変更された証拠revisionがある枝のみ: 元photo2_2の独立数字/細線正解と元実写真注釈、互換性のある公式FairScan完成binary/起動経路、checkpoint固有の権利/変換同一性/parity、全gate合格候補、同一原稿のiPhone入力と本人PC/iPhone操作。条件未変更で調査・試験・質問を反復しない。既存receiptを保持し、新revisionで再開する。候補未適格とclean Canon無推論保証の未証明はACCEPT-02未完に保持する。
+
+
+## 2026-11-11 公式実行経路・利用条件の訂正
+
+本人の続行指示により追加一次資料調査と公式FSENet CPU preflightを実施。FairScanには公式の非Android Kotlin/JVM evaluatorがあり、「Linux binaryなし＝公式経路なし」は訂正する。ただし初回compile/classpath/OpenCV native loadは未実施で、現計画の無build境界では未検証。公式Python mask単独は完成四隅検出を満たさない。
+
+FSENetはMIT repoが推論用として重みを直接配布し、確認資料に重み除外はない。「専用許諾文がないため必ず権利者回答待ち」は一律の停止理由から外す。元PyTorch評価にはONNX parity不要。ただし公式load_checkpointがstorage.cuda(0)を固定し、既存CPU環境で無変更実行できないことをsource確認。accelerate/torchmetrics/yacs/einops/albumentationsも不足。旧DocShadow ONNXは現在のFSENetと別候補に分離する。重み取得や依存導入だけではCUDA固定を解消しないので未実施。
+
+証拠: docs/design/research/correction-runtime-followup-v060/summary.json、fairscan.md、illumination.md、fsenet-preflight.md。過去のimmutable監査は当時の判定として保持し、本訂正を現在の根拠とする。6/14の能力達成数は変わらない。再開条件はFairScanの公式JVM評価を許すbuild方針、FSENetの公式CPU対応経路（または別候補としての旧DocShadow評価計画）、独立正解・本人操作証拠。単なる専用許諾文の欠如を再び一律の停止理由にしない。

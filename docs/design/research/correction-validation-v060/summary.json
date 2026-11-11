@@ -571,5 +571,12 @@
       "candidate": "Every qualification gate true, then actual candidate-bound shared path.",
       "owner": "Changed actual same-original iPhone and PC operation evidence revision."
     }
+  },
+  "runtime_eligibility_followup": {
+    "summary": "../correction-runtime-followup-v060/summary.json",
+    "sha256": "e3839309f1c8e76a1c27c3a08ee268a243b728de2a0b9acd132b03a6532bb1e3",
+    "supersedes_blanket_rights_holder_wait": true,
+    "requirements_newly_completed": 0,
+    "fsenet_cpu_blocker": "Official load_checkpoint forces storage.cuda(0); CPU source modification prohibited by current plan."
   }
 }

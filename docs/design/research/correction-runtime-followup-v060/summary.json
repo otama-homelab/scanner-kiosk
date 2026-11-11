@@ -1,0 +1,44 @@
+{
+  "format": "scanner-runtime-eligibility-followup",
+  "date": "2026-11-11",
+  "status": "bounded_followup_complete_capabilities_incomplete",
+  "verified_requirements": 6,
+  "original_requirement_count": 14,
+  "fairscan": "Official desktop JVM evaluator exists; initial build/classpath/native-load remain unverified under no-build plan boundary. Official interpreted mask script alone is insufficient.",
+  "fsenet_license": "Official MIT repository distributes pretrained FSENet weights without observed exclusion; bespoke permission letter is not a prerequisite by itself.",
+  "fsenet_cpu": "Official checkpoint loader forces storage.cuda(0); unmodified CPU path blocked. Five required inference dependencies absent.",
+  "onnx": "Earlier DocShadow export is a separate candidate; not established as current FSENet. No measured parity.",
+  "new_model_inferences": 0,
+  "evidence_files": [
+    {
+      "file": "fairscan-sources.json",
+      "bytes": 4655,
+      "sha256": "2450aea661ed1acc670d99139819c78d7623298a0ca85d4fb2ca749869ca4fcd"
+    },
+    {
+      "file": "fairscan.md",
+      "bytes": 4991,
+      "sha256": "e640c22111c188550d1e754e3ef8c7cb318eedfa249a6466f1e4b24bd808db74"
+    },
+    {
+      "file": "fsenet-preflight.json",
+      "bytes": 50989,
+      "sha256": "16e30976ae10213b03321594c6ee272d01ca6cdeec585c184e57a8269b50f01c"
+    },
+    {
+      "file": "fsenet-preflight.md",
+      "bytes": 3404,
+      "sha256": "cc74c4cbdff2adb97ee82223d1b7ce917de10578e9097b25ba7cc86500ccbfb8"
+    },
+    {
+      "file": "illumination-sources.json",
+      "bytes": 86790,
+      "sha256": "312d759bfa2f310cf4b916680f42044cac201947d10c417d28249e9bcdc227ea"
+    },
+    {
+      "file": "illumination.md",
+      "bytes": 5039,
+      "sha256": "77606f9e3073ac3054e16281d37053fe47f031cb55be61a9b538cf88703c89b3"
+    }
+  ]
+}

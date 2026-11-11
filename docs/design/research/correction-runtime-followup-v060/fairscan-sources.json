@@ -1,0 +1,108 @@
+{
+  "format": "scanner-fairscan-official-runtime-followup",
+  "checked_at": "2026-11-11T01:48:00.810164+00:00",
+  "source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "release": {
+    "url": "https://api.github.com/repos/pynicolas/FairScan/releases/latest",
+    "tag": "v2.3.0",
+    "assets": [
+      {
+        "name": "FairScan-2.3.0-arm64-v8a.apk",
+        "bytes": 47013508,
+        "digest": "sha256:53e3347745eaba7566632079a402583e25b906be893899f9ced0224adf771cd9",
+        "url": "https://github.com/pynicolas/FairScan/releases/download/v2.3.0/FairScan-2.3.0-arm64-v8a.apk"
+      },
+      {
+        "name": "FairScan-2.3.0-armeabi-v7a.apk",
+        "bytes": 34825758,
+        "digest": "sha256:3bce4426663cdc15ae463905d5987f1fac49f7b403ebf877207c7285f3e4e2a8",
+        "url": "https://github.com/pynicolas/FairScan/releases/download/v2.3.0/FairScan-2.3.0-armeabi-v7a.apk"
+      }
+    ]
+  },
+  "sources": [
+    {
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/README.md",
+      "http_status": 200,
+      "bytes": 5094,
+      "sha256": "48d943c23a389c7a5dbbdbb1dfa722a6b67d2653696bf2c6a06c5978b1361c3a"
+    },
+    {
+      "path": "evaluation/README.md",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/evaluation/README.md",
+      "http_status": 200,
+      "bytes": 286,
+      "sha256": "2770778354929a226732955e3f1dbc5df8b00508a17febc43f61ae95d15bde80"
+    },
+    {
+      "path": "evaluation/build.gradle.kts",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/evaluation/build.gradle.kts",
+      "http_status": 200,
+      "bytes": 396,
+      "sha256": "eb602c7e888c94a0f10614b270fc6a6c81c52de971b25ae25895925dc37880d0"
+    },
+    {
+      "path": "imageprocessing/build.gradle.kts",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/imageprocessing/build.gradle.kts",
+      "http_status": 200,
+      "bytes": 425,
+      "sha256": "507d8f036378a88ec773e23f3c1a23cb7c7469b65e43ce1e3847eb82467c276e"
+    },
+    {
+      "path": "evaluation/src/main/java/org/fairscan/evaluation/QuadDetectionEvaluator.kt",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/evaluation/src/main/java/org/fairscan/evaluation/QuadDetectionEvaluator.kt",
+      "http_status": 200,
+      "bytes": 5893,
+      "sha256": "34395a16752b913ac5b66dd3664fccd86f52836a52d9a76183a2b18f376543fe"
+    },
+    {
+      "path": "evaluation/python/generate_masks.py",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/evaluation/python/generate_masks.py",
+      "http_status": 200,
+      "bytes": 1859,
+      "sha256": "96aa83a764fe4f9dfab369672714c3f81766b517f8790e7040e5553fe753d9a2"
+    },
+    {
+      "path": "evaluation/python/requirements.txt",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/evaluation/python/requirements.txt",
+      "http_status": 200,
+      "bytes": 31,
+      "sha256": "5b2a25dc2c02d5578b2e53593d2e6420845c160d8def3d5b6d7ab2fa7e75cf72"
+    },
+    {
+      "path": "settings.gradle.kts",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/settings.gradle.kts",
+      "http_status": 200,
+      "bytes": 633,
+      "sha256": "d479c4b50e6e5ff5245ebcdf02d0bb3e3e3712e31c38c26551189d5d52c0abfd"
+    },
+    {
+      "path": "gradle/libs.versions.toml",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/gradle/libs.versions.toml",
+      "http_status": 200,
+      "bytes": 4956,
+      "sha256": "9460743dbaa07fd0cb3ffc77110bcc1ec14f3da6f2236511bde9a5f6c38aea22"
+    },
+    {
+      "path": "app/build.gradle.kts",
+      "url": "https://raw.githubusercontent.com/pynicolas/FairScan/2c5230b12f69f3cee2cc5a970013da20848d1272/app/build.gradle.kts",
+      "http_status": 200,
+      "bytes": 7414,
+      "sha256": "aca73699fad925449179a5ffb2d989e47511749a3c673ad40b6b8a28dc8efd31"
+    }
+  ],
+  "official_interpreted_mask_generator_exists": true,
+  "official_jvm_quad_evaluator_exists": true,
+  "prebuilt_desktop_evaluator_in_latest_release": false,
+  "executions": 0,
+  "builds": 0,
+  "installs": 0,
+  "messages_sent": 0,
+  "unverified": [
+    "JVM evaluator build/start invocation",
+    "Android hardware availability",
+    "native OpenCV loading",
+    "image/mask path and original-photo truth sufficiency"
+  ]
+}
