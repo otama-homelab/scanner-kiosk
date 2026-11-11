@@ -588,5 +588,15 @@
     "apply_eligible": false,
     "full_illumination_gate_complete": false,
     "requirements_newly_completed": 0
+  },
+  "old_docshadow_native_evaluation": {
+    "summary": "../correction-docshadow-native-v060/summary.json",
+    "sha256": "dcd8d3ce858a44386d62a5bb9af9dce1c7c9f815ed49f2648c1f5dd3282eb700",
+    "status": "measured-configuration-fail",
+    "native_case_count": 12,
+    "new_forward_count": 33,
+    "reused_forward_count": 3,
+    "apply_eligible": false,
+    "requirements_newly_completed": 0
   }
 }

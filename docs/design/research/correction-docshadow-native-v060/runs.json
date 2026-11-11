@@ -1,0 +1,771 @@
+[
+  {
+    "id": "mixed_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "input_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic; prior actual shape overrides old generic scope label",
+    "load_seconds": 1.330298346991185,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.5604177539935336,
+      1.592374108004151,
+      1.61026128398953
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.474014550447464,
+      1.2896791696548462
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/mixed_shadow_native.npy",
+    "raw_output_sha256": "549ff881d3731c7ffbf270fefebe6990ce32ace0a359ab8f2ca830501f3b3e66",
+    "peak_rss_bytes": 714518528,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": true,
+    "sampled_peak_rss_bytes": 714858496,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"mixed_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/mixed.png\"}",
+      "0"
+    ],
+    "prior_receipt": "/home/yamato/otama-homelab/scanner-kiosk/docs/design/research/correction-docshadow-cpu-v060/native.stdout.json",
+    "prior_receipt_sha256": "2bbf2afe0cd816b5c7d662a43b1f7a28122f104bdffeffe3c32a02ddebd090b3"
+  },
+  {
+    "id": "mixed_clean",
+    "input": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.1536065760010388,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.682282836001832,
+      1.888700137991691,
+      1.6986328590137418
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.5411060452461243,
+      1.3780947923660278
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/mixed_clean_native.npy",
+    "raw_output_sha256": "f893377353fd3a6e5e64a26e04898fa111fdcce1ec34c34cb249ecb9b78bdea7",
+    "peak_rss_bytes": 706609152,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"mixed_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/mixed.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 6.7287939169909805,
+    "sampled_peak_rss_bytes": 706928640
+  },
+  {
+    "id": "table_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/table.png",
+    "input_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.1958010510134045,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.898772218002705,
+      1.8820547770010307,
+      1.6447866609960329
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.8122774362564087,
+      1.551662802696228
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/table_shadow_native.npy",
+    "raw_output_sha256": "6039c7c66a5677c06420a64ba7a42250aef748147e42257dd6e43ae3e5cc3284",
+    "peak_rss_bytes": 715198464,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"table_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/table.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 6.927970741991885,
+    "sampled_peak_rss_bytes": 715509760
+  },
+  {
+    "id": "table_clean",
+    "input": "/tmp/scanner-v060-paired/clean/table.png",
+    "input_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.112009186996147,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.811613594996743,
+      1.816196564992424,
+      1.7128199900034815
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.8980394601821899,
+      1.6839773654937744
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/table_clean_native.npy",
+    "raw_output_sha256": "d72cbd8884e214d40f4fe17c0827f5a38018bfacc727bdb0c7b19e3a4abf9d4d",
+    "peak_rss_bytes": 732467200,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"table_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/table.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 6.72534946698579,
+    "sampled_peak_rss_bytes": 732741632
+  },
+  {
+    "id": "faint_mixed_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "input_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.106743162003113,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.7627323240158148,
+      1.758933998993598,
+      1.750990669010207
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.5024089813232422,
+      0.963293194770813
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_shadow_native.npy",
+    "raw_output_sha256": "ca813ab1276be9751c3ba69839f1eb42d8b9238f96210226c4964655d639782b",
+    "peak_rss_bytes": 716554240,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"faint_mixed_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/faint_mixed.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 6.627032075019088,
+    "sampled_peak_rss_bytes": 716750848
+  },
+  {
+    "id": "faint_mixed_clean",
+    "input": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.1332202999910805,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.7608998870127834,
+      1.7020006279926747,
+      1.7100056459894404
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.5260884165763855,
+      1.0184600353240967
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_clean_native.npy",
+    "raw_output_sha256": "c73daca0b6acd2db7bb33d99c7c5214da1881606d851be295fd9678eacce74dc",
+    "peak_rss_bytes": 714891264,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"faint_mixed_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 6.525801918003708,
+    "sampled_peak_rss_bytes": 715296768
+  },
+  {
+    "id": "faint_table_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "input_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.262407775997417,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.7858522449969314,
+      1.7194678689993452,
+      1.6341796899796464
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.4580893814563751,
+      0.9639790058135986
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/faint_table_shadow_native.npy",
+    "raw_output_sha256": "6df2f797a93cd52b024cb7d467e23bb367c1e99d6dc399f3f0964f1a15d09bc4",
+    "peak_rss_bytes": 715554816,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"faint_table_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/faint_table.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 6.627790767990518,
+    "sampled_peak_rss_bytes": 715841536
+  },
+  {
+    "id": "faint_table_clean",
+    "input": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      900,
+      700
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.1743037779815495,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      1.764152046001982,
+      1.7459216869901866,
+      1.6508713199873455
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.4923369288444519,
+      1.0323306322097778
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/faint_table_clean_native.npy",
+    "raw_output_sha256": "c53a6bbaa3940161ebbf4b3705344a5fe55cbe0e54e096f6ed9a627236a02f5e",
+    "peak_rss_bytes": 715108352,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"faint_table_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/faint_table.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 6.627054487995338,
+    "sampled_peak_rss_bytes": 715423744
+  },
+  {
+    "id": "blue_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "input_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "original_size": [
+      1055,
+      1491
+    ],
+    "model_size": [
+      1055,
+      1491
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.161177564994432,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      5.119860266015166,
+      4.919050237018382,
+      5.157835896010511
+    ],
+    "output_shape": [
+      1,
+      3,
+      1491,
+      1055
+    ],
+    "output_range": [
+      -0.2257845103740692,
+      1.3254185914993286
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/blue_shadow_native.npy",
+    "raw_output_sha256": "2c14bc5bc0ac2112cbad82b495eadeab31969b4f53be678d7404a14e440e145b",
+    "peak_rss_bytes": 1337995264,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"blue_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/blue.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 16.672214138001436,
+    "sampled_peak_rss_bytes": 1338327040
+  },
+  {
+    "id": "blue_clean",
+    "input": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "original_size": [
+      1055,
+      1491
+    ],
+    "model_size": [
+      1055,
+      1491
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.1819487000175286,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      6.17052943300223,
+      4.8716548180091195,
+      5.106775049993303
+    ],
+    "output_shape": [
+      1,
+      3,
+      1491,
+      1055
+    ],
+    "output_range": [
+      -0.23856446146965027,
+      1.3471782207489014
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/blue_clean_native.npy",
+    "raw_output_sha256": "d82629fd5cf1bd6481b54f810c8a930fb7551690421d8bb6be0ffc27aa6c68cd",
+    "peak_rss_bytes": 1337372672,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"blue_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/blue.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 17.675710492010694,
+    "sampled_peak_rss_bytes": 1337643008
+  },
+  {
+    "id": "peach_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/peach.png",
+    "input_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+    "original_size": [
+      1024,
+      1536
+    ],
+    "model_size": [
+      1024,
+      1536
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.142198984976858,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      4.445629793975968,
+      4.425289562001126,
+      4.510687424015487
+    ],
+    "output_shape": [
+      1,
+      3,
+      1536,
+      1024
+    ],
+    "output_range": [
+      -0.24902647733688354,
+      1.4055042266845703
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/peach_shadow_native.npy",
+    "raw_output_sha256": "81a104fea4e2fd4acb0de5f8621afc971766bfa7836a66a7c13b1230e5682adc",
+    "peak_rss_bytes": 1337737216,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"peach_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/peach.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 14.86767902399879,
+    "sampled_peak_rss_bytes": 1319112704
+  },
+  {
+    "id": "peach_clean",
+    "input": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "original_size": [
+      1024,
+      1536
+    ],
+    "model_size": [
+      1024,
+      1536
+    ],
+    "scope": "native-resolution synthetic diagnostic, original input dimensions preserved",
+    "load_seconds": 1.2683628080121707,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      4.43410128398682,
+      4.378940096008591,
+      4.454661750001833
+    ],
+    "output_shape": [
+      1,
+      3,
+      1536,
+      1024
+    ],
+    "output_range": [
+      -0.2803000807762146,
+      1.4545632600784302
+    ],
+    "raw_output": "/tmp/scanner-docshadow-native-v060/outputs/peach_clean_native.npy",
+    "raw_output_sha256": "8660616680f8323bd96684a8b0e223cbe58c26e7a164cafe40613c6364c13899",
+    "peak_rss_bytes": 1356152832,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "reused": false,
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-native-v060/evaluate.py",
+      "{\"id\": \"peach_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/peach.png\"}",
+      "0"
+    ],
+    "elapsed_seconds": 14.864962549996562,
+    "sampled_peak_rss_bytes": 1356660736
+  }
+]

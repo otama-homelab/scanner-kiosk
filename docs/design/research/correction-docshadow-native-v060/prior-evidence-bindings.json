@@ -1,0 +1,27 @@
+[
+  {
+    "path": "docs/design/research/correction-docshadow-cpu-v060/summary.json",
+    "bytes": 8384,
+    "sha256": "253e8595468b31687cd9bddeb2620ddb31bacf879346d959cfce65f55d4558f7"
+  },
+  {
+    "path": "docs/design/research/correction-docshadow-cpu-v060/native.stdout.json",
+    "bytes": 902,
+    "sha256": "2bbf2afe0cd816b5c7d662a43b1f7a28122f104bdffeffe3c32a02ddebd090b3"
+  },
+  {
+    "path": "docs/design/research/correction-docshadow-cpu-v060/native-attempt.json",
+    "bytes": 361,
+    "sha256": "18728e77ee2b6a176a40560c91a1533e8d87d81dd48c3343ec9cb0bc5434cef3"
+  },
+  {
+    "path": "docs/design/research/correction-docshadow-cpu-v060/quality.json",
+    "bytes": 5123,
+    "sha256": "50940580b3e44da5ece14b2ef42a6fdb243aa215d05b5967af2771d98188da51"
+  },
+  {
+    "path": "docs/design/research/correction-paired-v060/paired-truth.json",
+    "bytes": 5374,
+    "sha256": "9f5124ee66de0cd778204a1583387694582b361172d53d29e1c30bbad32641e2"
+  }
+]

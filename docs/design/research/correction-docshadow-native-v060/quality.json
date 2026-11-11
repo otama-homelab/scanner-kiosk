@@ -1,0 +1,144 @@
+{
+  "scope": "Native-resolution OLD DocShadow synthetic-only, exact same paired pixels; no resizing/clipping of input/output; not FSENet or conversion parity.",
+  "metric_implementation": "Installed OpenCV4.12.0 cv2.PSNR(R=1), cv2.norm(NORM_L1)/channel-count.",
+  "ssim": "not-measured: standard implementations absent in four existing evaluation environments; no new dependency or formula",
+  "thresholds": {
+    "shadow_psnr_improvement_db": 1,
+    "clean_ssim_min": 0.99,
+    "clean_channel_mae_max": 0.00392156862745098
+  },
+  "rows": [
+    {
+      "id": "mixed",
+      "native_size": [
+        900,
+        700
+      ],
+      "shadow_noop_psnr_db": 16.908529267982818,
+      "clean_noop_channel_mae": 0,
+      "previous_512_shadow_psnr_db": 19.364565978200506,
+      "previous_512_clean_channel_mae": 0.03806919262982738,
+      "shadow_status": "measured",
+      "shadow_psnr_db": 17.225076237600238,
+      "shadow_channel_mae": 0.1295529221558564,
+      "clean_status": "measured",
+      "clean_psnr_db": 28.31477376009097,
+      "clean_channel_mae": 0.03135255844128249,
+      "shadow_psnr_improvement_db": 0.3165469696174199,
+      "shadow_psnr_threshold_pass": false,
+      "native_vs512_shadow_psnr_delta_db": -2.1394897406002684,
+      "clean_mae_threshold_pass": false,
+      "native_vs512_clean_mae_delta": -0.006716634188544887
+    },
+    {
+      "id": "table",
+      "native_size": [
+        900,
+        700
+      ],
+      "shadow_noop_psnr_db": 16.92328010330564,
+      "clean_noop_channel_mae": 0,
+      "previous_512_shadow_psnr_db": 17.94480798833066,
+      "previous_512_clean_channel_mae": 0.042958812135195895,
+      "shadow_status": "measured",
+      "shadow_psnr_db": 17.6968953473926,
+      "shadow_channel_mae": 0.12166939213516575,
+      "clean_status": "measured",
+      "clean_psnr_db": 27.121185174262074,
+      "clean_channel_mae": 0.031957694334053634,
+      "shadow_psnr_improvement_db": 0.7736152440869617,
+      "shadow_psnr_threshold_pass": false,
+      "native_vs512_shadow_psnr_delta_db": -0.24791264093805765,
+      "clean_mae_threshold_pass": false,
+      "native_vs512_clean_mae_delta": -0.011001117801142261
+    },
+    {
+      "id": "faint_mixed",
+      "native_size": [
+        900,
+        700
+      ],
+      "shadow_noop_psnr_db": 16.905197558570766,
+      "clean_noop_channel_mae": 0,
+      "previous_512_shadow_psnr_db": 19.121924532374642,
+      "previous_512_clean_channel_mae": 0.0348435859003395,
+      "shadow_status": "measured",
+      "shadow_psnr_db": 16.6951139872265,
+      "shadow_channel_mae": 0.1371799346865485,
+      "clean_status": "measured",
+      "clean_psnr_db": 29.337911999585884,
+      "clean_channel_mae": 0.02884081517218282,
+      "shadow_psnr_improvement_db": -0.21008357134426703,
+      "shadow_psnr_threshold_pass": false,
+      "native_vs512_shadow_psnr_delta_db": -2.426810545148143,
+      "clean_mae_threshold_pass": false,
+      "native_vs512_clean_mae_delta": -0.006002770728156682
+    },
+    {
+      "id": "faint_table",
+      "native_size": [
+        900,
+        700
+      ],
+      "shadow_noop_psnr_db": 16.91111674660384,
+      "clean_noop_channel_mae": 0,
+      "previous_512_shadow_psnr_db": 19.19466209122351,
+      "previous_512_clean_channel_mae": 0.03410773206520333,
+      "shadow_status": "measured",
+      "shadow_psnr_db": 16.694828107372363,
+      "shadow_channel_mae": 0.13720195082269965,
+      "clean_status": "measured",
+      "clean_psnr_db": 28.981519012717136,
+      "clean_channel_mae": 0.029394288434884536,
+      "shadow_psnr_improvement_db": -0.2162886392314789,
+      "shadow_psnr_threshold_pass": false,
+      "native_vs512_shadow_psnr_delta_db": -2.499833983851147,
+      "clean_mae_threshold_pass": false,
+      "native_vs512_clean_mae_delta": -0.004713443630318795
+    },
+    {
+      "id": "blue",
+      "native_size": [
+        1055,
+        1491
+      ],
+      "shadow_noop_psnr_db": 19.252285814323987,
+      "clean_noop_channel_mae": 0,
+      "previous_512_shadow_psnr_db": 15.868425459003781,
+      "previous_512_clean_channel_mae": 0.07852777782916971,
+      "shadow_status": "measured",
+      "shadow_psnr_db": 17.246325780387824,
+      "shadow_channel_mae": 0.11681789621920839,
+      "clean_status": "measured",
+      "clean_psnr_db": 21.37228817566757,
+      "clean_channel_mae": 0.06728403716976929,
+      "shadow_psnr_improvement_db": -2.0059600339361623,
+      "shadow_psnr_threshold_pass": false,
+      "native_vs512_shadow_psnr_delta_db": 1.3779003213840433,
+      "clean_mae_threshold_pass": false,
+      "native_vs512_clean_mae_delta": -0.011243740659400425
+    },
+    {
+      "id": "peach",
+      "native_size": [
+        1024,
+        1536
+      ],
+      "shadow_noop_psnr_db": 19.7210868604322,
+      "clean_noop_channel_mae": 0,
+      "previous_512_shadow_psnr_db": 17.405839147809584,
+      "previous_512_clean_channel_mae": 0.06262627323539831,
+      "shadow_status": "measured",
+      "shadow_psnr_db": 20.082454763570464,
+      "shadow_channel_mae": 0.07802998501681893,
+      "clean_status": "measured",
+      "clean_psnr_db": 23.447788481140567,
+      "clean_channel_mae": 0.04487589325356556,
+      "shadow_psnr_improvement_db": 0.3613679031382624,
+      "shadow_psnr_threshold_pass": false,
+      "native_vs512_shadow_psnr_delta_db": 2.6766156157608805,
+      "clean_mae_threshold_pass": false,
+      "native_vs512_clean_mae_delta": -0.01775037998183275
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "/tmp/scanner-docshadow-v060/docshadow_sd7k.onnx": {
+    "bytes": 120041674,
+    "sha256": "8c09b9320a0fb3c53806cdf9cb8410b3706c77caed81f4ec1cb0bf2cbd14b049"
+  },
+  "/tmp/scanner-docshadow-v060/onnx_runner/docshadow.py": {
+    "bytes": 721,
+    "sha256": "64d9c6632aaad3bb915a9c19db9a5e049a9d7cbc4fe9e7e6cf2d68166297095a"
+  },
+  "/tmp/scanner-docshadow-v060/onnx_runner/__init__.py": {
+    "bytes": 39,
+    "sha256": "f3812438b3078278dad7263c18598c22454985467f85e87f62245a955ce1a223"
+  },
+  "/tmp/scanner-docshadow-v060/evaluate.py": {
+    "bytes": 2166,
+    "sha256": "dac8b4c6de4866036189710015ea31e3b00e1c2ae49b6de2aa870a3940cf175b"
+  }
+}

@@ -117,3 +117,10 @@ FSENetはMIT repoが推論用として重みを直接配布し、確認資料に
 作者紹介の旧DocShadow SD7K ONNXを現在のFSENetと区別し、公式前処理/run無変更で実測。合成影6+clean6入力を公式512設定で各3回、元900x700を追加3回、計39forward/13process成功。512 forward0.527–0.697秒/RSS476–511MB、native1.560–1.610秒/RSS714.5MB。影PSNR+1dBは4/6、青・桃紙は悪化。clean MAE基準は0/6で、この512構成は不合格・apply不可。既存OpenCV APIで測定、同resize-only baselineも保持。SSIM/全native品質/実写真/OCR/parity未測定、現FSENetの評価とは別。新規依存/補正アルゴリズム/製品変更/公開/配備なし。
 
 実行記録: docs/design/research/correction-docshadow-cpu-v060/report.md。summaryと40件の証拠hashを照合。元14要件の完了数は6/14を維持し、ILL-01/02をこの別候補の部分診断で完了に変えない。前回の「モデル推論なし」はこの追補より前の履歴を示す。
+
+
+## 2026-11-11 旧DocShadow全件native追補
+
+公開合成6shadow+6cleanを元寸法で評価。新規33forward＋hash/config一致の先行3forward再利用、全12case成功。独自resize/paddingなし。forward1.560–6.171秒、RSS706609152–1356152832 bytes、診断2GiB全件内・製品1GiBは4/12超過。影PSNR+1dB0/6、clean MAE≤1/255は0/6。薄文字2件とblueはno-opより悪化。512縮小を除いても不合格・apply不可で、旧DocShadowのこの構成は採用候補から外す。将来再開は別artifact/公式改訂/独立した新入力等の変更がある場合のみ。同条件の再実行はしない。
+
+証拠: docs/design/research/correction-docshadow-native-v060/report.md・summary.json。30証拠hashを照合。SSIM/実写真/OCR/現FSENet/parity未測定、元要件の完了数6/14を保持。新規依存・製品変更・公開・配備なし。
