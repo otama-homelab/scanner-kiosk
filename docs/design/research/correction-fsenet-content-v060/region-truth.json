@@ -1,0 +1,370 @@
+{
+  "regions": [
+    {
+      "fixture_id": "fixture_content_mixed_shadow",
+      "source_id": "mixed_shadow",
+      "source_kind": "shadow",
+      "text_regions": [
+        {
+          "x": 80,
+          "y": 80,
+          "width": 400,
+          "height": 36
+        },
+        {
+          "x": 80,
+          "y": 180,
+          "width": 380,
+          "height": 37
+        }
+      ],
+      "thin_line_regions": [],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    },
+    {
+      "fixture_id": "fixture_content_mixed_clean",
+      "source_id": "mixed_clean",
+      "source_kind": "clean",
+      "text_regions": [
+        {
+          "x": 80,
+          "y": 80,
+          "width": 400,
+          "height": 36
+        },
+        {
+          "x": 80,
+          "y": 180,
+          "width": 380,
+          "height": 37
+        }
+      ],
+      "thin_line_regions": [],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    },
+    {
+      "fixture_id": "fixture_content_table_shadow",
+      "source_id": "table_shadow",
+      "source_kind": "shadow",
+      "text_regions": [
+        {
+          "x": 90,
+          "y": 90,
+          "width": 80,
+          "height": 36
+        },
+        {
+          "x": 450,
+          "y": 90,
+          "width": 80,
+          "height": 37
+        },
+        {
+          "x": 90,
+          "y": 230,
+          "width": 80,
+          "height": 38
+        },
+        {
+          "x": 450,
+          "y": 230,
+          "width": 120,
+          "height": 33
+        }
+      ],
+      "thin_line_regions": [
+        {
+          "x": 70,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 420,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 800,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 70,
+          "y": 70,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 200,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 340,
+          "width": 731,
+          "height": 2
+        }
+      ],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    },
+    {
+      "fixture_id": "fixture_content_table_clean",
+      "source_id": "table_clean",
+      "source_kind": "clean",
+      "text_regions": [
+        {
+          "x": 90,
+          "y": 90,
+          "width": 80,
+          "height": 36
+        },
+        {
+          "x": 450,
+          "y": 90,
+          "width": 80,
+          "height": 37
+        },
+        {
+          "x": 90,
+          "y": 230,
+          "width": 80,
+          "height": 38
+        },
+        {
+          "x": 450,
+          "y": 230,
+          "width": 120,
+          "height": 33
+        }
+      ],
+      "thin_line_regions": [
+        {
+          "x": 70,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 420,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 800,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 70,
+          "y": 70,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 200,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 340,
+          "width": 731,
+          "height": 2
+        }
+      ],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    },
+    {
+      "fixture_id": "fixture_content_faint_mixed_shadow",
+      "source_id": "faint_mixed_shadow",
+      "source_kind": "shadow",
+      "text_regions": [
+        {
+          "x": 80,
+          "y": 80,
+          "width": 400,
+          "height": 36
+        },
+        {
+          "x": 80,
+          "y": 180,
+          "width": 380,
+          "height": 37
+        }
+      ],
+      "thin_line_regions": [],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    },
+    {
+      "fixture_id": "fixture_content_faint_mixed_clean",
+      "source_id": "faint_mixed_clean",
+      "source_kind": "clean",
+      "text_regions": [
+        {
+          "x": 80,
+          "y": 80,
+          "width": 400,
+          "height": 36
+        },
+        {
+          "x": 80,
+          "y": 180,
+          "width": 380,
+          "height": 37
+        }
+      ],
+      "thin_line_regions": [],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    },
+    {
+      "fixture_id": "fixture_content_faint_table_shadow",
+      "source_id": "faint_table_shadow",
+      "source_kind": "shadow",
+      "text_regions": [
+        {
+          "x": 90,
+          "y": 90,
+          "width": 80,
+          "height": 36
+        },
+        {
+          "x": 450,
+          "y": 90,
+          "width": 80,
+          "height": 37
+        },
+        {
+          "x": 90,
+          "y": 230,
+          "width": 80,
+          "height": 38
+        },
+        {
+          "x": 450,
+          "y": 230,
+          "width": 120,
+          "height": 33
+        }
+      ],
+      "thin_line_regions": [
+        {
+          "x": 70,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 420,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 800,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 70,
+          "y": 70,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 200,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 340,
+          "width": 731,
+          "height": 2
+        }
+      ],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    },
+    {
+      "fixture_id": "fixture_content_faint_table_clean",
+      "source_id": "faint_table_clean",
+      "source_kind": "clean",
+      "text_regions": [
+        {
+          "x": 90,
+          "y": 90,
+          "width": 80,
+          "height": 36
+        },
+        {
+          "x": 450,
+          "y": 90,
+          "width": 80,
+          "height": 37
+        },
+        {
+          "x": 90,
+          "y": 230,
+          "width": 80,
+          "height": 38
+        },
+        {
+          "x": 450,
+          "y": 230,
+          "width": 120,
+          "height": 33
+        }
+      ],
+      "thin_line_regions": [
+        {
+          "x": 70,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 420,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 800,
+          "y": 70,
+          "width": 2,
+          "height": 271
+        },
+        {
+          "x": 70,
+          "y": 70,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 200,
+          "width": 731,
+          "height": 2
+        },
+        {
+          "x": 70,
+          "y": 340,
+          "width": 731,
+          "height": 2
+        }
+      ],
+      "region_truth": "existing source OCR boxes and prepare_catalog.py fixed draw.line coordinates, not model-derived annotation"
+    }
+  ],
+  "semantics": "foreground/geometry retention diagnostic only, not semantic digit/thinline/seal missing0",
+  "negative_control": "solidgray225 viaPillow, not model/correction algorithm"
+}

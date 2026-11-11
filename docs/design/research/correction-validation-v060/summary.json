@@ -727,5 +727,11 @@
   "current_original_criteria_audit": {
     "summary": "../correction-current-criteria-audit-v060/summary.json",
     "sha256": "96e0dc7c7a2e90ed953a502ad7172c6ebd685476d2d20a0dde31e462c047ac5c"
+  },
+  "current_fsenet_content_diagnostic": {
+    "summary": "../correction-fsenet-content-v060/summary.json",
+    "sha256": "a2f40c2fcfc36b5cdb0075f882b6868107bcb6dd2ea1d4149365cd022de7392d",
+    "requirements_newly_completed": 0,
+    "semantic_zero_missing_proven": false
   }
 }

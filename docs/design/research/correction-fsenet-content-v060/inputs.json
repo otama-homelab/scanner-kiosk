@@ -1,0 +1,254 @@
+[
+  {
+    "id": "00_mixed_shadow",
+    "source_id": "mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "source_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "00_mixed_shadow.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/00_mixed_shadow.png",
+    "baseline512_sha256": "73a0923bfbfb5c12ec2852f1af8741b5c1c77cf675ea5eea14d0b436fca881cd",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/00_mixed_shadow_pred.png",
+    "prediction512_sha256": "c3918da5bcf645940fd36b072ccc0a28e38ffa743de353b19d10c738c81a5578",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/00_mixed_shadow_gt.png",
+    "official_target512_sha256": "508ac913e4c2de30974efb058bb4f5d059dee391600f52bc1e90635aec090992"
+  },
+  {
+    "id": "01_mixed_clean",
+    "source_id": "mixed_clean",
+    "source_kind": "clean",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "01_mixed_clean.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/01_mixed_clean.png",
+    "baseline512_sha256": "508ac913e4c2de30974efb058bb4f5d059dee391600f52bc1e90635aec090992",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/01_mixed_clean_pred.png",
+    "prediction512_sha256": "cf1561b4439f56f7e4c49009975983ddce8a3cfbe4314923047207c3db39124c",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/01_mixed_clean_gt.png",
+    "official_target512_sha256": "508ac913e4c2de30974efb058bb4f5d059dee391600f52bc1e90635aec090992"
+  },
+  {
+    "id": "02_table_shadow",
+    "source_id": "table_shadow",
+    "source_kind": "shadow",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/shadow/table.png",
+    "source_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "02_table_shadow.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/02_table_shadow.png",
+    "baseline512_sha256": "2aaa489e0b13cf8add272914986665e25742d1dc803789ddd558fc2b932f30cb",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/02_table_shadow_pred.png",
+    "prediction512_sha256": "a3b5f4264ae641c5470604771a877da5338182b66e3b309b82bdf7ce12fddd38",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/02_table_shadow_gt.png",
+    "official_target512_sha256": "09fcf805dd44b5a54f239f337a605cece10e42d73a68956813aa598add835d3d"
+  },
+  {
+    "id": "03_table_clean",
+    "source_id": "table_clean",
+    "source_kind": "clean",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/clean/table.png",
+    "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "03_table_clean.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/03_table_clean.png",
+    "baseline512_sha256": "09fcf805dd44b5a54f239f337a605cece10e42d73a68956813aa598add835d3d",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/03_table_clean_pred.png",
+    "prediction512_sha256": "a510d4360a9530033f7086404d01c00375fd35326cabcea6ecf3f0aea750baea",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/03_table_clean_gt.png",
+    "official_target512_sha256": "09fcf805dd44b5a54f239f337a605cece10e42d73a68956813aa598add835d3d"
+  },
+  {
+    "id": "04_faint_mixed_shadow",
+    "source_id": "faint_mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "source_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "04_faint_mixed_shadow.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/04_faint_mixed_shadow.png",
+    "baseline512_sha256": "6c1caff05f7551551e2fa46bc2f7aa3997f1d2bf4a960dde75d68cffed8ff7e5",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/04_faint_mixed_shadow_pred.png",
+    "prediction512_sha256": "6589fb79003667cfd6ccfb49ba55529e3d6347685327b17ddb9c84ccf04ac0a2",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/04_faint_mixed_shadow_gt.png",
+    "official_target512_sha256": "591e1caf078c7e1d6ac2917e91d59d9c1c40e3b2155137b6f775d621f9300336"
+  },
+  {
+    "id": "05_faint_mixed_clean",
+    "source_id": "faint_mixed_clean",
+    "source_kind": "clean",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "source_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "05_faint_mixed_clean.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/05_faint_mixed_clean.png",
+    "baseline512_sha256": "591e1caf078c7e1d6ac2917e91d59d9c1c40e3b2155137b6f775d621f9300336",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/05_faint_mixed_clean_pred.png",
+    "prediction512_sha256": "61dceddff2410c697274865e24ae54e6dc9e2f97915ebd9ff24490961660c180",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/05_faint_mixed_clean_gt.png",
+    "official_target512_sha256": "591e1caf078c7e1d6ac2917e91d59d9c1c40e3b2155137b6f775d621f9300336"
+  },
+  {
+    "id": "06_faint_table_shadow",
+    "source_id": "faint_table_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "source_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "06_faint_table_shadow.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/06_faint_table_shadow.png",
+    "baseline512_sha256": "e1dd7a8752d92cdfd1c670ee35a56dd41941e9e7b9cb3a2e34f0bc1b033dc1f0",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/06_faint_table_shadow_pred.png",
+    "prediction512_sha256": "b3bea885f59e318d0fb2e7b5d30dca27d95b45b9482956e5374230d9b0141533",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/06_faint_table_shadow_gt.png",
+    "official_target512_sha256": "b21b382cadcdd4955d436e7e5d075e18e1f80f681253901993494fc4ce957423"
+  },
+  {
+    "id": "07_faint_table_clean",
+    "source_id": "faint_table_clean",
+    "source_kind": "clean",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "source_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "07_faint_table_clean.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/07_faint_table_clean.png",
+    "baseline512_sha256": "b21b382cadcdd4955d436e7e5d075e18e1f80f681253901993494fc4ce957423",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/07_faint_table_clean_pred.png",
+    "prediction512_sha256": "2fd98a3f41887cfa545138351a799fc2abef8b6c91325141a63eae52b1c50e61",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/07_faint_table_clean_gt.png",
+    "official_target512_sha256": "b21b382cadcdd4955d436e7e5d075e18e1f80f681253901993494fc4ce957423"
+  },
+  {
+    "id": "08_blue_shadow",
+    "source_id": "blue_shadow",
+    "source_kind": "shadow",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "source_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "08_blue_shadow.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/08_blue_shadow.png",
+    "baseline512_sha256": "e338eebe6b08b6f795f963de6302f089dd903a23fc126fbc9ed035ba3b1b6eb8",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/08_blue_shadow_pred.png",
+    "prediction512_sha256": "4e9df1461ccda099eb9fd7086b827be984d78205d0d333f8710f5e4f547dd609",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/08_blue_shadow_gt.png",
+    "official_target512_sha256": "d950fa6fa9a575f8b6aca24c175f924a8cf0c51794135c5f5b01b383bbe31a12"
+  },
+  {
+    "id": "09_blue_clean",
+    "source_id": "blue_clean",
+    "source_kind": "clean",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/clean/blue.png",
+    "source_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "09_blue_clean.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/09_blue_clean.png",
+    "baseline512_sha256": "d950fa6fa9a575f8b6aca24c175f924a8cf0c51794135c5f5b01b383bbe31a12",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/09_blue_clean_pred.png",
+    "prediction512_sha256": "cacd24397366a10dff9087ee3d39947ec3ab077ed109aa6c60c4162a225772d5",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/09_blue_clean_gt.png",
+    "official_target512_sha256": "d950fa6fa9a575f8b6aca24c175f924a8cf0c51794135c5f5b01b383bbe31a12"
+  },
+  {
+    "id": "10_peach_shadow",
+    "source_id": "peach_shadow",
+    "source_kind": "shadow",
+    "fixture": "peach",
+    "source": "/tmp/scanner-v060-paired/shadow/peach.png",
+    "source_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "size": [
+      1024,
+      1536
+    ],
+    "filename": "10_peach_shadow.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/10_peach_shadow.png",
+    "baseline512_sha256": "2f4d5d70351ed258d6c0e6e134adbec3134252f686cab97eb4ab096f6510a94b",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/10_peach_shadow_pred.png",
+    "prediction512_sha256": "0777752ec3d7cbeb1464ddb1de32a47c61258cb15c5c01b1aa9399842526e398",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/10_peach_shadow_gt.png",
+    "official_target512_sha256": "75bd2c9ab994d00d6db3cdbacaa892e3ef556e3d7db6e7502b37906921fffe0e"
+  },
+  {
+    "id": "11_peach_clean",
+    "source_id": "peach_clean",
+    "source_kind": "clean",
+    "fixture": "peach",
+    "source": "/tmp/scanner-v060-paired/clean/peach.png",
+    "source_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "size": [
+      1024,
+      1536
+    ],
+    "filename": "11_peach_clean.png",
+    "baseline512": "/tmp/scanner-fsenet-content-v060/baseline512/11_peach_clean.png",
+    "baseline512_sha256": "75bd2c9ab994d00d6db3cdbacaa892e3ef556e3d7db6e7502b37906921fffe0e",
+    "prediction512": "/tmp/scanner-fsenet-cpu-v060/run512/result/11_peach_clean_pred.png",
+    "prediction512_sha256": "b76aefc5389d5fb5899b0b2022ef7b473c09a5468247d02ffebf6d1231529c32",
+    "official_target512": "/tmp/scanner-fsenet-cpu-v060/run512/result/11_peach_clean_gt.png",
+    "official_target512_sha256": "75bd2c9ab994d00d6db3cdbacaa892e3ef556e3d7db6e7502b37906921fffe0e"
+  }
+]

@@ -1,0 +1,564 @@
+{
+  "format": "scanner-current-fsenet-content-evaluation",
+  "date": "2026-11-11",
+  "status": "measured-content-diagnostics-with-semantic-GT-gaps",
+  "new_model_inferences": 0,
+  "fixed_shadow_pair_count": 6,
+  "fixed_clean_count": 6,
+  "official_model_output_condition": "retained current FSENet CPUfork official512 pipeline and official save_image PNG, not old ONNX",
+  "ocr_runs": 24,
+  "ocr_successes": 24,
+  "renderer_reference_ocr_scores": 16,
+  "raw_only_ocr_without_transcription": 8,
+  "ocr_vs_noop": {
+    "improved": 2,
+    "unchanged": 2,
+    "regressed": 4
+  },
+  "literal_digit_recognition": {
+    "noop512": {
+      "observed_present": 5,
+      "expected_literal_observations": 16
+    },
+    "fsenet512": {
+      "observed_present": 4,
+      "expected_literal_observations": 16
+    }
+  },
+  "literal_scope": "Exact UTF8 substring observation of independent renderer digit strings, no normalization/folding, not missing-glyph proof",
+  "existing_correction_analyzer_catalogs": 17,
+  "model_line_region_measurements": 24,
+  "model_line_regions_with_nonzero_foreground": 24,
+  "model_line_retention_ratio_range": [
+    0.8809849521203831,
+    1
+  ],
+  "roi_standard_metric_measurements": 96,
+  "negative_control": {
+    "type": "solidgray225 512x512 empty field, no characters/lines; metric validity test not correction algorithm",
+    "existing_analyzer_status": "passed",
+    "line_region_presence_passes": 6,
+    "line_region_retention_ratio": 1,
+    "conclusion": "Existing background-threshold retention can false-pass semantically absent content; never equate to missing0"
+  },
+  "seal_specific_missing_count": "unknown: fixed blue/peach imagegen references have no independent seal ROI/mask",
+  "digits_physical_missing_count": "unknown: literal OCR observations and pixel retention do not establish glyph identity",
+  "thin_line_complete_missing_count": "unknown: nonzero regionforeground does not establish original stroke content when colorcast survives",
+  "photo_color_scope": "global fixed raster PSNR/MAE/SSIM already measured on photo/color-containing blue/peach; localized semantic photo/color masks absent",
+  "original_ILL02_complete_recommendation": false,
+  "quality_pass": false,
+  "apply_eligible": false,
+  "prospective_additive_fixture": "Preserve sixpairs. Add separate known-reference stamp from approved fixed-font text 印 + Pillow native ellipse/text primitives and source-defined ROI/mask; no new shadow/correction algorithms. Standard ROI metrics/literal recognition still need independent criterion audit before claiming semantic missing0. No fixture generated or model run in this task.",
+  "selfchecks": {
+    "all24ocr_exits_zero": true,
+    "all24tsv_hashes_match": true,
+    "all17catalog_original_output_hashes_match": true,
+    "exact_existing_scorer_replay_equal_after_buildignore_tags": true,
+    "negative_control_semantic_false_positive_demonstrated": true,
+    "no_generated_text_promoted_to_transcription": true
+  },
+  "limits": {
+    "cpu_cores": 2,
+    "OMP_THREAD_LIMIT": 2,
+    "per_OCR_timeout_seconds": 30,
+    "sampled_process_PSS_limit_bytes": 2147483648,
+    "max_ocr_sampled_pss_bytes": 205156352
+  },
+  "evidence_files": [
+    {
+      "file": "blue_clean_fsenet512.stderr.log",
+      "bytes": 148,
+      "sha256": "089cf62d1cfa519be0418143cbb6392c9ebedc7123c4b9f0ade8f26fedd6bd86"
+    },
+    {
+      "file": "blue_clean_fsenet512.tsv",
+      "bytes": 2395,
+      "sha256": "b9111f5cd9c2e46ad5017aaf6c1d0f0506e7c5b0531a7df3c7d1f5f9f1718df9"
+    },
+    {
+      "file": "blue_clean_fsenet512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "blue_clean_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "4bacff958471415e125ab5fc10c9fa02035566105c9f1fc57ecbf76d46915403"
+    },
+    {
+      "file": "blue_clean_noop512.tsv",
+      "bytes": 2387,
+      "sha256": "69eecbf6078dc5ae16e7e0361446e95b188f04709e20a607a43ba129846547b4"
+    },
+    {
+      "file": "blue_clean_noop512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "blue_shadow_fsenet512.stderr.log",
+      "bytes": 147,
+      "sha256": "8f0cd532a1bee3c49f9a666ceda83d93928f44532e093a562d32257183308a6d"
+    },
+    {
+      "file": "blue_shadow_fsenet512.tsv",
+      "bytes": 2255,
+      "sha256": "378743e888fb6caf9dbe8a92440c1bbdfcac9aae821de5d86a7481095eca1489"
+    },
+    {
+      "file": "blue_shadow_fsenet512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "blue_shadow_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "5c781e5451efd97c245f7d094ce4037b3360420acf2dfccda0d6f65e078bb6c7"
+    },
+    {
+      "file": "blue_shadow_noop512.tsv",
+      "bytes": 2395,
+      "sha256": "5ab6b5b051ea6a0e1167e588069b566745e9d1a220ea44696370a5bbfbc71e07"
+    },
+    {
+      "file": "blue_shadow_noop512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "catalog-bindings.json",
+      "bytes": 7772,
+      "sha256": "f2572406b1ba8026b8fd2ccf01269a92f1e891a51196fbf1e8132900f073cdc3"
+    },
+    {
+      "file": "faint_mixed_clean_fsenet512.stderr.log",
+      "bytes": 148,
+      "sha256": "57bdbbc652a0934638c4a1bccde1c7d0f4d72c105160ea954a0a8623f98bba19"
+    },
+    {
+      "file": "faint_mixed_clean_fsenet512.tsv",
+      "bytes": 1336,
+      "sha256": "ada5b2cfaccded73c6128a620f4d6eaf5aaca8a55f735a475d6c4d693b3ee996"
+    },
+    {
+      "file": "faint_mixed_clean_fsenet512.txt",
+      "bytes": 50,
+      "sha256": "d5c1e382aea1e2dffa00085ece5aa93683c5c804e2c98519145d09ea6dd596b5"
+    },
+    {
+      "file": "faint_mixed_clean_noop512.stderr.log",
+      "bytes": 148,
+      "sha256": "8b9cc21ebd15003793ebaa8c73a95ff80eb7e16b0579b39255fbb9076e9a023b"
+    },
+    {
+      "file": "faint_mixed_clean_noop512.tsv",
+      "bytes": 1457,
+      "sha256": "d52ce66f6a2f993ea2a38eef9d9de999461e36ccb6dc0530c47511bba534d9fb"
+    },
+    {
+      "file": "faint_mixed_clean_noop512.txt",
+      "bytes": 50,
+      "sha256": "d5c1e382aea1e2dffa00085ece5aa93683c5c804e2c98519145d09ea6dd596b5"
+    },
+    {
+      "file": "faint_mixed_shadow_fsenet512.stderr.log",
+      "bytes": 148,
+      "sha256": "987dbca22244b41a947a65cb1e47f15810aedf05a4599c1564fba77877cc9a78"
+    },
+    {
+      "file": "faint_mixed_shadow_fsenet512.tsv",
+      "bytes": 1456,
+      "sha256": "0314d949f2a37a8bd1f74da8137758bfe510026a03357a06911fb9373065bf06"
+    },
+    {
+      "file": "faint_mixed_shadow_fsenet512.txt",
+      "bytes": 50,
+      "sha256": "d5c1e382aea1e2dffa00085ece5aa93683c5c804e2c98519145d09ea6dd596b5"
+    },
+    {
+      "file": "faint_mixed_shadow_noop512.stderr.log",
+      "bytes": 148,
+      "sha256": "2251d10255b8e6101cfeced60ee2e4f799ef07cbfc7997487f503848ceb6f7cf"
+    },
+    {
+      "file": "faint_mixed_shadow_noop512.tsv",
+      "bytes": 957,
+      "sha256": "f726eeec1ace9083105ce180196b05cc4891c316502b78704c231f7d77363842"
+    },
+    {
+      "file": "faint_mixed_shadow_noop512.txt",
+      "bytes": 45,
+      "sha256": "9b036a508098e391f91ab9bad5353edc8f97b1e915829328b13829e72dbebe48"
+    },
+    {
+      "file": "faint_table_clean_fsenet512.stderr.log",
+      "bytes": 147,
+      "sha256": "ed396a244a7868ea820d9c146fdffd07ff5ab900f6fcdea1d5f70624916a8cb9"
+    },
+    {
+      "file": "faint_table_clean_fsenet512.tsv",
+      "bytes": 1193,
+      "sha256": "7c6fdb9a6229913dca99d5d926084f9a5e523ef307e338f1ad5b07e3ba18f0ef"
+    },
+    {
+      "file": "faint_table_clean_fsenet512.txt",
+      "bytes": 20,
+      "sha256": "570b569cc08f121806b9c61e68be6ce5dca19d1948a49a81e9255eed5a97d852"
+    },
+    {
+      "file": "faint_table_clean_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "8560086fc747255f20a9bab077734b3e7e8d4ee88f67406fd5acddbe9edd51f5"
+    },
+    {
+      "file": "faint_table_clean_noop512.tsv",
+      "bytes": 1822,
+      "sha256": "ad147e291f0c0356f8691a98446dd4ddbd7a6188ad372bda66d674dba9b396f8"
+    },
+    {
+      "file": "faint_table_clean_noop512.txt",
+      "bytes": 17,
+      "sha256": "a2cfcb3eeeb9dc3acb0be51269fa43fa58e488e69f50e59923b3d4da801c3413"
+    },
+    {
+      "file": "faint_table_shadow_fsenet512.stderr.log",
+      "bytes": 147,
+      "sha256": "ed396a244a7868ea820d9c146fdffd07ff5ab900f6fcdea1d5f70624916a8cb9"
+    },
+    {
+      "file": "faint_table_shadow_fsenet512.tsv",
+      "bytes": 1229,
+      "sha256": "f234e08a8c745e82947b5406846f73a8675b5c58e6eac1ffc69a2961ab53eb49"
+    },
+    {
+      "file": "faint_table_shadow_fsenet512.txt",
+      "bytes": 20,
+      "sha256": "69f70ce60e00533c6fc90d4b3c3d0f6204bef65ba6a04876f4978b69f74fdd81"
+    },
+    {
+      "file": "faint_table_shadow_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "47df00d87680cc4f0d9bf28eb7ba8c5aad3e01d60fc276a4108cd56fb7dbb8c9"
+    },
+    {
+      "file": "faint_table_shadow_noop512.tsv",
+      "bytes": 223,
+      "sha256": "f8fdb6d75c01892ecf82f20883f38dac00a3a40ddcda251df5496975a70b992e"
+    },
+    {
+      "file": "faint_table_shadow_noop512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "inputs.json",
+      "bytes": 13001,
+      "sha256": "b6d2b52bc375f7d434024f8294138da8c9f3f319380c6006255935d6af5214f4"
+    },
+    {
+      "file": "map_regions.go",
+      "bytes": 1477,
+      "sha256": "750d14becdbe430b075cde8414bbbcc1f2f15578092268d52595cfb233b3425e"
+    },
+    {
+      "file": "mapped-regions.json",
+      "bytes": 9590,
+      "sha256": "084f781dd4c4372f2a98d300001e65c711e749c18a37ff35f9f48bf138e060ce"
+    },
+    {
+      "file": "mixed_clean_fsenet512.stderr.log",
+      "bytes": 148,
+      "sha256": "8b9cc21ebd15003793ebaa8c73a95ff80eb7e16b0579b39255fbb9076e9a023b"
+    },
+    {
+      "file": "mixed_clean_fsenet512.tsv",
+      "bytes": 1412,
+      "sha256": "72cc78e461410bdbde6df9e1b3c5e931285515ce7dc69c075773b38862a90262"
+    },
+    {
+      "file": "mixed_clean_fsenet512.txt",
+      "bytes": 41,
+      "sha256": "172e27ddb2ca76f5f85b0e3f7132cd420b89e063d12eeb4fbfc542c29d932ead"
+    },
+    {
+      "file": "mixed_clean_noop512.stderr.log",
+      "bytes": 148,
+      "sha256": "8b9cc21ebd15003793ebaa8c73a95ff80eb7e16b0579b39255fbb9076e9a023b"
+    },
+    {
+      "file": "mixed_clean_noop512.tsv",
+      "bytes": 1457,
+      "sha256": "4132733bea0142c909ffef47f4f0f5b060f566150584b0f21d4d6aec5104ed9b"
+    },
+    {
+      "file": "mixed_clean_noop512.txt",
+      "bytes": 50,
+      "sha256": "d5c1e382aea1e2dffa00085ece5aa93683c5c804e2c98519145d09ea6dd596b5"
+    },
+    {
+      "file": "mixed_shadow_fsenet512.stderr.log",
+      "bytes": 148,
+      "sha256": "c2f909d94c9f752d64a0bf819f9c5d844a56368d3168d10d2df8d56e9705d42a"
+    },
+    {
+      "file": "mixed_shadow_fsenet512.tsv",
+      "bytes": 1414,
+      "sha256": "54c8256795e5ca89af7c55b351314982eba424118ab1ebca479f6a203179e422"
+    },
+    {
+      "file": "mixed_shadow_fsenet512.txt",
+      "bytes": 41,
+      "sha256": "172e27ddb2ca76f5f85b0e3f7132cd420b89e063d12eeb4fbfc542c29d932ead"
+    },
+    {
+      "file": "mixed_shadow_noop512.stderr.log",
+      "bytes": 148,
+      "sha256": "8b9cc21ebd15003793ebaa8c73a95ff80eb7e16b0579b39255fbb9076e9a023b"
+    },
+    {
+      "file": "mixed_shadow_noop512.tsv",
+      "bytes": 1452,
+      "sha256": "f816e59f95933bfef12e871cba51cd408c2fe8a3f74168f739e70713afae9628"
+    },
+    {
+      "file": "mixed_shadow_noop512.txt",
+      "bytes": 45,
+      "sha256": "9b036a508098e391f91ab9bad5353edc8f97b1e915829328b13829e72dbebe48"
+    },
+    {
+      "file": "ocr-comparison.json",
+      "bytes": 2064,
+      "sha256": "fe73788ce13853d4a61167efdbbfd55ab9f662afb1fa385b10d9fc6240ffddcd"
+    },
+    {
+      "file": "ocr-runs.json",
+      "bytes": 27523,
+      "sha256": "373ab6e5d30d782809229dae36f1749052777a4f2912fdbea45190e345d257cc"
+    },
+    {
+      "file": "ocr-score-input.json",
+      "bytes": 19610,
+      "sha256": "17fd6a0e486e85433f286ac8c58117bb1772d831ba9d530d3d8e3f87fa799dda"
+    },
+    {
+      "file": "ocr-score.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ocr-scores.json",
+      "bytes": 12315,
+      "sha256": "c209be4ca6aceae6bb524f6bb45112f048133a0e406d3abe5f4f20575d9796d5"
+    },
+    {
+      "file": "ocr.log",
+      "bytes": 608,
+      "sha256": "66965036e144ea8f6c47d0a751965131765dc50e69ae120214c02ffb5f28bff3"
+    },
+    {
+      "file": "ocr.py",
+      "bytes": 3112,
+      "sha256": "03bb50fe729c116eb0c2b258e46cd83a530c077c627d85635ec418dc225ae092"
+    },
+    {
+      "file": "peach_clean_fsenet512.stderr.log",
+      "bytes": 147,
+      "sha256": "af1aba2b8ba88bab82ce5dc4186d8e4e7af36ca8ae4d2f3d0e871b1d435adb94"
+    },
+    {
+      "file": "peach_clean_fsenet512.tsv",
+      "bytes": 1451,
+      "sha256": "4dfe30b2f195ba0dbe0e27bad6ca4e1719c16a62f9fd78c1a0073f8970266ad9"
+    },
+    {
+      "file": "peach_clean_fsenet512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "peach_clean_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "f1ea922da0a4347b4bfb2060d5f42a990c3111deb43114a66e083806e1f6c5ca"
+    },
+    {
+      "file": "peach_clean_noop512.tsv",
+      "bytes": 2079,
+      "sha256": "5371816fbcb7e93c79938b5ba23fca60d8354fd6337fd2979bb9f86cce509d29"
+    },
+    {
+      "file": "peach_clean_noop512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "peach_shadow_fsenet512.stderr.log",
+      "bytes": 147,
+      "sha256": "427e20af36e28bf3fa0d7fc5eedccf71a1fa7181f01396c7fa3b2b09f83a46d6"
+    },
+    {
+      "file": "peach_shadow_fsenet512.tsv",
+      "bytes": 1451,
+      "sha256": "47d31d24716bee3f4512c30f71065bf6e16ecb0e4b51f262008e30b653bc5600"
+    },
+    {
+      "file": "peach_shadow_fsenet512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "peach_shadow_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "7e515478b99240c1595a4b555a0027d788259e5ef7439bd9271ce8d74eeba90a"
+    },
+    {
+      "file": "peach_shadow_noop512.tsv",
+      "bytes": 2475,
+      "sha256": "656ed58e40190472a094370e8cfedf1541b03330de102cd339533ece0248b814"
+    },
+    {
+      "file": "peach_shadow_noop512.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "photo-color-raster-evidence.json",
+      "bytes": 1214,
+      "sha256": "7e67ac17ca99a6511bb6f61ef274259df342a8c13e71c460c91e9c147becd034"
+    },
+    {
+      "file": "prepare-regions.log",
+      "bytes": 3,
+      "sha256": "54183f4323f377b737433a1e98229ead0fdc686f93bab057ecb612daa94002b5"
+    },
+    {
+      "file": "prepare.log",
+      "bytes": 3,
+      "sha256": "a1fb50e6c86fae1679ef3351296fd6713411a08cf8dd1790a4fd05fae8688164"
+    },
+    {
+      "file": "prepare_inputs.py",
+      "bytes": 1417,
+      "sha256": "34a59226e6733d63c635110569042e358eed566932934287f84223217b7615f1"
+    },
+    {
+      "file": "prepare_regions.py",
+      "bytes": 4444,
+      "sha256": "216044ebd7409c57c7ef5406f37ddf6b29179a27d6000924dc9348319a211557"
+    },
+    {
+      "file": "region-analysis-input.json",
+      "bytes": 5658,
+      "sha256": "df0d8984943a91f71b3d8f297bbf56c8a8c506dd87704c820a4610b83fe04550"
+    },
+    {
+      "file": "region-results.json",
+      "bytes": 39457,
+      "sha256": "70cf0ba995d3139ee84a4d753e9d72a316c460c9ba0e883bbad74168224ff229"
+    },
+    {
+      "file": "region-score.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "region-truth.json",
+      "bytes": 7957,
+      "sha256": "0fe6c084c14e2db977c3c074733ba99ef464644abbec7dfe0146b873636308fd"
+    },
+    {
+      "file": "regions.go",
+      "bytes": 506,
+      "sha256": "db7ed57b901d6c07410c4be83a4b0342f71856d36163d70c8e5a516fba6299c3"
+    },
+    {
+      "file": "report.md",
+      "bytes": 4826,
+      "sha256": "f8173601f85c27d4467ec486c4666032a525815810f962bcaecc4a90282a92d3"
+    },
+    {
+      "file": "roi-metrics.json",
+      "bytes": 48714,
+      "sha256": "1a5bd38219837b4b20fc30e0a4672c4a45e27fc834eea9f7ee791ad850ddfdc8"
+    },
+    {
+      "file": "roi-metrics.log",
+      "bytes": 3,
+      "sha256": "d93844f8f37e55564be3f194656bf33b5d0fb5e589a0fe17eb7c2d4e8593ec9c"
+    },
+    {
+      "file": "roi_metrics.py",
+      "bytes": 1213,
+      "sha256": "bba1d318c5b3a9c71fbb0210a913d56a9b1d9986c989fcfd1229ed9eb6dce0de"
+    },
+    {
+      "file": "score.go",
+      "bytes": 1664,
+      "sha256": "4ee79f5abf1b5b93887eddc3b0fe2f4bf778e93199b4107b9ee18ab8c0a149ef"
+    },
+    {
+      "file": "source-and-prior-bindings.json",
+      "bytes": 2079,
+      "sha256": "e5df754c910a19f31b0c0cc887ebb604aca74c4d6d074486bb0fa28e64e6bb0d"
+    },
+    {
+      "file": "table_clean_fsenet512.stderr.log",
+      "bytes": 148,
+      "sha256": "eaeb5e8e6e59da19f22ad431d722199fdb8a7099ad48cd05edfb1a054847c55e"
+    },
+    {
+      "file": "table_clean_fsenet512.tsv",
+      "bytes": 1474,
+      "sha256": "a0932e56bd4a0dc5d9b27967ca435d979f4f8750ccf4587940f598787f41a499"
+    },
+    {
+      "file": "table_clean_fsenet512.txt",
+      "bytes": 20,
+      "sha256": "c5cb4b6324922051529caa3833a4e0162c59e0e12dd775f97cca5b35bd6b395f"
+    },
+    {
+      "file": "table_clean_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "8560086fc747255f20a9bab077734b3e7e8d4ee88f67406fd5acddbe9edd51f5"
+    },
+    {
+      "file": "table_clean_noop512.tsv",
+      "bytes": 1822,
+      "sha256": "59687fb89413675deeb2e25e0a4d38626a9568ba0bfca822dcbd178141b95938"
+    },
+    {
+      "file": "table_clean_noop512.txt",
+      "bytes": 17,
+      "sha256": "a2cfcb3eeeb9dc3acb0be51269fa43fa58e488e69f50e59923b3d4da801c3413"
+    },
+    {
+      "file": "table_shadow_fsenet512.stderr.log",
+      "bytes": 148,
+      "sha256": "f18d1b34b9990b569e330e947ac1bc0c415ca6a5c0c81723448a32c977a76f6b"
+    },
+    {
+      "file": "table_shadow_fsenet512.tsv",
+      "bytes": 1267,
+      "sha256": "49e7a93761af8debbb2456724a7ae1bea0dcedc820b0b33933ceda7bd735bad4"
+    },
+    {
+      "file": "table_shadow_fsenet512.txt",
+      "bytes": 11,
+      "sha256": "cf4a801b8c2113eef74cdc903fce0530252889e51a10bce504599d3bb27c1dde"
+    },
+    {
+      "file": "table_shadow_noop512.stderr.log",
+      "bytes": 147,
+      "sha256": "37c06d5d640d27f34eb381027d7856f31f12c55dfce712473239047bd571490a"
+    },
+    {
+      "file": "table_shadow_noop512.tsv",
+      "bytes": 1652,
+      "sha256": "e3cf4fa136e8d36c71f149588d5638a885b24c4d385e310b00f9231b2c4f5e1e"
+    },
+    {
+      "file": "table_shadow_noop512.txt",
+      "bytes": 11,
+      "sha256": "1573127155a960c80749c10e214b10e231fb71319d72696b0d78f0fc57c90878"
+    }
+  ]
+}

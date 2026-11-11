@@ -1,0 +1,2406 @@
+{
+  "scope": "Pillow standard crop at existing MapSourcePoint coordinates, official512GT/prediction decoded8bit PNG; no semantic missing count inferred",
+  "metric": "existing OpenCV4.12 PSNR(R=1) and norm(L1)/channelcount, no new thresholds",
+  "rows": [
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 30.686508876559742,
+      "channel_mae": 0.02645696560007696
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 18.951263152454697,
+      "channel_mae": 0.09964185881755167
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 24.16838299121246,
+      "channel_mae": 0.057430939059573596
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 18.621785110122254,
+      "channel_mae": 0.09956381762930233
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 21.235784391715164,
+      "channel_mae": 0.06457099792586762
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 20.659434278955146,
+      "channel_mae": 0.05842724677992799
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 30.224140443704606,
+      "channel_mae": 0.027483768079018714
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 18.540303575335106,
+      "channel_mae": 0.10295647418400565
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 30.61471596315739,
+      "channel_mae": 0.025449147766258045
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 18.39458444298827,
+      "channel_mae": 0.10050729547701756
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 23.574613052912987,
+      "channel_mae": 0.05587321608790098
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 16.93554008150305,
+      "channel_mae": 0.11587301323295901
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 22.99617991362262,
+      "channel_mae": 0.062235675183782244
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 17.96795110208898,
+      "channel_mae": 0.1108636063795797
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 71.09745602900688,
+      "channel_mae": 1.9805900978319574e-05
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 11.197183647699253,
+      "channel_mae": 0.26977620179285156
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 71.09745602900688,
+      "channel_mae": 1.9805900978319574e-05
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 1.5499673318235985,
+      "channel_mae": 0.8140159842780844
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 71.09745602900688,
+      "channel_mae": 1.9805900978319574e-05
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 1.418218095699215,
+      "channel_mae": 0.8364956832368566
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 44.17653204508636,
+      "channel_mae": 0.0058540720492601395
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 19.848631469577626,
+      "channel_mae": 0.08106460588691661
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 37.1931367860212,
+      "channel_mae": 0.013626507483422756
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 19.286782821120433,
+      "channel_mae": 0.08534282636985434
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 62.280537606104154,
+      "channel_mae": 3.7707388401031494e-05
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 1.1405473720228556,
+      "channel_mae": 0.8728915353735479
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 20.675284205652687,
+      "channel_mae": 0.06833344161870746
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 20.634809666161196,
+      "channel_mae": 0.07122183143550163
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 17.869726808507956,
+      "channel_mae": 0.09443733906715637
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 20.06524677623071,
+      "channel_mae": 0.07639689687013647
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 9.229703291799913,
+      "channel_mae": 0.3403446317512404
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 0.8708549092014539,
+      "channel_mae": 0.8842345060786916
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 0.6966351269694416,
+      "channel_mae": 0.9112563580525443
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 16.55318435510843,
+      "channel_mae": 0.1225694472116466
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 17.74260114057513,
+      "channel_mae": 0.11131065060945754
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 0.4046198998896108,
+      "channel_mae": 0.9504996253989446
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "faint_mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 29.83234090301962,
+      "channel_mae": 0.03189546723197735
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "faint_mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 18.10060709591117,
+      "channel_mae": 0.12150195398519743
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "faint_mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 23.522444158122994,
+      "channel_mae": 0.06632372718534352
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "faint_mixed_shadow",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 18.752231066947118,
+      "channel_mae": 0.11356544684726025
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "faint_mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        58.51428571428571,
+        273.06666666666666,
+        84.8457142857143
+      ],
+      "source_id": "faint_mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 80,
+        "width": 400,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        227,
+        3
+      ],
+      "psnr_db": 23.472801122359282,
+      "channel_mae": 0.059356412698518865
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "faint_mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        45.51111111111111,
+        131.65714285714287,
+        261.6888888888889,
+        158.72
+      ],
+      "source_id": "faint_mixed_clean",
+      "source_region": {
+        "x": 80,
+        "y": 180,
+        "width": 380,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        216,
+        3
+      ],
+      "psnr_db": 24.514968948774563,
+      "channel_mae": 0.05261101383608555
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 29.051022677073078,
+      "channel_mae": 0.03498917753281801
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 17.90448170581741,
+      "channel_mae": 0.12407370235608972
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 29.080801705764724,
+      "channel_mae": 0.034776291697497526
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 17.441201819021664,
+      "channel_mae": 0.131131521553617
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 21.87523531286955,
+      "channel_mae": 0.08009986125904581
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 18.989595013777357,
+      "channel_mae": 0.10908232208179391
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 21.80605131917107,
+      "channel_mae": 0.08076941079514868
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 18.243112218563265,
+      "channel_mae": 0.12043844598035018
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 24.602841745569005,
+      "channel_mae": 0.05500098701679346
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 21.520920318689576,
+      "channel_mae": 0.08056380321281124
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 24.602841745569005,
+      "channel_mae": 0.05500098701679346
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 21.296421959432333,
+      "channel_mae": 0.08166633170060437
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 24.602841745569005,
+      "channel_mae": 0.05500098701679346
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 20.516398494909588,
+      "channel_mae": 0.09099491106139289
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 33.29345715347321,
+      "channel_mae": 0.021554485894739628
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 16.68587410842264,
+      "channel_mae": 0.14559922460466623
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 24.61301753401446,
+      "channel_mae": 0.05879524536430836
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 17.265809795960347,
+      "channel_mae": 0.13600897882133722
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 20.52569127742395,
+      "channel_mae": 0.09412706829607487
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "faint_table_shadow",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 21.220371942769788,
+      "channel_mae": 0.08535695821046829
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 0,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        65.82857142857144,
+        96.71111111111111,
+        92.16
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 90,
+        "width": 80,
+        "height": 36
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        26,
+        46,
+        3
+      ],
+      "psnr_db": 22.967005589102666,
+      "channel_mae": 0.06307954243991686
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 1,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        65.82857142857144,
+        301.5111111111111,
+        92.89142857142856
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 90,
+        "width": 80,
+        "height": 37
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        27,
+        46,
+        3
+      ],
+      "psnr_db": 21.970459846967646,
+      "channel_mae": 0.07250060085897092
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 2,
+      "kind": "text",
+      "mapped_crop_box": [
+        51.199999999999996,
+        168.22857142857143,
+        96.71111111111111,
+        196.02285714285713
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 90,
+        "y": 230,
+        "width": 80,
+        "height": 38
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        28,
+        46,
+        3
+      ],
+      "psnr_db": 24.351535094582133,
+      "channel_mae": 0.05338874362085177
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 3,
+      "kind": "text",
+      "mapped_crop_box": [
+        256,
+        168.22857142857143,
+        324.26666666666665,
+        192.3657142857143
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 450,
+        "y": 230,
+        "width": 120,
+        "height": 33
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        24,
+        68,
+        3
+      ],
+      "psnr_db": 22.72109777687902,
+      "channel_mae": 0.0647010726525503
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 0,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        40.96,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 15.716664286374975,
+      "channel_mae": 0.1566910846064789
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 1,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        238.93333333333334,
+        51.199999999999996,
+        240.07111111111112,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 420,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 24.482547361872168,
+      "channel_mae": 0.05524525979552606
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 2,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        455.1111111111111,
+        51.199999999999996,
+        456.24888888888887,
+        249.41714285714286
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 800,
+        "y": 70,
+        "width": 2,
+        "height": 271
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        198,
+        1,
+        3
+      ],
+      "psnr_db": 24.663225384121027,
+      "channel_mae": 0.054842539808966896
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 3,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        51.199999999999996,
+        455.68,
+        52.66285714285714
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 70,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 21.73059493410741,
+      "channel_mae": 0.08039843663573265
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 4,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        146.28571428571428,
+        455.68,
+        147.74857142857144
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 200,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        2,
+        416,
+        3
+      ],
+      "psnr_db": 20.561384713485786,
+      "channel_mae": 0.09212543442845345
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "noop512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 313.07119549054045,
+      "channel_mae": 0.0
+    },
+    {
+      "index": 5,
+      "kind": "thin-line",
+      "mapped_crop_box": [
+        39.82222222222222,
+        248.68571428571428,
+        455.68,
+        250.14857142857142
+      ],
+      "source_id": "faint_table_clean",
+      "source_region": {
+        "x": 70,
+        "y": 340,
+        "width": 731,
+        "height": 2
+      },
+      "arm": "fsenet512",
+      "crop_shape": [
+        1,
+        416,
+        3
+      ],
+      "psnr_db": 20.93459671231247,
+      "channel_mae": 0.08695323765277863
+    }
+  ]
+}

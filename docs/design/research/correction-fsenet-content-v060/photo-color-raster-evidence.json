@@ -1,0 +1,38 @@
+[
+  {
+    "fixture": "blue",
+    "source_kind": "shadow",
+    "psnr_db": 16.326240748533174,
+    "psnr_improvement_db": -2.9333290036627915,
+    "channel_mae": 0.09986354595129932,
+    "ssim": 0.7878947257995605,
+    "local_photo_or_color_or_seal_mask": "not available; global raster comparison only"
+  },
+  {
+    "fixture": "blue",
+    "source_kind": "clean",
+    "psnr_db": 16.15742891011799,
+    "psnr_improvement_db": -296.9137665804225,
+    "channel_mae": 0.07231497261155499,
+    "ssim": 0.7849986553192139,
+    "local_photo_or_color_or_seal_mask": "not available; global raster comparison only"
+  },
+  {
+    "fixture": "peach",
+    "source_kind": "shadow",
+    "psnr_db": 18.4423001817248,
+    "psnr_improvement_db": -1.2713056290627023,
+    "channel_mae": 0.09824202091029773,
+    "ssim": 0.8275644183158875,
+    "local_photo_or_color_or_seal_mask": "not available; global raster comparison only"
+  },
+  {
+    "fixture": "peach",
+    "source_kind": "clean",
+    "psnr_db": 21.808752287699495,
+    "psnr_improvement_db": -291.2624432028409,
+    "channel_mae": 0.05165423191287033,
+    "ssim": 0.8455848693847656,
+    "local_photo_or_color_or_seal_mask": "not available; global raster comparison only"
+  }
+]

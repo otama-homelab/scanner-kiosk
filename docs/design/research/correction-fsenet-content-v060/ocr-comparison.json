@@ -1,0 +1,77 @@
+{
+  "scope": "Existing OCR scorer with MapSourcePoint-scaled expected boxes; not physical glyph absence count",
+  "rows": [
+    {
+      "source_id": "mixed_shadow",
+      "noop_text_errors": 12,
+      "fsenet_text_errors": 12,
+      "text_error_delta": 0,
+      "reference_codepoints": 30,
+      "noop_matched_regions": 0,
+      "fsenet_matched_regions": 0
+    },
+    {
+      "source_id": "mixed_clean",
+      "noop_text_errors": 16,
+      "fsenet_text_errors": 12,
+      "text_error_delta": -4,
+      "reference_codepoints": 30,
+      "noop_matched_regions": 0,
+      "fsenet_matched_regions": 0
+    },
+    {
+      "source_id": "table_shadow",
+      "noop_text_errors": 5,
+      "fsenet_text_errors": 8,
+      "text_error_delta": 3,
+      "reference_codepoints": 11,
+      "noop_matched_regions": 1,
+      "fsenet_matched_regions": 0
+    },
+    {
+      "source_id": "table_clean",
+      "noop_text_errors": 7,
+      "fsenet_text_errors": 8,
+      "text_error_delta": 1,
+      "reference_codepoints": 11,
+      "noop_matched_regions": 1,
+      "fsenet_matched_regions": 0
+    },
+    {
+      "source_id": "faint_mixed_shadow",
+      "noop_text_errors": 12,
+      "fsenet_text_errors": 16,
+      "text_error_delta": 4,
+      "reference_codepoints": 30,
+      "noop_matched_regions": 0,
+      "fsenet_matched_regions": 0
+    },
+    {
+      "source_id": "faint_mixed_clean",
+      "noop_text_errors": 16,
+      "fsenet_text_errors": 16,
+      "text_error_delta": 0,
+      "reference_codepoints": 30,
+      "noop_matched_regions": 0,
+      "fsenet_matched_regions": 0
+    },
+    {
+      "source_id": "faint_table_shadow",
+      "noop_text_errors": 11,
+      "fsenet_text_errors": 8,
+      "text_error_delta": -3,
+      "reference_codepoints": 11,
+      "noop_matched_regions": 0,
+      "fsenet_matched_regions": 1
+    },
+    {
+      "source_id": "faint_table_clean",
+      "noop_text_errors": 7,
+      "fsenet_text_errors": 8,
+      "text_error_delta": 1,
+      "reference_codepoints": 11,
+      "noop_matched_regions": 1,
+      "fsenet_matched_regions": 1
+    }
+  ]
+}

@@ -196,3 +196,10 @@ FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい
 独立元基準監査はILL01の出所・条件判定を完了と支持。元要件は7/14完了へ更新し、ILL01はmeasured-fail/complete=true/quality_pass=false（変換parity不合格を含む判定完了）として品質/採用合格と分離する。元要件へbuildhost等を後付け必須化しない。ILL02は公式512全6pair測定済みだが数字/細線/印影等の内容比較が残る。Phase完了は引き続き64のみ。
 
 証拠: docs/design/research/correction-original-truth-followup-v060/report.md、correction-fsenet-artifact-identity-v060/report.md、correction-current-criteria-audit-v060/report.md。8+30証拠hashをroot照合、独立監査は146索引hash照合。次は既存出力でILL02内容比較、photo2_2独立注釈、本人端末受入。製品採用/公開/配備なし。
+
+
+## 2026-11-11 FSENet保存出力の内容比較・本人操作開始
+
+既存出力で24OCR/17catalog/96ROIを測定。文字誤りは改善2/同等2/悪化4、literal数字はno-op5/16→モデル4/16。既存foreground保持metricは空の灰色画像でも線/文字regionをpassedにする反例があり、semantic欠落0の証明へ昇格しない。生成色紙の印影専用ROI/maskは独立注釈がなくILL02partialを維持。証拠: docs/design/research/correction-fsenet-content-v060/report.md、99hash照合。追加モデル推論0。
+
+本人はiPhone/PC操作確認を先に選択。liveホームのcamera/photos/files下にgenericerrorがあり、本人の同一ブラウザGET/api/capabilities応答provider_unavailable503を確認。本人操作受入はまだ完了でない。写真/PDF取り込みが不要なOCRcatalogへ依存するUI不具合を修正中で、評価完了や部署変更は主張しない。
