@@ -68,7 +68,23 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    // Save uses the real render admission/worker and browser download.
    const download=page.waitForEvent('download');await page.getByRole('button',{name:'Save PDF',exact:true}).click();const saved=await download;assert((await saved.suggestedFilename()).endsWith('.pdf'));
    await page.getByRole('button',{name:'Home',exact:true}).click();await upload(page.locator('input[data-photo-picker]'),images[0]);await review();checks.push('camera JPEG and independent picker PNG to real review, primary Save and actual PDF download');
+   for(const format of ['jpeg','png']){
+    await page.getByRole('button',{name:'Home',exact:true}).click();const controls=page.locator('.photo-import');await controls.getByRole('button',{name:'Photo',exact:true}).click();await controls.getByLabel('Output format',{exact:true}).selectOption(format);
+    await upload(controls.locator('input[data-photo-picker]'),images[0]);await page.locator('h1[data-document-title]').waitFor();await page.getByRole('button',{name:'Save image',exact:true}).waitFor();
+    const read=()=>page.evaluate(async()=>{const response=await fetch('/api/documents/'+location.hash.split('/').pop());if(!response.ok)throw new Error('Photo document unavailable');return response.json()});
+    const photo=await read();assert.equal(photo.purpose,'photo');assert.equal(photo.photo_format,format);assert.equal(photo.pages[0].source_type,'photo');assert.equal(photo.pages[0].capture,null);assert.equal(await page.getByRole('button',{name:'Save PDF',exact:true}).count(),0);
+    if(format==='png'){
+     await page.getByRole('button',{name:'Crop photo',exact:true}).click();await page.getByLabel('Left',{exact:true}).fill('8');await page.getByLabel('Width',{exact:true}).fill('64');await page.getByRole('button',{name:'Preview crop',exact:true}).click();await page.getByRole('button',{name:'Apply crop',exact:true}).click();await page.locator('dialog.photo-crop').waitFor({state:'detached'});
+     const cropped=await read();assert.equal(cropped.purpose,'photo');assert.equal(cropped.photo_format,'png');assert(cropped.revision>photo.revision);
+     await page.getByRole('button',{name:'Crop photo',exact:true}).click();await page.getByRole('button',{name:'Undo crop',exact:true}).click();await page.locator('dialog.photo-crop').waitFor({state:'detached'});const undone=await read();assert.equal(undone.purpose,'photo');assert.equal(undone.photo_format,'png');assert.equal(undone.pages[0].correction?.state,undefined);
+    }
+    const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'Save image',exact:true}).click();const saved=await downloading;assert.match(await saved.suggestedFilename(),format==='png'?/\.png$/:/\.jpe?g$/);
+    const data=fs.readFileSync(await saved.path()),mime=format==='png'?'image/png':'image/jpeg';assert(format==='png'?data.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])):data[0]===255&&data[1]===216);
+    const response=await context.request.get(saved.url());assert.equal(response.status(),200);assert.equal(response.headers()['content-type'],mime);assert.deepEqual(await response.body(),data);
+    const decoded=await page.evaluate(async({encoded,mime})=>{const bytes=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));const bitmap=await createImageBitmap(new Blob([bytes],{type:mime}));const result={width:bitmap.width,height:bitmap.height};bitmap.close();return result},{encoded:data.toString('base64'),mime});assert.deepEqual(decoded,{width:80,height:48});
+    checks.push('real Photo/'+format+' import retains purpose/format and downloads matching MIME, signature and decoded dimensions'+(format==='png'?' after crop/undo':''));
+   }
   }
   assert.deepEqual(errors,[]);const receipt={passed:true,scenario,real_backend:true,checks,requests,scope:'Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance.'};if(process.env.SCANNER_PHOTO_RECEIPT)fs.writeFileSync(process.env.SCANNER_PHOTO_RECEIPT,JSON.stringify(receipt,null,2)+'\n');process.stdout.write(JSON.stringify(receipt));
- }catch(e){console.error('FAILURE_STATE',await page.locator('body').innerText(),await page.evaluate(()=>document.visibilityState),JSON.stringify(failedResponses));throw e}finally{await context.close();await browser.close()}
+ }catch(e){console.error('ORIGINAL_FAILURE',e.stack||e.message);let state='Page unavailable';try{state=await page.locator('body').innerText({timeout:1000})}catch{}console.error('FAILURE_STATE',state,JSON.stringify(failedResponses));throw e}finally{await context.close().catch(()=>{});await browser.close().catch(()=>{})}
 })().catch(e=>{console.error(e.stack||e.message);process.exit(1)});
