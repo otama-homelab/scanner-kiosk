@@ -13,7 +13,7 @@ before=hashes();include=Path(a.include_dir).resolve();libraries=[Path(directory)
 # CGO flag variables use their own tokenizer. Do not accept ambiguous flag paths.
 for directory in [include,*libraries]:
  if not directory.is_dir() or any(char.isspace() or char in "'\"\\" for char in str(directory)):p.error('native include/library paths must be existing directories without flag quoting')
-env=dict(os.environ,GOTOOLCHAIN='go1.27.3',CGO_ENABLED='1',CGO_CFLAGS='-I'+str(include),CGO_LDFLAGS=' '.join('-L'+str(directory) for directory in libraries))
+env=dict(os.environ,GOTOOLCHAIN='go1.27.4',CGO_ENABLED='1',CGO_CFLAGS='-I'+str(include),CGO_LDFLAGS=' '.join('-L'+str(directory) for directory in libraries))
 with tempfile.TemporaryDirectory(prefix='scanner-parameters-') as temporary:
  helper=Path(temporary)/'sane-parameters';static=Path(temporary)/'scanner'
  subprocess.run(['go','build','-tags','saneparams','-o',str(helper),'./cmd/sane-parameters'],cwd=root,env=env,check=True,capture_output=True,timeout=90)

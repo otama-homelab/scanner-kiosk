@@ -37,7 +37,7 @@ with tempfile.TemporaryDirectory(prefix='scanner-provider-fixture-') as temp:
     fixture = Path(temp) / 'synthetic.png'
     orientation_fixture = Path(temp) / 'orientation.png'
     subprocess.run([a.fixture_python, '-c', fixture_code, a.font, str(fixture), str(orientation_fixture)], check=True, capture_output=True)
-    env = dict(os.environ, GOTOOLCHAIN='go1.27.3', SCANNER_TEST_TESSERACT_BINARY=str(Path(a.binary).resolve()), SCANNER_TEST_TESSDATA=str(Path(a.tessdata).resolve()), SCANNER_TEST_OCR_FIXTURE=str(fixture), SCANNER_TEST_OCR_ORIENTATION_FIXTURE=str(orientation_fixture), SCANNER_TEST_OCR_COMPOSE_OUTPUT=temp)
+    env = dict(os.environ, GOTOOLCHAIN='go1.27.4', SCANNER_TEST_TESSERACT_BINARY=str(Path(a.binary).resolve()), SCANNER_TEST_TESSDATA=str(Path(a.tessdata).resolve()), SCANNER_TEST_OCR_FIXTURE=str(fixture), SCANNER_TEST_OCR_ORIENTATION_FIXTURE=str(orientation_fixture), SCANNER_TEST_OCR_COMPOSE_OUTPUT=temp)
     if a.standalone_binary:
         env['SCANNER_TEST_STANDALONE_BINARY'] = str(Path(a.standalone_binary).resolve(strict=True))
     go_stdout = Path(a.receipt).with_suffix('.go-test.jsonl')

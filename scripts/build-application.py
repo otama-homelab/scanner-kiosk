@@ -145,7 +145,7 @@ def acquire(revision,ref):
     for name in ['bin','home','tmp','cache','config','source']:(WORK/name).mkdir()
     for name in ['user.npmrc','global.npmrc']:(WORK/name).write_text('')
     checks=[(['node','--version'],'v24.22.2'),
-            (['go','version'],'go version go1.27.3 linux/amd64')]
+            (['go','version'],'go version go1.27.4 linux/amd64')]
     for args,expected in checks:
         actual=subprocess.check_output(args,env=environment(False),text=True).strip()
         if actual!=expected:raise ValueError('unexpected build tool version: '+actual)

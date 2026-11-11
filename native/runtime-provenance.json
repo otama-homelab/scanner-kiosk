@@ -1102,10 +1102,10 @@
       },
       "name": "sane-parameters",
       "sdk_lock": "sane-sdk.lock.json",
-      "sdk_lock_sha256": "e1b5345b4a30ac129b6857471951e2fce7e86745e47da5e5aaf22a91bc66e92d",
+      "sdk_lock_sha256": "3c4154cfb1908f19151c57d3b194c403aa906dd5fd7e1cc70b2d939b662935ca",
       "source_sha256": {
         "cmd/sane-parameters/main_linux.go": "c00cc3e473c29a60dfcbe8b579e8bc146adc4f50504300a3a62f4b3fa3f5cbb7",
-        "go.mod": "068469a3c3d27be6255c523ca0ef9469efc400ffbafd9597e6d48bdcd1d92a85",
+        "go.mod": "8b5eb9a2eb0c195247a74f4b78dcbd3c4ca55d2923e89f40d7eddfb13df22c0e",
         "go.sum": "888f8070d4e21b84090aa5b0eed23b20b75c8247a0390a025f519ff859e2e605",
         "internal/captureimage/validate.go": "ee5a5e8760032de31561eb8e33b340969600e42526d28928e18b8cb1d1965822",
         "internal/processrun/run_linux.go": "e03a3435de3c2aa2f147b5db450bf5cf0f39510ff71893b55fe570b496d061e8",
@@ -1598,7 +1598,7 @@
     "version": "25.12.0-r1"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "77b7aa00853c7f5ab3b092857615ac3231e7fe482597dab94a07e787929ad901",
+  "runtime_manifest_sha256": "15bf5ad7166816d17d8d9e4a83558e2d03dd393790eb70e4bcd2ea47432d1fa4",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {

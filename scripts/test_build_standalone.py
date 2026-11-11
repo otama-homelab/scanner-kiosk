@@ -15,7 +15,7 @@ spec.loader.exec_module(module)
 
 
 def app_info():
-    return {'Path': 'scanner-kiosk/cmd/scanner', 'GoVersion': 'go1.27.3',
+    return {'Path': 'scanner-kiosk/cmd/scanner', 'GoVersion': 'go1.27.4',
             'Settings': [{'Key': key, 'Value': value} for key, value in
                          [('GOOS', 'linux'), ('GOARCH', 'amd64'), ('CGO_ENABLED', '0'), ('-tags', 'webui')]]}
 

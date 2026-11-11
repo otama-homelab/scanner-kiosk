@@ -21,7 +21,7 @@ def run(name,command,*,environment=None,expected=0,redact_output=False,timeout=1
     if not passed:raise RuntimeError(name+' failed')
     return process.stdout
 try:
-    text=run('Go contracts and storage with race detector',['go','test','-race','-count=1','-json','./...'],environment=dict(os.environ,GOTOOLCHAIN='go1.27.3'),timeout=600)
+    text=run('Go contracts and storage with race detector',['go','test','-race','-count=1','-json','./...'],environment=dict(os.environ,GOTOOLCHAIN='go1.27.4'),timeout=600)
     events=[json.loads(line) for line in text.splitlines() if line.startswith('{')]
     checks[-1]['passed_tests']=[e['Test'] for e in events if e.get('Action')=='pass' and e.get('Test')]
     validation=run('OpenAPI specification',[args.validator_python,'-c',"import json;from openapi_spec_validator import validate;s=json.load(open('api/openapi.json'));validate(s);ids=[o['operationId'] for m in s['paths'].values() for o in m.values()];assert len(ids)==len(set(ids));assert not any('paperless' in p for p in s['paths']);print(json.dumps({'operations':len(ids),'sha256':__import__('hashlib').sha256(open('api/openapi.json','rb').read()).hexdigest()}))"])

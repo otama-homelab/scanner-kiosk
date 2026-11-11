@@ -27,7 +27,7 @@ assert affected and all(i.startswith('golang.org/x/crypto/openpgp') for i in aff
 receipt = {'passed':False,'scope':'absence of specific advisory import paths in linux/amd64 product builds; no module finding suppression or general vulnerability/call-graph acceptance','timestamp_utc':datetime.now(timezone.utc).isoformat(),'advisory_id':advisory['id'],'advisory_sha256':sha(args.advisory),'advisory_url':'https://vuln.go.dev/ID/'+advisory['id']+'.json','affected_imports':affected,'source_sha256':before,'script_sha256':sha(Path(__file__)),'builds':[]}
 try:
     for target,tags,cgo in [('./cmd/scanner','webui','0'),('./cmd/sane-parameters','saneparams','1')]:
-        env = dict(os.environ,GOTOOLCHAIN='go1.27.3',GOOS='linux',GOARCH='amd64',CGO_ENABLED=cgo)
+        env = dict(os.environ,GOTOOLCHAIN='go1.27.4',GOOS='linux',GOARCH='amd64',CGO_ENABLED=cgo)
         command = ['go','list','-deps','-tags',tags,target]
         result = subprocess.run(command,cwd=root,env=env,capture_output=True,check=True,timeout=120)
         packages = sorted(set(result.stdout.decode().splitlines()))

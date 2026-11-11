@@ -17,7 +17,7 @@ git ls-files --error-unmatch scripts/build-application.sh scripts/build-applicat
 if [ -n "$ref" ]; then python3 scripts/check-release-ref.py --ref "$ref" --sha "$sha"; fi
 revision=$(git rev-parse HEAD)
 goroot=$(env -u GOROOT GOTOOLCHAIN=local GOENV=off go env GOROOT)
-test "$(GOTOOLCHAIN=local "$goroot/bin/go" version)" = 'go version go1.27.3 linux/amd64'
+test "$(GOTOOLCHAIN=local "$goroot/bin/go" version)" = 'go version go1.27.4 linux/amd64'
 node=$(node -p process.execPath)
 case "$root$native$out$goroot$node" in *','*|*$'\n'*) echo 'Docker paths cannot contain comma or newline' >&2; exit 2;; esac
 mkdir -m 700 "$out"

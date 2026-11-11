@@ -26,7 +26,7 @@ with tempfile.TemporaryDirectory(prefix='scanner-worker-') as directory:
     binary = work/'scanner'
     subprocess.run(['go', 'build', '-o', str(binary), './cmd/scanner'], cwd=root, check=True, capture_output=True)
     identity=json.loads(subprocess.run([str(binary),'version'],env={'PATH':os.environ['PATH']},check=True,capture_output=True,timeout=10).stdout)
-    assert identity['version']=='0.0.0-dev' and identity['revision']=='unreleased' and identity['go_version']=='go1.27.3' and identity['os']=='linux'
+    assert identity['version']=='0.0.0-dev' and identity['revision']=='unreleased' and identity['go_version']=='go1.27.4' and identity['os']=='linux'
     checks.append('version reports explicit unreleased identity without configuration, credentials or stores')
     state_root, document_root = work/'state', work/'documents'
     for path in [state_root, document_root]:

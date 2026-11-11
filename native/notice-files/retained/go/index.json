@@ -1,6 +1,6 @@
 {
   "Scope": "Verified source notices for product Go dependencies; legal obligations require review",
-  "GoVersion": "go1.27.3",
+  "GoVersion": "go1.27.4",
   "ProjectLicense": "not selected",
   "modules": [
     {

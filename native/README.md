@@ -88,7 +88,7 @@ corresponding-source offer, security/license approval or a preview/release.
 ## SANE helper SDK
 
 `sane-sdk.lock.json` and `sane-sdk.SHA256SUMS` pin all 46 APK inputs of the
-SANE helper SDK, alongside the official Go 1.27.3 base digest. Seventeen package
+SANE helper SDK, alongside the official Go 1.27.4 base digest. Seventeen package
 identities come from that base; the original SDK build log records the exact
 29 additions. All match the retained official repository indexes. The
 `Dockerfile.sane-sdk` context uses the same layout as above, with exactly its
@@ -552,7 +552,7 @@ publish a release, authorize physical acquisition or complete acceptance.
 
 ## Connecting the application and distroless output
 
-Builders need Docker, Go 1.27.3 and Node 24.22.2. The npm client is fetched and
+Builders need Docker, Go 1.27.4 and Node 24.22.2. The npm client is fetched and
 verified from `web/npm-tool.lock.json` inside the credential-free acquisition
 sandbox, without changing host npm. Consumers need only the executable or image.
 From a clean committed checkout, connect the native output with:

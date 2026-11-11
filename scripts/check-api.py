@@ -22,7 +22,7 @@ def hashes():return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hex
 before=hashes();checks=[]
 with tempfile.TemporaryDirectory(prefix='scanner-api-cli-') as directory:
  work=Path(directory);binary=work/'scanner'
- subprocess.run(['go','build','-o',str(binary),'./cmd/scanner'],cwd=root,env=dict(os.environ,GOTOOLCHAIN='go1.27.3'),check=True,capture_output=True)
+ subprocess.run(['go','build','-o',str(binary),'./cmd/scanner'],cwd=root,env=dict(os.environ,GOTOOLCHAIN='go1.27.4'),check=True,capture_output=True)
  def port():
   with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
  def environment(name):
