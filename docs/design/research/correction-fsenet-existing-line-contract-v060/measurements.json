@@ -1,0 +1,161 @@
+{
+  "source_file": "docs/design/research/correction-synthetic-v060/analyze.py",
+  "source_file_sha256": "215404a515d0d91e3f6fec17f6862048d3da2c98207f20621c4552f75c0ef7e7",
+  "source_block_lines": [
+    15,
+    20
+  ],
+  "source_block_sha256": "45764569dc27de3b8c98ac3d725ae6d382ed02d7f7cedbc17d2c9d888e53af83",
+  "execution": "Exact source block copied, dedented for invocation only; no threshold or scorer modification",
+  "reference": "/tmp/scanner-v060-paired/clean/table.png",
+  "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+  "faint_not_evaluated": {
+    "ids": [
+      "faint_table_clean",
+      "faint_table_shadow"
+    ],
+    "status": "unsupported_contract",
+    "reason": "Existing renderer faint=(v+3*255)/4 maps black0 to191; originaldark<128source mask would be empty. No adjusted threshold."
+  },
+  "peak_rss_bytes": 57954304,
+  "new_model_inferences": 0,
+  "rows": [
+    {
+      "id": "source_reference_positive",
+      "kind": "identity-positive",
+      "path": "/tmp/scanner-v060-paired/clean/table.png",
+      "expected_semantics": "known renderer lines present",
+      "decoded_shape": [
+        700,
+        900,
+        3
+      ],
+      "image_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "measurement_seconds": 0.025661481980932876,
+      "metric": {
+        "table_line_source_dark_pixels": 5987,
+        "table_line_retained_dark_pixels": 5987,
+        "table_line_fixed_position_survival": 1.0,
+        "table_line_pass": true
+      }
+    },
+    {
+      "id": "shadow_noop_positive",
+      "kind": "existing-shadow-positive",
+      "path": "/tmp/scanner-v060-paired/shadow/table.png",
+      "expected_semantics": "known renderer lines unchanged by existing shadow recipe",
+      "decoded_shape": [
+        700,
+        900,
+        3
+      ],
+      "image_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+      "measurement_seconds": 0.02753631302039139,
+      "metric": {
+        "table_line_source_dark_pixels": 5987,
+        "table_line_retained_dark_pixels": 5987,
+        "table_line_fixed_position_survival": 1.0,
+        "table_line_pass": true
+      }
+    },
+    {
+      "id": "fsenet_native_table_clean",
+      "kind": "retained-model-output",
+      "path": "/tmp/scanner-fsenet-cpu-v060/result/03_table_clean_pred.png",
+      "raw_output_sha256": "247ed313e0304983d87247517a6e9a01d849df2da4882549f70979187c79ab0a",
+      "model_input_source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "expected_semantics": "unknown until semantic evaluation; this contract counts only dark pixels",
+      "decoded_shape": [
+        700,
+        900,
+        3
+      ],
+      "image_sha256": "4d9d5fc465177916d74b0ac6612c95f18896122bb07fcf27a5444ec8816cdb9b",
+      "measurement_seconds": 0.02716559698455967,
+      "metric": {
+        "table_line_source_dark_pixels": 5987,
+        "table_line_retained_dark_pixels": 5987,
+        "table_line_fixed_position_survival": 1.0,
+        "table_line_pass": true
+      }
+    },
+    {
+      "id": "fsenet_native_table_shadow",
+      "kind": "retained-model-output",
+      "path": "/tmp/scanner-fsenet-cpu-v060/result/02_table_shadow_pred.png",
+      "raw_output_sha256": "b3cde2075fd539277ceb5d829e96b88da12815abb5a24638660607abf0320d73",
+      "model_input_source_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+      "expected_semantics": "unknown until semantic evaluation; this contract counts only dark pixels",
+      "decoded_shape": [
+        700,
+        900,
+        3
+      ],
+      "image_sha256": "423a393c72569dcadedadd67c698baf9f93e6df2542837c1fedf98b33926e512",
+      "measurement_seconds": 0.027203764009755105,
+      "metric": {
+        "table_line_source_dark_pixels": 5987,
+        "table_line_retained_dark_pixels": 5987,
+        "table_line_fixed_position_survival": 1.0,
+        "table_line_pass": true
+      }
+    },
+    {
+      "id": "gray225_negative_control",
+      "kind": "constant-field-negative-control",
+      "path": "/tmp/scanner-fsenet-existing-line-contract-v060/gray225.png",
+      "expected_semantics": "no table lines exist; diagnostic test image, not correction output",
+      "decoded_shape": [
+        700,
+        900,
+        3
+      ],
+      "image_sha256": "518153586017cae90a74f523644ed603cf4ceacf4774c20e6c3e0764902e9377",
+      "measurement_seconds": 0.025643021013820544,
+      "metric": {
+        "table_line_source_dark_pixels": 5987,
+        "table_line_retained_dark_pixels": 0,
+        "table_line_fixed_position_survival": 0.0,
+        "table_line_pass": false
+      }
+    },
+    {
+      "id": "black0_negative_control",
+      "kind": "constant-field-negative-control",
+      "path": "/tmp/scanner-fsenet-existing-line-contract-v060/black0.png",
+      "expected_semantics": "no table lines exist; diagnostic test image, not correction output",
+      "decoded_shape": [
+        700,
+        900,
+        3
+      ],
+      "image_sha256": "95d933041ee64ce6b2095d75a03ae5e54d64fffdd30b475baa64362e6ad41bd8",
+      "measurement_seconds": 0.027941986016230658,
+      "metric": {
+        "table_line_source_dark_pixels": 5987,
+        "table_line_retained_dark_pixels": 5987,
+        "table_line_fixed_position_survival": 1.0,
+        "table_line_pass": true
+      }
+    },
+    {
+      "id": "white255_negative_control",
+      "kind": "constant-field-negative-control",
+      "path": "/tmp/scanner-fsenet-existing-line-contract-v060/white255.png",
+      "expected_semantics": "no table lines exist; diagnostic test image, not correction output",
+      "decoded_shape": [
+        700,
+        900,
+        3
+      ],
+      "image_sha256": "46276077932b9b3d2710ad4819e8827ce53e918d870cfe5529ed6997ea198278",
+      "measurement_seconds": 0.027227422018768266,
+      "metric": {
+        "table_line_source_dark_pixels": 5987,
+        "table_line_retained_dark_pixels": 0,
+        "table_line_fixed_position_survival": 0.0,
+        "table_line_pass": false
+      }
+    }
+  ]
+}

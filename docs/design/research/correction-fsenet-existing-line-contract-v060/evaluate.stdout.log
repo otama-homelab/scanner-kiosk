@@ -1,0 +1,58 @@
+[
+  {
+    "source_reference_positive": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    }
+  },
+  {
+    "shadow_noop_positive": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    }
+  },
+  {
+    "fsenet_native_table_clean": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    }
+  },
+  {
+    "fsenet_native_table_shadow": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    }
+  },
+  {
+    "gray225_negative_control": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 0,
+      "table_line_fixed_position_survival": 0.0,
+      "table_line_pass": false
+    }
+  },
+  {
+    "black0_negative_control": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    }
+  },
+  {
+    "white255_negative_control": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 0,
+      "table_line_fixed_position_survival": 0.0,
+      "table_line_pass": false
+    }
+  }
+]

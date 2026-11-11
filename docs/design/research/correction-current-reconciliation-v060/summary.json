@@ -1,0 +1,105 @@
+{
+  "format": "scanner-current-requirement-reconciliation",
+  "date": "2026-11-12",
+  "previous_goal_turn_classification": "progress: v0.2.10 published/deployed with verified schema upgrade",
+  "scope": "Current14 dispositions, referenced-file integrity and new existing-contract diagnostic; not a rerun or replacement of model/owner validation.",
+  "complete": 7,
+  "total": 14,
+  "requirement_evidence_references_checked": 35,
+  "line_diagnostic_index_files_checked": 9,
+  "requirements": [
+    {
+      "id": "ENV-01",
+      "complete": true,
+      "status": "measured-pass",
+      "remaining_condition": null
+    },
+    {
+      "id": "ENV-02",
+      "complete": true,
+      "status": "measured-pass",
+      "remaining_condition": null
+    },
+    {
+      "id": "TRUTH-01",
+      "complete": true,
+      "status": "measured-pass",
+      "remaining_condition": null
+    },
+    {
+      "id": "TRUTH-02",
+      "complete": false,
+      "status": "waiting_external_input",
+      "remaining_condition": "Human-confirmed original-photo annotations, including photo2_2 digits/thinlines, remain absent."
+    },
+    {
+      "id": "TRUTH-03",
+      "complete": true,
+      "status": "measured-pass",
+      "remaining_condition": null
+    },
+    {
+      "id": "VERIFY-01",
+      "complete": false,
+      "status": "waiting_external_input",
+      "remaining_condition": "Original6 independent photo annotations and remaining exact official contract/parity evidence are incomplete."
+    },
+    {
+      "id": "VERIFY-02",
+      "complete": false,
+      "status": "waiting_external_input",
+      "remaining_condition": "Original6 independent photo annotations are missing; synthetic/fallback diagnostics are not equivalent."
+    },
+    {
+      "id": "VERIFY-03",
+      "complete": true,
+      "status": "measured-pass",
+      "remaining_condition": null
+    },
+    {
+      "id": "VERIFY-04",
+      "complete": false,
+      "status": "waiting_external_input",
+      "remaining_condition": "photo2_2 independent content truth and bad-stage attribution remain incomplete."
+    },
+    {
+      "id": "ILL-01",
+      "complete": true,
+      "status": "measured-fail",
+      "remaining_condition": null
+    },
+    {
+      "id": "ILL-02",
+      "complete": false,
+      "status": "measured-partial",
+      "remaining_condition": "Independent seal ROI/masks and a valid semantic missing-content measurement contract remain absent; existing pixel scorers false-pass a blank black control."
+    },
+    {
+      "id": "ACCEPT-01",
+      "complete": false,
+      "status": "waiting_external_owner_operation",
+      "remaining_condition": "Owner iPhone/PC operations and same-original iPhone evidence are missing; existing JPEG import/save question remains pending."
+    },
+    {
+      "id": "ACCEPT-02",
+      "complete": false,
+      "status": "not-run",
+      "remaining_condition": "No fully qualified correction candidate and complete shared-path/clean-Canon acceptance evidence; no ineligible model may be integrated."
+    },
+    {
+      "id": "ACCEPT-03",
+      "complete": true,
+      "status": "measured-pass",
+      "remaining_condition": null
+    }
+  ],
+  "owner_ui_unblock": "production-deployed-owner-operation-pending",
+  "new_model_inferences": 0,
+  "new_models_adopted": 0,
+  "milestone_complete": false,
+  "next_action": "Existing owner operation checkpoint, then original independent annotations. No repeat inference or threshold retuning without changed truth/contract evidence.",
+  "known_public_annotation_inputs_present": {
+    "/tmp/scanner-v040/corpus/crop_2_2_copy.png": true,
+    "/tmp/scanner-original-truth.vhhyGR/archive_scan_2.png": true
+  }
+}

@@ -68,6 +68,11 @@
           "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
           "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732",
           "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        },
+        {
+          "path": "docs/design/research/correction-original-truth-followup-v060/summary.json",
+          "sha256": "fdc9b2311d0f484282048533094820110f13537781523fb0b6ec68d651b11801",
+          "revision": "2026-11-12-current-evidence-reconciliation"
         }
       ]
     },
@@ -90,7 +95,7 @@
       "id": "VERIFY-01",
       "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable. Latest: official unchanged CPU segmentation and JVM quad executed on6synthetic inputs. Full runtime shortage resolved; numerical corners and original-realphoto independent truth still unmeasured. Numeric followup:6synthetic gate0/6,3additional independent grid-endpoint diagnostics2detected/1null. Original6real truth and Android mask-value parity missing.",
+      "evidence_scope": "Official unchanged CPU segmentation and JVM quad runtime has executed; runtime availability is resolved. Official Android mask contract is threshold0.5 to binary0/255, not floatMat. Existing fixed-contract diagnostic detects5/6 synthetic cases but corner pilot passes0/6; OCR improves2, worsens1, equal-error-count3. Exact Android raw/resize/class parity and independent annotations for the original6photos remain unproven. No diagnostic result is a production-qualified detector.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -108,8 +113,14 @@
           "path": "docs/design/research/correction-fairscan-full-cpu-v060/summary.json",
           "sha256": "7037d98957885a2d3733796e6a3d757cc3f91e4edf01c43e088a9528ad939426",
           "revision": "2c5230b12f69f3cee2cc5a970013da20848d1272"
+        },
+        {
+          "path": "docs/design/research/correction-fairscan-mask-parity-v060/summary.json",
+          "sha256": "b6a925864294e6dd5daa41267879e1ef8af0b920c2370c77fa04f8887f42eced",
+          "revision": "2026-11-12-current-evidence-reconciliation"
         }
-      ]
+      ],
+      "historical_evidence_scope_before_20261112": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable. Latest: official unchanged CPU segmentation and JVM quad executed on6synthetic inputs. Full runtime shortage resolved; numerical corners and original-realphoto independent truth still unmeasured. Numeric followup:6synthetic gate0/6,3additional independent grid-endpoint diagnostics2detected/1null. Original6real truth and Android mask-value parity missing."
     },
     {
       "id": "VERIFY-02",
@@ -234,7 +245,7 @@
       "id": "ILL-02",
       "status": "measured-partial",
       "complete": false,
-      "evidence_scope": "Current FSENet CPU portability fork measured22 completed forwards: native10/12 captured then aggregatePSS2GiB stop; official51212/12 complete. Shadow PSNR4/6 at512; clean MAE0/6,SSIM3/6. Native clean0/5. Content digits/thinlines/seal absence and full original qualification remain unproven. Tested configuration apply-ineligible; original criterion incomplete.",
+      "evidence_scope": "Current FSENet CPU portability fork measured22 completed forwards: native10/12 captured then aggregatePSS2GiB stop; official51212/12 complete. Shadow PSNR4/6 at512; clean MAE0/6,SSIM3/6. Native clean0/5. Content digits/thinlines/seal absence and full original qualification remain unproven. Tested configuration apply-ineligible; original criterion incomplete. Saved-output content followup measured24OCR/96ROI: literal digits no-op5/16 versus model4/16. Existing foreground metric false-passes a glyph-free gray control; no semantic zero-missing claim. Fixed imagegen seal rasters lack independent ROI/mask annotation.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -262,9 +273,20 @@
           "path": "docs/design/research/correction-fsenet-cpu-v060/summary.json",
           "sha256": "276c7b5abf63aca78d6b6453f2d407b2c9c492a9dbcc324b55b287388b110df4",
           "revision": "efe9400c72e09ab8fa0d67bf2b248f4edad9adde"
+        },
+        {
+          "path": "docs/design/research/correction-fsenet-content-v060/summary.json",
+          "sha256": "a2f40c2fcfc36b5cdb0075f882b6868107bcb6dd2ea1d4149365cd022de7392d",
+          "revision": "2026-11-12-current-evidence-reconciliation"
+        },
+        {
+          "path": "docs/design/research/correction-fsenet-existing-line-contract-v060/summary.json",
+          "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07",
+          "revision": "2026-11-12-existing-contract-followup"
         }
       ],
-      "historical_evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference."
+      "historical_evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference.",
+      "historical_evidence_scope_before_20261112": "Current FSENet CPU portability fork measured22 completed forwards: native10/12 captured then aggregatePSS2GiB stop; official51212/12 complete. Shadow PSNR4/6 at512; clean MAE0/6,SSIM3/6. Native clean0/5. Content digits/thinlines/seal absence and full original qualification remain unproven. Tested configuration apply-ineligible; original criterion incomplete."
     },
     {
       "id": "ACCEPT-01",
@@ -737,7 +759,29 @@
   "owner_operation_ui_unblock": {
     "summary": "../photo-import-purpose-v027/summary.json",
     "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
-    "status": "local-verification-passed-deployment-approval-pending",
-    "owner_acceptance_complete": false
+    "status": "production-deployed-owner-operation-pending",
+    "owner_acceptance_complete": false,
+    "historical_status": "local-verification-passed-deployment-approval-pending",
+    "production_evidence": {
+      "path": "../photo-import-purpose-v027/production-v0210.json",
+      "sha256": "c5f2c2d3614b0e574adfbf43989e6efdb91a74164537183899f20a70af78040d",
+      "version": "v0.2.10"
+    },
+    "updated_at": "2026-11-12"
+  },
+  "release_or_deployment_scope": "False refers to correction-model/milestone deployment; the separately authorized image-import hotfix v0.2.10 was published/deployed without adopting a correction model.",
+  "current_fsenet_existing_line_contract": {
+    "summary": "../correction-fsenet-existing-line-contract-v060/summary.json",
+    "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07",
+    "requirements_newly_completed": 0,
+    "semantic_zero_missing_proven": false,
+    "new_model_inferences": 0
+  },
+  "current_requirements_reconciliation": {
+    "summary": "../correction-current-reconciliation-v060/summary.json",
+    "sha256": "6469c46fbe64637d255a2138a562e83cc3e4f6d9955276ffc092d6c4e677f679",
+    "complete": 7,
+    "total": 14,
+    "scope": "Referenced-file integrity and current dispositions only; not new owner/model qualification."
   }
 }

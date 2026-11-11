@@ -1,0 +1,27 @@
+[
+  {
+    "path": "docs/design/research/correction-synthetic-v060/analyze.py",
+    "bytes": 5608,
+    "sha256": "215404a515d0d91e3f6fec17f6862048d3da2c98207f20621c4552f75c0ef7e7"
+  },
+  {
+    "path": "docs/design/research/correction-paired-v060/paired-truth.json",
+    "bytes": 5374,
+    "sha256": "9f5124ee66de0cd778204a1583387694582b361172d53d29e1c30bbad32641e2"
+  },
+  {
+    "path": "docs/design/research/correction-fsenet-cpu-v060/native-runs.json",
+    "bytes": 10318,
+    "sha256": "ef8f0684e8ce606d6427f1fea7ffd939fd82e25370b4a100ecef30a8c2d82905"
+  },
+  {
+    "path": "internal/evaluation/catalog.go",
+    "bytes": 30389,
+    "sha256": "1bb36a05d6d59b75753c8a0db3432b95ec0718306ea52e55eceaf47aa66ad75f"
+  },
+  {
+    "path": "scripts/eval/ocr/prepare_catalog.py",
+    "bytes": 7746,
+    "sha256": "455bf3b025761c702246e7c9e5eebb54143f469d7729e534b5c4a5ce5e39c6ec"
+  }
+]

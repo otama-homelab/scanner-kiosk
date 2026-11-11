@@ -1,0 +1,6 @@
+    # Existing renderer draws2px black segments exactly at these source coordinates.
+    mask=np.zeros(orig.shape[:2],dtype=bool)
+    for x in [70,420,800]:mask[70:341,x:x+2]=True
+    for y in [70,200,340]:mask[y:y+2,70:801]=True
+    mask &= (orig.max(axis=2)<128);assert mask.sum()>0
+    row['table_line_source_dark_pixels']=int(mask.sum());row['table_line_retained_dark_pixels']=int((actual.max(axis=2)[mask]<128).sum());row['table_line_fixed_position_survival']=row['table_line_retained_dark_pixels']/row['table_line_source_dark_pixels'];row['table_line_pass']=row['table_line_fixed_position_survival']==1

@@ -1,0 +1,18 @@
+[
+  {
+    "source_id": "table_clean",
+    "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/03_table_clean.npy",
+    "raw_output_sha256": "247ed313e0304983d87247517a6e9a01d849df2da4882549f70979187c79ab0a",
+    "official_prediction_png": "/tmp/scanner-fsenet-cpu-v060/result/03_table_clean_pred.png",
+    "official_save_image_source": "/tmp/scanner-fsenet-cpu-v060/source/infer.py"
+  },
+  {
+    "source_id": "table_shadow",
+    "source_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/02_table_shadow.npy",
+    "raw_output_sha256": "b3cde2075fd539277ceb5d829e96b88da12815abb5a24638660607abf0320d73",
+    "official_prediction_png": "/tmp/scanner-fsenet-cpu-v060/result/02_table_shadow_pred.png",
+    "official_save_image_source": "/tmp/scanner-fsenet-cpu-v060/source/infer.py"
+  }
+]

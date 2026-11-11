@@ -1,0 +1,119 @@
+{
+  "format": "scanner-existing-dark-line-contract-evaluation",
+  "date": "2026-11-12",
+  "status": "narrow-contract-measured-pass-semantic-incomplete",
+  "existing_source_file": "docs/design/research/correction-synthetic-v060/analyze.py",
+  "existing_source_sha256": "215404a515d0d91e3f6fec17f6862048d3da2c98207f20621c4552f75c0ef7e7",
+  "existing_block_lines": [
+    15,
+    20
+  ],
+  "existing_block_sha256": "45764569dc27de3b8c98ac3d725ae6d382ed02d7f7cedbc17d2c9d888e53af83",
+  "new_scorer": false,
+  "threshold_modified": false,
+  "threshold": "source/actual allRGBchannels<128, exact same source block",
+  "reference_mask_dark_pixel_count": 5987,
+  "current_fsenet_native_outputs": 2,
+  "native_model_results": {
+    "fsenet_native_table_clean": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    },
+    "fsenet_native_table_shadow": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    }
+  },
+  "positive_baselines": [
+    "source_reference_positive",
+    "shadow_noop_positive"
+  ],
+  "negative_control_results": {
+    "gray225_negative_control": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 0,
+      "table_line_fixed_position_survival": 0.0,
+      "table_line_pass": false
+    },
+    "black0_negative_control": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 5987,
+      "table_line_fixed_position_survival": 1.0,
+      "table_line_pass": true
+    },
+    "white255_negative_control": {
+      "table_line_source_dark_pixels": 5987,
+      "table_line_retained_dark_pixels": 0,
+      "table_line_fixed_position_survival": 0.0,
+      "table_line_pass": false
+    }
+  },
+  "negative_control_validity": "gray225/white255 rejected; black0 empty field still falsely passes semantic line presence",
+  "faint_status": "unsupported_contract: declared faint ink191 is not<128; not run/no threshold retuning",
+  "semantic_line_missing0_proven": false,
+  "seal_gt_gap": "Existing fixedblue/peach have no independentsealROI/mask; feasibility report retained",
+  "original_ILL02_complete": false,
+  "apply_eligible": false,
+  "new_model_inferences": 0,
+  "new_model_exports": 0,
+  "new_correction_or_shadow_algorithms": 0,
+  "scope": "native non-fainttable900x700 only; official save_image8bitPNG, not rawfloat or512. Measures fixed-coordinate dark-pixel survival only.",
+  "resources": {
+    "cpu_affinity_core_count": 2,
+    "process_alarm_seconds": 30,
+    "peak_rss_bytes": 57954304,
+    "diagnostic_cap_bytes": 2147483648,
+    "rss_enforcement": "Observed peak RSS compared after exit; no live RSS kill.30s signal alarm bounds process time."
+  },
+  "evidence_files": [
+    {
+      "file": "evaluate.py",
+      "bytes": 4227,
+      "sha256": "10043e287df20d3215aae160b73f5768b0ea5a4059f12a1cc9d774b8a55a0d5e"
+    },
+    {
+      "file": "evaluate.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "evaluate.stdout.log",
+      "bytes": 1539,
+      "sha256": "15d2db3e78485fe0ee00c69fb3ed7d5053fc698dcd9eab764b77cdbe4d48e3ef"
+    },
+    {
+      "file": "measurements.json",
+      "bytes": 6057,
+      "sha256": "fb025a4f01c045ab0e3a95629c930e76e299897f282714c9a0c24e63b8a566c2"
+    },
+    {
+      "file": "model-output-bindings.json",
+      "bytes": 948,
+      "sha256": "537b51eb302a07cb738de137a67413325c45dd77524bb819a7535278f1775a43"
+    },
+    {
+      "file": "renderer-truth-feasibility.md",
+      "bytes": 7137,
+      "sha256": "86fe8ab05b3f1ff34c6fe3152e6e6533e10f55594a3945ebf3f395a317d71572"
+    },
+    {
+      "file": "report.md",
+      "bytes": 3179,
+      "sha256": "2ef4f57cc92eddc20f715ec4a202c8932c2925c02b594a73578090777fa57284"
+    },
+    {
+      "file": "source-and-prior-bindings.json",
+      "bytes": 877,
+      "sha256": "f3562f9ffc05cffec2abf565f5d1c7979a3efd68512335259b7fb3cf4f5e59c6"
+    },
+    {
+      "file": "unchanged-source-block.txt",
+      "bytes": 609,
+      "sha256": "45764569dc27de3b8c98ac3d725ae6d382ed02d7f7cedbc17d2c9d888e53af83"
+    }
+  ]
+}
