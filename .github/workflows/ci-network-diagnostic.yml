@@ -1,0 +1,26 @@
+name: CI network diagnostic
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dns:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Compare runner and APT-user DNS without credentials
+        shell: bash
+        run: |
+          ls -l /etc/resolv.conf
+          for host in archive.ubuntu.com security.ubuntu.com azure.archive.ubuntu.com ubuntu.osuosl.org mirrors.edge.kernel.org packages.microsoft.com; do
+            echo "DNS $host (runner)"
+            getent ahostsv4 "$host" || true
+            echo "DNS $host (_apt)"
+            sudo -u _apt getent ahostsv4 "$host" || true
+          done
+          for origin in https://archive.ubuntu.com/ubuntu https://ubuntu.osuosl.org/ubuntu https://mirrors.edge.kernel.org/ubuntu; do
+            echo "HTTPS $origin"
+            curl --head --fail --silent --show-error --max-time 15 "$origin/dists/noble/InRelease" || true
+          done
+      - name: Check signed APT metadata using the stock runner configuration
+        run: sudo apt-get update --error-on=any
