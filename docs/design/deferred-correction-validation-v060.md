@@ -158,3 +158,12 @@ FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい
 公式DatasetEvaluatorの透視切出しを合成6枚へ適用し、同条件JPEG baselineとTesseract12件/既存AnalyzeOCRPageを比較。改善0/悪化2/誤り数同等4（うち公式未検出fallback3件は補正成功に数えない）。同じ誤り数でも文字列一致とは限らず、baseline自身の誤りも残る。既存画素保持metricはinverse-bilinear、公式warpはperspectiveで同一mapでないため位置/画素保持は未検証と明示、独自metricを作らない。相対改善例は認めるが内容回帰/未検出/不足証拠からpreview適格性falseを維持。
 
 証拠: docs/design/research/correction-fairscan-relative-v060/report.md、summary.jsonの36件hash照合。追加モデル推論0。元実写真truth/本人受入は未解決、元要件6/14のまま。製品組込・公開・配備なし。
+
+
+## 2026-11-11 FairScan mask入力契約差の診断
+
+公式Android Mask.toMatはfloat Matではなく、clampedfloatを0.5で二値化したCV_8UC1の0/255であることをsource確認し、以前のfloatMat推測を訂正。desktop公式evaluatorは濃淡PNGをそのままcloneする。公式閾値を計算前に固定し、既存PNGへOpenCV標準threshold127で別枝の二値契約診断を実施（事後閾値調整なし）。quantization前raw/Bitmap resize/Android classの完全parityは未成立。
+
+合成6枚の検出3→5、未検出3→1に改善したが2%pilot誤差基準0/6は変わらない。公式透視切出しと同条件JPEG baselineのOCRは改善2/悪化1/誤り数同等3。誤り数同等でも文字列変化や偽数字があり、内容保持を保証しない。5件新規OCR＋画像hash一致1件再利用、追加補正モデル推論0。前回の不利な結果はdesktop契約の履歴として保持し、モデル単体の性能へ一律帰属しない。
+
+証拠: docs/design/research/correction-fairscan-mask-parity-v060/report.md、27件hash照合。preview適格性false、元実写真truth/厳密Android parity/位置内容保持/本人操作は未解決。元要件6/14完了を維持。製品変更・公開・配備なし。

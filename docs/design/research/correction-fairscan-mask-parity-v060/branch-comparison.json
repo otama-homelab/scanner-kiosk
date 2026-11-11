@@ -1,0 +1,92 @@
+{
+  "rows": [
+    {
+      "id": "fixture_ocr_columns_001",
+      "as_shipped_gray_quad_present": false,
+      "binary_contract_quad_present": true,
+      "as_shipped_max_corner_error_diagonal": null,
+      "binary_contract_max_corner_error_diagonal": 0.38684668600831484,
+      "as_shipped_pilot_corner_pass": false,
+      "binary_contract_pilot_corner_pass": false,
+      "quad_changed": true,
+      "ocr_baseline_errors": 26,
+      "ocr_binary_candidate_errors": 26,
+      "ocr_disposition": "equal_error_count",
+      "null_never_replaced_for_coordinates": true
+    },
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "as_shipped_gray_quad_present": false,
+      "binary_contract_quad_present": true,
+      "as_shipped_max_corner_error_diagonal": null,
+      "binary_contract_max_corner_error_diagonal": 0.5092799577517865,
+      "as_shipped_pilot_corner_pass": false,
+      "binary_contract_pilot_corner_pass": false,
+      "quad_changed": true,
+      "ocr_baseline_errors": 13,
+      "ocr_binary_candidate_errors": 13,
+      "ocr_disposition": "equal_error_count",
+      "null_never_replaced_for_coordinates": true
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "as_shipped_gray_quad_present": true,
+      "binary_contract_quad_present": true,
+      "as_shipped_max_corner_error_diagonal": 0.5096478894048184,
+      "binary_contract_max_corner_error_diagonal": 0.47154570819422315,
+      "as_shipped_pilot_corner_pass": false,
+      "binary_contract_pilot_corner_pass": false,
+      "quad_changed": true,
+      "ocr_baseline_errors": 14,
+      "ocr_binary_candidate_errors": 25,
+      "ocr_disposition": "worse",
+      "null_never_replaced_for_coordinates": true
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "as_shipped_gray_quad_present": true,
+      "binary_contract_quad_present": true,
+      "as_shipped_max_corner_error_diagonal": 0.33222291842766694,
+      "binary_contract_max_corner_error_diagonal": 0.33293213278881817,
+      "as_shipped_pilot_corner_pass": false,
+      "binary_contract_pilot_corner_pass": false,
+      "quad_changed": true,
+      "ocr_baseline_errors": 20,
+      "ocr_binary_candidate_errors": 18,
+      "ocr_disposition": "better",
+      "null_never_replaced_for_coordinates": true
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "as_shipped_gray_quad_present": true,
+      "binary_contract_quad_present": true,
+      "as_shipped_max_corner_error_diagonal": 0.571500311273659,
+      "binary_contract_max_corner_error_diagonal": 0.5703073414061546,
+      "as_shipped_pilot_corner_pass": false,
+      "binary_contract_pilot_corner_pass": false,
+      "quad_changed": true,
+      "ocr_baseline_errors": 21,
+      "ocr_binary_candidate_errors": 19,
+      "ocr_disposition": "better",
+      "null_never_replaced_for_coordinates": true
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "as_shipped_gray_quad_present": false,
+      "binary_contract_quad_present": false,
+      "as_shipped_max_corner_error_diagonal": null,
+      "binary_contract_max_corner_error_diagonal": null,
+      "as_shipped_pilot_corner_pass": false,
+      "binary_contract_pilot_corner_pass": false,
+      "quad_changed": false,
+      "ocr_baseline_errors": 8,
+      "ocr_binary_candidate_errors": 8,
+      "ocr_disposition": "equal_error_count",
+      "null_never_replaced_for_coordinates": true
+    }
+  ],
+  "as_shipped_retained": true,
+  "binary_contract_not_exact_android_parity": true,
+  "no_threshold_search": true,
+  "total": 6
+}

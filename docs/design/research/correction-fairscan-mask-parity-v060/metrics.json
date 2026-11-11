@@ -1,0 +1,353 @@
+{
+  "synthetic_rows": [
+    {
+      "id": "fixture_ocr_columns_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          69.95823621335943,
+          83.82758797323207
+        ],
+        [
+          717.5998081614628,
+          48.60396876668747
+        ],
+        [
+          739.1161837765262,
+          287.92502955285767
+        ],
+        [
+          91.47461182842278,
+          323.14864875940225
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.09576099783995151,
+        0.1647104110924832,
+        0.38684668600831484,
+        0.33926599824932446
+      ],
+      "max_corner_error_diagonal": 0.38684668600831484,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          4.116529005526745,
+          139.39668916606658
+        ],
+        [
+          322.0266483458232,
+          65.40374193351205
+        ],
+        [
+          495.7916014327138,
+          288.59609090490795
+        ],
+        [
+          117.09387602085249,
+          267.3488987170993
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.12231228242467758,
+        0.5092799577517865,
+        0.5046006656263545,
+        0.392265264487348
+      ],
+      "max_corner_error_diagonal": 0.5092799577517865,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          96.77768205085833,
+          121.86213579609058
+        ],
+        [
+          502.7557363781427,
+          109.37888350123242
+        ],
+        [
+          499.39091205464473,
+          339.31327766681443
+        ],
+        [
+          46.404946783824194,
+          232.8871883484121
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.13648414921752705,
+        0.3605265984097793,
+        0.47154570819422315,
+        0.41082896710072037
+      ],
+      "max_corner_error_diagonal": 0.47154570819422315,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          75.17286805940718,
+          71.6721013801856
+        ],
+        [
+          794.2785914520119,
+          68.59573575234994
+        ],
+        [
+          796.090500956858,
+          333.6144754331472
+        ],
+        [
+          69.90303997762975,
+          333.9611178511529
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.09109525955972024,
+        0.10979683465971575,
+        0.33293213278881817,
+        0.3259776071575304
+      ],
+      "max_corner_error_diagonal": 0.33293213278881817,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          538.6494728487957,
+          71.11834842425208
+        ],
+        [
+          761.9552085442133,
+          32.997656770147195
+        ],
+        [
+          720.525632878031,
+          369.73741172713017
+        ],
+        [
+          527.2556147198092,
+          318.4384156188133
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.4765267561160886,
+        0.12363133850120848,
+        0.328477784936395,
+        0.5703073414061546
+      ],
+      "max_corner_error_diagonal": 0.5703073414061546,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": null,
+      "quad_present": false,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": null,
+      "max_corner_error_diagonal": null,
+      "corner_pass": false,
+      "disposition": "no detection; no fallback substituted"
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "quad_present": 5,
+    "quad_null": 1,
+    "corner_pass": 0,
+    "no_op_corner_pass": 6,
+    "threshold_max_corner_error_diagonal": 0.02
+  },
+  "existing_metric_bindings": [
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 13,
+      "exact_statement": "gt=np.array([[0,0],[w-1,0],[w-1,ht-1],[0,ht-1]])"
+    },
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 18,
+      "exact_statement": "err=np.linalg.norm(q-gt,axis=1)/math.hypot(w,ht)"
+    },
+    {
+      "source": "docs/design/research/correction-validation-v060/docaligner-metrics.py",
+      "source_sha256": "ae676b5b7afeaa0546b144e58bb82db7a08d96ca89a4a31789dd496f0ddcc926",
+      "line": 6,
+      "exact_statement": "corners=np.stack([g[:,0,0],g[:,0,-1],g[:,-1,-1],g[:,-1,0]])"
+    },
+    {
+      "source": "docs/design/research/correction-validation-v060/docaligner-metrics.py",
+      "source_sha256": "ae676b5b7afeaa0546b144e58bb82db7a08d96ca89a4a31789dd496f0ddcc926",
+      "line": 10,
+      "exact_statement": "err=np.linalg.norm(q-corners,axis=1)/math.hypot(w,h)"
+    },
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 19,
+      "exact_expression": "float(err.max())"
+    },
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 19,
+      "exact_expression": "bool(np.all(err<=0.02))"
+    },
+    {
+      "source": "docs/design/research/correction-validation-v060/docaligner-metrics.py",
+      "source_sha256": "ae676b5b7afeaa0546b144e58bb82db7a08d96ca89a4a31789dd496f0ddcc926",
+      "line": 10,
+      "exact_expression": "float(err.mean())"
+    }
+  ]
+}

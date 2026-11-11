@@ -640,5 +640,11 @@
     "requirements_newly_completed": 0,
     "preview_only_qualified": false,
     "historical_2percent_gate_preserved": true
+  },
+  "fairscan_mask_contract_diagnostic": {
+    "summary": "../correction-fairscan-mask-parity-v060/summary.json",
+    "sha256": "b6a925864294e6dd5daa41267879e1ef8af0b920c2370c77fa04f8887f42eced",
+    "exact_android_parity": false,
+    "requirements_newly_completed": 0
   }
 }

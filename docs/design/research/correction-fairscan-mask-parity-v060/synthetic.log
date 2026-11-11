@@ -1,0 +1,28 @@
+Picked up JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2 -Xmx768m -XX:MaxMetaspaceSize=384m
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+Configuration on demand is an incubating feature.
+> Task :evaluation:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :imageprocessing:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :imageprocessing:compileKotlin UP-TO-DATE
+> Task :imageprocessing:compileJava NO-SOURCE
+> Task :evaluation:processResources NO-SOURCE
+> Task :imageprocessing:processResources NO-SOURCE
+> Task :imageprocessing:classes UP-TO-DATE
+> Task :imageprocessing:jar UP-TO-DATE
+> Task :evaluation:compileKotlin
+> Task :evaluation:compileJava
+> Task :evaluation:classes
+
+> Task :evaluation:runOfficialQuadCoordinates
+Picked up JAVA_TOOL_OPTIONS: -XX:ActiveProcessorCount=2 -Xmx768m -XX:MaxMetaspaceSize=384m
+Serialized official quad: fixture_ocr_columns_001 present=true
+Serialized official quad: fixture_ocr_horizontal_001 present=true
+Serialized official quad: fixture_ocr_mixed_001 present=true
+Serialized official quad: fixture_ocr_table_001 present=true
+Serialized official quad: fixture_ocr_vertical_001 present=true
+Serialized official quad: fixture_ocr_wrapped_001 present=false
+
+BUILD SUCCESSFUL in 12s
+5 actionable tasks: 3 executed, 2 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.2/userguide/configuration_cache_enabling.html

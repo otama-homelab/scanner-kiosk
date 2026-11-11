@@ -1,0 +1,160 @@
+{
+  "format": "scanner-fairscan-mask-contract-parity-diagnostic",
+  "official_source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "android_toMat_contract": "threshold0.5\u2192CV_8UC1binary0/255",
+  "desktop_contract": "quantizedprobabilitygrayPNGcloned",
+  "prior_floatMat_conjecture_corrected": true,
+  "binary_diagnostic_quad_present": 5,
+  "binary_diagnostic_quad_null": 1,
+  "pilot_corner_gate_pass": 0,
+  "no_op_corner_gate_pass": 6,
+  "paired_ocr": {
+    "total": 6,
+    "better": 2,
+    "worse": 1,
+    "equal_error_count": 3,
+    "new_jobs": 5,
+    "exact_hash_reuse": 1
+  },
+  "exact_android_parity": false,
+  "preview_only_qualified": false,
+  "new_correction_model_forwards": 0,
+  "requirements_newly_completed": [],
+  "evidence_files": [
+    {
+      "file": "branch-comparison.json",
+      "bytes": 3483,
+      "sha256": "35f4bbc65f2bce2577517aa6f65fea7729fdb026664047042aba3d572c2f1f3b"
+    },
+    {
+      "file": "contract-before-computation.md",
+      "bytes": 1816,
+      "sha256": "0e70ea5982d7ea12932b5c737dc2cde2052b4a6d53bc1346af1875a59c2ae5d5"
+    },
+    {
+      "file": "fixture_ocr_columns_001.stderr",
+      "bytes": 29,
+      "sha256": "3a58af71f4c05558f3f831ca24c085591908cb7494f9fba600a365c275891967"
+    },
+    {
+      "file": "fixture_ocr_columns_001.txt",
+      "bytes": 80,
+      "sha256": "9eda6cfc6b66c885082c0ddceb35e1c306aec2d113e91e63eb785626b83e14dd"
+    },
+    {
+      "file": "fixture_ocr_horizontal_001.stderr",
+      "bytes": 29,
+      "sha256": "e0fa8a3babec5e10490850b836ed478d80c851c6a7d9e0a6a8c3c1e5e49f3ae0"
+    },
+    {
+      "file": "fixture_ocr_horizontal_001.txt",
+      "bytes": 9,
+      "sha256": "2f4b89e4356e4060dd660fc875487e986fdd070d2a2c99d177969420bc07d735"
+    },
+    {
+      "file": "fixture_ocr_mixed_001.stderr",
+      "bytes": 29,
+      "sha256": "2e8738c619746760c579259405624193bb2f773f4c5547d52473a81eb14d472a"
+    },
+    {
+      "file": "fixture_ocr_mixed_001.txt",
+      "bytes": 17,
+      "sha256": "27cb0e4518c8f56ce2c87cb2241fcefef652c28b5771b5bee3525e8773005c33"
+    },
+    {
+      "file": "fixture_ocr_table_001.stderr",
+      "bytes": 29,
+      "sha256": "a91a042384d8239219cc1cbe7280511410d7a9c53239c94bcab722917ddc180e"
+    },
+    {
+      "file": "fixture_ocr_table_001.txt",
+      "bytes": 39,
+      "sha256": "9cebef84f2cffe80e07231e591262eaf2b17ac11bf569f9da5012a8993c24d16"
+    },
+    {
+      "file": "fixture_ocr_vertical_001.stderr",
+      "bytes": 29,
+      "sha256": "19d2a0cc49fdcfd932c2c2fff886501323ccbbe40bf497bfeafe77343c49dbaa"
+    },
+    {
+      "file": "fixture_ocr_vertical_001.txt",
+      "bytes": 37,
+      "sha256": "2ab514f6466e1e7b71dc80f855c2f7b54d58df8a8e21c2aecfdc32c74ccaac5e"
+    },
+    {
+      "file": "mask-bindings.json",
+      "bytes": 5102,
+      "sha256": "8f20e68a779b554285fb3b779af6564b65a5b6e7b1e7ba1e7ff7878161e65fa2"
+    },
+    {
+      "file": "mask-invocation.py",
+      "bytes": 2097,
+      "sha256": "8da499b9dfb791b68ee63bf1dd3fa0d7a0fe6840a78dab489759ff0c6762a0f9"
+    },
+    {
+      "file": "metric-invocation.py",
+      "bytes": 3538,
+      "sha256": "ebd23244c1af775bf850ddd608cf509ddbc8d2fc93784092d16ae64d7430a49a"
+    },
+    {
+      "file": "metrics.json",
+      "bytes": 8052,
+      "sha256": "64814dd2ba7c6ec5e9a85b9672763b059b0a5a9455b87e7fe3155de81733f16c"
+    },
+    {
+      "file": "ocr-command.py",
+      "bytes": 4416,
+      "sha256": "d9d24e660786e95700476ded7a3bbe2555fc078aeffe0ea0be29125ed6877323"
+    },
+    {
+      "file": "ocr.json",
+      "bytes": 10025,
+      "sha256": "070c2d32e86bdd57f9c3e4e8a50605130cb69f692393e45e164eddd77c797556"
+    },
+    {
+      "file": "quad-command.py",
+      "bytes": 3388,
+      "sha256": "7f36835670480c843bd45cfa42709b7ab182503af9ee22584dc3134db7e3af55"
+    },
+    {
+      "file": "raster-command.py",
+      "bytes": 3306,
+      "sha256": "cba4c6d034f8484c449ca849f08672989a5214f7ba481be4b310086048fd609a"
+    },
+    {
+      "file": "raster-run.json",
+      "bytes": 1027,
+      "sha256": "f777d4d333b15d0f3ec7f61428867ec34da6e782617b8055eba9d9153fe424ce"
+    },
+    {
+      "file": "raster.log",
+      "bytes": 1542,
+      "sha256": "df28841377560db2a2cbe48a6860174b5d92072d96c4b9cd4072c8e6dc7d39d6"
+    },
+    {
+      "file": "report.md",
+      "bytes": 5822,
+      "sha256": "9d385f94122b40c3269407bdebf1987d35f9c9265521ca99fa8967d2fdaabdf0"
+    },
+    {
+      "file": "selfchecks.json",
+      "bytes": 3502,
+      "sha256": "a33ac61dff4ac15a479fe0b98a9fe215de8e70a3e5fc8a6c3d67ee67c1fcdcf2"
+    },
+    {
+      "file": "synthetic-coordinates.json",
+      "bytes": 1485,
+      "sha256": "4b27c8aede67388402a0b3fa1e82070089e47b43bb722ade4355eaa34382cf86"
+    },
+    {
+      "file": "synthetic-run.json",
+      "bytes": 1110,
+      "sha256": "18fcaa510a7fc5531b34073b08a69465afe9ab91a539361e3fb7584270eb531e"
+    },
+    {
+      "file": "synthetic.log",
+      "bytes": 1655,
+      "sha256": "56f9fc8f2658e6f0def1c60cab131c0868b1cb0ae43de13143502703f8773572"
+    }
+  ]
+}
