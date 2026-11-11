@@ -633,5 +633,12 @@
     "summary": "../correction-fairscan-numeric-v060/summary.json",
     "sha256": "e7b8eba0f76d296c1a6aca9c6cfc3eb725230cbe86975d7a3b3515a6104264dc",
     "requirements_newly_completed": 0
+  },
+  "fairscan_relative_content_evaluation": {
+    "summary": "../correction-fairscan-relative-v060/summary.json",
+    "sha256": "827a37eefba8998c2c5ff3f6548c76148bf13ac2e8fd70bb1e6640a065d6c2eb",
+    "requirements_newly_completed": 0,
+    "preview_only_qualified": false,
+    "historical_2percent_gate_preserved": true
   }
 }

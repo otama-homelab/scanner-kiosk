@@ -1,0 +1,78 @@
+{
+  "all9_geometry_accounted": true,
+  "quad5_null4": true,
+  "six_paired_ocr12jobs": true,
+  "historical2percentverdict_preserved": true,
+  "no_posthoc_new_pass_threshold": true,
+  "officialsource272unchanged": true,
+  "raster_outputs": [
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/index.html",
+      "bytes": 1973,
+      "sha256": "5c6151dff66becb1f5dd25414fb4c6a63d36f65cba58691b9e89eb5d3c5eaf6b"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_columns_001_input.jpg",
+      "bytes": 34234,
+      "sha256": "7fa6e5c8a175f5041dec19d7513922a9faea7d76bec72358f6db8580668c1761"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_columns_001_output.jpg",
+      "bytes": 34234,
+      "sha256": "7fa6e5c8a175f5041dec19d7513922a9faea7d76bec72358f6db8580668c1761"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_horizontal_001_input.jpg",
+      "bytes": 25788,
+      "sha256": "e72ac411b6199aaa898346c1c69df7f3e5995dd05092a3b9e986c44b2f95b4e3"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_horizontal_001_output.jpg",
+      "bytes": 25788,
+      "sha256": "e72ac411b6199aaa898346c1c69df7f3e5995dd05092a3b9e986c44b2f95b4e3"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_mixed_001_input.jpg",
+      "bytes": 27272,
+      "sha256": "81d9a74f5187b4fa9a832f2ead6392e27ba9c10d9bf1d218f9bfcbe6950eb056"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_mixed_001_output.jpg",
+      "bytes": 10688,
+      "sha256": "bc5b100193811f7d3453efd51435898c5063b9b74ed21040ac358fdd26202461"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_table_001_input.jpg",
+      "bytes": 29214,
+      "sha256": "c98a7c2614141ba56d5ae8cc4cef004c8f458d68ff1666a76a0b1f1244a7588a"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_table_001_output.jpg",
+      "bytes": 20151,
+      "sha256": "08178e417580f2ef65acfd4a04631fa7b4607da5426d8f95b0164efaf5da9074"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_vertical_001_input.jpg",
+      "bytes": 20791,
+      "sha256": "ae39a38d90cd83a104cd36eabf6c0f39f9a48f855002f92e45c8ca94d5e3ac11"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_vertical_001_output.jpg",
+      "bytes": 11827,
+      "sha256": "7c62fe36ad13d0ac19868e049e24059df4f803dab8d84c9a6a6bdeaafd9c9858"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_wrapped_001_input.jpg",
+      "bytes": 14992,
+      "sha256": "78c0740eb99e2006d170ad5532cb702e7cf39d8928d6291e946c1ce96fabffdd"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-relative.csJ1VV/source/evaluation/reports/results/fixture_ocr_wrapped_001_output.jpg",
+      "bytes": 14992,
+      "sha256": "78c0740eb99e2006d170ad5532cb702e7cf39d8928d6291e946c1ce96fabffdd"
+    }
+  ],
+  "raster_bytes": 271944,
+  "no_new_model_inference": true,
+  "no_new_region_or_warp_algorithm": true
+}

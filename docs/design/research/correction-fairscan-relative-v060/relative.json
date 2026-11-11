@@ -1,0 +1,166 @@
+{
+  "source_metrics": "docs/design/research/correction-fairscan-numeric-v060/metrics.json",
+  "source_sha256": "26a2519f7ee54873d0c68b7989ab554d7e3552a802a7b62ea3202ffa295a08b9",
+  "historical_2percent_max_corner_gate": {
+    "quad_present": 3,
+    "quad_null": 3,
+    "corner_pass": 0,
+    "corner_fail_or_missing": 6,
+    "no_op_corner_pass": 6,
+    "threshold_max_corner_error_diagonal": 0.02
+  },
+  "interpretation": "historical pilot cutoff retained; not proven user usability boundary; no replacement pass threshold",
+  "rows": [
+    {
+      "id": "fixture_ocr_columns_001",
+      "stratum": "synthetic",
+      "quad_present": false,
+      "no_op_mean": 0.0,
+      "no_op_max": 0.0,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "no_quad",
+      "candidate_mean": null,
+      "candidate_max": null,
+      "paired_mean_change": null,
+      "paired_max_change": null
+    },
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "stratum": "synthetic",
+      "quad_present": false,
+      "no_op_mean": 0.0,
+      "no_op_max": 0.0,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "no_quad",
+      "candidate_mean": null,
+      "candidate_max": null,
+      "paired_mean_change": null,
+      "paired_max_change": null
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "stratum": "synthetic",
+      "quad_present": true,
+      "no_op_mean": 0.0,
+      "no_op_max": 0.0,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "worse_both",
+      "candidate_mean": 0.3439745589678387,
+      "candidate_max": 0.5096478894048184,
+      "paired_mean_change": 0.3439745589678387,
+      "paired_max_change": 0.5096478894048184
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "stratum": "synthetic",
+      "quad_present": true,
+      "no_op_mean": 0.0,
+      "no_op_max": 0.0,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "worse_both",
+      "candidate_mean": 0.214284821350615,
+      "candidate_max": 0.33222291842766694,
+      "paired_mean_change": 0.214284821350615,
+      "paired_max_change": 0.33222291842766694
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "stratum": "synthetic",
+      "quad_present": true,
+      "no_op_mean": 0.0,
+      "no_op_max": 0.0,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "worse_both",
+      "candidate_mean": 0.37460853291894364,
+      "candidate_max": 0.571500311273659,
+      "paired_mean_change": 0.37460853291894364,
+      "paired_max_change": 0.571500311273659
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "stratum": "synthetic",
+      "quad_present": false,
+      "no_op_mean": 0.0,
+      "no_op_max": 0.0,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "no_quad",
+      "candidate_mean": null,
+      "candidate_max": null,
+      "paired_mean_change": null,
+      "paired_max_change": null
+    },
+    {
+      "id": "real_00000",
+      "stratum": "additional_grid_endpoints",
+      "quad_present": false,
+      "no_op_mean": 0.11793884466120919,
+      "no_op_max": 0.15076057344087282,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "no_quad",
+      "candidate_mean": null,
+      "candidate_max": null,
+      "paired_mean_change": null,
+      "paired_max_change": null
+    },
+    {
+      "id": "real_00001",
+      "stratum": "additional_grid_endpoints",
+      "quad_present": true,
+      "no_op_mean": 0.10378347298131325,
+      "no_op_max": 0.12338184123586365,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "improved_both",
+      "candidate_mean": 0.007523282626247328,
+      "candidate_max": 0.014658685637642445,
+      "paired_mean_change": -0.09626019035506593,
+      "paired_max_change": -0.10872315559822121
+    },
+    {
+      "id": "real_00002",
+      "stratum": "additional_grid_endpoints",
+      "quad_present": true,
+      "no_op_mean": 0.08444056231423691,
+      "no_op_max": 0.11585100125003864,
+      "internal_fallback": "not exposed by official API",
+      "disposition": "improved_both",
+      "candidate_mean": 0.01649000593381015,
+      "candidate_max": 0.021467405934840186,
+      "paired_mean_change": -0.06795055638042677,
+      "paired_max_change": -0.09438359531519845
+    }
+  ],
+  "strata": [
+    {
+      "stratum": "synthetic",
+      "denominator": 6,
+      "counts": {
+        "improved_both": 0,
+        "worse_both": 3,
+        "tradeoff": 0,
+        "equal_both": 0,
+        "no_quad": 3
+      },
+      "detected_only_aggregate": "not reported as overall performance"
+    },
+    {
+      "stratum": "additional_grid_endpoints",
+      "denominator": 3,
+      "counts": {
+        "improved_both": 2,
+        "worse_both": 0,
+        "tradeoff": 0,
+        "equal_both": 0,
+        "no_quad": 1
+      },
+      "detected_only_aggregate": "not reported as overall performance"
+    }
+  ],
+  "pooled_accuracy": "not calculated",
+  "preview_only_qualified": false,
+  "preview_gate_reasons": [
+    "synthetic detected cases worsen geometry",
+    "content region/line retention not measured with a compatible map",
+    "original real6/photo2_2 content truth missing",
+    "owner/device acceptance and candidate-bound product regression missing"
+  ]
+}

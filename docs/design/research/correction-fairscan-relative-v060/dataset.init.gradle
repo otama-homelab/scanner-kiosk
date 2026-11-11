@@ -1,0 +1,13 @@
+allprojects { p ->
+    if (p.path == ':evaluation') {
+        p.plugins.withId('java') {
+            p.tasks.register('runOfficialDatasetEvaluation', JavaExec) {
+                classpath = p.sourceSets.main.runtimeClasspath
+                mainClass = 'org.fairscan.evaluation.DatasetEvaluatorKt'
+                workingDir = System.getProperty('scannerEvaluationRoot', p.rootProject.projectDir.toString())
+                maxHeapSize = '768m'
+                jvmArgs '-XX:ActiveProcessorCount=2'
+            }
+        }
+    }
+}

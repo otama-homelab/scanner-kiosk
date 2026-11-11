@@ -149,3 +149,12 @@ FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい
 公式detectDocumentQuadの戻り座標だけを外部invocation adapterでJSON化し、既存corner指標をそのまま再利用。公式source272件不変、未検出を代替しない。合成6枚は検出3/未検出3、既存最大corner誤差2%基準0/6合格、同scope無補正6/6。追加独立UVDoc3文書(元9画像との重複0)は検出2/未検出1、検出2件の平均誤差0.752%/1.649%、無補正10.378%/8.444%。付属grid端点を使う既存diagnosticであり元6実写真annotationの代用ではない。
 
 証拠: docs/design/research/correction-fairscan-numeric-v060/report.md、summary.jsonの19件hash照合。公開追加画像のモデル推論3回、既存合成maskは再利用。Androidと公式評価用mask値域のparityは未証明で、結果をモデル単体の限界へ帰属しない。VERIFY-01/02の元実写真truthとphoto2_2内容正解は未解決、要件完了6/14を維持。製品採用・公開・配備なし。
+
+
+## 2026-11-11 FairScan相対改善・内容・未検出の分離評価
+
+本人の2%妥当性への指摘を反映し、既定2%はpilot判定履歴として保持するがユーザー検証済み有用性境界とは扱わない。事後的な新しい合格閾値は追加せず、既存座標結果の対無補正平均/最大誤差、未検出、同条件OCRを分離して評価。合成6枚は改善0/悪化3/未検出3、追加独立3文書は改善2/未検出1で分母を維持。
+
+公式DatasetEvaluatorの透視切出しを合成6枚へ適用し、同条件JPEG baselineとTesseract12件/既存AnalyzeOCRPageを比較。改善0/悪化2/誤り数同等4（うち公式未検出fallback3件は補正成功に数えない）。同じ誤り数でも文字列一致とは限らず、baseline自身の誤りも残る。既存画素保持metricはinverse-bilinear、公式warpはperspectiveで同一mapでないため位置/画素保持は未検証と明示、独自metricを作らない。相対改善例は認めるが内容回帰/未検出/不足証拠からpreview適格性falseを維持。
+
+証拠: docs/design/research/correction-fairscan-relative-v060/report.md、summary.jsonの36件hash照合。追加モデル推論0。元実写真truth/本人受入は未解決、元要件6/14のまま。製品組込・公開・配備なし。
