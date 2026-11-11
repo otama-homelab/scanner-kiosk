@@ -542,8 +542,8 @@
     },
     "usr/libexec/scanner/sane-parameters": {
       "mode": 365,
-      "sha256": "c4a357f263145565791690c243d7515c6d0a67e52c40a5543081a64cb87a8b8d",
-      "size": 4924568
+      "sha256": "0373fe4ea283a599c8a59569753ee3b3d37a640441e9f9715a837788419ff511",
+      "size": 4924720
     },
     "usr/share/poppler/cMap/Adobe-CNS1/Adobe-CNS1-0": {
       "mode": 292,

@@ -1096,8 +1096,8 @@
       "files": {
         "usr/libexec/scanner/sane-parameters": {
           "mode": 365,
-          "sha256": "c4a357f263145565791690c243d7515c6d0a67e52c40a5543081a64cb87a8b8d",
-          "size": 4924568
+          "sha256": "0373fe4ea283a599c8a59569753ee3b3d37a640441e9f9715a837788419ff511",
+          "size": 4924720
         }
       },
       "name": "sane-parameters",
@@ -1598,7 +1598,7 @@
     "version": "25.12.0-r1"
   },
   "publication_approved": false,
-  "runtime_manifest_sha256": "15bf5ad7166816d17d8d9e4a83558e2d03dd393790eb70e4bcd2ea47432d1fa4",
+  "runtime_manifest_sha256": "467cea6c409a0704cf56db9404a796ee3d45f191bd87f2aa6ec0c45d4fa63e1c",
   "scope": "Fixed native input identity and origin mapping; not SBOM, source offer, security or license acceptance",
   "upstream_source_components": [
     {

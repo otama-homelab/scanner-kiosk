@@ -118,6 +118,18 @@ The updated manifest SHA-256 is
 `21bb815521d41b3ced50405e34605b54aa4720c9b45a20832fdc833115bf599a`.
 Source/SDK/manifest contract tests passed; this is not new real-device acceptance.
 
+The Go 1.27.4 security update was measured in CI run `43059656151` from
+source `537255dc21d4e2c0ea196b2cb3da125984414332`. The offline helper build
+reported Go 1.27.4, CGO enabled, Linux/amd64 and the `saneparams` tag. All 46
+SDK package identities matched the existing lock. The helper is 4,924,720 bytes,
+SHA-256 `0373fe4ea283a599c8a59569753ee3b3d37a640441e9f9715a837788419ff511`.
+The refreshed Go notice index changes only its toolchain version; all license
+texts are unchanged. The resulting runtime manifest SHA-256 is
+`467cea6c409a0704cf56db9404a796ee3d45f191bd87f2aa6ec0c45d4fa63e1c`.
+The measurement run failed during assembly because its intermediate APK lock
+still referenced the prior provenance hash. The final lock binds the refreshed
+provenance; the full candidate build must verify assembly before publication.
+
 `build-sane-parameters.sh SOURCE_DIRECTORY CHECKSUM_FILE` copies only the listed
 Go source/module files into fresh private scratch, rejects unsafe selection paths,
 then checks the copied hashes before compilation. Extra source files cannot enter
