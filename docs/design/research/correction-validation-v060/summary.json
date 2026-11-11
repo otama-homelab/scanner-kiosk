@@ -183,9 +183,9 @@
     },
     {
       "id": "ILL-01",
-      "status": "waiting_external_rights_holder",
+      "status": "waiting_external_implementation",
       "complete": false,
-      "evidence_scope": "Explicit checkpoint scope and exact FSENet/older DocShadow conversion identity unresolved; concrete unsent questions retained.",
+      "evidence_scope": "Current FSENet remains incomplete: official MIT distribution does not require bespoke checkpoint permission by itself; official loader forces CUDA storage, current CPU-safe artifact/loading and exact conversion identity/parity unproven. Earlier blanket rights-holder wait superseded. Old author-linked DocShadow ONNX is a distinct candidate.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -193,14 +193,30 @@
           "path": "docs/design/research/correction-autonomous-v060/phase67-resume.json",
           "sha256": "6688ffe4075f00a71646fa31075e64ae89dca5f0010730990838d3d0dd8678d0",
           "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        },
+        {
+          "path": "docs/design/research/correction-runtime-followup-v060/summary.json",
+          "sha256": "e3839309f1c8e76a1c27c3a08ee268a243b728de2a0b9acd132b03a6532bb1e3",
+          "revision": "2026-11-11-progress-reconciliation"
+        },
+        {
+          "path": "docs/design/research/correction-docshadow-native-v060/summary.json",
+          "sha256": "dcd8d3ce858a44386d62a5bb9af9dce1c7c9f815ed49f2648c1f5dd3282eb700",
+          "revision": "2026-11-11-progress-reconciliation"
+        },
+        {
+          "path": "docs/design/research/correction-docshadow-ssim-v060/summary.json",
+          "sha256": "3881f3ecf477bfecea2f530f813f27e9028ba1a970cc60ac1259efb69ae7e1c0",
+          "revision": "2026-11-11-progress-reconciliation"
         }
-      ]
+      ],
+      "historical_evidence_scope": "Explicit checkpoint scope and exact FSENet/older DocShadow conversion identity unresolved; concrete unsent questions retained."
     },
     {
       "id": "ILL-02",
-      "status": "waiting_external_rights_holder",
+      "status": "waiting_external_implementation",
       "complete": false,
-      "evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference.",
+      "evidence_scope": "Current FSENet illumination criterion not run: official CPU-compatible loading path unavailable. Distinct old DocShadow ONNX measured72 unique forwards plus OCR and standard SSIM; tested512/native configurations rejected. This does not qualify current FSENet or complete original ILL-02.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -208,8 +224,24 @@
           "path": "docs/design/research/correction-autonomous-v060/phase67-measurement.json",
           "sha256": "279c46f23cf12c13f6707a9984164d52b7edec03a407ece8c75c763377387163",
           "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        },
+        {
+          "path": "docs/design/research/correction-runtime-followup-v060/summary.json",
+          "sha256": "e3839309f1c8e76a1c27c3a08ee268a243b728de2a0b9acd132b03a6532bb1e3",
+          "revision": "2026-11-11-progress-reconciliation"
+        },
+        {
+          "path": "docs/design/research/correction-docshadow-native-v060/summary.json",
+          "sha256": "dcd8d3ce858a44386d62a5bb9af9dce1c7c9f815ed49f2648c1f5dd3282eb700",
+          "revision": "2026-11-11-progress-reconciliation"
+        },
+        {
+          "path": "docs/design/research/correction-docshadow-ssim-v060/summary.json",
+          "sha256": "3881f3ecf477bfecea2f530f813f27e9028ba1a970cc60ac1259efb69ae7e1c0",
+          "revision": "2026-11-11-progress-reconciliation"
         }
-      ]
+      ],
+      "historical_evidence_scope": "Synthetic paired truth ready; no eligible checkpoint, no illumination model quality inference."
     },
     {
       "id": "ACCEPT-01",
@@ -646,5 +678,10 @@
     "sha256": "b6a925864294e6dd5daa41267879e1ef8af0b920c2370c77fa04f8887f42eced",
     "exact_android_parity": false,
     "requirements_newly_completed": 0
+  },
+  "current_independent_verification": {
+    "summary": "../correction-evaluation-status-v060/summary.json",
+    "sha256": "c8aa5ce1ee4b6460eb6e5580ce6eaeed585a5901d8f76bf5bc373d02ec5fa5f2",
+    "status": "gaps_found"
   }
 }

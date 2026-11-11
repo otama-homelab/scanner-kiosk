@@ -167,3 +167,12 @@ FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい
 合成6枚の検出3→5、未検出3→1に改善したが2%pilot誤差基準0/6は変わらない。公式透視切出しと同条件JPEG baselineのOCRは改善2/悪化1/誤り数同等3。誤り数同等でも文字列変化や偽数字があり、内容保持を保証しない。5件新規OCR＋画像hash一致1件再利用、追加補正モデル推論0。前回の不利な結果はdesktop契約の履歴として保持し、モデル単体の性能へ一律帰属しない。
 
 証拠: docs/design/research/correction-fairscan-mask-parity-v060/report.md、27件hash照合。preview適格性false、元実写真truth/厳密Android parity/位置内容保持/本人操作は未解決。元要件6/14完了を維持。製品変更・公開・配備なし。
+
+
+## 2026-11-11 progress照合・正式検証更新
+
+19計画/19SUMMARYはすべて結果記録ありだが、partial/不合格/待機を含むため能力完了率ではない。完了Phase1/5(64のみ)、元要件6/14を維持。Phase66/67の正式VERIFICATIONをgaps_foundで保存し、missing report状態を解消。独立検証は390索引証拠/66公開raw binding/11公式source本文をhash再照合し不一致なし。
+
+台帳の古いILL01/02一律rights-holder待ちと「照明推論なし」を訂正しhistorical_evidence_scopeを保持。現FSENetはCPUloader/storage.cuda(0)とartifact/safe-loading未解決、旧DocShadowは72uniqueforward/OCR/SSIMの評価済み不採用として分離。FairScanruntimeは解消済み、元実写真独立正解/photo2_2内容原因/厳密Androidparity/透視内容保持は残る。本人操作は別のPhase68checkpoint。次回は変化した独立正解または公式CPU対応artifact/loaderに対してのみ再開し、同じ不合格推論/SSIM/閾値の再試行はしない。
+
+正本検証: docs/design/research/correction-evaluation-status-v060/verification.md。今回新規推論/テスト/build/downloadなし、製品変更/公開/配備なし。

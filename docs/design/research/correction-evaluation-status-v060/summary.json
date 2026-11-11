@@ -1,0 +1,22 @@
+{
+  "format": "scanner-v060-current-verification",
+  "date": "2026-11-11",
+  "status": "gaps_found",
+  "verified_requirements": 6,
+  "requirement_count": 14,
+  "completed_phases": [
+    64
+  ],
+  "phase66": "gaps_found",
+  "phase67": "gaps_found",
+  "indexed_evidence_hashes_verified": 390,
+  "public_raw_bindings_verified": 66,
+  "embedded_source_texts_verified": 11,
+  "evidence_files": [
+    {
+      "file": "verification.md",
+      "bytes": 4568,
+      "sha256": "f7504734244bca53b282aeae8693560d401ccdefc723f1db03b760e00a9a9ae9"
+    }
+  ]
+}
