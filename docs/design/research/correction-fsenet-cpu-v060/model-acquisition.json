@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/CXH-Research/DocShadow-SD7K/releases/download/Weights/SD7K.pth",
+  "bytes": 117980483,
+  "sha256": "6a514e34cf2d3aff12eebd0c4f7b04466f47c1c0c41019d81091cc4d2defdc56",
+  "release_id": 134210382,
+  "asset_id": 141095313,
+  "path": "/tmp/scanner-fsenet-cpu-v060/SD7K.pth",
+  "elapsed_seconds": 7.211378167005023,
+  "max_bytes": 268435456
+}

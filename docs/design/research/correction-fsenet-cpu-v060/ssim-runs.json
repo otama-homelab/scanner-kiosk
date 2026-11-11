@@ -1,0 +1,830 @@
+[
+  {
+    "id": "ssim_native_00_mixed_shadow",
+    "ssim": 0.9791246056556702,
+    "metric_seconds": 0.11093746201368049,
+    "peak_rss_bytes": 115965952,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/00_mixed_shadow_gt.png",
+    "reference_sha256": "f94a23e23e5af099925e2a7964b87c5a5e06fb69c1be2fd268251a91f87ff07f",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/00_mixed_shadow.npy",
+    "input_sha256": "f3222fb4fbd00c647b0c1a84c9f2e5c5fb5eb300a834c9283716ce7aea3a54cd",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_00_mixed_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/00_mixed_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/00_mixed_shadow.npy\", \"input_sha256\": \"f3222fb4fbd00c647b0c1a84c9f2e5c5fb5eb300a834c9283716ce7aea3a54cd\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.7038776309927925,
+    "sampled_peak_rss_bytes": 103182336,
+    "fixture": "mixed",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_native_01_mixed_clean",
+    "ssim": 0.9869077801704407,
+    "metric_seconds": 0.10049340600380674,
+    "peak_rss_bytes": 116383744,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/01_mixed_clean_gt.png",
+    "reference_sha256": "f94a23e23e5af099925e2a7964b87c5a5e06fb69c1be2fd268251a91f87ff07f",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/01_mixed_clean.npy",
+    "input_sha256": "0db961624a911c6cb453a2c98ff44afccc3cf5bb4a9abf9bfd402bd02bfb01f8",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_01_mixed_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/01_mixed_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/01_mixed_clean.npy\", \"input_sha256\": \"0db961624a911c6cb453a2c98ff44afccc3cf5bb4a9abf9bfd402bd02bfb01f8\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.5023379320045933,
+    "sampled_peak_rss_bytes": 112021504,
+    "fixture": "mixed",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_native_02_table_shadow",
+    "ssim": 0.9698920249938965,
+    "metric_seconds": 0.09220855901367031,
+    "peak_rss_bytes": 116133888,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/02_table_shadow_gt.png",
+    "reference_sha256": "e2af0c0da15d5578d474790aefbeecab276e3c23bb3ead4f9a2502c1e0d300a6",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/02_table_shadow.npy",
+    "input_sha256": "b3cde2075fd539277ceb5d829e96b88da12815abb5a24638660607abf0320d73",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_02_table_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/02_table_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/02_table_shadow.npy\", \"input_sha256\": \"b3cde2075fd539277ceb5d829e96b88da12815abb5a24638660607abf0320d73\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5024741280067246,
+    "sampled_peak_rss_bytes": 89432064,
+    "fixture": "table",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_native_03_table_clean",
+    "ssim": 0.9740919470787048,
+    "metric_seconds": 0.09093213701271452,
+    "peak_rss_bytes": 116228096,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/03_table_clean_gt.png",
+    "reference_sha256": "e2af0c0da15d5578d474790aefbeecab276e3c23bb3ead4f9a2502c1e0d300a6",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/03_table_clean.npy",
+    "input_sha256": "247ed313e0304983d87247517a6e9a01d849df2da4882549f70979187c79ab0a",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_03_table_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/03_table_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/03_table_clean.npy\", \"input_sha256\": \"247ed313e0304983d87247517a6e9a01d849df2da4882549f70979187c79ab0a\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5022320249991026,
+    "sampled_peak_rss_bytes": 83427328,
+    "fixture": "table",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_native_04_faint_mixed_shadow",
+    "ssim": 0.9793949127197266,
+    "metric_seconds": 0.09132332800072618,
+    "peak_rss_bytes": 116518912,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/04_faint_mixed_shadow_gt.png",
+    "reference_sha256": "0b10a43e1c2152fee49acc3a525d62f7bd0c25633ab90d11ba6b17ed7e732ded",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/04_faint_mixed_shadow.npy",
+    "input_sha256": "fa60db3b6ead863c30a556abefc9acb34af750671c7ab36dcbbc84cdf9ca4654",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_04_faint_mixed_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/04_faint_mixed_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/04_faint_mixed_shadow.npy\", \"input_sha256\": \"fa60db3b6ead863c30a556abefc9acb34af750671c7ab36dcbbc84cdf9ca4654\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.5023060489911586,
+    "sampled_peak_rss_bytes": 81477632,
+    "fixture": "faint_mixed",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_native_05_faint_mixed_clean",
+    "ssim": 0.9888027310371399,
+    "metric_seconds": 0.09133751501212828,
+    "peak_rss_bytes": 116289536,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/05_faint_mixed_clean_gt.png",
+    "reference_sha256": "0b10a43e1c2152fee49acc3a525d62f7bd0c25633ab90d11ba6b17ed7e732ded",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/05_faint_mixed_clean.npy",
+    "input_sha256": "dcb0e58cfd358243b9dc6e72dd416bf3999c1524dff79e3db5424878127be88c",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_05_faint_mixed_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/05_faint_mixed_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/05_faint_mixed_clean.npy\", \"input_sha256\": \"dcb0e58cfd358243b9dc6e72dd416bf3999c1524dff79e3db5424878127be88c\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.5022609509760514,
+    "sampled_peak_rss_bytes": 92225536,
+    "fixture": "faint_mixed",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_native_06_faint_table_shadow",
+    "ssim": 0.9775094985961914,
+    "metric_seconds": 0.0951719909789972,
+    "peak_rss_bytes": 116215808,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/06_faint_table_shadow_gt.png",
+    "reference_sha256": "469c5259713f26c7a9466cd09fa16d6836e24247c94258d8549d76e08637a3bc",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/06_faint_table_shadow.npy",
+    "input_sha256": "858cb8fb9fda4e4c0e6b9028b59694faf81e91bbfec406d64e46aa192b95890b",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_06_faint_table_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/06_faint_table_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/06_faint_table_shadow.npy\", \"input_sha256\": \"858cb8fb9fda4e4c0e6b9028b59694faf81e91bbfec406d64e46aa192b95890b\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.5039004230056889,
+    "sampled_peak_rss_bytes": 85950464,
+    "fixture": "faint_table",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_native_07_faint_table_clean",
+    "ssim": 0.9854788780212402,
+    "metric_seconds": 0.10146395702031441,
+    "peak_rss_bytes": 116318208,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/07_faint_table_clean_gt.png",
+    "reference_sha256": "469c5259713f26c7a9466cd09fa16d6836e24247c94258d8549d76e08637a3bc",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/07_faint_table_clean.npy",
+    "input_sha256": "ebb2db72c7c952f43005caeffc69accb30c8e07eddae66fdcefce789897f6163",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_07_faint_table_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/07_faint_table_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/07_faint_table_clean.npy\", \"input_sha256\": \"ebb2db72c7c952f43005caeffc69accb30c8e07eddae66fdcefce789897f6163\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.5025989560235757,
+    "sampled_peak_rss_bytes": 100577280,
+    "fixture": "faint_table",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_native_08_blue_shadow",
+    "ssim": 0.8692512512207031,
+    "metric_seconds": 0.2335587419802323,
+    "peak_rss_bytes": 191561728,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/08_blue_shadow_gt.png",
+    "reference_sha256": "c7741e49db89869cc67fab6a32b71ca2349ee33dace20590ece8b495d7e4d89d",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/08_blue_shadow.npy",
+    "input_sha256": "ae97d9efe19f5c9262c47c9eefce17c58349731f15040da4979b2651dac3a2d1",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_08_blue_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/08_blue_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/08_blue_shadow.npy\", \"input_sha256\": \"ae97d9efe19f5c9262c47c9eefce17c58349731f15040da4979b2651dac3a2d1\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.702861898986157,
+    "sampled_peak_rss_bytes": 191631360,
+    "fixture": "blue",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_native_09_blue_clean",
+    "ssim": 0.8799389004707336,
+    "metric_seconds": 0.2265225930023007,
+    "peak_rss_bytes": 191623168,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/09_blue_clean_gt.png",
+    "reference_sha256": "c7741e49db89869cc67fab6a32b71ca2349ee33dace20590ece8b495d7e4d89d",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw/09_blue_clean.npy",
+    "input_sha256": "b8cd4186d02c19772dae1cfd3fcfe25fff786eaf4a92dcbb351754c3071cc2cb",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_native_09_blue_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/09_blue_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw/09_blue_clean.npy\", \"input_sha256\": \"b8cd4186d02c19772dae1cfd3fcfe25fff786eaf4a92dcbb351754c3071cc2cb\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.6029174950090237,
+    "sampled_peak_rss_bytes": 191672320,
+    "fixture": "blue",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_512_00_mixed_shadow",
+    "ssim": 0.9878712296485901,
+    "metric_seconds": 0.050348685996141285,
+    "peak_rss_bytes": 86974464,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/00_mixed_shadow_gt.png",
+    "reference_sha256": "508ac913e4c2de30974efb058bb4f5d059dee391600f52bc1e90635aec090992",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/00_mixed_shadow.npy",
+    "input_sha256": "fc59c5370f0f5be42c10a83618eeabc25f3160465314ff3aeeb245c42e896e4c",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_00_mixed_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/00_mixed_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/00_mixed_shadow.npy\", \"input_sha256\": \"fc59c5370f0f5be42c10a83618eeabc25f3160465314ff3aeeb245c42e896e4c\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.40182602699496783,
+    "sampled_peak_rss_bytes": 77012992,
+    "fixture": "mixed",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_512_01_mixed_clean",
+    "ssim": 0.9933815598487854,
+    "metric_seconds": 0.04796719300793484,
+    "peak_rss_bytes": 86724608,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/01_mixed_clean_gt.png",
+    "reference_sha256": "508ac913e4c2de30974efb058bb4f5d059dee391600f52bc1e90635aec090992",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/01_mixed_clean.npy",
+    "input_sha256": "36284f695a214d8d9dd2fe7318859dc438ba09a5135a76ddd06d4e8346ad36a8",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_01_mixed_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/01_mixed_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/01_mixed_clean.npy\", \"input_sha256\": \"36284f695a214d8d9dd2fe7318859dc438ba09a5135a76ddd06d4e8346ad36a8\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.40181034497800283,
+    "sampled_peak_rss_bytes": 78925824,
+    "fixture": "mixed",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_512_02_table_shadow",
+    "ssim": 0.9603099822998047,
+    "metric_seconds": 0.05545235497993417,
+    "peak_rss_bytes": 86786048,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/02_table_shadow_gt.png",
+    "reference_sha256": "09fcf805dd44b5a54f239f337a605cece10e42d73a68956813aa598add835d3d",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/02_table_shadow.npy",
+    "input_sha256": "5ab9c585791b2a1a83819e73f2d73bed3c377140a160eedd63868229eaa639ec",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_02_table_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/02_table_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/02_table_shadow.npy\", \"input_sha256\": \"5ab9c585791b2a1a83819e73f2d73bed3c377140a160eedd63868229eaa639ec\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5022869310050737,
+    "sampled_peak_rss_bytes": 69574656,
+    "fixture": "table",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_512_03_table_clean",
+    "ssim": 0.9650714993476868,
+    "metric_seconds": 0.05149530997732654,
+    "peak_rss_bytes": 86544384,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/03_table_clean_gt.png",
+    "reference_sha256": "09fcf805dd44b5a54f239f337a605cece10e42d73a68956813aa598add835d3d",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/03_table_clean.npy",
+    "input_sha256": "abd715c952a513a9bfa988183e2ce740c982deb56645f4a1ee90cb7962a5274c",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_03_table_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/03_table_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/03_table_clean.npy\", \"input_sha256\": \"abd715c952a513a9bfa988183e2ce740c982deb56645f4a1ee90cb7962a5274c\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5021973979892209,
+    "sampled_peak_rss_bytes": 69115904,
+    "fixture": "table",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_512_04_faint_mixed_shadow",
+    "ssim": 0.990452229976654,
+    "metric_seconds": 0.0475087369850371,
+    "peak_rss_bytes": 86962176,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/04_faint_mixed_shadow_gt.png",
+    "reference_sha256": "591e1caf078c7e1d6ac2917e91d59d9c1c40e3b2155137b6f775d621f9300336",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/04_faint_mixed_shadow.npy",
+    "input_sha256": "2b31fcce61ceba754c3d01f7c2077c1d62c9851f4bb7f0792c30af819fc02d65",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_04_faint_mixed_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/04_faint_mixed_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/04_faint_mixed_shadow.npy\", \"input_sha256\": \"2b31fcce61ceba754c3d01f7c2077c1d62c9851f4bb7f0792c30af819fc02d65\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.4018160770065151,
+    "sampled_peak_rss_bytes": 63455232,
+    "fixture": "faint_mixed",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_512_05_faint_mixed_clean",
+    "ssim": 0.9967606663703918,
+    "metric_seconds": 0.049332208989653736,
+    "peak_rss_bytes": 86609920,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/05_faint_mixed_clean_gt.png",
+    "reference_sha256": "591e1caf078c7e1d6ac2917e91d59d9c1c40e3b2155137b6f775d621f9300336",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/05_faint_mixed_clean.npy",
+    "input_sha256": "ef5da4b7b98469368420d6064cd3ed7c6a581f86cdc5ae629d74d9499ec19980",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_05_faint_mixed_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/05_faint_mixed_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/05_faint_mixed_clean.npy\", \"input_sha256\": \"ef5da4b7b98469368420d6064cd3ed7c6a581f86cdc5ae629d74d9499ec19980\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.401744365983177,
+    "sampled_peak_rss_bytes": 83673088,
+    "fixture": "faint_mixed",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_512_06_faint_table_shadow",
+    "ssim": 0.9855148792266846,
+    "metric_seconds": 0.049474247003672644,
+    "peak_rss_bytes": 86978560,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/06_faint_table_shadow_gt.png",
+    "reference_sha256": "b21b382cadcdd4955d436e7e5d075e18e1f80f681253901993494fc4ce957423",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/06_faint_table_shadow.npy",
+    "input_sha256": "676158f9b8f2c3832e86f5eb1caf85af2e1d0a58997bedfcc756cad675a8e6fd",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_06_faint_table_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/06_faint_table_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/06_faint_table_shadow.npy\", \"input_sha256\": \"676158f9b8f2c3832e86f5eb1caf85af2e1d0a58997bedfcc756cad675a8e6fd\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.4026595049945172,
+    "sampled_peak_rss_bytes": 78454784,
+    "fixture": "faint_table",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_512_07_faint_table_clean",
+    "ssim": 0.9905888438224792,
+    "metric_seconds": 0.05263747100252658,
+    "peak_rss_bytes": 86659072,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/07_faint_table_clean_gt.png",
+    "reference_sha256": "b21b382cadcdd4955d436e7e5d075e18e1f80f681253901993494fc4ce957423",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/07_faint_table_clean.npy",
+    "input_sha256": "dcf3bd5f48cd54e946b00506146e52bb5756bd4c952839090c308d36f9670bb0",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_07_faint_table_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/07_faint_table_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/07_faint_table_clean.npy\", \"input_sha256\": \"dcf3bd5f48cd54e946b00506146e52bb5756bd4c952839090c308d36f9670bb0\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.5028304290026426,
+    "sampled_peak_rss_bytes": 69361664,
+    "fixture": "faint_table",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_512_08_blue_shadow",
+    "ssim": 0.7878947257995605,
+    "metric_seconds": 0.0458963529963512,
+    "peak_rss_bytes": 86953984,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/08_blue_shadow_gt.png",
+    "reference_sha256": "d950fa6fa9a575f8b6aca24c175f924a8cf0c51794135c5f5b01b383bbe31a12",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/08_blue_shadow.npy",
+    "input_sha256": "dc74974b81b6cd18a40a60f9269527f30ec5334620b1971ab32c9812de9f3f95",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_08_blue_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/08_blue_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/08_blue_shadow.npy\", \"input_sha256\": \"dc74974b81b6cd18a40a60f9269527f30ec5334620b1971ab32c9812de9f3f95\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.40182646000175737,
+    "sampled_peak_rss_bytes": 73760768,
+    "fixture": "blue",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_512_09_blue_clean",
+    "ssim": 0.7849986553192139,
+    "metric_seconds": 0.05423743501887657,
+    "peak_rss_bytes": 86872064,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/09_blue_clean_gt.png",
+    "reference_sha256": "d950fa6fa9a575f8b6aca24c175f924a8cf0c51794135c5f5b01b383bbe31a12",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/09_blue_clean.npy",
+    "input_sha256": "b10104d39e3d92ebff5139d711cf9c0645b7a75872dd9e5f58eb64bbae1bc6eb",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_09_blue_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/09_blue_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/09_blue_clean.npy\", \"input_sha256\": \"b10104d39e3d92ebff5139d711cf9c0645b7a75872dd9e5f58eb64bbae1bc6eb\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.502219440008048,
+    "sampled_peak_rss_bytes": 69562368,
+    "fixture": "blue",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_512_10_peach_shadow",
+    "ssim": 0.8275644183158875,
+    "metric_seconds": 0.048983751999912784,
+    "peak_rss_bytes": 86913024,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/10_peach_shadow_gt.png",
+    "reference_sha256": "75bd2c9ab994d00d6db3cdbacaa892e3ef556e3d7db6e7502b37906921fffe0e",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/10_peach_shadow.npy",
+    "input_sha256": "e2ffc6f67bf7190467d7bfdfd4b922e0d186eee22244e119daa22593bc6f74c8",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_10_peach_shadow\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/10_peach_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/10_peach_shadow.npy\", \"input_sha256\": \"e2ffc6f67bf7190467d7bfdfd4b922e0d186eee22244e119daa22593bc6f74c8\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.40191803898778744,
+    "sampled_peak_rss_bytes": 75481088,
+    "fixture": "peach",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "ssim_512_11_peach_clean",
+    "ssim": 0.8455848693847656,
+    "metric_seconds": 0.05303053598618135,
+    "peak_rss_bytes": 86679552,
+    "shape": [
+      512,
+      512,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/run512/result/11_peach_clean_gt.png",
+    "reference_sha256": "75bd2c9ab994d00d6db3cdbacaa892e3ef556e3d7db6e7502b37906921fffe0e",
+    "input": "/tmp/scanner-fsenet-cpu-v060/raw512/11_peach_clean.npy",
+    "input_sha256": "48da00e0165531a3864c6758d2da9a37c07ac6db536e918bb8f0b566b56834c5",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_512_11_peach_clean\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/run512/result/11_peach_clean_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/raw512/11_peach_clean.npy\", \"input_sha256\": \"48da00e0165531a3864c6758d2da9a37c07ac6db536e918bb8f0b566b56834c5\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.40197382000042126,
+    "sampled_peak_rss_bytes": 66445312,
+    "fixture": "peach",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "ssim_reference_selfcheck",
+    "ssim": 1.0,
+    "metric_seconds": 0.08868499798700213,
+    "peak_rss_bytes": 118157312,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-fsenet-cpu-v060/result/00_mixed_shadow_gt.png",
+    "reference_sha256": "f94a23e23e5af099925e2a7964b87c5a5e06fb69c1be2fd268251a91f87ff07f",
+    "input": "/tmp/scanner-fsenet-cpu-v060/result/00_mixed_shadow_gt.png",
+    "input_sha256": "f94a23e23e5af099925e2a7964b87c5a5e06fb69c1be2fd268251a91f87ff07f",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-fsenet-cpu-v060/ssim/metric.py",
+      "{\"id\": \"ssim_reference_selfcheck\", \"reference\": \"/tmp/scanner-fsenet-cpu-v060/result/00_mixed_shadow_gt.png\", \"input\": \"/tmp/scanner-fsenet-cpu-v060/result/00_mixed_shadow_gt.png\", \"input_sha256\": \"f94a23e23e5af099925e2a7964b87c5a5e06fb69c1be2fd268251a91f87ff07f\", \"arm\": \"reference\", \"source_kind\": \"selfcheck\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.502127636980731,
+    "sampled_peak_rss_bytes": 95858688,
+    "fixture": "mixed",
+    "arm": "reference",
+    "source_kind": "selfcheck"
+  }
+]

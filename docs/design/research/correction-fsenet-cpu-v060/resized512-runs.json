@@ -1,0 +1,446 @@
+[
+  {
+    "id": "00_mixed_shadow",
+    "source_id": "mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "source_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "00_mixed_shadow.png",
+    "status": "measured",
+    "forward_seconds": 1.0135464319901075,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.5278675556182861,
+      1.383594274520874
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/00_mixed_shadow.npy",
+    "raw_output_sha256": "fc59c5370f0f5be42c10a83618eeabc25f3160465314ff3aeeb245c42e896e4c",
+    "parent_peak_rss_bytes": 777990144,
+    "device": "cpu"
+  },
+  {
+    "id": "01_mixed_clean",
+    "source_id": "mixed_clean",
+    "source_kind": "clean",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "01_mixed_clean.png",
+    "status": "measured",
+    "forward_seconds": 0.649698975001229,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.5884287357330322,
+      1.5020368099212646
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/01_mixed_clean.npy",
+    "raw_output_sha256": "36284f695a214d8d9dd2fe7318859dc438ba09a5135a76ddd06d4e8346ad36a8",
+    "parent_peak_rss_bytes": 827375616,
+    "device": "cpu"
+  },
+  {
+    "id": "02_table_shadow",
+    "source_id": "table_shadow",
+    "source_kind": "shadow",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/shadow/table.png",
+    "source_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "02_table_shadow.png",
+    "status": "measured",
+    "forward_seconds": 0.6378236900200136,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.4458087682723999,
+      1.18198823928833
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/02_table_shadow.npy",
+    "raw_output_sha256": "5ab9c585791b2a1a83819e73f2d73bed3c377140a160eedd63868229eaa639ec",
+    "parent_peak_rss_bytes": 832872448,
+    "device": "cpu"
+  },
+  {
+    "id": "03_table_clean",
+    "source_id": "table_clean",
+    "source_kind": "clean",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/clean/table.png",
+    "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "03_table_clean.png",
+    "status": "measured",
+    "forward_seconds": 0.6142850169853773,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.5088870525360107,
+      1.2886857986450195
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/03_table_clean.npy",
+    "raw_output_sha256": "abd715c952a513a9bfa988183e2ce740c982deb56645f4a1ee90cb7962a5274c",
+    "parent_peak_rss_bytes": 832872448,
+    "device": "cpu"
+  },
+  {
+    "id": "04_faint_mixed_shadow",
+    "source_id": "faint_mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "source_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "04_faint_mixed_shadow.png",
+    "status": "measured",
+    "forward_seconds": 0.6331304860068485,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.5130526423454285,
+      0.9372769594192505
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/04_faint_mixed_shadow.npy",
+    "raw_output_sha256": "2b31fcce61ceba754c3d01f7c2077c1d62c9851f4bb7f0792c30af819fc02d65",
+    "parent_peak_rss_bytes": 832921600,
+    "device": "cpu"
+  },
+  {
+    "id": "05_faint_mixed_clean",
+    "source_id": "faint_mixed_clean",
+    "source_kind": "clean",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "source_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "05_faint_mixed_clean.png",
+    "status": "measured",
+    "forward_seconds": 0.6421651990094688,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.5497130155563354,
+      1.017359733581543
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/05_faint_mixed_clean.npy",
+    "raw_output_sha256": "ef5da4b7b98469368420d6064cd3ed7c6a581f86cdc5ae629d74d9499ec19980",
+    "parent_peak_rss_bytes": 832921600,
+    "device": "cpu"
+  },
+  {
+    "id": "06_faint_table_shadow",
+    "source_id": "faint_table_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "source_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "06_faint_table_shadow.png",
+    "status": "measured",
+    "forward_seconds": 0.5910353349754587,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.5068270564079285,
+      0.9435638785362244
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/06_faint_table_shadow.npy",
+    "raw_output_sha256": "676158f9b8f2c3832e86f5eb1caf85af2e1d0a58997bedfcc756cad675a8e6fd",
+    "parent_peak_rss_bytes": 834891776,
+    "device": "cpu"
+  },
+  {
+    "id": "07_faint_table_clean",
+    "source_id": "faint_table_clean",
+    "source_kind": "clean",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "source_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "07_faint_table_clean.png",
+    "status": "measured",
+    "forward_seconds": 0.6367484130023513,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.5471750497817993,
+      1.0368870496749878
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/07_faint_table_clean.npy",
+    "raw_output_sha256": "dcf3bd5f48cd54e946b00506146e52bb5756bd4c952839090c308d36f9670bb0",
+    "parent_peak_rss_bytes": 834891776,
+    "device": "cpu"
+  },
+  {
+    "id": "08_blue_shadow",
+    "source_id": "blue_shadow",
+    "source_kind": "shadow",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "source_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "08_blue_shadow.png",
+    "status": "measured",
+    "forward_seconds": 0.5918133319937624,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.2284393012523651,
+      1.1436805725097656
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/08_blue_shadow.npy",
+    "raw_output_sha256": "dc74974b81b6cd18a40a60f9269527f30ec5334620b1971ab32c9812de9f3f95",
+    "parent_peak_rss_bytes": 834891776,
+    "device": "cpu"
+  },
+  {
+    "id": "09_blue_clean",
+    "source_id": "blue_clean",
+    "source_kind": "clean",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/clean/blue.png",
+    "source_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "09_blue_clean.png",
+    "status": "measured",
+    "forward_seconds": 0.669747248000931,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.24166902899742126,
+      1.1354948282241821
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/09_blue_clean.npy",
+    "raw_output_sha256": "b10104d39e3d92ebff5139d711cf9c0645b7a75872dd9e5f58eb64bbae1bc6eb",
+    "parent_peak_rss_bytes": 834891776,
+    "device": "cpu"
+  },
+  {
+    "id": "10_peach_shadow",
+    "source_id": "peach_shadow",
+    "source_kind": "shadow",
+    "fixture": "peach",
+    "source": "/tmp/scanner-v060-paired/shadow/peach.png",
+    "source_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "size": [
+      1024,
+      1536
+    ],
+    "filename": "10_peach_shadow.png",
+    "status": "measured",
+    "forward_seconds": 0.6021979340002872,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.2767491936683655,
+      1.2766809463500977
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/10_peach_shadow.npy",
+    "raw_output_sha256": "e2ffc6f67bf7190467d7bfdfd4b922e0d186eee22244e119daa22593bc6f74c8",
+    "parent_peak_rss_bytes": 834891776,
+    "device": "cpu"
+  },
+  {
+    "id": "11_peach_clean",
+    "source_id": "peach_clean",
+    "source_kind": "clean",
+    "fixture": "peach",
+    "source": "/tmp/scanner-v060-paired/clean/peach.png",
+    "source_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "size": [
+      1024,
+      1536
+    ],
+    "filename": "11_peach_clean.png",
+    "status": "measured",
+    "forward_seconds": 0.6313961350242607,
+    "input_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.24545691907405853,
+      1.3278136253356934
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw512/11_peach_clean.npy",
+    "raw_output_sha256": "48da00e0165531a3864c6758d2da9a37c07ac6db536e918bb8f0b566b56834c5",
+    "parent_peak_rss_bytes": 834891776,
+    "device": "cpu"
+  }
+]

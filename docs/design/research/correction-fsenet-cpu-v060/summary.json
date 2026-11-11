@@ -1,0 +1,620 @@
+{
+  "format": "scanner-current-fsenet-cpu-evaluation",
+  "date": "2026-11-11",
+  "status": "measured-cpu-fork-fail",
+  "model": "CURRENT official FSENet SD7K checkpoint; private CPU portability fork, NOT unmodified official runtime",
+  "official_baseline_revision": "b9395ed333c916051d7ae58be212ac62119b61f5",
+  "private_patch_commit": "efe9400c72e09ab8fa0d67bf2b248f4edad9adde",
+  "patch_line_count": 1,
+  "architecture_source_unchanged": true,
+  "model_sha256": "6a514e34cf2d3aff12eebd0c4f7b04466f47c1c0c41019d81091cc4d2defdc56",
+  "model_bytes": 117980483,
+  "safe_load_status": "weights_only CPU pass,991state entries; unchanged official strict state_dict load pass29,398,130parameters",
+  "native_forward_successes": 10,
+  "native_planned_cases": 12,
+  "native_final_status": "aggregate-PSS-limit after10captured/saved predictions; exact internal metric/nextcase stage not instrumented",
+  "native_missing_ids": [
+    "peach_shadow",
+    "peach_clean"
+  ],
+  "native_sampled_parent_peak_rss_bytes": 1643376640,
+  "native_sampled_aggregate_peak_pss_bytes": 2180001792,
+  "native_pss_cap_bytes": 2147483648,
+  "resized512_forward_successes": 12,
+  "resized512_total_cases": 12,
+  "resized512_final_status": "complete",
+  "resized512_sampled_parent_peak_rss_bytes": 814211072,
+  "resized512_sampled_aggregate_peak_pss_bytes": 1147172864,
+  "new_model_forward_count": 22,
+  "native_forward_seconds_range": [
+    1.8081518590042833,
+    6.091463675023988
+  ],
+  "resized512_forward_seconds_range": [
+    0.5910353349754587,
+    1.0135464319901075
+  ],
+  "official_resized512_aggregate_metrics": {
+    "psnr_db": 21.575883865356445,
+    "ssim_torchmetrics": 0.9296548962593079,
+    "rmse_255": 23.936424255371094,
+    "mean_forward_seconds": 0.6636378963788351
+  },
+  "quality": {
+    "native": {
+      "shadow_cases": 5,
+      "shadow_psnr_improvement_passes": 0,
+      "clean_cases": 5,
+      "clean_channel_mae_passes": 0,
+      "clean_standard_ssim_passes": 0
+    },
+    "512": {
+      "shadow_cases": 6,
+      "shadow_psnr_improvement_passes": 4,
+      "clean_cases": 6,
+      "clean_channel_mae_passes": 0,
+      "clean_standard_ssim_passes": 3
+    }
+  },
+  "standard_ssim_cases": 23,
+  "matched_native_input_tensors": 10,
+  "matched_native_cpu_output_allclose_passes": 4,
+  "matched_native_cpu_output_comparisons": 10,
+  "cpu_output_comparison_rtol": 0.0001,
+  "cpu_output_comparison_atol": 1e-05,
+  "cpu_output_max_abs_diff": 5.8531761169433594e-05,
+  "cpu_output_comparison_scope": "exact matched native RGB tensors; no artifact-lineage or CUDA parity conclusion.512excluded due different preprocess.",
+  "source_builds": 0,
+  "cuda_or_gpu_changes": false,
+  "product_dependency_changes": false,
+  "apply_eligible": false,
+  "full_ILL01_complete": false,
+  "full_ILL02_complete": false,
+  "missing_original_criteria": [
+    "Original digits/thin-lines/seal preservation and owner evidence not supplied by global PSNR/SSIM",
+    "CPU fork versus official CUDA parity unmeasured",
+    "Native complete corpus resource gate failed; model/content/product qualification not proven"
+  ],
+  "evidence_files": [
+    {
+      "file": "acquire.py",
+      "bytes": 2560,
+      "sha256": "e549cc8cbd2a300db5aaf9e36cf89376d6462db4370a2995943eb26a50fc2e3b"
+    },
+    {
+      "file": "acquisition.log",
+      "bytes": 326,
+      "sha256": "69b26820ac6416e9688c5b21a697efe55a36846cc87e832243f71f87fd18c2b2"
+    },
+    {
+      "file": "bounded.py",
+      "bytes": 1214,
+      "sha256": "9bceca389ae4336a109202e9c1b1072640a1012c701217226593b9e8647da47b"
+    },
+    {
+      "file": "bounded_corpus.py",
+      "bytes": 2219,
+      "sha256": "e3bf77811b13c8ca6231cab7565309106ba3eda8a7d31a81c6e8ab9ec99f4326"
+    },
+    {
+      "file": "bounded_corpus_512.py",
+      "bytes": 2244,
+      "sha256": "923f40653c263dce4e62a2e2aa5eac18a87330cad19840b8f6681d9bb4d1fe2c"
+    },
+    {
+      "file": "cases.json",
+      "bytes": 6173,
+      "sha256": "f622d7d87da6b5b3254096d3090368ca38d9b214045dc919fce4c3e8452a1ebb"
+    },
+    {
+      "file": "compare_native.py",
+      "bytes": 2423,
+      "sha256": "ba7ddacffbb47c081ebac60e39e469d2fa8e1fa104b0b84009567ff31d126d4d"
+    },
+    {
+      "file": "comparison.log",
+      "bytes": 5,
+      "sha256": "fe3d205d7028d2540e89fe25dadf5834ac29d9cd9e031da51dbbabba9139fa90"
+    },
+    {
+      "file": "cpu-loader.patch",
+      "bytes": 529,
+      "sha256": "03eb74c893db6284ab2f9b8123b3e4b965f6e997fb7dc244269d910b67e384b9"
+    },
+    {
+      "file": "dependency-resolution.json",
+      "bytes": 333807,
+      "sha256": "053e61b6e90abc401c7e2b8a0673b7e4e88bd04e5719b098be6e7aa31fa1c5ed"
+    },
+    {
+      "file": "dependency-resolution.log",
+      "bytes": 6967,
+      "sha256": "22d2eab17ea725f91ad0cd8bda1f1caef14365ef794fa0fe56b8d260955a717a"
+    },
+    {
+      "file": "fork-identity.json",
+      "bytes": 8069,
+      "sha256": "33b2391f48ac7c6a34cb8a2093ec12118869e07ed8e119c8638f1645244de9c4"
+    },
+    {
+      "file": "install-report.json",
+      "bytes": 332642,
+      "sha256": "320f035efd442664b65e0f60a75646622c0a124d032351aa2bd56435e31c330e"
+    },
+    {
+      "file": "install.log",
+      "bytes": 3495,
+      "sha256": "8a2aab42fcab6371bb53d67b8cffca0e549c7f7a557ede70a60a245e539bac8d"
+    },
+    {
+      "file": "matched-input-cpu-output-comparison.json",
+      "bytes": 7951,
+      "sha256": "ebb10dbef23cf19bcc8f786af21bbc591812c52d5a474e90a254cf2cd6625181"
+    },
+    {
+      "file": "model-acquisition.json",
+      "bytes": 368,
+      "sha256": "adde4555dd858cf152dcceb8c82a4e3aaf89c25ebe8c826c4f51d8e12712f722"
+    },
+    {
+      "file": "model_load.py",
+      "bytes": 1203,
+      "sha256": "6c84cf82eebb701a4eecc0dd68e774df020dee37af5d50ccdb924a67c6bd8788"
+    },
+    {
+      "file": "native-config.yml",
+      "bytes": 408,
+      "sha256": "e067e922557571d641b220c4de6489c73fb878937b83bf73e90b6eaae120cdf8"
+    },
+    {
+      "file": "native-runs.json",
+      "bytes": 10318,
+      "sha256": "ef8f0684e8ce606d6427f1fea7ffd939fd82e25370b4a100ecef30a8c2d82905"
+    },
+    {
+      "file": "official-infer-512-wrapper-original.json",
+      "bytes": 793,
+      "sha256": "bbd2e1ae9b031a7869d138b1f69db738bcc4d1b0b884c73f72a0de66a68af75c"
+    },
+    {
+      "file": "official-infer-512.json",
+      "bytes": 1040,
+      "sha256": "36c65e6e8dd0659f55017432f7726a73029b005f4119aa009cd4870cd184e11b"
+    },
+    {
+      "file": "official-infer-512.stderr.log",
+      "bytes": 1177,
+      "sha256": "2a80d6ff7343cb551ee59c03075a187fffd6ebbb115676648076e17665c73c5f"
+    },
+    {
+      "file": "official-infer-512.stdout.log",
+      "bytes": 851,
+      "sha256": "93e908b3ba66c4542cda539987adc8254e3d2669bbef9c120951ebefa8344245"
+    },
+    {
+      "file": "official-infer.json",
+      "bytes": 820,
+      "sha256": "5d8b1cfdaeea613b4e004883a86ffa9bfaa85eeac5e8dc2d0a4f6bdcc9398fb6"
+    },
+    {
+      "file": "official-infer.stderr.log",
+      "bytes": 906,
+      "sha256": "1f029c91663b1b8f01ce9cb59f39dc504c6497abfbcd6dff3a465a96b1ed0084"
+    },
+    {
+      "file": "official-infer.stdout.log",
+      "bytes": 605,
+      "sha256": "a70712fe3a814606b8437a5407ecc0b263680c377f2ddfbf8454d0f4de4884e1"
+    },
+    {
+      "file": "official-model-load-with-setuptools.json",
+      "bytes": 456,
+      "sha256": "c9b959378134c91ec567ccc777b0b9fac59b82c2310c0e7c400b3dce9220ad81"
+    },
+    {
+      "file": "official-model-load-with-setuptools.stderr.log",
+      "bytes": 362,
+      "sha256": "35f4f8591a3bfd1d48a4a80285564cad6d48e341c7fe1f95555ca04bf76bf387"
+    },
+    {
+      "file": "official-model-load-with-setuptools.stdout.log",
+      "bytes": 269,
+      "sha256": "4f25799ce501334657f2d619749d4e60403c98d75bfbf3a430bc6e88cfb7b14b"
+    },
+    {
+      "file": "official-model-load.json",
+      "bytes": 459,
+      "sha256": "0cdff462fa6610bf4537c3562641239b803a3196b666e26ea2710e26ecbe9e6d"
+    },
+    {
+      "file": "official-model-load.stderr.log",
+      "bytes": 1056,
+      "sha256": "836e52ab501ab2ef6b860ec2b9432f51c70a33e5b23ef416e9b748482338a360"
+    },
+    {
+      "file": "official-model-load.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "old-onnx-native-input-identities.json",
+      "bytes": 3314,
+      "sha256": "e779a9ad02e27fb7499393315e4312f987f80828304378881ef376652ac4c7e0"
+    },
+    {
+      "file": "old-preprocess.log",
+      "bytes": 246,
+      "sha256": "c1add0746ca6747960af3ec3e5be4b1a93d97bec780ad12a3719c9386d680b12"
+    },
+    {
+      "file": "old_input_identities.py",
+      "bytes": 803,
+      "sha256": "6588db23b969bd047ea51c3635e40a0977c3de169a73db075cb17015325f230e"
+    },
+    {
+      "file": "prepare_inputs.py",
+      "bytes": 1259,
+      "sha256": "1227f1e8d918da7ecb5c09123758413755f69ff108920e7e9a7fa6e012175af4"
+    },
+    {
+      "file": "quality-psnr-mae.json",
+      "bytes": 19178,
+      "sha256": "a82316bf9de878e7e445f7b005de5c827d7a612c1c4173965262b560aaaec06b"
+    },
+    {
+      "file": "quality.py",
+      "bytes": 2385,
+      "sha256": "cb62c51ebd3fbdf1fbd45b78c1ec0977eb1a34b1861e3f82e4e60a6f29613cd9"
+    },
+    {
+      "file": "release.json",
+      "bytes": 7174,
+      "sha256": "82b7c4cedb3e83e65d6e2021fe52676af360c601002f347e53f468f304799bb2"
+    },
+    {
+      "file": "report.md",
+      "bytes": 5334,
+      "sha256": "2d7563d3e860d4535dcecc144ec6f3225f8218debcd328941a713490f23ee345"
+    },
+    {
+      "file": "requirements.lock",
+      "bytes": 1750,
+      "sha256": "afe04a0b9e4dde2e787d7e3e389a010b98cb9291e623991282f1eeaf8a04ff26"
+    },
+    {
+      "file": "resized512-config.yml",
+      "bytes": 409,
+      "sha256": "f462ef23f35118189f4ea80cf76022c090f3306b5c932f19f46c219574687204"
+    },
+    {
+      "file": "resized512-runs.json",
+      "bytes": 12373,
+      "sha256": "e87f361d1c28972e70bab3c01559c28cd2872da4df3af2957dca0e82ab5c772f"
+    },
+    {
+      "file": "run_official.py",
+      "bytes": 1917,
+      "sha256": "c7f64de45c288fdb644650f64b8e6d5e6fc08f1f40e972ddf2e5bc99d2d10be2"
+    },
+    {
+      "file": "run_official_512.py",
+      "bytes": 1934,
+      "sha256": "44bcfb50d049a8015122ad2d6d5f68dd0ee31a52bd19470850c1f93c3dcccd01"
+    },
+    {
+      "file": "runs.json",
+      "bytes": 10318,
+      "sha256": "ef8f0684e8ce606d6427f1fea7ffd939fd82e25370b4a100ecef30a8c2d82905"
+    },
+    {
+      "file": "runtime-scope.json",
+      "bytes": 561,
+      "sha256": "83a7e89bef3943dfb0b2329cbf5d520cdf23e9320ca5b42ce325645333318f12"
+    },
+    {
+      "file": "safe-load.json",
+      "bytes": 456,
+      "sha256": "db1e50e740b9bcdf8401e92c81e1e0b3aacde40419229246fb9605b5a60b7366"
+    },
+    {
+      "file": "safe-load.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "safe-load.stdout.log",
+      "bytes": 861,
+      "sha256": "41dc5da5ce1bbe5ee936cf8547d1aa0ff3719dd77f84223a17a3a020780ebd7a"
+    },
+    {
+      "file": "safe_load.py",
+      "bytes": 1036,
+      "sha256": "28f2262bc1939e823aae474de53d9d3b01da5f44f9e81c43274f9c953ca89828"
+    },
+    {
+      "file": "setuptools-download.log",
+      "bytes": 581,
+      "sha256": "4629bd33cd4fe79518c91274ae29a58cbb03f2b47741d6ed4e8729db53f0cb62"
+    },
+    {
+      "file": "setuptools-identity.json",
+      "bytes": 484,
+      "sha256": "1467e5764ff449cd2d6dad34f8b8d311a39f66c5c3bacc7ce2c33caf79d8a05a"
+    },
+    {
+      "file": "setuptools-install.json",
+      "bytes": 8020,
+      "sha256": "0006253ad2a300fab0800184947987893a4c0cf8222108587fae85af7c540c3e"
+    },
+    {
+      "file": "setuptools-install.log",
+      "bytes": 519,
+      "sha256": "0e066a2cad5dd0e6b01be181a476a260caf8e8dcf9b0e12890a20412ea7ea3bf"
+    },
+    {
+      "file": "source-LICENSE",
+      "bytes": 1066,
+      "sha256": "8bc89f3f97bce52fc3f3446ef6ee29834c7b7724cf7f47341cf92aaa765eb151"
+    },
+    {
+      "file": "ssim-cases.json",
+      "bytes": 8449,
+      "sha256": "95804c5a6cb0863e606dc9f45c77c988fc02279316fc537d73e19195515f0730"
+    },
+    {
+      "file": "ssim-metric.py",
+      "bytes": 1451,
+      "sha256": "63fcae6457c8e08b64faece3e26002d99c48a7867dd284cf36ae3523e7875840"
+    },
+    {
+      "file": "ssim-run.py",
+      "bytes": 1392,
+      "sha256": "b068ef3852936c6617a245cee92f3565f8b5f4b7239675c2334d42d98bdd9286"
+    },
+    {
+      "file": "ssim-runs.json",
+      "bytes": 33528,
+      "sha256": "3300d63737dc097cbf9132d42b11790f11af3b240671a7e1a1383cb8349de7a2"
+    },
+    {
+      "file": "ssim.log",
+      "bytes": 1059,
+      "sha256": "bb76a4538a347ea2e36971021921845f0319b823d101880bbba113258f80463e"
+    },
+    {
+      "file": "ssim_512_00_mixed_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_00_mixed_shadow.stdout.json",
+      "bytes": 670,
+      "sha256": "bc826f4405a38dc9940b8b45884b4215e8caff4902de2921ab5baaa3d43ce11b"
+    },
+    {
+      "file": "ssim_512_01_mixed_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_01_mixed_clean.stdout.json",
+      "bytes": 666,
+      "sha256": "afa543c21bb53a87434c715fd020bfbedd1a265df9f2051b2bda945b63202567"
+    },
+    {
+      "file": "ssim_512_02_table_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_02_table_shadow.stdout.json",
+      "bytes": 669,
+      "sha256": "71b33ff18f32bf45fbeb8f8bc905809d00bc3747ab0e5c3b3e4c69cf6d63c762"
+    },
+    {
+      "file": "ssim_512_03_table_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_03_table_clean.stdout.json",
+      "bytes": 666,
+      "sha256": "3c546db825c8e38a627d23be408f27a5785f95eff1d9c78a52f4d6e50195fa1b"
+    },
+    {
+      "file": "ssim_512_04_faint_mixed_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_04_faint_mixed_shadow.stdout.json",
+      "bytes": 685,
+      "sha256": "68f4d40f3e7e64e0fe9013f9de8a097837216db6dc02958e1f7f880d6057227e"
+    },
+    {
+      "file": "ssim_512_05_faint_mixed_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_05_faint_mixed_clean.stdout.json",
+      "bytes": 685,
+      "sha256": "7098329c81c2c3adb1b751caa27058c7e65d5bce771c8c43598784b423ab88db"
+    },
+    {
+      "file": "ssim_512_06_faint_table_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_06_faint_table_shadow.stdout.json",
+      "bytes": 688,
+      "sha256": "632859e7e5ded1e170c21afa08bd2299c9a60b87cdc626759fad620791f574dc"
+    },
+    {
+      "file": "ssim_512_07_faint_table_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_07_faint_table_clean.stdout.json",
+      "bytes": 684,
+      "sha256": "cf2ca2731d0b13935385a4bfdb04ac1f8f501309c4d566c51aea68d1dca4a891"
+    },
+    {
+      "file": "ssim_512_08_blue_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_08_blue_shadow.stdout.json",
+      "bytes": 665,
+      "sha256": "55b048467fc4efc5c4e03bdd809af70d2e1dede649c2190a4b5240eaa433f7cd"
+    },
+    {
+      "file": "ssim_512_09_blue_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_09_blue_clean.stdout.json",
+      "bytes": 663,
+      "sha256": "347041d510a9f56b31dbd82c1efcf2b777bc28bbdeb84671d59a36195a21bf6b"
+    },
+    {
+      "file": "ssim_512_10_peach_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_10_peach_shadow.stdout.json",
+      "bytes": 670,
+      "sha256": "3a125de431ba5f9c440e4d4c13f5518bbd458ea8df1cc7ea34be0dd3a951f488"
+    },
+    {
+      "file": "ssim_512_11_peach_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_512_11_peach_clean.stdout.json",
+      "bytes": 666,
+      "sha256": "7b4986bc06d23e23394b7452f433cfe9f6030617fa14c9c8fdf9223221b26e9e"
+    },
+    {
+      "file": "ssim_native_00_mixed_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_00_mixed_shadow.stdout.json",
+      "bytes": 663,
+      "sha256": "bf402ab2a333e343868fb97b4e87e9ea1e8b3036c6edc10a373ad64d555c014c"
+    },
+    {
+      "file": "ssim_native_01_mixed_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_01_mixed_clean.stdout.json",
+      "bytes": 660,
+      "sha256": "72cc101b2fa15f533542d62190820612492c6957b353493a5ce51c2a83c01799"
+    },
+    {
+      "file": "ssim_native_02_table_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_02_table_shadow.stdout.json",
+      "bytes": 663,
+      "sha256": "33cf127855a333926cc6c04615650ed9e36eb035fc2bbf888f7b5a602f750b42"
+    },
+    {
+      "file": "ssim_native_03_table_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_03_table_clean.stdout.json",
+      "bytes": 660,
+      "sha256": "1537161404a387a518b932403b3ee84c6a3a268808abb6ba045c28617ac6b43c"
+    },
+    {
+      "file": "ssim_native_04_faint_mixed_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_04_faint_mixed_shadow.stdout.json",
+      "bytes": 681,
+      "sha256": "4a2ace9f100e5070568fbf6bf9abdd32f75e2a2711c37368f5d32e8a9e0d475b"
+    },
+    {
+      "file": "ssim_native_05_faint_mixed_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_05_faint_mixed_clean.stdout.json",
+      "bytes": 678,
+      "sha256": "811bb027c0815fb9a76f0e1ab3e6d49b1644c346da4515324ba682f9beacb92d"
+    },
+    {
+      "file": "ssim_native_06_faint_table_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_06_faint_table_shadow.stdout.json",
+      "bytes": 680,
+      "sha256": "0bd358b36a165b8d962c58ec137f1f654d7734755ebe88b6db987e2835cdbf77"
+    },
+    {
+      "file": "ssim_native_07_faint_table_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_07_faint_table_clean.stdout.json",
+      "bytes": 678,
+      "sha256": "de4a2ee9a81c508f40c4c6e160312e26142c46b9ade4da5205121ef60b4741cc"
+    },
+    {
+      "file": "ssim_native_08_blue_shadow.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_08_blue_shadow.stdout.json",
+      "bytes": 661,
+      "sha256": "b7da92e756d27c431ed7b4157531aa15be287e64a73ccc00341764d20a323235"
+    },
+    {
+      "file": "ssim_native_09_blue_clean.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_native_09_blue_clean.stdout.json",
+      "bytes": 658,
+      "sha256": "6772c0b06c590e5b9ab8f22976e7736e4a80bcc230fa3b575c18ea3661e583f6"
+    },
+    {
+      "file": "ssim_reference_selfcheck.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "ssim_reference_selfcheck.stdout.json",
+      "bytes": 651,
+      "sha256": "397ece63ebf83dfd131c323045ae6564fc4b1994840cde8cf624a469da404c01"
+    },
+    {
+      "file": "wheel-identities.json",
+      "bytes": 8454,
+      "sha256": "6f0cb79b9e8a9773e721e8f98c934bdb612413a8ff9c3fb3cb8d395cf309466b"
+    }
+  ]
+}

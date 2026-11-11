@@ -1,0 +1,372 @@
+[
+  {
+    "id": "00_mixed_shadow",
+    "source_id": "mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "source_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "00_mixed_shadow.png",
+    "status": "measured",
+    "forward_seconds": 2.2457024730101693,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.4740287661552429,
+      1.2897151708602905
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/00_mixed_shadow.npy",
+    "raw_output_sha256": "f3222fb4fbd00c647b0c1a84c9f2e5c5fb5eb300a834c9283716ce7aea3a54cd",
+    "parent_peak_rss_bytes": 938622976,
+    "device": "cpu"
+  },
+  {
+    "id": "01_mixed_clean",
+    "source_id": "mixed_clean",
+    "source_kind": "clean",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "01_mixed_clean.png",
+    "status": "measured",
+    "forward_seconds": 1.9987051440111827,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.5411235094070435,
+      1.3781232833862305
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/01_mixed_clean.npy",
+    "raw_output_sha256": "0db961624a911c6cb453a2c98ff44afccc3cf5bb4a9abf9bfd402bd02bfb01f8",
+    "parent_peak_rss_bytes": 1058631680,
+    "device": "cpu"
+  },
+  {
+    "id": "02_table_shadow",
+    "source_id": "table_shadow",
+    "source_kind": "shadow",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/shadow/table.png",
+    "source_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "02_table_shadow.png",
+    "status": "measured",
+    "forward_seconds": 1.9012122600106522,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.812296986579895,
+      1.5516811609268188
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/02_table_shadow.npy",
+    "raw_output_sha256": "b3cde2075fd539277ceb5d829e96b88da12815abb5a24638660607abf0320d73",
+    "parent_peak_rss_bytes": 1073668096,
+    "device": "cpu"
+  },
+  {
+    "id": "03_table_clean",
+    "source_id": "table_clean",
+    "source_kind": "clean",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/clean/table.png",
+    "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "03_table_clean.png",
+    "status": "measured",
+    "forward_seconds": 1.8211031359969638,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      -0.8980618119239807,
+      1.6839854717254639
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/03_table_clean.npy",
+    "raw_output_sha256": "247ed313e0304983d87247517a6e9a01d849df2da4882549f70979187c79ab0a",
+    "parent_peak_rss_bytes": 1076232192,
+    "device": "cpu"
+  },
+  {
+    "id": "04_faint_mixed_shadow",
+    "source_id": "faint_mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "source_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "04_faint_mixed_shadow.png",
+    "status": "measured",
+    "forward_seconds": 1.8081518590042833,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.5024040937423706,
+      0.9632964134216309
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/04_faint_mixed_shadow.npy",
+    "raw_output_sha256": "fa60db3b6ead863c30a556abefc9acb34af750671c7ab36dcbbc84cdf9ca4654",
+    "parent_peak_rss_bytes": 1076318208,
+    "device": "cpu"
+  },
+  {
+    "id": "05_faint_mixed_clean",
+    "source_id": "faint_mixed_clean",
+    "source_kind": "clean",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "source_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "05_faint_mixed_clean.png",
+    "status": "measured",
+    "forward_seconds": 1.8855484470259398,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.5260818600654602,
+      1.0184729099273682
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/05_faint_mixed_clean.npy",
+    "raw_output_sha256": "dcb0e58cfd358243b9dc6e72dd416bf3999c1524dff79e3db5424878127be88c",
+    "parent_peak_rss_bytes": 1076318208,
+    "device": "cpu"
+  },
+  {
+    "id": "06_faint_table_shadow",
+    "source_id": "faint_table_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "source_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "06_faint_table_shadow.png",
+    "status": "measured",
+    "forward_seconds": 1.9123411629989278,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.4580863416194916,
+      0.9639827609062195
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/06_faint_table_shadow.npy",
+    "raw_output_sha256": "858cb8fb9fda4e4c0e6b9028b59694faf81e91bbfec406d64e46aa192b95890b",
+    "parent_peak_rss_bytes": 1076318208,
+    "device": "cpu"
+  },
+  {
+    "id": "07_faint_table_clean",
+    "source_id": "faint_table_clean",
+    "source_kind": "clean",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "source_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "07_faint_table_clean.png",
+    "status": "measured",
+    "forward_seconds": 1.9167553879960906,
+    "input_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_shape": [
+      1,
+      3,
+      700,
+      900
+    ],
+    "output_range": [
+      0.4923352897167206,
+      1.0323486328125
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/07_faint_table_clean.npy",
+    "raw_output_sha256": "ebb2db72c7c952f43005caeffc69accb30c8e07eddae66fdcefce789897f6163",
+    "parent_peak_rss_bytes": 1076318208,
+    "device": "cpu"
+  },
+  {
+    "id": "08_blue_shadow",
+    "source_id": "blue_shadow",
+    "source_kind": "shadow",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "source_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "08_blue_shadow.png",
+    "status": "measured",
+    "forward_seconds": 6.091463675023988,
+    "input_shape": [
+      1,
+      3,
+      1491,
+      1055
+    ],
+    "output_shape": [
+      1,
+      3,
+      1491,
+      1055
+    ],
+    "output_range": [
+      -0.22579023241996765,
+      1.3254401683807373
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/08_blue_shadow.npy",
+    "raw_output_sha256": "ae97d9efe19f5c9262c47c9eefce17c58349731f15040da4979b2651dac3a2d1",
+    "parent_peak_rss_bytes": 1385390080,
+    "device": "cpu"
+  },
+  {
+    "id": "09_blue_clean",
+    "source_id": "blue_clean",
+    "source_kind": "clean",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/clean/blue.png",
+    "source_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "09_blue_clean.png",
+    "status": "measured",
+    "forward_seconds": 5.856889962975401,
+    "input_shape": [
+      1,
+      3,
+      1491,
+      1055
+    ],
+    "output_shape": [
+      1,
+      3,
+      1491,
+      1055
+    ],
+    "output_range": [
+      -0.2385706901550293,
+      1.347198247909546
+    ],
+    "raw_output": "/tmp/scanner-fsenet-cpu-v060/raw/09_blue_clean.npy",
+    "raw_output_sha256": "b8cd4186d02c19772dae1cfd3fcfe25fff786eaf4a92dcbb351754c3071cc2cb",
+    "parent_peak_rss_bytes": 1610981376,
+    "device": "cpu"
+  }
+]

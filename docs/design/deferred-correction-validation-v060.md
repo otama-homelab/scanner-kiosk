@@ -176,3 +176,12 @@ FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい
 台帳の古いILL01/02一律rights-holder待ちと「照明推論なし」を訂正しhistorical_evidence_scopeを保持。現FSENetはCPUloader/storage.cuda(0)とartifact/safe-loading未解決、旧DocShadowは72uniqueforward/OCR/SSIMの評価済み不採用として分離。FairScanruntimeは解消済み、元実写真独立正解/photo2_2内容原因/厳密Androidparity/透視内容保持は残る。本人操作は別のPhase68checkpoint。次回は変化した独立正解または公式CPU対応artifact/loaderに対してのみ再開し、同じ不合格推論/SSIM/閾値の再試行はしない。
 
 正本検証: docs/design/research/correction-evaluation-status-v060/verification.md。今回新規推論/テスト/build/downloadなし、製品変更/公開/配備なし。
+
+
+## 2026-11-11 現FSENetのCPU portability fork実測
+
+反復する自律評価指示に沿い、無変更公式CPU経路の不存在を繰り返す代わりに計画上のsourcepatch全面禁止を限定改訂。公式pinnedsourceをprivate local Git forkとし、checkpoint読み込みのCUDA固定→cpu/weights_only=Trueだけ1行変更。モデル本体/前処理/推論source無変更、差分commitを保存。公式SD7K重み117980483B/hash固定、安全load991entries/strict model load29398130parameters成功。元公式CUDAと同じruntimeとの主張はしない。
+
+現モデル22completedforward: native10/12出力保存後にaggregatePSS2180001792B>2GiBでプロセス群停止（正確な内部停止stage不明、2件未完）。公式ORI=Falseの512経路は別runで12/12成功、forward0.591–1.014秒、parentRSS814MB/aggregatePSS1.147GBを区別。nativeは1.808–6.091秒。512影PSNR+1dB4/6、cleanMAE0/6/SSIM3/6、native影0/5/cleanMAE0/5/SSIM0/5で適用不可。旧ONNXと同一native入力tensor10件はhash一致、固定allclose4/10、最大差5.85e-5。配布lineage/CUDAparity証明ではない。
+
+証拠: docs/design/research/correction-fsenet-cpu-v060/report.md・summary.jsonの108件hash照合。台帳ILL02をmeasured-partialへ更新し「現FSENet推論なし」は過去の状態として明確化。ILL01はconversion出所/parity等の証拠待ち、ILL02は内容欠落/細線/印章と全体条件未完。元要件6/14を維持、製品変更/配備/公開なし。次の独立検証ではこのCPUfork追補を前回verificationより新しい証拠として読む。

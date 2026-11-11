@@ -1,0 +1,1 @@
+{"status": "official-model-load-pass", "parameters": 29398130, "construction_seconds": 0.20490723301190883, "load_seconds": 0.21816081600263715, "peak_rss_bytes": 725282816, "device": "cpu", "missing_extra_patches": false, "official_model_class": "models.model.Model"}

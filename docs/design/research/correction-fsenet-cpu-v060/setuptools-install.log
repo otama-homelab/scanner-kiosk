@@ -1,0 +1,8 @@
+Looking in links: /tmp/scanner-fsenet-cpu-v060/wheels
+Processing /tmp/scanner-fsenet-cpu-v060/wheels/setuptools-80.9.0-py3-none-any.whl
+Installing collected packages: setuptools
+  Attempting uninstall: setuptools
+    Found existing installation: setuptools 78.1.0
+    Not uninstalling setuptools at /tmp/scanner-v060/cpu-venv/lib/python3.12/site-packages, outside environment /tmp/scanner-fsenet-cpu-v060/venv
+    Can't uninstall 'setuptools'. No files were found to uninstall.
+Successfully installed setuptools-80.9.0

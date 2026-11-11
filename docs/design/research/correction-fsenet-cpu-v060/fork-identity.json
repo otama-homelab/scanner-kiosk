@@ -1,0 +1,197 @@
+{
+  "official_repository": "https://github.com/CXH-Research/DocShadow-SD7K",
+  "official_baseline_revision": "b9395ed333c916051d7ae58be212ac62119b61f5",
+  "private_fork": "/tmp/scanner-fsenet-cpu-v060/source",
+  "branch": "scanner-cpu-checkpoint-portability",
+  "patch_commit": "efe9400c72e09ab8fa0d67bf2b248f4edad9adde",
+  "changed_files": [
+    "utils/utils.py"
+  ],
+  "numstat": "1\t1\tutils/utils.py",
+  "single_change": "torch.load map_location CPU with weights_only=True; no architecture/forward/data/inference source changes",
+  "github_fork_or_push": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 3078,
+      "sha256": "5e2c671ddc9e301dafc241ad1a7c07aa85a91fef560a17721b41977b9eddba17",
+      "baseline_sha256": "5e2c671ddc9e301dafc241ad1a7c07aa85a91fef560a17721b41977b9eddba17",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1066,
+      "sha256": "8bc89f3f97bce52fc3f3446ef6ee29834c7b7724cf7f47341cf92aaa765eb151",
+      "baseline_sha256": "8bc89f3f97bce52fc3f3446ef6ee29834c7b7724cf7f47341cf92aaa765eb151",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "README.md",
+      "bytes": 5155,
+      "sha256": "acc02f60adc6119bbe6c879c81aa10b3af175a97c5009e721670d8fe8dbac7a2",
+      "baseline_sha256": "acc02f60adc6119bbe6c879c81aa10b3af175a97c5009e721670d8fe8dbac7a2",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "config.yml",
+      "bytes": 538,
+      "sha256": "2b2fd06bb219e03d90f88b20b55c2a1b9c980948481d85b15bd8c5ea6ad335fc",
+      "baseline_sha256": "2b2fd06bb219e03d90f88b20b55c2a1b9c980948481d85b15bd8c5ea6ad335fc",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "config/__init__.py",
+      "bytes": 27,
+      "sha256": "22eef9fb0f7f9e53e69c1fea280ee761a69a1dfef1b53ac398af0de2fd96577e",
+      "baseline_sha256": "22eef9fb0f7f9e53e69c1fea280ee761a69a1dfef1b53ac398af0de2fd96577e",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "config/config.py",
+      "bytes": 3499,
+      "sha256": "7107bb8b3fb6b701b60bab463d257189df899c04c339daffddb1e9868ff832a8",
+      "baseline_sha256": "7107bb8b3fb6b701b60bab463d257189df899c04c339daffddb1e9868ff832a8",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "data/__init__.py",
+      "bytes": 61,
+      "sha256": "0745b96c07c7806a805fb6d9d287d4e4748012a4063d4fd31340209432de9f88",
+      "baseline_sha256": "0745b96c07c7806a805fb6d9d287d4e4748012a4063d4fd31340209432de9f88",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "data/data_RGB.py",
+      "bytes": 328,
+      "sha256": "75a8e315210fb850f74725656035559884f561970bd3a8b924a2bf37922a0f15",
+      "baseline_sha256": "75a8e315210fb850f74725656035559884f561970bd3a8b924a2bf37922a0f15",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "data/dataset_RGB.py",
+      "bytes": 3748,
+      "sha256": "7e5f073fd6a27ae4880c88ee48ba3c33b9ba756675412ed0e3c17d358a305cdd",
+      "baseline_sha256": "7e5f073fd6a27ae4880c88ee48ba3c33b9ba756675412ed0e3c17d358a305cdd",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "infer.py",
+      "bytes": 2220,
+      "sha256": "166b281f7ad62e9fbbf3ea6a68262c24e85c3bb5984c66f4513f77cb144d3c45",
+      "baseline_sha256": "166b281f7ad62e9fbbf3ea6a68262c24e85c3bb5984c66f4513f77cb144d3c45",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "loss/__init__.py",
+      "bytes": 20,
+      "sha256": "001e3bfce97bdd3eabddf206ac68fdb7964c300252b627d1200f27091b0a9f4c",
+      "baseline_sha256": "001e3bfce97bdd3eabddf206ac68fdb7964c300252b627d1200f27091b0a9f4c",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "loss/loss.py",
+      "bytes": 32979,
+      "sha256": "be09c9b5d9dfbcc4f7f29191373a3022dcbb26595340936f4b761603531e2f99",
+      "baseline_sha256": "be09c9b5d9dfbcc4f7f29191373a3022dcbb26595340936f4b761603531e2f99",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "models/__init__.py",
+      "bytes": 24,
+      "sha256": "eac08274b2d9a819dfde2d2840bbf08bc80e6d802f656189a4d57da2450ac1af",
+      "baseline_sha256": "eac08274b2d9a819dfde2d2840bbf08bc80e6d802f656189a4d57da2450ac1af",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "models/backbone.py",
+      "bytes": 6365,
+      "sha256": "8f563be76310a99fb7c9b12c35b4fdb4209554e0ce085f5e7bdaee8584a23d38",
+      "baseline_sha256": "8f563be76310a99fb7c9b12c35b4fdb4209554e0ce085f5e7bdaee8584a23d38",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "models/blocks.py",
+      "bytes": 4090,
+      "sha256": "a124f907033390d835fb67c2f10229b627125121e5036012c0affda08ef7ef83",
+      "baseline_sha256": "a124f907033390d835fb67c2f10229b627125121e5036012c0affda08ef7ef83",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "models/blocks_.py",
+      "bytes": 4090,
+      "sha256": "a124f907033390d835fb67c2f10229b627125121e5036012c0affda08ef7ef83",
+      "baseline_sha256": "a124f907033390d835fb67c2f10229b627125121e5036012c0affda08ef7ef83",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "models/model.py",
+      "bytes": 19787,
+      "sha256": "4d26f7afa0e0963c5dd4ddf9a951424b9440ad5200a66da1cacce9d5a0e613cb",
+      "baseline_sha256": "4d26f7afa0e0963c5dd4ddf9a951424b9440ad5200a66da1cacce9d5a0e613cb",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "plot.py",
+      "bytes": 1102,
+      "sha256": "8af80a1b3bf384f8a1e1b6ad80a8b72db1586244330cd7bc5cb077d6abd83189",
+      "baseline_sha256": "8af80a1b3bf384f8a1e1b6ad80a8b72db1586244330cd7bc5cb077d6abd83189",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 311,
+      "sha256": "8f66b0462c08261716449e7d566e9c744554f83ed664d8d572889752f71874ef",
+      "baseline_sha256": "8f66b0462c08261716449e7d566e9c744554f83ed664d8d572889752f71874ef",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "single.py",
+      "bytes": 1628,
+      "sha256": "2fb784c183da511e143cdef68ed6e8433fdd8a1cfca4265492b842fe6a8f43dd",
+      "baseline_sha256": "2fb784c183da511e143cdef68ed6e8433fdd8a1cfca4265492b842fe6a8f43dd",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "teaser/Comparison.png",
+      "bytes": 44984,
+      "sha256": "647a38523d2674bb4b4ed91750df6909216bf7f781b5e95ab6272ccfb1307f4c",
+      "baseline_sha256": "647a38523d2674bb4b4ed91750df6909216bf7f781b5e95ab6272ccfb1307f4c",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "teaser/Dataset.png",
+      "bytes": 43098,
+      "sha256": "d745497b9981e94f32248d637bc61b9337c4d1c316d66699c40a7e74ce583f2f",
+      "baseline_sha256": "d745497b9981e94f32248d637bc61b9337c4d1c316d66699c40a7e74ce583f2f",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "teaser/High.png",
+      "bytes": 2707565,
+      "sha256": "ef51f6c7b936bc233c49a6985192da0779031c64c017bd5b218f947bea0d13ba",
+      "baseline_sha256": "ef51f6c7b936bc233c49a6985192da0779031c64c017bd5b218f947bea0d13ba",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "train.py",
+      "bytes": 4595,
+      "sha256": "6080f64e23fedbe53d7ce224902b3b6e4214a2435bc1f00ea1f34a47a128be46",
+      "baseline_sha256": "6080f64e23fedbe53d7ce224902b3b6e4214a2435bc1f00ea1f34a47a128be46",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "utils/__init__.py",
+      "bytes": 21,
+      "sha256": "6a52031819f1587e09bcff945beecdf7db1e0418b4af5195d61f1fd4444505e7",
+      "baseline_sha256": "6a52031819f1587e09bcff945beecdf7db1e0418b4af5195d61f1fd4444505e7",
+      "identical_to_official_baseline": true
+    },
+    {
+      "path": "utils/utils.py",
+      "bytes": 1046,
+      "sha256": "cfde171f4a42705371ae3c06aeac8c06841a72bcfeb0e2ee3b763dec70072c11",
+      "baseline_sha256": "c6e7ba106e1f7eaab4d5f68fa7f7edfb434ce70a82e34ce6dbec5f251b60737a",
+      "identical_to_official_baseline": false
+    }
+  ]
+}

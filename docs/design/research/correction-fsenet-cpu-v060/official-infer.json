@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/tmp/scanner-fsenet-cpu-v060/venv/bin/python",
+    "/tmp/scanner-fsenet-cpu-v060/run_official.py"
+  ],
+  "cwd": "/tmp/scanner-fsenet-cpu-v060",
+  "environment": {
+    "PYTHONPATH": "/tmp/scanner-fsenet-cpu-v060/source",
+    "ACCELERATE_USE_CPU": "true",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "returncode": -9,
+  "status": "failed",
+  "killed": "diagnostic-aggregate-PSS-limit",
+  "elapsed_seconds": 37.10309336698265,
+  "sampled_parent_peak_rss_bytes": 1643376640,
+  "sampled_aggregate_peak_pss_bytes": 2180001792,
+  "max_child_count": 8,
+  "resource_enforcement": "aggregate PSS across parent+workers sampled ~0.1s; parentRSS separately observed, not liveRSS kill",
+  "aggregate_pss_cap_bytes": 2147483648,
+  "total_process_timeout_seconds": 180,
+  "per_top_model_forward_alarm_seconds": 30
+}

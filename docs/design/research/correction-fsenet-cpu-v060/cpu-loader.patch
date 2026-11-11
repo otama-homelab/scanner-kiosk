@@ -1,0 +1,13 @@
+diff --git a/utils/utils.py b/utils/utils.py
+index 11e64fc..cce7f25 100644
+--- a/utils/utils.py
++++ b/utils/utils.py
+@@ -25,7 +25,7 @@ def save_checkpoint(state, epoch, model_name, outdir):
+ 
+ 
+ def load_checkpoint(model, weights):
+-    checkpoint = torch.load(weights, map_location=lambda storage, loc: storage.cuda(0))
++    checkpoint = torch.load(weights, map_location="cpu", weights_only=True)
+     new_state_dict = OrderedDict()
+     for key, value in checkpoint['state_dict'].items():
+         if key.startswith('module'):

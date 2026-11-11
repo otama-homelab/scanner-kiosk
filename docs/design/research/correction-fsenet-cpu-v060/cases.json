@@ -1,0 +1,182 @@
+[
+  {
+    "id": "00_mixed_shadow",
+    "source_id": "mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "source_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "00_mixed_shadow.png"
+  },
+  {
+    "id": "01_mixed_clean",
+    "source_id": "mixed_clean",
+    "source_kind": "clean",
+    "fixture": "mixed",
+    "source": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "01_mixed_clean.png"
+  },
+  {
+    "id": "02_table_shadow",
+    "source_id": "table_shadow",
+    "source_kind": "shadow",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/shadow/table.png",
+    "source_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "02_table_shadow.png"
+  },
+  {
+    "id": "03_table_clean",
+    "source_id": "table_clean",
+    "source_kind": "clean",
+    "fixture": "table",
+    "source": "/tmp/scanner-v060-paired/clean/table.png",
+    "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "03_table_clean.png"
+  },
+  {
+    "id": "04_faint_mixed_shadow",
+    "source_id": "faint_mixed_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "source_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "04_faint_mixed_shadow.png"
+  },
+  {
+    "id": "05_faint_mixed_clean",
+    "source_id": "faint_mixed_clean",
+    "source_kind": "clean",
+    "fixture": "faint_mixed",
+    "source": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "source_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "05_faint_mixed_clean.png"
+  },
+  {
+    "id": "06_faint_table_shadow",
+    "source_id": "faint_table_shadow",
+    "source_kind": "shadow",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "source_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "06_faint_table_shadow.png"
+  },
+  {
+    "id": "07_faint_table_clean",
+    "source_id": "faint_table_clean",
+    "source_kind": "clean",
+    "fixture": "faint_table",
+    "source": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "source_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "size": [
+      900,
+      700
+    ],
+    "filename": "07_faint_table_clean.png"
+  },
+  {
+    "id": "08_blue_shadow",
+    "source_id": "blue_shadow",
+    "source_kind": "shadow",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "source_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "08_blue_shadow.png"
+  },
+  {
+    "id": "09_blue_clean",
+    "source_id": "blue_clean",
+    "source_kind": "clean",
+    "fixture": "blue",
+    "source": "/tmp/scanner-v060-paired/clean/blue.png",
+    "source_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "size": [
+      1055,
+      1491
+    ],
+    "filename": "09_blue_clean.png"
+  },
+  {
+    "id": "10_peach_shadow",
+    "source_id": "peach_shadow",
+    "source_kind": "shadow",
+    "fixture": "peach",
+    "source": "/tmp/scanner-v060-paired/shadow/peach.png",
+    "source_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "size": [
+      1024,
+      1536
+    ],
+    "filename": "10_peach_shadow.png"
+  },
+  {
+    "id": "11_peach_clean",
+    "source_id": "peach_clean",
+    "source_kind": "clean",
+    "fixture": "peach",
+    "source": "/tmp/scanner-v060-paired/clean/peach.png",
+    "source_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "size": [
+      1024,
+      1536
+    ],
+    "filename": "11_peach_clean.png"
+  }
+]

@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/tmp/scanner-fsenet-cpu-v060/model_load.py", line 5, in <module>
+    from accelerate import Accelerator
+  File "/tmp/scanner-fsenet-cpu-v060/venv/lib/python3.12/site-packages/accelerate/__init__.py", line 3, in <module>
+    from .accelerator import Accelerator
+  File "/tmp/scanner-fsenet-cpu-v060/venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 30, in <module>
+    from .checkpointing import load_accelerator_state, load_custom_state, save_accelerator_state, save_custom_state
+  File "/tmp/scanner-fsenet-cpu-v060/venv/lib/python3.12/site-packages/accelerate/checkpointing.py", line 24, in <module>
+    from .utils import (
+  File "/tmp/scanner-fsenet-cpu-v060/venv/lib/python3.12/site-packages/accelerate/utils/__init__.py", line 2, in <module>
+    from .dataclasses import (
+  File "/tmp/scanner-fsenet-cpu-v060/venv/lib/python3.12/site-packages/accelerate/utils/dataclasses.py", line 29, in <module>
+    from distutils.util import strtobool
+ModuleNotFoundError: No module named 'distutils'

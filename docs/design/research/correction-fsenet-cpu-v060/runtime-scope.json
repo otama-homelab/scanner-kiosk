@@ -1,0 +1,13 @@
+{
+  "torch_cpu_source": "/tmp/scanner-v060/cpu-venv/lib/python3.12/site-packages",
+  "read_only_site_reference": "/tmp/scanner-fsenet-cpu-v060/venv/lib/python3.12/site-packages/readonly-existing-cpu.pth",
+  "existing_cpu_environment_modified": false,
+  "new_environment": "/tmp/scanner-fsenet-cpu-v060/venv",
+  "torch_version": "2.12.1+cpu",
+  "torch_cuda_version": null,
+  "safe_weights_only": true,
+  "setup_file_bytes": 826459155,
+  "setup_limit_bytes": 3221225472,
+  "additional_dependency_bytes": 87055797,
+  "additional_dependency_cap_bytes": 536870912
+}

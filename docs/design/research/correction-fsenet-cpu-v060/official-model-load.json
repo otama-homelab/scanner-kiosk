@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/tmp/scanner-fsenet-cpu-v060/venv/bin/python",
+    "/tmp/scanner-fsenet-cpu-v060/model_load.py"
+  ],
+  "cwd": "/tmp/scanner-fsenet-cpu-v060",
+  "environment_overrides": {
+    "PYTHONPATH": "/tmp/scanner-fsenet-cpu-v060/source",
+    "ACCELERATE_USE_CPU": "true"
+  },
+  "returncode": 1,
+  "killed": null,
+  "elapsed_seconds": 1.3034697989933193,
+  "sampled_peak_rss_bytes": 228560896,
+  "rss_cap_bytes": 2147483648,
+  "status": "failed"
+}

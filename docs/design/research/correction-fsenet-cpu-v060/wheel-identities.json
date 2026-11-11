@@ -1,0 +1,170 @@
+{
+  "files": [
+    {
+      "name": "accelerate",
+      "version": "0.17.1",
+      "wheel": "accelerate-0.17.1-py3-none-any.whl",
+      "sha256": "4d1f049c32498694c764cfe657cb4ead523e0eda90ed95e21bb1806ac06ab80b",
+      "bytes": 212803,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/0a/ca/96a50d122bd07d06c66e20e6bd275b5c8829602398f4e141f8755a25e31e/accelerate-0.17.1-py3-none-any.whl"
+    },
+    {
+      "name": "torchmetrics",
+      "version": "0.11.4",
+      "wheel": "torchmetrics-0.11.4-py3-none-any.whl",
+      "sha256": "45f892f3534e91f3ad9e2488d1b05a93b7cb76b7d037969435a41a1f24750d9a",
+      "bytes": 519162,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/fb/47/6e9f9b41c48750a45ad07cc6d43a2979bfc09e6989656aece97cc59cbef1/torchmetrics-0.11.4-py3-none-any.whl"
+    },
+    {
+      "name": "yacs",
+      "version": "0.1.8",
+      "wheel": "yacs-0.1.8-py3-none-any.whl",
+      "sha256": "99f893e30497a4b66842821bac316386f7bd5c4f47ad35c9073ef089aa33af32",
+      "bytes": 14747,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/38/4f/fe9a4d472aa867878ce3bb7efb16654c5d63672b86dc0e6e953a67018433/yacs-0.1.8-py3-none-any.whl"
+    },
+    {
+      "name": "einops",
+      "version": "0.6.1",
+      "wheel": "einops-0.6.1-py3-none-any.whl",
+      "sha256": "99149e46cc808956b174932fe563d920db4d6e5dadb8c6ecdaa7483b7ef7cfc3",
+      "bytes": 42232,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/68/24/b05452c986e8eff11f47e123a40798ae693f2fa1ed2f9546094997d2f6be/einops-0.6.1-py3-none-any.whl"
+    },
+    {
+      "name": "albumentations",
+      "version": "1.3.0",
+      "wheel": "albumentations-1.3.0-py3-none-any.whl",
+      "sha256": "294165d87d03bc8323e484927f0a5c1a3c64b0e7b9c32a979582a6c93c363bdf",
+      "bytes": 123540,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/4f/55/3c2ce84c108fc1d422afd6de153e4b0a3e6f96ecec4cb9afcf0284ce3538/albumentations-1.3.0-py3-none-any.whl"
+    },
+    {
+      "name": "opencv-python-headless",
+      "version": "5.0.0.93",
+      "wheel": "opencv_python_headless-5.0.0.93-cp37-abi3-manylinux_2_28_x86_64.whl",
+      "sha256": "ed709fdf9aa0bd1f2ed8549e71d19449b03a675bb581eb292285f6861953be37",
+      "bytes": 61204038,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/9b/21/f6ef335f6e65724aa78b8d792b48d40a48c381715f1e62f5a5049e09d07e/opencv_python_headless-5.0.0.93-cp37-abi3-manylinux_2_28_x86_64.whl"
+    },
+    {
+      "name": "qudida",
+      "version": "0.0.4",
+      "wheel": "qudida-0.0.4-py3-none-any.whl",
+      "sha256": "4519714c40cd0f2e6c51e1735edae8f8b19f4efe1f33be13e9d644ca5f736dd6",
+      "bytes": 3478,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/f0/a1/a5f4bebaa31d109003909809d88aeb0d4b201463a9ea29308d9e4f9e7655/qudida-0.0.4-py3-none-any.whl"
+    },
+    {
+      "name": "scikit-image",
+      "version": "0.26.0",
+      "wheel": "scikit_image-0.26.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "7df650e79031634ac90b11e64a9eedaf5a5e06fcd09bcd03a34be01745744466",
+      "bytes": 13561683,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/f4/a2/70401a107d6d7466d64b466927e6b96fcefa99d57494b972608e2f8be50f/scikit_image-0.26.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl"
+    },
+    {
+      "name": "scipy",
+      "version": "1.18.1",
+      "wheel": "scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "f55fa87b6c612ecd6b058f167c53231b1d14e412efe361d3d6e38b3631c73218",
+      "bytes": 35344199,
+      "reused_existing_verified_wheel": true,
+      "official_url": "https://files.pythonhosted.org/packages/df/64/ff35eb9e54894cf471ff4716abd3c81eb0a0626869217ce3e6ba4ccf17d7/scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+    },
+    {
+      "name": "psutil",
+      "version": "7.2.2",
+      "wheel": "psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "076a2d2f923fd4821644f5ba89f059523da90dc9014e85f8e45a5774ca5bc6f9",
+      "bytes": 155560,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/b5/70/5d8df3b09e25bce090399cf48e452d25c935ab72dad19406c77f4e828045/psutil-7.2.2-cp36-abi3-manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_28_x86_64.whl"
+    },
+    {
+      "name": "ImageIO",
+      "version": "2.38.1",
+      "wheel": "imageio-2.38.1-py3-none-any.whl",
+      "sha256": "36d23eb7423d2fb63f637098758edb3d2df3687f7125e0a5ce8596572022dcf9",
+      "bytes": 328389,
+      "reused_existing_verified_wheel": true,
+      "official_url": "https://files.pythonhosted.org/packages/7d/8a/3b7f62b9df56460959f1b9bef094248d2a4d7f393c5b0d2da8efcdf0e40e/imageio-2.38.1-py3-none-any.whl"
+    },
+    {
+      "name": "lazy-loader",
+      "version": "0.6",
+      "wheel": "lazy_loader-0.6-py3-none-any.whl",
+      "sha256": "77253be3391b06124a0e16105bd663b6c54470af1a9ca8e1cf026f38d58ed056",
+      "bytes": 8791,
+      "reused_existing_verified_wheel": true,
+      "official_url": "https://files.pythonhosted.org/packages/23/93/4e45e37f26c820216704b36b8e67cc55c490a7abd287a78a26a2c0e21386/lazy_loader-0.6-py3-none-any.whl"
+    },
+    {
+      "name": "scikit-learn",
+      "version": "1.9.1",
+      "wheel": "scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "e5d7b18a5b9dca241a74695f3275fa4c895a9dadc72b3d8df5fa9d1083c9b83e",
+      "bytes": 9166043,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/8e/57/a50162f3d29feb979ab6347c6debda506dfb525bcff3c50dd17606651c7e/scikit_learn-1.9.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
+    },
+    {
+      "name": "tifffile",
+      "version": "2026.11.8",
+      "wheel": "tifffile-2026.11.8-py3-none-any.whl",
+      "sha256": "bb41732b357a7fa3077db439961ea1ec3a88d2fda4b45fd3ea9f7786690f6049",
+      "bytes": 278909,
+      "reused_existing_verified_wheel": true,
+      "official_url": "https://files.pythonhosted.org/packages/13/2e/2e2488584cabde1b60ddf2731165b05c892ea07c29568bca50e638e7ce9b/tifffile-2026.11.8-py3-none-any.whl"
+    },
+    {
+      "name": "joblib",
+      "version": "1.6.0",
+      "wheel": "joblib-1.6.0-py3-none-any.whl",
+      "sha256": "3dbbf9f6e4b592a2357b854608e980fe6390d131d7a82f011a377ef2ebef7aba",
+      "bytes": 306115,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/18/53/84099323c2ec4be98d935f63c033ac4151ee83836ca1050ede3b3aadf155/joblib-1.6.0-py3-none-any.whl"
+    },
+    {
+      "name": "narwhals",
+      "version": "2.28.0",
+      "wheel": "narwhals-2.28.0-py3-none-any.whl",
+      "sha256": "1f69d6385ec30e2fa6e1fdeb37c562ecabd0f713f6f3e3b58a668c5c9df9567f",
+      "bytes": 490591,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/cf/82/8ef9c7e0f50493307a49c09cfa7f00c5a778b6d1921f7b2dabe1d3a5809e/narwhals-2.28.0-py3-none-any.whl"
+    },
+    {
+      "name": "threadpoolctl",
+      "version": "3.8.0",
+      "wheel": "threadpoolctl-3.8.0-py3-none-any.whl",
+      "sha256": "f1b49c82704d50f13ffae019c727b0fa4f6791a58f48f06a09c45face1be66da",
+      "bytes": 32091,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/54/1b/831f2de4840a25db1dd7b1afea433ccafe6bb10aca07e13264f2079462d0/threadpoolctl-3.8.0-py3-none-any.whl"
+    },
+    {
+      "name": "cloudpickle",
+      "version": "3.1.2",
+      "wheel": "cloudpickle-3.1.2-py3-none-any.whl",
+      "sha256": "9acb47f6afd73f60dc1df93bb801b472f05ff42fa6c84167d25cb206be1fbf4a",
+      "bytes": 22228,
+      "reused_existing_verified_wheel": false,
+      "official_url": "https://files.pythonhosted.org/packages/88/39/799be3f2f0f38cc727ee3b4f1445fe6d5e4133064ec2e4115069418a5bb6/cloudpickle-3.1.2-py3-none-any.whl"
+    }
+  ],
+  "new_download_bytes": 85854311,
+  "total_wheel_bytes": 121814599,
+  "all_pypi_sha_verified": true,
+  "source_builds": 0
+}
