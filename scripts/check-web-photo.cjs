@@ -1,12 +1,14 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
+const os=require('node:os');
+const path=require('node:path');
 const {createHash}=require('node:crypto');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
 const scenario=process.env.SCANNER_PHOTO_SCENARIO;
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,chromiumSandbox:true,args:process.env.SCANNER_PHOTO_INSPECT_PORT?['--remote-debugging-port='+process.env.SCANNER_PHOTO_INSPECT_PORT]:[]});
  const context=await browser.newContext({ignoreHTTPSErrors:true});const page=await context.newPage();page.setDefaultTimeout(15000);
- const checks=[],requests=[],errors=[],failedResponses=[];page.on('response',r=>{if(r.status()>=400)failedResponses.push({path:new URL(r.url()).pathname,status:r.status()})});page.on('pageerror',e=>errors.push(e.message));
+ const checks=[],requests=[],errors=[],failedResponses=[];let oversizedDirectory;page.on('response',r=>{if(r.status()>=400)failedResponses.push({path:new URL(r.url()).pathname,status:r.status()})});page.on('pageerror',e=>errors.push(e.message));
  page.on('request',r=>{if(r.url().includes('/api/documents/import'))requests.push({path:new URL(r.url()).pathname,method:r.method(),key:r.headers()['idempotency-key'],sha:r.headers()['x-content-sha256']})});
  try{
   await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
@@ -48,7 +50,9 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    }
    await page.evaluate(()=>{localStorage.setItem('scanner.locale','en');localStorage.setItem('scanner.theme','light');location.hash='#/'});await page.reload();await page.getByRole('button',{name:'Camera',exact:true}).waitFor();const cameraButton=page.getByRole('button',{name:'Camera',exact:true}),pickerButton=page.getByRole('button',{name:'Photos / Files',exact:true});await keyboardReach(cameraButton);await keyboardReach(pickerButton);await page.locator('input[capture]').dispatchEvent('cancel');assert(await cameraButton.evaluate(e=>e===document.activeElement));assert(await pickerButton.isEnabled());
    await page.locator('input[data-photo-picker]').setInputFiles({name:'capture.heic',mimeType:'image/heic',buffer:Buffer.from('synthetic')});await page.getByText('HEIC is not supported. Choose a JPEG or PNG.',{exact:true}).waitFor();assert(await cameraButton.evaluate(e=>e===document.activeElement));
-   await page.locator('input[data-photo-picker]').setInputFiles({name:'huge.png',mimeType:'image/png',buffer:Buffer.alloc(32*1024*1024+1)});await page.getByText('This image exceeds the size or processing limits. Choose a smaller image.',{exact:true}).waitFor();assert(await pickerButton.isEnabled());assert.equal(requests.filter(r=>r.path==='/api/documents/import').length,1);checks.push('keyboard camera/picker, cancellation focus, announced HEIC/size rejection without upload');
+   // Exercise the native file-picker path without sending a 32 MiB inline CDP payload.
+   oversizedDirectory=fs.mkdtempSync(path.join(os.tmpdir(),'scanner-photo-oversize-'));const oversized=path.join(oversizedDirectory,'huge.png'),descriptor=fs.openSync(oversized,'wx',0o600);try{fs.ftruncateSync(descriptor,32*1024*1024+1)}finally{fs.closeSync(descriptor)}assert.equal(fs.statSync(oversized).size,32*1024*1024+1);
+   await page.locator('input[data-photo-picker]').setInputFiles(oversized);await page.getByText('This image exceeds the size or processing limits. Choose a smaller image.',{exact:true}).waitFor();assert(await pickerButton.isEnabled());assert.equal(requests.filter(r=>r.path==='/api/documents/import').length,1);checks.push('keyboard camera/picker, cancellation focus, announced HEIC/size rejection without upload');
    await page.evaluate(()=>sessionStorage.setItem('scanner.photo.import',JSON.stringify({key:'rq1_0000000000000_00000000000000000000000000000000',sha256:'1'.repeat(64),input_bytes:123,media_type:'image/png',phase:'uncertain'})));await page.reload();await page.getByRole('button',{name:'Check import request',exact:true}).click();await page.getByText('This request expired. Reload this view before choosing another action.',{exact:true}).waitFor();assert(await page.getByRole('button',{name:'Photos / Files',exact:true}).isEnabled());assert.equal(await page.evaluate(()=>sessionStorage.getItem('scanner.photo.import')),null);checks.push('expired identity-only receipt clears safely and restores picker');
    const corruptResponse=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/documents/import');await page.locator('input[data-photo-picker]').setInputFiles({name:'broken.png',mimeType:'image/png',buffer:Buffer.from('not an image')});const corruptJob=await (await corruptResponse).json();await page.getByText('This image is damaged or could not be read.',{exact:true}).waitFor().catch(async e=>{throw new Error(e.message+' actual job '+JSON.stringify(await page.evaluate(async id=>(await fetch('/api/jobs/'+id)).json(),corruptJob.id))) });checks.push('actual corrupt photo rejected by production worker');
    await page.evaluate(id=>location.hash='#/document/'+id,doc.id);await page.locator('h1[data-document-title]').waitFor();
@@ -86,5 +90,5 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    }
   }
   assert.deepEqual(errors,[]);const receipt={passed:true,scenario,real_backend:true,checks,requests,scope:'Synthetic Chromium, real production serve/worker/SQLite and bounded photo child; no physical camera/screen reader/live service acceptance.'};if(process.env.SCANNER_PHOTO_RECEIPT)fs.writeFileSync(process.env.SCANNER_PHOTO_RECEIPT,JSON.stringify(receipt,null,2)+'\n');process.stdout.write(JSON.stringify(receipt));
- }catch(e){console.error('ORIGINAL_FAILURE',e.stack||e.message);let state='Page unavailable';try{state=await page.locator('body').innerText({timeout:1000})}catch{}console.error('FAILURE_STATE',state,JSON.stringify(failedResponses));throw e}finally{await context.close().catch(()=>{});await browser.close().catch(()=>{})}
+ }catch(e){console.error('ORIGINAL_FAILURE',e.stack||e.message);let state='Page unavailable';try{state=await page.locator('body').innerText({timeout:1000})}catch{}console.error('FAILURE_STATE',state,JSON.stringify(failedResponses));throw e}finally{await context.close().catch(()=>{});await browser.close().catch(()=>{});if(oversizedDirectory)fs.rmSync(oversizedDirectory,{recursive:true,force:true})}
 })().catch(e=>{console.error(e.stack||e.message);process.exit(1)});
