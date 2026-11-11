@@ -1,0 +1,97 @@
+{
+  "acquisition_record": "docs/design/research/correction-validation-v060/uvdoc-subset-acquisition.json",
+  "acquisition_record_sha256": "af1d103beaa5db2d15806dfc4980fe00fdc80eeb34b6053c652af99ab5e6ac31",
+  "original9_overlap_count": 0,
+  "rows": [
+    {
+      "id": "real_00000",
+      "source_path": "/tmp/scanner-v060/uvdoc-subset/img/00000.png",
+      "source_sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b",
+      "source_archive_member": "UVDoc_benchmark/img/00000.png",
+      "metadata": {
+        "geom_name": "09_00000_1_0_0",
+        "texture_name": "libregraphicsmag_2_2-15.png",
+        "background_name": "concrete_276.png",
+        "sample_id": "00000"
+      },
+      "label_members": [
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/metadata_sample/00000.json",
+          "sha256": "ccf4ef6747a7e040fe0dfa92281b16117c78fb587afc2b9de73df4dbf78b7b55"
+        },
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/grid2d/09_00000_1_0_0.mat",
+          "sha256": "1563eed6dcf4dc21e53908143977bd572d9d42fa15ab19f3851fffc552200805"
+        },
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/seg/09_00000_1_0_0.mat",
+          "sha256": "6bf7627d03d71eedfae2fd66ef2397502ef4ee252a7be5a96e9a3d4edeb14511"
+        }
+      ],
+      "grid_npy": "/tmp/scanner-v060/uvdoc-subset/truth/00000-grid.npy",
+      "grid_npy_sha256": "7f68a3c8f576ad94f08bd9354f928718af295ca3d5833b87fd0864f569509950",
+      "in_original9": false,
+      "corner_scope": "exact existing docaligner-metrics.py suppliedgrid endpoint diagnostic; not human annotations"
+    },
+    {
+      "id": "real_00001",
+      "source_path": "/tmp/scanner-v060/uvdoc-subset/img/00001.png",
+      "source_sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4",
+      "source_archive_member": "UVDoc_benchmark/img/00001.png",
+      "metadata": {
+        "geom_name": "09_00004_1_0_0",
+        "texture_name": "01_stagedancing_p0027.png",
+        "background_name": "ceramic_Light_935.png",
+        "sample_id": "00001"
+      },
+      "label_members": [
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/metadata_sample/00001.json",
+          "sha256": "6acbc514db7fb2df8f12133c9bce7b555b61747c8c9dbce7abfd9fde7af62583"
+        },
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/grid2d/09_00004_1_0_0.mat",
+          "sha256": "1f59b1ac83d59dbf6e7a4f648b844e020fe3da4ae9abe9724af92e2d4de1ab1b"
+        },
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/seg/09_00004_1_0_0.mat",
+          "sha256": "7aac68b3dcbfa2405c2808be481ebe199b972e86a0c0d508a1080d6971461d63"
+        }
+      ],
+      "grid_npy": "/tmp/scanner-v060/uvdoc-subset/truth/00001-grid.npy",
+      "grid_npy_sha256": "be1c33639eef27b05ce3cfb976a73780882ff970125368e35ee628802b7f3109",
+      "in_original9": false,
+      "corner_scope": "exact existing docaligner-metrics.py suppliedgrid endpoint diagnostic; not human annotations"
+    },
+    {
+      "id": "real_00002",
+      "source_path": "/tmp/scanner-v060/uvdoc-subset/img/00002.png",
+      "source_sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+      "source_archive_member": "UVDoc_benchmark/img/00002.png",
+      "metadata": {
+        "geom_name": "09_00005_1_0_0",
+        "texture_name": "05-09.png",
+        "background_name": "cardboard_805.png",
+        "sample_id": "00002"
+      },
+      "label_members": [
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/metadata_sample/00002.json",
+          "sha256": "6ea2ba9b7ee91d63a68133e5c25433872e32b34c3afb2b26bbe973b70c97657a"
+        },
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/grid2d/09_00005_1_0_0.mat",
+          "sha256": "073a764a25baa2b878ce61c451e2ddbcd9dde8c81f02c4b2c3e49a5a7ee49226"
+        },
+        {
+          "path": "/tmp/scanner-v060/uvdoc-subset/seg/09_00005_1_0_0.mat",
+          "sha256": "6351e00a43849873067e8ec021c53335081631d525127046613a58a123fe3fd6"
+        }
+      ],
+      "grid_npy": "/tmp/scanner-v060/uvdoc-subset/truth/00002-grid.npy",
+      "grid_npy_sha256": "33f66f9ddf029187795faa15978cc5fddf46e8b9ffa705d2fda2251c7a350e66",
+      "in_original9": false,
+      "corner_scope": "exact existing docaligner-metrics.py suppliedgrid endpoint diagnostic; not human annotations"
+    }
+  ]
+}

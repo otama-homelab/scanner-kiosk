@@ -1,0 +1,14 @@
+allprojects { p ->
+    if (p.path == ':evaluation') {
+        p.plugins.withId('java') {
+            p.sourceSets.main.java.srcDir('/tmp/scanner-fairscan-numeric.3LsDmU/adapter')
+            p.tasks.register('runOfficialQuadCoordinates', JavaExec) {
+                classpath = p.sourceSets.main.runtimeClasspath
+                mainClass = 'diagnostic.QuadCoordinates'
+                args System.getProperty('scannerDataset'), System.getProperty('scannerCoordinates')
+                maxHeapSize = '768m'
+                jvmArgs '-XX:ActiveProcessorCount=2'
+            }
+        }
+    }
+}

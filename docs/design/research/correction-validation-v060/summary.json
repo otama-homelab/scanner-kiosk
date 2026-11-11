@@ -90,7 +90,7 @@
       "id": "VERIFY-01",
       "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable. Latest: official unchanged CPU segmentation and JVM quad executed on6synthetic inputs. Full runtime shortage resolved; numerical corners and original-realphoto independent truth still unmeasured.",
+      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable. Latest: official unchanged CPU segmentation and JVM quad executed on6synthetic inputs. Full runtime shortage resolved; numerical corners and original-realphoto independent truth still unmeasured. Numeric followup:6synthetic gate0/6,3additional independent grid-endpoint diagnostics2detected/1null. Original6real truth and Android mask-value parity missing.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -627,6 +627,11 @@
   "docshadow_ssim_v060": {
     "summary": "../correction-docshadow-ssim-v060/summary.json",
     "sha256": "3881f3ecf477bfecea2f530f813f27e9028ba1a970cc60ac1259efb69ae7e1c0",
+    "requirements_newly_completed": 0
+  },
+  "fairscan_numeric_evaluation": {
+    "summary": "../correction-fairscan-numeric-v060/summary.json",
+    "sha256": "e7b8eba0f76d296c1a6aca9c6cfc3eb725230cbe86975d7a3b3515a6104264dc",
     "requirements_newly_completed": 0
   }
 }

@@ -1,0 +1,33 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1",
+    "/tmp/scanner-fairscan-fullcpu.AzeA6f/venv/bin/python",
+    "-u",
+    "generate_masks.py"
+  ],
+  "cwd": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/python",
+  "exit_code": 0,
+  "stop_reason": null,
+  "elapsed_s": 3.4319915960077196,
+  "peak_process_group_rss_bytes": 548569088,
+  "scope": "unchanged official tensorflow.lite.Interpreter script; full process30s bounds each forward too",
+  "masks": [
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/masks/real_00000.png",
+      "bytes": 3842,
+      "sha256": "2f9c2c8d3fae982d434187e9ade8938d66ceb158b53b12bb6c3a68a363103d92"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/masks/real_00001.png",
+      "bytes": 3138,
+      "sha256": "5e79168f1dda5863107e0fee2a088621e7c0c98ea3b634e3c91fa2350603dfe6"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/masks/real_00002.png",
+      "bytes": 2042,
+      "sha256": "978511c308d95ba4b6bc8d9ab9eb7897a2a0d3645c1492a3080a58b2f977ecf3"
+    }
+  ]
+}

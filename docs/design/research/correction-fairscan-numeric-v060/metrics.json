@@ -1,0 +1,545 @@
+{
+  "synthetic_rows": [
+    {
+      "id": "fixture_ocr_columns_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": null,
+      "quad_present": false,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": null,
+      "max_corner_error_diagonal": null,
+      "corner_pass": false,
+      "disposition": "no detection; no fallback substituted"
+    },
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": null,
+      "quad_present": false,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": null,
+      "max_corner_error_diagonal": null,
+      "corner_pass": false,
+      "disposition": "no detection; no fallback substituted"
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          96.21718682913288,
+          120.389531910302
+        ],
+        [
+          525.9029829640891,
+          111.98223744052633
+        ],
+        [
+          471.3724514582985,
+          305.55630357643736
+        ],
+        [
+          14.92075646841419,
+          255.22824990268168
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.13516766350577597,
+        0.34164917411250206,
+        0.5096478894048184,
+        0.38943350884825834
+      ],
+      "max_corner_error_diagonal": 0.5096478894048184,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          74.60813474299059,
+          69.19562545029679
+        ],
+        [
+          793.9241976038043,
+          68.6558483542409
+        ],
+        [
+          798.6462075246853,
+          333.7428246796559
+        ],
+        [
+          69.44484176989948,
+          334.330383659837
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.08924645371660002,
+        0.11008580486443255,
+        0.33222291842766694,
+        0.3255841083937605
+      ],
+      "max_corner_error_diagonal": 0.33222291842766694,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": [
+        [
+          535.0260927768263,
+          62.663636967753405
+        ],
+        [
+          752.1098485239104,
+          55.61674101499912
+        ],
+        [
+          725.9984741640469,
+          382.02029908364824
+        ],
+        [
+          524.7570332362345,
+          312.7016132692743
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": [
+        0.47245647040031724,
+        0.13775658153144357,
+        0.31672076847035485,
+        0.571500311273659
+      ],
+      "max_corner_error_diagonal": 0.571500311273659,
+      "corner_pass": false
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "width": 900,
+      "height": 700,
+      "truth": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "quad": null,
+      "quad_present": false,
+      "internal_fallback": "not exposed by official API",
+      "no_op_max_corner_error_diagonal": 0.0,
+      "no_op_corner_pass": true,
+      "corner_errors_diagonal": null,
+      "max_corner_error_diagonal": null,
+      "corner_pass": false,
+      "disposition": "no detection; no fallback substituted"
+    }
+  ],
+  "synthetic_summary": {
+    "quad_present": 3,
+    "quad_null": 3,
+    "corner_pass": 0,
+    "corner_fail_or_missing": 6,
+    "no_op_corner_pass": 6,
+    "threshold_max_corner_error_diagonal": 0.02
+  },
+  "real_additional_rows": [
+    {
+      "id": "real_00000",
+      "width": 1041,
+      "height": 1330,
+      "truth_grid_endpoints": [
+        [
+          254.36853549353344,
+          11.499999693726494
+        ],
+        [
+          1023.4714952725917,
+          168.17857361311218
+        ],
+        [
+          788.1485158592757,
+          1321.5000107662545
+        ],
+        [
+          11.613741998252955,
+          1210.4999777373187
+        ]
+      ],
+      "quad": null,
+      "quad_present": false,
+      "internal_fallback": "not exposed by official API",
+      "no_op_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          1041,
+          0
+        ],
+        [
+          1041,
+          1330
+        ],
+        [
+          0,
+          1330
+        ]
+      ],
+      "no_op_corner_errors_diagonal": [
+        0.15076057344087282,
+        0.10011469188257775,
+        0.14979308588760729,
+        0.07108702743377888
+      ],
+      "no_op_mean_corner_error_diagonal": 0.11793884466120917,
+      "no_op_binding": {
+        "path": "/tmp/scanner-v060/docaligner-truth-00000/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "8230ecd83d7cb35b2deba4d59f85c838f4991220ead40e7bf2456f89cf9c1498"
+      },
+      "quality_pass": "not defined for these additional diagnostics",
+      "scope": "exact existing docaligner-metrics.py suppliedgrid endpoint diagnostic; not human annotations",
+      "corner_errors_diagonal": null,
+      "mean_corner_error_diagonal": null,
+      "max_corner_error_diagonal": null,
+      "disposition": "no detection; no fallback substituted"
+    },
+    {
+      "id": "real_00001",
+      "width": 969,
+      "height": 1252,
+      "truth_grid_endpoints": [
+        [
+          194.77761512920353,
+          14.757869614455842
+        ],
+        [
+          964.8574933600073,
+          161.28837689726356
+        ],
+        [
+          790.9507662408851,
+          1244.5000609345552
+        ],
+        [
+          11.499996583181826,
+          1130.1937822518885
+        ]
+      ],
+      "quad": [
+        [
+          195.56660612918753,
+          19.443674144251325
+        ],
+        [
+          955.9609169938306,
+          172.30850074990795
+        ],
+        [
+          780.5511734634985,
+          1223.7532464358092
+        ],
+        [
+          15.719790151732786,
+          1133.7535009632727
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          969,
+          0
+        ],
+        [
+          969,
+          1252
+        ],
+        [
+          0,
+          1252
+        ]
+      ],
+      "no_op_corner_errors_diagonal": [
+        0.12338184123586365,
+        0.10190968175360193,
+        0.11256263135064805,
+        0.07727973758513938
+      ],
+      "no_op_mean_corner_error_diagonal": 0.10378347298131325,
+      "no_op_binding": {
+        "path": "/tmp/scanner-v060/docaligner-truth-00001/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "4679932a6c5332401d5c6c5e774910554434761e289264e7f75f5187a61ba102"
+      },
+      "quality_pass": "not defined for these additional diagnostics",
+      "scope": "exact existing docaligner-metrics.py suppliedgrid endpoint diagnostic; not human annotations",
+      "corner_errors_diagonal": [
+        0.0030014017726418003,
+        0.008945944496029914,
+        0.014658685637642445,
+        0.003487098598675153
+      ],
+      "mean_corner_error_diagonal": 0.0075232826262473275,
+      "max_corner_error_diagonal": 0.014658685637642445
+    },
+    {
+      "id": "real_00002",
+      "width": 1021,
+      "height": 1286,
+      "truth_grid_endpoints": [
+        [
+          189.5865936279297,
+          15.631561279296875
+        ],
+        [
+          1001.2090758646211,
+          144.9999918888139
+        ],
+        [
+          913.7125552289564,
+          1279.0000564698043
+        ],
+        [
+          19.999998294127238,
+          1177.3013726472686
+        ]
+      ],
+      "quad": [
+        [
+          213.79374916096833,
+          18.267287454555554
+        ],
+        [
+          965.9599343219932,
+          144.76011438792958
+        ],
+        [
+          893.170394143899,
+          1268.0766755558197
+        ],
+        [
+          44.310066072206375,
+          1184.8050049879532
+        ]
+      ],
+      "quad_present": true,
+      "internal_fallback": "not exposed by official API",
+      "no_op_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          1021,
+          0
+        ],
+        [
+          1021,
+          1286
+        ],
+        [
+          0,
+          1286
+        ]
+      ],
+      "no_op_corner_errors_diagonal": [
+        0.11585100125003864,
+        0.0891244832467937,
+        0.06547752837628526,
+        0.06730923638383005
+      ],
+      "no_op_mean_corner_error_diagonal": 0.08444056231423691,
+      "no_op_binding": {
+        "path": "/tmp/scanner-v060/docaligner-truth-00002/repetitions/001-cold/artifact-catalog.json",
+        "sha256": "335f163f86e5e529c1b1d8ea1d903eb7ddb4956479166ff92f39225d7d73a90f"
+      },
+      "quality_pass": "not defined for these additional diagnostics",
+      "scope": "exact existing docaligner-metrics.py suppliedgrid endpoint diagnostic; not human annotations",
+      "corner_errors_diagonal": [
+        0.014829412194819057,
+        0.021467405934840186,
+        0.014169033766008296,
+        0.015494171839573054
+      ],
+      "mean_corner_error_diagonal": 0.01649000593381015,
+      "max_corner_error_diagonal": 0.021467405934840186
+    }
+  ],
+  "real_summary": {
+    "quad_present": 2,
+    "quad_null": 1,
+    "original9_overlap": 0,
+    "quality_gate": "no new threshold for additional diagnostic3"
+  },
+  "existing_metric_bindings": [
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 13,
+      "exact_statement": "gt=np.array([[0,0],[w-1,0],[w-1,ht-1],[0,ht-1]])"
+    },
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 18,
+      "exact_statement": "err=np.linalg.norm(q-gt,axis=1)/math.hypot(w,ht)"
+    },
+    {
+      "source": "docs/design/research/correction-validation-v060/docaligner-metrics.py",
+      "source_sha256": "ae676b5b7afeaa0546b144e58bb82db7a08d96ca89a4a31789dd496f0ddcc926",
+      "line": 6,
+      "exact_statement": "corners=np.stack([g[:,0,0],g[:,0,-1],g[:,-1,-1],g[:,-1,0]])"
+    },
+    {
+      "source": "docs/design/research/correction-validation-v060/docaligner-metrics.py",
+      "source_sha256": "ae676b5b7afeaa0546b144e58bb82db7a08d96ca89a4a31789dd496f0ddcc926",
+      "line": 10,
+      "exact_statement": "err=np.linalg.norm(q-corners,axis=1)/math.hypot(w,h)"
+    },
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 19,
+      "exact_expression": "float(err.max())"
+    },
+    {
+      "source": "docs/design/research/correction-detection-v060/measure.py",
+      "source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 19,
+      "exact_expression": "bool(np.all(err<=0.02))"
+    },
+    {
+      "source": "docs/design/research/correction-validation-v060/docaligner-metrics.py",
+      "source_sha256": "ae676b5b7afeaa0546b144e58bb82db7a08d96ca89a4a31789dd496f0ddcc926",
+      "line": 10,
+      "exact_expression": "float(err.mean())"
+    }
+  ],
+  "selfchecks": "exactGTerror0 and syntheticlargeoffsetreject; realexactgridendpoint0"
+}

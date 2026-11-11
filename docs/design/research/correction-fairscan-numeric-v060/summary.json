@@ -1,0 +1,117 @@
+{
+  "format": "scanner-fairscan-numeric-evaluation",
+  "official_source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "synthetic": {
+    "total": 6,
+    "quad_present": 3,
+    "quad_null": 3,
+    "corner_gate_pass": 0,
+    "no_op_gate_pass": 6
+  },
+  "additional_grid_endpoint_diagnostic": {
+    "total": 3,
+    "quad_present": 2,
+    "quad_null": 1,
+    "original9_overlap": 0
+  },
+  "official_android_mask_value_parity": false,
+  "new_public_model_forwards": 3,
+  "requirements_newly_completed": [],
+  "evidence_files": [
+    {
+      "file": "QuadCoordinates.java",
+      "bytes": 2575,
+      "sha256": "d5b977fbb76906d81bd85d03007e384d9d65656b64886a508d53d9fcd41abbb9"
+    },
+    {
+      "file": "data-bindings.json",
+      "bytes": 4238,
+      "sha256": "eab07fba65feea66ba1da13238225f9474186c1c6f952f81a76c0e30faeaafe1"
+    },
+    {
+      "file": "metric-invocation.py",
+      "bytes": 5991,
+      "sha256": "0fb902845d13f43839aa885a5b9668826b08b3cfd954e5e158fde15a444f9c35"
+    },
+    {
+      "file": "metrics.json",
+      "bytes": 13165,
+      "sha256": "26a2519f7ee54873d0c68b7989ab554d7e3552a802a7b62ea3202ffa295a08b9"
+    },
+    {
+      "file": "numeric.init.gradle",
+      "bytes": 592,
+      "sha256": "7cd476841639f6dbb6717dcff7584e9ef1717b5744ef7cb031454b4e550b5f89"
+    },
+    {
+      "file": "real-coordinates.json",
+      "bytes": 646,
+      "sha256": "1781c5ee295beaffb11dd6dc547bb9ae18cd2680004da98877577841fbcad333"
+    },
+    {
+      "file": "real-quad-command.py",
+      "bytes": 3404,
+      "sha256": "49b22ee8c55b1703ffc7131f72df8d281db85f17f82ad6d5e2ea8ddaaeb1641b"
+    },
+    {
+      "file": "real-quad-run.json",
+      "bytes": 1130,
+      "sha256": "9313692c1af259251a52bd68f21d54d02e2372f207cb51bba3fc76e53262b52f"
+    },
+    {
+      "file": "real-quad.log",
+      "bytes": 1460,
+      "sha256": "2a10c0374bfb7d9da6d1ccd3b42b5cbf396475741669672fb1854f690b98f3e1"
+    },
+    {
+      "file": "real-segmentation-command.py",
+      "bytes": 2161,
+      "sha256": "9b4a2b43b58553eca26c6870912adccdd57ab2bbcba77cdec8a7001a6c0788b9"
+    },
+    {
+      "file": "real-segmentation.json",
+      "bytes": 1148,
+      "sha256": "ea735f8560b00186894d627e42c52db95017e9d566efdae58eb3633db8899b87"
+    },
+    {
+      "file": "real-segmentation.log",
+      "bytes": 1555,
+      "sha256": "265b2e5edf697871fc4dfc838069147bc56ee47f013a1a1d9927ed5453344f48"
+    },
+    {
+      "file": "real-truth-bindings.json",
+      "bytes": 4330,
+      "sha256": "1f7baf0e06446407a74bdee0b5431e3681818900af66e3ee80c0c000a3f473eb"
+    },
+    {
+      "file": "report.md",
+      "bytes": 5231,
+      "sha256": "55aff23c81f6d2c907755800a3600842a3051025aab713f818ab5d25b1cf2911"
+    },
+    {
+      "file": "selfchecks.json",
+      "bytes": 711,
+      "sha256": "e76d5e1cd08f8e9d7270235ddc4441b3c0deafb9020e367c978a502fd9b743a1"
+    },
+    {
+      "file": "synthetic-command.py",
+      "bytes": 3404,
+      "sha256": "9add413984ad025111d9d24c07b38fc08498b6233f491c1b2ad7423401a80e94"
+    },
+    {
+      "file": "synthetic-coordinates.json",
+      "bytes": 1180,
+      "sha256": "2fe80d7ebefb8c2b2c1ff089a50082eacfb70c7a78778f81bfc4fe5e5d895a65"
+    },
+    {
+      "file": "synthetic-run.json",
+      "bytes": 1127,
+      "sha256": "a8886a4026ac8367453edadbc6731298256057089b3ddd7825c4a06712e95ecc"
+    },
+    {
+      "file": "synthetic.log",
+      "bytes": 1660,
+      "sha256": "4ef965b030387858fd5c42183c042d126b0adc961cee12f9e8da8e780f436e60"
+    }
+  ]
+}

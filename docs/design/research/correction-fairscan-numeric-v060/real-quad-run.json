@@ -1,0 +1,30 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1",
+    "/tmp/scanner-fairscan-jvm.k0rsMW/gradle-9.8.2/bin/gradle",
+    "--no-daemon",
+    "-Dorg.gradle.jvmargs=-Xmx768m -XX:MaxMetaspaceSize=384m -XX:ActiveProcessorCount=2",
+    "--max-workers=2",
+    "--configure-on-demand",
+    "-DscannerDataset=/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset",
+    "-DscannerCoordinates=/tmp/scanner-fairscan-numeric.3LsDmU/real-coordinates.json",
+    "-I",
+    "/tmp/scanner-fairscan-numeric.3LsDmU/numeric.init.gradle",
+    ":evaluation:runOfficialQuadCoordinates",
+    "--console=plain",
+    "--stacktrace"
+  ],
+  "cwd": "/tmp/scanner-fairscan-jvm.k0rsMW/FairScan-2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "exit_code": 0,
+  "stop_reason": null,
+  "elapsed_seconds": 11.151617875002557,
+  "peak_process_tree_rss_bytes": 205455360,
+  "temp_tree_bytes": 1196780684,
+  "source_files": 575,
+  "original_source_bytes_unchanged": false,
+  "evaluation_executed": true,
+  "java_home": "/tmp/scanner-fairscan-jvm.k0rsMW/jdk-21.0.13+9",
+  "java_tool_options": "-XX:ActiveProcessorCount=2 -Xmx768m -XX:MaxMetaspaceSize=384m"
+}

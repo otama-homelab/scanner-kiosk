@@ -142,3 +142,10 @@ FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい
 旧DocShadowは標準scikit-image SSIMを隔離環境で36件測定。参照対自身6件すべて1、clean≥0.99はnative0/6・5121/6、native影は全6件でno-opよりSSIM低下。既知の画素/OCR/資源不合格に追加し、候補不採用を維持。新DocShadow推論ゼロ。
 
 証拠: docs/design/research/correction-fairscan-full-cpu-v060/report.md、correction-fairscan-jvm-resume-v060/report.md、correction-docshadow-ssim-v060/report.md。各summaryの19/13/90証拠hash照合。残るFairScan評価は数値precisionを出す既存公式経路と独立正解の接続。現FSENet CPU固定loader/独立実写真正解/本人操作は別の残件。製品変更・公開・配備なし。
+
+
+## 2026-11-11 FairScan公式四隅の数値比較
+
+公式detectDocumentQuadの戻り座標だけを外部invocation adapterでJSON化し、既存corner指標をそのまま再利用。公式source272件不変、未検出を代替しない。合成6枚は検出3/未検出3、既存最大corner誤差2%基準0/6合格、同scope無補正6/6。追加独立UVDoc3文書(元9画像との重複0)は検出2/未検出1、検出2件の平均誤差0.752%/1.649%、無補正10.378%/8.444%。付属grid端点を使う既存diagnosticであり元6実写真annotationの代用ではない。
+
+証拠: docs/design/research/correction-fairscan-numeric-v060/report.md、summary.jsonの19件hash照合。公開追加画像のモデル推論3回、既存合成maskは再利用。Androidと公式評価用mask値域のparityは未証明で、結果をモデル単体の限界へ帰属しない。VERIFY-01/02の元実写真truthとphoto2_2内容正解は未解決、要件完了6/14を維持。製品採用・公開・配備なし。

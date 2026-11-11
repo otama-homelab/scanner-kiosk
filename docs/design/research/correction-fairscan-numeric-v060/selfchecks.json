@@ -1,0 +1,23 @@
+{
+  "source_identity": [
+    {
+      "source_root": "/tmp/scanner-fairscan-jvm.k0rsMW/FairScan-2c5230b12f69f3cee2cc5a970013da20848d1272",
+      "original_source_files": 272,
+      "mismatches": []
+    },
+    {
+      "source_root": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source",
+      "original_source_files": 272,
+      "mismatches": []
+    }
+  ],
+  "three_combined_setup_bytes": 3158456947,
+  "synthetic_numeric_rows": 6,
+  "additional_grid_endpoint_rows": 3,
+  "nulls_not_replaced": true,
+  "metric_exactGTzero_offsetreject": true,
+  "source_model_mask_input_output_bound": true,
+  "official_corner_order_preserved": true,
+  "original9_overlap_count": 0,
+  "no_new_detection_or_metric_algorithm": true
+}

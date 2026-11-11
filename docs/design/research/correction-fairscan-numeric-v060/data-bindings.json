@@ -1,0 +1,95 @@
+{
+  "model_sha256": "96e14d7e610dd0c27b768b228fbc553b4ec119ebe68f3a3594029a25400691d2",
+  "files": [
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_columns_001.jpg",
+      "bytes": 13122,
+      "sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_horizontal_001.jpg",
+      "bytes": 13931,
+      "sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_mixed_001.jpg",
+      "bytes": 15152,
+      "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_table_001.jpg",
+      "bytes": 10010,
+      "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_vertical_001.jpg",
+      "bytes": 10850,
+      "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_wrapped_001.jpg",
+      "bytes": 6415,
+      "sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_columns_001.png",
+      "bytes": 3496,
+      "sha256": "f6729767fe4470deb4d134964d27a69cf021f163d6200d5adc601cd57db09d8b"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_horizontal_001.png",
+      "bytes": 2001,
+      "sha256": "4f8bde6341ef672f8e90fb6c8c823c54e7dc3ef49ee35c788fb0009ae7abb72b"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_mixed_001.png",
+      "bytes": 1944,
+      "sha256": "349b06a9c1b46e69390382c3eba037e2b8a6c709910b8b230aa1a9f41db57b00"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_table_001.png",
+      "bytes": 1329,
+      "sha256": "02432cfa8c55e0f5ac23ccf2076ad6bac12b619365feb21c4998cfcd578fa13f"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_vertical_001.png",
+      "bytes": 1938,
+      "sha256": "aa60decbdfa55d1d5aab1307c4394f037cc37b73ed7833dcb76d8327066fd4ba"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_wrapped_001.png",
+      "bytes": 461,
+      "sha256": "3a86b75258327d919751547cb0dbc33f6a039959646f0c170a644e598c1a43bd"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/images/real_00000.jpg",
+      "bytes": 1856062,
+      "sha256": "4bb8bbda9caed7b590b5bfbd6203bc7e7e44e158c221a2f52a1c4ad74e84771b"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/images/real_00001.jpg",
+      "bytes": 1957797,
+      "sha256": "3bdb896050f97c3b1d98451b086ff772b4600ee453e96eadab7663f737ca4cb4"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/images/real_00002.jpg",
+      "bytes": 2029190,
+      "sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/masks/real_00000.png",
+      "bytes": 3842,
+      "sha256": "2f9c2c8d3fae982d434187e9ade8938d66ceb158b53b12bb6c3a68a363103d92"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/masks/real_00001.png",
+      "bytes": 3138,
+      "sha256": "5e79168f1dda5863107e0fee2a088621e7c0c98ea3b634e3c91fa2350603dfe6"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-numeric.3LsDmU/real-source/evaluation/dataset/masks/real_00002.png",
+      "bytes": 2042,
+      "sha256": "978511c308d95ba4b6bc8d9ab9eb7897a2a0d3645c1492a3080a58b2f977ecf3"
+    }
+  ]
+}
