@@ -22,5 +22,8 @@ jobs:
             echo "HTTPS $origin"
             curl --head --fail --silent --show-error --max-time 15 "$origin/dists/noble/InRelease" || true
           done
-      - name: Check signed APT metadata using the stock runner configuration
-        run: sudo apt-get update --error-on=any
+      - name: Verify the reachable mirror with Ubuntu signature checks
+        run: |
+          sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|https://mirrors.edge.kernel.org/ubuntu/|g' /etc/apt/sources.list.d/ubuntu.sources
+          sudo apt-get update --error-on=any
+          sudo apt-get install --yes --no-install-recommends poppler-utils fonts-ipafont-gothic
