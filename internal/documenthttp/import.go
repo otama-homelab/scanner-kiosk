@@ -24,6 +24,12 @@ func (h *Handler) importPDF(w http.ResponseWriter, r *http.Request, p websession
 		write(w, 415, map[string]string{"code": "unsupported_media", "message": "JPEG, PNG or PDF required"})
 		return
 	}
+	purpose, format := r.Header.Get("X-Document-Purpose"), r.Header.Get("X-Photo-Format")
+	if len(r.Header.Values("X-Document-Purpose")) > 1 || len(r.Header.Values("X-Photo-Format")) > 1 ||
+		len(r.Header.Values("X-Document-Purpose")) == 1 && purpose == "" || len(r.Header.Values("X-Photo-Format")) == 1 && format == "" || !validImportOptions(media, purpose, format) {
+		failure(w, documents.ErrInvalid)
+		return
+	}
 	if r.ContentLength < 0 {
 		write(w, 411, map[string]string{"code": "length_required", "message": "Content-Length required"})
 		return
@@ -50,7 +56,7 @@ func (h *Handler) importPDF(w http.ResponseWriter, r *http.Request, p websession
 		failure(w, documents.ErrStorage)
 		return
 	}
-	request := documents.ImportRequest{IdempotencyKey: key, InputBytes: r.ContentLength, MediaType: media}
+	request := documents.ImportRequest{IdempotencyKey: key, InputBytes: r.ContentLength, MediaType: media, Purpose: purpose, PhotoFormat: format}
 	copy(request.SHA256[:], hash)
 	a, err := h.importService.Receive(r.Context(), p.ID, request, r.Body)
 	if err != nil {
@@ -74,15 +80,29 @@ func (h *Handler) reconcileImport(w http.ResponseWriter, r *http.Request, p webs
 		return
 	}
 	var body struct {
-		MediaType  string `json:"media_type"`
-		InputBytes int64  `json:"input_bytes"`
-		SHA256     string `json:"sha256"`
+		MediaType   string `json:"media_type"`
+		InputBytes  int64  `json:"input_bytes"`
+		SHA256      string `json:"sha256"`
+		Purpose     string `json:"purpose"`
+		PhotoFormat string `json:"photo_format"`
 	}
-	fields, ok := deliveryJSON(w, r, map[string]bool{"media_type": true, "input_bytes": true, "sha256": true})
+	fields, ok := deliveryJSON(w, r, map[string]bool{"media_type": true, "input_bytes": true, "sha256": true, "purpose": true, "photo_format": true})
 	if !ok {
 		return
 	}
 	if json.Unmarshal(fields["media_type"], &body.MediaType) != nil || json.Unmarshal(fields["input_bytes"], &body.InputBytes) != nil || json.Unmarshal(fields["sha256"], &body.SHA256) != nil {
+		failure(w, documents.ErrInvalid)
+		return
+	}
+	if value, exists := fields["purpose"]; exists && (json.Unmarshal(value, &body.Purpose) != nil || body.Purpose == "") {
+		failure(w, documents.ErrInvalid)
+		return
+	}
+	if value, exists := fields["photo_format"]; exists && (json.Unmarshal(value, &body.PhotoFormat) != nil || body.PhotoFormat == "") {
+		failure(w, documents.ErrInvalid)
+		return
+	}
+	if !validImportOptions(body.MediaType, body.Purpose, body.PhotoFormat) {
 		failure(w, documents.ErrInvalid)
 		return
 	}
@@ -98,7 +118,7 @@ func (h *Handler) reconcileImport(w http.ResponseWriter, r *http.Request, p webs
 		failure(w, documents.ErrStorage)
 		return
 	}
-	request := documents.ImportRequest{IdempotencyKey: key, MediaType: body.MediaType, InputBytes: body.InputBytes}
+	request := documents.ImportRequest{IdempotencyKey: key, MediaType: body.MediaType, InputBytes: body.InputBytes, Purpose: body.Purpose, PhotoFormat: body.PhotoFormat}
 	copy(request.SHA256[:], digest)
 	receipt, err := reader.ReadImportReceipt(r.Context(), p.ID, request)
 	if err != nil {
@@ -111,4 +131,11 @@ func (h *Handler) reconcileImport(w http.ResponseWriter, r *http.Request, p webs
 		return
 	}
 	write(w, 200, job)
+}
+
+func validImportOptions(media, purpose, format string) bool {
+	if purpose == "" || purpose == "document" {
+		return format == ""
+	}
+	return purpose == "photo" && (media == "image/jpeg" || media == "image/png") && (format == "" || format == "jpeg" || format == "png")
 }

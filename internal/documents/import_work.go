@@ -99,8 +99,9 @@ func (s *Store) loadImportWork(ctx context.Context, tx *sql.Tx, owner, job, runn
 	var out ImportWork
 	var digest []byte
 	var started int64
+	var purpose string
 	now := s.now().UnixMilli()
-	err := tx.QueryRowContext(ctx, `SELECT j.id,j.document_id,j.kind,j.configuration_json,j.input_revision,j.deadline_at_ms,j.started_at_ms,r.byte_size,a.id,a.relative_path,a.media_type,a.byte_size,a.sha256 FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id JOIN import_intakes i ON i.job_id=j.id AND i.owner_id=j.owner_id AND i.document_id=j.document_id JOIN artifacts a ON a.id=i.artifact_id AND a.document_id=i.document_id AND a.owner_id=i.owner_id JOIN reservations r ON r.job_id=j.id AND r.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND j.kind='import' AND j.state='running' AND j.runner_id=? AND j.started_at_ms IS NOT NULL AND d.state='processing' AND d.revision=j.input_revision AND j.deadline_at_ms>? AND d.expires_at_ms>? AND i.state='ready' AND a.kind='original' AND a.state='ready' AND EXISTS(SELECT 1 FROM job_artifacts x WHERE x.job_id=j.id AND x.owner_id=j.owner_id AND x.artifact_id=i.artifact_id) AND NOT EXISTS(SELECT 1 FROM job_artifacts x WHERE x.job_id=j.id AND x.artifact_id!=i.artifact_id)`, job, owner, runner, now, now).Scan(&out.Job.ID, &out.Job.DocumentID, &out.Job.Kind, &out.Job.Configuration, &out.Job.Revision, &out.Job.DeadlineAtMS, &started, &out.ReserveBytes, &out.Input.ID, &out.Input.RelativePath, &out.Input.MediaType, &out.Input.Size, &digest)
+	err := tx.QueryRowContext(ctx, `SELECT j.id,j.document_id,j.kind,j.configuration_json,j.input_revision,j.deadline_at_ms,j.started_at_ms,r.byte_size,a.id,a.relative_path,a.media_type,a.byte_size,a.sha256,d.purpose FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id JOIN import_intakes i ON i.job_id=j.id AND i.owner_id=j.owner_id AND i.document_id=j.document_id JOIN artifacts a ON a.id=i.artifact_id AND a.document_id=i.document_id AND a.owner_id=i.owner_id JOIN reservations r ON r.job_id=j.id AND r.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND j.kind='import' AND j.state='running' AND j.runner_id=? AND j.started_at_ms IS NOT NULL AND d.state='processing' AND d.revision=j.input_revision AND j.deadline_at_ms>? AND d.expires_at_ms>? AND i.state='ready' AND a.kind='original' AND a.state='ready' AND EXISTS(SELECT 1 FROM job_artifacts x WHERE x.job_id=j.id AND x.owner_id=j.owner_id AND x.artifact_id=i.artifact_id) AND NOT EXISTS(SELECT 1 FROM job_artifacts x WHERE x.job_id=j.id AND x.artifact_id!=i.artifact_id)`, job, owner, runner, now, now).Scan(&out.Job.ID, &out.Job.DocumentID, &out.Job.Kind, &out.Job.Configuration, &out.Job.Revision, &out.Job.DeadlineAtMS, &started, &out.ReserveBytes, &out.Input.ID, &out.Input.RelativePath, &out.Input.MediaType, &out.Input.Size, &digest, &purpose)
 	if errors.Is(err, sql.ErrNoRows) {
 		return ImportWork{}, ErrConflict
 	}
@@ -113,6 +114,10 @@ func (s *Store) loadImportWork(ctx context.Context, tx *sql.Tx, owner, job, runn
 	decoder := json.NewDecoder(strings.NewReader(out.Job.Configuration))
 	decoder.DisallowUnknownFields()
 	if decoder.Decode(&out.Snapshot) != nil || decoder.Decode(new(any)) != io.EOF || out.Snapshot.Version != 1 || importMedia(out.Snapshot.MediaType) != out.Input.MediaType || out.Snapshot.InputArtifactID != out.Input.ID || out.Snapshot.InputBytes != out.Input.Size || !sameHash(digest, out.Snapshot.SHA256) || out.Snapshot.MaxPages < 1 || out.Snapshot.MaxPages > 10000 {
+		return ImportWork{}, ErrInvalid
+	}
+	normalizedPurpose, format, err := importPurpose(out.Input.MediaType, out.Snapshot.Purpose, out.Snapshot.PhotoFormat)
+	if err != nil || normalizedPurpose != out.Snapshot.Purpose || format != out.Snapshot.PhotoFormat || importDocumentPurpose(normalizedPurpose) != purpose {
 		return ImportWork{}, ErrInvalid
 	}
 	copy(out.Input.SHA256[:], digest)

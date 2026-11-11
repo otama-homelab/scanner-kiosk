@@ -149,7 +149,7 @@ func (s *Store) ApplyRender(ctx context.Context, owner string, command RenderCom
 		if state != "review" && state != "ready" && state != "failed" {
 			return ErrConflict
 		}
-		if (purpose == "document" && settings.Format != "pdf") || (purpose == "photo" && (settings.Format == "pdf" || settings.OCR.Enabled)) {
+		if (purpose == "document" && settings.Format != "pdf") || (purpose == "photo" && (settings.Format == "pdf" && request.ManualCrop == nil || settings.OCR.Enabled)) {
 			return ErrInvalid
 		}
 		var active int

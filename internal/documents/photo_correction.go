@@ -77,7 +77,7 @@ func (s *Store) CompletePhotoCrop(ctx context.Context, owner, job, runner string
 		now := s.now().UnixMilli()
 		var doc, raw string
 		var reserved int64
-		e := tx.QueryRowContext(ctx, `SELECT d.id,j.configuration_json,r.byte_size FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id JOIN reservations r ON r.job_id=j.id AND r.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND j.runner_id=? AND j.kind='render' AND j.state='running' AND j.input_revision=? AND d.revision=j.input_revision AND d.state='processing' AND d.purpose='document' AND d.expires_at_ms>? AND j.deadline_at_ms>?`, job, owner, runner, revision, now, now).Scan(&doc, &raw, &reserved)
+		e := tx.QueryRowContext(ctx, `SELECT d.id,j.configuration_json,r.byte_size FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id JOIN reservations r ON r.job_id=j.id AND r.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND j.runner_id=? AND j.kind='render' AND j.state='running' AND j.input_revision=? AND d.revision=j.input_revision AND d.state='processing' AND d.purpose IN ('document','photo') AND d.expires_at_ms>? AND j.deadline_at_ms>?`, job, owner, runner, revision, now, now).Scan(&doc, &raw, &reserved)
 		if errors.Is(e, sql.ErrNoRows) {
 			return ErrConflict
 		}

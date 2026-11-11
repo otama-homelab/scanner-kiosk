@@ -11,6 +11,8 @@ import (
 
 type ImportRequest struct {
 	MediaType      string   `json:"media_type,omitempty"`
+	Purpose        string   `json:"purpose,omitempty"`
+	PhotoFormat    string   `json:"photo_format,omitempty"`
 	IdempotencyKey string   `json:"-"`
 	InputBytes     int64    `json:"input_bytes"`
 	SHA256         [32]byte `json:"sha256"`
@@ -22,6 +24,8 @@ type ImportLimits struct {
 }
 type ImportSnapshot struct {
 	MediaType       string   `json:"media_type,omitempty"`
+	Purpose         string   `json:"purpose,omitempty"`
+	PhotoFormat     string   `json:"photo_format,omitempty"`
 	Version         int      `json:"version"`
 	InputArtifactID string   `json:"input_artifact_id"`
 	InputBytes      int64    `json:"input_bytes"`
@@ -42,6 +46,7 @@ func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportReq
 	if err != nil || !validAdmissionLimits(limits.AdmissionLimits) || limits.MaxDocuments < 1 || limits.DocumentLifetime < time.Millisecond || limits.DocumentLifetime > 365*24*time.Hour {
 		return ImportAdmission{}, ErrInvalid
 	}
+	request.Purpose, request.PhotoFormat, _ = importPurpose(media, request.Purpose, request.PhotoFormat)
 	request.MediaType = media
 	if media == "application/pdf" {
 		request.MediaType = ""
@@ -129,7 +134,7 @@ func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportReq
 		if err != nil {
 			return ErrStorage
 		}
-		snapshot, err := json.Marshal(ImportSnapshot{Version: 1, InputArtifactID: artifact, InputBytes: request.InputBytes, SHA256: request.SHA256, MaxPages: limits.MaxPages, MediaType: request.MediaType})
+		snapshot, err := json.Marshal(ImportSnapshot{Version: 1, InputArtifactID: artifact, InputBytes: request.InputBytes, SHA256: request.SHA256, MaxPages: limits.MaxPages, MediaType: request.MediaType, Purpose: request.Purpose, PhotoFormat: request.PhotoFormat})
 		if err != nil {
 			return ErrStorage
 		}
@@ -139,7 +144,7 @@ func (s *Store) AdmitImport(ctx context.Context, owner string, request ImportReq
 			args []any
 		}{
 			{"INSERT INTO owners(id) VALUES(?) ON CONFLICT(id) DO NOTHING", []any{owner}},
-			{`INSERT INTO documents(id,owner_id,purpose,state,revision,created_at_ms,expires_at_ms) VALUES(?,?,'document','processing',1,?,?)`, []any{document, owner, now, expiry}},
+			{`INSERT INTO documents(id,owner_id,purpose,state,revision,created_at_ms,expires_at_ms) VALUES(?,?,?,'processing',1,?,?)`, []any{document, owner, importDocumentPurpose(request.Purpose), now, expiry}},
 			{`INSERT INTO jobs(id,document_id,owner_id,kind,state,input_revision,configuration_json,created_at_ms,deadline_at_ms) VALUES(?,?,?,'import','queued',1,?,?,?)`, []any{job, document, owner, string(snapshot), now, deadline}},
 			{`INSERT INTO artifacts(id,document_id,owner_id,kind,state,relative_path,media_type,byte_size,input_revision,created_at_ms) VALUES(?,?,?,'original','staging',?,?,0,1,?)`, []any{artifact, document, owner, path, media, now}},
 			{"INSERT INTO reservations(job_id,owner_id,byte_size) VALUES(?,?,?)", []any{job, owner, limits.JobMaxBytes}},
@@ -310,12 +315,43 @@ func importMedia(media string) string {
 	return media
 }
 
+// Document is omitted from the stored intent to preserve existing receipt hashes.
+func importPurpose(media, purpose, format string) (string, string, error) {
+	if purpose == "" || purpose == "document" {
+		if format != "" {
+			return "", "", ErrInvalid
+		}
+		return "", "", nil
+	}
+	if purpose != "photo" || media == "application/pdf" {
+		return "", "", ErrInvalid
+	}
+	if format == "" {
+		format = "jpeg"
+	}
+	if format != "jpeg" && format != "png" {
+		return "", "", ErrInvalid
+	}
+	return purpose, format, nil
+}
+func importDocumentPurpose(purpose string) string {
+	if purpose == "" {
+		return "document"
+	}
+	return purpose
+}
+
 // importIdentity retains the historical PDF digest while separating camera intake.
 func importIdentity(request ImportRequest) (string, string, [32]byte, error) {
 	media := importMedia(request.MediaType)
 	if !id(request.IdempotencyKey) || !validImportMedia(media) || request.InputBytes < 1 || request.InputBytes > 1<<30 || request.SHA256 == ([32]byte{}) || (media != "application/pdf" && request.InputBytes > 32<<20) {
 		return "", "", [32]byte{}, ErrInvalid
 	}
+	purpose, format, err := importPurpose(media, request.Purpose, request.PhotoFormat)
+	if err != nil {
+		return "", "", [32]byte{}, err
+	}
+	request.Purpose, request.PhotoFormat = purpose, format
 	operation, prefix := "pdf_import", "pdf-import-new-v1\x00"
 	request.MediaType = media
 	if media == "application/pdf" {
