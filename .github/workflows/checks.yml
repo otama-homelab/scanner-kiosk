@@ -144,9 +144,9 @@ jobs:
         run: gh run download "$GITHUB_RUN_ID" --name "native-test-runtime-$GITHUB_SHA-$GITHUB_RUN_ATTEMPT" --dir "$RUNNER_TEMP/native-test"
       - name: Prepare PDF and browser test dependencies
         run: |
-          # The hosted runner's Azure mirror repeatedly failed DNS; keep Ubuntu's signed HTTPS archive.
-          sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|https://archive.ubuntu.com/ubuntu/|g' /etc/apt/sources.list.d/ubuntu.sources
-          sudo apt-get update
+          # Ubuntu origin DNS fails on hosted runners; this reachable mirror retains Ubuntu signature checks.
+          sudo sed -i 's|mirror+file:/etc/apt/apt-mirrors.txt|https://mirrors.edge.kernel.org/ubuntu/|g' /etc/apt/sources.list.d/ubuntu.sources
+          sudo apt-get update --error-on=any
           sudo apt-get install --yes --no-install-recommends poppler-utils fonts-ipafont-gothic
           tar -xf "$RUNNER_TEMP/native-test/native.tar" -C "$RUNNER_TEMP/native-test"
           echo "SCANNER_TEST_PDF_RUNTIME=$RUNNER_TEMP/native-test/native" >> "$GITHUB_ENV"
