@@ -578,5 +578,15 @@
     "supersedes_blanket_rights_holder_wait": true,
     "requirements_newly_completed": 0,
     "fsenet_cpu_blocker": "Official load_checkpoint forces storage.cuda(0); CPU source modification prohibited by current plan."
+  },
+  "old_docshadow_cpu_evaluation": {
+    "summary": "../correction-docshadow-cpu-v060/summary.json",
+    "sha256": "253e8595468b31687cd9bddeb2620ddb31bacf879346d959cfce65f55d4558f7",
+    "status": "measured-configuration-fail",
+    "candidate": "old DocShadow, not current FSENet",
+    "forward_count": 39,
+    "apply_eligible": false,
+    "full_illumination_gate_complete": false,
+    "requirements_newly_completed": 0
   }
 }

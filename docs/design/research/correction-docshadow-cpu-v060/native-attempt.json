@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/tmp/scanner-correction-next-venv/bin/python",
+    "/tmp/scanner-docshadow-v060/evaluate.py",
+    "{\"id\": \"mixed_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/mixed.png\"}",
+    "0"
+  ],
+  "returncode": 0,
+  "sampled_peak_rss_bytes": 714858496,
+  "killed": null,
+  "elapsed_seconds": 6.327550374990096,
+  "status": "measured"
+}

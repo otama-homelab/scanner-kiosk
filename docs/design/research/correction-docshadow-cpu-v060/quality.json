@@ -1,0 +1,150 @@
+{
+  "scope": "512x512 official-CLI-resize synthetic diagnostic restored via official cv2.resize; not native-resolution inference, not FSENet, not full qualification",
+  "metric_implementation": "Installed OpenCV4.12.0 cv2.PSNR(R=1), cv2.norm(NORM_L1)/channel-count; no custom PSNR/SSIM implementation",
+  "clipping": "none, raw float outputs retained",
+  "thresholds": {
+    "shadow_psnr_improvement_db": 1,
+    "clean_ssim_min": 0.99,
+    "clean_channel_mae_max": 0.00392156862745098
+  },
+  "rows": [
+    {
+      "id": "mixed",
+      "original_size": [
+        900,
+        700
+      ],
+      "model_size": [
+        512,
+        512
+      ],
+      "baseline_psnr_db": 16.908529267982818,
+      "shadow_psnr_db": 19.364565978200506,
+      "shadow_channel_mae": 0.10458526786350071,
+      "clean_psnr_db": 26.279996216604054,
+      "clean_channel_mae": 0.03806919262982738,
+      "resize_only_shadow_psnr_db": 16.759385531711317,
+      "resize_only_clean_channel_mae": 0.0030566733198134147,
+      "shadow_gain_over_resize_only_db": 2.6051804464891894,
+      "shadow_psnr_improvement_db": 2.4560367102176883,
+      "shadow_psnr_threshold_pass": true,
+      "clean_mae_threshold_pass": false,
+      "ssim": "not-measured: no installed standard SSIM implementation"
+    },
+    {
+      "id": "table",
+      "original_size": [
+        900,
+        700
+      ],
+      "model_size": [
+        512,
+        512
+      ],
+      "baseline_psnr_db": 16.92328010330564,
+      "shadow_psnr_db": 17.94480798833066,
+      "shadow_channel_mae": 0.11217547511934974,
+      "clean_psnr_db": 21.70525751105123,
+      "clean_channel_mae": 0.042958812135195895,
+      "resize_only_shadow_psnr_db": 16.511873124278857,
+      "resize_only_clean_channel_mae": 0.007520919974276146,
+      "shadow_gain_over_resize_only_db": 1.432934864051802,
+      "shadow_psnr_improvement_db": 1.0215278850250193,
+      "shadow_psnr_threshold_pass": true,
+      "clean_mae_threshold_pass": false,
+      "ssim": "not-measured: no installed standard SSIM implementation"
+    },
+    {
+      "id": "faint_mixed",
+      "original_size": [
+        900,
+        700
+      ],
+      "model_size": [
+        512,
+        512
+      ],
+      "baseline_psnr_db": 16.905197558570766,
+      "shadow_psnr_db": 19.121924532374642,
+      "shadow_channel_mae": 0.10988128058799991,
+      "clean_psnr_db": 28.736944269780796,
+      "clean_channel_mae": 0.0348435859003395,
+      "resize_only_shadow_psnr_db": 16.89697631134765,
+      "resize_only_clean_channel_mae": 0.000741789789710726,
+      "shadow_gain_over_resize_only_db": 2.2249482210269917,
+      "shadow_psnr_improvement_db": 2.216726973803876,
+      "shadow_psnr_threshold_pass": true,
+      "clean_mae_threshold_pass": false,
+      "ssim": "not-measured: no installed standard SSIM implementation"
+    },
+    {
+      "id": "faint_table",
+      "original_size": [
+        900,
+        700
+      ],
+      "model_size": [
+        512,
+        512
+      ],
+      "baseline_psnr_db": 16.91111674660384,
+      "shadow_psnr_db": 19.19466209122351,
+      "shadow_channel_mae": 0.1085019246674404,
+      "clean_psnr_db": 28.591736558934432,
+      "clean_channel_mae": 0.03410773206520333,
+      "resize_only_shadow_psnr_db": 16.88630112514607,
+      "resize_only_clean_channel_mae": 0.0018476725820511107,
+      "shadow_gain_over_resize_only_db": 2.3083609660774407,
+      "shadow_psnr_improvement_db": 2.283545344619668,
+      "shadow_psnr_threshold_pass": true,
+      "clean_mae_threshold_pass": false,
+      "ssim": "not-measured: no installed standard SSIM implementation"
+    },
+    {
+      "id": "blue",
+      "original_size": [
+        1055,
+        1491
+      ],
+      "model_size": [
+        512,
+        512
+      ],
+      "baseline_psnr_db": 19.252285814323987,
+      "shadow_psnr_db": 15.868425459003781,
+      "shadow_channel_mae": 0.10591194780128232,
+      "clean_psnr_db": 15.732984317470088,
+      "clean_channel_mae": 0.07852777782916971,
+      "resize_only_shadow_psnr_db": 18.125891410424316,
+      "resize_only_clean_channel_mae": 0.019548008856991234,
+      "shadow_gain_over_resize_only_db": -2.257465951420535,
+      "shadow_psnr_improvement_db": -3.3838603553202056,
+      "shadow_psnr_threshold_pass": false,
+      "clean_mae_threshold_pass": false,
+      "ssim": "not-measured: no installed standard SSIM implementation"
+    },
+    {
+      "id": "peach",
+      "original_size": [
+        1024,
+        1536
+      ],
+      "model_size": [
+        512,
+        512
+      ],
+      "baseline_psnr_db": 19.7210868604322,
+      "shadow_psnr_db": 17.405839147809584,
+      "shadow_channel_mae": 0.10870106280064795,
+      "clean_psnr_db": 19.897359174798268,
+      "clean_channel_mae": 0.06262627323539831,
+      "resize_only_shadow_psnr_db": 18.053209909657646,
+      "resize_only_clean_channel_mae": 0.032664394570209365,
+      "shadow_gain_over_resize_only_db": -0.6473707618480624,
+      "shadow_psnr_improvement_db": -2.315247712622618,
+      "shadow_psnr_threshold_pass": false,
+      "clean_mae_threshold_pass": false,
+      "ssim": "not-measured: no installed standard SSIM implementation"
+    }
+  ]
+}

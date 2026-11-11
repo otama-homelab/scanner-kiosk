@@ -1,0 +1,32 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/fabio-sim/DocShadow-ONNX-TensorRT/ec926bf36b4ac0778f836a2d34e27021447df27c/onnx_runner/__init__.py",
+    "file": "onnx_runner/__init__.py",
+    "bytes": 39,
+    "sha256": "f3812438b3078278dad7263c18598c22454985467f85e87f62245a955ce1a223"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/fabio-sim/DocShadow-ONNX-TensorRT/ec926bf36b4ac0778f836a2d34e27021447df27c/onnx_runner/docshadow.py",
+    "file": "onnx_runner/docshadow.py",
+    "bytes": 721,
+    "sha256": "64d9c6632aaad3bb915a9c19db9a5e049a9d7cbc4fe9e7e6cf2d68166297095a"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/fabio-sim/DocShadow-ONNX-TensorRT/ec926bf36b4ac0778f836a2d34e27021447df27c/infer.py",
+    "file": "infer.py",
+    "bytes": 2783,
+    "sha256": "7a1a17860cac3fff3caad4afbaaaad2012ebeae36ba395bf0cc38e20abdfb9eb"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/fabio-sim/DocShadow-ONNX-TensorRT/ec926bf36b4ac0778f836a2d34e27021447df27c/requirements-onnx.txt",
+    "file": "requirements-onnx.txt",
+    "bytes": 73,
+    "sha256": "3a6df62dd8e5b724293ac99d0c21a7cbf680f18d3e40665c58c5b851e707b9a5"
+  },
+  {
+    "url": "https://raw.githubusercontent.com/fabio-sim/DocShadow-ONNX-TensorRT/ec926bf36b4ac0778f836a2d34e27021447df27c/LICENSE",
+    "file": "LICENSE",
+    "bytes": 1108,
+    "sha256": "c9118efeb94f4b03e4655ce0e191e45b351aa9183b0e43e53646e860e0f223a6"
+  }
+]

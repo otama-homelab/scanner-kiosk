@@ -1,0 +1,758 @@
+[
+  {
+    "id": "mixed_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "input_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.1275153220049106,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.6966554289974738,
+      0.5720462900062557,
+      0.55982117500389
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.5075349807739258,
+      1.3809599876403809
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/mixed_shadow.npy",
+    "raw_output_sha256": "1325e427aa9e7ad35df92d2eba8b491dc764045cabbd65036e2076580aee53b4",
+    "peak_rss_bytes": 510963712,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"mixed_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/mixed.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 3.213032212021062,
+    "sampled_peak_rss_bytes": 511303680
+  },
+  {
+    "id": "mixed_clean",
+    "input": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 0.9861503850261215,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.5510783280187752,
+      0.5473769069940317,
+      0.5703330620017368
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.5214232206344604,
+      1.439691424369812
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/mixed_clean.npy",
+    "raw_output_sha256": "f92a81606213048aebd86f5c3d918c4f08cd9312d5dc19ddaa1c2df7e6e8eb9c",
+    "peak_rss_bytes": 510234624,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"mixed_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/mixed.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 2.9119123420096003,
+    "sampled_peak_rss_bytes": 510242816
+  },
+  {
+    "id": "table_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/table.png",
+    "input_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 0.9763852329924703,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.5696777540142648,
+      0.5434290940174833,
+      0.5538721029879525
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.49824225902557373,
+      1.2156744003295898
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/table_shadow.npy",
+    "raw_output_sha256": "909a90205561d8479bcace01c0b41914440968e4a2f2715f851985c9950aa342",
+    "peak_rss_bytes": 510636032,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"table_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/table.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 2.910008841980016,
+    "sampled_peak_rss_bytes": 510984192
+  },
+  {
+    "id": "table_clean",
+    "input": "/tmp/scanner-v060-paired/clean/table.png",
+    "input_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.0524616329930723,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.6973357679962646,
+      0.5642709739913698,
+      0.582636042003287
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.544807493686676,
+      1.2573473453521729
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/table_clean.npy",
+    "raw_output_sha256": "35af5c27faaed3cd0fb165526bd127ed27e8be67ca5602353174e2e03dc17146",
+    "peak_rss_bytes": 510803968,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"table_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/table.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 3.1123126260063145,
+    "sampled_peak_rss_bytes": 510824448
+  },
+  {
+    "id": "faint_mixed_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "input_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.015081198012922,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.5693974000168964,
+      0.553644803003408,
+      0.567212649009889
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.507635235786438,
+      0.9372860193252563
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/faint_mixed_shadow.npy",
+    "raw_output_sha256": "b2fdf1c6b37705acee7a0246f586f37456c6bf58f613901e6b499f561b57d2d9",
+    "peak_rss_bytes": 509980672,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"faint_mixed_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/faint_mixed.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 2.9108705609978642,
+    "sampled_peak_rss_bytes": 510128128
+  },
+  {
+    "id": "faint_mixed_clean",
+    "input": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 0.997826951002935,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.5791840809979476,
+      0.5702735900122207,
+      0.5637420450220816
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.5469894409179688,
+      1.009717345237732
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/faint_mixed_clean.npy",
+    "raw_output_sha256": "2bd0668699d6d36347d4271dc04056536073419c64b7650dc8108c298afd2081",
+    "peak_rss_bytes": 508383232,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"faint_mixed_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 2.910983917012345,
+    "sampled_peak_rss_bytes": 508416000
+  },
+  {
+    "id": "faint_table_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "input_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.028761593013769,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.5885251829749905,
+      0.550256680988241,
+      0.5434423979895655
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.48610174655914307,
+      0.9403426647186279
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/faint_table_shadow.npy",
+    "raw_output_sha256": "577b7e477389cb44fc93ef5c6dd449af4b680450911660730809c8764150ef30",
+    "peak_rss_bytes": 510349312,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"faint_table_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/faint_table.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 2.9110704410122707,
+    "sampled_peak_rss_bytes": 510869504
+  },
+  {
+    "id": "faint_table_clean",
+    "input": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "original_size": [
+      900,
+      700
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.1656036410131492,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.6657839569961652,
+      0.6469487510039471,
+      0.6149908169754781
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      0.5432056188583374,
+      1.0364793539047241
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/faint_table_clean.npy",
+    "raw_output_sha256": "f67213fe865859191534500f706e623b1a4bc43e24c27c68fe1eb9e76bfa1eb6",
+    "peak_rss_bytes": 511107072,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"faint_table_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/faint_table.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 3.315566923993174,
+    "sampled_peak_rss_bytes": 511229952
+  },
+  {
+    "id": "blue_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "input_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "original_size": [
+      1055,
+      1491
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.059329929004889,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.5860409860033542,
+      0.5324786650016904,
+      0.531045747018652
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.21351474523544312,
+      1.132504940032959
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/blue_shadow.npy",
+    "raw_output_sha256": "622d981d4aae9c811178ff3348b4677ab7b83b9dd17d1183e3f7440d36fcaafa",
+    "peak_rss_bytes": 509550592,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"blue_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/blue.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 3.0116186600062065,
+    "sampled_peak_rss_bytes": 509677568
+  },
+  {
+    "id": "blue_clean",
+    "input": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "original_size": [
+      1055,
+      1491
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.0026645709876902,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.5891054170206189,
+      0.5377305529837031,
+      0.5339362130034715
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.22315499186515808,
+      1.1253516674041748
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/blue_clean.npy",
+    "raw_output_sha256": "3a2cffcbb05460e36b2984eccecbfe13a2dcd7eab207ee7837c4919b830ebc3d",
+    "peak_rss_bytes": 476131328,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"blue_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/blue.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 2.910705632006284,
+    "sampled_peak_rss_bytes": 476610560
+  },
+  {
+    "id": "peach_shadow",
+    "input": "/tmp/scanner-v060-paired/shadow/peach.png",
+    "input_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+    "original_size": [
+      1024,
+      1536
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.0247873709886335,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.556983438989846,
+      0.6203170029912144,
+      0.5762214020069223
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.24584829807281494,
+      1.2479162216186523
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/peach_shadow.npy",
+    "raw_output_sha256": "bb122b9e2fdcfc6353a06442adb6b53a08e0a839a5b0e13a05e3599b802dfad2",
+    "peak_rss_bytes": 509374464,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"peach_shadow\", \"path\": \"/tmp/scanner-v060-paired/shadow/peach.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 3.113217853999231,
+    "sampled_peak_rss_bytes": 509370368
+  },
+  {
+    "id": "peach_clean",
+    "input": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "original_size": [
+      1024,
+      1536
+    ],
+    "model_size": [
+      512,
+      512
+    ],
+    "scope": "official CLI resize diagnostic, not native-resolution model quality",
+    "load_seconds": 1.0540193050110247,
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "input_spec": [
+      [
+        "image",
+        [
+          "batch_size",
+          3,
+          "height",
+          "width"
+        ],
+        "tensor(float)"
+      ]
+    ],
+    "timing_seconds": [
+      0.6338203880004585,
+      0.5266352479811758,
+      0.5347382389882114
+    ],
+    "output_shape": [
+      1,
+      3,
+      512,
+      512
+    ],
+    "output_range": [
+      -0.2558547258377075,
+      1.273685097694397
+    ],
+    "raw_output": "/tmp/scanner-docshadow-v060/outputs/peach_clean.npy",
+    "raw_output_sha256": "7cd392f09a5997f05f0e9d62d1fba19b7bca3465dd7af8ed1b275a8f369fc7a7",
+    "peak_rss_bytes": 510078976,
+    "status": "measured",
+    "intra_threads": 2,
+    "inter_threads": 1,
+    "cpu_affinity": [
+      0,
+      1
+    ],
+    "command": [
+      "/tmp/scanner-correction-next-venv/bin/python",
+      "/tmp/scanner-docshadow-v060/evaluate.py",
+      "{\"id\": \"peach_clean\", \"path\": \"/tmp/scanner-v060-paired/clean/peach.png\"}",
+      "512"
+    ],
+    "elapsed_seconds": 3.011712492996594,
+    "sampled_peak_rss_bytes": 510234624
+  }
+]

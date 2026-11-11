@@ -1,0 +1,258 @@
+{
+  "format": "scanner-old-docshadow-cpu-evaluation",
+  "source_revision": "ec926bf36b4ac0778f836a2d34e27021447df27c",
+  "model": "author-linked OLD DocShadow SD7K ONNX v1.0.0, NOT current FSENet",
+  "model_sha256": "8c09b9320a0fb3c53806cdf9cb8410b3706c77caed81f4ec1cb0bf2cbd14b049",
+  "model_bytes": 120041674,
+  "status": "measured-configuration-fail",
+  "apply_eligible": false,
+  "production_dependencies_added": false,
+  "source_patches": false,
+  "new_algorithm": false,
+  "inference_processes": 13,
+  "forward_count": 39,
+  "resized_512_inputs": 12,
+  "native_900x700_inputs": 1,
+  "native_scope_note": "native.stdout.json inherited generic resized-scope label from glue; actual model_size [900,700] and shape [1,3,700,900] prove no model-input rescaling. Native-specific fields supersede label.",
+  "cold_forward_seconds_range": [
+    0.5510783280187752,
+    0.6973357679962646
+  ],
+  "warm_forward_seconds_range": [
+    0.5266352479811758,
+    0.6469487510039471
+  ],
+  "session_load_seconds_range": [
+    0.9763852329924703,
+    1.1656036410131492
+  ],
+  "peak_rss_bytes_range": [
+    476131328,
+    511107072
+  ],
+  "native_forward_seconds": [
+    1.5604177539935336,
+    1.592374108004151,
+    1.61026128398953
+  ],
+  "native_peak_rss_bytes": 714518528,
+  "shadow_psnr_improvement_passes": 4,
+  "shadow_case_count": 6,
+  "clean_mae_passes": 0,
+  "clean_case_count": 6,
+  "ssim": "not-measured",
+  "full_illumination_gate_complete": false,
+  "quality_scope": "512 diagnostic, synthetic-only, output restored using official visualization resize. Both original no-op and same-resize no-op baseline retained. Not current FSENet or conversion parity.",
+  "earlier_acquisition_failure": "First guessed raw onnx_runner.py URL returned404; GitHub tree identified actual onnx_runner package. No failed inference attempts.",
+  "limits": {
+    "cpu_threads": 2,
+    "inter_op_threads": 1,
+    "rss_cap_bytes": 2147483648,
+    "rss_enforcement": "live /proc RSS sampling ~0.1s, sampled enforcement not hard cgroup cap",
+    "forward_timeout_seconds": 30,
+    "process_timeout_seconds": 100,
+    "download_cap_bytes": 268435456
+  },
+  "evidence_files": [
+    {
+      "file": "blue_clean.stderr.log",
+      "bytes": 243,
+      "sha256": "7b57c3c0bca4291fb6ec551791e73427878839fd93a8d8f07c1dd025c156754b"
+    },
+    {
+      "file": "blue_clean.stdout.json",
+      "bytes": 897,
+      "sha256": "a16963e4e769ed8fa1edc46d26c04592a4b57839ee0ec88a592d0e22b51ad0f2"
+    },
+    {
+      "file": "blue_shadow.stderr.log",
+      "bytes": 243,
+      "sha256": "2eb610746a41f60f6e60c27a53afc935e13d2cae6277cb3199f8838b0b783014"
+    },
+    {
+      "file": "blue_shadow.stdout.json",
+      "bytes": 897,
+      "sha256": "4657a83554e937f3c44bc41cb3440afbf5f1d6d0f94a4334d06836f5eba6aa38"
+    },
+    {
+      "file": "evaluate.py",
+      "bytes": 2166,
+      "sha256": "dac8b4c6de4866036189710015ea31e3b00e1c2ae49b6de2aa870a3940cf175b"
+    },
+    {
+      "file": "faint_mixed_clean.stderr.log",
+      "bytes": 243,
+      "sha256": "2e11ffb34e7b58b7386ef1dedd3fe898f2b63c729551bc4de646d27572a7c583"
+    },
+    {
+      "file": "faint_mixed_clean.stdout.json",
+      "bytes": 912,
+      "sha256": "2b17bbd3c7ea9cf0f38538e5b2baeab57d414024417bc836467f7cce30b4b8ba"
+    },
+    {
+      "file": "faint_mixed_shadow.stderr.log",
+      "bytes": 243,
+      "sha256": "48d530519df274fba0b3e457ec891e7cd7ab8d7a98010414a388972de7ffc318"
+    },
+    {
+      "file": "faint_mixed_shadow.stdout.json",
+      "bytes": 913,
+      "sha256": "ac71f945c1bec3a2776ba074b7f7a92c5aafb97102d9f2d4c5ac6cf7caa12007"
+    },
+    {
+      "file": "faint_table_clean.stderr.log",
+      "bytes": 243,
+      "sha256": "5b59e84bc71b4bc40b1bcee95ff667e838a01b3ee5fbfc0e773e0aab5b03b284"
+    },
+    {
+      "file": "faint_table_clean.stdout.json",
+      "bytes": 914,
+      "sha256": "ad3d2c50430d3c9dac9aa2dc88c389b8a11addc847370c148183fc84b0b4f25c"
+    },
+    {
+      "file": "faint_table_shadow.stderr.log",
+      "bytes": 243,
+      "sha256": "9933a36ce16d7efc424325fbabfcd42a7e17fcbc2eab17ca91097e865ee1538f"
+    },
+    {
+      "file": "faint_table_shadow.stdout.json",
+      "bytes": 916,
+      "sha256": "faf2097a7ae445527d2312a75826b51a9e32ad1526a4e663bd98c6924c3823d6"
+    },
+    {
+      "file": "mixed_clean.stderr.log",
+      "bytes": 243,
+      "sha256": "0baa4c3d2f53b8e3b0652eeab209cf3e7071fefd39e45116542aec45f4fc5a8d"
+    },
+    {
+      "file": "mixed_clean.stdout.json",
+      "bytes": 896,
+      "sha256": "5c3857bfa88214e6005f46a8e4aef58703fa1c2b3857741657564781ff9c4888"
+    },
+    {
+      "file": "mixed_shadow.stderr.log",
+      "bytes": 243,
+      "sha256": "9e284f8232eae92e3039d9dfbfa4388e880898064d0437cbabc70603a33dcff5"
+    },
+    {
+      "file": "mixed_shadow.stdout.json",
+      "bytes": 898,
+      "sha256": "f271666122268c2b6e8eb1c1cc7744d2c62ac90b8d4529a0ec466aa7cc5286a5"
+    },
+    {
+      "file": "model-acquisition.json",
+      "bytes": 393,
+      "sha256": "20e0f0419388028357b9b9322d93ecf1212aa76bfbddc1680d74c5ba1adff02a"
+    },
+    {
+      "file": "native-attempt.json",
+      "bytes": 361,
+      "sha256": "18728e77ee2b6a176a40560c91a1533e8d87d81dd48c3343ec9cb0bc5434cef3"
+    },
+    {
+      "file": "native.py",
+      "bytes": 1190,
+      "sha256": "2d756723a068fcb3151daf695a3a0b3534f018db8069eeaf8b6ebfb827943a01"
+    },
+    {
+      "file": "native.stderr.log",
+      "bytes": 243,
+      "sha256": "bd68915ac29a1c626f17309c79e092b73c7b741e4a140465368ec1f922258239"
+    },
+    {
+      "file": "native.stdout.json",
+      "bytes": 902,
+      "sha256": "2bbf2afe0cd816b5c7d662a43b1f7a28122f104bdffeffe3c32a02ddebd090b3"
+    },
+    {
+      "file": "peach_clean.stderr.log",
+      "bytes": 243,
+      "sha256": "e6be1328b3fb1fe25d04c7d8f9698ba9710547258522b3dfc3ea0772a5c421e9"
+    },
+    {
+      "file": "peach_clean.stdout.json",
+      "bytes": 898,
+      "sha256": "23bda49e6f8ced150ef9f9fe2b799b8d6bcef6ada7c0a41e6c4d38ccada5a9d9"
+    },
+    {
+      "file": "peach_shadow.stderr.log",
+      "bytes": 243,
+      "sha256": "05a3c64d1febe46f0353f8ba82a4873dcebd32ff83ee2b062dd53ddd8bf6de80"
+    },
+    {
+      "file": "peach_shadow.stdout.json",
+      "bytes": 902,
+      "sha256": "350ac8d9fbc85d536b08ca8ab7f0035f0905c1a8c6564b395c662ca8aff02af3"
+    },
+    {
+      "file": "quality.json",
+      "bytes": 5123,
+      "sha256": "50940580b3e44da5ece14b2ef42a6fdb243aa215d05b5967af2771d98188da51"
+    },
+    {
+      "file": "quality.py",
+      "bytes": 2357,
+      "sha256": "15e7ecb96a181f7387820a185cedb73f7bb194d8658658c35b96e4eb3ada84ae"
+    },
+    {
+      "file": "report.md",
+      "bytes": 2655,
+      "sha256": "765571cd6e6bd4ade069160f1cd7c26466431c4dd2fc7cfb07c05f3e454facd1"
+    },
+    {
+      "file": "run.py",
+      "bytes": 1655,
+      "sha256": "cc9a926c24076ad8536d28e800c9dfd8188f9fa2eb49d6ddd83dde625227f12e"
+    },
+    {
+      "file": "runs.json",
+      "bytes": 18439,
+      "sha256": "6c4caa9ac84cb1fab47849a16f6a11e5b2eaaf6baffa31640297cb222f6e388e"
+    },
+    {
+      "file": "source-acquisition.json",
+      "bytes": 1409,
+      "sha256": "eda272c39f7d782d419221c7d77cbf5294bdd81ff2f9a84f4b945b2b80916988"
+    },
+    {
+      "file": "table_clean.stderr.log",
+      "bytes": 243,
+      "sha256": "e85fc9d760d5d5663e61236413e111f23563c515a754950adfeead1d0bfafeb2"
+    },
+    {
+      "file": "table_clean.stdout.json",
+      "bytes": 895,
+      "sha256": "99d561371e5fdefd8d13793ccccc2f442a3d3dfd3628305a229aceb185512865"
+    },
+    {
+      "file": "table_shadow.stderr.log",
+      "bytes": 243,
+      "sha256": "50a075cead2c5a85fb65def4d031267a4fb4ffeaae056577468fca26be54d006"
+    },
+    {
+      "file": "table_shadow.stdout.json",
+      "bytes": 901,
+      "sha256": "63b4d0267853b1d5351b672c3ea095d1c02af7c0a32041c4c3043cfe91b1c458"
+    },
+    {
+      "file": "upstream-LICENSE",
+      "bytes": 1108,
+      "sha256": "c9118efeb94f4b03e4655ce0e191e45b351aa9183b0e43e53646e860e0f223a6"
+    },
+    {
+      "file": "upstream-infer.py",
+      "bytes": 2783,
+      "sha256": "7a1a17860cac3fff3caad4afbaaaad2012ebeae36ba395bf0cc38e20abdfb9eb"
+    },
+    {
+      "file": "upstream-onnx-runner-docshadow.py",
+      "bytes": 721,
+      "sha256": "64d9c6632aaad3bb915a9c19db9a5e049a9d7cbc4fe9e7e6cf2d68166297095a"
+    },
+    {
+      "file": "upstream-onnx-runner-init.py",
+      "bytes": 39,
+      "sha256": "f3812438b3078278dad7263c18598c22454985467f85e87f62245a955ce1a223"
+    }
+  ]
+}

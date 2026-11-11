@@ -110,3 +110,10 @@ EGMレビュー済み6計画の自動14タスクを実施し、独立検証も�
 FSENetはMIT repoが推論用として重みを直接配布し、確認資料に重み除外はない。「専用許諾文がないため必ず権利者回答待ち」は一律の停止理由から外す。元PyTorch評価にはONNX parity不要。ただし公式load_checkpointがstorage.cuda(0)を固定し、既存CPU環境で無変更実行できないことをsource確認。accelerate/torchmetrics/yacs/einops/albumentationsも不足。旧DocShadow ONNXは現在のFSENetと別候補に分離する。重み取得や依存導入だけではCUDA固定を解消しないので未実施。
 
 証拠: docs/design/research/correction-runtime-followup-v060/summary.json、fairscan.md、illumination.md、fsenet-preflight.md。過去のimmutable監査は当時の判定として保持し、本訂正を現在の根拠とする。6/14の能力達成数は変わらない。再開条件はFairScanの公式JVM評価を許すbuild方針、FSENetの公式CPU対応経路（または別候補としての旧DocShadow評価計画）、独立正解・本人操作証拠。単なる専用許諾文の欠如を再び一律の停止理由にしない。
+
+
+## 2026-11-11 旧DocShadow CPU評価を実施
+
+作者紹介の旧DocShadow SD7K ONNXを現在のFSENetと区別し、公式前処理/run無変更で実測。合成影6+clean6入力を公式512設定で各3回、元900x700を追加3回、計39forward/13process成功。512 forward0.527–0.697秒/RSS476–511MB、native1.560–1.610秒/RSS714.5MB。影PSNR+1dBは4/6、青・桃紙は悪化。clean MAE基準は0/6で、この512構成は不合格・apply不可。既存OpenCV APIで測定、同resize-only baselineも保持。SSIM/全native品質/実写真/OCR/parity未測定、現FSENetの評価とは別。新規依存/補正アルゴリズム/製品変更/公開/配備なし。
+
+実行記録: docs/design/research/correction-docshadow-cpu-v060/report.md。summaryと40件の証拠hashを照合。元14要件の完了数は6/14を維持し、ILL-01/02をこの別候補の部分診断で完了に変えない。前回の「モデル推論なし」はこの追補より前の履歴を示す。
