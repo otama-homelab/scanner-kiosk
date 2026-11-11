@@ -1,0 +1,14 @@
+{
+  "six_exact_photo_pairs": true,
+  "three_exact_raw_scan_extractions": true,
+  "official_uvdoc_document_capture_reference_mapping": true,
+  "all9_canonical_hashes_unchanged": true,
+  "all9_decoded_rgb_shapes_identical": true,
+  "encoded_byte_identity_false_all9": true,
+  "source_scan_alpha_nonopaque_all3": true,
+  "visual_alpha_compositing_equivalence_claimed": false,
+  "independent_content_truth_claimed": false,
+  "new_public_download_bytes": 1371938,
+  "private_pixels_accessed": false,
+  "ocr_llm_used_as_truth": false
+}

@@ -1,0 +1,38 @@
+{
+  "scope": "Source-defined row selection/broadcast analysis only; runtime/checkpoint not modified",
+  "source_key": "module.backbone.coefficient_1_0",
+  "original_shape": [
+    2,
+    3
+  ],
+  "original_bytes_sha256": "e310828339e9b618549b1904b48a4ba70683be4a07c435fbba3753ebf48d5c6a",
+  "rows": [
+    {
+      "source_expression": "coefficient_1_0[0, :][None, :, None, None]",
+      "row_index": 0,
+      "broadcast_shape": [
+        1,
+        3,
+        1,
+        1
+      ],
+      "dtype": "<f4",
+      "bytes": 12,
+      "raw_bytes_sha256": "e1443413302ad8c4e2e1d07cd37450eb3a54fafa1305495a0ba9cb0c891bc25c"
+    },
+    {
+      "source_expression": "coefficient_1_0[1, :][None, :, None, None]",
+      "row_index": 1,
+      "broadcast_shape": [
+        1,
+        3,
+        1,
+        1
+      ],
+      "dtype": "<f4",
+      "bytes": 12,
+      "raw_bytes_sha256": "9117d4d1265f01b441699aec1b60d00f8b6d91a4eee19b9cce0ab39b4316ce41"
+    }
+  ],
+  "peak_rss_bytes": 350523392
+}

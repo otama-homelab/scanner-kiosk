@@ -185,3 +185,14 @@ FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい
 現モデル22completedforward: native10/12出力保存後にaggregatePSS2180001792B>2GiBでプロセス群停止（正確な内部停止stage不明、2件未完）。公式ORI=Falseの512経路は別runで12/12成功、forward0.591–1.014秒、parentRSS814MB/aggregatePSS1.147GBを区別。nativeは1.808–6.091秒。512影PSNR+1dB4/6、cleanMAE0/6/SSIM3/6、native影0/5/cleanMAE0/5/SSIM0/5で適用不可。旧ONNXと同一native入力tensor10件はhash一致、固定allclose4/10、最大差5.85e-5。配布lineage/CUDAparity証明ではない。
 
 証拠: docs/design/research/correction-fsenet-cpu-v060/report.md・summary.jsonの108件hash照合。台帳ILL02をmeasured-partialへ更新し「現FSENet推論なし」は過去の状態として明確化。ILL01はconversion出所/parity等の証拠待ち、ILL02は内容欠落/細線/印章と全体条件未完。元要件6/14を維持、製品変更/配備/公開なし。次の独立検証ではこのCPUfork追補を前回verificationより新しい証拠として読む。
+
+
+## 2026-11-11 独立正解の来歴・SD7K parameter同一性・元基準監査
+
+公式UVDoc評価実装により元6写真とscan1/2/3を対応付け、photo2_2→scan2を確定。flatbed参照は既にあり、不足は数字/細線/位置注釈。来歴訂正: canonical9は元archivePNGとencodedbytesが全件異なるRGB再保存版だが、dimensions/decodedRGBは全件一致しcanonicalhashは不変。RGBA scan3枚に非不透明alphaがあるため視覚描画同一性は主張しない。archive memberをそのまま展開してcanonicalhashへ復旧できるという古い説明を訂正し、rawarchive/memberとcanonicalRGB派生の二つのidentityを保持する。
+
+現FSENetSD7Kと作者紹介ONNXは、別配布artifactであるが無関係な重みではない。990tensor直接一致＋公式forwardのrow選択/broadcastとgraphMul/Addによる1tensor対応を証明し、991state/992initializerの全117592520parameterbytes一致、不一致/未対応0。旧来の日付だけによる同一性未確定の説明を本証拠が更新する。推論/weight改変/exportなし。固定CPUoutput比較4/10合格は変えず、CUDAparityや完全exportbuild履歴は未証明。
+
+独立元基準監査はILL01の出所・条件判定を完了と支持。元要件は7/14完了へ更新し、ILL01はmeasured-fail/complete=true/quality_pass=false（変換parity不合格を含む判定完了）として品質/採用合格と分離する。元要件へbuildhost等を後付け必須化しない。ILL02は公式512全6pair測定済みだが数字/細線/印影等の内容比較が残る。Phase完了は引き続き64のみ。
+
+証拠: docs/design/research/correction-original-truth-followup-v060/report.md、correction-fsenet-artifact-identity-v060/report.md、correction-current-criteria-audit-v060/report.md。8+30証拠hashをroot照合、独立監査は146索引hash照合。次は既存出力でILL02内容比較、photo2_2独立注釈、本人端末受入。製品採用/公開/配備なし。

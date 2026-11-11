@@ -1,0 +1,190 @@
+{
+  "format": "scanner-fsenet-artifact-identity-evaluation",
+  "date": "2026-11-11",
+  "status": "parameter-identity-measured-pass-build-lineage-and-parity-separate",
+  "scope": "Only official SD7K.pth versus author-linked docshadow_sd7k.onnx; not Jung/Kligler or all models",
+  "official_checkpoint_sha256": "6a514e34cf2d3aff12eebd0c4f7b04466f47c1c0c41019d81091cc4d2defdc56",
+  "author_linked_onnx_sha256": "8c09b9320a0fb3c53806cdf9cb8410b3706c77caed81f4ec1cb0bf2cbd14b049",
+  "current_official_source_revision": "b9395ed333c916051d7ae58be212ac62119b61f5",
+  "author_linked_exporter_revision": "ec926bf36b4ac0778f836a2d34e27021447df27c",
+  "state_dict_count": 991,
+  "onnx_initializer_count": 992,
+  "direct_tensor_identity_matches": 990,
+  "source_defined_folded_tensor_matches": 1,
+  "unmatched_state_count": 0,
+  "unmatched_initializer_count": 0,
+  "same_name_mismatch_count": 0,
+  "total_parameter_bytes_per_artifact": 117592520,
+  "parameter_value_identity_established": true,
+  "full_checkpoint_file_byte_identity_established": false,
+  "exact_export_build_lineage_established": false,
+  "cuda_parity_established": false,
+  "existing_cpu_output_comparison_allclose": "4/10 at fixedatol1e-5/rtol1e-4; unchanged, not rerun",
+  "source_checkpoint_url": "https://drive.google.com/uc?export=download&confirm=t&id=1a1dGcSFYB1ocR5KohSTjXIQcpQ0w05V7",
+  "source_checkpoint_probe": "200 virus-scan confirmation HTML only; duplicate model download intentionally not attempted after parameter proof closed",
+  "new_model_inferences": 0,
+  "new_exports": 0,
+  "new_weight_or_graph_transformations": 0,
+  "new_dependencies": 0,
+  "onnx_version": "1.19.1",
+  "max_measurement_peak_rss_bytes": 470679552,
+  "license_scope": "Pinned official repository/release context is MIT, author-linked exporter MIT; no weight exclusion observed in captured sources; no bespoke letter required merely because no modelcard. Retain source/notice obligations. This is not an independent rights-holder guarantee.",
+  "original_ILL01_auto_completed": false,
+  "remaining_original_ILL01_gates": [
+    "Exact export build recipe/checkpoint file lineage not established from released metadata",
+    "Original numerical parity criterion remains existing4/10allclose outcome; official CUDA parity unavailable"
+  ],
+  "apply_eligible": false,
+  "evidence_files": [
+    {
+      "file": "acquire_source_checkpoint.py",
+      "bytes": 1762,
+      "sha256": "bb7c1775ae90270f587b3148d43bfa91e2ac2d69a3f71bce5dae440e278fcd7b"
+    },
+    {
+      "file": "bounded.py",
+      "bytes": 1026,
+      "sha256": "fd94a758cd7839a5253b34daae7e05f47b931058f57ef7752ab27922dc7f031a"
+    },
+    {
+      "file": "coefficient-rows-process.json",
+      "bytes": 312,
+      "sha256": "33aa6884be2fd46ebb37777bf680dad3b3b05b51b74164004e9dab7bae72c515"
+    },
+    {
+      "file": "coefficient-rows.json",
+      "bytes": 978,
+      "sha256": "5b69f9f86b3c7ff88199b79833794f438733a107cd52bbdcf8e2bf1cb2e7f3ed"
+    },
+    {
+      "file": "coefficient-rows.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "coefficient-rows.stdout.log",
+      "bytes": 471,
+      "sha256": "96d098948075f4d1bcbd12956f483479150d6af6fc881564d9693e5cd76324d2"
+    },
+    {
+      "file": "coefficient_rows.py",
+      "bytes": 1287,
+      "sha256": "ef64795a741925e0f49d27490a71278bc28278fb7cd218aa8a71a5bfeeb528ac"
+    },
+    {
+      "file": "current-state-process.json",
+      "bytes": 309,
+      "sha256": "37e97e15208fd809272a6923d25ce2b190fd61a758d80526eaa226b97cb2dbca"
+    },
+    {
+      "file": "current-state.json",
+      "bytes": 348122,
+      "sha256": "bf493d65c9203bbd50b067b7344f820390d79cc52b8aca725327abefe54b8b1b"
+    },
+    {
+      "file": "current-state.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "current-state.stdout.log",
+      "bytes": 4,
+      "sha256": "d7a72f7e1677172eec67fbe4378c722fda94651e94b428f448263e02bc287841"
+    },
+    {
+      "file": "current_state.py",
+      "bytes": 1400,
+      "sha256": "1c71bc4eeeb14cc232858bed8a577821bf93ed8392bedaa367fd6e6ae85bf6b7"
+    },
+    {
+      "file": "folded-coefficient-identity.json",
+      "bytes": 1799,
+      "sha256": "4fa3cfa0cb890a81f85e28501c3ce5b7545457e0bdae13eac44410f05bcf2c35"
+    },
+    {
+      "file": "folded-graph-process.json",
+      "bytes": 308,
+      "sha256": "e40533bd57c97c5054c51a65fa406bc5ca0f7a7c4466e02f51419734460579ff"
+    },
+    {
+      "file": "folded-graph.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "folded-graph.stdout.log",
+      "bytes": 1048,
+      "sha256": "078d209758f332d076c89736f263b72a4b64cd3c84d15b4b35a52175dab38ee3"
+    },
+    {
+      "file": "folded_graph.py",
+      "bytes": 2017,
+      "sha256": "134500df050b24fd2934dd9e1e64e145a4df7f2b50fce0c756c32dff5c4e4786"
+    },
+    {
+      "file": "official-current-model-source.txt",
+      "bytes": 19787,
+      "sha256": "4d26f7afa0e0963c5dd4ddf9a951424b9440ad5200a66da1cacce9d5a0e613cb"
+    },
+    {
+      "file": "onnx-initializers-process.json",
+      "bytes": 313,
+      "sha256": "43823e0b93a71f8e6a149db49a3aa4c0a09ddb9879fc1cd1af27595afed27ff6"
+    },
+    {
+      "file": "onnx-initializers.json",
+      "bytes": 259358,
+      "sha256": "5867b4468a4bc13baffcbf71bb30cdbf3ef594c0b725e68ae1c9da958eb00348"
+    },
+    {
+      "file": "onnx-initializers.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "onnx-initializers.stdout.log",
+      "bytes": 4,
+      "sha256": "d48e339a0e59886f05ad3bb339540a55c1309f8a556cfc248ef7cdd7f70180bc"
+    },
+    {
+      "file": "onnx_initializers.py",
+      "bytes": 1458,
+      "sha256": "981b342d39a9ecf5c710417341b4f0d7522c72d719dba2b4faeee58d8edc5162"
+    },
+    {
+      "file": "parameter-mapping.json",
+      "bytes": 496184,
+      "sha256": "4b48c19d570e2506dfe4671ce95dfd01e24c9181a19399576168778aafc8020f"
+    },
+    {
+      "file": "primary-sources.json",
+      "bytes": 11394,
+      "sha256": "eabd9d9b511235bc5d7dd4b9cc533f009bb48cf98613884c45aa3171dc6666d4"
+    },
+    {
+      "file": "prior-evidence-bindings.json",
+      "bytes": 1003,
+      "sha256": "cd5eebdace0d57c6ec4820854f4a189b3fc114b18b69683bb35e0af4d20680fd"
+    },
+    {
+      "file": "report.md",
+      "bytes": 4941,
+      "sha256": "f2328499265ba7fa077e8f609ba0a83bb83b41dde2809a3470f5b34fca3f6858"
+    },
+    {
+      "file": "selfcheck.json",
+      "bytes": 371,
+      "sha256": "2624c9e4a258466d76e763e5a832cb708479800b912685280048183d2288f635"
+    },
+    {
+      "file": "source-checkpoint-acquisition.json",
+      "bytes": 668,
+      "sha256": "adc64a1666e6dba3253bcfb9f4c46dba8815b0bfa5c95d9cafe0508ff5935040"
+    },
+    {
+      "file": "source-checkpoint-response.html",
+      "bytes": 2456,
+      "sha256": "32cdfe5428c0882911aa764f5f32cb3b2d2d313e6bc356df70e37c72e01a2bc6"
+    }
+  ]
+}

@@ -1,0 +1,969 @@
+{
+  "archives": [
+    {
+      "path": "/tmp/scanner-v040/crop.zip",
+      "bytes": 294741912,
+      "sha256": "30e385f4a8c7bb47ec93cb61c73e40d91ed390fbf86b22cf1c5e4e8898df4e81",
+      "png_member_count": 130,
+      "nonimage_members": [],
+      "newly_downloaded": false
+    },
+    {
+      "path": "/tmp/scanner-v040/scan.zip",
+      "bytes": 436458210,
+      "sha256": "28b97e256c657a9a2d6320c54517cb378af13f5f3ca27bde0f915c6da02e2bd2",
+      "png_member_count": 65,
+      "nonimage_members": [],
+      "newly_downloaded": false
+    }
+  ],
+  "normalization_equality": "decoded RGB and dimensions only, not encoded byte identity; alpha/orientation separately recorded",
+  "pillow_version": "12.2.0",
+  "all9_original9_canonical_hashes_preserved": true,
+  "canonical_to_archive_identity": [
+    {
+      "id": "fixture_docunet_crop_1_1_copy",
+      "source_archive": "crop.zip",
+      "archive_member": "crop/1_1 copy.png",
+      "archive_member_bytes": 1443806,
+      "archive_member_sha256": "e241c565dc595cc28b5302344cafa8c7745011688232ed398353de499fee8492",
+      "canonical_path": "/tmp/scanner-v040/corpus/crop_1_1_copy.png",
+      "canonical_bytes": 1439196,
+      "canonical_sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "2f7e634f202267d4fd1c6d477f3f43693166b3d75343c2175e63634329e2361b",
+      "metadata": {
+        "archive_mode": "RGB",
+        "canonical_mode": "RGB",
+        "size": [
+          1137,
+          1521
+        ],
+        "archive_exif_orientation": 1,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": null,
+        "alpha_max": null,
+        "alpha_opaque_fraction": null
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_crop_1_2_copy",
+      "source_archive": "crop.zip",
+      "archive_member": "crop/1_2 copy.png",
+      "archive_member_bytes": 1588210,
+      "archive_member_sha256": "84a9dc0306855583c6bb3fc768ffc2a9de43dffa8feef18c8300c3986589bf5a",
+      "canonical_path": "/tmp/scanner-v040/corpus/crop_1_2_copy.png",
+      "canonical_bytes": 1581870,
+      "canonical_sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "e876b0c7344c0c91f730549121bd66f56e526984aae272bd37896287db3399ff",
+      "metadata": {
+        "archive_mode": "RGB",
+        "canonical_mode": "RGB",
+        "size": [
+          1265,
+          1636
+        ],
+        "archive_exif_orientation": 1,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": null,
+        "alpha_max": null,
+        "alpha_opaque_fraction": null
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_crop_2_1_copy",
+      "source_archive": "crop.zip",
+      "archive_member": "crop/2_1 copy.png",
+      "archive_member_bytes": 2023288,
+      "archive_member_sha256": "6cec7122584fb9162b957a1164fc9fbebe8645d93143f79f016b4526fada47a2",
+      "canonical_path": "/tmp/scanner-v040/corpus/crop_2_1_copy.png",
+      "canonical_bytes": 2019020,
+      "canonical_sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "6d56fb85f6d338ff9cbd6ab20e958b5e881000bced55d87fe1d95e88a8e0c287",
+      "metadata": {
+        "archive_mode": "RGB",
+        "canonical_mode": "RGB",
+        "size": [
+          1155,
+          2352
+        ],
+        "archive_exif_orientation": 1,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": null,
+        "alpha_max": null,
+        "alpha_opaque_fraction": null
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_crop_2_2_copy",
+      "source_archive": "crop.zip",
+      "archive_member": "crop/2_2 copy.png",
+      "archive_member_bytes": 2397969,
+      "archive_member_sha256": "63081e3dc3d76ac7425e3f8923b8a782dab28315d8ca26f304b4c4cd4d6bdab1",
+      "canonical_path": "/tmp/scanner-v040/corpus/crop_2_2_copy.png",
+      "canonical_bytes": 2394380,
+      "canonical_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "6335b44dfb07f46cd29b6d42121c7da08d15c74807026e64816db7f71322cb6d",
+      "metadata": {
+        "archive_mode": "RGB",
+        "canonical_mode": "RGB",
+        "size": [
+          1365,
+          2421
+        ],
+        "archive_exif_orientation": 1,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": null,
+        "alpha_max": null,
+        "alpha_opaque_fraction": null
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_crop_3_1_copy",
+      "source_archive": "crop.zip",
+      "archive_member": "crop/3_1 copy.png",
+      "archive_member_bytes": 1426068,
+      "archive_member_sha256": "8e3179959d02f3f476031c50bc9e55f166474ee4e2d77ffea9e5745778f83edc",
+      "canonical_path": "/tmp/scanner-v040/corpus/crop_3_1_copy.png",
+      "canonical_bytes": 1422168,
+      "canonical_sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "38fb64e328588749da0814f74aa3b600fcee459bc9baa00799a00002da85d50a",
+      "metadata": {
+        "archive_mode": "RGB",
+        "canonical_mode": "RGB",
+        "size": [
+          1117,
+          1701
+        ],
+        "archive_exif_orientation": 1,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": null,
+        "alpha_max": null,
+        "alpha_opaque_fraction": null
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_crop_3_2_copy",
+      "source_archive": "crop.zip",
+      "archive_member": "crop/3_2 copy.png",
+      "archive_member_bytes": 1465657,
+      "archive_member_sha256": "d31f6e1d665269068888f66ce1f594a417de671bcb8b4904303a84b3df08fb16",
+      "canonical_path": "/tmp/scanner-v040/corpus/crop_3_2_copy.png",
+      "canonical_bytes": 1457205,
+      "canonical_sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "4b2b20cee5fa6835cc0a9bac86a3f398060aedd8f762d92efd53bf773709f623",
+      "metadata": {
+        "archive_mode": "RGB",
+        "canonical_mode": "RGB",
+        "size": [
+          950,
+          1604
+        ],
+        "archive_exif_orientation": 1,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": null,
+        "alpha_max": null,
+        "alpha_opaque_fraction": null
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_scan_1",
+      "source_archive": "scan.zip",
+      "archive_member": "scan/1.png",
+      "archive_member_bytes": 2675263,
+      "archive_member_sha256": "6e7b954887cbda909f864ef1034039fc1f88672a188a7682eae86989a78d1820",
+      "canonical_path": "/tmp/scanner-v040/corpus/scan_1.png",
+      "canonical_bytes": 2479249,
+      "canonical_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "776defa48edbcf42c49bf8e0dec0ef24756aeb865639c4b1575153044dfbed4b",
+      "metadata": {
+        "archive_mode": "RGBA",
+        "canonical_mode": "RGB",
+        "size": [
+          1265,
+          1770
+        ],
+        "archive_exif_orientation": null,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": 0,
+        "alpha_max": 255,
+        "alpha_opaque_fraction": 0.9855416359616802
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_scan_2",
+      "source_archive": "scan.zip",
+      "archive_member": "scan/2.png",
+      "archive_member_bytes": 1831480,
+      "archive_member_sha256": "a0c79a3c801cb55ccf5ecab8d355f4064960830d0188ba4b8889d902acacbb13",
+      "canonical_path": "/tmp/scanner-v040/corpus/scan_2.png",
+      "canonical_bytes": 1684825,
+      "canonical_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "df401be936c8a016b4a692a840e1fd6df872436a1d76f186e9721bbdea307246",
+      "metadata": {
+        "archive_mode": "RGBA",
+        "canonical_mode": "RGB",
+        "size": [
+          944,
+          2702
+        ],
+        "archive_exif_orientation": null,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": 0,
+        "alpha_max": 255,
+        "alpha_opaque_fraction": 0.9950785827196427
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    {
+      "id": "fixture_docunet_scan_3",
+      "source_archive": "scan.zip",
+      "archive_member": "scan/3.png",
+      "archive_member_bytes": 840958,
+      "archive_member_sha256": "5815a08284d8f56059fffa7d459c41ac9e60da1799846b43e5eeaa29361f3d04",
+      "canonical_path": "/tmp/scanner-v040/corpus/scan_3.png",
+      "canonical_bytes": 747101,
+      "canonical_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "0461f29c0ebecff827cde3ff0261ff370443abf4e6c35f67df24ea90f496b35c",
+      "metadata": {
+        "archive_mode": "RGBA",
+        "canonical_mode": "RGB",
+        "size": [
+          938,
+          1901
+        ],
+        "archive_exif_orientation": null,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": 0,
+        "alpha_max": 255,
+        "alpha_opaque_fraction": 0.9927044345418021
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    }
+  ],
+  "photos": [
+    {
+      "photo_id": "photo1_1",
+      "document_id": 1,
+      "capture_variant": 1,
+      "original": {
+        "id": "fixture_docunet_crop_1_1_copy",
+        "source_archive": "crop.zip",
+        "archive_member": "crop/1_1 copy.png",
+        "archive_member_bytes": 1443806,
+        "archive_member_sha256": "e241c565dc595cc28b5302344cafa8c7745011688232ed398353de499fee8492",
+        "canonical_path": "/tmp/scanner-v040/corpus/crop_1_1_copy.png",
+        "canonical_bytes": 1439196,
+        "canonical_sha256": "af2a09921d541d146b0eba19e118dd2aae171e785b43a7cb7419386d1315ba3b",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "2f7e634f202267d4fd1c6d477f3f43693166b3d75343c2175e63634329e2361b",
+        "metadata": {
+          "archive_mode": "RGB",
+          "canonical_mode": "RGB",
+          "size": [
+            1137,
+            1521
+          ],
+          "archive_exif_orientation": 1,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": null,
+          "alpha_max": null,
+          "alpha_opaque_fraction": null
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+      },
+      "reference_document_id": 1,
+      "pairing_basis": "officialUVDocpredictionstrips copy suffix;officialevalScriptloops k,m againstscan/k.png",
+      "pixel_aligned_gt": false,
+      "digits_labels_supplied": false,
+      "thin_line_regions_supplied": false,
+      "reference": {
+        "id": "fixture_docunet_scan_1",
+        "source_archive": "scan.zip",
+        "archive_member": "scan/1.png",
+        "archive_member_bytes": 2675263,
+        "archive_member_sha256": "6e7b954887cbda909f864ef1034039fc1f88672a188a7682eae86989a78d1820",
+        "canonical_path": "/tmp/scanner-v040/corpus/scan_1.png",
+        "canonical_bytes": 2479249,
+        "canonical_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "776defa48edbcf42c49bf8e0dec0ef24756aeb865639c4b1575153044dfbed4b",
+        "metadata": {
+          "archive_mode": "RGBA",
+          "canonical_mode": "RGB",
+          "size": [
+            1265,
+            1770
+          ],
+          "archive_exif_orientation": null,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "alpha_opaque_fraction": 0.9855416359616802
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+        "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_1.png"
+      }
+    },
+    {
+      "photo_id": "photo1_2",
+      "document_id": 1,
+      "capture_variant": 2,
+      "original": {
+        "id": "fixture_docunet_crop_1_2_copy",
+        "source_archive": "crop.zip",
+        "archive_member": "crop/1_2 copy.png",
+        "archive_member_bytes": 1588210,
+        "archive_member_sha256": "84a9dc0306855583c6bb3fc768ffc2a9de43dffa8feef18c8300c3986589bf5a",
+        "canonical_path": "/tmp/scanner-v040/corpus/crop_1_2_copy.png",
+        "canonical_bytes": 1581870,
+        "canonical_sha256": "9143c7af398dc0f81aaa7554f2df14fd60909722b34f0405279c7c82adb2b796",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "e876b0c7344c0c91f730549121bd66f56e526984aae272bd37896287db3399ff",
+        "metadata": {
+          "archive_mode": "RGB",
+          "canonical_mode": "RGB",
+          "size": [
+            1265,
+            1636
+          ],
+          "archive_exif_orientation": 1,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": null,
+          "alpha_max": null,
+          "alpha_opaque_fraction": null
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+      },
+      "reference_document_id": 1,
+      "pairing_basis": "officialUVDocpredictionstrips copy suffix;officialevalScriptloops k,m againstscan/k.png",
+      "pixel_aligned_gt": false,
+      "digits_labels_supplied": false,
+      "thin_line_regions_supplied": false,
+      "reference": {
+        "id": "fixture_docunet_scan_1",
+        "source_archive": "scan.zip",
+        "archive_member": "scan/1.png",
+        "archive_member_bytes": 2675263,
+        "archive_member_sha256": "6e7b954887cbda909f864ef1034039fc1f88672a188a7682eae86989a78d1820",
+        "canonical_path": "/tmp/scanner-v040/corpus/scan_1.png",
+        "canonical_bytes": 2479249,
+        "canonical_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "776defa48edbcf42c49bf8e0dec0ef24756aeb865639c4b1575153044dfbed4b",
+        "metadata": {
+          "archive_mode": "RGBA",
+          "canonical_mode": "RGB",
+          "size": [
+            1265,
+            1770
+          ],
+          "archive_exif_orientation": null,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "alpha_opaque_fraction": 0.9855416359616802
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+        "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_1.png"
+      }
+    },
+    {
+      "photo_id": "photo2_1",
+      "document_id": 2,
+      "capture_variant": 1,
+      "original": {
+        "id": "fixture_docunet_crop_2_1_copy",
+        "source_archive": "crop.zip",
+        "archive_member": "crop/2_1 copy.png",
+        "archive_member_bytes": 2023288,
+        "archive_member_sha256": "6cec7122584fb9162b957a1164fc9fbebe8645d93143f79f016b4526fada47a2",
+        "canonical_path": "/tmp/scanner-v040/corpus/crop_2_1_copy.png",
+        "canonical_bytes": 2019020,
+        "canonical_sha256": "23e97fd18175337d272af23bb6f03a01f5d7e556f5c59a49655fee3385531eb8",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "6d56fb85f6d338ff9cbd6ab20e958b5e881000bced55d87fe1d95e88a8e0c287",
+        "metadata": {
+          "archive_mode": "RGB",
+          "canonical_mode": "RGB",
+          "size": [
+            1155,
+            2352
+          ],
+          "archive_exif_orientation": 1,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": null,
+          "alpha_max": null,
+          "alpha_opaque_fraction": null
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+      },
+      "reference_document_id": 2,
+      "pairing_basis": "officialUVDocpredictionstrips copy suffix;officialevalScriptloops k,m againstscan/k.png",
+      "pixel_aligned_gt": false,
+      "digits_labels_supplied": false,
+      "thin_line_regions_supplied": false,
+      "reference": {
+        "id": "fixture_docunet_scan_2",
+        "source_archive": "scan.zip",
+        "archive_member": "scan/2.png",
+        "archive_member_bytes": 1831480,
+        "archive_member_sha256": "a0c79a3c801cb55ccf5ecab8d355f4064960830d0188ba4b8889d902acacbb13",
+        "canonical_path": "/tmp/scanner-v040/corpus/scan_2.png",
+        "canonical_bytes": 1684825,
+        "canonical_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "df401be936c8a016b4a692a840e1fd6df872436a1d76f186e9721bbdea307246",
+        "metadata": {
+          "archive_mode": "RGBA",
+          "canonical_mode": "RGB",
+          "size": [
+            944,
+            2702
+          ],
+          "archive_exif_orientation": null,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "alpha_opaque_fraction": 0.9950785827196427
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+        "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_2.png"
+      }
+    },
+    {
+      "photo_id": "photo2_2",
+      "document_id": 2,
+      "capture_variant": 2,
+      "original": {
+        "id": "fixture_docunet_crop_2_2_copy",
+        "source_archive": "crop.zip",
+        "archive_member": "crop/2_2 copy.png",
+        "archive_member_bytes": 2397969,
+        "archive_member_sha256": "63081e3dc3d76ac7425e3f8923b8a782dab28315d8ca26f304b4c4cd4d6bdab1",
+        "canonical_path": "/tmp/scanner-v040/corpus/crop_2_2_copy.png",
+        "canonical_bytes": 2394380,
+        "canonical_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "6335b44dfb07f46cd29b6d42121c7da08d15c74807026e64816db7f71322cb6d",
+        "metadata": {
+          "archive_mode": "RGB",
+          "canonical_mode": "RGB",
+          "size": [
+            1365,
+            2421
+          ],
+          "archive_exif_orientation": 1,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": null,
+          "alpha_max": null,
+          "alpha_opaque_fraction": null
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+      },
+      "reference_document_id": 2,
+      "pairing_basis": "officialUVDocpredictionstrips copy suffix;officialevalScriptloops k,m againstscan/k.png",
+      "pixel_aligned_gt": false,
+      "digits_labels_supplied": false,
+      "thin_line_regions_supplied": false,
+      "reference": {
+        "id": "fixture_docunet_scan_2",
+        "source_archive": "scan.zip",
+        "archive_member": "scan/2.png",
+        "archive_member_bytes": 1831480,
+        "archive_member_sha256": "a0c79a3c801cb55ccf5ecab8d355f4064960830d0188ba4b8889d902acacbb13",
+        "canonical_path": "/tmp/scanner-v040/corpus/scan_2.png",
+        "canonical_bytes": 1684825,
+        "canonical_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "df401be936c8a016b4a692a840e1fd6df872436a1d76f186e9721bbdea307246",
+        "metadata": {
+          "archive_mode": "RGBA",
+          "canonical_mode": "RGB",
+          "size": [
+            944,
+            2702
+          ],
+          "archive_exif_orientation": null,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "alpha_opaque_fraction": 0.9950785827196427
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+        "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_2.png"
+      }
+    },
+    {
+      "photo_id": "photo3_1",
+      "document_id": 3,
+      "capture_variant": 1,
+      "original": {
+        "id": "fixture_docunet_crop_3_1_copy",
+        "source_archive": "crop.zip",
+        "archive_member": "crop/3_1 copy.png",
+        "archive_member_bytes": 1426068,
+        "archive_member_sha256": "8e3179959d02f3f476031c50bc9e55f166474ee4e2d77ffea9e5745778f83edc",
+        "canonical_path": "/tmp/scanner-v040/corpus/crop_3_1_copy.png",
+        "canonical_bytes": 1422168,
+        "canonical_sha256": "91e6ed2ad65c9b053598a0c1b57495397ed9a9ea29396985275729d4d2f84efe",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "38fb64e328588749da0814f74aa3b600fcee459bc9baa00799a00002da85d50a",
+        "metadata": {
+          "archive_mode": "RGB",
+          "canonical_mode": "RGB",
+          "size": [
+            1117,
+            1701
+          ],
+          "archive_exif_orientation": 1,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": null,
+          "alpha_max": null,
+          "alpha_opaque_fraction": null
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+      },
+      "reference_document_id": 3,
+      "pairing_basis": "officialUVDocpredictionstrips copy suffix;officialevalScriptloops k,m againstscan/k.png",
+      "pixel_aligned_gt": false,
+      "digits_labels_supplied": false,
+      "thin_line_regions_supplied": false,
+      "reference": {
+        "id": "fixture_docunet_scan_3",
+        "source_archive": "scan.zip",
+        "archive_member": "scan/3.png",
+        "archive_member_bytes": 840958,
+        "archive_member_sha256": "5815a08284d8f56059fffa7d459c41ac9e60da1799846b43e5eeaa29361f3d04",
+        "canonical_path": "/tmp/scanner-v040/corpus/scan_3.png",
+        "canonical_bytes": 747101,
+        "canonical_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "0461f29c0ebecff827cde3ff0261ff370443abf4e6c35f67df24ea90f496b35c",
+        "metadata": {
+          "archive_mode": "RGBA",
+          "canonical_mode": "RGB",
+          "size": [
+            938,
+            1901
+          ],
+          "archive_exif_orientation": null,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "alpha_opaque_fraction": 0.9927044345418021
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+        "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_3.png"
+      }
+    },
+    {
+      "photo_id": "photo3_2",
+      "document_id": 3,
+      "capture_variant": 2,
+      "original": {
+        "id": "fixture_docunet_crop_3_2_copy",
+        "source_archive": "crop.zip",
+        "archive_member": "crop/3_2 copy.png",
+        "archive_member_bytes": 1465657,
+        "archive_member_sha256": "d31f6e1d665269068888f66ce1f594a417de671bcb8b4904303a84b3df08fb16",
+        "canonical_path": "/tmp/scanner-v040/corpus/crop_3_2_copy.png",
+        "canonical_bytes": 1457205,
+        "canonical_sha256": "e72175f0a98b6c1039440c86097fcd02d119f2b3fa9a66543ce6c4aa8049500a",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "4b2b20cee5fa6835cc0a9bac86a3f398060aedd8f762d92efd53bf773709f623",
+        "metadata": {
+          "archive_mode": "RGB",
+          "canonical_mode": "RGB",
+          "size": [
+            950,
+            1604
+          ],
+          "archive_exif_orientation": 1,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": null,
+          "alpha_max": null,
+          "alpha_opaque_fraction": null
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+      },
+      "reference_document_id": 3,
+      "pairing_basis": "officialUVDocpredictionstrips copy suffix;officialevalScriptloops k,m againstscan/k.png",
+      "pixel_aligned_gt": false,
+      "digits_labels_supplied": false,
+      "thin_line_regions_supplied": false,
+      "reference": {
+        "id": "fixture_docunet_scan_3",
+        "source_archive": "scan.zip",
+        "archive_member": "scan/3.png",
+        "archive_member_bytes": 840958,
+        "archive_member_sha256": "5815a08284d8f56059fffa7d459c41ac9e60da1799846b43e5eeaa29361f3d04",
+        "canonical_path": "/tmp/scanner-v040/corpus/scan_3.png",
+        "canonical_bytes": 747101,
+        "canonical_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+        "archive_bytes_equal_canonical": false,
+        "decoded_RGB_equal": true,
+        "decoded_RGB_sha256": "0461f29c0ebecff827cde3ff0261ff370443abf4e6c35f67df24ea90f496b35c",
+        "metadata": {
+          "archive_mode": "RGBA",
+          "canonical_mode": "RGB",
+          "size": [
+            938,
+            1901
+          ],
+          "archive_exif_orientation": null,
+          "canonical_exif_orientation": null,
+          "archive_metadata_keys": [
+            "XML:com.adobe.xmp",
+            "dpi",
+            "xmp"
+          ],
+          "canonical_metadata_keys": [],
+          "alpha_min": 0,
+          "alpha_max": 255,
+          "alpha_opaque_fraction": 0.9927044345418021
+        },
+        "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+        "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_3.png"
+      }
+    }
+  ],
+  "scans": [
+    {
+      "id": "fixture_docunet_scan_1",
+      "source_archive": "scan.zip",
+      "archive_member": "scan/1.png",
+      "archive_member_bytes": 2675263,
+      "archive_member_sha256": "6e7b954887cbda909f864ef1034039fc1f88672a188a7682eae86989a78d1820",
+      "canonical_path": "/tmp/scanner-v040/corpus/scan_1.png",
+      "canonical_bytes": 2479249,
+      "canonical_sha256": "51bdfab5b9b425e182d0117df10dc1473a3ed9990fe042843967d1ce1efb2810",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "776defa48edbcf42c49bf8e0dec0ef24756aeb865639c4b1575153044dfbed4b",
+      "metadata": {
+        "archive_mode": "RGBA",
+        "canonical_mode": "RGB",
+        "size": [
+          1265,
+          1770
+        ],
+        "archive_exif_orientation": null,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": 0,
+        "alpha_max": 255,
+        "alpha_opaque_fraction": 0.9855416359616802
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+      "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_1.png"
+    },
+    {
+      "id": "fixture_docunet_scan_2",
+      "source_archive": "scan.zip",
+      "archive_member": "scan/2.png",
+      "archive_member_bytes": 1831480,
+      "archive_member_sha256": "a0c79a3c801cb55ccf5ecab8d355f4064960830d0188ba4b8889d902acacbb13",
+      "canonical_path": "/tmp/scanner-v040/corpus/scan_2.png",
+      "canonical_bytes": 1684825,
+      "canonical_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "df401be936c8a016b4a692a840e1fd6df872436a1d76f186e9721bbdea307246",
+      "metadata": {
+        "archive_mode": "RGBA",
+        "canonical_mode": "RGB",
+        "size": [
+          944,
+          2702
+        ],
+        "archive_exif_orientation": null,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": 0,
+        "alpha_max": 255,
+        "alpha_opaque_fraction": 0.9950785827196427
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+      "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_2.png"
+    },
+    {
+      "id": "fixture_docunet_scan_3",
+      "source_archive": "scan.zip",
+      "archive_member": "scan/3.png",
+      "archive_member_bytes": 840958,
+      "archive_member_sha256": "5815a08284d8f56059fffa7d459c41ac9e60da1799846b43e5eeaa29361f3d04",
+      "canonical_path": "/tmp/scanner-v040/corpus/scan_3.png",
+      "canonical_bytes": 747101,
+      "canonical_sha256": "bc54dc4503c490a3978cfc70169a8e584f52dea4fc84217aed0c09b80abeaba9",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "0461f29c0ebecff827cde3ff0261ff370443abf4e6c35f67df24ea90f496b35c",
+      "metadata": {
+        "archive_mode": "RGBA",
+        "canonical_mode": "RGB",
+        "size": [
+          938,
+          1901
+        ],
+        "archive_exif_orientation": null,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": 0,
+        "alpha_max": 255,
+        "alpha_opaque_fraction": 0.9927044345418021
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+      "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_3.png"
+    }
+  ],
+  "mandatory_photo2_2": {
+    "photo_id": "photo2_2",
+    "document_id": 2,
+    "capture_variant": 2,
+    "original": {
+      "id": "fixture_docunet_crop_2_2_copy",
+      "source_archive": "crop.zip",
+      "archive_member": "crop/2_2 copy.png",
+      "archive_member_bytes": 2397969,
+      "archive_member_sha256": "63081e3dc3d76ac7425e3f8923b8a782dab28315d8ca26f304b4c4cd4d6bdab1",
+      "canonical_path": "/tmp/scanner-v040/corpus/crop_2_2_copy.png",
+      "canonical_bytes": 2394380,
+      "canonical_sha256": "b59f2a03e16a9c5105f72b32998b4e17b83456bfe6eb06b83576768005388d96",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "6335b44dfb07f46cd29b6d42121c7da08d15c74807026e64816db7f71322cb6d",
+      "metadata": {
+        "archive_mode": "RGB",
+        "canonical_mode": "RGB",
+        "size": [
+          1365,
+          2421
+        ],
+        "archive_exif_orientation": 1,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": null,
+        "alpha_max": null,
+        "alpha_opaque_fraction": null
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform"
+    },
+    "reference_document_id": 2,
+    "pairing_basis": "officialUVDocpredictionstrips copy suffix;officialevalScriptloops k,m againstscan/k.png",
+    "pixel_aligned_gt": false,
+    "digits_labels_supplied": false,
+    "thin_line_regions_supplied": false,
+    "reference": {
+      "id": "fixture_docunet_scan_2",
+      "source_archive": "scan.zip",
+      "archive_member": "scan/2.png",
+      "archive_member_bytes": 1831480,
+      "archive_member_sha256": "a0c79a3c801cb55ccf5ecab8d355f4064960830d0188ba4b8889d902acacbb13",
+      "canonical_path": "/tmp/scanner-v040/corpus/scan_2.png",
+      "canonical_bytes": 1684825,
+      "canonical_sha256": "e7f1a3e81a71018fd0410531dfb9c5cbf2b20f0085eece5d23315e8eee2cfd26",
+      "archive_bytes_equal_canonical": false,
+      "decoded_RGB_equal": true,
+      "decoded_RGB_sha256": "df401be936c8a016b4a692a840e1fd6df872436a1d76f186e9721bbdea307246",
+      "metadata": {
+        "archive_mode": "RGBA",
+        "canonical_mode": "RGB",
+        "size": [
+          944,
+          2702
+        ],
+        "archive_exif_orientation": null,
+        "canonical_exif_orientation": null,
+        "archive_metadata_keys": [
+          "XML:com.adobe.xmp",
+          "dpi",
+          "xmp"
+        ],
+        "canonical_metadata_keys": [],
+        "alpha_min": 0,
+        "alpha_max": 255,
+        "alpha_opaque_fraction": 0.9950785827196427
+      },
+      "normalization_scope": "RGB projection and PNG reencoding; original archive identity differs; no position/geometry transform",
+      "raw_reference_path": "/tmp/scanner-original-truth.vhhyGR/archive_scan_2.png"
+    }
+  },
+  "paired_flat_reference_available": true,
+  "independent_dense_geometry_or_content_labels_available": false
+}

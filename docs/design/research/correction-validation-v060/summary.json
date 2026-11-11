@@ -60,7 +60,7 @@
       "id": "TRUTH-02",
       "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing.",
+      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing. Official pairing2_2→scan2 now source-proven. Canonical9 are RGB reencoded derivatives, not exact archive PNG bytes; all decodedRGB/shapes match. RawRGBA scans have nonopaque alpha; independent digit/thinline annotations remain absent.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -183,10 +183,10 @@
     },
     {
       "id": "ILL-01",
-      "status": "waiting_external_input",
-      "complete": false,
-      "evidence_scope": "Official FSENet SD7K checkpoint acquired and hashed; MIT release context and weights_only safe-load/strict model load verified. CPU portability fork changes only loader map_location one line. Current CPU evaluation exists; exact converted-artifact lineage and CUDA parity remain unproven, so original ILL-01 incomplete.",
-      "complete_measurement": false,
+      "status": "measured-fail",
+      "complete": true,
+      "evidence_scope": "ILL-01 original provenance/conditions determination completed after independent criterion audit: exact official SD7K checkpoint and author-linked ONNX identified under captured specific MIT release/export context; all991 state parameters map exactly to992 ONNX initializers (117592520 bytes), safe strict CPU load proven. Conversion numerical parity measured-fail4/10 at unchanged tolerance; no quality or interchangeable-engine adoption. Buildhost/container identity and CUDA parity are not added as original CPU-path prerequisites.",
+      "complete_measurement": true,
       "quality_pass": false,
       "evidence": [
         {
@@ -213,9 +213,22 @@
           "path": "docs/design/research/correction-fsenet-cpu-v060/summary.json",
           "sha256": "276c7b5abf63aca78d6b6453f2d407b2c9c492a9dbcc324b55b287388b110df4",
           "revision": "efe9400c72e09ab8fa0d67bf2b248f4edad9adde"
+        },
+        {
+          "path": "docs/design/research/correction-fsenet-artifact-identity-v060/summary.json",
+          "sha256": "76173fdd69b04fab248e28238552c214b789261b659a49e18dfea244857000cf",
+          "revision": "2026-11-11-original-criteria-audit"
+        },
+        {
+          "path": "docs/design/research/correction-current-criteria-audit-v060/summary.json",
+          "sha256": "96e0dc7c7a2e90ed953a502ad7172c6ebd685476d2d20a0dde31e462c047ac5c",
+          "revision": "2026-11-11-original-criteria-audit"
         }
       ],
-      "historical_evidence_scope": "Explicit checkpoint scope and exact FSENet/older DocShadow conversion identity unresolved; concrete unsent questions retained."
+      "historical_evidence_scope": "Explicit checkpoint scope and exact FSENet/older DocShadow conversion identity unresolved; concrete unsent questions retained.",
+      "provenance_determination_complete": true,
+      "parameter_identity_pass": true,
+      "conversion_parity_pass": false
     },
     {
       "id": "ILL-02",
@@ -322,7 +335,9 @@
     "owner_iphone_pc_acceptance": "needs-human",
     "mesh_unit_tests": 2,
     "focused_go_packages_passed": 4,
-    "earlier_test_environment_failure_retained": true
+    "earlier_test_environment_failure_retained": true,
+    "current_verified_requirements": 7,
+    "original_corpus_identity_scope": "Canonical RGB derivative hashes preserved; distinguish archived member byte identity, decoded RGB identity, and alpha-rendering identity."
   },
   "quality_thresholds": {
     "date": "2026-11-10",
@@ -700,5 +715,17 @@
     "status": "measured-cpu-fork-fail",
     "runtime_scope": "one-line CPU portability fork, not unmodified official CUDA runtime",
     "requirements_newly_completed": 0
+  },
+  "original_corpus_truth_provenance": {
+    "summary": "../correction-original-truth-followup-v060/summary.json",
+    "sha256": "fdc9b2311d0f484282048533094820110f13537781523fb0b6ec68d651b11801"
+  },
+  "fsenet_parameter_identity": {
+    "summary": "../correction-fsenet-artifact-identity-v060/summary.json",
+    "sha256": "76173fdd69b04fab248e28238552c214b789261b659a49e18dfea244857000cf"
+  },
+  "current_original_criteria_audit": {
+    "summary": "../correction-current-criteria-audit-v060/summary.json",
+    "sha256": "96e0dc7c7a2e90ed953a502ad7172c6ebd685476d2d20a0dde31e462c047ac5c"
   }
 }

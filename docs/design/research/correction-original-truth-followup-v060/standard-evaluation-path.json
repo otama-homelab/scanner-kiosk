@@ -1,0 +1,30 @@
+{
+  "docunet_official_eval_archive_sha256": "5511239ebfdefcbf2066c796759d206cd64d2ceae21add416fcf688e5920c25c",
+  "docunet_eval_function": "evalUnwarp(A,ref)",
+  "reference_contract": "scan image; not explicit pixel correspondence or text transcription",
+  "official_metric_paths": [
+    "MS-SSIM with Matlab Image Processing Toolbox",
+    "SIFTflow-estimated LD correspondence"
+  ],
+  "local_runtime": {
+    "matlab_on_PATH": null,
+    "octave_on_PATH": null
+  },
+  "included_siftflow_mex_platforms": [
+    "mexmaci64",
+    "mexw64"
+  ],
+  "linux_mex_in_docunet_eval_archive": false,
+  "existing_registration_is_independent_truth": false,
+  "new_registration_or_ocr_truth_generated": false,
+  "missing_original_truth": [
+    "page/content annotations on exact six canonical photos",
+    "mandatory photo2_2 digit transcription and pixel regions",
+    "mandatory photo2_2 thin-line reference regions and source correspondence",
+    "reviewer/date/sourcehash binding"
+  ],
+  "precise_reference_paths": {
+    "canonical_photo2_2": "/tmp/scanner-v040/corpus/crop_2_2_copy.png",
+    "archive_scan2_rgba": "/tmp/scanner-original-truth.vhhyGR/archive_scan_2.png"
+  }
+}

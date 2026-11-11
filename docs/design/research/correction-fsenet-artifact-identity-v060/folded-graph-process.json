@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/tmp/scanner-correction-next-venv/bin/python",
+    "/tmp/scanner-fsenet-artifact-identity-v060/folded_graph.py"
+  ],
+  "returncode": 0,
+  "killed": null,
+  "elapsed_seconds": 0.4019044050073717,
+  "sampled_peak_rss_bytes": 175542272,
+  "rss_cap_bytes": 2147483648,
+  "status": "pass"
+}

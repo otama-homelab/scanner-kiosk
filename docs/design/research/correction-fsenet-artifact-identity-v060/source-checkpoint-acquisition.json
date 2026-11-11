@@ -1,0 +1,15 @@
+{
+  "url": "https://drive.google.com/uc?export=download&confirm=t&id=1a1dGcSFYB1ocR5KohSTjXIQcpQ0w05V7",
+  "source": "pinned upstream DocShadow/utils/utils.py MODEL_URLS.sd7k",
+  "max_bytes": 268435456,
+  "new_inference": false,
+  "http_status": 200,
+  "resolved_url": "https://drive.usercontent.google.com/download?id=1a1dGcSFYB1ocR5KohSTjXIQcpQ0w05V7&export=download",
+  "content_type": "text/html; charset=utf-8",
+  "content_length": "2456",
+  "content_disposition": null,
+  "status": "html-not-checkpoint",
+  "response_bytes": 2456,
+  "response_sha256": "32cdfe5428c0882911aa764f5f32cb3b2d2d313e6bc356df70e37c72e01a2bc6",
+  "elapsed_seconds": 0.6356065169966314
+}

@@ -1,0 +1,8 @@
+{
+  "actual_first_check": "assert archive_member_sha256 == canonical_fixture_sha256",
+  "result": "failed",
+  "first_member": "crop/1_1 copy.png",
+  "cause": "canonical corpus is RGB-projected PNG-reencoded derivative, not source archive bytes",
+  "investigation": "all9 decoded RGB and shape equal; encoded identities and alpha/orientation recorded separately",
+  "original_canonical_files_modified": false
+}

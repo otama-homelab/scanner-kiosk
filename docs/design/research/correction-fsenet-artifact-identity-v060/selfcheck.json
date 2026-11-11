@@ -1,0 +1,11 @@
+{
+  "direct_name_shape_dtype_raw_hash_matches": 990,
+  "official_forward_defined_fold_match": 1,
+  "all991state_parameters_mapped": true,
+  "all992onnx_initializers_mapped": true,
+  "matched_total_parameter_bytes": 117592520,
+  "no_same_name_mismatch": true,
+  "no_unmatched_parameters_or_initializers": true,
+  "no_model_forward_or_export": true,
+  "status": "passed"
+}

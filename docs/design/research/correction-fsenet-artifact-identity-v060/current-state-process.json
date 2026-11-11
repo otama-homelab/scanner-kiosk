@@ -1,0 +1,12 @@
+{
+  "command": [
+    "/tmp/scanner-fsenet-cpu-v060/venv/bin/python",
+    "/tmp/scanner-fsenet-artifact-identity-v060/current_state.py"
+  ],
+  "returncode": 0,
+  "killed": null,
+  "elapsed_seconds": 3.1155249919975176,
+  "sampled_peak_rss_bytes": 470867968,
+  "rss_cap_bytes": 2147483648,
+  "status": "pass"
+}

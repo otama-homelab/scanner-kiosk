@@ -1,0 +1,381 @@
+{
+  "uvdoc_revision": "4c9b82b537057aff2526e6dd118a847cdd072e82",
+  "sources": [
+    {
+      "name": "docunet-publisher",
+      "url": "https://www3.cs.stonybrook.edu/~cvl/docunet.html",
+      "bytes": 9578,
+      "sha256": "d91747f3b58339d3eda46f2bec8526e7dd904e00843ee475bfc93af829a02aba",
+      "snippets": [
+        {
+          "line": 108,
+          "text": "        We provide the benchmark dataset. It contains 3 parts: i) original photos, ii) document centered cropped images (used in"
+        },
+        {
+          "line": 143,
+          "text": "        Similarity (MS-SSIM) and Local Distortion (LD)."
+        },
+        {
+          "line": 163,
+          "text": "                    <a href=\"http://vision.cs.stonybrook.edu/~kema/docwarp/scan.zip\">Scans from a flatbed scanner (416MB)</a>"
+        },
+        {
+          "line": 168,
+          "text": "                    <a href=\"http://vision.cs.stonybrook.edu/~kema/docwarp/eval.zip\">Evaluation code (1MB)</a>"
+        },
+        {
+          "line": 211,
+          "text": "        The evaluation code computes both MS-SSIM and local distortion (LD). SSIM uses Matlab Image Processing toolbox. "
+        },
+        {
+          "line": 221,
+          "text": "            [2] Liu, Ce, Jenny Yuen, and Antonio Torralba. \"Sift flow: Dense correspondence "
+        }
+      ]
+    },
+    {
+      "name": "uvdoc-docunet-evaluation",
+      "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/4c9b82b537057aff2526e6dd118a847cdd072e82/docUnet_eval.py",
+      "bytes": 3543,
+      "sha256": "9520a7159490f849a858901f0efa915744f93a34d7b89a4ae1d1eb5290cffb66",
+      "snippets": [
+        {
+          "line": 18,
+          "text": "    mean_ms, mean_ld, mean_ad = eng.evalScript(os.path.join(docunet_path, \"scan\"), preds_path, verbose, nargout=3)"
+        },
+        {
+          "line": 29,
+          "text": "        os.path.join(docunet_path, \"scan\"), preds_path, os.path.join(docunet_path, crop_type)"
+        }
+      ]
+    },
+    {
+      "name": "uvdoc-docunet-prediction",
+      "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/4c9b82b537057aff2526e6dd118a847cdd072e82/docUnet_pred.py",
+      "bytes": 6508,
+      "sha256": "4af2437bab77f1f9045096d16e8a18869f12aa8c0658e779f6cc0f2a5cdb0953",
+      "snippets": [
+        {
+          "line": 117,
+          "text": "            os.path.join(save_path, im_names[0].split(\" \")[0].split(\".\")[0] + \".png\"),"
+        }
+      ]
+    },
+    {
+      "name": "uvdoc-pair-mapping",
+      "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/4c9b82b537057aff2526e6dd118a847cdd072e82/eval/eval_code/evalScript.m",
+      "bytes": 1628,
+      "sha256": "e6535092b0b87c610f2b5ab67ced75cba713e696e1ff5e6d79105e59448b3551",
+      "snippets": [
+        {
+          "line": 9,
+          "text": "for k = 1 : 65"
+        },
+        {
+          "line": 10,
+          "text": "    if ~isfile(sprintf('%s/%d.png', gtdir, k))"
+        },
+        {
+          "line": 11,
+          "text": "        fprintf('%s - Not file (ref/input)\\n', sprintf('%s/%d.png', gtdir, k))"
+        },
+        {
+          "line": 18,
+          "text": "    rimg = rgb2gray(imread(sprintf('%s/%d.png', gtdir, k)));"
+        },
+        {
+          "line": 20,
+          "text": "    for m = 1 : 2"
+        },
+        {
+          "line": 21,
+          "text": "        if isfile(sprintf('%s/%d_%d.png', imdir, k, m))"
+        },
+        {
+          "line": 25,
+          "text": "            ximg = rgb2gray(imread(sprintf('%s/%d_%d.png', imdir, k, m)));"
+        },
+        {
+          "line": 27,
+          "text": "            rimg=imresize(rimg,sqrt(598400/(rh*rw)),'bicubic');"
+        },
+        {
+          "line": 29,
+          "text": "            ximg=imresize(ximg,[rh rw],'bicubic');"
+        },
+        {
+          "line": 31,
+          "text": "            [vx, vy] = siftFlow(rimg, ximg);"
+        },
+        {
+          "line": 39,
+          "text": "            fprintf('%s - Not file\\n', sprintf('%s/%d_%d.png', imdir, k, m))"
+        }
+      ]
+    },
+    {
+      "name": "uvdoc-ocr-mapping-not-truth",
+      "url": "https://raw.githubusercontent.com/tanguymagne/UVDoc/4c9b82b537057aff2526e6dd118a847cdd072e82/eval/ocr_eval/ocr_eval.py",
+      "bytes": 3029,
+      "sha256": "dfd00fa79417f4c494b4ec22cfc402a863b74e7ed51afba207ab2daed740bf4b",
+      "snippets": [
+        {
+          "line": 48,
+          "text": "        GT_text = pytesseract.image_to_string(scan_img, config=\"--oem 1\")"
+        },
+        {
+          "line": 72,
+          "text": "            scan_filepath = os.path.join(scan_path, file + \".png\")"
+        },
+        {
+          "line": 73,
+          "text": "            input_filepath = os.path.join(input_path, f\"{file}_{i} copy.png\")"
+        },
+        {
+          "line": 95,
+          "text": "        scan_filepath = os.path.join(gt_path, f\"{file}.png\")"
+        },
+        {
+          "line": 96,
+          "text": "        input_filepath = os.path.join(preds_path.replace(\"texture_sample\", \"warped_textures\"), f\"{file}.png\")"
+        }
+      ]
+    }
+  ],
+  "new_evaluation_archive": {
+    "url": "http://vision.cs.stonybrook.edu/~kema/docwarp/eval.zip",
+    "bytes": 1347652,
+    "sha256": "5511239ebfdefcbf2066c796759d206cd64d2ceae21add416fcf688e5920c25c",
+    "transport": "official publisher HTTP link; no authenticated publisher checksum",
+    "https_attempt": "certificate verify failed; TLS verification never disabled",
+    "members": [
+      {
+        "member": "evalUnwarp.m",
+        "bytes": 1750,
+        "sha256": "7daa13101ffd616eb7f287648280c99d59b44aa9051cf43c6ebbba1c1652f233"
+      },
+      {
+        "member": "SIFTflow/computeColor.m",
+        "bytes": 3142,
+        "sha256": "879d158337bc4648adb45771da98ce0ed4fb85ff8fa4cd52f72fd7e9a1d9edd8"
+      },
+      {
+        "member": "SIFTflow/demo.asv",
+        "bytes": 1260,
+        "sha256": "834dfd9a077650fc7c0146de6703c901d6bbf805db9483174802d2166d154449"
+      },
+      {
+        "member": "SIFTflow/demo.m",
+        "bytes": 1256,
+        "sha256": "95b00f976b68fd4847044a6f0728b71569bdc90ed5f9b702211b8e287f8a68d1"
+      },
+      {
+        "member": "SIFTflow/flowToColor.m",
+        "bytes": 2643,
+        "sha256": "498fad43b9823430b8e8a5d404e6d201daf1966c72fec68f1a83c72bcdfa31fb"
+      },
+      {
+        "member": "SIFTflow/Mars-1.jpg",
+        "bytes": 245661,
+        "sha256": "308879d35a7abc427e571422cfa60311d233f7c225eb748ddc36dc9c9445d89b"
+      },
+      {
+        "member": "SIFTflow/Mars-2.jpg",
+        "bytes": 268869,
+        "sha256": "e407848a8b3e79c16639bc78af6cae022a4234f49b342c3ad39cc6b2cc161f0f"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/dir.cpp",
+        "bytes": 3889,
+        "sha256": "28c4cdaba45ecd46777dfdeed0ad072749e4e171ddeead2664a01e34a0725c4a"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/dir.h",
+        "bytes": 498,
+        "sha256": "d510bc8bbebaad1c802e0b62667342d49c2c01b9469c1a0b4d34a900a4113f52"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/Image.h",
+        "bytes": 51972,
+        "sha256": "95bffc31282e394174ab849c1776a6d38f4c0ef68a37ee5a4bbe898e32ad8661"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/ImageFeature.h",
+        "bytes": 9043,
+        "sha256": "98a593a5b7997f5601c6422a4d607e1e76a5c0940fc349e6f9a941f5a316d73b"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/ImageIO.h",
+        "bytes": 9548,
+        "sha256": "40426f7c7c8c1bb495414b3ebc4465c2e7608b985745e4c50f708f1c142e0097"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/ImageProcessing.h",
+        "bytes": 16124,
+        "sha256": "cd5fd90a5a01ed60e6c8cab52f5a6114f254205d4b49b9b24473af503949cb05"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/Matrix.cpp",
+        "bytes": 8756,
+        "sha256": "80eeda91d10f1de2a8052dfa0c33cf2c6e1c3934c215c3316acb386f1fc36ee8"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/Matrix.h",
+        "bytes": 2916,
+        "sha256": "762ff71321efb8e8eafd9dada82bf4b43323526fcac55711cc55cf39031910d0"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/mexDenseSIFT.cpp",
+        "bytes": 1007,
+        "sha256": "6a82d262d6f39aefd52123809a0206694a0519c382456cee60abe84210da9813"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/mexDenseSIFT.m",
+        "bytes": 1070,
+        "sha256": "6e1dc7bdbf3f94b0a1b2ececec7bb3012bbb6f05053246b11c3f4cde1730157b"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/mexDenseSIFT.mexmaci64",
+        "bytes": 62432,
+        "sha256": "9f2e35dda5dbd66fb8102f8c47c0cefdf56efa7f227384e2737c5730994ac2ba"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/mexDenseSIFT.mexw64",
+        "bytes": 46080,
+        "sha256": "f8ffa357f2b67745dd1a741899005259e52abfdeb0062ab992d90857541b7e74"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/pcSIFT.mat",
+        "bytes": 98470,
+        "sha256": "e73d9e1ac854f0f96418209ff5d030022fa7773e6f7de208e8e8aa12a11e1ee3"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/project.h",
+        "bytes": 783,
+        "sha256": "e008ed590f148ea5b24442ad2a0d39cb684656082d1dff7ef24ca409430b0742"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/readme.txt",
+        "bytes": 723,
+        "sha256": "1af8646ae649936d511ce2bacb337b343cd46f135afcec5aa373c10139d47e96"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/showColorSIFT.m",
+        "bytes": 697,
+        "sha256": "d04e326417bc73ba77ec9f0996000322d1e01ce8f6567879927b1b5f5d4be880"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/Vector.cpp",
+        "bytes": 5166,
+        "sha256": "e1fd5158301cec2dd9f8cb564e6bc84f211c25a14040e0d0b26226340992aa18"
+      },
+      {
+        "member": "SIFTflow/mexDenseSIFT/Vector.h",
+        "bytes": 2245,
+        "sha256": "6165e12eb31932025f18d20cd19aea8db3558e1a085e6f80077a5b4c9b85cd53"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/BPFlow.cpp",
+        "bytes": 34716,
+        "sha256": "8689790985c31a6f1431ec213ad653aae96dd200368639d7a8e32c73d4610f2e"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/BPFlow.h",
+        "bytes": 6356,
+        "sha256": "90997b43242f0203ef0dcdeea48e50b394a16dc9b8c1c45c9a7e01b57357a340"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/Image.h",
+        "bytes": 45007,
+        "sha256": "8c4adb20febeb21f4940b206891867bdca76a99f585532221aae9a06e52bcc82"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/ImageIO.h",
+        "bytes": 5911,
+        "sha256": "05c35521df1e32e20da9d2db57d7d038da47ddcccfe7064834f9a1e003833b42"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/ImageProcessing.h",
+        "bytes": 15696,
+        "sha256": "698488a0009c61f77c9bf7b62f3525671e432ffc66aea3ea25e8122f58eae856"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/main.cpp",
+        "bytes": 1988,
+        "sha256": "c5af10a1de3ec87439d6d929f207f42b0d4a305f39329b354516b270537ac754"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/mexDiscreteFlow.cpp",
+        "bytes": 3189,
+        "sha256": "43ac33f26e2ade72c303a9fb1cf153fb68b573ae7ab4c678b5fbc4897b5828dd"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/mexDiscreteFlow.m",
+        "bytes": 2197,
+        "sha256": "5c3700a1df66b003571a0ac4978351f2f22b3cf0aeb1aa076c39807fe0419e1f"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/mexDiscreteFlow.mexmaci64",
+        "bytes": 77480,
+        "sha256": "2b12311c91ecf6dae8c0cae368564fa5ae0df55772df83abd0c3dae7a67bb5bf"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/mexDiscreteFlow.mexw64",
+        "bytes": 61440,
+        "sha256": "d0b0a40843c579923accf4062faa346e559ea7e2618768d55aad7f9739de7681"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/project.h",
+        "bytes": 765,
+        "sha256": "e4b907a9986c99777632866db85d8024458ce99d19d04febc9877072c593f8c7"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/readme.txt",
+        "bytes": 719,
+        "sha256": "9151f0b7b2b3662d612b74a407a938a27381f9bbbfe88e13d39c665a4205212e"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/Stochastic.cpp",
+        "bytes": 1982,
+        "sha256": "27cf7652714796d928f300496bb2307ad62a86f14fd2ec03334853ca43defddb"
+      },
+      {
+        "member": "SIFTflow/mexDiscreteFlow/Stochastic.h",
+        "bytes": 10016,
+        "sha256": "897ded3ec9c9d2f11890924332acfec4b7bf29c8e6b731a4419116c33c41589e"
+      },
+      {
+        "member": "SIFTflow/readme.txt",
+        "bytes": 1120,
+        "sha256": "88697843f7b5b4f79c93d6e11ce7bdc2002b09987994d545929bab2454dbe55c"
+      },
+      {
+        "member": "SIFTflow/SIFTflowc2f.m",
+        "bytes": 5485,
+        "sha256": "7c828f754e08c51e9b360f9c307f5d558fba54284331007d23e6f1ed6ef18581"
+      },
+      {
+        "member": "SIFTflow/t.png",
+        "bytes": 669624,
+        "sha256": "f7ac48182d613c5d98d156352c94dadc37d8eae57c27ba08edef2a1349c7df30"
+      },
+      {
+        "member": "SIFTflow/warpFL.m",
+        "bytes": 212,
+        "sha256": "e86468f46c1bc045c0e235680a68e03504c6f7d8bea15caf5014db74e0440fca"
+      },
+      {
+        "member": "SIFTflow/warpFLColor.m",
+        "bytes": 514,
+        "sha256": "14678c61fedf8181e56e51eb2105be9e011510e5c0cd53c8b891d2f262d2e3fb"
+      },
+      {
+        "member": "SIFTflow/warpImage.m",
+        "bytes": 481,
+        "sha256": "0f63a1718203be6afeffdff47ba26afc6bde519c4e86223de74adecc12357e5b"
+      }
+    ]
+  },
+  "new_bytes_recorded": 1371938,
+  "ocr_gt_policy": "official code OCR(scan) is NOT accepted as independent text truth; source used only to corroborate filename mapping"
+}

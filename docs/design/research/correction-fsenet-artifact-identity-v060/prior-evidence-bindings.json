@@ -1,0 +1,27 @@
+[
+  {
+    "path": "docs/design/research/correction-fsenet-cpu-v060/model-acquisition.json",
+    "bytes": 368,
+    "sha256": "adde4555dd858cf152dcceb8c82a4e3aaf89c25ebe8c826c4f51d8e12712f722"
+  },
+  {
+    "path": "docs/design/research/correction-fsenet-cpu-v060/fork-identity.json",
+    "bytes": 8069,
+    "sha256": "33b2391f48ac7c6a34cb8a2093ec12118869e07ed8e119c8638f1645244de9c4"
+  },
+  {
+    "path": "docs/design/research/correction-fsenet-cpu-v060/matched-input-cpu-output-comparison.json",
+    "bytes": 7951,
+    "sha256": "ebb10dbef23cf19bcc8f786af21bbc591812c52d5a474e90a254cf2cd6625181"
+  },
+  {
+    "path": "docs/design/research/correction-docshadow-cpu-v060/model-acquisition.json",
+    "bytes": 393,
+    "sha256": "20e0f0419388028357b9b9322d93ecf1212aa76bfbddc1680d74c5ba1adff02a"
+  },
+  {
+    "path": "docs/design/research/correction-runtime-followup-v060/illumination-sources.json",
+    "bytes": 86790,
+    "sha256": "312d759bfa2f310cf4b916680f42044cac201947d10c417d28249e9bcdc227ea"
+  }
+]

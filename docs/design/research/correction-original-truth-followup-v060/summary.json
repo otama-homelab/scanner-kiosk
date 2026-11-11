@@ -1,0 +1,57 @@
+{
+  "format": "scanner-original-docunet-truth-provenance-followup",
+  "official_pair_mapping_verified": true,
+  "photo_count": 6,
+  "scan_count": 3,
+  "mandatory_photo2_2_to_scan2_verified": true,
+  "canonical9_hashes_preserved": true,
+  "archive_encoded_bytes_equal_canonical": false,
+  "all9_decoded_rgb_and_shape_equal": true,
+  "scan_alpha_nonopaque": true,
+  "visual_compositing_equivalence_verified": false,
+  "independent_digits_thinline_annotation_available": false,
+  "requirements_newly_completed": [],
+  "new_model_forwards": 0,
+  "evidence_files": [
+    {
+      "file": "binding-check.py",
+      "bytes": 4618,
+      "sha256": "b02e912abd11080178e1398ba6be8dc5ec1f7bda29bceed4148e6809c86c0b48"
+    },
+    {
+      "file": "exact-original-pair-bindings.json",
+      "bytes": 37894,
+      "sha256": "af908ed846a70247b0487ba2fb5d03c4a287c8a1f7a02e896a59957b61228c74"
+    },
+    {
+      "file": "initial-failed-byte-assumption.json",
+      "bytes": 410,
+      "sha256": "34ea3203be0d1883b2d2463b279c07d2a0263d98962debb6d7191ae20a6fd10a"
+    },
+    {
+      "file": "official-evidence.json",
+      "bytes": 13697,
+      "sha256": "96b35456a53f68f425d1bd71c3bd73d051a9c92c1ca8a13c4ea9e5163452c792"
+    },
+    {
+      "file": "report.md",
+      "bytes": 7107,
+      "sha256": "c873e52fd44274d67520a56d7b825e7da20a34de2214cff033b84204224d9255"
+    },
+    {
+      "file": "required-annotation.md",
+      "bytes": 1668,
+      "sha256": "8c7e465416d3663115655da784bb9e6918bff9d41759dcfc2c7efe884abfbf64"
+    },
+    {
+      "file": "selfchecks.json",
+      "bytes": 530,
+      "sha256": "bc54359bbd637976bc1a34b78e75aa569c7ae1b62ca02c80f129493ece12e010"
+    },
+    {
+      "file": "standard-evaluation-path.json",
+      "bytes": 1163,
+      "sha256": "15bf32f06a2ec1ff35f0f1f58b5a343f89564762e01e94293be97a470649cb1c"
+    }
+  ]
+}

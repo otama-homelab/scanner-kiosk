@@ -1,0 +1,16 @@
+{
+  "format": "scanner-current-original-criteria-audit",
+  "status": "gaps_found",
+  "verified_requirements": 7,
+  "original_requirement_count": 14,
+  "new_completed_requirement": "ILL-01",
+  "conversion_parity_pass": false,
+  "quality_adoption_pass": false,
+  "evidence_files": [
+    {
+      "file": "report.md",
+      "bytes": 9176,
+      "sha256": "1cd15e7dc6c8b0160b508c73c957a1d92a102c70cd97c9313c9013582aaffc4c"
+    }
+  ]
+}
