@@ -88,9 +88,9 @@
     },
     {
       "id": "VERIFY-01",
-      "status": "waiting_external_implementation",
+      "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable.",
+      "evidence_scope": "3public and6synthetic mask diagnostics measured; synthetic0/6IoUpass. Complete supported CPU detection path and original6photo annotations unavailable. Latest: official unchanged CPU segmentation and JVM quad executed on6synthetic inputs. Full runtime shortage resolved; numerical corners and original-realphoto independent truth still unmeasured.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -103,6 +103,11 @@
           "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
           "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6",
           "revision": "v060-autonomous-readonly-reconciliation-2026-11-11"
+        },
+        {
+          "path": "docs/design/research/correction-fairscan-full-cpu-v060/summary.json",
+          "sha256": "7037d98957885a2d3733796e6a3d757cc3f91e4edf01c43e088a9528ad939426",
+          "revision": "2c5230b12f69f3cee2cc5a970013da20848d1272"
         }
       ]
     },
@@ -607,6 +612,21 @@
   "fairscan_official_jvm_attempt": {
     "summary": "../correction-fairscan-jvm-v060/summary.json",
     "sha256": "cccd7ec00bd1ed70a60fd9104fc26df6e7ebe02b228e98bf1ffb8176a3165783",
+    "requirements_newly_completed": 0
+  },
+  "fairscan_jvm_resume_v060": {
+    "summary": "../correction-fairscan-jvm-resume-v060/summary.json",
+    "sha256": "057b4367366700967ef07a656bc9fa9d0a8d9f17fadd6e6115778a3af5cc64e3",
+    "requirements_newly_completed": 0
+  },
+  "fairscan_full_cpu_v060": {
+    "summary": "../correction-fairscan-full-cpu-v060/summary.json",
+    "sha256": "7037d98957885a2d3733796e6a3d757cc3f91e4edf01c43e088a9528ad939426",
+    "requirements_newly_completed": 0
+  },
+  "docshadow_ssim_v060": {
+    "summary": "../correction-docshadow-ssim-v060/summary.json",
+    "sha256": "3881f3ecf477bfecea2f530f813f27e9028ba1a970cc60ac1259efb69ae7e1c0",
     "requirements_newly_completed": 0
   }
 }

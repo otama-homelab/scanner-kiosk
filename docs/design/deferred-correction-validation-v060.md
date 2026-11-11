@@ -133,3 +133,12 @@ FSENetはMIT repoが推論用として重みを直接配布し、確認資料に
 前回計画の全面build禁止を改訂し、無変更の公式FairScan JVM評価を試行。公式Temurin21/Gradle9.8.2のdigest固定、source272件無変更。実compileはKotlin設定checkまで到達したが、101.57秒で隔離全tree1GiB監視により停止（観測1116906697 bytes、sampling overshoot、exit−9）。SDK不在やモデル不合格とは断定しない。未完downloadのみ記録後削除、同条件再試行なし。quad評価未実行。証拠: docs/design/research/correction-fairscan-jvm-v060/report.md。次回はtoolchain容量と実行tempを区別した計画へ改訂する必要がある。
 
 現在6/14要件完了を維持。既存画像や失敗を成功として置き換えず、実写真truth/本人操作/現FSENet CPU固定loader等は未解決。製品変更・公開・配備なし。
+
+
+## 2026-11-11 FairScan公式全経路と標準SSIM評価
+
+FairScan公式source無変更のJVM compile成功(31.26秒)。続いて新しい隔離CPU環境へ公式binary wheel38件をPyPI公開hash照合して導入。無変更generate_masks.py＋tensorflow.lite.Interpreterで公開合成6枚のmask生成成功(3.05秒/RSS640225280B)、同じmaskで公式JVM四隅処理成功(11.08秒/RSS約107MB)、mask6/overlay6/HTML生成。source272件不変、GPU依存なし。これにより「公式実行環境不足」は解消した。setup容量とruntime tempを区別し、前回の1GiB全tree停止を隠さず保持。数値corner精度/独立元実写真truth/Android pixel parityは未測定で、VERIFY-01はwaiting_external_implementationからwaiting_external_inputへ更新、完了数6/14を維持。
+
+旧DocShadowは標準scikit-image SSIMを隔離環境で36件測定。参照対自身6件すべて1、clean≥0.99はnative0/6・5121/6、native影は全6件でno-opよりSSIM低下。既知の画素/OCR/資源不合格に追加し、候補不採用を維持。新DocShadow推論ゼロ。
+
+証拠: docs/design/research/correction-fairscan-full-cpu-v060/report.md、correction-fairscan-jvm-resume-v060/report.md、correction-docshadow-ssim-v060/report.md。各summaryの19/13/90証拠hash照合。残るFairScan評価は数値precisionを出す既存公式経路と独立正解の接続。現FSENet CPU固定loader/独立実写真正解/本人操作は別の残件。製品変更・公開・配備なし。

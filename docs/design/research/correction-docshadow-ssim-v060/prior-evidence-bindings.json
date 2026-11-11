@@ -1,0 +1,17 @@
+[
+  {
+    "path": "docs/design/research/correction-paired-v060/paired-truth.json",
+    "bytes": 5374,
+    "sha256": "9f5124ee66de0cd778204a1583387694582b361172d53d29e1c30bbad32641e2"
+  },
+  {
+    "path": "docs/design/research/correction-docshadow-cpu-v060/runs.json",
+    "bytes": 18439,
+    "sha256": "6c4caa9ac84cb1fab47849a16f6a11e5b2eaaf6baffa31640297cb222f6e388e"
+  },
+  {
+    "path": "docs/design/research/correction-docshadow-native-v060/runs.json",
+    "bytes": 19210,
+    "sha256": "5a58889630ade5438306e93c6676a604e300ee7e01700f1c7ead9f523702de3a"
+  }
+]

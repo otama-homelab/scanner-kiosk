@@ -1,0 +1,9 @@
+{
+  "reference_equals_itself_case_count": 6,
+  "all_ssim_exactly_one": true,
+  "finite_same_shape_cases": 36,
+  "bound_input_hashes_verified": 36,
+  "whole_process_timeout_and_sampled_rss_passes": 36,
+  "metric_implementation": "standard skimage.metrics.structural_similarity, no new formula",
+  "status": "passed"
+}

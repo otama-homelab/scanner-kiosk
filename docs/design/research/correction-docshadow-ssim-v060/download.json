@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+    "-m",
+    "pip",
+    "download",
+    "--no-cache-dir",
+    "--only-binary=:all:",
+    "--index-url",
+    "https://pypi.org/simple",
+    "--dest",
+    "/tmp/scanner-docshadow-ssim-v060/wheels",
+    "scikit-image==0.25.2"
+  ],
+  "returncode": 0,
+  "killed": false,
+  "peak_download_and_staging_bytes": 154523224,
+  "download_cap_bytes": 268435456,
+  "elapsed_seconds": 3.3253533320093993
+}

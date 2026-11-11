@@ -1,0 +1,45 @@
+Collecting scikit-image==0.25.2
+  Downloading scikit_image-0.25.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (14 kB)
+Collecting numpy>=1.24 (from scikit-image==0.25.2)
+  Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+Collecting scipy>=1.11.4 (from scikit-image==0.25.2)
+  Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+Collecting networkx>=3.0 (from scikit-image==0.25.2)
+  Downloading networkx-3.7-py3-none-any.whl.metadata (6.7 kB)
+Collecting pillow>=10.1 (from scikit-image==0.25.2)
+  Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Collecting imageio!=2.35.0,>=2.33 (from scikit-image==0.25.2)
+  Downloading imageio-2.38.1-py3-none-any.whl.metadata (9.7 kB)
+Collecting tifffile>=2022.8.12 (from scikit-image==0.25.2)
+  Downloading tifffile-2026.11.8-py3-none-any.whl.metadata (35 kB)
+Collecting packaging>=21 (from scikit-image==0.25.2)
+  Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting lazy-loader>=0.4 (from scikit-image==0.25.2)
+  Downloading lazy_loader-0.6-py3-none-any.whl.metadata (6.0 kB)
+Downloading scikit_image-0.25.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.0 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 15.0/15.0 MB 56.2 MB/s eta 0:00:00
+Downloading imageio-2.38.1-py3-none-any.whl (328 kB)
+Downloading lazy_loader-0.6-py3-none-any.whl (8.8 kB)
+Downloading networkx-3.7-py3-none-any.whl (2.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 99.4 MB/s eta 0:00:00
+Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 86.4 MB/s eta 0:00:00
+Downloading packaging-26.3-py3-none-any.whl (129 kB)
+Downloading pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 78.4 MB/s eta 0:00:00
+Downloading scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (35.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.3/35.3 MB 57.6 MB/s eta 0:00:00
+Downloading tifffile-2026.11.8-py3-none-any.whl (278 kB)
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/scikit_image-0.25.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/imageio-2.38.1-py3-none-any.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/lazy_loader-0.6-py3-none-any.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/networkx-3.7-py3-none-any.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/packaging-26.3-py3-none-any.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+Saved /tmp/scanner-docshadow-ssim-v060/wheels/tifffile-2026.11.8-py3-none-any.whl
+Successfully downloaded scikit-image imageio lazy-loader networkx numpy packaging pillow scipy tifffile
+
+[notice] A new release of pip is available: 24.3.1 -> 26.3
+[notice] To update, run: python -m pip install --upgrade pip

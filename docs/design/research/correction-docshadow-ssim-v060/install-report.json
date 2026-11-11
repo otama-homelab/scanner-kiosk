@@ -1,0 +1,863 @@
+{
+  "version": "1",
+  "pip_version": "24.3.1",
+  "install": [
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/scikit_image-0.25.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=a17e17eb8562660cc0d31bb55643a4da996a81944b82c54805c91b3fe66f4824",
+          "hashes": {
+            "sha256": "a17e17eb8562660cc0d31bb55643a4da996a81944b82c54805c91b3fe66f4824"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": true,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "scikit-image",
+        "version": "0.25.2",
+        "summary": "Image processing in Python",
+        "description": "# scikit-image: Image processing in Python\n\n[![Image.sc forum](https://img.shields.io/badge/dynamic/json.svg?label=forum&url=https%3A%2F%2Fforum.image.sc%2Ftags%2Fscikit-image.json&query=%24.topic_list.tags.0.topic_count&colorB=brightgreen&suffix=%20topics&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABPklEQVR42m3SyyqFURTA8Y2BER0TDyExZ+aSPIKUlPIITFzKeQWXwhBlQrmFgUzMMFLKZeguBu5y+//17dP3nc5vuPdee6299gohUYYaDGOyyACq4JmQVoFujOMR77hNfOAGM+hBOQqB9TjHD36xhAa04RCuuXeKOvwHVWIKL9jCK2bRiV284QgL8MwEjAneeo9VNOEaBhzALGtoRy02cIcWhE34jj5YxgW+E5Z4iTPkMYpPLCNY3hdOYEfNbKYdmNngZ1jyEzw7h7AIb3fRTQ95OAZ6yQpGYHMMtOTgouktYwxuXsHgWLLl+4x++Kx1FJrjLTagA77bTPvYgw1rRqY56e+w7GNYsqX6JfPwi7aR+Y5SA+BXtKIRfkfJAYgj14tpOF6+I46c4/cAM3UhM3JxyKsxiOIhH0IO6SH/A1Kb1WBeUjbkAAAAAElFTkSuQmCC)](https://forum.image.sc/tags/scikit-image)\n[![Stackoverflow](https://img.shields.io/badge/stackoverflow-Ask%20questions-blue.svg)](https://stackoverflow.com/questions/tagged/scikit-image)\n[![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://skimage.zulipchat.com)\n\n- **Website (including documentation):** [https://scikit-image.org/](https://scikit-image.org)\n- **Documentation:** [https://scikit-image.org/docs/stable/](https://scikit-image.org/docs/stable/)\n- **User forum:** [https://forum.image.sc/tag/scikit-image](https://forum.image.sc/tag/scikit-image)\n- **Developer forum:** [https://discuss.scientific-python.org/c/contributor/skimage](https://discuss.scientific-python.org/c/contributor/skimage)\n- **Source:** [https://github.com/scikit-image/scikit-image](https://github.com/scikit-image/scikit-image)\n\n## Installation\n\n- **pip:** `pip install scikit-image`\n- **conda:** `conda install -c conda-forge scikit-image`\n\nAlso see [installing `scikit-image`](https://github.com/scikit-image/scikit-image/blob/main/INSTALL.rst).\n\n## License\n\nSee [LICENSE.txt](https://github.com/scikit-image/scikit-image/blob/main/LICENSE.txt).\n\n## Citation\n\nIf you find this project useful, please cite:\n\n> Stéfan van der Walt, Johannes L. Schönberger, Juan Nunez-Iglesias,\n> François Boulogne, Joshua D. Warner, Neil Yager, Emmanuelle\n> Gouillart, Tony Yu, and the scikit-image contributors.\n> _scikit-image: Image processing in Python_. PeerJ 2:e453 (2014)\n> https://doi.org/10.7717/peerj.453\n",
+        "description_content_type": "text/markdown",
+        "maintainer_email": "scikit-image developers <skimage-core@discuss.scientific-python.org>",
+        "license": "Files: *\n Copyright: 2009-2022 the scikit-image team\n License: BSD-3-Clause\n\n Files: doc/source/themes/scikit-image/layout.html\n Copyright: 2007-2010 the Sphinx team\n License: BSD-3-Clause\n\n Files: skimage/feature/_canny.py\n        skimage/filters/edges.py\n        skimage/filters/_rank_order.py\n        skimage/morphology/_skeletonize.py\n        skimage/morphology/tests/test_watershed.py\n        skimage/morphology/watershed.py\n        skimage/segmentation/heap_general.pxi\n        skimage/segmentation/heap_watershed.pxi\n        skimage/segmentation/_watershed.py\n        skimage/segmentation/_watershed_cy.pyx\n Copyright: 2003-2009 Massachusetts Institute of Technology\n            2009-2011 Broad Institute\n            2003 Lee Kamentsky\n            2003-2005 Peter J. Verveer\n License: BSD-3-Clause\n\n Files: skimage/filters/thresholding.py\n        skimage/graph/_mcp.pyx\n        skimage/graph/heap.pyx\n Copyright: 2009-2015 Board of Regents of the University of\n            Wisconsin-Madison, Broad Institute of MIT and Harvard,\n            and Max Planck Institute of Molecular Cell Biology and\n            Genetics\n            2009 Zachary Pincus\n            2009 Almar Klein\n License: BSD-2-Clause\n\n File: skimage/morphology/grayreconstruct.py\n       skimage/morphology/tests/test_reconstruction.py\n Copyright: 2003-2009 Massachusetts Institute of Technology\n            2009-2011 Broad Institute\n            2003 Lee Kamentsky\n License: BSD-3-Clause\n\n File: skimage/morphology/_grayreconstruct.pyx\n Copyright: 2003-2009 Massachusetts Institute of Technology\n            2009-2011 Broad Institute\n            2003 Lee Kamentsky\n            2022 Gregory Lee (added a 64-bit integer variant for large images)\n License: BSD-3-Clause\n\n File: skimage/segmentation/_expand_labels.py\n Copyright: 2020 Broad Institute\n            2020 CellProfiler team\n License: BSD-3-Clause\n\n File: skimage/exposure/_adapthist.py\n Copyright: 1994 Karel Zuiderveld\n License: BSD-3-Clause\n\n Function: skimage/morphology/_skeletonize_various_cy.pyx:_skeletonize_loop\n Copyright: 2003-2009 Massachusetts Institute of Technology\n            2009-2011 Broad Institute\n            2003 Lee Kamentsky\n License: BSD-3-Clause\n\n Function: skimage/_shared/version_requirements.py:_check_version\n Copyright: 2013 The IPython Development Team\n License: BSD-3-Clause\n\n Function: skimage/_shared/version_requirements.py:is_installed\n Copyright: 2009-2011 Pierre Raybaut\n License: MIT\n\n File: skimage/feature/_fisher_vector.py\n Copyright: 2014 2014 Dan Oneata\n License: MIT\n\n File: skimage/_vendored/numpy_lookfor.py\n Copyright: 2005-2023, NumPy Developers\n License: BSD-3-Clause\n\n File: skimage/transform/_thin_plate_splines.py\n Copyright: 2007 Zachary Pincus\n License: BSD-3-Clause\n\n License: BSD-2-Clause\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n 1. Redistributions of source code must retain the above copyright\n    notice, this list of conditions and the following disclaimer.\n 2. Redistributions in binary form must reproduce the above copyright\n    notice, this list of conditions and the following disclaimer in the\n    documentation and/or other materials provided with the distribution.\n .\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE HOLDERS OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n License: BSD-3-Clause\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n 1. Redistributions of source code must retain the above copyright\n    notice, this list of conditions and the following disclaimer.\n 2. Redistributions in binary form must reproduce the above copyright\n    notice, this list of conditions and the following disclaimer in the\n    documentation and/or other materials provided with the distribution.\n 3. Neither the name of the University nor the names of its contributors\n    may be used to endorse or promote products derived from this software\n    without specific prior written permission.\n .\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE HOLDERS OR\n CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n License: MIT\n\n Permission is hereby granted, free of charge, to any person obtaining a copy\n of this software and associated documentation files (the \"Software\"), to deal\n in the Software without restriction, including without limitation the rights\n to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n copies of the Software, and to permit persons to whom the Software is\n furnished to do so, subject to the following conditions:\n\n The above copyright notice and this permission notice shall be included in all\n copies or substantial portions of the Software.\n\n THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n SOFTWARE.\n",
+        "classifier": [
+          "Development Status :: 4 - Beta",
+          "Environment :: Console",
+          "Intended Audience :: Developers",
+          "Intended Audience :: Science/Research",
+          "License :: OSI Approved :: BSD License",
+          "Programming Language :: C",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3 :: Only",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Scientific/Engineering",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: POSIX",
+          "Operating System :: Unix",
+          "Operating System :: MacOS"
+        ],
+        "requires_dist": [
+          "numpy>=1.24",
+          "scipy>=1.11.4",
+          "networkx>=3.0",
+          "pillow>=10.1",
+          "imageio!=2.35.0,>=2.33",
+          "tifffile>=2022.8.12",
+          "packaging>=21",
+          "lazy-loader>=0.4",
+          "meson-python>=0.16; extra == \"build\"",
+          "ninja>=1.11.1.1; extra == \"build\"",
+          "Cython>=3.0.8; extra == \"build\"",
+          "pythran>=0.16; extra == \"build\"",
+          "numpy>=2.0; extra == \"build\"",
+          "spin==0.13; extra == \"build\"",
+          "build>=1.2.1; extra == \"build\"",
+          "pooch>=1.6.0; extra == \"data\"",
+          "pre-commit; extra == \"developer\"",
+          "ipython; extra == \"developer\"",
+          "tomli; python_version < \"3.11\" and extra == \"developer\"",
+          "sphinx>=8.0; extra == \"docs\"",
+          "sphinx-gallery[parallel]>=0.18; extra == \"docs\"",
+          "numpydoc>=1.7; extra == \"docs\"",
+          "sphinx-copybutton; extra == \"docs\"",
+          "matplotlib>=3.7; extra == \"docs\"",
+          "dask[array]>=2023.2.0; extra == \"docs\"",
+          "pandas>=2.0; extra == \"docs\"",
+          "seaborn>=0.11; extra == \"docs\"",
+          "pooch>=1.6; extra == \"docs\"",
+          "tifffile>=2022.8.12; extra == \"docs\"",
+          "myst-parser; extra == \"docs\"",
+          "intersphinx-registry>=0.2411.14; extra == \"docs\"",
+          "ipywidgets; extra == \"docs\"",
+          "ipykernel; extra == \"docs\"",
+          "plotly>=5.20; extra == \"docs\"",
+          "kaleido==0.2.1; extra == \"docs\"",
+          "scikit-learn>=1.2; extra == \"docs\"",
+          "sphinx_design>=0.5; extra == \"docs\"",
+          "pydata-sphinx-theme>=0.16; extra == \"docs\"",
+          "PyWavelets>=1.6; extra == \"docs\"",
+          "pytest-doctestplus; extra == \"docs\"",
+          "SimpleITK; extra == \"optional\"",
+          "astropy>=5.0; extra == \"optional\"",
+          "cloudpickle>=1.1.1; extra == \"optional\"",
+          "dask[array]>=2023.2.0; extra == \"optional\"",
+          "matplotlib>=3.7; extra == \"optional\"",
+          "pooch>=1.6.0; extra == \"optional\"",
+          "pyamg>=5.2; extra == \"optional\"",
+          "PyWavelets>=1.6; extra == \"optional\"",
+          "scikit-learn>=1.2; extra == \"optional\"",
+          "asv; extra == \"test\"",
+          "numpydoc>=1.7; extra == \"test\"",
+          "pooch>=1.6.0; extra == \"test\"",
+          "pytest>=8; extra == \"test\"",
+          "pytest-cov>=2.11.0; extra == \"test\"",
+          "pytest-localserver; extra == \"test\"",
+          "pytest-faulthandler; extra == \"test\"",
+          "pytest-doctestplus; extra == \"test\""
+        ],
+        "requires_python": ">=3.10",
+        "project_url": [
+          "homepage, https://scikit-image.org",
+          "documentation, https://scikit-image.org/docs/stable",
+          "source, https://github.com/scikit-image/scikit-image",
+          "download, https://pypi.org/project/scikit-image/#files",
+          "tracker, https://github.com/scikit-image/scikit-image/issues"
+        ],
+        "provides_extra": [
+          "build",
+          "data",
+          "developer",
+          "docs",
+          "optional",
+          "test"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/imageio-2.38.1-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=36d23eb7423d2fb63f637098758edb3d2df3687f7125e0a5ce8596572022dcf9",
+          "hashes": {
+            "sha256": "36d23eb7423d2fb63f637098758edb3d2df3687f7125e0a5ce8596572022dcf9"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "ImageIO",
+        "version": "2.38.1",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "Read and write images and video across all major formats. Supports scientific and volumetric data.",
+        "description": "# IMAGEIO\n\n[![CI](https://github.com/imageio/imageio/workflows/CI/badge.svg)](https://github.com/imageio/imageio/actions/workflows/ci.yml)\n[![CD](https://github.com/imageio/imageio/workflows/CD/badge.svg)](https://github.com/imageio/imageio/actions/workflows/cd.yml)\n[![codecov](https://codecov.io/gh/imageio/imageio/branch/master/graph/badge.svg?token=81Zhu9MDec)](https://codecov.io/gh/imageio/imageio)\n[![Docs](https://readthedocs.org/projects/imageio/badge/?version=latest)](https://imageio.readthedocs.io)\n\n[![Supported Python Versions](https://img.shields.io/pypi/pyversions/imageio.svg)](https://pypi.python.org/pypi/imageio/)\n[![PyPI Version](https://img.shields.io/pypi/v/imageio.svg)](https://pypi.python.org/pypi/imageio/)\n![PyPI Downloads](https://img.shields.io/pypi/dm/imageio?color=blue)\n[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1488561.svg)](https://doi.org/10.5281/zenodo.1488561)\n\nWebsite: <https://imageio.readthedocs.io/>\n\nImageio is a mature Python library that makes it easy to read and write image\nand video data. This includes animated images, video, volumetric data, and\nscientific formats. It is cross-platform, runs on Python 3.11 through 3.14, and is easy to\ninstall.\n\nProfessional support is available via\n[Tidelift](https://tidelift.com/funding/github/pypi/imageio).\n\n## Example\n\nHere's a minimal example of how to use imageio. See the docs for [more\nexamples](https://imageio.readthedocs.io/en/stable/examples.html).\n\n```python\nimport imageio.v3 as iio\nim = iio.imread('imageio:chelsea.png')  # read a standard image\nim.shape  # im is a NumPy array of shape (300, 451, 3)\niio.imwrite('chelsea.jpg', im)  # convert to jpg\n```\n\n## API in a nutshell\n\nYou just have to remember a handful of functions:\n\n```python\nimread()  # for reading\nimwrite() # for writing\nimiter()  # for iterating image series (animations/videos/OME-TIFF/...)\nimprops() # for standardized metadata\nimmeta()  # for format-specific metadata\nimopen()  # for advanced usage\n```\n\nSee the [API docs](https://imageio.readthedocs.io/en/stable/reference/index.html) for more information.\n\n## Features\n\n- Simple interface via a concise set of functions\n- Easy to\n  [install](https://imageio.readthedocs.io/en/stable/getting_started/installation.html)\n  using Conda or pip\n- Few core dependencies (only NumPy and Pillow)\n- Pure Python, runs on Python 3.11 through 3.14, and PyPy\n- Cross platform, runs on Windows, Linux, macOS\n- More than 295 supported\n  [formats](https://imageio.readthedocs.io/en/stable/formats/index.html)\n- Read/Write support for various\n  [resources](https://imageio.readthedocs.io/en/stable/getting_started/requests.html)\n  (files, URLs, bytes, FileLike objects, ...)\n- High code quality and large test suite including functional, regression, and\n  integration tests\n\n## Dependencies\n\nMinimal requirements:\n\n- Python 3.11 through 3.14\n- NumPy\n- Pillow >= 8.3.2\n\nOptional Python packages:\n\n- imageio-ffmpeg (for working with video files)\n- pyav (for working with video files)\n- tifffile (for working with TIFF files)\n- itk or SimpleITK (for ITK plugin)\n- astropy (for FITS plugin)\n- [imageio-flif](https://codeberg.org/monilophyta/imageio-flif) (for working\n  with [FLIF](https://github.com/FLIF-hub/FLIF) image files)\n\n## Security contact information\n\nTo report a security vulnerability, please use the [Tidelift security\ncontact](https://tidelift.com/security). Tidelift will coordinate the fix and\ndisclosure.\n\n## ImageIO for enterprise\n\nAvailable as part of the Tidelift Subscription.\n\nThe maintainers of imageio and thousands of other packages are working with\nTidelift to deliver commercial support and maintenance for the open source\ndependencies you use to build your applications. Save time, reduce risk, and\nimprove code health, while paying the maintainers of the exact dependencies you\nuse. ([Learn\nmore](https://tidelift.com/subscription/pkg/pypi-imageio?utm_source=pypi-imageio&utm_medium=referral&utm_campaign=readme))\n\n## Details\n\nThe core of ImageIO is a set of user-facing APIs combined with a plugin manager.\nAPI calls choose sensible defaults and then call the plugin manager, which\ndeduces the correct plugin/backend to use for the given resource and file\nformat. The plugin manager adds sensible backend-specific defaults and then\ncalls one of ImageIOs many backends to perform the actual loading. This allows\nImageIO to take care of most of the gory details of loading images for you,\nwhile still allowing you to customize the behavior when and where you need to.\nYou can find a more detailed explanation of this process in [our\ndocumentation](https://imageio.readthedocs.io/en/stable/user_guide/overview.html).\n\n## Contributing\n\nWe welcome contributions of any kind. Here are some suggestions on how you are\nable to contribute\n\n- add missing formats to the format list\n- suggest/implement support for new backends\n- report/fix any bugs you encounter while using ImageIO\n\nTo assist you in getting started with contributing code, take a look at the\n[development\nsection](https://imageio.readthedocs.io/en/stable/development/index.html) of the\ndocs. You will find instructions on setting up the dev environment as well as\nexamples on how to contribute code.\n",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "image",
+          "video",
+          "imread",
+          "imwrite",
+          "io",
+          "animation",
+          "ffmpeg",
+          "image processing",
+          "numpy",
+          "format conversion",
+          "scientific imaging",
+          "medical imaging",
+          "volumetric",
+          "video encoding",
+          "multimedia",
+          "gif",
+          "tiff",
+          "png",
+          "jpeg"
+        ],
+        "author": "ImageIO contributors",
+        "maintainer_email": "Sebastian Wallkotter <sebastian@wallkoetter.net>, Almar Klein <almar.klein@gmail.com>",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Science/Research",
+          "Intended Audience :: Education",
+          "Intended Audience :: Developers",
+          "Operating System :: MacOS :: MacOS X",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: POSIX",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14"
+        ],
+        "requires_dist": [
+          "numpy",
+          "pillow>=8.3.2",
+          "imageio-ffmpeg; extra == \"ffmpeg\"",
+          "psutil; extra == \"ffmpeg\"",
+          "fsspec[http]; extra == \"freeimage\"",
+          "pillow-heif; extra == \"pillow-heif\"",
+          "pydicom; extra == \"pydicom\"",
+          "tifffile; extra == \"tifffile\"",
+          "av; extra == \"pyav\"",
+          "astropy; extra == \"fits\"",
+          "rawpy; extra == \"rawpy\"",
+          "numpy>2; extra == \"rawpy\"",
+          "gdal; extra == \"gdal\"",
+          "itk; extra == \"itk\"",
+          "black; extra == \"linting\"",
+          "flake8; extra == \"linting\"",
+          "pytest; extra == \"test\"",
+          "pytest-cov; extra == \"test\"",
+          "fsspec[github]; extra == \"test\"",
+          "sphinx<6; extra == \"docs\"",
+          "numpydoc; extra == \"docs\"",
+          "pydata-sphinx-theme; extra == \"docs\"",
+          "pytest; extra == \"dev\"",
+          "pytest-cov; extra == \"dev\"",
+          "fsspec[github]; extra == \"dev\"",
+          "black; extra == \"dev\"",
+          "flake8; extra == \"dev\"",
+          "av; extra == \"all-plugins\"",
+          "astropy; extra == \"all-plugins\"",
+          "fsspec[http]; extra == \"all-plugins\"",
+          "imageio-ffmpeg; extra == \"all-plugins\"",
+          "numpy>2; extra == \"all-plugins\"",
+          "pillow-heif; extra == \"all-plugins\"",
+          "psutil; extra == \"all-plugins\"",
+          "pydicom; extra == \"all-plugins\"",
+          "rawpy; extra == \"all-plugins\"",
+          "tifffile; extra == \"all-plugins\"",
+          "fsspec[http]; extra == \"all-plugins-pypy\"",
+          "imageio-ffmpeg; extra == \"all-plugins-pypy\"",
+          "psutil; extra == \"all-plugins-pypy\"",
+          "astropy; extra == \"full\"",
+          "av; extra == \"full\"",
+          "black; extra == \"full\"",
+          "flake8; extra == \"full\"",
+          "fsspec[github,http]; extra == \"full\"",
+          "imageio-ffmpeg; extra == \"full\"",
+          "numpydoc; extra == \"full\"",
+          "numpy>2; extra == \"full\"",
+          "pillow-heif; extra == \"full\"",
+          "psutil; extra == \"full\"",
+          "pydicom; extra == \"full\"",
+          "pydata-sphinx-theme; extra == \"full\"",
+          "pytest; extra == \"full\"",
+          "pytest-cov; extra == \"full\"",
+          "rawpy; extra == \"full\"",
+          "sphinx<6; extra == \"full\"",
+          "tifffile; extra == \"full\""
+        ],
+        "requires_python": ">=3.11",
+        "project_url": [
+          "homepage, https://github.com/imageio/imageio",
+          "download, http://pypi.python.org/pypi/imageio",
+          "source, https://github.com/imageio/imageio",
+          "documentation, https://imageio.readthedocs.io"
+        ],
+        "provides_extra": [
+          "bsdf",
+          "dicom",
+          "feisem",
+          "ffmpeg",
+          "freeimage",
+          "lytro",
+          "numpy",
+          "pillow-heif",
+          "pillow",
+          "pydicom",
+          "simpleitk",
+          "spe",
+          "swf",
+          "tifffile",
+          "pyav",
+          "fits",
+          "rawpy",
+          "gdal",
+          "itk",
+          "linting",
+          "test",
+          "docs",
+          "dev",
+          "all-plugins",
+          "all-plugins-pypy",
+          "full"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/lazy_loader-0.6-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=77253be3391b06124a0e16105bd663b6c54470af1a9ca8e1cf026f38d58ed056",
+          "hashes": {
+            "sha256": "77253be3391b06124a0e16105bd663b6c54470af1a9ca8e1cf026f38d58ed056"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "lazy-loader",
+        "version": "0.6",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "Makes it easy to load subpackages and functions on demand.",
+        "description": "[![PyPI](https://img.shields.io/pypi/v/lazy-loader)](https://pypi.org/project/lazy-loader/)\n[![Test status](https://github.com/scientific-python/lazy-loader/workflows/test/badge.svg?branch=main)](https://github.com/scientific-python/lazy-loader/actions?query=workflow%3A%22test%22)\n[![Test coverage](https://codecov.io/gh/scientific-python/lazy-loader/branch/main/graph/badge.svg)](https://app.codecov.io/gh/scientific-python/lazy-loader/branch/main)\n\n`lazy-loader` makes it easy to load subpackages and functions on demand.\n\n## Motivation\n\n1. Allow subpackages to be made visible to users without incurring import costs.\n2. Allow external libraries to be imported only when used, improving import times.\n\nFor a more detailed discussion, see [the SPEC](https://scientific-python.org/specs/spec-0001/).\n\n## Installation\n\n```\npip install -U lazy-loader\n```\n\nWe recommend using `lazy-loader` with Python >= 3.11.\nIf using Python 3.11, please upgrade to 3.11.9 or later.\nIf using Python 3.12, please upgrade to 3.12.3 or later.\nThese versions [avoid](https://github.com/python/cpython/pull/114781) a [known race condition](https://github.com/python/cpython/issues/114763).\n\n## Usage\n\n### Lazily load subpackages\n\nConsider the `__init__.py` from [scikit-image](https://scikit-image.org):\n\n```python\nsubpackages = [\n    ...,\n    'filters',\n    ...\n]\n\nimport lazy_loader as lazy\n__getattr__, __dir__, _ = lazy.attach(__name__, subpackages)\n```\n\nYou can now do:\n\n```python\nimport skimage as ski\nski.filters.gaussian(...)\n```\n\nThe `filters` subpackages will only be loaded once accessed.\n\n### Lazily load subpackages and functions\n\nConsider `skimage/filters/__init__.py`:\n\n```python\nfrom ..util import lazy\n\n__getattr__, __dir__, __all__ = lazy.attach(\n    __name__,\n    submodules=['rank'],\n    submod_attrs={\n        '_gaussian': ['gaussian', 'difference_of_gaussians'],\n        'edges': ['sobel', 'scharr', 'prewitt', 'roberts',\n                  'laplace', 'farid']\n    }\n)\n```\n\nThe above is equivalent to:\n\n```python\nfrom . import rank\nfrom ._gaussian import gaussian, difference_of_gaussians\nfrom .edges import (sobel, scharr, prewitt, roberts,\n                    laplace, farid)\n```\n\nExcept that all subpackages (such as `rank`) and functions (such as `sobel`) are loaded upon access.\n\n### Type checkers\n\nStatic type checkers and IDEs cannot infer type information from\nlazily loaded imports. As a workaround you can load [type\nstubs](https://mypy.readthedocs.io/en/stable/stubs.html) (`.pyi`\nfiles) with `lazy.attach_stub`:\n\n```python\nimport lazy_loader as lazy\n__getattr__, __dir__, _ = lazy.attach_stub(__name__, \"subpackages.pyi\")\n```\n\nNote that, since imports are now defined in `.pyi` files, those\nare not only necessary for type checking but also at runtime.\n\nThe SPEC [describes this workaround in more\ndetail](https://scientific-python.org/specs/spec-0001/#type-checkers).\n\n### Early failure\n\nWith lazy loading, missing imports no longer fail upon loading the\nlibrary. During development and testing, you can set the `EAGER_IMPORT`\nenvironment variable to \"1\" or \"true\" to disable lazy loading (\"0\" or \"\" re-enables lazy loading).\n\n### External libraries\n\nThe `lazy.attach` function discussed above is used to set up package\ninternal imports.\n\nUse `lazy.load` to lazily import external libraries:\n\n```python\nsp = lazy.load('scipy')  # `sp` will only be loaded when accessed\nsp.linalg.norm(...)\n```\n\n_Note that lazily importing *sub*packages,\ni.e. `load('scipy.linalg')` will cause the package containing the\nsubpackage to be imported immediately; thus, this usage is\ndiscouraged._\n\nYou can ask `lazy.load` to raise import errors as soon as it is called:\n\n```python\nlinalg = lazy.load('scipy.linalg', error_on_import=True)\n```\n\n#### Optional requirements\n\nOne use for lazy loading is for loading optional dependencies, with\n`ImportErrors` only arising when optional functionality is accessed. If optional\nfunctionality depends on a specific version, a version requirement can\nbe set:\n\n```python\nnp = lazy.load(\"numpy\", require=\"numpy >=1.24\")\n```\n\nIn this case, if `numpy` is installed, but the version is less than 1.24,\nthe `np` module returned will raise an error on attribute access. Using\nthis feature is not all-or-nothing: One module may rely on one version of\nnumpy, while another module may not set any requirement.\n\n_Note that the requirement must use the package [distribution name][] instead\nof the module [import name][]. For example, the `pyyaml` distribution provides\nthe `yaml` module for import._\n\n[distribution name]: https://packaging.python.org/en/latest/glossary/#term-Distribution-Package\n[import name]: https://packaging.python.org/en/latest/glossary/#term-Import-Package\n",
+        "description_content_type": "text/markdown",
+        "author": "Scientific Python Developers",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15"
+        ],
+        "requires_dist": [
+          "packaging",
+          "pytest>=8.0; extra == \"test\"",
+          "pytest-cov>=5.0; extra == \"test\"",
+          "coverage[toml]>=7.2; extra == \"test\"",
+          "pre-commit==4.3.0; extra == \"lint\"",
+          "changelist==0.5; extra == \"dev\"",
+          "spin==0.15; extra == \"dev\""
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Home, https://scientific-python.org/specs/spec-0001/",
+          "Source, https://github.com/scientific-python/lazy-loader"
+        ],
+        "provides_extra": [
+          "test",
+          "lint",
+          "dev"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/networkx-3.7-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0",
+          "hashes": {
+            "sha256": "e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "networkx",
+        "version": "3.7",
+        "dynamic": [
+          "license-file"
+        ],
+        "platform": [
+          "Linux",
+          "Mac OSX",
+          "Windows",
+          "Unix"
+        ],
+        "summary": "Python package for creating and manipulating graphs and networks",
+        "description": "NetworkX\n========\n\n\n.. image::\n    https://github.com/networkx/networkx/actions/workflows/test.yml/badge.svg?branch=main\n    :target: https://github.com/networkx/networkx/actions/workflows/test.yml\n\n.. image::\n    https://img.shields.io/pypi/v/networkx.svg?\n    :target: https://pypi.python.org/pypi/networkx\n\n.. image::\n    https://img.shields.io/pypi/l/networkx.svg?\n    :target: https://github.com/networkx/networkx/blob/main/LICENSE.txt\n\n.. image::\n    https://img.shields.io/pypi/pyversions/networkx.svg?\n    :target: https://pypi.python.org/pypi/networkx\n\n.. image::\n    https://insights.linuxfoundation.org/api/badge/health-score?project=networkx\n    :target: https://insights.linuxfoundation.org/project/networkx\n\n\nNetworkX is a Python package for the creation, manipulation,\nand study of the structure, dynamics, and functions\nof complex networks.\n\n- **Website (including documentation):** https://networkx.org\n- **Mailing list:** https://groups.google.com/forum/#!forum/networkx-discuss\n- **Source:** https://github.com/networkx/networkx\n- **Bug reports:** https://github.com/networkx/networkx/issues\n- **Report a security vulnerability:** https://tidelift.com/security\n- **Tutorial:** https://networkx.org/documentation/latest/tutorial.html\n- **GitHub Discussions:** https://github.com/networkx/networkx/discussions\n- **Discord (Scientific Python) invite link:** https://discord.com/invite/vur45CbwMz\n- **NetworkX meetings calendar (open to all):** https://scientific-python.org/calendars/networkx.ics\n\nSimple example\n--------------\n\nFind the shortest path between two nodes in an undirected graph:\n\n.. code:: pycon\n\n    >>> import networkx as nx\n    >>> G = nx.Graph()\n    >>> G.add_edge(\"A\", \"B\", weight=4)\n    >>> G.add_edge(\"B\", \"D\", weight=2)\n    >>> G.add_edge(\"A\", \"C\", weight=3)\n    >>> G.add_edge(\"C\", \"D\", weight=4)\n    >>> nx.shortest_path(G, \"A\", \"D\", weight=\"weight\")\n    ['A', 'B', 'D']\n\nInstall\n-------\n\nInstall the latest released version of NetworkX:\n\n.. code:: shell\n\n    $ pip install networkx\n\nInstall with all optional dependencies:\n\n.. code:: shell\n\n    $ pip install networkx[default]\n\nFor additional details,\nplease see the `installation guide <https://networkx.org/documentation/stable/install.html>`_.\n\nBugs\n----\n\nPlease report any bugs that you find `here <https://github.com/networkx/networkx/issues>`_.\nOr, even better, fork the repository on `GitHub <https://github.com/networkx/networkx>`_\nand create a pull request (PR). We welcome all changes, big or small, and we\nwill help you make the PR if you are new to `git` (just ask on the issue and/or\nsee the `contributor guide <https://networkx.org/documentation/latest/developer/contribute.html>`_).\n\nLicense\n-------\n\nReleased under the `3-clause BSD license <https://github.com/networkx/networkx/blob/main/LICENSE.txt>`_::\n\n    Copyright (c) 2004-2026, NetworkX Developers\n    Aric Hagberg <hagberg@lanl.gov>\n    Dan Schult <dschult@colgate.edu>\n    Pieter Swart <swart@lanl.gov>\n",
+        "description_content_type": "text/x-rst",
+        "keywords": [
+          "Networks",
+          "Graph Theory",
+          "Mathematics",
+          "network",
+          "graph",
+          "discrete mathematics",
+          "math"
+        ],
+        "author_email": "Aric Hagberg <hagberg@lanl.gov>",
+        "maintainer_email": "NetworkX Developers <networkx-discuss@googlegroups.com>",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Intended Audience :: Science/Research",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: 3 :: Only",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Scientific/Engineering :: Bio-Informatics",
+          "Topic :: Scientific/Engineering :: Information Analysis",
+          "Topic :: Scientific/Engineering :: Mathematics",
+          "Topic :: Scientific/Engineering :: Physics"
+        ],
+        "requires_dist": [
+          "asv>=0.6.5; extra == \"benchmarking\"",
+          "py-rattler<0.22,>=0.21; extra == \"benchmarking\"",
+          "virtualenv; extra == \"benchmarking\"",
+          "numpy>=2.2; extra == \"default\"",
+          "scipy>=1.15; extra == \"default\"",
+          "matplotlib>=3.10; extra == \"default\"",
+          "pandas>=2.3; extra == \"default\"",
+          "pre-commit>=4.1; extra == \"developer\"",
+          "mypy>=1.15; extra == \"developer\"",
+          "sphinx>=8.0; extra == \"doc\"",
+          "pydata-sphinx-theme>=0.16; extra == \"doc\"",
+          "sphinx-gallery>=0.18; extra == \"doc\"",
+          "numpydoc>=1.8.0; extra == \"doc\"",
+          "pillow>=10; extra == \"doc\"",
+          "texext>=0.6.7; extra == \"doc\"",
+          "myst-nb>=1.1; extra == \"doc\"",
+          "intersphinx-registry; extra == \"doc\"",
+          "osmnx>=2.0.0; extra == \"example\"",
+          "momepy>=0.7.2; extra == \"example\"",
+          "contextily>=1.6; extra == \"example\"",
+          "seaborn>=0.13; extra == \"example\"",
+          "cairocffi>=1.7; extra == \"example\"",
+          "igraph>=0.11; extra == \"example\"",
+          "scikit-learn>=1.6; extra == \"example\"",
+          "iplotx>=0.9.0; extra == \"example\"",
+          "hiveplotlib>=0.28; extra == \"example\"",
+          "lxml>=4.6; extra == \"extra\"",
+          "pygraphviz>=2.0; extra == \"extra\"",
+          "pydot>=3.0.1; extra == \"extra\"",
+          "sympy>=1.10; extra == \"extra\"",
+          "build>=0.10; extra == \"release\"",
+          "twine>=4.0; extra == \"release\"",
+          "wheel>=0.40; extra == \"release\"",
+          "changelist==0.5; extra == \"release\"",
+          "pytest>=7.2; extra == \"test\"",
+          "pytest-cov>=4.0; extra == \"test\"",
+          "pytest-xdist>=3.0; extra == \"test\"",
+          "pytest-mpl; extra == \"test-extras\"",
+          "pytest-randomly; extra == \"test-extras\""
+        ],
+        "requires_python": "!=3.14.1,>=3.12",
+        "project_url": [
+          "Homepage, https://networkx.org/",
+          "Bug Tracker, https://github.com/networkx/networkx/issues",
+          "Documentation, https://networkx.org/documentation/stable/",
+          "Source Code, https://github.com/networkx/networkx"
+        ],
+        "provides_extra": [
+          "benchmarking",
+          "default",
+          "developer",
+          "doc",
+          "example",
+          "extra",
+          "release",
+          "test",
+          "test-extras"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=fbde6962867ee75b48b0ee29b2b9372ec5d617799dbaf38e82dc0596f2f7738a",
+          "hashes": {
+            "sha256": "fbde6962867ee75b48b0ee29b2b9372ec5d617799dbaf38e82dc0596f2f7738a"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "numpy",
+        "version": "2.5.4",
+        "summary": "Fundamental package for array computing in Python",
+        "description": "<h1 align=\"center\">\n<img src=\"https://raw.githubusercontent.com/numpy/numpy/main/branding/logo/primary/numpylogo.svg\" width=\"300\">\n</h1><br>\n\n\n[![Powered by NumFOCUS](https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](\nhttps://numfocus.org)\n[![PyPI Downloads](https://img.shields.io/pypi/dm/numpy.svg?label=PyPI%20downloads)](\nhttps://pypi.org/project/numpy/)\n[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/numpy.svg?label=Conda%20downloads)](\nhttps://anaconda.org/conda-forge/numpy)\n[![Stack Overflow](https://img.shields.io/badge/stackoverflow-Ask%20questions-blue.svg)](\nhttps://stackoverflow.com/questions/tagged/numpy)\n[![Nature Paper](https://img.shields.io/badge/DOI-10.1038%2Fs41586--020--2649--2-blue)](\nhttps://doi.org/10.1038/s41586-020-2649-2)\n[![LFX Health Score](https://insights.linuxfoundation.org/api/badge/health-score?project=numpy)](https://insights.linuxfoundation.org/project/numpy)\n[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/numpy/numpy/badge)](https://securityscorecards.dev/viewer/?uri=github.com/numpy/numpy)\n[![Typing](https://img.shields.io/pypi/types/numpy)](https://pypi.org/project/numpy/)\n\n\nNumPy is the fundamental package for scientific computing with Python.\n\n- **Website:** https://numpy.org\n- **Documentation:** https://numpy.org/doc\n- **Mailing list:** https://mail.python.org/mailman/listinfo/numpy-discussion\n- **Source code:** https://github.com/numpy/numpy\n- **Contributing:** https://numpy.org/devdocs/dev/index.html\n- **Bug reports:** https://github.com/numpy/numpy/issues\n- **Report a security vulnerability:** https://github.com/numpy/numpy/security/policy (via Tidelift)\n\nIt provides:\n\n- a powerful N-dimensional array object\n- sophisticated (broadcasting) functions\n- tools for integrating C/C++ and Fortran code\n- useful linear algebra, Fourier transform, and random number capabilities\n\nTesting:\n\nNumPy requires `pytest` and `hypothesis`.  Tests can then be run after installation with:\n\n    python -c \"import numpy, sys; sys.exit(numpy.test() is False)\"\n\nCode of Conduct\n----------------------\n\nNumPy is a community-driven open source project developed by a diverse group of\n[contributors](https://numpy.org/teams/). The NumPy leadership has made a strong\ncommitment to creating an open, inclusive, and positive community. Please read the\n[NumPy Code of Conduct](https://numpy.org/code-of-conduct/) for guidance on how to interact\nwith others in a way that makes our community thrive.\n\nCall for Contributions\n----------------------\n\nThe NumPy project welcomes your expertise and enthusiasm!\n\nSmall improvements or fixes are always appreciated. If you are considering larger contributions\nto the source code, please contact us through the [mailing\nlist](https://mail.python.org/mailman/listinfo/numpy-discussion) first.\n\nWriting code isn’t the only way to contribute to NumPy. You can also:\n- review pull requests\n- help us stay on top of new and old issues\n- develop tutorials, presentations, and other educational materials\n- maintain and improve [our website](https://github.com/numpy/numpy.org)\n- develop graphic design for our brand assets and promotional materials\n- translate website content\n- help with outreach and onboard new contributors\n- write grant proposals and help with other fundraising efforts\n\nFor more information about the ways you can contribute to NumPy, visit [our website](https://numpy.org/contribute/). \nIf you’re unsure where to start or how your skills fit in, reach out! You can\nask on the mailing list or here, on GitHub, by opening a new issue or leaving a\ncomment on a relevant issue that is already open.\n\nOur preferred channels of communication are all public, but if you’d like to\nspeak to us in private first, contact our community coordinators at\nnumpy-team@googlegroups.com or on Slack (write numpy-team@googlegroups.com for\nan invitation).\n\nWe also have a biweekly community call, details of which are announced on the\nmailing list. You are very welcome to join.\n\nIf you are new to contributing to open source, [this\nguide](https://opensource.guide/how-to-contribute/) helps explain why, what,\nand how to successfully get involved.\n",
+        "description_content_type": "text/markdown",
+        "author": "Travis E. Oliphant et al.",
+        "maintainer_email": "NumPy Developers <numpy-discussion@python.org>",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Science/Research",
+          "Intended Audience :: Developers",
+          "Programming Language :: C",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Topic :: Software Development",
+          "Topic :: Scientific/Engineering",
+          "Typing :: Typed",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: POSIX",
+          "Operating System :: Unix",
+          "Operating System :: MacOS"
+        ],
+        "requires_python": ">=3.12",
+        "project_url": [
+          "homepage, https://numpy.org",
+          "documentation, https://numpy.org/doc/",
+          "source, https://github.com/numpy/numpy",
+          "download, https://pypi.org/project/numpy/#files",
+          "tracker, https://github.com/numpy/numpy/issues",
+          "release notes, https://numpy.org/doc/stable/release"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/packaging-26.3-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+          "hashes": {
+            "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "packaging",
+        "version": "26.3",
+        "summary": "Core utilities for Python packages",
+        "description": "packaging\n=========\n\n.. start-intro\n\nReusable core utilities for various Python Packaging\n`interoperability specifications <https://packaging.python.org/specifications/>`_.\n\nThis library provides utilities that implement the interoperability\nspecifications which have clearly one correct behaviour (eg: :pep:`440`)\nor benefit greatly from having a single shared implementation (eg: :pep:`425`).\n\n.. end-intro\n\nThe ``packaging`` project includes the following: version handling, specifiers,\nmarkers, requirements, tags, metadata, lockfiles, utilities.\n\nDocumentation\n-------------\n\nThe `documentation`_ provides information and the API for the following:\n\n- Version Handling\n- Specifiers\n- Markers\n- Licenses\n- Requirements\n- Metadata\n- Tags\n- Lockfiles (pylock)\n- Direct URL helpers\n- Dependency groups\n- Errors\n- Utilities\n\nInstallation\n------------\n\nUse ``pip`` to install these utilities::\n\n    pip install packaging\n\nThe ``packaging`` library uses calendar-based versioning (``YY.N``).\n\nDiscussion\n----------\n\nIf you run into bugs, you can file them in our `issue tracker`_.\n\nYou can also join discussions on `GitHub Discussions`_ to ask questions or get involved.\n\n.. _`documentation`: https://packaging.pypa.io/\n.. _`issue tracker`: https://github.com/pypa/packaging/issues\n.. _`GitHub Discussions`: https://github.com/pypa/packaging/discussions\n\n\nCode of Conduct\n---------------\n\nEveryone interacting in the packaging project's codebases, issue trackers, chat\nrooms, and mailing lists is expected to follow the `PSF Code of Conduct`_.\n\n.. _PSF Code of Conduct: https://github.com/pypa/.github/blob/main/CODE_OF_CONDUCT.md\n\nContributing\n------------\n\nThe ``CONTRIBUTING.rst`` file outlines how to contribute to this project as\nwell as how to report a potential security issue. The documentation for this\nproject also covers information about `project development`_ and `security`_.\n\n.. _`project development`: https://packaging.pypa.io/en/latest/development/\n.. _`security`: https://packaging.pypa.io/en/latest/security/\n\nProject History\n---------------\n\nPlease review the ``CHANGELOG.rst`` file or the `Changelog documentation`_ for\nrecent changes and project history.\n\n.. _`Changelog documentation`: https://packaging.pypa.io/en/latest/changelog/\n\n",
+        "description_content_type": "text/x-rst",
+        "author_email": "Donald Stufft <donald@stufft.io>",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Developers",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.9",
+          "Programming Language :: Python :: 3.10",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Programming Language :: Python :: Free Threading :: 4 - Resilient",
+          "Typing :: Typed"
+        ],
+        "requires_python": ">=3.9",
+        "project_url": [
+          "Documentation, https://packaging.pypa.io/",
+          "Source, https://github.com/pypa/packaging"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=42d63be3af4f9b951b199b0a9d23365d37ab14687e6d77b74940432c8515c4ca",
+          "hashes": {
+            "sha256": "42d63be3af4f9b951b199b0a9d23365d37ab14687e6d77b74940432c8515c4ca"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "pillow",
+        "version": "13.0.0",
+        "dynamic": [
+          "license-file"
+        ],
+        "summary": "Python Imaging Library (fork)",
+        "description": "<p align=\"center\">\n    <img width=\"248\" height=\"250\" src=\"https://raw.githubusercontent.com/python-pillow/pillow-logo/main/pillow-logo-248x250.png\" alt=\"Pillow logo\">\n</p>\n\n# Pillow\n\n## Python Imaging Library (Fork)\n\nPillow is the friendly PIL fork by [Jeffrey 'Alex' Clark and\ncontributors](https://github.com/python-pillow/Pillow/graphs/contributors).\nPIL is the Python Imaging Library by Fredrik Lundh and contributors.\nDevelopment is supported by:\n- [Tidelift](https://tidelift.com/lifter/search/pypi/pillow) (since 2018)\n- [Thanks.dev](https://thanks.dev) (since 2023)\n- [GitHub Sponsors](https://github.com/sponsors/python-pillow) (since 2026)\n\n<table>\n    <tr>\n        <th>docs</th>\n        <td>\n            <a href=\"https://pillow.readthedocs.io/?badge=latest\"><img\n                alt=\"Documentation Status\"\n                src=\"https://readthedocs.org/projects/pillow/badge/?version=latest\"></a>\n        </td>\n    </tr>\n    <tr>\n        <th>tests</th>\n        <td>\n            <a href=\"https://github.com/python-pillow/Pillow/actions/workflows/lint.yml\"><img\n                alt=\"GitHub Actions build status (Lint)\"\n                src=\"https://github.com/python-pillow/Pillow/workflows/Lint/badge.svg\"></a>\n            <a href=\"https://github.com/python-pillow/Pillow/actions/workflows/test.yml\"><img\n                alt=\"GitHub Actions build status (Test Linux and macOS)\"\n                src=\"https://github.com/python-pillow/Pillow/workflows/Test/badge.svg\"></a>\n            <a href=\"https://github.com/python-pillow/Pillow/actions/workflows/test-windows.yml\"><img\n                alt=\"GitHub Actions build status (Test Windows)\"\n                src=\"https://github.com/python-pillow/Pillow/workflows/Test%20Windows/badge.svg\"></a>\n            <a href=\"https://github.com/python-pillow/Pillow/actions/workflows/test-mingw.yml\"><img\n                alt=\"GitHub Actions build status (Test MinGW)\"\n                src=\"https://github.com/python-pillow/Pillow/workflows/Test%20MinGW/badge.svg\"></a>\n            <a href=\"https://github.com/python-pillow/Pillow/actions/workflows/test-docker.yml\"><img\n                alt=\"GitHub Actions build status (Test Docker)\"\n                src=\"https://github.com/python-pillow/Pillow/workflows/Test%20Docker/badge.svg\"></a>\n            <a href=\"https://github.com/python-pillow/Pillow/actions/workflows/wheels.yml\"><img\n                alt=\"GitHub Actions build status (Wheels)\"\n                src=\"https://github.com/python-pillow/Pillow/workflows/Wheels/badge.svg\"></a>\n            <a href=\"https://app.codecov.io/gh/python-pillow/Pillow\"><img\n                alt=\"Code coverage\"\n                src=\"https://codecov.io/gh/python-pillow/Pillow/branch/main/graph/badge.svg\"></a>\n            <a href=\"https://issues.oss-fuzz.com/issues?q=title:pillow\"><img\n                alt=\"Fuzzing Status\"\n                src=\"https://oss-fuzz-build-logs.storage.googleapis.com/badges/pillow.svg\"></a>\n        </td>\n    </tr>\n    <tr>\n        <th>package</th>\n        <td>\n            <a href=\"https://zenodo.org/badge/latestdoi/17549/python-pillow/Pillow\"><img\n                alt=\"Zenodo\"\n                src=\"https://zenodo.org/badge/17549/python-pillow/Pillow.svg\"></a>\n            <a href=\"https://tidelift.com/lifter/search/pypi/pillow\"><img\n                alt=\"Tidelift\"\n                src=\"https://tidelift.com/badges/package/pypi/pillow?style=flat\"></a>\n            <a href=\"https://pypi.org/project/pillow/\"><img\n                alt=\"Newest PyPI version\"\n                src=\"https://img.shields.io/pypi/v/pillow.svg\"></a>\n            <a href=\"https://pypi.org/project/pillow/\"><img\n                alt=\"Number of PyPI downloads\"\n                src=\"https://img.shields.io/pypi/dm/pillow.svg\"></a>\n            <a href=\"https://www.bestpractices.dev/projects/6331\"><img\n                alt=\"OpenSSF Best Practices\"\n                src=\"https://www.bestpractices.dev/projects/6331/badge\"></a>\n        </td>\n    </tr>\n    <tr>\n        <th>social</th>\n        <td>\n            <a href=\"https://gitter.im/python-pillow/Pillow?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge\"><img\n                alt=\"Join the chat at https://gitter.im/python-pillow/Pillow\"\n                src=\"https://badges.gitter.im/python-pillow/Pillow.svg\"></a>\n            <a href=\"https://fosstodon.org/@pillow\"><img\n                alt=\"Follow on https://fosstodon.org/@pillow\"\n                src=\"https://img.shields.io/badge/publish-on%20Mastodon-595aff.svg\"\n                rel=\"me\"></a>\n        </td>\n    </tr>\n</table>\n\n## Overview\n\nThe Python Imaging Library adds image processing capabilities to your Python interpreter.\n\nThis library provides extensive file format support, an efficient internal representation, and fairly powerful image processing capabilities.\n\nThe core image library is designed for fast access to data stored in a few basic pixel formats. It should provide a solid foundation for a general image processing tool.\n\n## More information\n\n- [Documentation](https://pillow.readthedocs.io/)\n  - [Installation](https://pillow.readthedocs.io/en/latest/installation/basic-installation.html)\n  - [Handbook](https://pillow.readthedocs.io/en/latest/handbook/index.html)\n- [Contribute](https://github.com/python-pillow/Pillow/blob/main/.github/CONTRIBUTING.md)\n  - [Issues](https://github.com/python-pillow/Pillow/issues)\n  - [Pull requests](https://github.com/python-pillow/Pillow/pulls)\n- [Release notes](https://pillow.readthedocs.io/en/stable/releasenotes/index.html)\n- [Changelog](https://github.com/python-pillow/Pillow/releases)\n  - [Pre-fork](https://github.com/python-pillow/Pillow/blob/main/CHANGES.rst#pre-fork)\n\n## Report a vulnerability\n\nTo report sensitive vulnerability information, report it [privately on GitHub](https://github.com/python-pillow/Pillow/security/advisories/new).\n\nIf you cannot use GitHub, use the [Tidelift security contact](https://tidelift.com/security). Tidelift will coordinate the fix and disclosure.\n\nDO NOT report sensitive vulnerability information in public.\n",
+        "description_content_type": "text/markdown",
+        "keywords": [
+          "Imaging"
+        ],
+        "author_email": "Jeffrey 'Alex' Clark <aclark@aclark.net>",
+        "classifier": [
+          "Development Status :: 6 - Mature",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.11",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Programming Language :: Python :: Implementation :: CPython",
+          "Programming Language :: Python :: Implementation :: PyPy",
+          "Topic :: Multimedia :: Graphics",
+          "Topic :: Multimedia :: Graphics :: Capture :: Digital Camera",
+          "Topic :: Multimedia :: Graphics :: Capture :: Screen Capture",
+          "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+          "Topic :: Multimedia :: Graphics :: Viewers",
+          "Typing :: Typed"
+        ],
+        "requires_dist": [
+          "furo; extra == \"docs\"",
+          "olefile; extra == \"docs\"",
+          "sphinx>=8.2; extra == \"docs\"",
+          "sphinx-autobuild; extra == \"docs\"",
+          "sphinx-copybutton; extra == \"docs\"",
+          "sphinx-inline-tabs; extra == \"docs\"",
+          "sphinxext-opengraph; extra == \"docs\"",
+          "olefile; extra == \"fpx\"",
+          "olefile; extra == \"mic\"",
+          "arro3-compute; extra == \"test-arrow\"",
+          "arro3-core; extra == \"test-arrow\"",
+          "nanoarrow; extra == \"test-arrow\"",
+          "pyarrow; extra == \"test-arrow\"",
+          "coverage>=7.4.2; extra == \"tests\"",
+          "defusedxml; extra == \"tests\"",
+          "markdown2; extra == \"tests\"",
+          "olefile; extra == \"tests\"",
+          "packaging; extra == \"tests\"",
+          "psutil; (sys_platform == \"linux\" or sys_platform == \"darwin\") and extra == \"tests\"",
+          "pytest; extra == \"tests\"",
+          "pytest-cov; extra == \"tests\"",
+          "pytest-timeout; extra == \"tests\"",
+          "pytest-xdist; extra == \"tests\"",
+          "setuptools; extra == \"tests\"",
+          "trove-classifiers>=2024.10.12; extra == \"tests\"",
+          "defusedxml; extra == \"xmp\""
+        ],
+        "requires_python": ">=3.11",
+        "project_url": [
+          "Release notes, https://pillow.readthedocs.io/en/stable/releasenotes/index.html",
+          "Changelog, https://github.com/python-pillow/Pillow/releases",
+          "Documentation, https://pillow.readthedocs.io",
+          "Funding, https://tidelift.com/lifter/search/pypi/pillow",
+          "Homepage, https://python-pillow.org",
+          "Mastodon, https://fosstodon.org/@pillow",
+          "Security, https://pillow.readthedocs.io/en/stable/handbook/security.html",
+          "Source, https://github.com/python-pillow/Pillow"
+        ],
+        "provides_extra": [
+          "docs",
+          "fpx",
+          "mic",
+          "test-arrow",
+          "tests",
+          "xmp"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "archive_info": {
+          "hash": "sha256=f55fa87b6c612ecd6b058f167c53231b1d14e412efe361d3d6e38b3631c73218",
+          "hashes": {
+            "sha256": "f55fa87b6c612ecd6b058f167c53231b1d14e412efe361d3d6e38b3631c73218"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.1",
+        "name": "scipy",
+        "version": "1.18.1",
+        "summary": "Fundamental algorithms for scientific computing in Python",
+        "description": ".. image:: https://raw.githubusercontent.com/scipy/scipy/main/doc/source/_static/logo.svg\n  :target: https://scipy.org\n  :width: 110\n  :height: 110\n  :align: left\n\n.. image:: https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A\n  :target: https://numfocus.org\n\n.. image:: https://img.shields.io/pypi/dm/scipy.svg?label=Pypi%20downloads\n  :target: https://pypi.org/project/scipy/\n\n.. image:: https://img.shields.io/conda/dn/conda-forge/scipy.svg?label=Conda%20downloads\n  :target: https://anaconda.org/conda-forge/scipy\n\n.. image:: https://img.shields.io/badge/stackoverflow-Ask%20questions-blue.svg\n  :target: https://stackoverflow.com/questions/tagged/scipy\n\n.. image:: https://img.shields.io/badge/DOI-10.1038%2Fs41592--019--0686--2-blue.svg\n  :target: https://www.nature.com/articles/s41592-019-0686-2\n\n.. image:: https://insights.linuxfoundation.org/api/badge/health-score?project=scipy\n  :target: https://insights.linuxfoundation.org/project/scipy\n\nSciPy (pronounced \"Sigh Pie\") is an open-source software for mathematics,\nscience, and engineering. It includes modules for statistics, optimization,\nintegration, linear algebra, Fourier transforms, signal and image processing,\nODE solvers, and more.\n\n- **Website:** https://scipy.org\n- **Documentation:** https://docs.scipy.org/doc/scipy/\n- **Development version of the documentation:** https://scipy.github.io/devdocs\n- **SciPy development forum:** https://discuss.scientific-python.org/c/contributor/scipy\n- **Stack Overflow:** https://stackoverflow.com/questions/tagged/scipy\n- **Source code:** https://github.com/scipy/scipy\n- **Contributing:** https://scipy.github.io/devdocs/dev/index.html\n- **Bug reports:** https://github.com/scipy/scipy/issues\n- **Code of Conduct:** https://docs.scipy.org/doc/scipy/dev/conduct/code_of_conduct.html\n- **Report a security vulnerability:** via Tidelift, as explained in\n  `our docs on Security <https://scipy.github.io/devdocs/tutorial/security.html>`__\n- **Citing in your work:** https://www.scipy.org/citing-scipy/\n\nSciPy is built to work with\nNumPy arrays, and provides many user-friendly and efficient numerical routines,\nsuch as routines for numerical integration and optimization. Together, they\nrun on all popular operating systems, are quick to install, and are free of\ncharge. NumPy and SciPy are easy to use, but powerful enough to be depended\nupon by some of the world's leading scientists and engineers. If you need to\nmanipulate numbers on a computer and display or publish the results, give\nSciPy a try!\n\nFor the installation instructions, see `our install\nguide <https://scipy.org/install/>`__.\n\n\nCall for Contributions\n----------------------\n\nWe appreciate and welcome contributions. Small improvements or fixes are always appreciated; issues labeled as \"good\nfirst issue\" may be a good starting point. Have a look at `our contributing\nguide <https://scipy.github.io/devdocs/dev/index.html>`__.\n\nWriting code isn’t the only way to contribute to SciPy. You can also:\n\n- review pull requests\n- triage issues\n- develop tutorials, presentations, and other educational materials\n- maintain and improve `our website <https://github.com/scipy/scipy.org>`__\n- develop graphic design for our brand assets and promotional materials\n- help with outreach and onboard new contributors\n- write grant proposals and help with other fundraising efforts\n\nIf you’re unsure where to start or how your skills fit in, reach out! You can\nask on the `forum <https://discuss.scientific-python.org/c/contributor/scipy>`__\nor here, on GitHub, by leaving a comment on a relevant issue that is already\nopen.\n\nIf you are new to contributing to open source, `this\nguide <https://opensource.guide/how-to-contribute/>`__ helps explain why, what,\nand how to get involved.\n",
+        "description_content_type": "text/x-rst",
+        "maintainer_email": "SciPy Developers <scipy-dev@python.org>",
+        "license": "Copyright (c) 2001-2002 Enthought, Inc. 2003, SciPy Developers.\n All rights reserved.\n\n Redistribution and use in source and binary forms, with or without\n modification, are permitted provided that the following conditions\n are met:\n\n 1. Redistributions of source code must retain the above copyright\n    notice, this list of conditions and the following disclaimer.\n\n 2. Redistributions in binary form must reproduce the above\n    copyright notice, this list of conditions and the following\n    disclaimer in the documentation and/or other materials provided\n    with the distribution.\n\n 3. Neither the name of the copyright holder nor the names of its\n    contributors may be used to endorse or promote products derived\n    from this software without specific prior written permission.\n\n THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n ----\n\n\n ----\n\n This binary distribution of SciPy can also bundle the following software\n (depending on the build):\n\n\n Name: OpenBLAS\n Files: scipy.libs/libscipy_openblas*.so\n Description: bundled as a dynamically linked library\n Availability: https://github.com/OpenMathLib/OpenBLAS/\n License: BSD-3-Clause\n   Copyright (c) 2011-2014, The OpenBLAS Project\n   All rights reserved.\n\n   Redistribution and use in source and binary forms, with or without\n   modification, are permitted provided that the following conditions are\n   met:\n\n      1. Redistributions of source code must retain the above copyright\n         notice, this list of conditions and the following disclaimer.\n\n      2. Redistributions in binary form must reproduce the above copyright\n         notice, this list of conditions and the following disclaimer in\n         the documentation and/or other materials provided with the\n         distribution.\n      3. Neither the name of the OpenBLAS project nor the names of \n         its contributors may be used to endorse or promote products \n         derived from this software without specific prior written \n         permission.\n\n   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"\n   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE\n   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE\n   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE\n   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL\n   DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\n   SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\n   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,\n   OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE\n   USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\n Name: LAPACK\n Files: scipy.libs/libscipy_openblas*.so\n Description: bundled in OpenBLAS\n Availability: https://github.com/OpenMathLib/OpenBLAS/\n License: BSD-3-Clause-Open-MPI\n   Copyright (c) 1992-2013 The University of Tennessee and The University\n                           of Tennessee Research Foundation.  All rights\n                           reserved.\n   Copyright (c) 2000-2013 The University of California Berkeley. All\n                           rights reserved.\n   Copyright (c) 2006-2013 The University of Colorado Denver.  All rights\n                           reserved.\n\n   $COPYRIGHT$\n\n   Additional copyrights may follow\n\n   $HEADER$\n\n   Redistribution and use in source and binary forms, with or without\n   modification, are permitted provided that the following conditions are\n   met:\n\n   - Redistributions of source code must retain the above copyright\n     notice, this list of conditions and the following disclaimer.\n\n   - Redistributions in binary form must reproduce the above copyright\n     notice, this list of conditions and the following disclaimer listed\n     in this license in the documentation and/or other materials\n     provided with the distribution.\n\n   - Neither the name of the copyright holders nor the names of its\n     contributors may be used to endorse or promote products derived from\n     this software without specific prior written permission.\n\n   The copyright holders provide no reassurances that the source code\n   provided does not infringe any patent, copyright, or any other\n   intellectual property rights of third parties.  The copyright holders\n   disclaim any liability to any recipient for claims brought against\n   recipient by any third party for infringement of that parties\n   intellectual property rights.\n\n   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n   \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\n\n Name: GCC runtime library\n Files: scipy.libs/libgfortran*.so\n Description: dynamically linked to files compiled with gcc\n Availability: https://gcc.gnu.org/git/?p=gcc.git;a=tree;f=libgfortran\n License: GPL-3.0-or-later WITH GCC-exception-3.1\n   Copyright (C) 2002-2017 Free Software Foundation, Inc.\n\n   Libgfortran is free software; you can redistribute it and/or modify\n   it under the terms of the GNU General Public License as published by\n   the Free Software Foundation; either version 3, or (at your option)\n   any later version.\n\n   Libgfortran is distributed in the hope that it will be useful,\n   but WITHOUT ANY WARRANTY; without even the implied warranty of\n   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n   GNU General Public License for more details.\n\n   Under Section 7 of GPL version 3, you are granted additional\n   permissions described in the GCC Runtime Library Exception, version\n   3.1, as published by the Free Software Foundation.\n\n   You should have received a copy of the GNU General Public License and\n   a copy of the GCC Runtime Library Exception along with this program;\n   see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see\n   <http://www.gnu.org/licenses/>.\n\n ----\n\n Full text of license texts referred to above follows (that they are\n listed below does not necessarily imply the conditions apply to the\n present binary release):\n\n ----\n\n GCC RUNTIME LIBRARY EXCEPTION\n\n Version 3.1, 31 March 2009\n\n Copyright (C) 2009 Free Software Foundation, Inc. <http://fsf.org/>\n\n Everyone is permitted to copy and distribute verbatim copies of this\n license document, but changing it is not allowed.\n\n This GCC Runtime Library Exception (\"Exception\") is an additional\n permission under section 7 of the GNU General Public License, version\n 3 (\"GPLv3\"). It applies to a given file (the \"Runtime Library\") that\n bears a notice placed by the copyright holder of the file stating that\n the file is governed by GPLv3 along with this Exception.\n\n When you use GCC to compile a program, GCC may combine portions of\n certain GCC header files and runtime libraries with the compiled\n program. The purpose of this Exception is to allow compilation of\n non-GPL (including proprietary) programs to use, in this way, the\n header files and runtime libraries covered by this Exception.\n\n 0. Definitions.\n\n A file is an \"Independent Module\" if it either requires the Runtime\n Library for execution after a Compilation Process, or makes use of an\n interface provided by the Runtime Library, but is not otherwise based\n on the Runtime Library.\n\n \"GCC\" means a version of the GNU Compiler Collection, with or without\n modifications, governed by version 3 (or a specified later version) of\n the GNU General Public License (GPL) with the option of using any\n subsequent versions published by the FSF.\n\n \"GPL-compatible Software\" is software whose conditions of propagation,\n modification and use would permit combination with GCC in accord with\n the license of GCC.\n\n \"Target Code\" refers to output from any compiler for a real or virtual\n target processor architecture, in executable form or suitable for\n input to an assembler, loader, linker and/or execution\n phase. Notwithstanding that, Target Code does not include data in any\n format that is used as a compiler intermediate representation, or used\n for producing a compiler intermediate representation.\n\n The \"Compilation Process\" transforms code entirely represented in\n non-intermediate languages designed for human-written code, and/or in\n Java Virtual Machine byte code, into Target Code. Thus, for example,\n use of source code generators and preprocessors need not be considered\n part of the Compilation Process, since the Compilation Process can be\n understood as starting with the output of the generators or\n preprocessors.\n\n A Compilation Process is \"Eligible\" if it is done using GCC, alone or\n with other GPL-compatible software, or if it is done without using any\n work based on GCC. For example, using non-GPL-compatible Software to\n optimize any GCC intermediate representations would not qualify as an\n Eligible Compilation Process.\n\n 1. Grant of Additional Permission.\n\n You have permission to propagate a work of Target Code formed by\n combining the Runtime Library with Independent Modules, even if such\n propagation would otherwise violate the terms of GPLv3, provided that\n all Target Code was generated by Eligible Compilation Processes. You\n may then convey such a combination under terms of your choice,\n consistent with the licensing of the Independent Modules.\n\n 2. No Weakening of GCC Copyleft.\n\n The availability of this Exception does not imply any general\n presumption that third-party software is unaffected by the copyleft\n requirements of the license of GCC.\n\n ----\n\n                     GNU GENERAL PUBLIC LICENSE\n                        Version 3, 29 June 2007\n\n  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>\n  Everyone is permitted to copy and distribute verbatim copies\n  of this license document, but changing it is not allowed.\n\n                             Preamble\n\n   The GNU General Public License is a free, copyleft license for\n software and other kinds of works.\n\n   The licenses for most software and other practical works are designed\n to take away your freedom to share and change the works.  By contrast,\n the GNU General Public License is intended to guarantee your freedom to\n share and change all versions of a program--to make sure it remains free\n software for all its users.  We, the Free Software Foundation, use the\n GNU General Public License for most of our software; it applies also to\n any other work released this way by its authors.  You can apply it to\n your programs, too.\n\n   When we speak of free software, we are referring to freedom, not\n price.  Our General Public Licenses are designed to make sure that you\n have the freedom to distribute copies of free software (and charge for\n them if you wish), that you receive source code or can get it if you\n want it, that you can change the software or use pieces of it in new\n free programs, and that you know you can do these things.\n\n   To protect your rights, we need to prevent others from denying you\n these rights or asking you to surrender the rights.  Therefore, you have\n certain responsibilities if you distribute copies of the software, or if\n you modify it: responsibilities to respect the freedom of others.\n\n   For example, if you distribute copies of such a program, whether\n gratis or for a fee, you must pass on to the recipients the same\n freedoms that you received.  You must make sure that they, too, receive\n or can get the source code.  And you must show them these terms so they\n know their rights.\n\n   Developers that use the GNU GPL protect your rights with two steps:\n (1) assert copyright on the software, and (2) offer you this License\n giving you legal permission to copy, distribute and/or modify it.\n\n   For the developers' and authors' protection, the GPL clearly explains\n that there is no warranty for this free software.  For both users' and\n authors' sake, the GPL requires that modified versions be marked as\n changed, so that their problems will not be attributed erroneously to\n authors of previous versions.\n\n   Some devices are designed to deny users access to install or run\n modified versions of the software inside them, although the manufacturer\n can do so.  This is fundamentally incompatible with the aim of\n protecting users' freedom to change the software.  The systematic\n pattern of such abuse occurs in the area of products for individuals to\n use, which is precisely where it is most unacceptable.  Therefore, we\n have designed this version of the GPL to prohibit the practice for those\n products.  If such problems arise substantially in other domains, we\n stand ready to extend this provision to those domains in future versions\n of the GPL, as needed to protect the freedom of users.\n\n   Finally, every program is threatened constantly by software patents.\n States should not allow patents to restrict development and use of\n software on general-purpose computers, but in those that do, we wish to\n avoid the special danger that patents applied to a free program could\n make it effectively proprietary.  To prevent this, the GPL assures that\n patents cannot be used to render the program non-free.\n\n   The precise terms and conditions for copying, distribution and\n modification follow.\n\n                        TERMS AND CONDITIONS\n\n   0. Definitions.\n\n   \"This License\" refers to version 3 of the GNU General Public License.\n\n   \"Copyright\" also means copyright-like laws that apply to other kinds of\n works, such as semiconductor masks.\n\n   \"The Program\" refers to any copyrightable work licensed under this\n License.  Each licensee is addressed as \"you\".  \"Licensees\" and\n \"recipients\" may be individuals or organizations.\n\n   To \"modify\" a work means to copy from or adapt all or part of the work\n in a fashion requiring copyright permission, other than the making of an\n exact copy.  The resulting work is called a \"modified version\" of the\n earlier work or a work \"based on\" the earlier work.\n\n   A \"covered work\" means either the unmodified Program or a work based\n on the Program.\n\n   To \"propagate\" a work means to do anything with it that, without\n permission, would make you directly or secondarily liable for\n infringement under applicable copyright law, except executing it on a\n computer or modifying a private copy.  Propagation includes copying,\n distribution (with or without modification), making available to the\n public, and in some countries other activities as well.\n\n   To \"convey\" a work means any kind of propagation that enables other\n parties to make or receive copies.  Mere interaction with a user through\n a computer network, with no transfer of a copy, is not conveying.\n\n   An interactive user interface displays \"Appropriate Legal Notices\"\n to the extent that it includes a convenient and prominently visible\n feature that (1) displays an appropriate copyright notice, and (2)\n tells the user that there is no warranty for the work (except to the\n extent that warranties are provided), that licensees may convey the\n work under this License, and how to view a copy of this License.  If\n the interface presents a list of user commands or options, such as a\n menu, a prominent item in the list meets this criterion.\n\n   1. Source Code.\n\n   The \"source code\" for a work means the preferred form of the work\n for making modifications to it.  \"Object code\" means any non-source\n form of a work.\n\n   A \"Standard Interface\" means an interface that either is an official\n standard defined by a recognized standards body, or, in the case of\n interfaces specified for a particular programming language, one that\n is widely used among developers working in that language.\n\n   The \"System Libraries\" of an executable work include anything, other\n than the work as a whole, that (a) is included in the normal form of\n packaging a Major Component, but which is not part of that Major\n Component, and (b) serves only to enable use of the work with that\n Major Component, or to implement a Standard Interface for which an\n implementation is available to the public in source code form.  A\n \"Major Component\", in this context, means a major essential component\n (kernel, window system, and so on) of the specific operating system\n (if any) on which the executable work runs, or a compiler used to\n produce the work, or an object code interpreter used to run it.\n\n   The \"Corresponding Source\" for a work in object code form means all\n the source code needed to generate, install, and (for an executable\n work) run the object code and to modify the work, including scripts to\n control those activities.  However, it does not include the work's\n System Libraries, or general-purpose tools or generally available free\n programs which are used unmodified in performing those activities but\n which are not part of the work.  For example, Corresponding Source\n includes interface definition files associated with source files for\n the work, and the source code for shared libraries and dynamically\n linked subprograms that the work is specifically designed to require,\n such as by intimate data communication or control flow between those\n subprograms and other parts of the work.\n\n   The Corresponding Source need not include anything that users\n can regenerate automatically from other parts of the Corresponding\n Source.\n\n   The Corresponding Source for a work in source code form is that\n same work.\n\n   2. Basic Permissions.\n\n   All rights granted under this License are granted for the term of\n copyright on the Program, and are irrevocable provided the stated\n conditions are met.  This License explicitly affirms your unlimited\n permission to run the unmodified Program.  The output from running a\n covered work is covered by this License only if the output, given its\n content, constitutes a covered work.  This License acknowledges your\n rights of fair use or other equivalent, as provided by copyright law.\n\n   You may make, run and propagate covered works that you do not\n convey, without conditions so long as your license otherwise remains\n in force.  You may convey covered works to others for the sole purpose\n of having them make modifications exclusively for you, or provide you\n with facilities for running those works, provided that you comply with\n the terms of this License in conveying all material for which you do\n not control copyright.  Those thus making or running the covered works\n for you must do so exclusively on your behalf, under your direction\n and control, on terms that prohibit them from making any copies of\n your copyrighted material outside their relationship with you.\n\n   Conveying under any other circumstances is permitted solely under\n the conditions stated below.  Sublicensing is not allowed; section 10\n makes it unnecessary.\n\n   3. Protecting Users' Legal Rights From Anti-Circumvention Law.\n\n   No covered work shall be deemed part of an effective technological\n measure under any applicable law fulfilling obligations under article\n 11 of the WIPO copyright treaty adopted on 20 December 1996, or\n similar laws prohibiting or restricting circumvention of such\n measures.\n\n   When you convey a covered work, you waive any legal power to forbid\n circumvention of technological measures to the extent such circumvention\n is effected by exercising rights under this License with respect to\n the covered work, and you disclaim any intention to limit operation or\n modification of the work as a means of enforcing, against the work's\n users, your or third parties' legal rights to forbid circumvention of\n technological measures.\n\n   4. Conveying Verbatim Copies.\n\n   You may convey verbatim copies of the Program's source code as you\n receive it, in any medium, provided that you conspicuously and\n appropriately publish on each copy an appropriate copyright notice;\n keep intact all notices stating that this License and any\n non-permissive terms added in accord with section 7 apply to the code;\n keep intact all notices of the absence of any warranty; and give all\n recipients a copy of this License along with the Program.\n\n   You may charge any price or no price for each copy that you convey,\n and you may offer support or warranty protection for a fee.\n\n   5. Conveying Modified Source Versions.\n\n   You may convey a work based on the Program, or the modifications to\n produce it from the Program, in the form of source code under the\n terms of section 4, provided that you also meet all of these conditions:\n\n     a) The work must carry prominent notices stating that you modified\n     it, and giving a relevant date.\n\n     b) The work must carry prominent notices stating that it is\n     released under this License and any conditions added under section\n     7.  This requirement modifies the requirement in section 4 to\n     \"keep intact all notices\".\n\n     c) You must license the entire work, as a whole, under this\n     License to anyone who comes into possession of a copy.  This\n     License will therefore apply, along with any applicable section 7\n     additional terms, to the whole of the work, and all its parts,\n     regardless of how they are packaged.  This License gives no\n     permission to license the work in any other way, but it does not\n     invalidate such permission if you have separately received it.\n\n     d) If the work has interactive user interfaces, each must display\n     Appropriate Legal Notices; however, if the Program has interactive\n     interfaces that do not display Appropriate Legal Notices, your\n     work need not make them do so.\n\n   A compilation of a covered work with other separate and independent\n works, which are not by their nature extensions of the covered work,\n and which are not combined with it such as to form a larger program,\n in or on a volume of a storage or distribution medium, is called an\n \"aggregate\" if the compilation and its resulting copyright are not\n used to limit the access or legal rights of the compilation's users\n beyond what the individual works permit.  Inclusion of a covered work\n in an aggregate does not cause this License to apply to the other\n parts of the aggregate.\n\n   6. Conveying Non-Source Forms.\n\n   You may convey a covered work in object code form under the terms\n of sections 4 and 5, provided that you also convey the\n machine-readable Corresponding Source under the terms of this License,\n in one of these ways:\n\n     a) Convey the object code in, or embodied in, a physical product\n     (including a physical distribution medium), accompanied by the\n     Corresponding Source fixed on a durable physical medium\n     customarily used for software interchange.\n\n     b) Convey the object code in, or embodied in, a physical product\n     (including a physical distribution medium), accompanied by a\n     written offer, valid for at least three years and valid for as\n     long as you offer spare parts or customer support for that product\n     model, to give anyone who possesses the object code either (1) a\n     copy of the Corresponding Source for all the software in the\n     product that is covered by this License, on a durable physical\n     medium customarily used for software interchange, for a price no\n     more than your reasonable cost of physically performing this\n     conveying of source, or (2) access to copy the\n     Corresponding Source from a network server at no charge.\n\n     c) Convey individual copies of the object code with a copy of the\n     written offer to provide the Corresponding Source.  This\n     alternative is allowed only occasionally and noncommercially, and\n     only if you received the object code with such an offer, in accord\n     with subsection 6b.\n\n     d) Convey the object code by offering access from a designated\n     place (gratis or for a charge), and offer equivalent access to the\n     Corresponding Source in the same way through the same place at no\n     further charge.  You need not require recipients to copy the\n     Corresponding Source along with the object code.  If the place to\n     copy the object code is a network server, the Corresponding Source\n     may be on a different server (operated by you or a third party)\n     that supports equivalent copying facilities, provided you maintain\n     clear directions next to the object code saying where to find the\n     Corresponding Source.  Regardless of what server hosts the\n     Corresponding Source, you remain obligated to ensure that it is\n     available for as long as needed to satisfy these requirements.\n\n     e) Convey the object code using peer-to-peer transmission, provided\n     you inform other peers where the object code and Corresponding\n     Source of the work are being offered to the general public at no\n     charge under subsection 6d.\n\n   A separable portion of the object code, whose source code is excluded\n from the Corresponding Source as a System Library, need not be\n included in conveying the object code work.\n\n   A \"User Product\" is either (1) a \"consumer product\", which means any\n tangible personal property which is normally used for personal, family,\n or household purposes, or (2) anything designed or sold for incorporation\n into a dwelling.  In determining whether a product is a consumer product,\n doubtful cases shall be resolved in favor of coverage.  For a particular\n product received by a particular user, \"normally used\" refers to a\n typical or common use of that class of product, regardless of the status\n of the particular user or of the way in which the particular user\n actually uses, or expects or is expected to use, the product.  A product\n is a consumer product regardless of whether the product has substantial\n commercial, industrial or non-consumer uses, unless such uses represent\n the only significant mode of use of the product.\n\n   \"Installation Information\" for a User Product means any methods,\n procedures, authorization keys, or other information required to install\n and execute modified versions of a covered work in that User Product from\n a modified version of its Corresponding Source.  The information must\n suffice to ensure that the continued functioning of the modified object\n code is in no case prevented or interfered with solely because\n modification has been made.\n\n   If you convey an object code work under this section in, or with, or\n specifically for use in, a User Product, and the conveying occurs as\n part of a transaction in which the right of possession and use of the\n User Product is transferred to the recipient in perpetuity or for a\n fixed term (regardless of how the transaction is characterized), the\n Corresponding Source conveyed under this section must be accompanied\n by the Installation Information.  But this requirement does not apply\n if neither you nor any third party retains the ability to install\n modified object code on the User Product (for example, the work has\n been installed in ROM).\n\n   The requirement to provide Installation Information does not include a\n requirement to continue to provide support service, warranty, or updates\n for a work that has been modified or installed by the recipient, or for\n the User Product in which it has been modified or installed.  Access to a\n network may be denied when the modification itself materially and\n adversely affects the operation of the network or violates the rules and\n protocols for communication across the network.\n\n   Corresponding Source conveyed, and Installation Information provided,\n in accord with this section must be in a format that is publicly\n documented (and with an implementation available to the public in\n source code form), and must require no special password or key for\n unpacking, reading or copying.\n\n   7. Additional Terms.\n\n   \"Additional permissions\" are terms that supplement the terms of this\n License by making exceptions from one or more of its conditions.\n Additional permissions that are applicable to the entire Program shall\n be treated as though they were included in this License, to the extent\n that they are valid under applicable law.  If additional permissions\n apply only to part of the Program, that part may be used separately\n under those permissions, but the entire Program remains governed by\n this License without regard to the additional permissions.\n\n   When you convey a copy of a covered work, you may at your option\n remove any additional permissions from that copy, or from any part of\n it.  (Additional permissions may be written to require their own\n removal in certain cases when you modify the work.)  You may place\n additional permissions on material, added by you to a covered work,\n for which you have or can give appropriate copyright permission.\n\n   Notwithstanding any other provision of this License, for material you\n add to a covered work, you may (if authorized by the copyright holders of\n that material) supplement the terms of this License with terms:\n\n     a) Disclaiming warranty or limiting liability differently from the\n     terms of sections 15 and 16 of this License; or\n\n     b) Requiring preservation of specified reasonable legal notices or\n     author attributions in that material or in the Appropriate Legal\n     Notices displayed by works containing it; or\n\n     c) Prohibiting misrepresentation of the origin of that material, or\n     requiring that modified versions of such material be marked in\n     reasonable ways as different from the original version; or\n\n     d) Limiting the use for publicity purposes of names of licensors or\n     authors of the material; or\n\n     e) Declining to grant rights under trademark law for use of some\n     trade names, trademarks, or service marks; or\n\n     f) Requiring indemnification of licensors and authors of that\n     material by anyone who conveys the material (or modified versions of\n     it) with contractual assumptions of liability to the recipient, for\n     any liability that these contractual assumptions directly impose on\n     those licensors and authors.\n\n   All other non-permissive additional terms are considered \"further\n restrictions\" within the meaning of section 10.  If the Program as you\n received it, or any part of it, contains a notice stating that it is\n governed by this License along with a term that is a further\n restriction, you may remove that term.  If a license document contains\n a further restriction but permits relicensing or conveying under this\n License, you may add to a covered work material governed by the terms\n of that license document, provided that the further restriction does\n not survive such relicensing or conveying.\n\n   If you add terms to a covered work in accord with this section, you\n must place, in the relevant source files, a statement of the\n additional terms that apply to those files, or a notice indicating\n where to find the applicable terms.\n\n   Additional terms, permissive or non-permissive, may be stated in the\n form of a separately written license, or stated as exceptions;\n the above requirements apply either way.\n\n   8. Termination.\n\n   You may not propagate or modify a covered work except as expressly\n provided under this License.  Any attempt otherwise to propagate or\n modify it is void, and will automatically terminate your rights under\n this License (including any patent licenses granted under the third\n paragraph of section 11).\n\n   However, if you cease all violation of this License, then your\n license from a particular copyright holder is reinstated (a)\n provisionally, unless and until the copyright holder explicitly and\n finally terminates your license, and (b) permanently, if the copyright\n holder fails to notify you of the violation by some reasonable means\n prior to 60 days after the cessation.\n\n   Moreover, your license from a particular copyright holder is\n reinstated permanently if the copyright holder notifies you of the\n violation by some reasonable means, this is the first time you have\n received notice of violation of this License (for any work) from that\n copyright holder, and you cure the violation prior to 30 days after\n your receipt of the notice.\n\n   Termination of your rights under this section does not terminate the\n licenses of parties who have received copies or rights from you under\n this License.  If your rights have been terminated and not permanently\n reinstated, you do not qualify to receive new licenses for the same\n material under section 10.\n\n   9. Acceptance Not Required for Having Copies.\n\n   You are not required to accept this License in order to receive or\n run a copy of the Program.  Ancillary propagation of a covered work\n occurring solely as a consequence of using peer-to-peer transmission\n to receive a copy likewise does not require acceptance.  However,\n nothing other than this License grants you permission to propagate or\n modify any covered work.  These actions infringe copyright if you do\n not accept this License.  Therefore, by modifying or propagating a\n covered work, you indicate your acceptance of this License to do so.\n\n   10. Automatic Licensing of Downstream Recipients.\n\n   Each time you convey a covered work, the recipient automatically\n receives a license from the original licensors, to run, modify and\n propagate that work, subject to this License.  You are not responsible\n for enforcing compliance by third parties with this License.\n\n   An \"entity transaction\" is a transaction transferring control of an\n organization, or substantially all assets of one, or subdividing an\n organization, or merging organizations.  If propagation of a covered\n work results from an entity transaction, each party to that\n transaction who receives a copy of the work also receives whatever\n licenses to the work the party's predecessor in interest had or could\n give under the previous paragraph, plus a right to possession of the\n Corresponding Source of the work from the predecessor in interest, if\n the predecessor has it or can get it with reasonable efforts.\n\n   You may not impose any further restrictions on the exercise of the\n rights granted or affirmed under this License.  For example, you may\n not impose a license fee, royalty, or other charge for exercise of\n rights granted under this License, and you may not initiate litigation\n (including a cross-claim or counterclaim in a lawsuit) alleging that\n any patent claim is infringed by making, using, selling, offering for\n sale, or importing the Program or any portion of it.\n\n   11. Patents.\n\n   A \"contributor\" is a copyright holder who authorizes use under this\n License of the Program or a work on which the Program is based.  The\n work thus licensed is called the contributor's \"contributor version\".\n\n   A contributor's \"essential patent claims\" are all patent claims\n owned or controlled by the contributor, whether already acquired or\n hereafter acquired, that would be infringed by some manner, permitted\n by this License, of making, using, or selling its contributor version,\n but do not include claims that would be infringed only as a\n consequence of further modification of the contributor version.  For\n purposes of this definition, \"control\" includes the right to grant\n patent sublicenses in a manner consistent with the requirements of\n this License.\n\n   Each contributor grants you a non-exclusive, worldwide, royalty-free\n patent license under the contributor's essential patent claims, to\n make, use, sell, offer for sale, import and otherwise run, modify and\n propagate the contents of its contributor version.\n\n   In the following three paragraphs, a \"patent license\" is any express\n agreement or commitment, however denominated, not to enforce a patent\n (such as an express permission to practice a patent or covenant not to\n sue for patent infringement).  To \"grant\" such a patent license to a\n party means to make such an agreement or commitment not to enforce a\n patent against the party.\n\n   If you convey a covered work, knowingly relying on a patent license,\n and the Corresponding Source of the work is not available for anyone\n to copy, free of charge and under the terms of this License, through a\n publicly available network server or other readily accessible means,\n then you must either (1) cause the Corresponding Source to be so\n available, or (2) arrange to deprive yourself of the benefit of the\n patent license for this particular work, or (3) arrange, in a manner\n consistent with the requirements of this License, to extend the patent\n license to downstream recipients.  \"Knowingly relying\" means you have\n actual knowledge that, but for the patent license, your conveying the\n covered work in a country, or your recipient's use of the covered work\n in a country, would infringe one or more identifiable patents in that\n country that you have reason to believe are valid.\n\n   If, pursuant to or in connection with a single transaction or\n arrangement, you convey, or propagate by procuring conveyance of, a\n covered work, and grant a patent license to some of the parties\n receiving the covered work authorizing them to use, propagate, modify\n or convey a specific copy of the covered work, then the patent license\n you grant is automatically extended to all recipients of the covered\n work and works based on it.\n\n   A patent license is \"discriminatory\" if it does not include within\n the scope of its coverage, prohibits the exercise of, or is\n conditioned on the non-exercise of one or more of the rights that are\n specifically granted under this License.  You may not convey a covered\n work if you are a party to an arrangement with a third party that is\n in the business of distributing software, under which you make payment\n to the third party based on the extent of your activity of conveying\n the work, and under which the third party grants, to any of the\n parties who would receive the covered work from you, a discriminatory\n patent license (a) in connection with copies of the covered work\n conveyed by you (or copies made from those copies), or (b) primarily\n for and in connection with specific products or compilations that\n contain the covered work, unless you entered into that arrangement,\n or that patent license was granted, prior to 28 March 2007.\n\n   Nothing in this License shall be construed as excluding or limiting\n any implied license or other defenses to infringement that may\n otherwise be available to you under applicable patent law.\n\n   12. No Surrender of Others' Freedom.\n\n   If conditions are imposed on you (whether by court order, agreement or\n otherwise) that contradict the conditions of this License, they do not\n excuse you from the conditions of this License.  If you cannot convey a\n covered work so as to satisfy simultaneously your obligations under this\n License and any other pertinent obligations, then as a consequence you may\n not convey it at all.  For example, if you agree to terms that obligate you\n to collect a royalty for further conveying from those to whom you convey\n the Program, the only way you could satisfy both those terms and this\n License would be to refrain entirely from conveying the Program.\n\n   13. Use with the GNU Affero General Public License.\n\n   Notwithstanding any other provision of this License, you have\n permission to link or combine any covered work with a work licensed\n under version 3 of the GNU Affero General Public License into a single\n combined work, and to convey the resulting work.  The terms of this\n License will continue to apply to the part which is the covered work,\n but the special requirements of the GNU Affero General Public License,\n section 13, concerning interaction through a network will apply to the\n combination as such.\n\n   14. Revised Versions of this License.\n\n   The Free Software Foundation may publish revised and/or new versions of\n the GNU General Public License from time to time.  Such new versions will\n be similar in spirit to the present version, but may differ in detail to\n address new problems or concerns.\n\n   Each version is given a distinguishing version number.  If the\n Program specifies that a certain numbered version of the GNU General\n Public License \"or any later version\" applies to it, you have the\n option of following the terms and conditions either of that numbered\n version or of any later version published by the Free Software\n Foundation.  If the Program does not specify a version number of the\n GNU General Public License, you may choose any version ever published\n by the Free Software Foundation.\n\n   If the Program specifies that a proxy can decide which future\n versions of the GNU General Public License can be used, that proxy's\n public statement of acceptance of a version permanently authorizes you\n to choose that version for the Program.\n\n   Later license versions may give you additional or different\n permissions.  However, no additional obligations are imposed on any\n author or copyright holder as a result of your choosing to follow a\n later version.\n\n   15. Disclaimer of Warranty.\n\n   THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\n APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\n HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY\n OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,\n THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM\n IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF\n ALL NECESSARY SERVICING, REPAIR OR CORRECTION.\n\n   16. Limitation of Liability.\n\n   IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\n WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS\n THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY\n GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE\n USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF\n DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD\n PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),\n EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF\n SUCH DAMAGES.\n\n   17. Interpretation of Sections 15 and 16.\n\n   If the disclaimer of warranty and limitation of liability provided\n above cannot be given local legal effect according to their terms,\n reviewing courts shall apply local law that most closely approximates\n an absolute waiver of all civil liability in connection with the\n Program, unless a warranty or assumption of liability accompanies a\n copy of the Program in return for a fee.\n\n                      END OF TERMS AND CONDITIONS\n\n             How to Apply These Terms to Your New Programs\n\n   If you develop a new program, and you want it to be of the greatest\n possible use to the public, the best way to achieve this is to make it\n free software which everyone can redistribute and change under these terms.\n\n   To do so, attach the following notices to the program.  It is safest\n to attach them to the start of each source file to most effectively\n state the exclusion of warranty; and each file should have at least\n the \"copyright\" line and a pointer to where the full notice is found.\n\n     <one line to give the program's name and a brief idea of what it does.>\n     Copyright (C) <year>  <name of author>\n\n     This program is free software: you can redistribute it and/or modify\n     it under the terms of the GNU General Public License as published by\n     the Free Software Foundation, either version 3 of the License, or\n     (at your option) any later version.\n\n     This program is distributed in the hope that it will be useful,\n     but WITHOUT ANY WARRANTY; without even the implied warranty of\n     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n     GNU General Public License for more details.\n\n     You should have received a copy of the GNU General Public License\n     along with this program.  If not, see <http://www.gnu.org/licenses/>.\n\n Also add information on how to contact you by electronic and paper mail.\n\n   If the program does terminal interaction, make it output a short\n notice like this when it starts in an interactive mode:\n\n     <program>  Copyright (C) <year>  <name of author>\n     This program comes with ABSOLUTELY NO WARRANTY; for details type `show w'.\n     This is free software, and you are welcome to redistribute it\n     under certain conditions; type `show c' for details.\n\n The hypothetical commands `show w' and `show c' should show the appropriate\n parts of the General Public License.  Of course, your program's commands\n might be different; for a GUI interface, you would use an \"about box\".\n\n   You should also get your employer (if you work as a programmer) or school,\n if any, to sign a \"copyright disclaimer\" for the program, if necessary.\n For more information on this, and how to apply and follow the GNU GPL, see\n <http://www.gnu.org/licenses/>.\n\n   The GNU General Public License does not permit incorporating your program\n into proprietary programs.  If your program is a subroutine library, you\n may consider it more useful to permit linking proprietary applications with\n the library.  If this is what you want to do, use the GNU Lesser General\n Public License instead of this License.  But first, please read\n <http://www.gnu.org/philosophy/why-not-lgpl.html>.\n\n\n Name: libquadmath\n Files: scipy.libs/libquadmath*.so\n Description: dynamically linked to files compiled with gcc\n Availability: https://gcc.gnu.org/git/?p=gcc.git;a=tree;f=libquadmath\n License: LGPL-2.1-or-later\n\n     GCC Quad-Precision Math Library\n     Copyright (C) 2010-2019 Free Software Foundation, Inc.\n     Written by Francois-Xavier Coudert  <fxcoudert@gcc.gnu.org>\n\n     This file is part of the libquadmath library.\n     Libquadmath is free software; you can redistribute it and/or\n     modify it under the terms of the GNU Library General Public\n     License as published by the Free Software Foundation; either\n     version 2.1 of the License, or (at your option) any later version.\n\n     Libquadmath is distributed in the hope that it will be useful,\n     but WITHOUT ANY WARRANTY; without even the implied warranty of\n     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n     Lesser General Public License for more details.\n     https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html\n",
+        "classifier": [
+          "Development Status :: 5 - Production/Stable",
+          "Intended Audience :: Science/Research",
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: BSD License",
+          "Programming Language :: C",
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15",
+          "Topic :: Software Development :: Libraries",
+          "Topic :: Scientific/Engineering",
+          "Operating System :: Microsoft :: Windows",
+          "Operating System :: POSIX :: Linux",
+          "Operating System :: POSIX",
+          "Operating System :: Unix",
+          "Operating System :: MacOS"
+        ],
+        "requires_dist": [
+          "numpy<2.8,>=2.0.0",
+          "pytest>=8.0.0; extra == \"test\"",
+          "pytest-cov; extra == \"test\"",
+          "pytest-timeout; extra == \"test\"",
+          "pytest-xdist; extra == \"test\"",
+          "asv; extra == \"test\"",
+          "mpmath; extra == \"test\"",
+          "gmpy2; extra == \"test\"",
+          "threadpoolctl; extra == \"test\"",
+          "scikit-umfpack; extra == \"test\"",
+          "pooch; extra == \"test\"",
+          "hypothesis>=6.30; extra == \"test\"",
+          "array-api-strict>=2.3.1; extra == \"test\"",
+          "Cython; extra == \"test\"",
+          "meson; extra == \"test\"",
+          "ninja; sys_platform != \"emscripten\" and extra == \"test\"",
+          "scipy-doctest>=2.0.0; extra == \"test\"",
+          "sphinx<8.2.0,>=5.0.0; extra == \"doc\"",
+          "intersphinx_registry; extra == \"doc\"",
+          "pydata-sphinx-theme>=0.15.2; extra == \"doc\"",
+          "sphinx-copybutton; extra == \"doc\"",
+          "sphinx-design>=0.4.0; extra == \"doc\"",
+          "matplotlib>=3.5; extra == \"doc\"",
+          "numpydoc; extra == \"doc\"",
+          "jupytext; extra == \"doc\"",
+          "myst-nb>=1.2.0; extra == \"doc\"",
+          "pooch; extra == \"doc\"",
+          "jupyterlite-sphinx>=0.19.1; extra == \"doc\"",
+          "jupyterlite-pyodide-kernel; extra == \"doc\"",
+          "linkify-it-py; extra == \"doc\"",
+          "tabulate; extra == \"doc\"",
+          "click<8.3.0; extra == \"dev\"",
+          "spin; extra == \"dev\"",
+          "mypy==1.19.1; extra == \"dev\"",
+          "pyrefly==0.63.0; extra == \"dev\"",
+          "typing_extensions; extra == \"dev\"",
+          "types-psutil; extra == \"dev\"",
+          "pycodestyle; extra == \"dev\"",
+          "ruff>=0.12.0; extra == \"dev\"",
+          "cython-lint>=0.12.2; extra == \"dev\""
+        ],
+        "requires_python": ">=3.12",
+        "project_url": [
+          "homepage, https://scipy.org/",
+          "documentation, https://docs.scipy.org/doc/scipy/",
+          "source, https://github.com/scipy/scipy",
+          "download, https://github.com/scipy/scipy/releases",
+          "tracker, https://github.com/scipy/scipy/issues"
+        ],
+        "provides_extra": [
+          "test",
+          "doc",
+          "dev"
+        ]
+      }
+    },
+    {
+      "download_info": {
+        "url": "file:///tmp/scanner-docshadow-ssim-v060/wheels/tifffile-2026.11.8-py3-none-any.whl",
+        "archive_info": {
+          "hash": "sha256=bb41732b357a7fa3077db439961ea1ec3a88d2fda4b45fd3ea9f7786690f6049",
+          "hashes": {
+            "sha256": "bb41732b357a7fa3077db439961ea1ec3a88d2fda4b45fd3ea9f7786690f6049"
+          }
+        }
+      },
+      "is_direct": false,
+      "is_yanked": false,
+      "requested": false,
+      "metadata": {
+        "metadata_version": "2.4",
+        "name": "tifffile",
+        "version": "2026.11.8",
+        "dynamic": [
+          "author",
+          "author-email",
+          "classifier",
+          "description",
+          "description-content-type",
+          "home-page",
+          "license",
+          "license-file",
+          "platform",
+          "project-url",
+          "provides-extra",
+          "requires-dist",
+          "requires-python",
+          "summary"
+        ],
+        "platform": [
+          "any"
+        ],
+        "summary": "Read and write TIFF files",
+        "description": "Read and write TIFF files\r\n=========================\r\n\r\nTifffile is a comprehensive Python library to\r\n\r\n(1) store NumPy arrays in TIFF (Tagged Image File Format) files, and\r\n(2) read image and metadata from TIFF-like files used in bioimaging.\r\n\r\nImage and metadata can be read from TIFF, BigTIFF, OME-TIFF, GeoTIFF,\r\nAdobe DNG, ZIF (Zoomable Image File Format), MetaMorph STK, Zeiss LSM,\r\nImageJ hyperstack, Micro-Manager MMStack and NDTiff, SGI, NIHImage, FLIMage,\r\nOlympus FluoView and SIS, ScanImage, Molecular Dynamics GEL, Huron TIFF,\r\nAperio SVS, Leica SCN, Roche BIF, PerkinElmer QPTIFF (QPI, PKI),\r\nHamamatsu NDPI, Argos AVS, Philips DP, DICOM-TIFF, and ThermoFisher EER\r\nformatted files.\r\n\r\nImage data can be read as NumPy arrays or Zarr arrays/groups from strips,\r\ntiles, pages (IFDs), SubIFDs, higher-order series, and pyramidal levels.\r\n\r\nImage data can be written to TIFF, BigTIFF, OME-TIFF, and ImageJ hyperstack\r\ncompatible files in multi-page, volumetric, pyramidal, memory-mappable,\r\ntiled, predicted, or compressed form.\r\n\r\nMany compression schemes, predictors, and data types are supported via the\r\nimagecodecs library, including LZW, PackBits, Deflate, CCITT, PIXTIFF,\r\nLZMA, LERC, Zstd, JPEG (8 and 12-bit, lossless), JPEG 2000, JPEG XR,\r\nJPEG XL, WebP, PNG, EER, Jetraw, 24-bit floating-point, packed integers,\r\nand horizontal differencing.\r\n\r\nTifffile can also be used to inspect TIFF structures, read image data from\r\nmulti-dimensional file sequences, write fsspec ReferenceFileSystem for\r\nTIFF files and image file sequences, patch TIFF tag values, and parse\r\nmany proprietary metadata formats.\r\n\r\n:Author: `Christoph Gohlke <https://www.cgohlke.com>`_\r\n:License: BSD-3-Clause\r\n:Version: 2026.11.8\r\n:DOI: `10.5281/zenodo.6795860 <https://doi.org/10.5281/zenodo.6795860>`_\r\n\r\nQuickstart\r\n----------\r\n\r\nInstall the tifffile package and all dependencies from the\r\n`Python Package Index <https://pypi.org/project/tifffile/>`_::\r\n\r\n    python -m pip install -U tifffile[all]\r\n\r\nTifffile is also available in other package repositories such as Anaconda,\r\nDebian, and MSYS2.\r\n\r\nUse tifffile from the command line to inspect and preview TIFF files::\r\n\r\n    python -m tifffile --help\r\n\r\nSee `Examples`_ and `Documentation <https://www.cgohlke.com/docs/tifffile/>`_\r\nfor using the programming interface.\r\n\r\nSource code and support are available on\r\n`GitHub <https://github.com/cgohlke/tifffile>`_.\r\n\r\nSupport is also provided on the\r\n`image.sc <https://forum.image.sc/tag/tifffile>`_ forum.\r\n\r\nRequirements\r\n------------\r\n\r\nThis revision was tested with the following requirements and dependencies\r\n(other versions may work):\r\n\r\n- `CPython <https://www.python.org>`_ 3.12.10, 3.13.17, 3.14.10, 3.15.2 64-bit\r\n- `Numpy <https://pypi.org/project/numpy>`_ 2.5.4\r\n- `Imagecodecs <https://pypi.org/project/imagecodecs/>`_ 2026.10.10\r\n  (required for encoding or decoding LZW, JPEG, etc. compressed segments)\r\n- `Xarray <https://pypi.org/project/xarray>`_ 2026.9.0\r\n  (required only for reading xarray DataArrays)\r\n- `Matplotlib <https://pypi.org/project/matplotlib/>`_ 3.11.2\r\n  (required for plotting)\r\n- `Lxml <https://pypi.org/project/lxml/>`_ 6.1.3\r\n  (required only for validating and printing XML)\r\n- `Zarr <https://pypi.org/project/zarr/>`_ 3.4.1\r\n  (required only for using Zarr stores)\r\n- `Kerchunk <https://pypi.org/project/kerchunk/>`_ 0.2.10\r\n  (required only for opening ReferenceFileSystem files)\r\n\r\nRevisions\r\n---------\r\n\r\n2026.11.8\r\n\r\n- Exclude zero-size pages from generic series (breaking).\r\n- Require matching UUID for OME-TIFF files outside directory (security).\r\n- Support new imagecodecs.imread 'imagecodec' argument in FileSequence.\r\n- Deprecate FileSequence imreadargs 'codec' for imagecodecs > 2026.10.10.\r\n- Fix ZarrFileSequenceStore.write_fsspec writing imread codec argument.\r\n- Fix TiledSequence accepting duplicate or out-of-range axestiled.\r\n- Fix FileSequence.asarray reading first file twice.\r\n- Fix FileSequence.asarray and aszarr discarding chunkshape or chunkdtype.\r\n- Fix reorient swapping RIGHTBOT and LEFTBOT orientations.\r\n- Add more Andor tags.\r\n\r\n2026.10.15\r\n\r\n- Fix TiffWriter truncating existing file on invalid kind argument.\r\n- Fix TiffPage.asarray not closing reopened file handle on exceptions.\r\n- Fix ZarrTiffStore not releasing file cache reference on decode errors.\r\n- Fix Tiff codec configuration not JSON-serializable with slice key.\r\n- Fix ZarrStore listing methods omitting chunk keys.\r\n- Fix FileSequence.asarray leaving missing chunks uninitialized.\r\n- Fix 'axes' file name pattern matching characters in file name prefix.\r\n- Fix parse_filenames with _shape argument.\r\n- Raise ValueError if FileSequence files map to same index (breaking).\r\n- Disallow writable ZarrFileSequenceStore (breaking).\r\n- Use struct.unpack_from when possible.\r\n\r\n2026.9.20\r\n\r\n- Fix TiffPage.delete corrupting NDPI files.\r\n- Fix unwrapping offsets in LSM files > 4GB with T, P, and M dimensions.\r\n- Support Mikroscan and Motic formats (structurally identical to SVS).\r\n- Support MedScan Trestle series and metadata.\r\n\r\n2026.9.15\r\n\r\n- Fix MMStack series when numeric Summary metadata values are strings (#334).\r\n\r\n2026.9.9\r\n\r\n- Fix TiffSeries(squeeze=None) incorrectly squeezes 'shaped' series (breaking).\r\n\r\n2026.8.23\r\n\r\n- Add methods to delete pages from main IFD chain and erase their content.\r\n\r\n2026.8.16\r\n\r\n- Fix fsspec v3 stores with big-endian floatpred codec (breaking).\r\n- Require imagecodecs >= 2026.8.16.\r\n\r\n2026.7.31\r\n\r\n- Fsspec v3 stores using big-endian floatpred are incompatible with zarr>=3.3.\r\n- Specify bytes codec endian configuration in ZarrFileSequenceStore.\r\n- Add additional NDPI tags from specification (#331).\r\n\r\n2026.7.14\r\n\r\n- Fix series.asxarray returns wrong series for sublevels.\r\n- Support Huron TIFF series and metadata.\r\n- Support FLIMage FLIM series and metadata.\r\n- Support DECTRIS IFD and tags.\r\n- Allow subsampling with any image compression scheme.\r\n- Detect DICOM-TIFF dual-personality format.\r\n\r\n2026.6.1\r\n\r\n- Replace NullContext with contextlib.nullcontext (breaking).\r\n- Fix writing monochrome linear_raw (#328).\r\n- Fix keyboard axis selection in imshow interactive viewer (#327).\r\n- Fix reading short ASCII string tag values from NDPI.\r\n- Add option to suppress writing extrasamples tag.\r\n- Verify origin of codecs.\r\n\r\n2026.5.15\r\n\r\n- Update ZarrFileSequenceStore to zarr format 3 (breaking).\r\n- Derive ZarrFileSequenceStore dimension names from FileSequence.dims.\r\n- Add option to override dimension names in zarr stores.\r\n- Add support for Python 3.15.\r\n\r\n2026.5.2\r\n\r\n- Change TiffFile.series from list to callable TiffSeries sequence (breaking).\r\n- Remove TiffPageSeries squeeze dual-state (breaking).\r\n- Remove TiffPageSeries.get_shape, get_axes, and get_coords (breaking).\r\n- Remove ZarrTiffStore squeeze parameter (breaking).\r\n- Update ZarrTiffStore to zarr format 3 and multiscales to NGFF 0.5 (breaking).\r\n- Update multiscales zarr format 2 fsspec files to NGFF 0.4 (breaking).\r\n- Remove generic TiffPage coords (breaking).\r\n- Change dims and sizes to use single-char axis codes (breaking).\r\n- Add zarr format 3 compatible Tiff codec.\r\n- Add asxarray methods to TiffFile, TiffPage, TiffPageSeries (requires xarray).\r\n- Add geotiff kind of TiffPageSeries.\r\n- Add mpp and coord_offsets/scales/units properties to TiffPageSeries.\r\n- Add attrs property to TiffPage and TiffPageSeries.\r\n- Add kind and squeeze parameters to memmap.\r\n- Add kind parameter to imwrite and TiffFile; deprecate ome, imagej, shaped.\r\n- Add return_as parameter to imread; deprecate aszarr.\r\n- Fix writing TIFF trees (#326).\r\n- Fix wrong TiffTagRegistry entries (#323).\r\n- Implement TiffPageSeries.coords property.\r\n- Deprecate kwargs to FileSequence.asarray; use imreadargs.\r\n- Require zarr>=3.2.0 for zarr support.\r\n- Drop support for numpy 2.0 (SPEC0, #324).\r\n\r\n2026.4.11\r\n\r\n- …\r\n\r\nRefer to the CHANGES file for older revisions.\r\n\r\nNotes\r\n-----\r\n\r\nTIFF, the Tagged Image File Format, was created by the Aldus Corporation and\r\nAdobe Systems Incorporated.\r\n\r\nTifffile supports a large subset of the TIFF6 specification, mainly 1-32,\r\nand 64-bit integer, 16, 32, and 64-bit float, grayscale and multi-sample\r\nimages.\r\nSpecifically, OJPEG compression, chroma subsampling without JPEG compression,\r\ncolor space transformations, samples with differing types, or IPTC, ICC,\r\nand XMP metadata are not implemented.\r\n\r\nBesides classic TIFF, tifffile supports several TIFF-like formats that do not\r\nstrictly adhere to the TIFF6 specification. Some formats extend TIFF\r\ncapabilities in various ways, including exceeding the 4 GB limit,\r\nhandling multi-dimensional data, or working around format constraints:\r\n\r\n- **BigTIFF** is identified by version number 43 and uses different file\r\n  header, IFD, and tag structures with 64-bit offsets. The format also adds\r\n  64-bit data types. Tifffile can read and write BigTIFF files.\r\n- **ImageJ hyperstacks** store all image data, which may exceed 4 GB,\r\n  contiguously after the first IFD. Files > 4 GB contain one IFD only.\r\n  The size and shape of the up to 6-dimensional image data can be determined\r\n  from the ImageDescription tag of the first IFD, which is Latin-1 encoded.\r\n  Tifffile can read and write ImageJ hyperstacks.\r\n- **OME-TIFF** files store up to 8-dimensional image data in one or multiple\r\n  TIFF or BigTIFF files. The UTF-8 encoded OME-XML metadata found in the\r\n  ImageDescription tag of the first IFD defines the position of TIFF IFDs in\r\n  the high-dimensional image data. Tifffile can read OME-TIFF files\r\n  and write NumPy arrays to single-file OME-TIFF.\r\n- **Micro-Manager NDTiff** stores multi-dimensional image data in one\r\n  or more classic TIFF files. Metadata contained in a separate NDTiff.index\r\n  binary file defines the position of the TIFF IFDs in the image array.\r\n  Each TIFF file also contains metadata in a non-TIFF binary structure at\r\n  offset 8. Downsampled image data of pyramidal datasets are stored in\r\n  separate folders. Tifffile can read NDTiff files. Version 0 and 1 series,\r\n  tiling, stitching, and multi-resolution pyramids are not supported.\r\n- **Micro-Manager MMStack** stores 6-dimensional image data in one or more\r\n  classic TIFF files. Metadata contained in non-TIFF binary structures and\r\n  JSON strings define the image stack dimensions and the position of the image\r\n  frame data in the file and the image stack. The TIFF structures and metadata\r\n  are often corrupted or wrong. Tifffile can read MMStack files.\r\n- **Carl Zeiss LSM** files store all IFDs below 4 GB and wrap around 32-bit\r\n  StripOffsets pointing to image data above 4 GB. The StripByteCounts tag\r\n  contains the number of bytes for the uncompressed data. Tifffile can read\r\n  LSM files of any size.\r\n- **MetaMorph STK** files contain additional image planes stored\r\n  contiguously after the image data of the first page. The total number of\r\n  planes is equal to the count of the UIC2 tag. Tifffile can read STK files.\r\n- **ZIF**, the Zoomable Image File format, is a subspecification of BigTIFF\r\n  with SGI's ImageDepth extension and additional compression schemes.\r\n  Only little-endian, tiled, interleaved, 8-bit per sample images with\r\n  JPEG, PNG, JPEG XR, and JPEG 2000 compression are allowed. Tifffile can\r\n  read and write ZIF files.\r\n- **Hamamatsu NDPI** files use some 64-bit offsets in the file header, IFD,\r\n  and tag structures. Single, LONG typed tag values can exceed 32-bit.\r\n  The high bytes of 64-bit tag values and offsets are stored after IFD\r\n  structures. Tifffile can read NDPI files > 4 GB.\r\n  JPEG compressed segments with dimensions >65530 or missing restart markers\r\n  cannot be decoded with common JPEG libraries. Tifffile works around this\r\n  limitation by separately decoding the MCUs between restart markers, which\r\n  performs poorly.\r\n  BitsPerSample, SamplesPerPixel, and PhotometricInterpretation tags may\r\n  contain wrong values, which can be corrected using the value of tag 65441.\r\n  ASCII string tag values are not stored inline.\r\n  Tag values and may be shared between multiple pages.\r\n- **Philips TIFF** slides store padded ImageWidth and ImageLength tag values\r\n  for tiled pages. The values can be corrected using the DICOM_PIXEL_SPACING\r\n  attributes of the XML formatted description of the first page. Tile offsets\r\n  and byte counts may be 0. Tifffile can read Philips slides.\r\n- **Ventana/Roche BIF** slides store tiles and metadata in a BigTIFF container.\r\n  Tiles may overlap and require stitching based on the TileJointInfo elements\r\n  in the XMP tag. Volumetric scans are stored using the ImageDepth extension.\r\n  Tifffile can read BIF and decode individual tiles but does not perform\r\n  stitching.\r\n- **MedScan Trestle** slides are pyramidal tiled TIFF files where tiles\r\n  in each level overlap their neighbors. The per-level overlap values are\r\n  specified in the OverlapsXY field of the ImageDescription tag.\r\n  Tifffile can read Trestle files and decode individual tiles but does not\r\n  perform stitching.\r\n- **ScanImage** optionally allows corrupted non-BigTIFF files > 2 GB.\r\n  The values of StripOffsets and StripByteCounts can be recovered using the\r\n  constant differences of the offsets of IFD and tag values throughout the\r\n  file. Tifffile can read such files if the image data are stored contiguously\r\n  in each page.\r\n- **GeoTIFF sparse** files allow strip or tile offsets and byte counts to be 0.\r\n  Such segments are implicitly set to 0 or the NODATA value on reading.\r\n  Tifffile can read GeoTIFF sparse files.\r\n- **Tifffile shaped** files store the array shape and user-provided metadata\r\n  of multi-dimensional image series in JSON format in the ImageDescription tag\r\n  of the first page of the series. The format allows multiple series,\r\n  SubIFDs, sparse segments with zero offset and byte count, and truncated\r\n  series, where only the first page of a series is present, and the image data\r\n  are stored contiguously. No other software besides Tifffile supports the\r\n  truncated format.\r\n\r\nOther libraries for reading, writing, inspecting, or manipulating scientific\r\nTIFF files from Python are\r\n`bioio <https://github.com/bioio-devs/bioio>`_,\r\n`aicsimageio <https://github.com/AllenCellModeling/aicsimageio>`_,\r\n`apeer-ometiff-library\r\n<https://github.com/apeer-micro/apeer-ometiff-library>`_,\r\n`bigtiff <https://pypi.org/project/bigtiff>`_,\r\n`fabio.TiffIO <https://github.com/silx-kit/fabio>`_,\r\n`GDAL <https://github.com/OSGeo/gdal/>`_,\r\n`imread <https://github.com/luispedro/imread>`_,\r\n`large_image <https://github.com/girder/large_image>`_,\r\n`openslide-python <https://github.com/openslide/openslide-python>`_,\r\n`opentile <https://github.com/imi-bigpicture/opentile>`_,\r\n`pylibtiff <https://github.com/pearu/pylibtiff>`_,\r\n`pylsm <https://launchpad.net/pylsm>`_,\r\n`pymimage <https://github.com/ardoi/pymimage>`_,\r\n`python-bioformats <https://github.com/CellProfiler/python-bioformats>`_,\r\n`pytiff <https://github.com/FZJ-INM1-BDA/pytiff>`_,\r\n`scanimagetiffreader-python\r\n<https://gitlab.com/vidriotech/scanimagetiffreader-python>`_,\r\n`SimpleITK <https://github.com/SimpleITK/SimpleITK>`_,\r\n`slideio <https://gitlab.com/bioslide/slideio>`_,\r\n`tiffslide <https://github.com/bayer-science-for-a-better-life/tiffslide>`_,\r\n`tifftools <https://github.com/DigitalSlideArchive/tifftools>`_,\r\n`tyf <https://github.com/Moustikitos/tyf>`_,\r\n`xtiff <https://github.com/BodenmillerGroup/xtiff>`_, and\r\n`ndtiff <https://github.com/micro-manager/NDTiffStorage>`_.\r\n\r\nReferences\r\n----------\r\n\r\n- TIFF 6.0 Specification and Supplements. Adobe Systems Incorporated.\r\n  https://www.adobe.io/open/standards/TIFF.html\r\n  https://download.osgeo.org/libtiff/doc/\r\n- TIFF File Format FAQ. https://www.awaresystems.be/imaging/tiff/faq.html\r\n- The BigTIFF File Format.\r\n  https://www.awaresystems.be/imaging/tiff/bigtiff.html\r\n- BigTIFF community standard candidate\r\n  https://github.com/opengeospatial/BigTIFF\r\n- MetaMorph Stack (STK) Image File Format.\r\n  http://mdc.custhelp.com/app/answers/detail/a_id/18862\r\n- Image File Format Description LSM 5/7 Release 6.0 (ZEN 2010).\r\n  Carl Zeiss MicroImaging GmbH. BioSciences. May 10, 2011\r\n- The OME-TIFF format.\r\n  https://docs.openmicroscopy.org/ome-model/latest/\r\n- UltraQuant(r) Version 6.0 for Windows Start-Up Guide.\r\n  http://www.ultralum.com/images%20ultralum/pdf/UQStart%20Up%20Guide.pdf\r\n- Micro-Manager File Formats.\r\n  https://micro-manager.org/wiki/Micro-Manager_File_Formats\r\n- ScanImage BigTiff Specification.\r\n  https://docs.scanimage.org/Appendix/ScanImage+BigTiff+Specification.html\r\n- ZIF, the Zoomable Image File format. https://zif.photo/\r\n- GeoTIFF File Format. https://gdal.org/drivers/raster/gtiff.html\r\n- Cloud optimized GeoTIFF.\r\n  https://github.com/cogeotiff/cog-spec/blob/master/spec.md\r\n- Tags for TIFF and Related Specifications. Digital Preservation.\r\n  https://www.loc.gov/preservation/digital/formats/content/tiff_tags.shtml\r\n- CIPA DC-008-2016: Exchangeable image file format for digital still cameras:\r\n  Exif Version 2.31.\r\n  http://www.cipa.jp/std/documents/e/DC-008-Translation-2016-E.pdf\r\n- The EER (Electron Event Representation) file format.\r\n  https://github.com/fei-company/EerReaderLib\r\n- Digital Negative (DNG) Specification. Version 1.7.1.0, September 2023.\r\n  https://helpx.adobe.com/content/dam/help/en/photoshop/pdf/DNG_Spec_1_7_1_0.pdf\r\n- Roche Digital Pathology. BIF image file format for digital pathology.\r\n  https://diagnostics.roche.com/content/dam/diagnostics/Blueprint/en/pdf/rmd/Roche-Digital-Pathology-BIF-Whitepaper.pdf\r\n- Astro-TIFF specification. https://astro-tiff.sourceforge.io/\r\n- Aperio Technologies, Inc. Digital Slides and Third-Party Data Interchange.\r\n  Aperio_Digital_Slides_and_Third-party_data_interchange.pdf\r\n- PerkinElmer image format.\r\n  https://downloads.openmicroscopy.org/images/Vectra-QPTIFF/perkinelmer/PKI_Image%20Format.docx\r\n- NDTiffStorage. https://github.com/micro-manager/NDTiffStorage\r\n- Argos AVS File Format.\r\n  https://github.com/user-attachments/files/15580286/ARGOS.AVS.File.Format.pdf\r\n- NDP.image File Format.\r\n  https://nanozoomer.hamamatsu.com/us/en/SDK-API/Our-file-format.html\r\n\r\nExamples\r\n--------\r\n\r\nImport functions and classes used in these examples:\r\n\r\n>>> from tifffile import TiffFile, imread, imwrite\r\n\r\nWrite a NumPy array to a single-page RGB TIFF file:\r\n\r\n>>> import numpy\r\n>>> data = numpy.random.randint(0, 255, (256, 256, 3), 'uint8')\r\n>>> imwrite('temp.tif', data, photometric='rgb')\r\n\r\nRead the image from the TIFF file as NumPy array:\r\n\r\n>>> image = imread('temp.tif')\r\n>>> image.shape\r\n(256, 256, 3)\r\n\r\nUse the ``photometric`` and ``planarconfig`` arguments to write a 3x3x3 NumPy\r\narray to an interleaved RGB, a planar RGB, or a 3-page grayscale TIFF:\r\n\r\n>>> data = numpy.random.randint(0, 255, (3, 3, 3), 'uint8')\r\n>>> imwrite('temp.tif', data, photometric='rgb')\r\n>>> imwrite('temp.tif', data, photometric='rgb', planarconfig='separate')\r\n>>> imwrite('temp.tif', data, photometric='minisblack')\r\n\r\nUse the ``extrasamples`` argument to specify how extra components are\r\ninterpreted, for example, for an RGBA image with unassociated alpha channel:\r\n\r\n>>> data = numpy.random.randint(0, 255, (256, 256, 4), 'uint8')\r\n>>> imwrite('temp.tif', data, photometric='rgb', extrasamples=['unassalpha'])\r\n\r\nWrite a 3-dimensional NumPy array to a multi-page, 16-bit grayscale TIFF file:\r\n\r\n>>> data = numpy.random.randint(0, 2**12, (64, 301, 219), 'uint16')\r\n>>> imwrite('temp.tif', data, photometric='minisblack')\r\n\r\nRead the whole image stack from the multi-page TIFF file as NumPy array:\r\n\r\n>>> image_stack = imread('temp.tif')\r\n>>> image_stack.shape\r\n(64, 301, 219)\r\n>>> image_stack.dtype\r\ndtype('uint16')\r\n\r\nRead the image from the first page in the TIFF file as NumPy array:\r\n\r\n>>> image = imread('temp.tif', key=0)\r\n>>> image.shape\r\n(301, 219)\r\n\r\nRead images from a selected range of pages:\r\n\r\n>>> images = imread('temp.tif', key=range(4, 40, 2))\r\n>>> images.shape\r\n(18, 301, 219)\r\n\r\nIterate over all pages in the TIFF file and successively read images:\r\n\r\n>>> with TiffFile('temp.tif') as tif:\r\n...     for page in tif.pages:\r\n...         image = page.asarray()\r\n...\r\n\r\nGet information about the image stack in the TIFF file without reading\r\nany image data:\r\n\r\n>>> tif = TiffFile('temp.tif')\r\n>>> len(tif.pages)  # number of pages in the file\r\n64\r\n>>> page = tif.pages[0]  # get shape and dtype of image in first page\r\n>>> page.shape\r\n(301, 219)\r\n>>> page.dtype\r\ndtype('uint16')\r\n>>> page.axes\r\n'YX'\r\n>>> series = tif.series[0]  # get shape and dtype of first image series\r\n>>> series.shape\r\n(64, 301, 219)\r\n>>> series.dtype\r\ndtype('uint16')\r\n>>> series.axes\r\n'QYX'\r\n>>> tif.close()\r\n\r\nInspect the \"XResolution\" tag from the first page in the TIFF file:\r\n\r\n>>> with TiffFile('temp.tif') as tif:\r\n...     tag = tif.pages[0].tags['XResolution']\r\n...\r\n>>> tag.value\r\n(1, 1)\r\n>>> tag.name\r\n'XResolution'\r\n>>> tag.code\r\n282\r\n>>> tag.count\r\n1\r\n>>> tag.dtype\r\n<DATATYPE.RATIONAL: 5>\r\n\r\nIterate over all tags in the TIFF file:\r\n\r\n>>> with TiffFile('temp.tif') as tif:\r\n...     for page in tif.pages:\r\n...         for tag in page.tags:\r\n...             tag_name, tag_value = tag.name, tag.value\r\n...\r\n\r\nOverwrite the value of an existing tag, for example, XResolution:\r\n\r\n>>> with TiffFile('temp.tif', mode='r+') as tif:\r\n...     _ = tif.pages[0].tags['XResolution'].overwrite((96000, 1000))\r\n...\r\n\r\nWrite a 5-dimensional floating-point array using BigTIFF format, separate\r\ncolor components, tiling, Zlib compression level 8, horizontal differencing\r\npredictor, and additional metadata:\r\n\r\n>>> data = numpy.random.rand(2, 5, 3, 301, 219).astype('float32')\r\n>>> imwrite(\r\n...     'temp.tif',\r\n...     data,\r\n...     bigtiff=True,\r\n...     photometric='rgb',\r\n...     planarconfig='separate',\r\n...     tile=(32, 32),\r\n...     compression='zlib',\r\n...     compressionargs={'level': 8},\r\n...     predictor=True,\r\n...     metadata={'axes': 'TZCYX'},\r\n... )\r\n\r\nWrite a 10 fps time series of volumes with xyz voxel size 2.6755x2.6755x3.9474\r\nmicron^3 to an ImageJ hyperstack formatted TIFF file:\r\n\r\n>>> volume = numpy.random.randn(6, 57, 256, 256).astype('float32')\r\n>>> image_labels = [f'{i}' for i in range(volume.shape[0] * volume.shape[1])]\r\n>>> imwrite(\r\n...     'temp.tif',\r\n...     volume,\r\n...     kind='imagej',\r\n...     resolution=(1.0 / 2.6755, 1.0 / 2.6755),\r\n...     metadata={\r\n...         'spacing': 3.947368,\r\n...         'unit': 'um',\r\n...         'finterval': 1 / 10,\r\n...         'fps': 10.0,\r\n...         'axes': 'TZYX',\r\n...         'Labels': image_labels,\r\n...     },\r\n... )\r\n\r\nRead the volume and metadata from the ImageJ hyperstack file\r\nas xarray DataArray:\r\n\r\n>>> with TiffFile('temp.tif') as tif:\r\n...     volume = tif.asxarray()\r\n...     imagej_metadata = tif.imagej_metadata\r\n...\r\n>>> volume\r\n<xarray.DataArray '' (T: 6, Z: 57, Y: 256, X: 256)> Size: 90MB\r\narray([[[[...]]]],\r\n        shape=(6, 57, 256, 256), dtype=float32)\r\nCoordinates:\r\n    * T        (T) float64 48B 0.0 0.1 0.2 0.3 0.4 0.5\r\n    * Z        (Z) float64 456B 0.0 3.947 ... 221.1\r\n    * Y        (Y) float32 1kB 0.0 2.675 ... 682.3\r\n    * X        (X) float32 1kB 0.0 2.675 ... 682.3\r\nAttributes...\r\n    photometric:    minisblack\r\n    mode:           grayscale\r\n...\r\n>>> imagej_metadata['slices']\r\n57\r\n>>> imagej_metadata['frames']\r\n6\r\n\r\nMemory-map the contiguous image data in the ImageJ hyperstack file:\r\n\r\n>>> memmap_volume = memmap('temp.tif')\r\n>>> memmap_volume.shape\r\n(6, 57, 256, 256)\r\n>>> del memmap_volume\r\n\r\nCreate a TIFF file containing an empty image and write to the memory-mapped\r\nNumPy array (note: this does not work with compression or tiling):\r\n\r\n>>> memmap_image = memmap(\r\n...     'temp.tif', shape=(256, 256, 3), dtype='float32', photometric='rgb'\r\n... )\r\n>>> type(memmap_image)\r\n<class 'numpy.memmap'>\r\n>>> memmap_image[255, 255, 1] = 1.0\r\n>>> memmap_image.flush()\r\n>>> del memmap_image\r\n\r\nWrite two NumPy arrays to a multi-series TIFF file (note: other TIFF readers\r\nwill not recognize the two series; use the OME-TIFF format for better\r\ninteroperability):\r\n\r\n>>> series0 = numpy.random.randint(0, 255, (32, 32, 3), 'uint8')\r\n>>> series1 = numpy.random.randint(0, 255, (4, 256, 256), 'uint16')\r\n>>> with TiffWriter('temp.tif') as tif:\r\n...     tif.write(series0, photometric='rgb')\r\n...     tif.write(series1, photometric='minisblack')\r\n...\r\n\r\nRead the second image series from the TIFF file:\r\n\r\n>>> series1 = imread('temp.tif', series=1)\r\n>>> series1.shape\r\n(4, 256, 256)\r\n\r\nSuccessively write the frames of one contiguous series to a TIFF file:\r\n\r\n>>> data = numpy.random.randint(0, 255, (30, 301, 219), 'uint8')\r\n>>> with TiffWriter('temp.tif') as tif:\r\n...     for frame in data:\r\n...         tif.write(frame, contiguous=True)\r\n...\r\n\r\nAppend an image series to the existing TIFF file (note: this does not work\r\nwith ImageJ hyperstack or OME-TIFF files):\r\n\r\n>>> data = numpy.random.randint(0, 255, (301, 219, 3), 'uint8')\r\n>>> imwrite('temp.tif', data, photometric='rgb', append=True)\r\n\r\nDelete pages from the TIFF file, optionally erasing their image data\r\nand tag values (note: this is irreversible and might invalidate file\r\nmetadata such as ImageJ or OME-TIFF image descriptions):\r\n\r\n>>> with TiffFile('temp.tif', mode='r+') as tif:\r\n...     tif.pages[-1].delete()  # delete the last page\r\n...     tif.pages.delete([0, 1], erase=True)  # erase the first two pages\r\n...\r\n\r\nCreate a TIFF file from a generator of tiles:\r\n\r\n>>> data = numpy.random.randint(0, 2**12, (31, 33, 3), 'uint16')\r\n>>> def tiles(data, tileshape):\r\n...     for y in range(0, data.shape[0], tileshape[0]):\r\n...         for x in range(0, data.shape[1], tileshape[1]):\r\n...             yield data[y : y + tileshape[0], x : x + tileshape[1]]\r\n...\r\n>>> imwrite(\r\n...     'temp.tif',\r\n...     tiles(data, (16, 16)),\r\n...     tile=(16, 16),\r\n...     shape=data.shape,\r\n...     dtype=data.dtype,\r\n...     photometric='rgb',\r\n... )\r\n\r\nWrite a multi-dimensional, multi-resolution (pyramidal), multi-series OME-TIFF\r\nfile with optional metadata. Sub-resolution images are written to SubIFDs.\r\nLimit parallel encoding to 2 threads. Write a thumbnail image as a separate\r\nimage series:\r\n\r\n>>> data = numpy.random.randint(0, 255, (8, 2, 512, 512, 3), 'uint8')\r\n>>> subresolutions = 2\r\n>>> pixelsize = 0.29  # micrometer\r\n>>> with TiffWriter('temp.ome.tif', bigtiff=True) as tif:\r\n...     metadata = {\r\n...         'axes': 'TCYXS',\r\n...         'SignificantBits': 8,\r\n...         'TimeIncrement': 0.1,\r\n...         'TimeIncrementUnit': 's',\r\n...         'PhysicalSizeX': pixelsize,\r\n...         'PhysicalSizeXUnit': 'µm',\r\n...         'PhysicalSizeY': pixelsize,\r\n...         'PhysicalSizeYUnit': 'µm',\r\n...         'Channel': {'Name': ['Channel 1', 'Channel 2']},\r\n...         'Plane': {'PositionX': [0.0] * 16, 'PositionXUnit': ['µm'] * 16},\r\n...         'Description': 'A multi-dimensional, multi-resolution image',\r\n...         'MapAnnotation': {  # for OMERO\r\n...             'Namespace': 'openmicroscopy.org/PyramidResolution',\r\n...             '1': '256 256',\r\n...             '2': '128 128',\r\n...         },\r\n...     }\r\n...     options = dict(\r\n...         photometric='rgb',\r\n...         tile=(128, 128),\r\n...         compression='jpeg',\r\n...         resolutionunit='CENTIMETER',\r\n...         maxworkers=2,\r\n...     )\r\n...     tif.write(\r\n...         data,\r\n...         subifds=subresolutions,\r\n...         resolution=(1e4 / pixelsize, 1e4 / pixelsize),\r\n...         metadata=metadata,\r\n...         **options,\r\n...     )\r\n...     # write pyramid levels to the two subifds\r\n...     # in production use resampling to generate sub-resolution images\r\n...     for level in range(subresolutions):\r\n...         mag = 2 ** (level + 1)\r\n...         tif.write(\r\n...             data[..., ::mag, ::mag, :],\r\n...             subfiletype=1,  # FILETYPE.REDUCEDIMAGE\r\n...             resolution=(1e4 / mag / pixelsize, 1e4 / mag / pixelsize),\r\n...             **options,\r\n...         )\r\n...     # add a thumbnail image as a separate series\r\n...     # it is recognized by QuPath as an associated image\r\n...     thumbnail = (data[0, 0, ::8, ::8] >> 2).astype('uint8')\r\n...     tif.write(thumbnail, metadata={'Name': 'thumbnail'})\r\n...\r\n\r\nAccess image levels in the pyramidal OME-TIFF file:\r\n\r\n>>> baseimage = imread('temp.ome.tif')\r\n>>> second_level = imread('temp.ome.tif', series=0, level=1)\r\n>>> with TiffFile('temp.ome.tif') as tif:\r\n...     series = tif.series[0]\r\n...     assert series.kind == 'ome'\r\n...     assert series.sizes == {'T': 8, 'C': 2, 'Y': 512, 'X': 512, 'S': 3}\r\n...     baseimage = series.asarray()\r\n...     second_level = series.levels[1].asarray()\r\n...     number_levels = len(series.levels)  # includes base level\r\n...\r\n\r\nRead image data from a generic kind of series, ignoring OME metadata:\r\n\r\n>>> with TiffFile('temp.ome.tif') as tif:\r\n...     series = tif.series(kind='generic')[0]\r\n...     assert series.kind == 'generic'\r\n...     assert series.sizes == {'I': 16, 'Y': 512, 'X': 512, 'S': 3}\r\n...     image = series.asarray()\r\n...\r\n\r\nIterate over and decode single JPEG compressed tiles in the TIFF file:\r\n\r\n>>> with TiffFile('temp.ome.tif') as tif:\r\n...     fh = tif.filehandle\r\n...     for page in tif.pages:\r\n...         for index, (offset, bytecount) in enumerate(\r\n...             zip(page.dataoffsets, page.databytecounts)\r\n...         ):\r\n...             _ = fh.seek(offset)\r\n...             data = fh.read(bytecount)\r\n...             tile, indices, shape = page.decode(\r\n...                 data, index, jpegtables=page.jpegtables\r\n...             )\r\n...\r\n\r\nUse Zarr to read parts of the tiled, pyramidal images in the TIFF file:\r\n\r\n>>> import zarr\r\n>>> store = imread('temp.ome.tif', return_as='zarr')\r\n>>> z = zarr.open(store, mode='r')\r\n>>> z\r\n<Group ZarrTiffStore>\r\n>>> z['0']  # base layer\r\n <Array ZarrTiffStore/0 shape=(8, 2, 512, 512, 3) dtype=uint8>\r\n>>> z['0'][2, 0, 128:384, 256:].shape  # read a tile from the base layer\r\n(256, 256, 3)\r\n>>> store.close()\r\n\r\nLoad the base layer from the Zarr store as a dask array:\r\n\r\n>>> import dask.array\r\n>>> store = imread('temp.ome.tif', return_as='zarr')\r\n>>> dask.array.from_zarr(store, '0')\r\ndask.array<...shape=(8, 2, 512, 512, 3)...chunksize=(1, 1, 128, 128, 3)...\r\n>>> store.close()\r\n\r\nWrite the Zarr store to a fsspec ReferenceFileSystem in JSON format:\r\n\r\n>>> store = imread('temp.ome.tif', return_as='zarr')\r\n>>> store.write_fsspec('temp.ome.tif.json', url='file://', zarr_format=3)\r\n>>> store.close()\r\n\r\nOpen the fsspec ReferenceFileSystem as a Zarr group and read the first layer:\r\n\r\n>>> from kerchunk.utils import refs_as_store\r\n>>> import imagecodecs.zarr\r\n>>> imagecodecs.zarr.register_codecs(verbose=False)\r\n>>> z = zarr.open(refs_as_store('temp.ome.tif.json'), mode='r')\r\n>>> z['1']  # first layer\r\n<Array <FsspecStore(ReferenceFileSystem, /)>/1 shape=(8, 2, 256, 256, 3) ...>\r\n\r\nCreate an OME-TIFF file containing an empty, tiled image series and write\r\nto it via the Zarr interface (note: this does not work with compression):\r\n\r\n>>> imwrite(\r\n...     'temp2.ome.tif',\r\n...     shape=(8, 800, 600),\r\n...     dtype='uint16',\r\n...     photometric='minisblack',\r\n...     tile=(128, 128),\r\n...     metadata={'axes': 'CYX'},\r\n... )\r\n>>> store = imread('temp2.ome.tif', mode='r+', return_as='zarr')\r\n>>> z = zarr.open(store, mode='r+')\r\n>>> z\r\n<Array ZarrTiffStore shape=(8, 800, 600) dtype=uint16>\r\n>>> z[3, 100:200, 200:300:2] = 1024\r\n>>> store.close()\r\n\r\nRead images from a sequence of TIFF files as NumPy array using two I/O worker\r\nthreads:\r\n\r\n>>> imwrite('temp_C001T001.tif', numpy.random.rand(64, 64))\r\n>>> imwrite('temp_C001T002.tif', numpy.random.rand(64, 64))\r\n>>> image_sequence = imread(\r\n...     ['temp_C001T001.tif', 'temp_C001T002.tif'], ioworkers=2, maxworkers=1\r\n... )\r\n>>> image_sequence.shape\r\n(2, 64, 64)\r\n>>> image_sequence.dtype\r\ndtype('float64')\r\n\r\nRead an image stack from a series of TIFF files with a file name pattern\r\nas NumPy or Zarr arrays:\r\n\r\n>>> image_sequence = TiffSequence('temp_C0*.tif', pattern=r'_(C)(\\d+)(T)(\\d+)')\r\n>>> image_sequence.shape\r\n(1, 2)\r\n>>> image_sequence.axes\r\n'CT'\r\n>>> data = image_sequence.asarray()\r\n>>> data.shape\r\n(1, 2, 64, 64)\r\n>>> store = image_sequence.aszarr()\r\n>>> zarr.open(store, mode='r', ioworkers=2, maxworkers=1)\r\n<Array ZarrFileSequenceStore shape=(1, 2, 64, 64) dtype=float64>\r\n>>> image_sequence.close()\r\n\r\nWrite the Zarr store to a fsspec ReferenceFileSystem in JSON format:\r\n\r\n>>> store = image_sequence.aszarr()\r\n>>> store.write_fsspec('temp.json', url='file://', zarr_format=3)\r\n\r\nOpen the fsspec ReferenceFileSystem as a Zarr array:\r\n\r\n>>> from kerchunk.utils import refs_as_store\r\n>>> import tifffile.zarr\r\n>>> tifffile.zarr.register_codec()\r\n>>> zarr.open(refs_as_store('temp.json'), mode='r')\r\n<Array <FsspecStore(ReferenceFileSystem, /)> shape=(1, 2, 64, 64) ...>\r\n\r\nInspect the TIFF file from the command line::\r\n\r\n    $ python -m tifffile temp.ome.tif\r\n",
+        "description_content_type": "text/x-rst",
+        "home_page": "https://www.cgohlke.com",
+        "author": "Christoph Gohlke",
+        "author_email": "cgohlke@cgohlke.com",
+        "license": "BSD-3-Clause",
+        "classifier": [
+          "Development Status :: 4 - Beta",
+          "Intended Audience :: Science/Research",
+          "Intended Audience :: Developers",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 3 :: Only",
+          "Programming Language :: Python :: 3.12",
+          "Programming Language :: Python :: 3.13",
+          "Programming Language :: Python :: 3.14",
+          "Programming Language :: Python :: 3.15"
+        ],
+        "requires_dist": [
+          "numpy>=2.1",
+          "imagecodecs>=2026.8.16; extra == \"codecs\"",
+          "lxml; extra == \"xml\"",
+          "zarr>=3.3.0; extra == \"zarr\"",
+          "fsspec; extra == \"zarr\"",
+          "kerchunk; extra == \"zarr\"",
+          "matplotlib; extra == \"plot\"",
+          "imagecodecs>=2026.8.16; extra == \"all\"",
+          "matplotlib; extra == \"all\"",
+          "lxml; extra == \"all\"",
+          "zarr>=3.3.0; extra == \"all\"",
+          "xarray; extra == \"all\"",
+          "fsspec; extra == \"all\"",
+          "kerchunk; extra == \"all\"",
+          "cmapfile; extra == \"test\"",
+          "czifile; extra == \"test\"",
+          "dask; extra == \"test\"",
+          "fsspec; extra == \"test\"",
+          "imagecodecs; extra == \"test\"",
+          "kerchunk; extra == \"test\"",
+          "lfdfiles; extra == \"test\"",
+          "lxml; extra == \"test\"",
+          "ndtiff; extra == \"test\"",
+          "oiffile; extra == \"test\"",
+          "psdtags; extra == \"test\"",
+          "pytest; extra == \"test\"",
+          "requests; extra == \"test\"",
+          "roifile; extra == \"test\"",
+          "xarray; extra == \"test\"",
+          "zarr; extra == \"test\""
+        ],
+        "requires_python": ">=3.12",
+        "project_url": [
+          "Bug Tracker, https://github.com/cgohlke/tifffile/issues",
+          "Source Code, https://github.com/cgohlke/tifffile",
+          "Documentation, https://www.cgohlke.com/docs/tifffile/"
+        ],
+        "provides_extra": [
+          "codecs",
+          "xml",
+          "zarr",
+          "plot",
+          "all",
+          "test"
+        ]
+      }
+    }
+  ],
+  "environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.12.9",
+    "os_name": "posix",
+    "platform_machine": "x86_64",
+    "platform_release": "6.18.54.1-microsoft-standard-WSL2",
+    "platform_system": "Linux",
+    "platform_version": "#1 SMP PREEMPT_DYNAMIC Tue Oct  6 19:13:07 UTC 2026",
+    "python_full_version": "3.12.9",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.12",
+    "sys_platform": "linux"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "format": "scanner-fairscan-full-official-cpu-chain",
+  "source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "official_segmentation_preprocessing_executed": true,
+  "interpreter": "tensorflow.lite.Interpreter via tensorflow-cpu2.19.1",
+  "official_quad_executed": true,
+  "input_count": 6,
+  "mask_count": 6,
+  "overlay_count": 6,
+  "numerical_corner_precision_measured": false,
+  "original_realphoto_groundtruth_measured": false,
+  "product_android_pixel_parity": false,
+  "requirements_newly_completed": [],
+  "new_model_forward_count": 6,
+  "evidence_files": [
+    {
+      "file": "download-command.py",
+      "bytes": 1381,
+      "sha256": "fb64e14f4c913c3106e18033f72ac6bb3bace876ea242556dd15cd0371448637"
+    },
+    {
+      "file": "download.json",
+      "bytes": 449,
+      "sha256": "90385d0dc954735b1758920af57f7a3d9702814dc68a00270d3113f12096257d"
+    },
+    {
+      "file": "download.log",
+      "bytes": 14145,
+      "sha256": "764d0a1128d5043be70f51f13c11abda69cc5b6ea3211fd28a47099687a21156"
+    },
+    {
+      "file": "evaluate.init.gradle",
+      "bytes": 533,
+      "sha256": "cb61f866837de648b4e95df214e7ede72bfc31940768c6727c4e0666fb93c6d8"
+    },
+    {
+      "file": "evaluation-command.py",
+      "bytes": 3304,
+      "sha256": "6d3f482c387fd1fa838398af22584cc960118335bb6c61c97e4139e56ecd96d8"
+    },
+    {
+      "file": "evaluation.json",
+      "bytes": 1026,
+      "sha256": "9acf42b8d6d6577a2b55b6ffb1546c11eefae74cab93e0d129ebef8413ebcd80"
+    },
+    {
+      "file": "evaluation.log",
+      "bytes": 1571,
+      "sha256": "44b30cce7b4f9913945691c720ac3041e04fc49f7e29daa3fb20ba6107f2fb59"
+    },
+    {
+      "file": "inputs.json",
+      "bytes": 2308,
+      "sha256": "592178f28a694d7a1d3b38fe708f90b32f8e88185c3a97b3b3eeff2c69738efd"
+    },
+    {
+      "file": "install-command.py",
+      "bytes": 2359,
+      "sha256": "345100e18daba75971c8abac871dfdea4e1dfe5060646a6270061160cf5ae945"
+    },
+    {
+      "file": "install.json",
+      "bytes": 4070,
+      "sha256": "8d0f532dda5fa63b83d2b4130836a3e274fb6e5e537f5e2ca92b254651e847a4"
+    },
+    {
+      "file": "install.log",
+      "bytes": 4996,
+      "sha256": "262fe8aea5c0c15db12c0c1af8e07b7e568a50bdaa2b7bbf5fb22747fcb60609"
+    },
+    {
+      "file": "installed-packages.json",
+      "bytes": 1696,
+      "sha256": "13105320f00dc0038c8b3d91699e607b90f901d15c151d68effe4df07a0297fd"
+    },
+    {
+      "file": "outputs.json",
+      "bytes": 3304,
+      "sha256": "992550197fe62b52a3ea02b159de1cc8b612889d6350c733ddfdaacc668c33a5"
+    },
+    {
+      "file": "report.md",
+      "bytes": 4816,
+      "sha256": "2d2532b2fae3c9e50e6c16b2cf33e30977fd323066be13a6648e0b729253b5cc"
+    },
+    {
+      "file": "segmentation-command.py",
+      "bytes": 2109,
+      "sha256": "af549205b92d306a6c3c4ba58e8cb8487884f20d2036ade090d5d90474acf8f6"
+    },
+    {
+      "file": "segmentation.json",
+      "bytes": 1858,
+      "sha256": "a03873dfa8c0e2fb420371094a92d21ae7d73398833d6529153144334f6aa155"
+    },
+    {
+      "file": "segmentation.log",
+      "bytes": 1792,
+      "sha256": "1131d78974fb8d19a0d8ac1da3d2321d0830929a93056b64394fdd2e35802f84"
+    },
+    {
+      "file": "selfchecks.json",
+      "bytes": 489,
+      "sha256": "8d9279a92adafbe7e842e99f7d66891de1a311988cc05e77701f8e6b530b81e4"
+    },
+    {
+      "file": "wheels.json",
+      "bytes": 78240,
+      "sha256": "ceef75db03bba6334b36bdc7aad8ec2cf07a146441e0dfb1a166e742ebb33f96"
+    }
+  ]
+}

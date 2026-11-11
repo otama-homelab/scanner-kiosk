@@ -1,0 +1,6 @@
+{
+  "original_source_count": 272,
+  "mismatches": [],
+  "all_original_bytes_unchanged": true,
+  "broad_build_snapshot_false_explanation": "snapshot includes Gradle generated mutable files; not upstream source identities"
+}

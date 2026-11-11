@@ -1,0 +1,12 @@
+{
+  "original_source272unchanged": true,
+  "official_python_script_unchanged": true,
+  "actual_tensorflow_lite_interpreter_not_shim": true,
+  "model_hash": "96e14d7e610dd0c27b768b228fbc553b4ec119ebe68f3a3594029a25400691d2",
+  "six_official_mask_outputs": true,
+  "six_official_quad_processed": true,
+  "combined_setup_bytes": 3142012479,
+  "evaluation_runtime_bytes": 366509,
+  "previous_stage_outputs_preserved_in_separate_workingdir": true,
+  "no_original_realphoto_truth_claim": true
+}

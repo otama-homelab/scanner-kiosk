@@ -1,0 +1,8 @@
+{
+  "path": "/tmp/scanner-docshadow-ssim-v060/venv/lib/python3.12/site-packages/skimage/metrics/_structural_similarity.py",
+  "sha256": "9781d34ee98d3f4bc30012add3a4740eafbb66952dba9c6a5b3eb87bd0b4b0a0",
+  "bytes": 10422,
+  "version": "scikit-image0.25.2",
+  "official_api": "https://scikit-image.org/docs/0.25.x/api/skimage.metrics.html#skimage.metrics.structural_similarity",
+  "new_implementation": false
+}

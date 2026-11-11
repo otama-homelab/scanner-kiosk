@@ -1,0 +1,75 @@
+{
+  "processed_images": 6,
+  "mask_count": 6,
+  "output_jpegs": 12,
+  "output_html": 1,
+  "quad_detected_count": "not emitted by officialmain",
+  "numeric_corner_precision": "not measured",
+  "outputs": [
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/index.html",
+      "bytes": 1973,
+      "sha256": "f09abc80b8b11db9cbd954ad67be4e313cecd95a45928fb951c3a164a7b9288a"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_columns_001_input.jpg",
+      "bytes": 34234,
+      "sha256": "7fa6e5c8a175f5041dec19d7513922a9faea7d76bec72358f6db8580668c1761"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_columns_001_output.jpg",
+      "bytes": 41975,
+      "sha256": "fbbe11d2066e75913861936c8a06241fa4b4fc51b2cb90d977dc750020f61991"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_horizontal_001_input.jpg",
+      "bytes": 25788,
+      "sha256": "e72ac411b6199aaa898346c1c69df7f3e5995dd05092a3b9e986c44b2f95b4e3"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_horizontal_001_output.jpg",
+      "bytes": 29771,
+      "sha256": "e96a75c71ae4c1d8bee7b0d3606334afbe72065b4f90d238c398eaa9040f1c8a"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_mixed_001_input.jpg",
+      "bytes": 27272,
+      "sha256": "81d9a74f5187b4fa9a832f2ead6392e27ba9c10d9bf1d218f9bfcbe6950eb056"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_mixed_001_output.jpg",
+      "bytes": 42722,
+      "sha256": "df173cd4255e59855b58dcc830a3ef497664c57c444a5c2ea84c23846ae284d3"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_table_001_input.jpg",
+      "bytes": 29214,
+      "sha256": "c98a7c2614141ba56d5ae8cc4cef004c8f458d68ff1666a76a0b1f1244a7588a"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_table_001_output.jpg",
+      "bytes": 38255,
+      "sha256": "1e4858c9d0504b0304c0de24874e74904dba251d8b31f4da76a3c27358c9ec93"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_vertical_001_input.jpg",
+      "bytes": 20791,
+      "sha256": "ae39a38d90cd83a104cd36eabf6c0f39f9a48f855002f92e45c8ca94d5e3ac11"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_vertical_001_output.jpg",
+      "bytes": 34080,
+      "sha256": "43347286ef418476cbab24c5be1fffeb96a93e99b3b5d03da4b5794fc28567bf"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_wrapped_001_input.jpg",
+      "bytes": 14992,
+      "sha256": "78c0740eb99e2006d170ad5532cb702e7cf39d8928d6291e946c1ce96fabffdd"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/reports/results/fixture_ocr_wrapped_001_output.jpg",
+      "bytes": 14273,
+      "sha256": "f29b3a7e0d62e3be9c3ba020a46fb80d2e00e76fd35d7e1e1e173dfbc641ed31"
+    }
+  ]
+}

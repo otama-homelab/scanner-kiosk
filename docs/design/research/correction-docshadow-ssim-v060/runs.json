@@ -1,0 +1,1298 @@
+[
+  {
+    "id": "mixed_clean_noop",
+    "ssim": 1.0,
+    "metric_seconds": 0.09462192899081856,
+    "peak_rss_bytes": 126816256,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "input": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"mixed_clean_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/mixed.png\", \"input\": \"/tmp/scanner-v060-paired/clean/mixed.png\", \"input_sha256\": \"55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee\", \"arm\": \"noop\", \"source_kind\": \"clean\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.5029206869949121,
+    "sampled_peak_rss_bytes": 104460288,
+    "fixture": "mixed",
+    "arm": "noop",
+    "source_kind": "clean"
+  },
+  {
+    "id": "mixed_clean_native",
+    "ssim": 0.9869078993797302,
+    "metric_seconds": 0.09707443398656324,
+    "peak_rss_bytes": 124866560,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/mixed_clean_native.npy",
+    "input_sha256": "f893377353fd3a6e5e64a26e04898fa111fdcce1ec34c34cb249ecb9b78bdea7",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"mixed_clean_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/mixed.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/mixed_clean_native.npy\", \"input_sha256\": \"f893377353fd3a6e5e64a26e04898fa111fdcce1ec34c34cb249ecb9b78bdea7\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.502374133997364,
+    "sampled_peak_rss_bytes": 94728192,
+    "fixture": "mixed",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "mixed_clean_512",
+    "ssim": 0.9893428683280945,
+    "metric_seconds": 0.11343021100037731,
+    "peak_rss_bytes": 124547072,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/mixed_clean_512.npy",
+    "input_sha256": "0ac09e88aade1918d2b940745d165662b8502248aebe90b9c03f8d6f406c6b99",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"mixed_clean_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/mixed.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/mixed_clean_512.npy\", \"input_sha256\": \"0ac09e88aade1918d2b940745d165662b8502248aebe90b9c03f8d6f406c6b99\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.5025334889942314,
+    "sampled_peak_rss_bytes": 102129664,
+    "fixture": "mixed",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "mixed_shadow_noop",
+    "ssim": 0.9860053658485413,
+    "metric_seconds": 0.08530493700527586,
+    "peak_rss_bytes": 126685184,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "input": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "input_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"mixed_shadow_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/mixed.png\", \"input\": \"/tmp/scanner-v060-paired/shadow/mixed.png\", \"input_sha256\": \"eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c\", \"arm\": \"noop\", \"source_kind\": \"shadow\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.5022990760044195,
+    "sampled_peak_rss_bytes": 103579648,
+    "fixture": "mixed",
+    "arm": "noop",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "mixed_shadow_native",
+    "ssim": 0.9791242480278015,
+    "metric_seconds": 0.09556880098534748,
+    "peak_rss_bytes": 124870656,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "input": "/tmp/scanner-docshadow-v060/outputs/mixed_shadow_native.npy",
+    "input_sha256": "549ff881d3731c7ffbf270fefebe6990ce32ace0a359ab8f2ca830501f3b3e66",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"mixed_shadow_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/mixed.png\", \"input\": \"/tmp/scanner-docshadow-v060/outputs/mixed_shadow_native.npy\", \"input_sha256\": \"549ff881d3731c7ffbf270fefebe6990ce32ace0a359ab8f2ca830501f3b3e66\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.5023626709880773,
+    "sampled_peak_rss_bytes": 94801920,
+    "fixture": "mixed",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "mixed_shadow_512",
+    "ssim": 0.9837680459022522,
+    "metric_seconds": 0.09635493298992515,
+    "peak_rss_bytes": 124944384,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "reference_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/mixed_shadow_512.npy",
+    "input_sha256": "e38511c0fea36b7f5b306f433a0d490230211d2e64eacadf9fd50fe3d25bbd88",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"mixed_shadow_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/mixed.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/mixed_shadow_512.npy\", \"input_sha256\": \"e38511c0fea36b7f5b306f433a0d490230211d2e64eacadf9fd50fe3d25bbd88\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"mixed\"}"
+    ],
+    "elapsed_seconds": 0.5024267970002256,
+    "sampled_peak_rss_bytes": 113692672,
+    "fixture": "mixed",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "table_clean_noop",
+    "ssim": 1.0,
+    "metric_seconds": 0.09716319499420933,
+    "peak_rss_bytes": 126484480,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "input": "/tmp/scanner-v060-paired/clean/table.png",
+    "input_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"table_clean_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/table.png\", \"input\": \"/tmp/scanner-v060-paired/clean/table.png\", \"input_sha256\": \"d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416\", \"arm\": \"noop\", \"source_kind\": \"clean\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5023860140063334,
+    "sampled_peak_rss_bytes": 105439232,
+    "fixture": "table",
+    "arm": "noop",
+    "source_kind": "clean"
+  },
+  {
+    "id": "table_clean_native",
+    "ssim": 0.9740921854972839,
+    "metric_seconds": 0.1012339020089712,
+    "peak_rss_bytes": 124702720,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/table_clean_native.npy",
+    "input_sha256": "d72cbd8884e214d40f4fe17c0827f5a38018bfacc727bdb0c7b19e3a4abf9d4d",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"table_clean_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/table.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/table_clean_native.npy\", \"input_sha256\": \"d72cbd8884e214d40f4fe17c0827f5a38018bfacc727bdb0c7b19e3a4abf9d4d\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5022782130108681,
+    "sampled_peak_rss_bytes": 101564416,
+    "fixture": "table",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "table_clean_512",
+    "ssim": 0.9636573195457458,
+    "metric_seconds": 0.09167734099901281,
+    "peak_rss_bytes": 124837888,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/table_clean_512.npy",
+    "input_sha256": "aefaf428c3b601b11794efc73eab26c583d829ed01dbeda8b135da19bbb0c90f",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"table_clean_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/table.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/table_clean_512.npy\", \"input_sha256\": \"aefaf428c3b601b11794efc73eab26c583d829ed01dbeda8b135da19bbb0c90f\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.502421998011414,
+    "sampled_peak_rss_bytes": 95297536,
+    "fixture": "table",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "table_shadow_noop",
+    "ssim": 0.9859150052070618,
+    "metric_seconds": 0.0880634149943944,
+    "peak_rss_bytes": 126681088,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "input": "/tmp/scanner-v060-paired/shadow/table.png",
+    "input_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"table_shadow_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/table.png\", \"input\": \"/tmp/scanner-v060-paired/shadow/table.png\", \"input_sha256\": \"fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9\", \"arm\": \"noop\", \"source_kind\": \"shadow\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5026163440197706,
+    "sampled_peak_rss_bytes": 103575552,
+    "fixture": "table",
+    "arm": "noop",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "table_shadow_native",
+    "ssim": 0.9698925018310547,
+    "metric_seconds": 0.0950818760029506,
+    "peak_rss_bytes": 124739584,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/table_shadow_native.npy",
+    "input_sha256": "6039c7c66a5677c06420a64ba7a42250aef748147e42257dd6e43ae3e5cc3284",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"table_shadow_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/table.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/table_shadow_native.npy\", \"input_sha256\": \"6039c7c66a5677c06420a64ba7a42250aef748147e42257dd6e43ae3e5cc3284\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5022822089958936,
+    "sampled_peak_rss_bytes": 106524672,
+    "fixture": "table",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "table_shadow_512",
+    "ssim": 0.9583079218864441,
+    "metric_seconds": 0.11558453398174606,
+    "peak_rss_bytes": 124833792,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "reference_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/table_shadow_512.npy",
+    "input_sha256": "302755e5341792c461398192a27eb88fe72f9555f73fdc34a39218191fc2c1c4",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"table_shadow_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/table.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/table_shadow_512.npy\", \"input_sha256\": \"302755e5341792c461398192a27eb88fe72f9555f73fdc34a39218191fc2c1c4\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"table\"}"
+    ],
+    "elapsed_seconds": 0.5123122470104136,
+    "sampled_peak_rss_bytes": 100343808,
+    "fixture": "table",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "faint_mixed_clean_noop",
+    "ssim": 1.0,
+    "metric_seconds": 0.09661437300383113,
+    "peak_rss_bytes": 126902272,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "input": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_mixed_clean_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\", \"input\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\", \"input_sha256\": \"a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f\", \"arm\": \"noop\", \"source_kind\": \"clean\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.5029894890030846,
+    "sampled_peak_rss_bytes": 103809024,
+    "fixture": "faint_mixed",
+    "arm": "noop",
+    "source_kind": "clean"
+  },
+  {
+    "id": "faint_mixed_clean_native",
+    "ssim": 0.9888026118278503,
+    "metric_seconds": 0.12296314700506628,
+    "peak_rss_bytes": 124702720,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_clean_native.npy",
+    "input_sha256": "c73daca0b6acd2db7bb33d99c7c5214da1881606d851be295fd9678eacce74dc",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_mixed_clean_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_clean_native.npy\", \"input_sha256\": \"c73daca0b6acd2db7bb33d99c7c5214da1881606d851be295fd9678eacce74dc\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.603523985017091,
+    "sampled_peak_rss_bytes": 101134336,
+    "fixture": "faint_mixed",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "faint_mixed_clean_512",
+    "ssim": 0.9940781593322754,
+    "metric_seconds": 0.10416316200280562,
+    "peak_rss_bytes": 124825600,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_mixed_clean_512.npy",
+    "input_sha256": "e966323f5867f67f5f242f6e3eb695141c18053bd71368b1457b5e790ebb050a",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_mixed_clean_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/faint_mixed_clean_512.npy\", \"input_sha256\": \"e966323f5867f67f5f242f6e3eb695141c18053bd71368b1457b5e790ebb050a\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.5024719670182094,
+    "sampled_peak_rss_bytes": 102907904,
+    "fixture": "faint_mixed",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "faint_mixed_shadow_noop",
+    "ssim": 0.9860116839408875,
+    "metric_seconds": 0.09097672099596821,
+    "peak_rss_bytes": 126550016,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "input_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_mixed_shadow_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\", \"input\": \"/tmp/scanner-v060-paired/shadow/faint_mixed.png\", \"input_sha256\": \"662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa\", \"arm\": \"noop\", \"source_kind\": \"shadow\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.5022169749718159,
+    "sampled_peak_rss_bytes": 104321024,
+    "fixture": "faint_mixed",
+    "arm": "noop",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "faint_mixed_shadow_native",
+    "ssim": 0.9793944358825684,
+    "metric_seconds": 0.09450061499956064,
+    "peak_rss_bytes": 124510208,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_shadow_native.npy",
+    "input_sha256": "ca813ab1276be9751c3ba69839f1eb42d8b9238f96210226c4964655d639782b",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_mixed_shadow_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_shadow_native.npy\", \"input_sha256\": \"ca813ab1276be9751c3ba69839f1eb42d8b9238f96210226c4964655d639782b\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.5023159140255302,
+    "sampled_peak_rss_bytes": 98369536,
+    "fixture": "faint_mixed",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "faint_mixed_shadow_512",
+    "ssim": 0.9878342151641846,
+    "metric_seconds": 0.10552290998748504,
+    "peak_rss_bytes": 124776448,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "reference_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_mixed_shadow_512.npy",
+    "input_sha256": "e34cc53db41d9e0273f8a686c3fc5512e67cdbc4a8b7fff77ab8206532a23b46",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_mixed_shadow_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_mixed.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/faint_mixed_shadow_512.npy\", \"input_sha256\": \"e34cc53db41d9e0273f8a686c3fc5512e67cdbc4a8b7fff77ab8206532a23b46\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"faint_mixed\"}"
+    ],
+    "elapsed_seconds": 0.5021017869876232,
+    "sampled_peak_rss_bytes": 100286464,
+    "fixture": "faint_mixed",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "faint_table_clean_noop",
+    "ssim": 1.0,
+    "metric_seconds": 0.08975494399783202,
+    "peak_rss_bytes": 126664704,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "input": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_table_clean_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_table.png\", \"input\": \"/tmp/scanner-v060-paired/clean/faint_table.png\", \"input_sha256\": \"442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9\", \"arm\": \"noop\", \"source_kind\": \"clean\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.502299215993844,
+    "sampled_peak_rss_bytes": 104427520,
+    "fixture": "faint_table",
+    "arm": "noop",
+    "source_kind": "clean"
+  },
+  {
+    "id": "faint_table_clean_native",
+    "ssim": 0.9854786992073059,
+    "metric_seconds": 0.09427198799676262,
+    "peak_rss_bytes": 124620800,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_table_clean_native.npy",
+    "input_sha256": "c53a6bbaa3940161ebbf4b3705344a5fe55cbe0e54e096f6ed9a627236a02f5e",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_table_clean_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_table.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/faint_table_clean_native.npy\", \"input_sha256\": \"c53a6bbaa3940161ebbf4b3705344a5fe55cbe0e54e096f6ed9a627236a02f5e\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.5025055559817702,
+    "sampled_peak_rss_bytes": 104669184,
+    "fixture": "faint_table",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "faint_table_clean_512",
+    "ssim": 0.983262300491333,
+    "metric_seconds": 0.09861748499679379,
+    "peak_rss_bytes": 124403712,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_table_clean_512.npy",
+    "input_sha256": "29fea4d85db83e5eacf3e725a28434a057704970d3084d131cdfb7443d8533d3",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_table_clean_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_table.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/faint_table_clean_512.npy\", \"input_sha256\": \"29fea4d85db83e5eacf3e725a28434a057704970d3084d131cdfb7443d8533d3\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.502301354019437,
+    "sampled_peak_rss_bytes": 91930624,
+    "fixture": "faint_table",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "faint_table_shadow_noop",
+    "ssim": 0.9859583377838135,
+    "metric_seconds": 0.0904927859955933,
+    "peak_rss_bytes": 126410752,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "input_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_table_shadow_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_table.png\", \"input\": \"/tmp/scanner-v060-paired/shadow/faint_table.png\", \"input_sha256\": \"aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb\", \"arm\": \"noop\", \"source_kind\": \"shadow\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.5024638369795866,
+    "sampled_peak_rss_bytes": 103395328,
+    "fixture": "faint_table",
+    "arm": "noop",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "faint_table_shadow_native",
+    "ssim": 0.9775088429450989,
+    "metric_seconds": 0.09405348901054822,
+    "peak_rss_bytes": 124551168,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_table_shadow_native.npy",
+    "input_sha256": "6df2f797a93cd52b024cb7d467e23bb367c1e99d6dc399f3f0964f1a15d09bc4",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_table_shadow_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_table.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/faint_table_shadow_native.npy\", \"input_sha256\": \"6df2f797a93cd52b024cb7d467e23bb367c1e99d6dc399f3f0964f1a15d09bc4\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.5025021929759532,
+    "sampled_peak_rss_bytes": 94580736,
+    "fixture": "faint_table",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "faint_table_shadow_512",
+    "ssim": 0.9765399098396301,
+    "metric_seconds": 0.09598668199032545,
+    "peak_rss_bytes": 124801024,
+    "shape": [
+      700,
+      900,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "reference_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_table_shadow_512.npy",
+    "input_sha256": "c55704abe2ee6f98552d16e98f30735e3e85b34959992544a6a37fd5dd161323",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"faint_table_shadow_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/faint_table.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/faint_table_shadow_512.npy\", \"input_sha256\": \"c55704abe2ee6f98552d16e98f30735e3e85b34959992544a6a37fd5dd161323\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"faint_table\"}"
+    ],
+    "elapsed_seconds": 0.5025500210176688,
+    "sampled_peak_rss_bytes": 94777344,
+    "fixture": "faint_table",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "blue_clean_noop",
+    "ssim": 1.0,
+    "metric_seconds": 0.27948954500607215,
+    "peak_rss_bytes": 204394496,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "input": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"blue_clean_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/blue.png\", \"input\": \"/tmp/scanner-v060-paired/clean/blue.png\", \"input_sha256\": \"e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4\", \"arm\": \"noop\", \"source_kind\": \"clean\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.8032462849805597,
+    "sampled_peak_rss_bytes": 148217856,
+    "fixture": "blue",
+    "arm": "noop",
+    "source_kind": "clean"
+  },
+  {
+    "id": "blue_clean_native",
+    "ssim": 0.8799363970756531,
+    "metric_seconds": 0.23750526199000888,
+    "peak_rss_bytes": 199806976,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/blue_clean_native.npy",
+    "input_sha256": "d82629fd5cf1bd6481b54f810c8a930fb7551690421d8bb6be0ffc27aa6c68cd",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"blue_clean_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/blue.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/blue_clean_native.npy\", \"input_sha256\": \"d82629fd5cf1bd6481b54f810c8a930fb7551690421d8bb6be0ffc27aa6c68cd\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.7033121280255727,
+    "sampled_peak_rss_bytes": 200007680,
+    "fixture": "blue",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "blue_clean_512",
+    "ssim": 0.7612302899360657,
+    "metric_seconds": 0.24943159500253387,
+    "peak_rss_bytes": 200028160,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/blue_clean_512.npy",
+    "input_sha256": "9313f58c2112b734a1293796c319a84c520385231573f54b5dd63ea9d151f5dc",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"blue_clean_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/blue.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/blue_clean_512.npy\", \"input_sha256\": \"9313f58c2112b734a1293796c319a84c520385231573f54b5dd63ea9d151f5dc\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.7042538390087429,
+    "sampled_peak_rss_bytes": 200101888,
+    "fixture": "blue",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "blue_shadow_noop",
+    "ssim": 0.9810566902160645,
+    "metric_seconds": 0.24999439500970766,
+    "peak_rss_bytes": 204595200,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "input": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "input_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"blue_shadow_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/blue.png\", \"input\": \"/tmp/scanner-v060-paired/shadow/blue.png\", \"input_sha256\": \"edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57\", \"arm\": \"noop\", \"source_kind\": \"shadow\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.7030610390065704,
+    "sampled_peak_rss_bytes": 148213760,
+    "fixture": "blue",
+    "arm": "noop",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "blue_shadow_native",
+    "ssim": 0.8692498803138733,
+    "metric_seconds": 0.2580084280052688,
+    "peak_rss_bytes": 199909376,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/blue_shadow_native.npy",
+    "input_sha256": "2c14bc5bc0ac2112cbad82b495eadeab31969b4f53be678d7404a14e440e145b",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"blue_shadow_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/blue.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/blue_shadow_native.npy\", \"input_sha256\": \"2c14bc5bc0ac2112cbad82b495eadeab31969b4f53be678d7404a14e440e145b\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.7032939530035947,
+    "sampled_peak_rss_bytes": 200130560,
+    "fixture": "blue",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "blue_shadow_512",
+    "ssim": 0.7596598267555237,
+    "metric_seconds": 0.23351441099657677,
+    "peak_rss_bytes": 199884800,
+    "shape": [
+      1491,
+      1055,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "reference_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/blue_shadow_512.npy",
+    "input_sha256": "c4ed697b6a1f2159ee1e74251892c5f09e04021ed4fc087ac10c511c55c2c904",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"blue_shadow_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/blue.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/blue_shadow_512.npy\", \"input_sha256\": \"c4ed697b6a1f2159ee1e74251892c5f09e04021ed4fc087ac10c511c55c2c904\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"blue\"}"
+    ],
+    "elapsed_seconds": 0.703162259014789,
+    "sampled_peak_rss_bytes": 200060928,
+    "fixture": "blue",
+    "arm": "512",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "peach_clean_noop",
+    "ssim": 1.0,
+    "metric_seconds": 0.4170967710088007,
+    "peak_rss_bytes": 205062144,
+    "shape": [
+      1536,
+      1024,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "input": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"peach_clean_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/peach.png\", \"input\": \"/tmp/scanner-v060-paired/clean/peach.png\", \"input_sha256\": \"f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b\", \"arm\": \"noop\", \"source_kind\": \"clean\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.904158275021473,
+    "sampled_peak_rss_bytes": 177344512,
+    "fixture": "peach",
+    "arm": "noop",
+    "source_kind": "clean"
+  },
+  {
+    "id": "peach_clean_native",
+    "ssim": 0.8841063380241394,
+    "metric_seconds": 0.37775681298808195,
+    "peak_rss_bytes": 200282112,
+    "shape": [
+      1536,
+      1024,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/peach_clean_native.npy",
+    "input_sha256": "8660616680f8323bd96684a8b0e223cbe58c26e7a164cafe40613c6364c13899",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"peach_clean_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/peach.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/peach_clean_native.npy\", \"input_sha256\": \"8660616680f8323bd96684a8b0e223cbe58c26e7a164cafe40613c6364c13899\", \"arm\": \"native\", \"source_kind\": \"clean\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.803299955005059,
+    "sampled_peak_rss_bytes": 178610176,
+    "fixture": "peach",
+    "arm": "native",
+    "source_kind": "clean"
+  },
+  {
+    "id": "peach_clean_512",
+    "ssim": 0.7135568261146545,
+    "metric_seconds": 0.40583183598937467,
+    "peak_rss_bytes": 200273920,
+    "shape": [
+      1536,
+      1024,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/peach_clean_512.npy",
+    "input_sha256": "085e684135c71d29dd4137b14f0272c265c41994c70c48f19ad70fbbcb46106f",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"peach_clean_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/peach.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/peach_clean_512.npy\", \"input_sha256\": \"085e684135c71d29dd4137b14f0272c265c41994c70c48f19ad70fbbcb46106f\", \"arm\": \"512\", \"source_kind\": \"clean\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.8032456960063428,
+    "sampled_peak_rss_bytes": 187854848,
+    "fixture": "peach",
+    "arm": "512",
+    "source_kind": "clean"
+  },
+  {
+    "id": "peach_shadow_noop",
+    "ssim": 0.980885922908783,
+    "metric_seconds": 0.4274692159960978,
+    "peak_rss_bytes": 205012992,
+    "shape": [
+      1536,
+      1024,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "input": "/tmp/scanner-v060-paired/shadow/peach.png",
+    "input_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"peach_shadow_noop\", \"reference\": \"/tmp/scanner-v060-paired/clean/peach.png\", \"input\": \"/tmp/scanner-v060-paired/shadow/peach.png\", \"input_sha256\": \"bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed\", \"arm\": \"noop\", \"source_kind\": \"shadow\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.9037929150217678,
+    "sampled_peak_rss_bytes": 205193216,
+    "fixture": "peach",
+    "arm": "noop",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "peach_shadow_native",
+    "ssim": 0.8718023300170898,
+    "metric_seconds": 0.3958625170052983,
+    "peak_rss_bytes": 200323072,
+    "shape": [
+      1536,
+      1024,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/peach_shadow_native.npy",
+    "input_sha256": "81a104fea4e2fd4acb0de5f8621afc971766bfa7836a66a7c13b1230e5682adc",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"peach_shadow_native\", \"reference\": \"/tmp/scanner-v060-paired/clean/peach.png\", \"input\": \"/tmp/scanner-docshadow-native-v060/outputs/peach_shadow_native.npy\", \"input_sha256\": \"81a104fea4e2fd4acb0de5f8621afc971766bfa7836a66a7c13b1230e5682adc\", \"arm\": \"native\", \"source_kind\": \"shadow\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.9046046000148635,
+    "sampled_peak_rss_bytes": 150142976,
+    "fixture": "peach",
+    "arm": "native",
+    "source_kind": "shadow"
+  },
+  {
+    "id": "peach_shadow_512",
+    "ssim": 0.6987823843955994,
+    "metric_seconds": 0.41043932901811786,
+    "peak_rss_bytes": 200355840,
+    "shape": [
+      1536,
+      1024,
+      3
+    ],
+    "parameters": {
+      "data_range": 1.0,
+      "channel_axis": 2,
+      "win_size": 7,
+      "gaussian_weights": false,
+      "use_sample_covariance": true,
+      "K1": 0.01,
+      "K2": 0.03
+    },
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "reference_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/peach_shadow_512.npy",
+    "input_sha256": "1022dd657144c504b19114026487e76eac39221b45f13b6a98bdc6895b62445d",
+    "clipping": "none",
+    "status": "measured",
+    "command": [
+      "/tmp/scanner-docshadow-ssim-v060/venv/bin/python",
+      "/tmp/scanner-docshadow-ssim-v060/metric.py",
+      "{\"id\": \"peach_shadow_512\", \"reference\": \"/tmp/scanner-v060-paired/clean/peach.png\", \"input\": \"/tmp/scanner-docshadow-ssim-v060/resized/peach_shadow_512.npy\", \"input_sha256\": \"1022dd657144c504b19114026487e76eac39221b45f13b6a98bdc6895b62445d\", \"arm\": \"512\", \"source_kind\": \"shadow\", \"fixture\": \"peach\"}"
+    ],
+    "elapsed_seconds": 0.8032330209971406,
+    "sampled_peak_rss_bytes": 187863040,
+    "fixture": "peach",
+    "arm": "512",
+    "source_kind": "shadow"
+  }
+]

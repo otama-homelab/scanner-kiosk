@@ -1,0 +1,80 @@
+{
+  "format": "scanner-fairscan-official-jvm-stage",
+  "source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "compile_success": true,
+  "official_quad_stage_executed": true,
+  "processed_inputs": 6,
+  "output_images": 12,
+  "output_html": 1,
+  "full_segmentation_pipeline_parity": false,
+  "numeric_corner_accuracy_measured": false,
+  "requirements_newly_completed": [],
+  "new_model_inferences": 0,
+  "evidence_files": [
+    {
+      "file": "build-command.py",
+      "bytes": 2889,
+      "sha256": "0207f071c0d036f9266a49234c9f652c38f746fc5e75b76571b114404d637870"
+    },
+    {
+      "file": "build.json",
+      "bytes": 858,
+      "sha256": "7d81444eeccf85103900e0a2f737aca6988d79c41e14369db50eff19b3721b9c"
+    },
+    {
+      "file": "build.log",
+      "bytes": 1001,
+      "sha256": "9ecf3ea18bf16f96fce96d00a7e7255c9bb5634c905f4ff4097569f9f45c5b0c"
+    },
+    {
+      "file": "evaluate.init.gradle",
+      "bytes": 477,
+      "sha256": "e6925e59ebbaf444b20bef90b36fbefa4278326a8eb3100f3e22c3fa0f931d4f"
+    },
+    {
+      "file": "evaluation-command.py",
+      "bytes": 3095,
+      "sha256": "b743c26f2c673913ee1fd3b5611a54375ef6903bfbf0f75a391baa0e9392fad5"
+    },
+    {
+      "file": "evaluation.json",
+      "bytes": 947,
+      "sha256": "45adc8e3fc7ed9e5ad0f36533f24724580aaed766e2c4b4fc39a7614255a8210"
+    },
+    {
+      "file": "evaluation.log",
+      "bytes": 1560,
+      "sha256": "b448be79d957f94d008672feb60a127742c90f9d848377c8ca1d786dc98796cf"
+    },
+    {
+      "file": "inputs.json",
+      "bytes": 4186,
+      "sha256": "b9b3118d98c4a3cc19663033efffd5b7d3a21d2aca9b3d6e9a686c6b032533a1"
+    },
+    {
+      "file": "outputs.json",
+      "bytes": 3856,
+      "sha256": "a0cf53242c9a542b4bd16a2c7eadb16eb3e9d324d570c0f95b25eda1cd4cb870"
+    },
+    {
+      "file": "prepare-inputs.py",
+      "bytes": 1862,
+      "sha256": "3dbff9081ead85c2e3fd5c64c226e225299c745aa45d3ea03a4650cda25ace19"
+    },
+    {
+      "file": "report.md",
+      "bytes": 4276,
+      "sha256": "6b78f1b667ad2355732afb1c4865bde34c667e3405cdc765f817bbe9c96b2f51"
+    },
+    {
+      "file": "selfchecks.json",
+      "bytes": 278,
+      "sha256": "dd5afb71175da17305cc87966d0f4d57ea7d251ea2d024706cd051b806e512b8"
+    },
+    {
+      "file": "source-identity.json",
+      "bytes": 223,
+      "sha256": "b7add41ff44e4e82f243cd584db594c9523b123a61fefb801fe2f600ad50f1b9"
+    }
+  ]
+}

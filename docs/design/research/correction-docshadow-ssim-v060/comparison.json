@@ -1,0 +1,90 @@
+{
+  "threshold_source": "existing paired-truth.json thresholds.clean_ssim_min",
+  "rows": [
+    {
+      "id": "mixed",
+      "clean_threshold": 0.99,
+      "clean_noop_ssim": 1.0,
+      "clean_native_ssim": 0.9869078993797302,
+      "clean_512_ssim": 0.9893428683280945,
+      "shadow_noop_ssim": 0.9860053658485413,
+      "shadow_native_ssim": 0.9791242480278015,
+      "shadow_512_ssim": 0.9837680459022522,
+      "clean_native_pass": false,
+      "shadow_native_delta_vs_noop": -0.006881117820739746,
+      "clean_512_pass": false,
+      "shadow_512_delta_vs_noop": -0.0022373199462890625
+    },
+    {
+      "id": "table",
+      "clean_threshold": 0.99,
+      "clean_noop_ssim": 1.0,
+      "clean_native_ssim": 0.9740921854972839,
+      "clean_512_ssim": 0.9636573195457458,
+      "shadow_noop_ssim": 0.9859150052070618,
+      "shadow_native_ssim": 0.9698925018310547,
+      "shadow_512_ssim": 0.9583079218864441,
+      "clean_native_pass": false,
+      "shadow_native_delta_vs_noop": -0.01602250337600708,
+      "clean_512_pass": false,
+      "shadow_512_delta_vs_noop": -0.027607083320617676
+    },
+    {
+      "id": "faint_mixed",
+      "clean_threshold": 0.99,
+      "clean_noop_ssim": 1.0,
+      "clean_native_ssim": 0.9888026118278503,
+      "clean_512_ssim": 0.9940781593322754,
+      "shadow_noop_ssim": 0.9860116839408875,
+      "shadow_native_ssim": 0.9793944358825684,
+      "shadow_512_ssim": 0.9878342151641846,
+      "clean_native_pass": false,
+      "shadow_native_delta_vs_noop": -0.006617248058319092,
+      "clean_512_pass": true,
+      "shadow_512_delta_vs_noop": 0.0018225312232971191
+    },
+    {
+      "id": "faint_table",
+      "clean_threshold": 0.99,
+      "clean_noop_ssim": 1.0,
+      "clean_native_ssim": 0.9854786992073059,
+      "clean_512_ssim": 0.983262300491333,
+      "shadow_noop_ssim": 0.9859583377838135,
+      "shadow_native_ssim": 0.9775088429450989,
+      "shadow_512_ssim": 0.9765399098396301,
+      "clean_native_pass": false,
+      "shadow_native_delta_vs_noop": -0.0084494948387146,
+      "clean_512_pass": false,
+      "shadow_512_delta_vs_noop": -0.00941842794418335
+    },
+    {
+      "id": "blue",
+      "clean_threshold": 0.99,
+      "clean_noop_ssim": 1.0,
+      "clean_native_ssim": 0.8799363970756531,
+      "clean_512_ssim": 0.7612302899360657,
+      "shadow_noop_ssim": 0.9810566902160645,
+      "shadow_native_ssim": 0.8692498803138733,
+      "shadow_512_ssim": 0.7596598267555237,
+      "clean_native_pass": false,
+      "shadow_native_delta_vs_noop": -0.11180680990219116,
+      "clean_512_pass": false,
+      "shadow_512_delta_vs_noop": -0.22139686346054077
+    },
+    {
+      "id": "peach",
+      "clean_threshold": 0.99,
+      "clean_noop_ssim": 1.0,
+      "clean_native_ssim": 0.8841063380241394,
+      "clean_512_ssim": 0.7135568261146545,
+      "shadow_noop_ssim": 0.980885922908783,
+      "shadow_native_ssim": 0.8718023300170898,
+      "shadow_512_ssim": 0.6987823843955994,
+      "clean_native_pass": false,
+      "shadow_native_delta_vs_noop": -0.10908359289169312,
+      "clean_512_pass": false,
+      "shadow_512_delta_vs_noop": -0.2821035385131836
+    }
+  ],
+  "shadow_threshold": "none specified; deltas are diagnostic only"
+}

@@ -1,0 +1,326 @@
+[
+  {
+    "id": "mixed_clean_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+    "arm": "noop",
+    "source_kind": "clean",
+    "fixture": "mixed"
+  },
+  {
+    "id": "mixed_clean_native",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/mixed_clean_native.npy",
+    "input_sha256": "f893377353fd3a6e5e64a26e04898fa111fdcce1ec34c34cb249ecb9b78bdea7",
+    "arm": "native",
+    "source_kind": "clean",
+    "fixture": "mixed"
+  },
+  {
+    "id": "mixed_clean_512",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/mixed_clean_512.npy",
+    "input_sha256": "0ac09e88aade1918d2b940745d165662b8502248aebe90b9c03f8d6f406c6b99",
+    "arm": "512",
+    "source_kind": "clean",
+    "fixture": "mixed"
+  },
+  {
+    "id": "mixed_shadow_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input": "/tmp/scanner-v060-paired/shadow/mixed.png",
+    "input_sha256": "eb52cb28a0286053e031461e75ccdfb33d574e208c21505a24a28fdef281b39c",
+    "arm": "noop",
+    "source_kind": "shadow",
+    "fixture": "mixed"
+  },
+  {
+    "id": "mixed_shadow_native",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input": "/tmp/scanner-docshadow-v060/outputs/mixed_shadow_native.npy",
+    "input_sha256": "549ff881d3731c7ffbf270fefebe6990ce32ace0a359ab8f2ca830501f3b3e66",
+    "arm": "native",
+    "source_kind": "shadow",
+    "fixture": "mixed"
+  },
+  {
+    "id": "mixed_shadow_512",
+    "reference": "/tmp/scanner-v060-paired/clean/mixed.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/mixed_shadow_512.npy",
+    "input_sha256": "e38511c0fea36b7f5b306f433a0d490230211d2e64eacadf9fd50fe3d25bbd88",
+    "arm": "512",
+    "source_kind": "shadow",
+    "fixture": "mixed"
+  },
+  {
+    "id": "table_clean_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "input": "/tmp/scanner-v060-paired/clean/table.png",
+    "input_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+    "arm": "noop",
+    "source_kind": "clean",
+    "fixture": "table"
+  },
+  {
+    "id": "table_clean_native",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/table_clean_native.npy",
+    "input_sha256": "d72cbd8884e214d40f4fe17c0827f5a38018bfacc727bdb0c7b19e3a4abf9d4d",
+    "arm": "native",
+    "source_kind": "clean",
+    "fixture": "table"
+  },
+  {
+    "id": "table_clean_512",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/table_clean_512.npy",
+    "input_sha256": "aefaf428c3b601b11794efc73eab26c583d829ed01dbeda8b135da19bbb0c90f",
+    "arm": "512",
+    "source_kind": "clean",
+    "fixture": "table"
+  },
+  {
+    "id": "table_shadow_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "input": "/tmp/scanner-v060-paired/shadow/table.png",
+    "input_sha256": "fff050df4e4d6bc636e40ed9c6f51b94dc01ba3049c2756258423dae45fb76b9",
+    "arm": "noop",
+    "source_kind": "shadow",
+    "fixture": "table"
+  },
+  {
+    "id": "table_shadow_native",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/table_shadow_native.npy",
+    "input_sha256": "6039c7c66a5677c06420a64ba7a42250aef748147e42257dd6e43ae3e5cc3284",
+    "arm": "native",
+    "source_kind": "shadow",
+    "fixture": "table"
+  },
+  {
+    "id": "table_shadow_512",
+    "reference": "/tmp/scanner-v060-paired/clean/table.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/table_shadow_512.npy",
+    "input_sha256": "302755e5341792c461398192a27eb88fe72f9555f73fdc34a39218191fc2c1c4",
+    "arm": "512",
+    "source_kind": "shadow",
+    "fixture": "table"
+  },
+  {
+    "id": "faint_mixed_clean_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input_sha256": "a741c71f58f3bd88661f3b6bb33f5e5e791a1a499d93e9715827ddc90dd70e3f",
+    "arm": "noop",
+    "source_kind": "clean",
+    "fixture": "faint_mixed"
+  },
+  {
+    "id": "faint_mixed_clean_native",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_clean_native.npy",
+    "input_sha256": "c73daca0b6acd2db7bb33d99c7c5214da1881606d851be295fd9678eacce74dc",
+    "arm": "native",
+    "source_kind": "clean",
+    "fixture": "faint_mixed"
+  },
+  {
+    "id": "faint_mixed_clean_512",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_mixed_clean_512.npy",
+    "input_sha256": "e966323f5867f67f5f242f6e3eb695141c18053bd71368b1457b5e790ebb050a",
+    "arm": "512",
+    "source_kind": "clean",
+    "fixture": "faint_mixed"
+  },
+  {
+    "id": "faint_mixed_shadow_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_mixed.png",
+    "input_sha256": "662be00583a7b98d0fea4c179d5b5b9f83e9df2c3a9f0d1033a13318166a40aa",
+    "arm": "noop",
+    "source_kind": "shadow",
+    "fixture": "faint_mixed"
+  },
+  {
+    "id": "faint_mixed_shadow_native",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_mixed_shadow_native.npy",
+    "input_sha256": "ca813ab1276be9751c3ba69839f1eb42d8b9238f96210226c4964655d639782b",
+    "arm": "native",
+    "source_kind": "shadow",
+    "fixture": "faint_mixed"
+  },
+  {
+    "id": "faint_mixed_shadow_512",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_mixed.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_mixed_shadow_512.npy",
+    "input_sha256": "e34cc53db41d9e0273f8a686c3fc5512e67cdbc4a8b7fff77ab8206532a23b46",
+    "arm": "512",
+    "source_kind": "shadow",
+    "fixture": "faint_mixed"
+  },
+  {
+    "id": "faint_table_clean_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input_sha256": "442fd7bda172b72958bd8f9a6ef18e6c79c0bc67f505a986c9d8fc8e910533b9",
+    "arm": "noop",
+    "source_kind": "clean",
+    "fixture": "faint_table"
+  },
+  {
+    "id": "faint_table_clean_native",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_table_clean_native.npy",
+    "input_sha256": "c53a6bbaa3940161ebbf4b3705344a5fe55cbe0e54e096f6ed9a627236a02f5e",
+    "arm": "native",
+    "source_kind": "clean",
+    "fixture": "faint_table"
+  },
+  {
+    "id": "faint_table_clean_512",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_table_clean_512.npy",
+    "input_sha256": "29fea4d85db83e5eacf3e725a28434a057704970d3084d131cdfb7443d8533d3",
+    "arm": "512",
+    "source_kind": "clean",
+    "fixture": "faint_table"
+  },
+  {
+    "id": "faint_table_shadow_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input": "/tmp/scanner-v060-paired/shadow/faint_table.png",
+    "input_sha256": "aa6137bdcf52b304a1507577d3af6fbdd3e909bf8f4635f8ebae4c717d9814cb",
+    "arm": "noop",
+    "source_kind": "shadow",
+    "fixture": "faint_table"
+  },
+  {
+    "id": "faint_table_shadow_native",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/faint_table_shadow_native.npy",
+    "input_sha256": "6df2f797a93cd52b024cb7d467e23bb367c1e99d6dc399f3f0964f1a15d09bc4",
+    "arm": "native",
+    "source_kind": "shadow",
+    "fixture": "faint_table"
+  },
+  {
+    "id": "faint_table_shadow_512",
+    "reference": "/tmp/scanner-v060-paired/clean/faint_table.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/faint_table_shadow_512.npy",
+    "input_sha256": "c55704abe2ee6f98552d16e98f30735e3e85b34959992544a6a37fd5dd161323",
+    "arm": "512",
+    "source_kind": "shadow",
+    "fixture": "faint_table"
+  },
+  {
+    "id": "blue_clean_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input_sha256": "e7ea007f5d69c82bf185b3ecc3e47d127189356ca9046036c6961bc280687ea4",
+    "arm": "noop",
+    "source_kind": "clean",
+    "fixture": "blue"
+  },
+  {
+    "id": "blue_clean_native",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/blue_clean_native.npy",
+    "input_sha256": "d82629fd5cf1bd6481b54f810c8a930fb7551690421d8bb6be0ffc27aa6c68cd",
+    "arm": "native",
+    "source_kind": "clean",
+    "fixture": "blue"
+  },
+  {
+    "id": "blue_clean_512",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/blue_clean_512.npy",
+    "input_sha256": "9313f58c2112b734a1293796c319a84c520385231573f54b5dd63ea9d151f5dc",
+    "arm": "512",
+    "source_kind": "clean",
+    "fixture": "blue"
+  },
+  {
+    "id": "blue_shadow_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input": "/tmp/scanner-v060-paired/shadow/blue.png",
+    "input_sha256": "edbf20fd95b41eb57e1a71513c6c5998fbd8145039f2a493516eb4b036565c57",
+    "arm": "noop",
+    "source_kind": "shadow",
+    "fixture": "blue"
+  },
+  {
+    "id": "blue_shadow_native",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/blue_shadow_native.npy",
+    "input_sha256": "2c14bc5bc0ac2112cbad82b495eadeab31969b4f53be678d7404a14e440e145b",
+    "arm": "native",
+    "source_kind": "shadow",
+    "fixture": "blue"
+  },
+  {
+    "id": "blue_shadow_512",
+    "reference": "/tmp/scanner-v060-paired/clean/blue.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/blue_shadow_512.npy",
+    "input_sha256": "c4ed697b6a1f2159ee1e74251892c5f09e04021ed4fc087ac10c511c55c2c904",
+    "arm": "512",
+    "source_kind": "shadow",
+    "fixture": "blue"
+  },
+  {
+    "id": "peach_clean_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input_sha256": "f192c56c7eae4f3d860c7a99189b2e71b11bbd1daba4c4c10af7fe4bc66bf34b",
+    "arm": "noop",
+    "source_kind": "clean",
+    "fixture": "peach"
+  },
+  {
+    "id": "peach_clean_native",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/peach_clean_native.npy",
+    "input_sha256": "8660616680f8323bd96684a8b0e223cbe58c26e7a164cafe40613c6364c13899",
+    "arm": "native",
+    "source_kind": "clean",
+    "fixture": "peach"
+  },
+  {
+    "id": "peach_clean_512",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/peach_clean_512.npy",
+    "input_sha256": "085e684135c71d29dd4137b14f0272c265c41994c70c48f19ad70fbbcb46106f",
+    "arm": "512",
+    "source_kind": "clean",
+    "fixture": "peach"
+  },
+  {
+    "id": "peach_shadow_noop",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input": "/tmp/scanner-v060-paired/shadow/peach.png",
+    "input_sha256": "bd25be90be4ba1181250b4c3b70c23ee549fa232ef9507c4bff83fddf71f9aed",
+    "arm": "noop",
+    "source_kind": "shadow",
+    "fixture": "peach"
+  },
+  {
+    "id": "peach_shadow_native",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input": "/tmp/scanner-docshadow-native-v060/outputs/peach_shadow_native.npy",
+    "input_sha256": "81a104fea4e2fd4acb0de5f8621afc971766bfa7836a66a7c13b1230e5682adc",
+    "arm": "native",
+    "source_kind": "shadow",
+    "fixture": "peach"
+  },
+  {
+    "id": "peach_shadow_512",
+    "reference": "/tmp/scanner-v060-paired/clean/peach.png",
+    "input": "/tmp/scanner-docshadow-ssim-v060/resized/peach_shadow_512.npy",
+    "input_sha256": "1022dd657144c504b19114026487e76eac39221b45f13b6a98bdc6895b62445d",
+    "arm": "512",
+    "source_kind": "shadow",
+    "fixture": "peach"
+  }
+]

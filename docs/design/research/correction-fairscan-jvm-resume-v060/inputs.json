@@ -1,0 +1,59 @@
+{
+  "fixtures": [
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "image_alias_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "image_alias": "PNG original bytes named jpg; OpenCV magic decoding; no recompression",
+      "diagnostic_raw_mask_sha256": "bd25809294a6aaf29f47fbfc774c21e6f929ec374235b4f910e7ccfefba47384",
+      "mask_png_sha256": "e9fb2f6cce567a970db220fa450f3fc2673380797439631b672e48c40a324924",
+      "mask_scope": "existing Pillow-normalized LiteRT diagnostic, official quantization clip/round only; not official full preprocessing parity"
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "image_alias_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "image_alias": "PNG original bytes named jpg; OpenCV magic decoding; no recompression",
+      "diagnostic_raw_mask_sha256": "a40db3353db3b74d345cccac750cebd68b8be8e62fc320a55b2f1136c99534db",
+      "mask_png_sha256": "9f3fefb2f9953dd64b612016da54ef104f446533a9eb8f141903c8d710be3116",
+      "mask_scope": "existing Pillow-normalized LiteRT diagnostic, official quantization clip/round only; not official full preprocessing parity"
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "image_alias_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "image_alias": "PNG original bytes named jpg; OpenCV magic decoding; no recompression",
+      "diagnostic_raw_mask_sha256": "63de9de39e3b44c9c8f7f18989de6b30685d61907192df96bc91f790b74a3185",
+      "mask_png_sha256": "d061e9c23c6bd330e5cc93a1475654efd20252e2e07099be253f96a50c5b84fe",
+      "mask_scope": "existing Pillow-normalized LiteRT diagnostic, official quantization clip/round only; not official full preprocessing parity"
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "image_alias_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "image_alias": "PNG original bytes named jpg; OpenCV magic decoding; no recompression",
+      "diagnostic_raw_mask_sha256": "de5aa8c3a37aa964e3716023ca0866daabdc594f5b47e6ee9deda5c6a918cf07",
+      "mask_png_sha256": "c10b1dc29a937f67dc35bf7fac834bd564177951819bfc31b1ee2224df5e9581",
+      "mask_scope": "existing Pillow-normalized LiteRT diagnostic, official quantization clip/round only; not official full preprocessing parity"
+    },
+    {
+      "id": "fixture_ocr_columns_001",
+      "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "image_alias_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "image_alias": "PNG original bytes named jpg; OpenCV magic decoding; no recompression",
+      "diagnostic_raw_mask_sha256": "67be1d8a7b19f92696791f73f39ea397824c3665ddfc9a0e3c13f967fd258877",
+      "mask_png_sha256": "2c248cc0e81159c398b08cb6096cc5b46712de7335fedaa6d30447912f92777b",
+      "mask_scope": "existing Pillow-normalized LiteRT diagnostic, official quantization clip/round only; not official full preprocessing parity"
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "image_alias_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "image_alias": "PNG original bytes named jpg; OpenCV magic decoding; no recompression",
+      "diagnostic_raw_mask_sha256": "38e61545000f343a00fbdc80ca4ad04da52b4bd7a1a72fc38d4952ce475cb460",
+      "mask_png_sha256": "e329861304d31aaee9f3b34169a2b29a04727c842ba5347548d66a18be7e438b",
+      "mask_scope": "existing Pillow-normalized LiteRT diagnostic, official quantization clip/round only; not official full preprocessing parity"
+    }
+  ],
+  "scope": "official quad stage on identity-bound previously diagnostic masks; not full pipeline quality"
+}

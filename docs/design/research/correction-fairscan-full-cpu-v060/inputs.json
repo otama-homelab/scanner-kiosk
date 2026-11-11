@@ -1,0 +1,43 @@
+{
+  "source_revision": "2c5230b12f69f3cee2cc5a970013da20848d1272",
+  "official_script_sha256": "96aa83a764fe4f9dfab369672714c3f81766b517f8790e7040e5553fe753d9a2",
+  "model_sha256": "96e14d7e610dd0c27b768b228fbc553b4ec119ebe68f3a3594029a25400691d2",
+  "images": [
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "alias": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_horizontal_001.jpg",
+      "scope": "byte-preserving PNG with jpg filename; official OpenCV decodes content"
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "alias": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_mixed_001.jpg",
+      "scope": "byte-preserving PNG with jpg filename; official OpenCV decodes content"
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "alias": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_table_001.jpg",
+      "scope": "byte-preserving PNG with jpg filename; official OpenCV decodes content"
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "alias": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_vertical_001.jpg",
+      "scope": "byte-preserving PNG with jpg filename; official OpenCV decodes content"
+    },
+    {
+      "id": "fixture_ocr_columns_001",
+      "sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "alias": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_columns_001.jpg",
+      "scope": "byte-preserving PNG with jpg filename; official OpenCV decodes content"
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "alias": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/images/fixture_ocr_wrapped_001.jpg",
+      "scope": "byte-preserving PNG with jpg filename; official OpenCV decodes content"
+    }
+  ]
+}

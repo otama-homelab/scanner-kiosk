@@ -1,0 +1,48 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1",
+    "/tmp/scanner-fairscan-fullcpu.AzeA6f/venv/bin/python",
+    "-u",
+    "generate_masks.py"
+  ],
+  "cwd": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/python",
+  "exit_code": 0,
+  "stop_reason": null,
+  "elapsed_s": 3.049247666989686,
+  "peak_process_group_rss_bytes": 640225280,
+  "scope": "unchanged official tensorflow.lite.Interpreter script; full process30s bounds each forward too",
+  "masks": [
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_columns_001.png",
+      "bytes": 3496,
+      "sha256": "f6729767fe4470deb4d134964d27a69cf021f163d6200d5adc601cd57db09d8b"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_horizontal_001.png",
+      "bytes": 2001,
+      "sha256": "4f8bde6341ef672f8e90fb6c8c823c54e7dc3ef49ee35c788fb0009ae7abb72b"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_mixed_001.png",
+      "bytes": 1944,
+      "sha256": "349b06a9c1b46e69390382c3eba037e2b8a6c709910b8b230aa1a9f41db57b00"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_table_001.png",
+      "bytes": 1329,
+      "sha256": "02432cfa8c55e0f5ac23ccf2076ad6bac12b619365feb21c4998cfcd578fa13f"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_vertical_001.png",
+      "bytes": 1938,
+      "sha256": "aa60decbdfa55d1d5aab1307c4394f037cc37b73ed7833dcb76d8327066fd4ba"
+    },
+    {
+      "path": "/tmp/scanner-fairscan-fullcpu.AzeA6f/source/evaluation/dataset/masks/fixture_ocr_wrapped_001.png",
+      "bytes": 461,
+      "sha256": "3a86b75258327d919751547cb0dbc33f6a039959646f0c170a644e598c1a43bd"
+    }
+  ]
+}

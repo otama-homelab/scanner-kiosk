@@ -1,0 +1,12 @@
+Looking in links: /tmp/scanner-docshadow-ssim-v060/wheels
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/scikit_image-0.25.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (from scikit-image==0.25.2)
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/scipy-1.18.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (from scikit-image==0.25.2)
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/networkx-3.7-py3-none-any.whl (from scikit-image==0.25.2)
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/pillow-13.0.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (from scikit-image==0.25.2)
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/imageio-2.38.1-py3-none-any.whl (from scikit-image==0.25.2)
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/tifffile-2026.11.8-py3-none-any.whl (from scikit-image==0.25.2)
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/packaging-26.3-py3-none-any.whl (from scikit-image==0.25.2)
+Processing /tmp/scanner-docshadow-ssim-v060/wheels/lazy_loader-0.6-py3-none-any.whl (from scikit-image==0.25.2)
+Installing collected packages: pillow, packaging, numpy, networkx, tifffile, scipy, lazy-loader, imageio, scikit-image
+Successfully installed imageio-2.38.1 lazy-loader-0.6 networkx-3.7 numpy-2.5.4 packaging-26.3 pillow-13.0.0 scikit-image-0.25.2 scipy-1.18.1 tifffile-2026.11.8

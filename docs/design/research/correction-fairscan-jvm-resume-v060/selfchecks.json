@@ -1,0 +1,9 @@
+{
+  "official_compile_exit_zero": true,
+  "official_evaluation_exit_zero": true,
+  "six_processed": true,
+  "six_mask_identities_match_prior_diagnostics": true,
+  "twelve_output_images_one_html": true,
+  "original_272_source_bytes_unchanged": true,
+  "no_new_inference": true
+}
