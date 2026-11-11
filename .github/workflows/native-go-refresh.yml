@@ -16,7 +16,7 @@ jobs:
       - name: Rebuild with locked official SDK and retain the measured helper
         run: |
           test "$(git rev-parse HEAD)" = 537255dc21d4e2c0ea196b2cb3da125984414332
-          bash scripts/build-native.sh "$RUNNER_TEMP/native"
+          python3 scripts/build-native.py --output-dir "$RUNNER_TEMP/native"
       - name: Retain measurement even when old runtime hash rejects the new helper
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
