@@ -18,7 +18,7 @@ files = sorted([*root.glob('cmd/**/*.go'), *root.glob('internal/**/*.go'), *root
 def hashes():
     return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
 before = hashes()
-env = dict(os.environ, GOTOOLCHAIN='go1.27.3', SCANNER_TEST_SANE_BINARY=str(Path(args.binary).resolve()), SCANNER_TEST_SANE_LIBRARY_DIRS=':'.join(str(Path(p).resolve()) for p in args.library_dir))
+env = dict(os.environ, GOTOOLCHAIN='go1.27.4', SCANNER_TEST_SANE_BINARY=str(Path(args.binary).resolve()), SCANNER_TEST_SANE_LIBRARY_DIRS=':'.join(str(Path(p).resolve()) for p in args.library_dir))
 run = subprocess.run(['go','test','-race','-count=1','-json','./internal/scanner/...','./internal/scannerdriver','./internal/scanjob'],cwd=root,env=env,capture_output=True,text=True,timeout=120)
 events = [json.loads(line) for line in run.stdout.splitlines() if line.startswith('{')]
 if run.returncode or any(e['Action']=='fail' or (e['Action']=='skip' and 'Test' in e) for e in events):

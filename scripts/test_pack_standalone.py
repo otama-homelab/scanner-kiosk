@@ -91,7 +91,7 @@ class StandalonePackageTests(unittest.TestCase):
         repo = Path(__file__).resolve().parents[1]
         for source in (repo/'cmd/scanner-standalone').glob('*.go'):
             shutil.copyfile(source, self.destination/source.name)
-        (self.destination/'go.mod').write_text('module scanner-standalone-check\n\ngo 1.27.3\n')
+        (self.destination/'go.mod').write_text('module scanner-standalone-check\n\ngo 1.27.4\n')
         result = subprocess.run(['go', 'test', '-race', '-count=1', '-tags', 'bundled', './...'],
                                 cwd=self.destination, capture_output=True, text=True, timeout=120,
                                 env=dict(os.environ, GOWORK='off'))

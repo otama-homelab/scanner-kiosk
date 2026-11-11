@@ -44,8 +44,8 @@ func main() {
 }
 
 func collect() error {
-	if len(os.Args) != 2 || runtime.Version() != "go1.27.3" {
-		return fmt.Errorf("usage: Go 1.27.3 go run scripts/collect-go-notices.go OUTPUT_DIRECTORY")
+	if len(os.Args) != 2 || runtime.Version() != "go1.27.4" {
+		return fmt.Errorf("usage: Go 1.27.4 go run scripts/collect-go-notices.go OUTPUT_DIRECTORY")
 	}
 	destination, err := filepath.Abs(os.Args[1])
 	if err != nil {

@@ -15,7 +15,7 @@ root=Path(__file__).resolve().parents[1]
 files=sorted([*root.glob('cmd/**/*.go'),*root.glob('internal/**/*.go'),*root.glob('internal/**/*.sql'),*root.glob('pkg/**/*.go'),root/'go.mod',root/'go.sum',root/'api/openapi.json',Path(__file__).resolve()])
 def hashes():return {str(p.relative_to(root)):hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
 before=hashes()
-run=subprocess.run(['go','test','-race','-count=1','-json','./internal/websession','./internal/oidcattempt','./internal/oidcprovider','./internal/simpleauth','./internal/useradmin','./internal/storage'],cwd=root,env=dict(os.environ,GOTOOLCHAIN='go1.27.3'),capture_output=True,text=True,timeout=120)
+run=subprocess.run(['go','test','-race','-count=1','-json','./internal/websession','./internal/oidcattempt','./internal/oidcprovider','./internal/simpleauth','./internal/useradmin','./internal/storage'],cwd=root,env=dict(os.environ,GOTOOLCHAIN='go1.27.4'),capture_output=True,text=True,timeout=120)
 events=[json.loads(line) for line in run.stdout.splitlines() if line.startswith('{')]
 if run.returncode or any(e['Action'] in ['fail','skip'] for e in events):raise RuntimeError(run.stdout+run.stderr)
 passed=[e['Test'] for e in events if e['Action']=='pass' and 'Test' in e]

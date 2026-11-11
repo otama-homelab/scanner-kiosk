@@ -79,7 +79,7 @@ class ApplicationPipelineTests(unittest.TestCase):
             goroot=root/'go';(goroot/'bin').mkdir(parents=True);calls=root/'calls.jsonl';out=root/'output'
             def executable(path,text):path.write_text('#!/bin/sh\n'+text);path.chmod(0o755)
             executable(tools/'go','test "${GOROOT:-}" != /wrong-go || exit 18\nprintf "%s\\n" "$FIXTURE_GO"\n')
-            executable(goroot/'bin/go','printf "go version go1.27.3 linux/amd64\\n"\n')
+            executable(goroot/'bin/go','printf "go version go1.27.4 linux/amd64\\n"\n')
             executable(tools/'node','printf "%s\\n" "$FIXTURE_NODE"\n')
             executable(node/'bin/node','exit 0\n')
             executable(tools/'git','''case "$1" in

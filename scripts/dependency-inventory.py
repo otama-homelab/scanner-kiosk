@@ -27,7 +27,7 @@ sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
 inputs = ['go.mod','go.sum','web/package.json','web/package-lock.json']
 before = {name:sha(root/name) for name in inputs}
 receipt = {'passed':False,'started_at':datetime.now(timezone.utc).isoformat(),'source_sha256':before,'script_sha256':sha(Path(__file__)),'runtime_sbom_sha256':sha(args.runtime_sbom),'scope':'declared lockfile dependencies, including optional foreign-platform packages; verified runtime Go module notice files, not installed build image inventory or legal approval'}
-env = dict(os.environ,GOTOOLCHAIN='go1.27.3',SYFT_CHECK_FOR_APP_UPDATE='false')
+env = dict(os.environ,GOTOOLCHAIN='go1.27.4',SYFT_CHECK_FOR_APP_UPDATE='false')
 def run(command, cwd=root):
     return subprocess.run(command,cwd=cwd,env=env,capture_output=True,check=True,timeout=180).stdout
 try:
@@ -84,13 +84,13 @@ try:
                 entries.append({'source_relative_path':str(relative),'bundled_path':str(target.relative_to(args.output_dir)),'sha256':sha(target)})
             notices.append({'module':item['Path'],'version':item['Version'],'sum':item['Sum'],'go_mod_sum':item['GoModSum'],'files':entries})
         # Go runtime license evidence comes from the exact local build toolchain.
-        assert run(['go','version']).decode().split()[2]=='go1.27.3'
+        assert run(['go','version']).decode().split()[2]=='go1.27.4'
         goroot = Path(run(['go','env','GOROOT']).decode().strip())
         standard = []
         for filename in ['LICENSE','PATENTS']:
             file = goroot/filename
             if file.is_file():
-                target = args.output_dir/'go-notices'/'stdlib-go1.27.3'/filename
+                target = args.output_dir/'go-notices'/'stdlib-go1.27.4'/filename
                 target.parent.mkdir(parents=True,exist_ok=True)
                 shutil.copyfile(file,target)
                 standard.append({'bundled_path':str(target.relative_to(args.output_dir)),'sha256':sha(target)})

@@ -22,7 +22,7 @@ class StageCandidateTest(unittest.TestCase):
         self.output = self.root/'staged'
         self.source = 'a'*40
         self.version = {'version': '0.0.0-dev', 'revision': 'unreleased',
-                        'os': 'linux', 'architecture': 'amd64', 'go_version': 'go1.27.3'}
+                        'os': 'linux', 'architecture': 'amd64', 'go_version': 'go1.27.4'}
         self.files = {}
         for name in ['binary', 'image', 'source', 'native-source', 'base-source',
                      'license', 'notices', 'deployment', 'changelog', 'security-reports']:

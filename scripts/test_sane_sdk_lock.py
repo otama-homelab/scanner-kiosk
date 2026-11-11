@@ -36,7 +36,7 @@ class SaneSDKLockTests(unittest.TestCase):
     def test_offline_recipe_verifies_inputs_and_signatures(self):
         recipe = (ROOT / 'Dockerfile.sane-sdk').read_text()
         self.assertEqual(self.lock['platform'], 'linux/amd64')
-        self.assertRegex(self.lock['base_image'], r'^golang:1\.27\.3-alpine3\.24@sha256:[0-9a-f]{64}$')
+        self.assertRegex(self.lock['base_image'], r'^golang:1\.27\.4-alpine3\.24@sha256:[0-9a-f]{64}$')
         self.assertIn('FROM ' + self.lock['base_image'], recipe)
         for required in ['RUN --network=none',
                          'sha256sum -c /inputs/sane-sdk.SHA256SUMS',
