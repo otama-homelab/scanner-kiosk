@@ -227,7 +227,7 @@ func (s *Store) applyScan(ctx context.Context, owner string, command scanCommand
 			if purpose == "photo" {
 				// Keep the most recent committed output intent through an explicit retry
 				// of an empty photo. This query carries metadata only, never file content.
-				err = tx.QueryRowContext(ctx, `SELECT COALESCE(json_extract(configuration_json,'$.settings.format'),json_extract(configuration_json,'$.photo_format')) FROM jobs WHERE document_id=? AND owner_id=? AND kind IN ('scan','render') AND COALESCE(json_extract(configuration_json,'$.settings.format'),json_extract(configuration_json,'$.photo_format')) IN ('jpeg','png') ORDER BY input_revision DESC LIMIT 1`, documentID, owner).Scan(&photoFormat)
+				err = tx.QueryRowContext(ctx, `SELECT COALESCE(json_extract(configuration_json,'$.settings.format'),json_extract(configuration_json,'$.photo_format')) FROM jobs WHERE document_id=? AND owner_id=? AND kind IN ('scan','render','import') AND COALESCE(json_extract(configuration_json,'$.settings.format'),json_extract(configuration_json,'$.photo_format')) IN ('jpeg','png') ORDER BY input_revision DESC LIMIT 1`, documentID, owner).Scan(&photoFormat)
 				if errors.Is(err, sql.ErrNoRows) {
 					photoFormat = "jpeg"
 				} else if err != nil {

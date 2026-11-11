@@ -61,6 +61,49 @@ const {reveal}=require('./web-controls.cjs');
   if(process.env.SCANNER_TEST_IMPORT_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_IMPORT_SCREENSHOT,fullPage:true});
   await page.selectOption('#locale','ja');await page.getByRole('link',{name:'PDFページを開く',exact:true}).waitFor();
   checks.push('PDF page uses isolated new-tab browser link without fake raster; mixed review navigation and bilingual mobile widths work');
+  await page.selectOption('#locale','en');
+  const imagePosts=[],reconciles=[],image=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Wl6l2kAAAAASUVORK5CYII=','base64');let imageUncertain=false;
+  const imageDoc={id:doc,revision:1,purpose:'document',photo_format:undefined,state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:new Date(Date.now()+3600000).toISOString(),pages:[{id:scan,source_type:'photo',rotation:0,capture:null}]};
+  await page.route('**/api/documents/'+doc,r=>reply(r,imageDoc));
+  await page.route('**/api/documents/import',r=>{imagePosts.push({headers:r.request().headers(),body:r.request().postDataBuffer()});if(imageUncertain)return r.abort('failed');return reply(r,job,202)});
+  await page.route('**/api/documents/import/reconcile',r=>{reconciles.push({headers:r.request().headers(),body:r.request().postDataJSON()});return reply(r,job,202)});
+  const imageHome=async()=>{await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.getByText('Choose a JPEG or PNG to review and save as a document.',{exact:true}).waitFor();};
+  for(const [purpose,format] of [['document',undefined],['photo','jpeg'],['photo','png']]){
+   await imageHome();const controls=page.locator('.photo-import');
+   assert.equal(await controls.getByRole('button',{name:'Document',exact:true}).getAttribute('aria-pressed'),'true');
+   assert.equal(await controls.getByText('PDF',{exact:true}).count(),1);
+   await controls.getByRole('button',{name:'Photo',exact:true}).click();
+   assert.equal(await controls.getByLabel('Output format',{exact:true}).inputValue(),'jpeg');
+   if(purpose==='photo'){await controls.getByLabel('Output format',{exact:true}).selectOption(format);await controls.getByText('Choose a JPEG or PNG to review and save as a photo.',{exact:true}).waitFor()}
+   else{await controls.getByRole('button',{name:'Document',exact:true}).click();assert.equal(await controls.getByRole('combobox').count(),0)}
+   imageDoc.purpose=purpose;imageDoc.photo_format=format;job.state='succeeded';
+   await controls.locator('input[data-photo-picker]').setInputFiles({name:'chosen.png',mimeType:'image/png',buffer:image});await page.locator('h1[data-document-title]').waitFor();
+   const posted=imagePosts.at(-1);assert.equal(posted.headers['x-document-purpose'],purpose==='photo'?'photo':undefined);assert.equal(posted.headers['x-photo-format'],format);assert.deepEqual(posted.body,image);
+   assert.equal(await page.getByRole('button',{name:purpose==='photo'?'Save image':'Save PDF',exact:true}).count(),1);
+  }
+  checks.push('Image import chooses Document/PDF or Photo/JPEG/PNG before picking, and opens the matching editor');
+  await imageHome();const controls=page.locator('.photo-import');await controls.getByRole('button',{name:'Photo',exact:true}).click();await controls.getByLabel('Output format',{exact:true}).selectOption('png');imageUncertain=true;
+  await controls.locator('input[data-photo-picker]').setInputFiles({name:'uncertain.png',mimeType:'image/png',buffer:image});await controls.getByRole('button',{name:'Check import request',exact:true}).waitFor();
+  for(const name of ['Document','Photo','Camera','Photos / Files'])assert(await controls.getByRole('button',{name,exact:true}).isDisabled());assert(await controls.getByLabel('Output format',{exact:true}).isDisabled());
+  const frozen=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('scanner.photo.import')));assert.equal(frozen.purpose,'photo');assert.equal(frozen.photo_format,'png');
+  await page.reload();await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).waitFor();assert.equal(await page.locator('.photo-import').getByRole('button',{name:'Photo',exact:true}).getAttribute('aria-pressed'),'true');assert.equal(await page.locator('#photo-import-format').inputValue(),'png');
+  imageUncertain=false;imageDoc.purpose='photo';imageDoc.photo_format='png';await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).click();await page.locator('h1[data-document-title]').waitFor();
+  assert.deepEqual(reconciles.at(-1).body,{sha256:frozen.sha256,input_bytes:frozen.input_bytes,media_type:frozen.media_type,purpose:'photo',photo_format:'png'});assert.equal(reconciles.at(-1).headers['idempotency-key'],frozen.key);
+  checks.push('Uncertain image intent locks purpose/format and restores the exact Photo/PNG intent across reload/reconciliation');
+  const legacy={key:'rq1_0000000000000_00000000000000000000000000000000',sha256:'1'.repeat(64),input_bytes:123,media_type:'image/png',phase:'uncertain'};
+  await page.evaluate(value=>sessionStorage.setItem('scanner.photo.import',JSON.stringify(value)),legacy);await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).waitFor();
+  assert.equal(await page.locator('.photo-import').getByRole('button',{name:'Document',exact:true}).getAttribute('aria-pressed'),'true');imageDoc.purpose='document';imageDoc.photo_format=undefined;
+  await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).click();await page.locator('h1[data-document-title]').waitFor();assert.deepEqual(reconciles.at(-1).body,{sha256:legacy.sha256,input_bytes:123,media_type:'image/png'});
+  for(const invalid of [{purpose:'photo',photo_format:'pdf'},{purpose:'document',photo_format:'png'},{photo_format:'png'}]){
+   await page.evaluate(value=>sessionStorage.setItem('scanner.photo.import',JSON.stringify(value)),{...legacy,...invalid});await imageHome();assert(await page.locator('.photo-import').getByRole('button',{name:'Photos / Files',exact:true}).isEnabled());assert.equal(await page.getByRole('button',{name:'Check import request',exact:true}).count(),0);
+  }
+  await page.evaluate(()=>sessionStorage.removeItem('scanner.photo.import'));checks.push('Legacy image receipt remains Document without new identity fields; malformed purpose/format receipts cannot replay');
+  await imageHome();
+  for(const [locale,purpose,formatLabel] of [['en','Photo','Output format'],['ja','写真','保存形式']])for(const width of [320,390,768,1440]){
+   await page.setViewportSize({width,height:844});await page.selectOption('#locale',locale);const section=page.locator('.photo-import');await section.getByRole('button',{name:purpose,exact:true}).click();const selected=section.getByLabel(formatLabel,{exact:true});await selected.selectOption('png');await selected.focus();assert(await selected.evaluate(e=>e===document.activeElement));assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+   for(const b of await section.getByRole('button').all())if(await b.isVisible()){const box=await b.boundingBox();assert(box.height>=44)}
+  }
+  checks.push('Bilingual import purpose/format controls keep keyboard focus and44px touch targets without horizontal overflow');
   assert.deepEqual(errors,[]);process.stdout.write(JSON.stringify({passed:true,checks}));
  }finally{await context.close();await browser.close();}
 })().catch(e=>{console.error(e.stack||e.message);process.exit(1)});

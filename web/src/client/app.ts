@@ -8,7 +8,7 @@ import {passwordLogin} from './login';
 import {captureControls} from './capture';
 import {correctionControl,photoCorrectionControl} from './correction';
 import {importControls} from './import';
-import {photoImportControls} from './photo-import';
+import {photoImportControls,type PhotoImportIntent} from './photo-import';
 import {deliveryControl} from './delivery';
 import {messages,type Key} from './messages';
 let locale:'en'|'ja'='en';try{if(localStorage.getItem('scanner.locale')==='ja')locale='ja'}catch{}
@@ -117,9 +117,9 @@ function mountCapture(view:number,doc?:any,placement?:{insert_before_page_id?:st
 
 function mountImport(view:number,file?:File){const controls=importControls({t,current:()=>view===generation,load:signal=>api('/api/scanners','GET',undefined,undefined,undefined,signal),send:(file,key,sha,signal)=>responseDataFromUpload(file,key,sha,signal),accepted:job=>navigate('#/job/'+job.id),history:()=>navigate('#/history'),reload:()=>void render(),classify:err=>err instanceof APIError&&err.status===410?'expired':err instanceof APIError&&err.status>=400&&err.status<500&&![401,404].includes(err.status)?'rejected':'uncertain'});main.append(controls.element);disposeImport=controls.dispose;void controls.start(file)}
 
-function mountPhotoImport(view:number){const controls=photoImportControls({t,current:()=>view===generation,load:signal=>api('/api/scanners','GET',undefined,undefined,undefined,signal),send:(file,key,sha,signal)=>responseDataFromUpload(file,key,sha,signal),reconcile:({key,phase,...identity},signal)=>api('/api/documents/import/reconcile','POST',identity,key,undefined,signal),accepted:job=>navigate('#/job/'+job.id),classify:err=>err instanceof APIError&&[404,410].includes(err.status)?'expired':err instanceof APIError&&err.status>=400&&err.status<500&&err.status!==401?'rejected':'uncertain'});main.append(controls.element);disposePhotoImport=controls.dispose;void controls.start()}
+function mountPhotoImport(view:number){const controls=photoImportControls({t,current:()=>view===generation,load:signal=>api('/api/scanners','GET',undefined,undefined,undefined,signal),send:responseDataFromUpload,reconcile:({key,phase,...identity},signal)=>api('/api/documents/import/reconcile','POST',identity,key,undefined,signal),accepted:job=>navigate('#/job/'+job.id),classify:err=>err instanceof APIError&&[404,410].includes(err.status)?'expired':err instanceof APIError&&err.status>=400&&err.status<500&&err.status!==401?'rejected':'uncertain'});main.append(controls.element);disposePhotoImport=controls.dispose;void controls.start()}
 
-async function responseDataFromUpload(file:File,key:string,sha:string,signal:AbortSignal){return responseData(await fetch('/api/documents/import',{method:'POST',headers:{'Content-Type':file.type==='image/jpeg'||file.type==='image/png'?file.type:'application/pdf','Idempotency-Key':key,'X-Content-SHA256':sha},body:file,credentials:'same-origin',cache:'no-store',redirect:'error',signal}))}
+async function responseDataFromUpload(file:File,key:string,sha:string,signal:AbortSignal,intent?:PhotoImportIntent){return responseData(await fetch('/api/documents/import',{method:'POST',headers:{'Content-Type':file.type==='image/jpeg'||file.type==='image/png'?file.type:'application/pdf','Idempotency-Key':key,'X-Content-SHA256':sha,...intent?{'X-Document-Purpose':intent.purpose,'X-Photo-Format':intent.photo_format}:{}},body:file,credentials:'same-origin',cache:'no-store',redirect:'error',signal}))}
 
 function documentDeleteButton(doc:any,label:'deleteDocument'|'deletePhoto'|'deletePage'='deleteDocument'){
  if(!opaque(doc.id)||!Number.isSafeInteger(doc.revision)||doc.revision<1)throw new Error('Invalid document');
