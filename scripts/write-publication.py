@@ -35,7 +35,11 @@ def command(args, env, input_data=None, timeout=60, allow_failure=False):
     if allow_failure:
         return result
     if result.returncode:
-        raise RuntimeError(args[0]+' command failed with exit '+str(result.returncode))
+        detail = result.stderr.decode(errors='replace')
+        if env.get('GH_TOKEN'):
+            detail = detail.replace(env['GH_TOKEN'], '[redacted]')
+        detail = re.sub(r'https?://\S+', '[URL omitted]', detail)[:2048]
+        raise RuntimeError(' '.join(args[:2])+' failed with exit '+str(result.returncode)+': '+detail)
     return result.stdout
 
 
@@ -338,8 +342,9 @@ def main():
     args = parser.parse_args()
     try:
         result = publish(args.candidate, args.plan, args.plan_sha256, args.ref, args.sha, args.event, apply=args.apply)
-    except (ValueError, OSError, KeyError, TypeError, RuntimeError, subprocess.SubprocessError):
-        parser.exit(1, 'publication stopped; inspect any reserved draft/version before retrying; never overwrite it\n')
+    except (ValueError, OSError, KeyError, TypeError, RuntimeError, subprocess.SubprocessError) as error:
+        detail = str(error) if isinstance(error, RuntimeError) else type(error).__name__
+        parser.exit(1, 'publication stopped ('+detail+'); inspect any reserved draft/version before retrying; never overwrite it\n')
     print(json.dumps(result, sort_keys=True))
 
 
