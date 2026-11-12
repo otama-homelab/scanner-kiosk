@@ -292,7 +292,7 @@
       "id": "ACCEPT-01",
       "status": "waiting_external_owner_operation",
       "complete": false,
-      "evidence_scope": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass.",
+      "evidence_scope": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass. v0.2.20 separates scanner/image-camera paths with shared save settings and verified live assets; no new owner per-device observation supplied.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -310,6 +310,11 @@
           "path": "docs/design/research/scanner-source-actions-v0214/release.json",
           "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c",
           "revision": "2026-11-12-v0214-owner-checkpoint"
+        },
+        {
+          "path": "docs/design/research/scanner-acquisition-groups-v0220/release.json",
+          "sha256": "8d3d8b9149963f9024376da6eaca347a3d21cb30ffb7c0ba8d65208e619b6698",
+          "revision": "92f3f6b42352df42ebaede342cfc788828e4c7dd"
         }
       ]
     },
@@ -769,15 +774,15 @@
   "owner_operation_ui_unblock": {
     "summary": "../photo-import-purpose-v027/summary.json",
     "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
-    "status": "v0219-ocr-crop-ux-deployed-owner-validation-pending",
+    "status": "v0220-acquisition-groups-deployed-owner-validation-pending",
     "owner_acceptance_complete": false,
     "historical_status": "local-verification-passed-deployment-approval-pending",
     "production_evidence": {
-      "path": "../scanner-ocr-crop-v0219/release.json",
-      "sha256": "6c7ca4f5a9b2b5cc914e826008e3ed3e6241d90a8e8cff240e610cbdfb8e8a9a",
-      "version": "v0.2.19"
+      "path": "../scanner-acquisition-groups-v0220/release.json",
+      "sha256": "8d3d8b9149963f9024376da6eaca347a3d21cb30ffb7c0ba8d65208e619b6698",
+      "version": "v0.2.20"
     },
-    "updated_at": "2026-11-12T03:52:16.489926+00:00",
+    "updated_at": "2026-11-12T10:24:18.716954+00:00",
     "owner_import_observation": {
       "path": "../photo-import-purpose-v027/owner-import-observation.json",
       "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c"
@@ -797,10 +802,15 @@
         "path": "../scanner-shared-intake-v0216/release.json",
         "sha256": "27e4d22fea950c72f425502fd130b87b59785fb63e5d92408365940cfbd8aec2",
         "version": "v0.2.16"
+      },
+      {
+        "path": "../scanner-ocr-crop-v0219/release.json",
+        "sha256": "6c7ca4f5a9b2b5cc914e826008e3ed3e6241d90a8e8cff240e610cbdfb8e8a9a",
+        "version": "v0.2.19"
       }
     ]
   },
-  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized OCR UX/direct manual crop UI v0.2.19 and existing LLM OCR configuration repair are published/deployed without new correction-model adoption or owner-device acceptance.",
+  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized acquisition-grouping UI v0.2.20 is published/deployed; v0.2.19 OCR/crop and LLM repairs are retained. No new correction-model qualification or owner-device acceptance.",
   "current_fsenet_existing_line_contract": {
     "summary": "../correction-fsenet-existing-line-contract-v060/summary.json",
     "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07",
@@ -809,11 +819,11 @@
     "new_model_inferences": 0
   },
   "current_requirements_reconciliation": {
-    "summary": "../correction-v0214-goal-reconciliation/summary.json",
-    "sha256": "e77e22b8c9ae1ed7300dee44f239767c085136190788eaab24fb5a89a75fc9b8",
+    "summary": "../correction-v0220-goal-reconciliation/summary.json",
+    "sha256": "3e609442e9651c5bfdfd0ff88999306b5c19125af2008d378d50bcfc3109c3c7",
     "complete": 7,
     "total": 14,
-    "scope": "Current14 requirement evidence and v0.2.14 release/partial owner evidence; no full owner or model qualification."
+    "scope": "Original14 requirement dispositions, current deployed acquisition UX and38 verified evidence references; no inferred owner/model qualification."
   },
   "historical_requirements_reconciliation_before_v0214": {
     "summary": "../correction-current-reconciliation-v060/summary.json",
@@ -821,5 +831,12 @@
     "complete": 7,
     "total": 14,
     "scope": "Referenced-file integrity and current dispositions only; not new owner/model qualification."
+  },
+  "historical_requirements_reconciliation_before_v0220": {
+    "summary": "../correction-v0214-goal-reconciliation/summary.json",
+    "sha256": "e77e22b8c9ae1ed7300dee44f239767c085136190788eaab24fb5a89a75fc9b8",
+    "complete": 7,
+    "total": 14,
+    "scope": "Current14 requirement evidence and v0.2.14 release/partial owner evidence; no full owner or model qualification."
   }
 }

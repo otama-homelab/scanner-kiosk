@@ -1,0 +1,157 @@
+{
+  "version": "v0.2.20",
+  "source_sha": "92f3f6b42352df42ebaede342cfc788828e4c7dd",
+  "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.20",
+  "ci_run_id": 43192632058,
+  "required_checks_attempt": 2,
+  "publisher_attempt": 3,
+  "first_attempt_failure_scope": "Dependency mirror TCP timeout before application tests; raw failure retained. Full unchanged-source retry passed.",
+  "manifest_sha256": "9c1d7eebca6063c6c944e95ace19bea7ec2b052fd4aa10f485345f8cb222b844",
+  "approval_sha256": "7ef1d0012a4fb02284710f7d304a990c42858c9c49a31c00c484e88d950f3125",
+  "changes": [
+    "Shared Save as settings for scan and image/camera intent",
+    "Scanner block owns device selection, scan settings and Scan",
+    "Separate Images/camera block owns Import and Take a photo",
+    "Empty scanner-specific fields hidden without a device; enabled scanner primary action remains within phone viewport"
+  ],
+  "local_full_browser_proof_sha256": "136bf944fd0947cfa92ad1f924d5c2c3126d064fc3c2c1d5375c83e8a87e0eef",
+  "rendered_home_ja_390_sha256": "18a85ad89f4acb02eaf9fd278daa46872bfc94ab1c148c2c758ae87234ac4582",
+  "actual_image_ocr_pdf_proof_sha256": "c3f012668154725cd6ba0d99e16d26d255d64077fabb063a672b71ef358a5ae9",
+  "public_assets_verified": 48,
+  "images": {
+    "core": {
+      "digest": "sha256:74df5bcbd3cae67ad8f41d072dc9c5088cd4f8b736d1666dd8f800a387fc7d10",
+      "image_id": "sha256:c858b1842ab70ca8d8928bed2abcc84249e1c8a68662edba5506217a305eb709",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    },
+    "tesseract": {
+      "digest": "sha256:919f6d2080be06c0782d8ae8ec39201e48729a78e0a42e8e51dd5d21fa014391",
+      "image_id": "sha256:0c5910070d37d0aaef5933f245bc38004700b0a6d485ae852163b2cac229b79c",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    }
+  },
+  "production": {
+    "version": "v0.2.20",
+    "source_sha": "92f3f6b42352df42ebaede342cfc788828e4c7dd",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-12T10:23:11.509858+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "new_source_actions_bundle_served": true,
+    "exact_source_css_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-5fdc6dd69d-tc6vw",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:74df5bcbd3cae67ad8f41d072dc9c5088cd4f8b736d1666dd8f800a387fc7d10",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:74df5bcbd3cae67ad8f41d072dc9c5088cd4f8b736d1666dd8f800a387fc7d10"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:74df5bcbd3cae67ad8f41d072dc9c5088cd4f8b736d1666dd8f800a387fc7d10",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:74df5bcbd3cae67ad8f41d072dc9c5088cd4f8b736d1666dd8f800a387fc7d10"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-657cc6f946-x2tc2",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:919f6d2080be06c0782d8ae8ec39201e48729a78e0a42e8e51dd5d21fa014391"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:919f6d2080be06c0782d8ae8ec39201e48729a78e0a42e8e51dd5d21fa014391"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "metadata_observed_at_ms": 1794478987770,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "owner_device_uat": "pending",
+    "physical_scan_executed": false
+  },
+  "new_intake_group_assets_verified": true,
+  "llm_configuration_unchanged_from_v0219": true,
+  "llm_configuration_evidence_scope": "Retained v0.2.19 synthetic live provider protocol; current live env/catalog verified unchanged.",
+  "llm_configuration": {
+    "passed": true,
+    "actual_live_provider_protocol_passed": true,
+    "live_provider_proof_sha256": "746296a57621ef473f68d4388ba8137e30ebe224f20eba944c1ac468bba3b9e2",
+    "live_provider_seconds": 85.158512239,
+    "profile_id": "gufo-vision",
+    "request_model": "local",
+    "response_model": "Qwen3.8-Flash-Next",
+    "output_token_ceiling": 8192,
+    "containers_match": {
+      "api": true,
+      "worker": true
+    },
+    "synthetic_live_endpoint_checked": true,
+    "original_profile_rejection_and_corrected_profile_acceptance_checked": true,
+    "original_documents_transmitted": false,
+    "model_quality_qualified": false,
+    "network_scope": {
+      "egress": [
+        {
+          "ports": [
+            {
+              "port": 20128,
+              "protocol": "TCP"
+            }
+          ],
+          "to": [
+            {
+              "namespaceSelector": {
+                "matchLabels": {
+                  "kubernetes.io/metadata.name": "inference"
+                }
+              },
+              "podSelector": {
+                "matchLabels": {
+                  "app.kubernetes.io/name": "omniroute"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "podSelector": {
+        "matchLabels": {
+          "app.kubernetes.io/instance": "scanner-kiosk"
+        }
+      },
+      "policyTypes": [
+        "Egress"
+      ]
+    },
+    "wire_proof_sha256": "92461e7459ea2ecbe767446a2e5b5076a08b3bb7363ec51f96602755b15cac4f"
+  },
+  "security": {
+    "new_advisory_findings": 0,
+    "existing_reviewed_advisory_tuples": 12,
+    "raw_advisory_threshold_passed": false,
+    "reachable_go_vulnerabilities": 0
+  },
+  "owner_device_acceptance": false,
+  "new_correction_model_qualified": false,
+  "automatic_crop_detection_enabled": false,
+  "new_network_grants": false,
+  "physical_scan_executed": false,
+  "original_milestone_complete": false
+}
