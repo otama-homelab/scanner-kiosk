@@ -102,6 +102,7 @@ if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
    if(scenario==='reocr-compare'){
     const panels=page.locator('.ocr-result-panel');assert.equal(await panels.count(),2,'same-page comparison must render old and candidate');
     assert.equal(await panels.first().locator('.ocr-result-details').getAttribute('open'),null,'technical provenance starts collapsed');
+    const preview=panels.first().locator('svg');const initial=await preview.boundingBox();await panels.first().getByRole('button',{name:'Zoom in',exact:true}).click();assert((await preview.boundingBox()).width>initial.width*1.9);await panels.first().getByRole('button',{name:'Zoom out',exact:true}).click();assert(await panels.first().getByRole('button',{name:'Zoom out',exact:true}).isDisabled());
     await panels.first().getByRole('button',{name:'1. <script>window.ocrInjected=true</script>',exact:true}).click();
     const rect=panels.first().locator('rect.ocr-highlight');assert.equal(await rect.getAttribute('x'),'20');assert.equal(await rect.getAttribute('width'),'40');
     const geometry=await rect.evaluate(el=>{const m=el.parentElement.getScreenCTM(),p=new DOMPoint(20,10).matrixTransform(m),q=new DOMPoint(60,30).matrixTransform(m),r=el.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,expected:[Math.min(p.x,q.x),Math.min(p.y,q.y),Math.abs(p.x-q.x),Math.abs(p.y-q.y)]}});for(const [i,k] of ['x','y','w','h'].entries())assert(Math.abs(geometry[k]-geometry.expected[i])<1,'rendered highlight must follow rotated source coordinates');
@@ -150,7 +151,7 @@ if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
   assert.equal(await page.getByRole('switch').count(),0,'unconfigured OCR must not be offered');
   assert(await page.getByRole('dialog').getByRole('button',{name:'Save PDF',exact:true}).isEnabled());if(process.env.SCANNER_TEST_SCREENSHOTS)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOTS+'/ocr-none.png',fullPage:true});checks.push('No configured OCR hides its controls and keeps ordinary PDF saving');
   await page.keyboard.press('Escape');mode='local';await open();await page.getByRole('switch').waitFor();
-  assert(!(await page.getByRole('switch').isChecked()));assert(!(await page.locator('.ocr-fields').isVisible()));
+  assert.equal(await page.getByRole('switch').count(),1);assert.equal(await page.getByRole('switch').evaluate(el=>getComputedStyle(el,'::before').content),'none','the legacy switch track must not render');assert(!(await page.getByRole('switch').isChecked()));assert(!(await page.locator('.ocr-fields').isVisible()));
   if(process.env.SCANNER_TEST_SCREENSHOTS)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOTS+'/ocr-off.png',fullPage:true});const compact=await page.getByRole('dialog').boundingBox();await page.getByRole('switch').check();assert(await page.locator('.ocr-fields').isVisible());
   const expanded=await page.getByRole('dialog').boundingBox();assert(expanded.height>compact.height);assert.equal(expanded.width,compact.width);
   assert(await page.getByText('Select the languages used in the document. Choose at least one.',{exact:true}).isVisible());
