@@ -1,5 +1,7 @@
 # OCR review workspace
 
+Historical proposal only: v0.2.23 was cancelled before publication/deployment after further owner feedback. Superseded by [the correction-first document workspace](../document-workspace-v0224/decision.md).
+
 The owner confirmed OCR recognition itself works. The requested change removes repeated source images from result comparison and the document preview. Keep the existing Impeccable Operate theme.
 
 ## References checked on 2026-11-12
