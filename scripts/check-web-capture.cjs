@@ -71,11 +71,11 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
    devices=[{...devices[0],name,state:'idle',capture_options:[capture],default_capture:capture}];
    await page.getByRole('button',{name:'Home',exact:true}).click();
    await page.waitForFunction(({name,accepted})=>{
-    const identity=document.querySelector('.capture-identity'),scan=document.querySelector('.capture-settings>.primary'),state=document.querySelector('.capture-state');
+    const identity=document.querySelector('.capture-identity'),scan=document.querySelector('.capture-scan-start'),state=document.querySelector('.capture-state');
     return accepted?identity?.textContent===name&&scan?.disabled===false:scan?.disabled===true&&state?.textContent==='Scanning unavailable';
    },{name,accepted});
   }
-  devices=[{...devices[0],name:'Office',state:'idle',capture_options:[capture],default_capture:capture}];await page.getByRole('button',{name:'Try again',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.capture-settings>.primary')?.disabled);assert.equal(await page.getByRole('button',{name:'Try again',exact:true}).count(),0,'successful recovery removes retry');
+  devices=[{...devices[0],name:'Office',state:'idle',capture_options:[capture],default_capture:capture}];await page.getByRole('button',{name:'Try again',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('.capture-scan-start')?.disabled);assert.equal(await page.getByRole('button',{name:'Try again',exact:true}).count(),0,'successful recovery removes retry');
   assert.equal(posts.length,namePosts);checks.push('Scanner names preserve 1–256 Unicode code points; empty and over-limit inventories fail closed without scanning');
   assert.deepEqual(errors,[]);process.stdout.write(JSON.stringify({passed:true,checks}));
  }finally{release?.();await context.close();await browser.close()}
