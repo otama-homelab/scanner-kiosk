@@ -769,13 +769,13 @@
   "owner_operation_ui_unblock": {
     "summary": "../photo-import-purpose-v027/summary.json",
     "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
-    "status": "v0216-shared-settings-deployed-owner-validation-pending",
+    "status": "v0219-ocr-crop-ux-deployed-owner-validation-pending",
     "owner_acceptance_complete": false,
     "historical_status": "local-verification-passed-deployment-approval-pending",
     "production_evidence": {
-      "path": "../scanner-shared-intake-v0216/release.json",
-      "sha256": "27e4d22fea950c72f425502fd130b87b59785fb63e5d92408365940cfbd8aec2",
-      "version": "v0.2.16"
+      "path": "../scanner-ocr-crop-v0219/release.json",
+      "sha256": "6c7ca4f5a9b2b5cc914e826008e3ed3e6241d90a8e8cff240e610cbdfb8e8a9a",
+      "version": "v0.2.19"
     },
     "updated_at": "2026-11-12T03:52:16.489926+00:00",
     "owner_import_observation": {
@@ -792,10 +792,15 @@
         "path": "../scanner-source-actions-v0214/release.json",
         "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c",
         "version": "v0.2.14"
+      },
+      {
+        "path": "../scanner-shared-intake-v0216/release.json",
+        "sha256": "27e4d22fea950c72f425502fd130b87b59785fb63e5d92408365940cfbd8aec2",
+        "version": "v0.2.16"
       }
     ]
   },
-  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized image-import/shared-settings UI v0.2.16 is published/deployed without new model adoption or owner-device acceptance.",
+  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized OCR UX/direct manual crop UI v0.2.19 and existing LLM OCR configuration repair are published/deployed without new correction-model adoption or owner-device acceptance.",
   "current_fsenet_existing_line_contract": {
     "summary": "../correction-fsenet-existing-line-contract-v060/summary.json",
     "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07",
