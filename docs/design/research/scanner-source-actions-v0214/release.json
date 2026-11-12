@@ -1,0 +1,126 @@
+{
+  "version": "v0.2.14",
+  "source_sha": "46265fb6c82e9d931837bc5036611e64a970ebdf",
+  "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.14",
+  "production_url": "https://scanner.homelab.otama-playground.com",
+  "completed_at": "2026-11-12T02:22:10.159785+00:00",
+  "owner_authorization": "リリースして本番反映",
+  "changes": [
+    "Scanner selection, Import and Take a photo share one equal-width action row in the Scanner block.",
+    "Document/Photo and PDF/JPEG/PNG intent, uncertain-request reconciliation and native camera capture remain supported.",
+    "Locked APK hashes and signature checks are retained across allowlisted Alpine-listed HTTPS mirrors.",
+    "CLI parser dispatch is tested using the production memory profile, with parent/library race checks retained."
+  ],
+  "required_ci": {
+    "run_id": 43136673911,
+    "attempt": 1,
+    "conclusion": "success",
+    "all_required_jobs_passed": true
+  },
+  "publication": {
+    "assets_verified": 48,
+    "anonymous_manifest_verified": true,
+    "asset_sizes_and_server_sha256_match": true,
+    "manifest_sha256": "0cf1cbf24baa04000683c0f3870367d10ae18afd8a6c74cf39d22b67f91bcae6",
+    "artifact_id": 13908127083,
+    "publisher_flag_reset_false": true,
+    "images": {
+      "core": {
+        "digest": "sha256:087a15d463c525a5b34357a3f47d30d7ca168e95702c1089e050933a357d07e4",
+        "image_id": "sha256:b21ef77d6f22d32ecbe99a768945c3030072e2db37c7ed126430ec3ea88cc69e",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      },
+      "tesseract": {
+        "digest": "sha256:26f416754342a49314f59058cfc682a212b6d01f1dbb5932f62452b440550be7",
+        "image_id": "sha256:cccf9cf1c09f20d04f31eb54406ec63717ff420fac650dc62bbdefcc781777c1",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      }
+    }
+  },
+  "production": {
+    "version": "v0.2.14",
+    "source_sha": "46265fb6c82e9d931837bc5036611e64a970ebdf",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-12T02:21:19.749896+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "new_source_actions_bundle_served": true,
+    "exact_source_css_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-668df9d9b-pltpf",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:087a15d463c525a5b34357a3f47d30d7ca168e95702c1089e050933a357d07e4",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:087a15d463c525a5b34357a3f47d30d7ca168e95702c1089e050933a357d07e4"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:087a15d463c525a5b34357a3f47d30d7ca168e95702c1089e050933a357d07e4",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:087a15d463c525a5b34357a3f47d30d7ca168e95702c1089e050933a357d07e4"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-7c75d5bc74-wmgmt",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:26f416754342a49314f59058cfc682a212b6d01f1dbb5932f62452b440550be7"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:26f416754342a49314f59058cfc682a212b6d01f1dbb5932f62452b440550be7"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "metadata_observed_at_ms": 1794449969164,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "owner_device_uat": "pending",
+    "physical_scan_executed": false
+  },
+  "infrastructure_commit": "08b1043d938daa158a8f06eba69f29f84d19b971",
+  "applied_scope": [
+    "scanner-kiosk Deployment image references",
+    "scanner-kiosk-tesseract Deployment image reference",
+    "Temporary public Service selector maintenance, then exact selector restoration"
+  ],
+  "network_policy_changes_applied": false,
+  "db_migration_performed": false,
+  "prior_same_schema_version": "v0.2.10",
+  "evidence_sha256": {
+    ".planning/releases/v0.2.14/required_checks-evidence.json": "b8445ac18cb04c077bb7d706675fb93ba75e232bd6884c891ac6e2e4a6b534b6",
+    ".planning/releases/v0.2.14/approval.json": "0a810674ae7410bfd0835c82c9fda20154e07bbb5a10f9a3a8f1984176bd672e",
+    ".planning/releases/v0.2.14/publication-plan.json": "c3cf3bc1f700644d429cd12b0f7267c02abf0cc3f7f4c2f58e6a63f86da72fa2",
+    ".planning/releases/v0.2.14/publication-verification.json": "755c24942a329255979f11bcaea681c6666eeaa12a98c6002a40f01d267b8c48",
+    ".planning/releases/v0.2.14/offline-verification.json": "4210487f27c9e781826c143c2b73e4f3d15adba43d34bf2d34da2f65a4f374b3",
+    ".planning/releases/v0.2.14/pdf-content-review.json": "560c5e268ea04e4063f7a1bde72b1bcecb1d8e3acac50856cc3335d6439f5103",
+    ".planning/ops/v0214/deployment-verification.json": "09c7c9945abd5deb31e7037a7dfcb2239aa767fda18d9e9b543016b4583eef66"
+  },
+  "security": {
+    "new_advisory_findings": 0,
+    "existing_exact_advisory_tuples": 12,
+    "raw_advisory_threshold_passed": false,
+    "scoped_existing_dispositions_retained": true,
+    "reachable_go_vulnerabilities": 0
+  },
+  "limitations": [
+    "Owner iPhone/PC operation acceptance remains pending.",
+    "No new physical scan or private-document inspection was performed.",
+    "Automatic slight-angle correction and new correction-model qualification are unchanged; v0.6.0 remains 7/14."
+  ]
+}
