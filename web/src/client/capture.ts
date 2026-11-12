@@ -1,4 +1,5 @@
 import {requestKey} from './request-key';
+export type CaptureIntent={purpose:'document'|'photo';photo_format:'jpeg'|'png'};
 type Capture={size:string;color:string;dpi:number};
 type Device={id:string;name:string;state:'idle'|'busy'|'unknown'|'unavailable';capture_options:Capture[];default_capture:Capture|null};
 export type CaptureKey='insertScan'|'replaceScan'|'requestExpired'|'reloadView'|'scanner'|'type'|'document'|'photo'|'chooseScanner'|'changeScanner'|'searchScanners'|'noScanners'|'noMatches'|'scannerIdle'|'scannerBusy'|'scannerUnknown'|'unavailable'|'scanSettings'|'size'|'color'|'gray'|'dpi'|'advanced'|'format'|'outputFormat'|'jpeg'|'png'|'close'|'apply'|'scan'|'scanNext'|'loading'|'retry'|'history'|'settingsChanged'|'scanRejected'|'scanUncertain'|'scanning'|'a4'|'a5'|'a6'|'letter'|'photo10x15';
@@ -23,15 +24,18 @@ export function captureControls(options:Options){
  const choose=action('chooseScanner',()=>scannerDialog());const refresh=action('retry',()=>void read(true));
  const sourceActions=node('div');sourceActions.className='capture-source-actions';sourceActions.append(choose);devicePanel.append(identity,state,sourceActions,refresh);
  const settings=node('section');settings.className='panel capture-settings';settings.append(node('h2',t('type')));
- const purposes=node('div');purposes.className='capture-purposes';purposes.setAttribute('role','group');purposes.setAttribute('aria-label',t('type'));let purpose=options.purpose||'document';
+ const purposes=node('div');purposes.className='capture-purposes';purposes.setAttribute('role','group');purposes.setAttribute('aria-label',t('type'));let purpose:CaptureIntent['purpose']=options.purpose||'document';
  const purposeButtons:HTMLButtonElement[]=[];
- for(const kind of ['document','photo'] as const){const b=action(kind,()=>{if(pending||options.purpose)return;purpose=kind;update()});b.setAttribute('aria-pressed',String(purpose===kind));b.disabled=!!options.purpose;purposeButtons.push(b);purposes.append(b)}
- const summary=node('dl');summary.className='capture-summary';const edit=action('scanSettings',()=>settingsDialog());
+ for(const kind of ['document','photo'] as const){const b=action(kind,()=>{if(pending||importLocked||options.purpose)return;purpose=kind;update()});b.setAttribute('aria-pressed',String(purpose===kind));b.disabled=!!options.purpose;purposeButtons.push(b);purposes.append(b)}
+ const summary=node('dl');summary.className='capture-summary';const summaryValues:HTMLElement[]=[];
+ for(const key of ['size','color','dpi','outputFormat'] as const){const field=node('div'),label=node('dt',t(key)),value=node('dd');if(key==='outputFormat')label.id='capture-output-format-label';field.append(label,value);summary.append(field);summaryValues.push(value)}
+ const encoding=document.createElement('select');encoding.id='capture-photo-format';encoding.setAttribute('aria-labelledby','capture-output-format-label');for(const value of ['jpeg','png']){const option=document.createElement('option');option.value=value;option.textContent=t(value as CaptureKey);encoding.append(option)}encoding.addEventListener('change',()=>{if(!pending&&!importLocked){format=encoding.value==='png'?'png':'jpeg';update()}});
+ const edit=action('scanSettings',()=>settingsDialog());
  const notice=node('p');notice.className='capture-notice';notice.setAttribute('role','status');
  const history=action('history',options.history);history.hidden=true;
  const start=action(options.submitLabel||(options.purpose?'scanNext':'scan'),()=>void submit());start.className='primary';
  const reload=action('reloadView',options.reload);reload.hidden=true;settings.append(purposes,summary,edit,notice,start,history,reload);element.append(devicePanel,settings);
- let devices:Device[]=[],selected='',capture:Capture|null=null,format=options.photoFormat||'jpeg',loading=true,loaded=false,available=false,pending=false,uncertain=false,expired=false,disposed=false,manualRefresh=false;
+ let devices:Device[]=[],selected='',capture:Capture|null=null,format:CaptureIntent['photo_format']=options.photoFormat||'jpeg',loading=true,loaded=false,available=false,pending=false,uncertain=false,expired=false,disposed=false,manualRefresh=false,importLocked=false;
  let timer:ReturnType<typeof setTimeout>|undefined,readController:AbortController|null=null,submitController:AbortController|null=null,modal:HTMLDialogElement|null=null;
  let fingerprint='',key='';
  const setText=(e:HTMLElement,value:string)=>{if(e.textContent!==value)e.textContent=value};
@@ -41,9 +45,11 @@ export function captureControls(options:Options){
  function update(){
   const current=device();setText(identity,current?.name||t(devices.length?'chooseScanner':'noScanners'));setText(state,t(loading?'loading':!available?'unavailable':current?statusKey(current.state):'scannerUnknown'));
   choose.textContent=t(sourceActions.childElementCount>1?'chooseScanner':current?'changeScanner':'chooseScanner');choose.hidden=sourceActions.childElementCount===1&&(devices.length===0||devices.length===1&&!!current);choose.disabled=pending||!devices.length;refresh.disabled=pending||!loaded||manualRefresh;refresh.hidden=!loaded||available&&devices.length>0&&(!current||current.state==='idle'||current.state==='busy');
-  for(let i=0;i<purposeButtons.length;i++){purposeButtons[i].setAttribute('aria-pressed',String(purpose===(i===0?'document':'photo')));purposeButtons[i].disabled=pending||!!options.purpose}
-  summary.replaceChildren();for(const [label,value] of [['size',capture?t(capture.size as CaptureKey):'—'],['color',capture?t(capture.color as CaptureKey):'—'],['dpi',capture?String(capture.dpi):'—'],['outputFormat',purpose==='photo'?t(format as CaptureKey):'PDF']] as const){const field=node('div');field.append(node('dt',t(label)),node('dd',value));summary.append(field)}
-  edit.disabled=pending||!current?.capture_options.length;start.disabled=pending||uncertain||expired||loading||!available||current?.state!=='idle'||!valid();setText(start,t(pending?'scanning':options.submitLabel||(options.purpose?'scanNext':'scan')));
+  for(let i=0;i<purposeButtons.length;i++){purposeButtons[i].setAttribute('aria-pressed',String(purpose===(i===0?'document':'photo')));purposeButtons[i].disabled=pending||importLocked||!!options.purpose}
+  for(const [i,value] of [capture?t(capture.size as CaptureKey):'—',capture?t(capture.color as CaptureKey):'—',capture?String(capture.dpi):'—',purpose==='photo'?t(format as CaptureKey):'PDF'].entries()){
+   const field=summaryValues[i];if(i===3&&purpose==='photo'&&!options.purpose){if(encoding.parentElement!==field)field.replaceChildren(encoding);encoding.value=format;encoding.disabled=pending||importLocked}else setText(field,value)
+  }
+  edit.disabled=pending||importLocked||!current?.capture_options.length;start.disabled=pending||importLocked||uncertain||expired||loading||!available||current?.state!=='idle'||!valid();setText(start,t(pending?'scanning':options.submitLabel||(options.purpose?'scanNext':'scan')));
   history.hidden=!uncertain;reload.hidden=!expired;
  }
  function select(id:string){const chosen=devices.find(d=>d.id===id);if(!chosen)return;selected=id;capture=chosen.default_capture?{...chosen.default_capture}:chosen.capture_options[0]?{...chosen.capture_options[0]}:null;notice.textContent='';update()}
@@ -83,5 +89,5 @@ export function captureControls(options:Options){
  }
  const visibility=()=>{if(document.hidden){available=false;readController?.abort();if(timer)clearTimeout(timer);update()}else void read()};document.addEventListener('visibilitychange',visibility);
  update();
- return {element,sourceActions,start:async(immediate=false)=>{if(immediate&&previousCapture){selected=previousCapture.scannerID;capture={...previousCapture.capture}}await read();if(immediate&&active()){if(options.initialCapture&&device()){capture={...options.initialCapture};if(!valid())notice.textContent=t('settingsChanged');update()}await submit()}},dispose:()=>{disposed=true;readController?.abort();submitController?.abort();if(timer)clearTimeout(timer);modal?.remove();modal=null;document.removeEventListener('visibilitychange',visibility)}};
+ return {element,sourceActions,getImportIntent:():CaptureIntent=>({purpose,photo_format:format}),restoreImportIntent:(intent:CaptureIntent)=>{purpose=intent.purpose;format=intent.photo_format;update()},lockImportIntent:(locked:boolean)=>{if(importLocked!==locked){importLocked=locked;update()}},start:async(immediate=false)=>{if(immediate&&previousCapture){selected=previousCapture.scannerID;capture={...previousCapture.capture}}await read();if(immediate&&active()){if(options.initialCapture&&device()){capture={...options.initialCapture};if(!valid())notice.textContent=t('settingsChanged');update()}await submit()}},dispose:()=>{disposed=true;readController?.abort();submitController?.abort();if(timer)clearTimeout(timer);modal?.remove();modal=null;document.removeEventListener('visibilitychange',visibility)}};
 }

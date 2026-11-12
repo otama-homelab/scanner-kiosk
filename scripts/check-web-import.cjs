@@ -16,9 +16,9 @@ const {reveal}=require('./web-controls.cjs');
   await page.route('**/api/jobs/'+job.id,r=>reply(r,job));
   await page.route('**/api/documents/import',r=>{const request=r.request();posts.push({headers:request.headers(),body:request.postDataBuffer()});if(uncertain){uncertain=false;return r.abort('failed')}return reply(r,job,202)});
   await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
-  await page.getByText('Choose a JPEG or PNG to review and save as a document.',{exact:true}).waitFor();
+  await page.locator('.capture-settings').waitFor();assert.equal(await page.getByRole('heading',{name:'Import an image',exact:true}).count(),0);assert.equal(await page.locator('.capture-settings').getByRole('button',{name:'Document',exact:true}).count(),1);
   assert(await page.getByRole('button',{name:'Take a photo',exact:true}).isEnabled());assert(await page.getByRole('button',{name:'Import',exact:true}).isEnabled());
-  assert(!(await page.locator('.photo-import').innerText()).includes('The request could not be completed. Try again.'));
+  assert(!(await page.locator('.capture-panels').innerText()).includes('The request could not be completed. Try again.'));
   checks.push('Photo import stays available when the OCR catalog returns provider_unavailable');
   const choosing=page.waitForEvent('filechooser');await page.getByRole('button',{name:'Import PDF',exact:true}).click();const chooser=await choosing;
   assert(!page.url().endsWith('#/import'),'opening the native picker must not navigate to an import page');assert.equal(posts.length,0);
@@ -67,14 +67,14 @@ const {reveal}=require('./web-controls.cjs');
   await page.route('**/api/documents/'+doc,r=>reply(r,imageDoc));
   await page.route('**/api/documents/import',r=>{imagePosts.push({headers:r.request().headers(),body:r.request().postDataBuffer()});if(imageUncertain)return r.abort('failed');return reply(r,job,202)});
   await page.route('**/api/documents/import/reconcile',r=>{reconciles.push({headers:r.request().headers(),body:r.request().postDataJSON()});return reply(r,job,202)});
-  const imageHome=async()=>{await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.getByText('Choose a JPEG or PNG to review and save as a document.',{exact:true}).waitFor();};
+  const imageHome=async()=>{await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.locator('.capture-settings').waitFor();assert.equal(await page.getByRole('heading',{name:'Import an image',exact:true}).count(),0);assert.equal(await page.locator('.capture-settings').getByRole('button',{name:'Document',exact:true}).count(),1);};
   for(const [purpose,format] of [['document',undefined],['photo','jpeg'],['photo','png']]){
-   await imageHome();const controls=page.locator('.photo-import');
+   await imageHome();const controls=page.locator('.capture-panels');
    assert.equal(await controls.getByRole('button',{name:'Document',exact:true}).getAttribute('aria-pressed'),'true');
    assert.equal(await controls.getByText('PDF',{exact:true}).count(),1);
    await controls.getByRole('button',{name:'Photo',exact:true}).click();
    assert.equal(await controls.getByLabel('Output format',{exact:true}).inputValue(),'jpeg');
-   if(purpose==='photo'){await controls.getByLabel('Output format',{exact:true}).selectOption(format);await controls.getByText('Choose a JPEG or PNG to review and save as a photo.',{exact:true}).waitFor()}
+   if(purpose==='photo'){await controls.getByLabel('Output format',{exact:true}).selectOption(format)}
    else{await controls.getByRole('button',{name:'Document',exact:true}).click();assert.equal(await controls.getByRole('combobox').count(),0)}
    imageDoc.purpose=purpose;imageDoc.photo_format=format;job.state='succeeded';
    await page.locator('input[data-photo-picker]').setInputFiles({name:'chosen.png',mimeType:'image/png',buffer:image});await page.locator('h1[data-document-title]').waitFor();
@@ -82,25 +82,25 @@ const {reveal}=require('./web-controls.cjs');
    assert.equal(await page.getByRole('button',{name:purpose==='photo'?'Save image':'Save PDF',exact:true}).count(),1);
   }
   checks.push('Image import chooses Document/PDF or Photo/JPEG/PNG before picking, and opens the matching editor');
-  await imageHome();const controls=page.locator('.photo-import');await controls.getByRole('button',{name:'Photo',exact:true}).click();await controls.getByLabel('Output format',{exact:true}).selectOption('png');imageUncertain=true;
+  await imageHome();const controls=page.locator('.capture-panels');await controls.getByRole('button',{name:'Photo',exact:true}).click();await controls.getByLabel('Output format',{exact:true}).selectOption('png');imageUncertain=true;
   await page.locator('input[data-photo-picker]').setInputFiles({name:'uncertain.png',mimeType:'image/png',buffer:image});await controls.getByRole('button',{name:'Check import request',exact:true}).waitFor();
   for(const name of ['Document','Photo'])assert(await controls.getByRole('button',{name,exact:true}).isDisabled());for(const name of ['Take a photo','Import'])assert(await page.getByRole('button',{name,exact:true}).isDisabled());assert(await controls.getByLabel('Output format',{exact:true}).isDisabled());
-  const frozen=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('scanner.photo.import')));assert.equal(frozen.purpose,'photo');assert.equal(frozen.photo_format,'png');
-  await page.reload();await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).waitFor();assert.equal(await page.locator('.photo-import').getByRole('button',{name:'Photo',exact:true}).getAttribute('aria-pressed'),'true');assert.equal(await page.locator('#photo-import-format').inputValue(),'png');
-  imageUncertain=false;imageDoc.purpose='photo';imageDoc.photo_format='png';await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).click();await page.locator('h1[data-document-title]').waitFor();
+  const frozen=await page.evaluate(()=>JSON.parse(sessionStorage.getItem('scanner.photo.import')));assert.equal(frozen.purpose,'photo');assert.equal(frozen.photo_format,'png');const beforeLockedUpload=imagePosts.length;await page.locator('input[data-photo-picker]').setInputFiles({name:'ignored.png',mimeType:'image/png',buffer:image});assert.equal(imagePosts.length,beforeLockedUpload);assert.deepEqual(await page.evaluate(()=>JSON.parse(sessionStorage.getItem('scanner.photo.import'))),frozen);
+  await page.reload();await page.locator('.capture-panels').getByRole('button',{name:'Check import request',exact:true}).waitFor();assert.equal(await page.locator('.capture-panels').getByRole('button',{name:'Photo',exact:true}).getAttribute('aria-pressed'),'true');assert.equal(await page.locator('#capture-photo-format').inputValue(),'png');
+  imageUncertain=false;imageDoc.purpose='photo';imageDoc.photo_format='png';await page.locator('.capture-panels').getByRole('button',{name:'Check import request',exact:true}).click();await page.locator('h1[data-document-title]').waitFor();
   assert.deepEqual(reconciles.at(-1).body,{sha256:frozen.sha256,input_bytes:frozen.input_bytes,media_type:frozen.media_type,purpose:'photo',photo_format:'png'});assert.equal(reconciles.at(-1).headers['idempotency-key'],frozen.key);
   checks.push('Uncertain image intent locks purpose/format and restores the exact Photo/PNG intent across reload/reconciliation');
   const legacy={key:'rq1_0000000000000_00000000000000000000000000000000',sha256:'1'.repeat(64),input_bytes:123,media_type:'image/png',phase:'uncertain'};
-  await page.evaluate(value=>sessionStorage.setItem('scanner.photo.import',JSON.stringify(value)),legacy);await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).waitFor();
-  assert.equal(await page.locator('.photo-import').getByRole('button',{name:'Document',exact:true}).getAttribute('aria-pressed'),'true');imageDoc.purpose='document';imageDoc.photo_format=undefined;
-  await page.locator('.photo-import').getByRole('button',{name:'Check import request',exact:true}).click();await page.locator('h1[data-document-title]').waitFor();assert.deepEqual(reconciles.at(-1).body,{sha256:legacy.sha256,input_bytes:123,media_type:'image/png'});
+  await page.evaluate(value=>sessionStorage.setItem('scanner.photo.import',JSON.stringify(value)),legacy);await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.locator('.capture-panels').getByRole('button',{name:'Check import request',exact:true}).waitFor();
+  assert.equal(await page.locator('.capture-panels').getByRole('button',{name:'Document',exact:true}).getAttribute('aria-pressed'),'true');imageDoc.purpose='document';imageDoc.photo_format=undefined;
+  await page.locator('.capture-panels').getByRole('button',{name:'Check import request',exact:true}).click();await page.locator('h1[data-document-title]').waitFor();assert.deepEqual(reconciles.at(-1).body,{sha256:legacy.sha256,input_bytes:123,media_type:'image/png'});
   for(const invalid of [{purpose:'photo',photo_format:'pdf'},{purpose:'document',photo_format:'png'},{photo_format:'png'}]){
    await page.evaluate(value=>sessionStorage.setItem('scanner.photo.import',JSON.stringify(value)),{...legacy,...invalid});await imageHome();assert(await page.getByRole('button',{name:'Import',exact:true}).isEnabled());assert.equal(await page.getByRole('button',{name:'Check import request',exact:true}).count(),0);
   }
   await page.evaluate(()=>sessionStorage.removeItem('scanner.photo.import'));checks.push('Legacy image receipt remains Document without new identity fields; malformed purpose/format receipts cannot replay');
   await imageHome();
   for(const [locale,purpose,formatLabel] of [['en','Photo','Output format'],['ja','写真','保存形式']])for(const width of [320,390,768,1440]){
-   await page.setViewportSize({width,height:844});await page.selectOption('#locale',locale);const section=page.locator('.photo-import');await section.getByRole('button',{name:purpose,exact:true}).click();const selected=section.getByLabel(formatLabel,{exact:true});await selected.selectOption('png');await selected.focus();assert(await selected.evaluate(e=>e===document.activeElement));assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+   await page.setViewportSize({width,height:844});await page.selectOption('#locale',locale);const section=page.locator('.capture-panels');await section.getByRole('button',{name:purpose,exact:true}).click();const selected=section.getByLabel(formatLabel,{exact:true});await selected.selectOption('png');await selected.focus();assert(await selected.evaluate(e=>e===document.activeElement));if(locale==='en'&&width===320){await page.waitForResponse('**/api/scanners');assert(await selected.evaluate(e=>e===document.activeElement),'scanner polling must retain output format focus')}assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
    for(const b of await section.getByRole('button').all())if(await b.isVisible()){const box=await b.boundingBox();assert(box.height>=44)}
    const sources=page.locator('.capture-source-actions');assert.deepEqual(await sources.getByRole('button').allTextContents(),locale==='en'?['Select scanner','Import','Take a photo']:['スキャナーを選択','取り込む','写真を撮る']);for(const b of await sources.getByRole('button').all()){const box=await b.boundingBox();assert(box.height>=48&&box.x>=0&&box.x+box.width<=width)}if(locale==='ja'&&width===390){await selected.evaluate(e=>e.blur());await page.screenshot({path:'/tmp/scanner-source-entry-ja-390.png',fullPage:true})}
   }
