@@ -34,7 +34,7 @@ export function captureControls(options:Options){
  const notice=node('p');notice.className='capture-notice';notice.setAttribute('role','status');
  const history=action('history',options.history);history.hidden=true;
  const start=action(options.submitLabel||(options.purpose?'scanNext':'scan'),()=>void submit());start.className='primary capture-scan-start';
- const reload=action('reloadView',options.reload);reload.hidden=true;settings.append(purposes,summary);if(home){devicePanel.append(scanSummary,edit,notice,start,history,reload);element.append(settings,devicePanel,imagePanel)}else{settings.append(edit,notice,start,history,reload);element.append(devicePanel,settings)};
+ const reload=action('reloadView',options.reload);reload.hidden=true;settings.append(purposes,summary);if(home){const deviceActions=node('div');deviceActions.className='capture-device-actions';deviceActions.append(choose,edit);devicePanel.append(scanSummary,deviceActions,notice,start,history,reload);element.append(settings,devicePanel,imagePanel)}else{settings.append(edit,notice,start,history,reload);element.append(devicePanel,settings)};
  let devices:Device[]=[],selected='',capture:Capture|null=null,format:CaptureIntent['photo_format']=options.photoFormat||'jpeg',loading=true,loaded=false,available=false,pending=false,uncertain=false,expired=false,disposed=false,manualRefresh=false,importLocked=false;
  let timer:ReturnType<typeof setTimeout>|undefined,readController:AbortController|null=null,submitController:AbortController|null=null,modal:HTMLDialogElement|null=null;
  let fingerprint='',key='';
