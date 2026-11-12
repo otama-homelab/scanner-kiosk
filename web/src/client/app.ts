@@ -272,7 +272,7 @@ function outputDialog(doc:any){
  const hint=text('p','');hint.setAttribute('role','alert');
  let pending=false,fingerprint='',key='';
  let requestController:AbortController|null=null;
- const ocr:ReturnType<typeof ocrControls>|null=doc.purpose==='photo'?null:ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},locale,()=>{submit.disabled=pending||!ocr!.valid();dialog.classList.toggle('with-ocr',ocr!.enabled())});
+ const ocr:ReturnType<typeof ocrControls>|null=doc.purpose==='photo'?null:ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),help:t('ocrHelp'),languageHint:t('ocrLanguageHint'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},locale,()=>{submit.disabled=pending||!ocr!.valid();dialog.classList.toggle('with-ocr',ocr!.enabled())});
  const close=button('close',()=>{if(!pending)dialog.close()});
  const submit=button(doc.purpose==='photo'?'saveImage':'savePDF',async()=>{
   if(pending||ocr&&!ocr.valid())return;

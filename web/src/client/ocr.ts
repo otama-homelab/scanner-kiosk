@@ -1,29 +1,30 @@
 // Dialog-local OCR intent. Capability and admission authority remain on the server.
 export type OCRCommand={enabled:false}|{enabled:true;provider_id:string;model_id:string;languages:string[];quality_preset?:string};
-type Labels={enable:string;model:string;languages:string;quality:string;chooseModel:string;chooseQuality:string;loading:string;unavailable:string;retry:string;external:string;presets:Record<string,string>};
+type Labels={enable:string;model:string;languages:string;quality:string;chooseModel:string;chooseQuality:string;loading:string;unavailable:string;retry:string;external:string;help:string;languageHint:string;presets:Record<string,string>};
 type Model={processing_destination?:string;id:string;name:string;languages:string[];quality_presets:string[];default_quality_preset:string|null;available:boolean;outputs:string[]};
 type Entry={provider:string;name:string;external:boolean;model:Model};
 export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Labels,locale:string,changed:()=>void){
  const element=document.createElement('section');element.className='ocr-settings';element.hidden=true;
  const toggleLabel=document.createElement('label');toggleLabel.className='ocr-toggle';
  const toggle=document.createElement('input');toggle.type='checkbox';toggle.id='ocr-enabled';toggle.setAttribute('role','switch');toggleLabel.append(document.createTextNode(labels.enable),toggle);
+ const help=document.createElement('p');help.className='ocr-help';help.textContent=labels.help;help.id='ocr-help';toggle.setAttribute('aria-describedby',help.id);
  const fields=document.createElement('fieldset');fields.className='ocr-fields';fields.hidden=true;
  const modelLabel=document.createElement('label');modelLabel.htmlFor='ocr-model';modelLabel.textContent=labels.model;
  const models=document.createElement('select');models.id='ocr-model';
  const languages=document.createElement('fieldset');languages.className='ocr-languages';const legend=document.createElement('legend');legend.textContent=labels.languages;languages.append(legend);
- const languageList=document.createElement('div');languages.append(languageList);
+ const languageList=document.createElement('div');const languageHint=document.createElement('p');languageHint.className='ocr-language-hint';languageHint.id='ocr-language-hint';languageHint.textContent=labels.languageHint;languages.setAttribute('aria-describedby',languageHint.id);languages.append(languageHint,languageList);
  const qualityLabel=document.createElement('label');qualityLabel.htmlFor='ocr-quality';qualityLabel.textContent=labels.quality;
  const quality=document.createElement('select');quality.id='ocr-quality';
  const notice=document.createElement('p');notice.className='ocr-notice';notice.id='ocr-processing-notice';models.setAttribute('aria-describedby',notice.id);notice.setAttribute('role','status');
  const state=document.createElement('p');state.className='ocr-state';state.setAttribute('role','status');
  const retry=document.createElement('button');retry.type='button';retry.textContent=labels.retry;
- fields.append(modelLabel,models,notice,languages,qualityLabel,quality);element.append(toggleLabel,fields,state,retry);
+ fields.append(modelLabel,models,notice,languages,qualityLabel,quality);element.append(toggleLabel,help,fields,state,retry);
  let entries:Entry[]=[],ready=false,configured=false,failed=false,locked=false,disposed=false,controller:AbortController|null=null;
  let request=0;
  const placeholder=(select:HTMLSelectElement,label:string)=>{select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=label;select.append(option)};
  placeholder(models,labels.chooseModel);placeholder(quality,labels.chooseQuality);
  const selected=()=>models.value===''?undefined:entries[Number(models.value)];
- const sync=()=>{element.hidden=!configured&&!failed&&!toggle.checked;toggleLabel.hidden=!configured&&!toggle.checked;fields.hidden=!toggle.checked;toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
+ const sync=()=>{element.hidden=!configured&&!failed&&!toggle.checked;toggleLabel.hidden=!configured&&!toggle.checked;help.hidden=toggleLabel.hidden;fields.hidden=!toggle.checked;toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
  function options(preferredLanguages:string[]=[],preset?:string){
   languageList.replaceChildren();placeholder(quality,labels.chooseQuality);
   const entry=selected();notice.textContent=entry?.external?labels.external.replace('{destination}',entry.model.processing_destination!):'';
