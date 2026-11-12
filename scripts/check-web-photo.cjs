@@ -74,7 +74,7 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
    const download=page.waitForEvent('download');await page.getByRole('button',{name:'Save PDF',exact:true}).click();const saved=await download;assert((await saved.suggestedFilename()).endsWith('.pdf'));
    await page.getByRole('button',{name:'Home',exact:true}).click();await upload(page.locator('input[data-photo-picker]'),images[0]);await review();checks.push('camera JPEG and independent picker PNG to real review, primary Save and actual PDF download');
    for(const format of ['jpeg','png']){
-    await page.getByRole('button',{name:'Home',exact:true}).click();const controls=page.locator('.photo-import');await controls.getByRole('button',{name:'Photo',exact:true}).click();await controls.getByLabel('Output format',{exact:true}).selectOption(format);
+    await page.getByRole('button',{name:'Home',exact:true}).click();const controls=page.locator('.capture-panels');await controls.getByRole('button',{name:'Photo',exact:true}).click();await controls.getByLabel('Output format',{exact:true}).selectOption(format);
     await upload(page.locator('input[data-photo-picker]'),images[0]);await page.locator('h1[data-document-title]').waitFor();await page.getByRole('button',{name:'Save image',exact:true}).waitFor();
     const read=()=>page.evaluate(async()=>{const response=await fetch('/api/documents/'+location.hash.split('/').pop());if(!response.ok)throw new Error('Photo document unavailable');return response.json()});
     const photo=await read();assert.equal(photo.purpose,'photo');assert.equal(photo.photo_format,format);assert.equal(photo.pages[0].source_type,'photo');assert.equal(photo.pages[0].capture,null);assert.equal(await page.getByRole('button',{name:'Save PDF',exact:true}).count(),0);
