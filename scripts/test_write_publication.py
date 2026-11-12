@@ -1,4 +1,6 @@
 import hashlib
+import contextlib
+import io
 import importlib.util
 import json
 from pathlib import Path
@@ -397,6 +399,35 @@ class WritePublicationTest(unittest.TestCase):
         denied = subprocess.CompletedProcess([], 1, b'', b'gh: Resource not accessible (HTTP 403)')
         with patch.object(self.module, 'command', return_value=denied), self.assertRaises(RuntimeError):
             self.module.api('orgs/otama-homelab/packages/container/scanner-kiosk', {}, missing=True)
+
+
+class PublicationDiagnosticsTest(unittest.TestCase):
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location('publication_diagnostics', Path(__file__).with_name('write-publication.py'))
+        self.module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.module)
+
+    def test_failed_command_keeps_reason_without_credentials_or_signed_urls(self):
+        token = 'fixture-secret-token'
+        result = subprocess.CompletedProcess([], 1, b'',
+            ('denied: '+token+' https://registry.example/blob?sig=private\n'+'x'*4096).encode())
+        with patch.object(self.module.subprocess, 'run', return_value=result), self.assertRaises(RuntimeError) as raised:
+            self.module.command(['docker', 'push', 'fixture'], {'GH_TOKEN': token}, input_data=b'private-stdin')
+        message = str(raised.exception)
+        self.assertIn('docker push failed with exit 1: denied:', message)
+        for secret in [token, 'registry.example', 'sig=private', 'private-stdin']:
+            self.assertNotIn(secret, message)
+        self.assertLess(len(message), 2100)
+
+    def test_cli_preserves_sanitized_failure_reason_and_stop_instruction(self):
+        args = ['writer', '--candidate', '/candidate', '--plan', '/plan', '--plan-sha256', '0'*64,
+                '--ref', 'refs/tags/v0.2.25', '--sha', '0'*40, '--event', 'push']
+        output = io.StringIO()
+        with patch('sys.argv', args), patch.object(self.module, 'publish', side_effect=RuntimeError('docker push failed')), contextlib.redirect_stderr(output), self.assertRaises(SystemExit) as raised:
+            self.module.main()
+        self.assertEqual(raised.exception.code, 1)
+        self.assertIn('docker push failed', output.getvalue())
+        self.assertIn('never overwrite it', output.getvalue())
 
 
 if __name__ == '__main__':
