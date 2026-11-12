@@ -1,0 +1,162 @@
+{
+  "version": "v0.2.25",
+  "source_sha": "60ff2cbb6645273293866b37124893cb271cbcf7",
+  "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.25",
+  "production_url": "https://scanner.homelab.otama-playground.com",
+  "ci_run_id": 43259851278,
+  "required_checks_attempt": 1,
+  "publisher_attempt": 2,
+  "artifact_id": 13964930370,
+  "manifest_sha256": "c96ae37e4aa53ea8af5cd9da646378b4552bab826a3c3d296084152e8daaef95",
+  "approval_sha256": "0270dc2a7cbb57ef0ef8c0d3d44d364a9ed82f49c49ffd15c3c2e815ef21b20d",
+  "publication_plan_sha256": "f18e35eb9580655198fb66eb1011d6a829f0f16b741561964b3f2da06aed5dc1",
+  "changes": [
+    "Correction-first document workspace with stable Save and one selected page.",
+    "One exact-result source beside recognition text; Saved/New/Compare explicitly selected; source opened on demand on mobile.",
+    "Selected page and OCR work context retained across adjustment, result adoption/discard and reload; existing recovery/identity guards preserved.",
+    "Scoped document styles, coherent SVG appearance icons, responsive JA/EN light/dark contrast; recorded DESIGN.md and sidecar.",
+    "Bounded redacted publisher failure reasons; no publication guard or overwrite-policy change."
+  ],
+  "proofs": {
+    "full_browser": {
+      "sha256": "127b997025eba44dbf13e75fc61b6d47f0a7a1fe62ebf227d50f64ec068bafe7",
+      "unchanged_inputs": 543,
+      "scope": "Retained v0.2.24 exact stable UI proof; every recorded input also matches v0.2.25."
+    },
+    "independent_finish_review": {
+      "sha256": "e10d0e30cac69e1f95f45ffee6bb1478417df05e70e337818c982fc57340ea6f",
+      "disposition": "ship",
+      "scope": "Six scored fixes resolved; no physical-device or deployment acceptance implied."
+    },
+    "design_sha256": "58601b408ca21ffd149d88148599d6de42e81cc813b96561ad3d624001f76cc4",
+    "actual_image_pdf_content_sha256": "8b0cbf08761e5317fb6079eda384f86c6c64a219bf8dc5f98ff6cfdde56671a6",
+    "offline_candidate_verification_sha256": "abea19144245fd4d345be7314086e2c07440c74b008e4c7a890f836a0e64d634",
+    "required_checks_sha256": "d4dad2ffcfe7c0abf1b44dae7ef3fa73775f998817b5889e4002277081b80506",
+    "publication_verification_sha256": "7ed844a414daa3e66ec2e12af8abd0ad114384ee79068a3afe0d1f4dbfb53805",
+    "deployment_verification_sha256": "3267ad89abaf0aa520075454fc83597dd56bd32b8c755442306d581bdec45c9d",
+    "configuration_readback_sha256": "be76e072991d7b5b5377b80a7d939ea5dd9aafe6e3f098e5faa2e74dc1abc352",
+    "publication_diagnostic_tests": 32,
+    "remote_state_projection_sha256": "2bbca20698399086284ba40217addbef83153fccaa05843b6c00413ffd5c6b00"
+  },
+  "public_assets_verified": 48,
+  "asset_verification_scope": "API-reported sizes/SHA256 for all48; manifest also fetched anonymously; both immutable/latest OCI identities/config checked.",
+  "images": {
+    "core": {
+      "digest": "sha256:86f445559c22880f82b717f126635f5be0ae31e423e2ead51475eafd8e8e7c7c",
+      "image_id": "sha256:5148bfce0a230c707aabe3e4de7c000aefc2b156614382e8e1ced7f8ea59c86f",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    },
+    "tesseract": {
+      "digest": "sha256:190d18858189c9586ef15d31d0c7cb9db2e3ec312c18fccc466f555f67f3fe6a",
+      "image_id": "sha256:6c19e9c3160db7824b1bbf93eba0cf658cd156c7f74106053f8bdedb6fae6d3d",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    }
+  },
+  "production": {
+    "version": "v0.2.25",
+    "source_sha": "60ff2cbb6645273293866b37124893cb271cbcf7",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-12T17:07:00.223410+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "new_source_actions_bundle_served": true,
+    "ocr_workspace_bundle_served": true,
+    "exact_source_css_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-6cdc9699bb-gr2kd",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:86f445559c22880f82b717f126635f5be0ae31e423e2ead51475eafd8e8e7c7c",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:86f445559c22880f82b717f126635f5be0ae31e423e2ead51475eafd8e8e7c7c"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:86f445559c22880f82b717f126635f5be0ae31e423e2ead51475eafd8e8e7c7c",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:86f445559c22880f82b717f126635f5be0ae31e423e2ead51475eafd8e8e7c7c"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-6df4686b79-tjzdq",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:190d18858189c9586ef15d31d0c7cb9db2e3ec312c18fccc466f555f67f3fe6a"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:190d18858189c9586ef15d31d0c7cb9db2e3ec312c18fccc466f555f67f3fe6a"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "metadata_observed_at_ms": 1794503201854,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "owner_device_uat": "pending",
+    "physical_scan_executed": false
+  },
+  "infra_commit": "1ae3fe9cbb1c3f0387a489c37572286b5fcb847f",
+  "infra_scope": "Only infra/scanner/core.json, ocr.json and values.json committed locally; unrelated homelab branch not pushed. Applied core and extracted Tesseract Deployment only.",
+  "retained_llm_proof": {
+    "origin_version": "v0.2.22",
+    "sha256": "062e041ad11e6d948404df8ce3004bc50605ee861e931581773ac52cc19b7546",
+    "new_inference": false,
+    "unchanged_provider_identity": true
+  },
+  "advisories": {
+    "existing_exact_tuples": 12,
+    "new_findings": 0,
+    "raw_threshold_passed": false
+  },
+  "prior_candidates": [
+    {
+      "version": "v0.2.23",
+      "published": false,
+      "tag_moved": false,
+      "reason": "Owner rejected initial tab-only proposal."
+    },
+    {
+      "version": "v0.2.24",
+      "source_assets_public": 48,
+      "version_images_published": false,
+      "latest_changed": false,
+      "original_transfer_failure_cause": "unproven; exact-image hosted load and absent-manifest diagnostics pass",
+      "assets_or_tag_overwritten": false,
+      "warning": "Incomplete publication; do not deploy."
+    }
+  ],
+  "preflight_input_correction": {
+    "original_remote_snapshot_bytes": 2153856,
+    "policy_input_bytes": 5152,
+    "all_releases_preserved": 27,
+    "complete_image_tags_preserved": true,
+    "original_snapshot_hash_retained": true,
+    "input_bound_increased": false,
+    "official_cli_isolated_preflight": "passed"
+  },
+  "owner_reported_ocr_results_ok": true,
+  "owner_observation_scope": "Conversation says OCRの結果はOKです; no inferred device/browser/save/open acceptance.",
+  "owner_device_uat": "pending",
+  "new_physical_scan": false,
+  "new_private_document_replay": false,
+  "new_correction_algorithm": false,
+  "new_correction_model_qualified": false,
+  "automatic_crop_detector_adopted": false,
+  "original_correction_requirements_complete": 7,
+  "original_correction_requirements_total": 14,
+  "original_milestone_complete": false
+}
