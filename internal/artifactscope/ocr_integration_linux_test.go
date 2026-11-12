@@ -1,6 +1,6 @@
 //go:build linux
 
-package artifactscope
+package artifactscope_test
 
 import (
 	"bytes"
@@ -18,13 +18,14 @@ import (
 	"testing"
 	"time"
 
+	"scanner-kiosk/internal/artifactscope"
 	"scanner-kiosk/internal/config"
 	"scanner-kiosk/internal/ocr/llm"
 	"scanner-kiosk/internal/ocr/runtime"
 	"scanner-kiosk/pkg/ocrplugin"
 )
 
-func imageScope(t *testing.T, data []byte) (*Scope, string) {
+func imageScope(t *testing.T, data []byte) (*artifactscope.Scope, string) {
 	t.Helper()
 	root := t.TempDir()
 	if err := os.Chmod(root, 0700); err != nil {
@@ -33,7 +34,7 @@ func imageScope(t *testing.T, data []byte) (*Scope, string) {
 	if err := os.WriteFile(filepath.Join(root, "source"), data, 0600); err != nil {
 		t.Fatal(err)
 	}
-	scope, err := New(root, map[string]Input{"input_0000000001": {RelativePath: "source", Size: int64(len(data)), SHA256: sha256.Sum256(data)}}, Limits{MaxInputBytes: 20 << 20, MaxOutputBytes: 20 << 20, MaxTotalOutputBytes: 20 << 20, MaxOutputs: 1})
+	scope, err := artifactscope.New(root, map[string]artifactscope.Input{"input_0000000001": {RelativePath: "source", Size: int64(len(data)), SHA256: sha256.Sum256(data)}}, artifactscope.Limits{MaxInputBytes: 20 << 20, MaxOutputBytes: 20 << 20, MaxTotalOutputBytes: 20 << 20, MaxOutputs: 1})
 	if err != nil {
 		t.Fatal(err)
 	}
