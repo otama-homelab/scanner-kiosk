@@ -39,7 +39,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   await page.getByRole('button',{name:'Select scanner',exact:true}).waitFor();assert(await scan.isDisabled(),'a disappeared selection must never silently move to different hardware');
   await page.getByRole('button',{name:'Select scanner',exact:true}).click();await page.getByRole('button',{name:/New scanner/}).click();assert(await scan.isEnabled());
   scanners.push({...scanners[0],id:'scanner_hotplug_0002',name:'Second scanner'});await page.clock.fastForward(5000);
-  await page.getByRole('button',{name:'Change scanner',exact:true}).waitFor();assert(await scan.isEnabled(),'new devices preserve the current selection');
+  await page.getByRole('button',{name:'Select scanner',exact:true}).waitFor();assert(await scan.isEnabled(),'new devices preserve the current selection');
   checks.push('Hotplug preserves selection, allows selecting one remaining device and never silently redirects acquisition');
   for(const locale of ['en','ja'])for(const width of [320,768,1440]){
    await page.setViewportSize({width,height:900});await page.selectOption('#locale',locale);await page.locator('main[aria-busy=false] h1').waitFor();
