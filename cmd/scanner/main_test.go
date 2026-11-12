@@ -19,6 +19,7 @@ func TestPhotoNormalizeChildDispatch(t *testing.T) {
 	// Parser limits describe the production executable, not the race runtime's shadow memory.
 	self := filepath.Join(t.TempDir(), "scanner")
 	build := exec.Command("go", "build", "-o", self, ".")
+	build.Env = append(os.Environ(), "CGO_ENABLED=0")
 	if diagnostics, err := build.CombinedOutput(); err != nil {
 		t.Fatal("build production child", err, string(diagnostics))
 	}
