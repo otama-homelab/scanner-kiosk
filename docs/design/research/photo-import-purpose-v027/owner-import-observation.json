@@ -1,0 +1,11 @@
+{
+  "observed_at": "2026-11-12T00:51:54.766514+00:00",
+  "owner_words": "取り込みできました",
+  "operation": "image import",
+  "import_success": true,
+  "save_success": "not explicitly confirmed",
+  "device": "not specified",
+  "format": "not separately confirmed; response followed JPEG import/save prompt",
+  "small_angle_correction": "owner reports remaining slight skew; no measured angle",
+  "full_acceptance": false
+}

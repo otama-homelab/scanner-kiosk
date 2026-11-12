@@ -1,0 +1,99 @@
+{
+  "format": "scanner-v0214-goal-reconciliation",
+  "checked_at": "2026-11-12T02:25:16.912826+00:00",
+  "previous_goal_turn_classification": "progress: v0.2.14 published and deployed with full required CI and actual public readback",
+  "current_goal_turn_classification": "progress: reconcile release and partial owner observation with original requirement ledger",
+  "complete": 7,
+  "total": 14,
+  "requirement_evidence_references_checked": 37,
+  "requirements": [
+    {
+      "id": "ENV-01",
+      "status": "measured-pass",
+      "complete": true
+    },
+    {
+      "id": "ENV-02",
+      "status": "measured-pass",
+      "complete": true
+    },
+    {
+      "id": "TRUTH-01",
+      "status": "measured-pass",
+      "complete": true
+    },
+    {
+      "id": "TRUTH-02",
+      "status": "waiting_external_input",
+      "complete": false
+    },
+    {
+      "id": "TRUTH-03",
+      "status": "measured-pass",
+      "complete": true
+    },
+    {
+      "id": "VERIFY-01",
+      "status": "waiting_external_input",
+      "complete": false
+    },
+    {
+      "id": "VERIFY-02",
+      "status": "waiting_external_input",
+      "complete": false
+    },
+    {
+      "id": "VERIFY-03",
+      "status": "measured-pass",
+      "complete": true
+    },
+    {
+      "id": "VERIFY-04",
+      "status": "waiting_external_input",
+      "complete": false
+    },
+    {
+      "id": "ILL-01",
+      "status": "measured-fail",
+      "complete": true
+    },
+    {
+      "id": "ILL-02",
+      "status": "measured-partial",
+      "complete": false
+    },
+    {
+      "id": "ACCEPT-01",
+      "status": "waiting_external_owner_operation",
+      "complete": false
+    },
+    {
+      "id": "ACCEPT-02",
+      "status": "not-run",
+      "complete": false
+    },
+    {
+      "id": "ACCEPT-03",
+      "status": "measured-pass",
+      "complete": true
+    }
+  ],
+  "new_qualified_correction_models": 0,
+  "source_actions_release": {
+    "path": "docs/design/research/scanner-source-actions-v0214/release.json",
+    "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c"
+  },
+  "owner_import_observation": {
+    "path": "docs/design/research/photo-import-purpose-v027/owner-import-observation.json",
+    "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c"
+  },
+  "completion_proven": false,
+  "remaining_conditions": [
+    "Independent annotations of original6 photographs, including photo2_2 digits/thinlines/geometry",
+    "Independent seal/content truth and valid semantic content-preservation evidence",
+    "Actual owner same-original iPhone/PC save/open observations",
+    "Candidate/shared-path qualification after dependent gates"
+  ],
+  "new_inference_runs": 0,
+  "scope": "Current evidence reconciliation only; release success is not correction-milestone completion."
+}

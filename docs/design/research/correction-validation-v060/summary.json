@@ -292,7 +292,7 @@
       "id": "ACCEPT-01",
       "status": "waiting_external_owner_operation",
       "complete": false,
-      "evidence_scope": "One authorized Canon direct experimental scan captured locally; iPhone/PC product operation and acceptance missing.",
+      "evidence_scope": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -300,6 +300,16 @@
           "path": "docs/design/research/correction-autonomous-v060/phase68-owner-evidence.json",
           "sha256": "d87cc038f952c37a8eadd265d0fcc9c34ffc1c92d820cbb1a9d94633d613df83",
           "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        },
+        {
+          "path": "docs/design/research/photo-import-purpose-v027/owner-import-observation.json",
+          "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c",
+          "revision": "2026-11-12-v0214-owner-checkpoint"
+        },
+        {
+          "path": "docs/design/research/scanner-source-actions-v0214/release.json",
+          "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c",
+          "revision": "2026-11-12-v0214-owner-checkpoint"
         }
       ]
     },
@@ -759,17 +769,28 @@
   "owner_operation_ui_unblock": {
     "summary": "../photo-import-purpose-v027/summary.json",
     "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
-    "status": "production-deployed-owner-operation-pending",
+    "status": "v0214-source-actions-deployed-owner-import-partially-confirmed",
     "owner_acceptance_complete": false,
     "historical_status": "local-verification-passed-deployment-approval-pending",
     "production_evidence": {
-      "path": "../photo-import-purpose-v027/production-v0210.json",
-      "sha256": "c5f2c2d3614b0e574adfbf43989e6efdb91a74164537183899f20a70af78040d",
-      "version": "v0.2.10"
+      "path": "../scanner-source-actions-v0214/release.json",
+      "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c",
+      "version": "v0.2.14"
     },
-    "updated_at": "2026-11-12"
+    "updated_at": "2026-11-12T02:25:16.912826+00:00",
+    "owner_import_observation": {
+      "path": "../photo-import-purpose-v027/owner-import-observation.json",
+      "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c"
+    },
+    "historical_production_evidence": [
+      {
+        "path": "../photo-import-purpose-v027/production-v0210.json",
+        "sha256": "c5f2c2d3614b0e574adfbf43989e6efdb91a74164537183899f20a70af78040d",
+        "version": "v0.2.10"
+      }
+    ]
   },
-  "release_or_deployment_scope": "False refers to correction-model/milestone deployment; the separately authorized image-import hotfix v0.2.10 was published/deployed without adopting a correction model.",
+  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized image-import/source-action hotfix v0.2.14 is published/deployed; no correction model adopted.",
   "current_fsenet_existing_line_contract": {
     "summary": "../correction-fsenet-existing-line-contract-v060/summary.json",
     "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07",
@@ -778,6 +799,13 @@
     "new_model_inferences": 0
   },
   "current_requirements_reconciliation": {
+    "summary": "../correction-v0214-goal-reconciliation/summary.json",
+    "sha256": "e77e22b8c9ae1ed7300dee44f239767c085136190788eaab24fb5a89a75fc9b8",
+    "complete": 7,
+    "total": 14,
+    "scope": "Current14 requirement evidence and v0.2.14 release/partial owner evidence; no full owner or model qualification."
+  },
+  "historical_requirements_reconciliation_before_v0214": {
     "summary": "../correction-current-reconciliation-v060/summary.json",
     "sha256": "6469c46fbe64637d255a2138a562e83cc3e4f6d9955276ffc092d6c4e677f679",
     "complete": 7,
