@@ -1,7 +1,7 @@
 export const messages = {
  en:{
   photoPreviewUnavailable:'The image preview is unavailable. You can still save the document.',
-  photoCrop:'Crop photo',photoCropHelp:'Crop the normalized image. Preview first, then apply. The original stays available.',cropLeft:'Left',cropTop:'Top',cropWidth:'Width',cropHeight:'Height',photoCropPreview:'Preview crop',photoCropApply:'Apply crop',photoCropUndo:'Undo crop',photoViewOriginal:'View original upload',photoCropInvalid:'Enter a crop inside the image bounds.',photoCropReady:'Preview ready. Apply to use this crop.',
+  photoCrop:'Crop photo',photoCropHelp:'Drag the two corners, or select a corner below and tap the image. Arrow keys move a focused corner. Preview, then apply; the original is kept.',cropLeft:'Left',cropTop:'Top',cropWidth:'Width',cropHeight:'Height',photoCropPreview:'Preview crop',photoCropApply:'Apply crop',photoCropUndo:'Undo crop',photoViewOriginal:'View original upload',photoCropInvalid:'Enter a crop inside the image bounds.',photoCropReady:'Preview ready. Apply to use this crop.',
   camera:'Take a photo',photoPicker:'Import',photoChooserCancelled:'No photo selected. You can use Import.',photoHEIC:'HEIC is not supported. Choose a JPEG or PNG.',photoUnsupported:'Choose a JPEG or PNG image.',photoLimit:'This image exceeds the size or processing limits. Choose a smaller image.',photoRejected:'The image could not be imported. Choose another JPEG or PNG.',photoInvalid:'This image is damaged or could not be read.',
   deliverySend:"Send to Paperless",
   deliveryConfirm:"Confirm send",
@@ -155,6 +155,7 @@ export const messages = {
   ocrHelp:'Adds searchable text to your PDF. Review recognition results before relying on them.',
   ocrLanguageHint:'Select the languages used in the document. Choose at least one.',
   ocrDetails:'Recognition details',
+  cropPrecise:'Adjust by pixels',cropTopLeft:'1. Top-left corner',cropBottomRight:'2. Bottom-right corner',ocrZoomIn:'Zoom in',ocrZoomOut:'Zoom out',
   ocrModel:'OCR model',
   ocrLanguages:'OCR languages',
   ocrQuality:'Quality',
@@ -222,7 +223,7 @@ export const messages = {
  },
  ja:{
   photoPreviewUnavailable:'画像を表示できません。書類の保存は引き続き利用できます。',
-  photoCrop:'写真を切り抜く',photoCropHelp:'向きを整えた画像を切り抜きます。プレビューを確認して適用してください。原本は保持されます。',cropLeft:'左',cropTop:'上',cropWidth:'幅',cropHeight:'高さ',photoCropPreview:'切り抜きを確認',photoCropApply:'切り抜きを適用',photoCropUndo:'切り抜きを元に戻す',photoViewOriginal:'取り込んだ原本を表示',photoCropInvalid:'画像の範囲内で切り抜きを指定してください。',photoCropReady:'プレビューを確認し、適用してください。',
+  photoCrop:'写真を切り抜く',photoCropHelp:'2つの角をドラッグするか、下で角を選んで画像をタップしてください。角は矢印キーでも動かせます。確認して適用すると切り抜かれ、原本は保持されます。',cropLeft:'左',cropTop:'上',cropWidth:'幅',cropHeight:'高さ',photoCropPreview:'切り抜きを確認',photoCropApply:'切り抜きを適用',photoCropUndo:'切り抜きを元に戻す',photoViewOriginal:'取り込んだ原本を表示',photoCropInvalid:'画像の範囲内で切り抜きを指定してください。',photoCropReady:'プレビューを確認し、適用してください。',
   camera:'写真を撮る',photoPicker:'取り込む',photoChooserCancelled:'写真は選択されませんでした。「取り込む」から選択できます。',photoHEIC:'HEICには対応していません。JPEG・PNGを選んでください。',photoUnsupported:'JPEG・PNG画像を選んでください。',photoLimit:'画像がサイズ・処理上限を超えています。小さい画像を選んでください。',photoRejected:'画像を取り込めませんでした。別のJPEG・PNGを選んでください。',photoInvalid:'画像が壊れているか、読み取れません。',
   deliverySend:"Paperlessへ送る",
   deliveryConfirm:"送信を確定",
@@ -376,6 +377,7 @@ export const messages = {
   ocrHelp:'PDFに検索できる文字を追加します。認識結果には誤りがあるため、内容を確認してください。',
   ocrLanguageHint:'原稿に使われている言語を1つ以上選んでください。',
   ocrDetails:'認識の詳細',
+  cropPrecise:'数値で調整',cropTopLeft:'1. 左上の角',cropBottomRight:'2. 右下の角',ocrZoomIn:'拡大',ocrZoomOut:'縮小',
   ocrModel:'OCRモデル',
   ocrLanguages:'OCR言語',
   ocrQuality:'品質',

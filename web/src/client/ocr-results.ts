@@ -94,7 +94,10 @@ export function ocrResults(o:Options){
       const group=document.createElementNS(svg.namespaceURI,'g');group.setAttribute('transform',rotation===90?`translate(${h} 0) rotate(90)`:rotation===180?`translate(${w} ${h}) rotate(180)`:rotation===270?`translate(0 ${w}) rotate(270)`:'');
       const image=document.createElementNS(svg.namespaceURI,'image');image.setAttribute('href',prefix+kind);image.setAttribute('width',String(w));image.setAttribute('height',String(h));
       const rect=document.createElementNS(svg.namespaceURI,'rect') as SVGRectElement;rect.classList.add('ocr-highlight');rect.setAttribute('visibility','hidden');overlay=rect;
-      image.addEventListener('error',()=>{overlay=null;clearSuggestion();svg.replaceWith(make('p',t('reocrPreviewUnavailable')))},{once:true});group.append(image,rect);svg.append(group);panel.append(svg);
+      const viewport=document.createElement('div');viewport.className='ocr-preview-viewport';viewport.tabIndex=0;viewport.setAttribute('aria-label',t('preview'));
+      const zoomControls=document.createElement('div');zoomControls.className='ocr-zoom-controls';let zoom=1;const out=button('ocrZoomOut',()=>setZoom(zoom-1)),into=button('ocrZoomIn',()=>setZoom(zoom+1));const setZoom=(value:number)=>{zoom=Math.max(1,Math.min(4,value));svg.style.width=zoom*100+'%';out.disabled=zoom===1;into.disabled=zoom===4};setZoom(1);zoomControls.append(out,into);
+      svg.style.aspectRatio=`${rotation%180?h:w} / ${rotation%180?w:h}`;
+      image.addEventListener('error',()=>{overlay=null;clearSuggestion();svg.replaceWith(make('p',t('reocrPreviewUnavailable')))},{once:true});group.append(image,rect);svg.append(group);viewport.append(svg);panel.append(zoomControls,viewport);
      }else panel.append(make('p',t('reocrPreviewUnavailable')));
      if(p.transcript_unavailable||!artifacts.text){panel.append(make('p',t('reocrTextUnavailable')));return}
      const transcript=await artifact(artifacts.text,prefix+'text',signal);if(!current()||version!==comparisonVersion)return;

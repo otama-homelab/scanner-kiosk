@@ -254,3 +254,22 @@ button:active:not(:disabled){box-shadow:inset 0 0 0 2px var(--accent)}
 .ocr-notice:empty,#output-settings .ocr-notice:empty,.ocr-state:empty{display:none}
 .ocr-result-details{margin-block:.5rem 1rem}
 .ocr-result-details summary{cursor:pointer;min-height:2.75rem;padding-block:.65rem;box-sizing:border-box}
+
+/* Scope the switch track to the shared OCR control; the old track must not paint twice. */
+.ocr-settings .ocr-toggle{margin:0;padding:0;border:0;background:none}
+.ocr-settings .ocr-toggle input{width:2.75rem;height:1.5rem;min-width:0;min-height:0;flex:0 0 2.75rem;border:1px solid var(--control-line)}
+.ocr-settings .ocr-toggle input::before{content:none}
+.ocr-preview-viewport{max-height:60dvh;overflow:auto;margin-block:.75rem;background:var(--bg);border:1px solid var(--line)}
+.ocr-preview-viewport .ocr-source-preview{width:100%;height:auto;max-height:none;max-width:none;margin:0}
+.ocr-zoom-controls,.crop-corners{display:flex;flex-wrap:wrap;gap:.5rem}
+.ocr-zoom-controls button{margin:0}
+.photo-crop{width:min(56rem,calc(100vw - 2rem))}
+.crop-stage{position:relative;width:fit-content;max-width:calc(100% - 2.75rem);margin:1.75rem auto;touch-action:none}
+.crop-stage>img{display:block;width:100%;height:auto;user-select:none}
+.crop-selection{position:absolute;border:2px solid var(--accent);pointer-events:none;background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.crop-handle{position:absolute!important;min-width:44px;min-height:44px;width:44px;height:44px;padding:0!important;margin:0!important;border:2px solid var(--on-accent);background:var(--accent);color:var(--on-accent);pointer-events:auto;touch-action:none;cursor:crosshair;transform:translate(-50%,-50%)}
+.crop-handle-0{left:0;top:0}.crop-handle-1{left:100%;top:100%}
+.crop-corners button{flex:1;min-width:0;font-size:.875rem;margin:0}
+.crop-corners [aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+
+.photo-crop .photo-import-actions{position:sticky;bottom:-1.75rem;background:var(--surface);padding-block:.75rem;z-index:1}
