@@ -1,7 +1,7 @@
 import {ocrControls} from './ocr';
 import {requestKey} from './request-key';
 import type {Key} from './messages';
-type Options={doc:any;locale:string;t:(key:Key)=>string;api:(path:string,method?:string,body?:unknown,key?:string,revision?:number,signal?:AbortSignal)=>Promise<any>;refresh:()=>Promise<void>;stopJob:()=>void;current:()=>boolean};
+type Options={doc:any;locale:string;t:(key:Key)=>string;api:(path:string,method?:string,body?:unknown,key?:string,revision?:number,signal?:AbortSignal)=>Promise<any>;refresh:()=>Promise<void>;stopJob:()=>void;onPageChange?:(pageID:string)=>void;current:()=>boolean};
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
 export function ocrResults(o:Options){
  const {doc,t,api}=o,base='/api/documents/'+doc.id;
@@ -9,6 +9,7 @@ export function ocrResults(o:Options){
  const make=(tag:string,value:string)=>{const e=document.createElement(tag);e.textContent=value;return e};
  const button=(key:Key,action:()=>void)=>{const b=document.createElement('button');b.type='button';b.textContent=t(key);b.addEventListener('click',action);return b};
  const state=make('p','');state.setAttribute('role','status');
+ let selectPage=(id:string)=>{};
  let disposed=false,dialog:HTMLDialogElement|null=null,controls:ReturnType<typeof ocrControls>|null=null;
  const controller=new AbortController();const current=()=>!disposed&&o.current();
  const pendingKey='scanner.reocr.'+doc.id;
@@ -43,12 +44,13 @@ export function ocrResults(o:Options){
   controls=ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),help:t('ocrHelp'),languageHint:t('ocrLanguageHint'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},o.locale,()=>{submit.disabled=sending||!controls?.enabled()||!controls.valid()});
   const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);dialog.append(title,hint,controls.element,actions);commands.append(dialog);
   dialog.addEventListener('close',()=>{controls?.dispose();controls=null;dialog?.remove();dialog=null;if(current())start.focus()},{once:true});dialog.showModal();controls.start();
- });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();const commands=document.createElement('div');commands.className='ocr-results-actions';commands.append(start,cancel,check,state);
+ });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();const commands=document.createElement('div');commands.className='ocr-results-actions';commands.append(start,cancel,check,state);element.append(commands);
  if(pending())state.textContent=t('reocrUnknown');
  if(doc.active_job_id)cancel.hidden=false;
  const summaries=Array.isArray(doc.ocr_results)?doc.ocr_results:[];
  const candidate=summaries.find((r:any)=>r.state==='candidate');
  if(candidate||readDisposition())start.disabled=true;
+ if(candidate)start.hidden=true;
  if(readDisposition()){check.hidden=false;fail()}
  const previous=summaries.find((r:any)=>r.state==='adopted');
  if(previous&&opaque(previous.id)&&doc.output?.revision!==doc.revision){const link=document.createElement('a');link.className='download-link';link.href=base+'/ocr-results/'+previous.id+'/output';link.textContent=t('savePDF');element.prepend(link)}
@@ -57,12 +59,28 @@ export function ocrResults(o:Options){
  const expire=()=>{const remaining=expires-Date.now();if(remaining>0)expiryTimer=setTimeout(expire,Math.min(remaining,2147483647));else for(const clear of expiryHandlers)clear()};expire();
  if(summaries.length){
   if(summaries.length>2||summaries.some((r:any)=>!opaque(r.id)||!['candidate','adopted'].includes(r.state)||!Number.isSafeInteger(r.input_revision)))throw new Error('Invalid result summaries');
-  const title=make('h2',t(candidate?'reocrCompare':'ocrText'));title.tabIndex=-1;title.dataset.reocrHeading='true';element.append(title);
+  const title=make('h2',t('ocrText'));title.tabIndex=-1;title.dataset.reocrHeading='true';element.append(title);
   const label=make('label',t('page'));const select=document.createElement('select');label.append(select);
-  for(const [index,p] of doc.pages.entries()){if(!opaque(p.id))throw new Error('Invalid page');const option=document.createElement('option');option.value=p.id;option.textContent=t('page')+' '+(index+1);select.append(option)}
-  const pageKey='scanner.reocr.page.'+doc.id;try{const saved=sessionStorage.getItem(pageKey);if(doc.pages.some((p:any)=>p.id===saved))select.value=saved!}catch{}
-  element.append(make('p',t('ocrReviewHelp')));
-  const panels=document.createElement('div');panels.className='ocr-comparison';element.append(label,panels);
+  for(const [index,p] of doc.pages.entries()){if(!opaque(p.id))throw new Error('Invalid page');const option=document.createElement('option');option.value=p.id;option.textContent=(index+1)+' / '+doc.pages.length;select.append(option)}
+  const pageKey='scanner.document.page.'+doc.id;try{const saved=sessionStorage.getItem(pageKey);if(doc.pages.some((p:any)=>p.id===saved))select.value=saved!}catch{}
+  const help=make('p',t('ocrReviewHelp'));help.className='ocr-review-help';
+  const toolbar=document.createElement('div');toolbar.className='ocr-review-toolbar';
+  const resultControls=document.createElement('div');resultControls.className='ocr-result-choices';resultControls.setAttribute('role','group');resultControls.setAttribute('aria-label',t('reocrCompare'));
+  const panels=document.createElement('div');panels.className='ocr-comparison';
+  const body=document.createElement('div');body.className='ocr-review-body';body.dataset.sourceOpen='false';
+  const sourcePane=document.createElement('aside');sourcePane.className='ocr-source-pane';sourcePane.id='ocr-source-pane';sourcePane.setAttribute('aria-label',t('ocrSourceImage'));
+  const sourceTitle=make('p',''),sourceHost=document.createElement('div');sourceTitle.className='ocr-source-title';sourceHost.className='ocr-source-host';sourcePane.append(sourceTitle,sourceHost);
+  const textPane=document.createElement('div');textPane.className='ocr-text-pane';textPane.append(panels);
+  const sourceToggle=button('ocrSourceImage',()=>{const open=body.dataset.sourceOpen!=='true';body.dataset.sourceOpen=String(open);sourceToggle.setAttribute('aria-expanded',String(open));sourceToggle.textContent=t(open?'ocrHideSource':'ocrSourceImage')});sourceToggle.className='ocr-source-toggle';sourceToggle.setAttribute('aria-controls',sourcePane.id);sourceToggle.setAttribute('aria-expanded','false');
+  let resultView=candidate?'candidate':'adopted',activeSourceID=candidate?.id??previous?.id;
+  const sources=new Map<string,{view:HTMLElement;label:string}>(),resultKey='scanner.reocr.result.'+doc.id;
+  try{const saved=JSON.parse(sessionStorage.getItem(resultKey)||'null');if(saved?.candidate===(candidate?.id??'')&&['candidate','adopted','compare'].includes(saved.view)&&(saved.view==='compare'||summaries.some((r:any)=>r.state===saved.view)))resultView=saved.view}catch{}
+  const showSource=(id:string)=>{activeSourceID=id;const found=sources.get(id);sourceTitle.textContent=found?.label??t('loading');if(found){if(sourceHost.firstElementChild!==found.view)sourceHost.replaceChildren(found.view)}else sourceHost.replaceChildren(make('p',t('loading')))};
+  const viewButtons=new Map<string,HTMLButtonElement>();
+  const setResultView=(value:string)=>{resultView=value;panels.dataset.view=value;for(const panel of panels.querySelectorAll<HTMLElement>('.ocr-result-panel'))panel.hidden=value!=='compare'&&panel.dataset.resultState!==value;for(const [key,b] of viewButtons)b.setAttribute('aria-pressed',String(key===value));showSource(value==='adopted'?previous.id:candidate?.id??previous.id);try{sessionStorage.setItem(resultKey,JSON.stringify({view:value,candidate:candidate?.id??''}))}catch{}};
+  if(summaries.length===2){for(const [value,key] of [['adopted','ocrSavedView'],['candidate','ocrNewView'],['compare','ocrCompareView']] as const){const control=button(key,()=>setResultView(value));viewButtons.set(value,control);resultControls.append(control)}}
+  toolbar.append(label,resultControls,sourceToggle);body.append(sourcePane,textPane);const heading=document.createElement('div');heading.className='ocr-review-heading';const intro=document.createElement('div');intro.append(title,help);heading.append(intro,commands);element.append(heading,toolbar,body);
+
   async function artifact(url:string,expected:string,signal:AbortSignal){
    if(url!==expected)throw new Error('Mismatched result artifact');
    const response=await fetch(expected,{credentials:'same-origin',cache:'no-store',redirect:'error',signal});
@@ -73,9 +91,9 @@ export function ocrResults(o:Options){
   }
   async function compare(){
    comparisonAbort?.abort();comparisonAbort=new AbortController();const signal=comparisonAbort.signal,version=++comparisonVersion,pageID=select.value;
-   expiryHandlers.clear();panels.replaceChildren();
+   expiryHandlers.clear();panels.replaceChildren();sources.clear();showSource(resultView==='adopted'?previous.id:candidate?.id??previous.id);
    await Promise.all(summaries.map(async(summary:any)=>{
-    const panel=document.createElement('section');panel.className='ocr-result-panel';panel.dataset.resultId=summary.id;panel.append(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('loading')));panels.append(panel);
+    const panel=document.createElement('section');panel.className='ocr-result-panel';panel.dataset.resultId=summary.id;panel.dataset.resultState=summary.state;panel.hidden=resultView!=='compare'&&resultView!==summary.state;panels.dataset.view=resultView;panel.append(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('loading')));panels.append(panel);
     try{
      const resultBase=base+'/ocr-results/'+summary.id;
      const result=await api(resultBase,'GET',undefined,undefined,undefined,signal);
@@ -88,7 +106,7 @@ export function ocrResults(o:Options){
      details.append(make('p',`${t('reocrRevision')} ${result.input_revision} · ${result.settings.ocr.provider_id} / ${result.settings.ocr.model_id} / ${result.settings.ocr.model_version}`));
      const provenance=make('p',`${t('reocrSource')}: ${p.effective_sha256}`);provenance.className='ocr-source';details.append(provenance);if(p.pdf_text_origin==='retained-source')panel.append(make('p',t('reocrRetained')));
      const prefix=resultBase+'/pages/'+pageID+'/',artifacts=p.artifacts??{},kind=p.source_type==='pdf'?'preview':'effective';
-     let overlay:SVGRectElement|null=null,sourceInspector:HTMLDetailsElement|null=null,clearSuggestion=()=>{};
+     let overlay:SVGRectElement|null=null,sourceView=make('div',''),clearSuggestion=()=>{};sourceView.className='ocr-source-view';
      if(artifacts[kind]===prefix+kind){
       const w=p.pixel_width,h=p.pixel_height,sourceRotation=p.pdf_raster?.SourceRotation??0;if(![0,90,180,270].includes(sourceRotation))throw new Error('Invalid PDF rotation');const rotation=(p.rotation+sourceRotation)%360;
       const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${rotation%180?h:w} ${rotation%180?w:h}`);svg.setAttribute('role','img');svg.setAttribute('aria-label',t('preview'));svg.classList.add('ocr-source-preview');
@@ -96,11 +114,12 @@ export function ocrResults(o:Options){
       const image=document.createElementNS(svg.namespaceURI,'image');image.setAttribute('href',prefix+kind);image.setAttribute('width',String(w));image.setAttribute('height',String(h));
       const rect=document.createElementNS(svg.namespaceURI,'rect') as SVGRectElement;rect.classList.add('ocr-highlight');rect.setAttribute('visibility','hidden');overlay=rect;
       const viewport=document.createElement('div');viewport.className='ocr-preview-viewport';viewport.tabIndex=0;viewport.setAttribute('aria-label',t('preview'));
-      const zoomControls=document.createElement('div');zoomControls.className='ocr-zoom-controls';let zoom=1;const out=button('ocrZoomOut',()=>setZoom(zoom-1)),into=button('ocrZoomIn',()=>setZoom(zoom+1));const setZoom=(value:number)=>{zoom=Math.max(1,Math.min(4,value));svg.style.width=zoom*100+'%';out.disabled=zoom===1;into.disabled=zoom===4};setZoom(1);zoomControls.append(out,into);
+      const zoomControls=document.createElement('div');zoomControls.className='ocr-zoom-controls';let zoom=1;const out=button('ocrZoomOut',()=>setZoom(zoom-1)),into=button('ocrZoomIn',()=>setZoom(zoom+1));const setZoom=(value:number)=>{zoom=Math.max(1,Math.min(4,value));svg.style.width=zoom*100+'%';svg.style.height=zoom*100+'%';out.disabled=zoom===1;into.disabled=zoom===4};setZoom(1);zoomControls.append(out,into);
       svg.style.aspectRatio=`${rotation%180?h:w} / ${rotation%180?w:h}`;
-      image.addEventListener('error',()=>{overlay=null;clearSuggestion();svg.replaceWith(make('p',t('reocrPreviewUnavailable')))},{once:true});group.append(image,rect);svg.append(group);viewport.append(svg);const source=document.createElement('details');sourceInspector=source;source.className='ocr-source-inspector';source.name='ocr-source-'+doc.id;source.append(make('summary',t('ocrSourceImage')),zoomControls,viewport);
-     }else panel.append(make('p',t('reocrPreviewUnavailable')));
-     const footer=()=>{if(sourceInspector)panel.append(sourceInspector);panel.append(details)};
+      image.addEventListener('error',()=>{overlay=null;clearSuggestion();out.disabled=into.disabled=true;svg.replaceWith(make('p',t('reocrPreviewUnavailable')))},{once:true});group.append(image,rect);svg.append(group);viewport.append(svg);sourceView.append(viewport,zoomControls);
+     }else sourceView.append(make('p',t('reocrPreviewUnavailable')));
+     sources.set(result.id,{view:sourceView,label:t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')+' · '+result.settings.ocr.model_id});if(activeSourceID===result.id)showSource(result.id);
+     const footer=()=>panel.append(details);
      if(p.transcript_unavailable||!artifacts.text){panel.append(make('p',t('reocrTextUnavailable')));footer();return}
      const transcript=await artifact(artifacts.text,prefix+'text',signal);if(!current()||version!==comparisonVersion)return;
      let positions:any=null;
@@ -128,19 +147,20 @@ export function ocrResults(o:Options){
        const generated=document.createElement('div');generated.dataset.structureSuggestion='true';generated.setAttribute('role','region');generated.setAttribute('aria-label',t('structureGenerated'));
        generated.append(make('h4',t('structureGenerated')),make('p',t('structureHelp')),make('p',name+'.pdf'));
        const reference=make('p',`${result.id} · ${t('reocrRevision')} ${result.input_revision} · ${t('page')} ${doc.pages.findIndex((v:any)=>v.id===pageID)+1} (${pageID}) · ${t('structureItem')} ${index+1} · ${p.effective_sha256}`);reference.className='ocr-source';
-       const source=button('structureSource',()=>void(async()=>{source.disabled=true;try{await validate(index);if(token!==generation)return;const control=spans.querySelectorAll('button')[index];if(sourceInspector)sourceInspector.open=true;control.focus();control.click()}catch{if(current()&&version===comparisonVersion){clearSuggestion();spans.querySelectorAll('button')[index]?.focus()}}finally{source.disabled=false}})());
+       const source=button('structureSource',()=>void(async()=>{source.disabled=true;try{await validate(index);if(token!==generation)return;const control=spans.querySelectorAll('button')[index];showSource(result.id);control.focus();control.click()}catch{if(current()&&version===comparisonVersion){clearSuggestion();spans.querySelectorAll('button')[index]?.focus()}}finally{source.disabled=false}})());
        generated.append(reference,source);optional.replaceChildren(create,generated);notice.textContent='';
       }catch{if(current()&&version===comparisonVersion&&token===generation){clearSuggestion();spans.querySelectorAll('button')[index]?.focus()}}finally{create.disabled=false}
      })());
      for(const [index,span] of positions.spans.entries()){
       const row=document.createElement('li');const control=document.createElement('button');control.type='button';control.textContent=`${index+1}. ${span.text}`;control.setAttribute('aria-pressed','false');
-      const selectSpan=()=>{for(const button of spans.querySelectorAll('button'))button.setAttribute('aria-pressed',String(button===control));if(overlay){for(const key of ['x','y','width','height'])overlay.setAttribute(key,String(span.box[key]));overlay.setAttribute('visibility','visible')}if(selected!==index){selected=index;generation++;optional.replaceChildren();notice.textContent='';if(available()&&span.text.trim()&&transcript.includes(span.text))optional.append(create);else notice.textContent=t('structureUnavailable')}};
+      const selectSpan=()=>{showSource(result.id);for(const button of panels.querySelectorAll('.ocr-spans button'))button.setAttribute('aria-pressed',String(button===control));if(overlay){for(const key of ['x','y','width','height'])overlay.setAttribute(key,String(span.box[key]));overlay.setAttribute('visibility','visible')}if(selected!==index){selected=index;generation++;optional.replaceChildren();notice.textContent='';if(available()&&span.text.trim()&&transcript.includes(span.text))optional.append(create);else notice.textContent=t('structureUnavailable')}};
       control.addEventListener('click',selectSpan);control.addEventListener('focus',selectSpan);row.append(control);spans.append(row);
      }panel.append(spans,optional,notice);footer();
     }catch{if(current()&&version===comparisonVersion)panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('reocrTextUnavailable')))}
    }));
   }
-  select.addEventListener('change',()=>{try{sessionStorage.setItem(pageKey,select.value)}catch{}void compare()});void compare();
+  const changedPage=()=>{try{sessionStorage.setItem(pageKey,select.value)}catch{}o.onPageChange?.(select.value);void compare()};
+  selectPage=(id:string)=>{if(select.value!==id&&doc.pages.some((p:any)=>p.id===id)){select.value=id;changedPage()}};select.addEventListener('change',changedPage);void compare();for(const [key,b] of viewButtons)b.setAttribute('aria-pressed',String(key===resultView));
   if(candidate){
    const actions=document.createElement('div');actions.className='output-actions';
    const adopt=button('reocrAdopt',()=>void disposeCandidate('adopt'));
@@ -156,8 +176,8 @@ export function ocrResults(o:Options){
      else{fail();check.hidden=false}
     }
    }
-   actions.append(discard,adopt);element.append(actions);
+   actions.append(discard,adopt);actions.classList.add('ocr-review-actions');textPane.append(actions);
   }
- }
- return {element,actions:commands,dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();dialog?.remove()}};
+ }else{element.prepend(make('h2',t('documentOCR')),make('p',t('ocrEmpty')))}
+ return {element,selectPage:(id:string)=>selectPage(id),dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();dialog?.remove()}};
 }

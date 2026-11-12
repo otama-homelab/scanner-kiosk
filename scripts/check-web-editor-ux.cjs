@@ -11,6 +11,7 @@ function fixturePDF(){
  const id='document_editor_0001',jobID='job_editor_0000001',errors=[],renders=[];
  let state='queued',previewFailure=true,holdNextPreview=false,previewEntered,releasePreview;const previewBlocked=new Promise(resolve=>previewEntered=resolve);
  const doc={id,revision:2,purpose:'document',state:'review',created_at:'2026-11-07T03:00:00Z',expires_at:new Date(Date.now()+3600000).toISOString(),active_job_id:null,output:null,pages:[1,2].map(n=>({id:'page_editor_00000'+n,ordinal:n-1,rotation:0,source_type:'pdf'}))};
+ const visitPDFPages=async()=>{const picker=page.locator('.document-pagebar select');for(const p of doc.pages){await picker.selectOption(p.id);await page.waitForFunction(id=>{const canvas=document.querySelector('[data-page-id="'+id+'"] canvas');return canvas&&!canvas.hidden&&canvas.width>0},p.id)}await picker.selectOption(doc.pages[0].id)};
  const reply=(r,json,status=200)=>r.fulfill({status,headers:{Date:new Date().toUTCString()},json});
  try{
   page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>document.addEventListener('securitypolicyviolation',e=>window.__csp=(window.__csp||[]).concat(e.violatedDirective)));
@@ -23,7 +24,7 @@ function fixturePDF(){
   await page.route('**/api/documents/'+id+'/download',r=>r.fulfill({status:200,contentType:'application/pdf',headers:{'Content-Disposition':'attachment; filename="scan.pdf"'},body:Buffer.from('%PDF-1.4\n% download fixture\n')}));
   await page.setViewportSize({width:390,height:844});await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);
   await page.locator('h1[data-document-title]').waitFor();
-  await page.getByRole('button',{name:'Try again',exact:true}).click();await page.waitForFunction(()=>[...document.querySelectorAll('.pdf-page canvas')].every(c=>!c.hidden&&c.width>0));
+  await page.getByRole('button',{name:'Try again',exact:true}).click();await visitPDFPages();
   assert.equal(await page.locator('.preview-grid canvas').count(),2,'PDF pages preview inline in the overview');
   assert.equal(await page.locator('.page-more').count(),0);assert.equal(await page.getByRole('button',{name:'Replace with scan',exact:true}).count(),0);assert.equal(await page.getByRole('button',{name:'Insert scan before',exact:true}).count(),0);assert.equal(await page.locator('.page-actions button').count(),8,'four simple actions per page');const toolbarBox=await page.locator('.document-toolbar').boundingBox(),gridBox=await page.locator('.preview-grid').boundingBox();assert(gridBox.y>=toolbarBox.y+toolbarBox.height+20,'page blocks stay clear of the divider');
   assert.equal(await page.locator('.document-header button').count(),0,'document navigation uses the existing History header');
@@ -55,10 +56,10 @@ function fixturePDF(){
   }
   doc.active_job_id=null;state='succeeded';
   for(const locale of ['en','ja'])for(const theme of ['light','dark'])for(const width of [320,390,1440]){
-   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);await page.selectOption('#locale',locale);await page.locator('h1[data-document-title]').waitFor();await page.waitForFunction(()=>{const canvases=[...document.querySelectorAll('.preview-grid canvas')];return canvases.length===2&&canvases.every(canvas=>!canvas.hidden&&canvas.width>0)});
+   await page.goto(process.env.SCANNER_TEST_ORIGIN+'/#/document/'+id);await page.selectOption('#locale',locale);await page.locator('h1[data-document-title]').waitFor();await visitPDFPages();
    await page.evaluate(theme=>document.documentElement.dataset.theme=theme,theme);await page.setViewportSize({width,height:844});
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');
-   if(width<=600){const cards=await page.locator('.preview-grid>.preview-card').all();const a=await cards[0].boundingBox(),b=await cards[1].boundingBox();assert(Math.abs(a.y-b.y)<1&&b.x>a.x,'phone overview places pages side by side');assert((await page.locator('.preview-grid canvas').first().boundingBox()).height<=190);for(const button of await page.locator('.page-actions button').all()){const box=await button.boundingBox();assert(box.width>=44&&box.height>=44,'page icons keep touch targets');}}
+   if(width<=600){assert.equal(await page.locator('.preview-card:visible').count(),1,'one full page is the stable focus');assert.equal(await page.locator('.document-pagebar select option').count(),2,'both PDF pages remain reachable');for(const button of await page.locator('.page-actions button:visible').all()){const box=await button.boundingBox();assert(box.width>=44&&box.height>=44,'page icons keep touch targets');}}
    if(process.env.SCANNER_TEST_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOT.replace('.png',`-${locale}-${theme}-${width}.png`),fullPage:true});
   }
   await page.selectOption('#locale','en');
