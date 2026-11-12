@@ -605,3 +605,10 @@ the current go.mod/go.sum. Its expected executable remains c4a357f2… and the
 candidate pipeline must rebuild it using the unchanged locked SDK before native
 assembly/publication. The library versions and exact advisory tuples are unchanged;
 this notice refresh does not approve new vulnerabilities or formal release gates.
+
+Fixed SDK APK acquisition tries the canonical Alpine CDN first. On HTTP 404 only,
+it tries two HTTPS mirrors listed by mirrors.alpinelinux.org (us.mirrors.cicku.me,
+mirror.mobinhost.com). Every origin must supply the same locked size/SHA-256 and
+pass the existing pinned-key APK verification; redirects, mismatches and other
+errors fail closed. Package versions, native payload pins and publication scope
+are unchanged. Mirrors can also retire old packages; none is an archival guarantee.

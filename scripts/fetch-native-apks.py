@@ -22,6 +22,10 @@ import urllib.error
 spec = importlib.util.spec_from_file_location('prepare_native', Path(__file__).with_name('prepare-native-apks.py'))
 prepare = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(prepare)
+# Alpine-listed HTTPS mirrors retain some fixed SDK archives removed from the CDN.
+APK_ORIGINS = ('https://dl-cdn.alpinelinux.org/alpine',
+               'https://us.mirrors.cicku.me/alpine',
+               'https://mirror.mobinhost.com/alpine')
 REPOSITORIES = tuple('https://dl-cdn.alpinelinux.org/alpine/v3.24/'+name
                      for name in ['main', 'community'])
 
@@ -97,18 +101,21 @@ def fetch(lock_path, keys, apk, output):
         env = {'PATH': '/usr/bin:/bin', 'HOME': str(work), 'TMPDIR': str(work), 'LC_ALL': 'C'}
         opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
         for package in packages:
-            url = ('https://dl-cdn.alpinelinux.org/alpine/v3.24/'+package['repository']
-                   +'/x86_64/'+package['filename'])
-            request = urllib.request.Request(url, headers={'User-Agent': 'scanner-kiosk-build-inputs'})
-            try:
-                with opener.open(request, timeout=30) as response:
-                    prepare.write_verified(response, work/'verified'/package['filename'],
-                                           package['bytes'], package['sha256'], 0o444)
-            except (OSError, ValueError) as exc:
-                # Public lock identity only; never print response bodies or exception paths.
-                status = exc.code if isinstance(exc, urllib.error.HTTPError) else None
-                print(f"locked APK failure: {package['filename']} {type(exc).__name__} status={status}", file=sys.stderr)
-                raise
+            for origin in APK_ORIGINS:
+                url = origin+'/v3.24/'+package['repository']+'/x86_64/'+package['filename']
+                request = urllib.request.Request(url, headers={'User-Agent': 'scanner-kiosk-build-inputs'})
+                try:
+                    with opener.open(request, timeout=30) as response:
+                        prepare.write_verified(response, work/'verified'/package['filename'],
+                                               package['bytes'], package['sha256'], 0o444)
+                    break
+                except (OSError, ValueError) as exc:
+                    status = exc.code if isinstance(exc, urllib.error.HTTPError) else None
+                    if status == 404 and origin != APK_ORIGINS[-1]:
+                        continue
+                    # Public lock identity only; never print response bodies or exception paths.
+                    print(f"locked APK failure: {package['filename']} {type(exc).__name__} status={status}", file=sys.stderr)
+                    raise
         subprocess.run([str(apk), '--no-network', '--keys-dir', str(work/'keys'), 'verify',
                         *[str(work/'verified'/package['filename']) for package in packages]],
                        stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
