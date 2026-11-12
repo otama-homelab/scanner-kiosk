@@ -4,7 +4,7 @@ type Options={doc:any;name:string;t:(key:Key)=>string;api:(path:string,method?:s
 const states=new Map<string,Key>([['queued','deliveryQueued'],['attempted','deliveryAttempted'],['accepted','deliveryAccepted'],['confirmed','deliveryConfirmed'],['failed','deliveryFailed'],['unknown','deliveryUnknown'],['cancelled','deliveryCancelled']]);
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
 export function deliveryControl(o:Options){
- const {doc,t}=o,element=document.createElement('section');element.hidden=true;element.className='ocr-results';
+ const {doc,t}=o,element=document.createElement('section');element.hidden=true;element.className='delivery';
  const controller=new AbortController();let disposed=false,pending=false,failure=false,checked=false,uncertain=false,record:any=null,cap:any=null,timer:ReturnType<typeof setTimeout>|undefined,dialog:HTMLDialogElement|null=null,polls=0;
  const current=()=>!disposed&&o.current();
  const call=(path:string,method='GET',body?:unknown,key?:string,revision?:number)=>o.api(path,method,body,key,revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));
@@ -31,14 +31,14 @@ export function deliveryControl(o:Options){
    catch{try{await read()}catch{checked=false}}
    finally{pending=false;if(current()){dialog?.close();draw();state.focus();schedule()}}
   })());submit.className='primary';const actions=document.createElement('div');actions.className='output-actions';actions.append(cancel,submit);
-  const destination=make('p',cap.processing_destination);destination.className='ocr-result-panel';dialog.append(title,make('p',o.name),destination,hint,actions);element.append(dialog);
+  const destination=make('p',cap.processing_destination);destination.className='delivery-destination';dialog.append(title,make('p',o.name),destination,hint,actions);element.append(dialog);
   dialog.addEventListener('cancel',e=>{if(pending)e.preventDefault()});dialog.addEventListener('close',()=>{dialog?.remove();dialog=null;if(current()&&opener.isConnected)opener.focus()},{once:true});dialog.showModal();cancel.focus();
  }
  function draw(){
   if(!current()||!cap?.enabled)return;element.hidden=false;element.dataset.delivery='';
   const focused=element.contains(document.activeElement)?document.activeElement as HTMLElement:null;
   const focusKey=focused?.dataset.deliveryAction;
-  const heading=make('h2','Paperless');const destination=make('p',t('deliveryDestination')+': '+cap.processing_destination);destination.className='ocr-result-panel';
+  const heading=make('h2','Paperless');const destination=make('p',t('deliveryDestination')+': '+cap.processing_destination);destination.className='delivery-destination';
   const health=make('p',t(!cap.configured?'deliveryUnconfigured':cap.health?.status==='healthy'?'deliveryHealthy':cap.health?.status==='unknown'?'deliveryHealthUnknown':'deliveryHealthFailed'));
   if(cap.health?.checked_at)health.append(document.createTextNode(' · '+new Date(cap.health.checked_at).toLocaleString()));
   const controls=document.createElement('div');controls.className='output-actions';element.replaceChildren(heading,destination,health,state,controls);

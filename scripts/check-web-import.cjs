@@ -56,7 +56,7 @@ const {reveal}=require('./web-controls.cjs');
   await page.getByRole('dialog').getByRole('button',{name:'Close',exact:true}).click();
   checks.push('PDF import uses non-OCR limits while unavailable OCR stays disabled in output settings');
   const link=page.getByRole('link',{name:'Open PDF page',exact:true});assert((await link.getAttribute('href')).endsWith('/'+pdf+'/preview'));assert.equal(await link.getAttribute('target'),'_blank');assert.match(await link.getAttribute('rel'),/noopener/);assert.equal(await page.locator(`[data-page-id="${pdf}"] img`).count(),0);
-  assert.equal(await page.locator('.review-view-switch').count(),0);assert.equal(await page.locator('.preview-card:visible').count(),2);
+  assert.equal(await page.locator('.review-view-switch').count(),0);assert.equal(await page.locator('.preview-card:visible').count(),1);assert.equal(await page.locator('.preview-card').count(),2);const picker=page.locator('.document-pagebar select'),ids=await picker.locator('option').evaluateAll(options=>options.map(o=>o.value));assert.equal(ids.length,2);await picker.selectOption(ids.find(id=>id!==pdf));assert.equal(await page.locator('.preview-card:visible').getAttribute('data-page-id'),ids.find(id=>id!==pdf));await picker.selectOption(pdf);assert(await link.isVisible());
   for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))}
   if(process.env.SCANNER_TEST_IMPORT_SCREENSHOT)await page.screenshot({path:process.env.SCANNER_TEST_IMPORT_SCREENSHOT,fullPage:true});
   await page.selectOption('#locale','ja');await page.getByRole('link',{name:'PDFページを開く',exact:true}).waitFor();
