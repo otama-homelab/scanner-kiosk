@@ -2,7 +2,7 @@ export const messages = {
  en:{
   photoPreviewUnavailable:'The image preview is unavailable. You can still save the document.',
   photoCrop:'Crop photo',photoCropHelp:'Crop the normalized image. Preview first, then apply. The original stays available.',cropLeft:'Left',cropTop:'Top',cropWidth:'Width',cropHeight:'Height',photoCropPreview:'Preview crop',photoCropApply:'Apply crop',photoCropUndo:'Undo crop',photoViewOriginal:'View original upload',photoCropInvalid:'Enter a crop inside the image bounds.',photoCropReady:'Preview ready. Apply to use this crop.',
-  camera:'Camera',photoPicker:'Photos / Files',photoImportTitle:'Import an image',photoHelp:'Choose a JPEG or PNG to review and save as a document.',photoImportPhotoHelp:'Choose a JPEG or PNG to review and save as a photo.',photoChooserCancelled:'No photo selected. You can use Photos / Files.',photoHEIC:'HEIC is not supported. Choose a JPEG or PNG.',photoUnsupported:'Choose a JPEG or PNG image.',photoLimit:'This image exceeds the size or processing limits. Choose a smaller image.',photoRejected:'The image could not be imported. Choose another JPEG or PNG.',photoInvalid:'This image is damaged or could not be read.',
+  camera:'Take a photo',photoPicker:'Import',photoImportTitle:'Import an image',photoHelp:'Choose a JPEG or PNG to review and save as a document.',photoImportPhotoHelp:'Choose a JPEG or PNG to review and save as a photo.',photoChooserCancelled:'No photo selected. You can use Import.',photoHEIC:'HEIC is not supported. Choose a JPEG or PNG.',photoUnsupported:'Choose a JPEG or PNG image.',photoLimit:'This image exceeds the size or processing limits. Choose a smaller image.',photoRejected:'The image could not be imported. Choose another JPEG or PNG.',photoInvalid:'This image is damaged or could not be read.',
   deliverySend:"Send to Paperless",
   deliveryConfirm:"Confirm send",
   deliveryConfirmHelp:"Send this saved PDF to the destination shown above? Your saved file stays available.",
@@ -220,7 +220,7 @@ export const messages = {
  ja:{
   photoPreviewUnavailable:'画像を表示できません。書類の保存は引き続き利用できます。',
   photoCrop:'写真を切り抜く',photoCropHelp:'向きを整えた画像を切り抜きます。プレビューを確認して適用してください。原本は保持されます。',cropLeft:'左',cropTop:'上',cropWidth:'幅',cropHeight:'高さ',photoCropPreview:'切り抜きを確認',photoCropApply:'切り抜きを適用',photoCropUndo:'切り抜きを元に戻す',photoViewOriginal:'取り込んだ原本を表示',photoCropInvalid:'画像の範囲内で切り抜きを指定してください。',photoCropReady:'プレビューを確認し、適用してください。',
-  camera:'カメラ',photoPicker:'写真・ファイル',photoImportTitle:'カメラ・画像から取り込む',photoHelp:'JPEG・PNGを選び、書類として確認・保存できます。',photoImportPhotoHelp:'JPEG・PNGを選び、写真として確認・保存できます。',photoChooserCancelled:'写真は選択されませんでした。写真・ファイルから選択できます。',photoHEIC:'HEICには対応していません。JPEG・PNGを選んでください。',photoUnsupported:'JPEG・PNG画像を選んでください。',photoLimit:'画像がサイズ・処理上限を超えています。小さい画像を選んでください。',photoRejected:'画像を取り込めませんでした。別のJPEG・PNGを選んでください。',photoInvalid:'画像が壊れているか、読み取れません。',
+  camera:'写真を撮る',photoPicker:'取り込む',photoImportTitle:'カメラ・画像から取り込む',photoHelp:'JPEG・PNGを選び、書類として確認・保存できます。',photoImportPhotoHelp:'JPEG・PNGを選び、写真として確認・保存できます。',photoChooserCancelled:'写真は選択されませんでした。「取り込む」から選択できます。',photoHEIC:'HEICには対応していません。JPEG・PNGを選んでください。',photoUnsupported:'JPEG・PNG画像を選んでください。',photoLimit:'画像がサイズ・処理上限を超えています。小さい画像を選んでください。',photoRejected:'画像を取り込めませんでした。別のJPEG・PNGを選んでください。',photoInvalid:'画像が壊れているか、読み取れません。',
   deliverySend:"Paperlessへ送る",
   deliveryConfirm:"送信を確定",
   deliveryConfirmHelp:"上記の送信先へこの保存済みPDFを送りますか？保存済みファイルは引き続き使えます。",

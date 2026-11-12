@@ -21,7 +21,7 @@ export function captureControls(options:Options){
  const devicePanel=node('section');devicePanel.className='panel capture-device';devicePanel.append(node('h2',t('scanner')));
  const identity=node('p');identity.className='capture-identity';const state=node('p');state.className='capture-state';state.setAttribute('role','status');
  const choose=action('chooseScanner',()=>scannerDialog());const refresh=action('retry',()=>void read(true));
- devicePanel.append(identity,state,choose,refresh);
+ const sourceActions=node('div');sourceActions.className='capture-source-actions';sourceActions.append(choose);devicePanel.append(identity,state,sourceActions,refresh);
  const settings=node('section');settings.className='panel capture-settings';settings.append(node('h2',t('type')));
  const purposes=node('div');purposes.className='capture-purposes';purposes.setAttribute('role','group');purposes.setAttribute('aria-label',t('type'));let purpose=options.purpose||'document';
  const purposeButtons:HTMLButtonElement[]=[];
@@ -40,7 +40,7 @@ export function captureControls(options:Options){
  const statusKey=(value:Device['state']):CaptureKey=>value==='idle'?'scannerIdle':value==='busy'?'scannerBusy':value==='unavailable'?'unavailable':'scannerUnknown';
  function update(){
   const current=device();setText(identity,current?.name||t(devices.length?'chooseScanner':'noScanners'));setText(state,t(loading?'loading':!available?'unavailable':current?statusKey(current.state):'scannerUnknown'));
-  choose.textContent=t(current?'changeScanner':'chooseScanner');choose.hidden=devices.length===0||devices.length===1&&!!current;choose.disabled=pending||!devices.length;refresh.disabled=pending||!loaded||manualRefresh;refresh.hidden=!loaded||available&&devices.length>0&&(!current||current.state==='idle'||current.state==='busy');
+  choose.textContent=t(sourceActions.childElementCount>1?'chooseScanner':current?'changeScanner':'chooseScanner');choose.hidden=sourceActions.childElementCount===1&&(devices.length===0||devices.length===1&&!!current);choose.disabled=pending||!devices.length;refresh.disabled=pending||!loaded||manualRefresh;refresh.hidden=!loaded||available&&devices.length>0&&(!current||current.state==='idle'||current.state==='busy');
   for(let i=0;i<purposeButtons.length;i++){purposeButtons[i].setAttribute('aria-pressed',String(purpose===(i===0?'document':'photo')));purposeButtons[i].disabled=pending||!!options.purpose}
   summary.replaceChildren();for(const [label,value] of [['size',capture?t(capture.size as CaptureKey):'—'],['color',capture?t(capture.color as CaptureKey):'—'],['dpi',capture?String(capture.dpi):'—'],['outputFormat',purpose==='photo'?t(format as CaptureKey):'PDF']] as const){const field=node('div');field.append(node('dt',t(label)),node('dd',value));summary.append(field)}
   edit.disabled=pending||!current?.capture_options.length;start.disabled=pending||uncertain||expired||loading||!available||current?.state!=='idle'||!valid();setText(start,t(pending?'scanning':options.submitLabel||(options.purpose?'scanNext':'scan')));
@@ -83,5 +83,5 @@ export function captureControls(options:Options){
  }
  const visibility=()=>{if(document.hidden){available=false;readController?.abort();if(timer)clearTimeout(timer);update()}else void read()};document.addEventListener('visibilitychange',visibility);
  update();
- return {element,start:async(immediate=false)=>{if(immediate&&previousCapture){selected=previousCapture.scannerID;capture={...previousCapture.capture}}await read();if(immediate&&active()){if(options.initialCapture&&device()){capture={...options.initialCapture};if(!valid())notice.textContent=t('settingsChanged');update()}await submit()}},dispose:()=>{disposed=true;readController?.abort();submitController?.abort();if(timer)clearTimeout(timer);modal?.remove();modal=null;document.removeEventListener('visibilitychange',visibility)}};
+ return {element,sourceActions,start:async(immediate=false)=>{if(immediate&&previousCapture){selected=previousCapture.scannerID;capture={...previousCapture.capture}}await read();if(immediate&&active()){if(options.initialCapture&&device()){capture={...options.initialCapture};if(!valid())notice.textContent=t('settingsChanged');update()}await submit()}},dispose:()=>{disposed=true;readController?.abort();submitController?.abort();if(timer)clearTimeout(timer);modal?.remove();modal=null;document.removeEventListener('visibilitychange',visibility)}};
 }
