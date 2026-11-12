@@ -87,6 +87,39 @@ class NativeAPKFetchTests(unittest.TestCase):
         self.assertFalse(result['publication_approved'])
         self.assertEqual(result['lock_sha256'], hashlib.sha256(self.path.read_bytes()).hexdigest())
 
+    def test_missing_archives_use_only_fixed_mirrors_before_signature_verification(self):
+        for available in [1, 2]:
+            with self.subTest(available=available):
+                urls = []
+                def respond(request, timeout):
+                    urls.append(request.full_url)
+                    if len(urls) <= available:
+                        raise urllib.error.HTTPError(request.full_url, 404, 'missing', {}, None)
+                    return io.BytesIO(DATA)
+                with patch.object(self, 'respond', side_effect=respond):
+                    self.fetch()
+                self.assertEqual(urls, [origin+'/v3.24/main/x86_64/fixture-1.0-r0.apk'
+                                        for origin in module.APK_ORIGINS[:available+1]])
+                self.assertEqual(self.calls[-1], 'verify')
+                (self.output/'fixture-1.0-r0.apk').unlink()
+                self.output.rmdir()
+
+    def test_mirror_failures_do_not_weaken_hash_or_signature_checks(self):
+        for failure in ['missing', 'hash', 'verify']:
+            with self.subTest(failure=failure):
+                urls = []
+                def respond(request, timeout):
+                    urls.append(request.full_url)
+                    if len(urls) == 1 or failure == 'missing':
+                        raise urllib.error.HTTPError(request.full_url, 404, 'missing', {}, None)
+                    return io.BytesIO(b'X'+DATA[1:] if failure == 'hash' else DATA)
+                self.fail = 'verify' if failure == 'verify' else None
+                with patch.object(self, 'respond', side_effect=respond):
+                    with self.assertRaises((OSError, ValueError, subprocess.SubprocessError)):
+                        self.fetch()
+                self.assertEqual(len(urls), 3 if failure == 'missing' else 2)
+                self.assertFalse(self.output.exists())
+
     def test_failure_or_bad_archive_never_publishes_output(self):
         for failure, payload in [('fetch', DATA), ('verify', DATA),
                                  (None, b'wrong'), (None, b'X'+DATA[1:]), (None, DATA+b'extra')]:
