@@ -273,3 +273,16 @@ button:active:not(:disabled){box-shadow:inset 0 0 0 2px var(--accent)}
 .crop-corners [aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 
 .photo-crop .photo-import-actions{position:sticky;bottom:-1.75rem;background:var(--surface);padding-block:.75rem;z-index:1}
+
+/* Common output settings precede two distinct acquisition methods. */
+.capture-intake>.capture-settings{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:12px 20px}
+.capture-intake>.capture-settings>h2{grid-column:1/-1}
+.capture-intake>.capture-settings>.capture-summary{grid-template-columns:1fr;margin:0}
+.capture-intake>.capture-device{display:flex;flex-direction:column;gap:12px}
+.capture-intake>.capture-device>h2,.capture-intake>.capture-import>h2{font-size:1.1rem;font-weight:650;color:var(--text)}
+.capture-intake .capture-scan-summary{grid-template-columns:repeat(3,minmax(0,1fr));margin:0}
+.capture-intake .capture-notice{min-height:0}.capture-intake .capture-notice:empty{display:none}
+.capture-intake .capture-source-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.capture-intake>.capture-import{justify-content:flex-start}
+.capture-intake .capture-device>.primary{margin-top:auto}
+@media(max-width:760px){.capture-intake>.capture-settings{grid-template-columns:1fr}.capture-intake>.capture-settings>.capture-summary{display:flex;align-items:center}.capture-intake>.capture-settings>.capture-summary>div{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%}.capture-intake>.capture-settings .capture-summary dd{margin:0;min-width:5rem}}

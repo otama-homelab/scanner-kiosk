@@ -14,7 +14,7 @@ const scenario=process.env.SCANNER_PHOTO_SCENARIO;
  try{
   await page.goto(process.env.SCANNER_TEST_ORIGIN);await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
   assert.equal(await page.getByRole('button',{name:'Take a photo',exact:true}).count(),1,'camera entry must exist independently of scanner readiness');
-  assert.deepEqual(await page.locator('.capture-source-actions button').allTextContents(),['Select scanner','Import','Take a photo']);
+  assert.deepEqual(await page.locator('.capture-source-actions button').allTextContents(),['Import','Take a photo']);
   const camera=page.locator('input[capture="environment"]');const picker=page.locator('input[data-photo-picker]');
   assert.equal(await camera.getAttribute('accept'),'image/jpeg,image/png');assert.equal(await picker.getAttribute('capture'),null);
   // Generate actual PNG/JPEG bytes through the browser encoder, with asymmetric corners.
