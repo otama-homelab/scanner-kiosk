@@ -41,9 +41,9 @@ export function ocrResults(o:Options){
    catch(err){if(current()){const code=(err as {status?:number}).status;if(code&&code>=400&&code<500){clear();hint.textContent=t(code===412?'changed':code===410?'requestExpired':'failed');start.disabled=false}else{hint.textContent=t('reocrUnknown');start.disabled=true}check.hidden=false}}
   })());submit.className='primary';submit.disabled=true;
   controls=ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),help:t('ocrHelp'),languageHint:t('ocrLanguageHint'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},o.locale,()=>{submit.disabled=sending||!controls?.enabled()||!controls.valid()});
-  const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);dialog.append(title,hint,controls.element,actions);element.append(dialog);
+  const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);dialog.append(title,hint,controls.element,actions);commands.append(dialog);
   dialog.addEventListener('close',()=>{controls?.dispose();controls=null;dialog?.remove();dialog=null;if(current())start.focus()},{once:true});dialog.showModal();controls.start();
- });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();element.append(start,cancel,check,state);
+ });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();const commands=document.createElement('div');commands.className='ocr-results-actions';commands.append(start,cancel,check,state);
  if(pending())state.textContent=t('reocrUnknown');
  if(doc.active_job_id)cancel.hidden=false;
  const summaries=Array.isArray(doc.ocr_results)?doc.ocr_results:[];
@@ -57,10 +57,11 @@ export function ocrResults(o:Options){
  const expire=()=>{const remaining=expires-Date.now();if(remaining>0)expiryTimer=setTimeout(expire,Math.min(remaining,2147483647));else for(const clear of expiryHandlers)clear()};expire();
  if(summaries.length){
   if(summaries.length>2||summaries.some((r:any)=>!opaque(r.id)||!['candidate','adopted'].includes(r.state)||!Number.isSafeInteger(r.input_revision)))throw new Error('Invalid result summaries');
-  const title=make('h2',t('reocrCompare'));title.tabIndex=-1;title.dataset.reocrHeading='true';element.append(title);
+  const title=make('h2',t(candidate?'reocrCompare':'ocrText'));title.tabIndex=-1;title.dataset.reocrHeading='true';element.append(title);
   const label=make('label',t('page'));const select=document.createElement('select');label.append(select);
   for(const [index,p] of doc.pages.entries()){if(!opaque(p.id))throw new Error('Invalid page');const option=document.createElement('option');option.value=p.id;option.textContent=t('page')+' '+(index+1);select.append(option)}
   const pageKey='scanner.reocr.page.'+doc.id;try{const saved=sessionStorage.getItem(pageKey);if(doc.pages.some((p:any)=>p.id===saved))select.value=saved!}catch{}
+  element.append(make('p',t('ocrReviewHelp')));
   const panels=document.createElement('div');panels.className='ocr-comparison';element.append(label,panels);
   async function artifact(url:string,expected:string,signal:AbortSignal){
    if(url!==expected)throw new Error('Mismatched result artifact');
@@ -82,12 +83,12 @@ export function ocrResults(o:Options){
      if(result.id!==summary.id||result.input_revision!==summary.input_revision||!Array.isArray(result.pages)||result.pages.length>1000||!result.settings?.ocr?.model_id||!result.settings.ocr.model_version)throw new Error('Invalid result identity');
      const matches=result.pages.filter((p:any)=>p.page_id===pageID);if(matches.length!==1)throw new Error('Missing result page');const p=matches[0];
      if(!/^[a-f0-9]{64}$/.test(p.original_sha256)||!/^[a-f0-9]{64}$/.test(p.effective_sha256)||![0,90,180,270].includes(p.rotation)||!Number.isSafeInteger(p.pixel_width)||!Number.isSafeInteger(p.pixel_height)||p.pixel_width<=0||p.pixel_height<=0||p.pixel_width*p.pixel_height>40000000)throw new Error('Invalid source');
-     panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')));
+     panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')));const model=make('p',result.settings.ocr.model_id);model.className='ocr-result-model';panel.append(model);
      const details=document.createElement('details');details.className='ocr-result-details';details.append(make('summary',t('ocrDetails')));
      details.append(make('p',`${t('reocrRevision')} ${result.input_revision} · ${result.settings.ocr.provider_id} / ${result.settings.ocr.model_id} / ${result.settings.ocr.model_version}`));
-     const provenance=make('p',`${t('reocrSource')}: ${p.effective_sha256}`);provenance.className='ocr-source';details.append(provenance);panel.append(details,make('p',t(p.pdf_text_origin==='retained-source'?'reocrRetained':'reocrRecognized')));
+     const provenance=make('p',`${t('reocrSource')}: ${p.effective_sha256}`);provenance.className='ocr-source';details.append(provenance);if(p.pdf_text_origin==='retained-source')panel.append(make('p',t('reocrRetained')));
      const prefix=resultBase+'/pages/'+pageID+'/',artifacts=p.artifacts??{},kind=p.source_type==='pdf'?'preview':'effective';
-     let overlay:SVGRectElement|null=null,clearSuggestion=()=>{};
+     let overlay:SVGRectElement|null=null,sourceInspector:HTMLDetailsElement|null=null,clearSuggestion=()=>{};
      if(artifacts[kind]===prefix+kind){
       const w=p.pixel_width,h=p.pixel_height,sourceRotation=p.pdf_raster?.SourceRotation??0;if(![0,90,180,270].includes(sourceRotation))throw new Error('Invalid PDF rotation');const rotation=(p.rotation+sourceRotation)%360;
       const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox',`0 0 ${rotation%180?h:w} ${rotation%180?w:h}`);svg.setAttribute('role','img');svg.setAttribute('aria-label',t('preview'));svg.classList.add('ocr-source-preview');
@@ -97,14 +98,15 @@ export function ocrResults(o:Options){
       const viewport=document.createElement('div');viewport.className='ocr-preview-viewport';viewport.tabIndex=0;viewport.setAttribute('aria-label',t('preview'));
       const zoomControls=document.createElement('div');zoomControls.className='ocr-zoom-controls';let zoom=1;const out=button('ocrZoomOut',()=>setZoom(zoom-1)),into=button('ocrZoomIn',()=>setZoom(zoom+1));const setZoom=(value:number)=>{zoom=Math.max(1,Math.min(4,value));svg.style.width=zoom*100+'%';out.disabled=zoom===1;into.disabled=zoom===4};setZoom(1);zoomControls.append(out,into);
       svg.style.aspectRatio=`${rotation%180?h:w} / ${rotation%180?w:h}`;
-      image.addEventListener('error',()=>{overlay=null;clearSuggestion();svg.replaceWith(make('p',t('reocrPreviewUnavailable')))},{once:true});group.append(image,rect);svg.append(group);viewport.append(svg);panel.append(zoomControls,viewport);
+      image.addEventListener('error',()=>{overlay=null;clearSuggestion();svg.replaceWith(make('p',t('reocrPreviewUnavailable')))},{once:true});group.append(image,rect);svg.append(group);viewport.append(svg);const source=document.createElement('details');sourceInspector=source;source.className='ocr-source-inspector';source.name='ocr-source-'+doc.id;source.append(make('summary',t('ocrSourceImage')),zoomControls,viewport);
      }else panel.append(make('p',t('reocrPreviewUnavailable')));
-     if(p.transcript_unavailable||!artifacts.text){panel.append(make('p',t('reocrTextUnavailable')));return}
+     const footer=()=>{if(sourceInspector)panel.append(sourceInspector);panel.append(details)};
+     if(p.transcript_unavailable||!artifacts.text){panel.append(make('p',t('reocrTextUnavailable')));footer();return}
      const transcript=await artifact(artifacts.text,prefix+'text',signal);if(!current()||version!==comparisonVersion)return;
      let positions:any=null;
      if(artifacts.positions){try{positions=JSON.parse(await artifact(artifacts.positions,prefix+'positions',signal));if(positions.page_id!==pageID||positions.width!==p.pixel_width||positions.height!==p.pixel_height||!Array.isArray(positions.spans)||positions.spans.length>10000||positions.spans.some((s:any)=>typeof s.text!=='string'||s.text.length>65536||!s.box||![s.box.x,s.box.y,s.box.width,s.box.height].every(Number.isFinite)||s.box.x<0||s.box.y<0||s.box.width<=0||s.box.height<=0||s.box.x+s.box.width>p.pixel_width||s.box.y+s.box.height>p.pixel_height))positions=null}catch{positions=null}}
      if(!current()||version!==comparisonVersion)return;
-     if(!positions){panel.append(make('p',t('reocrPositionsUnavailable')),make('pre',transcript));return}
+     if(!positions){panel.append(make('p',t('reocrPositionsUnavailable')),make('pre',transcript));footer();return}
      const spans=document.createElement('ol');spans.className='ocr-spans';spans.setAttribute('aria-label',t('reocrOrder'));
      const optional=document.createElement('div'),notice=make('p','');notice.setAttribute('role','status');
      let selected=-1,generation=0;
@@ -126,7 +128,7 @@ export function ocrResults(o:Options){
        const generated=document.createElement('div');generated.dataset.structureSuggestion='true';generated.setAttribute('role','region');generated.setAttribute('aria-label',t('structureGenerated'));
        generated.append(make('h4',t('structureGenerated')),make('p',t('structureHelp')),make('p',name+'.pdf'));
        const reference=make('p',`${result.id} · ${t('reocrRevision')} ${result.input_revision} · ${t('page')} ${doc.pages.findIndex((v:any)=>v.id===pageID)+1} (${pageID}) · ${t('structureItem')} ${index+1} · ${p.effective_sha256}`);reference.className='ocr-source';
-       const source=button('structureSource',()=>void(async()=>{source.disabled=true;try{await validate(index);if(token!==generation)return;const control=spans.querySelectorAll('button')[index];control.focus();control.click()}catch{if(current()&&version===comparisonVersion){clearSuggestion();spans.querySelectorAll('button')[index]?.focus()}}finally{source.disabled=false}})());
+       const source=button('structureSource',()=>void(async()=>{source.disabled=true;try{await validate(index);if(token!==generation)return;const control=spans.querySelectorAll('button')[index];if(sourceInspector)sourceInspector.open=true;control.focus();control.click()}catch{if(current()&&version===comparisonVersion){clearSuggestion();spans.querySelectorAll('button')[index]?.focus()}}finally{source.disabled=false}})());
        generated.append(reference,source);optional.replaceChildren(create,generated);notice.textContent='';
       }catch{if(current()&&version===comparisonVersion&&token===generation){clearSuggestion();spans.querySelectorAll('button')[index]?.focus()}}finally{create.disabled=false}
      })());
@@ -134,7 +136,7 @@ export function ocrResults(o:Options){
       const row=document.createElement('li');const control=document.createElement('button');control.type='button';control.textContent=`${index+1}. ${span.text}`;control.setAttribute('aria-pressed','false');
       const selectSpan=()=>{for(const button of spans.querySelectorAll('button'))button.setAttribute('aria-pressed',String(button===control));if(overlay){for(const key of ['x','y','width','height'])overlay.setAttribute(key,String(span.box[key]));overlay.setAttribute('visibility','visible')}if(selected!==index){selected=index;generation++;optional.replaceChildren();notice.textContent='';if(available()&&span.text.trim()&&transcript.includes(span.text))optional.append(create);else notice.textContent=t('structureUnavailable')}};
       control.addEventListener('click',selectSpan);control.addEventListener('focus',selectSpan);row.append(control);spans.append(row);
-     }panel.append(spans,optional,notice);
+     }panel.append(spans,optional,notice);footer();
     }catch{if(current()&&version===comparisonVersion)panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('reocrTextUnavailable')))}
    }));
   }
@@ -157,5 +159,5 @@ export function ocrResults(o:Options){
    actions.append(discard,adopt);element.append(actions);
   }
  }
- return {element,dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();dialog?.remove()}};
+ return {element,actions:commands,dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();dialog?.remove()}};
 }

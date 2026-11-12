@@ -240,7 +240,7 @@ button:active:not(:disabled){box-shadow:inset 0 0 0 2px var(--accent)}
 .ocr-spans{list-style:none;padding:0;display:grid;gap:.5rem;max-height:24rem;overflow:auto}
 .ocr-spans button{width:100%;text-align:start;white-space:pre-wrap;overflow-wrap:anywhere}
 .ocr-spans button[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:-2px}
-.ocr-result-panel pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.ocr-result-panel pre{font:inherit;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:48rem){.ocr-comparison{grid-template-columns:minmax(0,1fr)}}
 .photo-import-actions{display:flex;flex-wrap:wrap;gap:.5rem}.photo-import-feedback{grid-column:1/-1}.photo-import-feedback[hidden]{display:none}.photo-import-feedback p{margin:0;overflow-wrap:anywhere}.photo-import-feedback button{margin-top:8px}.capture-summary select{min-height:48px;width:100%;font-size:1rem}.capture-summary dd:has(select){margin-top:4px}
 
@@ -291,3 +291,20 @@ button:active:not(:disabled){box-shadow:inset 0 0 0 2px var(--accent)}
 
 /* Reserve the format control height for the plain PDF value too. */
 .capture-intake>.capture-settings .capture-summary dd{display:flex;align-items:center;min-height:48px}
+
+/* Keep recognition text separate from the editable document preview. */
+.document-view-tabs{display:flex;gap:1rem;border-bottom:1px solid var(--line);margin-block:1.25rem}
+.document-view-tabs [role=tab]{flex:1 1 0;min-width:0;border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:var(--muted);padding:.75rem .5rem}
+.document-view-tabs [aria-selected=true]{border-bottom-color:var(--accent);color:var(--accent);font-weight:700}
+.ocr-results:empty{display:none}
+.ocr-results-actions{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-block:1rem}
+.ocr-results-actions>p:empty{display:none}
+.ocr-results-actions>p{flex-basis:100%;margin:0}
+.ocr-results>h2{margin-top:0}
+.ocr-results>p{color:var(--muted);max-width:70ch}
+.ocr-source-inspector{margin-block:.75rem}
+.ocr-source-inspector>summary{min-height:48px;padding:.5rem 0;color:var(--accent);cursor:pointer}
+.ocr-comparison:has(>.ocr-result-panel:only-child){grid-template-columns:minmax(0,1fr)}
+.ocr-spans button{font-weight:400;line-height:1.6;border-color:transparent;background:transparent;box-shadow:none;border-radius:6px;padding:.5rem .625rem}
+.ocr-spans button[aria-pressed=true]{background:var(--accent-soft)}
+.ocr-result-model{color:var(--muted);font-size:.875rem;margin-block:0 .75rem}
