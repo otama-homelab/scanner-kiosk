@@ -211,7 +211,8 @@ function showDocument(doc:any){
  if(!active&&['review','ready','failed'].includes(doc.state)&&doc.purpose==='document'&&!doc.pages.some((page:any)=>page.source_type==='photo')){const next=button('scanNext',()=>{next.disabled=true;immediateScan=doc.id;navigate('#/document/'+doc.id+'/scan')});toolbar.append(next)}
  toolbar.append(secondary);
  if(!photo&&!active&&doc.output?.revision===doc.revision&&['review','ready'].includes(doc.state)){const delivery=deliveryControl({doc,name:documentName(doc),t,api,current:()=>showGeneration===generation});main.append(delivery.element);disposePreviews.push(delivery.dispose)}
- if(!photo){const results=ocrResults({doc,locale,t,api,refresh:render,stopJob,current:()=>showGeneration===generation});main.append(results.element);disposePreviews.push(results.dispose)}
+ const results=photo?null:ocrResults({doc,locale,t,api,refresh:render,stopJob,current:()=>showGeneration===generation});
+ if(results){main.append(results.actions,results.element);disposePreviews.push(results.dispose)}
  const grid=document.createElement('div');grid.className=photo||doc.pages.some((page:any)=>page.source_type==='photo')?'preview-grid photo-review':'preview-grid';
  const editable=!active&&['review','ready','failed'].includes(doc.state);
  let editing=false;
@@ -258,7 +259,24 @@ function showDocument(doc:any){
    const cancel=button('cancel',()=>dialog.close());const remove=button('deletePage',()=>{dialog.close();void edit(page.id,'deletePage',async()=>{await api('/api/documents/'+doc.id+'/pages/'+page.id,'DELETE',undefined,deleteKey,doc.revision)})});
    dialog.append(title,cancel,remove);main.append(dialog);const dispose=()=>{dialog.remove();if(disposeDialog===dispose)disposeDialog=null};disposeDialog=dispose;dialog.addEventListener('close',dispose,{once:true});dialog.addEventListener('click',event=>{const box=dialog.getBoundingClientRect();if(event.target===dialog&&(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom))dialog.close()});dialog.showModal();cancel.focus()
   })};card.append(preview,actions);grid.append(card)
- }main.append(grid)
+ }main.append(grid);
+ if(results&&doc.ocr_results?.length){
+  const tabs=document.createElement('div');tabs.className='document-view-tabs';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label',t('document'));
+  const candidate=doc.ocr_results.find((r:any)=>r.state==='candidate')?.id??'',viewKey='scanner.document.view.'+doc.id;let view=candidate?'text':'preview';
+  try{const saved=JSON.parse(sessionStorage.getItem(viewKey)||'null');if(saved?.candidate===candidate&&['text','preview'].includes(saved.view))view=saved.view}catch{}
+  const previewTab=button('preview',()=>setView('preview')),textTab=button('ocrText',()=>setView('text'));
+  const panels=[grid,results.element],buttons=[previewTab,textTab];
+  function setView(value:string){
+   view=value;
+   for(const [index,tab] of buttons.entries()){const selected=(index===0?'preview':'text')===view;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;panels[index].hidden=!selected}
+   try{sessionStorage.setItem(viewKey,JSON.stringify({view,candidate}))}catch{}
+  }
+  for(const [index,tab] of buttons.entries()){
+   const id=index===0?'document-preview':'document-ocr';tab.id=id+'-tab';tab.setAttribute('role','tab');tab.setAttribute('aria-controls',id);panels[index].id=id;panels[index].setAttribute('role','tabpanel');panels[index].setAttribute('aria-labelledby',tab.id);panels[index].tabIndex=0;
+   tab.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?1:1-index;buttons[next].click();buttons[next].focus()});tabs.append(tab)
+  }
+  results.element.before(tabs);setView(view);
+ }
 }
 function outputDialog(doc:any){
  const view=generation;
