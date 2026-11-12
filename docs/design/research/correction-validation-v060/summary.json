@@ -769,15 +769,15 @@
   "owner_operation_ui_unblock": {
     "summary": "../photo-import-purpose-v027/summary.json",
     "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
-    "status": "v0214-source-actions-deployed-owner-import-partially-confirmed",
+    "status": "v0216-shared-settings-deployed-owner-validation-pending",
     "owner_acceptance_complete": false,
     "historical_status": "local-verification-passed-deployment-approval-pending",
     "production_evidence": {
-      "path": "../scanner-source-actions-v0214/release.json",
-      "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c",
-      "version": "v0.2.14"
+      "path": "../scanner-shared-intake-v0216/release.json",
+      "sha256": "27e4d22fea950c72f425502fd130b87b59785fb63e5d92408365940cfbd8aec2",
+      "version": "v0.2.16"
     },
-    "updated_at": "2026-11-12T02:25:16.912826+00:00",
+    "updated_at": "2026-11-12T03:52:16.489926+00:00",
     "owner_import_observation": {
       "path": "../photo-import-purpose-v027/owner-import-observation.json",
       "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c"
@@ -787,10 +787,15 @@
         "path": "../photo-import-purpose-v027/production-v0210.json",
         "sha256": "c5f2c2d3614b0e574adfbf43989e6efdb91a74164537183899f20a70af78040d",
         "version": "v0.2.10"
+      },
+      {
+        "path": "../scanner-source-actions-v0214/release.json",
+        "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c",
+        "version": "v0.2.14"
       }
     ]
   },
-  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized image-import/source-action hotfix v0.2.14 is published/deployed; no correction model adopted.",
+  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized image-import/shared-settings UI v0.2.16 is published/deployed without new model adoption or owner-device acceptance.",
   "current_fsenet_existing_line_contract": {
     "summary": "../correction-fsenet-existing-line-contract-v060/summary.json",
     "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07",

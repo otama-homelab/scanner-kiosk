@@ -1,0 +1,135 @@
+{
+  "version": "v0.2.16",
+  "source_sha": "b979486d171a78b84745f3cf3f61756659249926",
+  "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.16",
+  "production_url": "https://scanner.homelab.otama-playground.com",
+  "completed_at": "2026-11-12T03:52:16.489926+00:00",
+  "owner_request": [
+    "Remove the Import an image / Original type / Output format duplicate card.",
+    "$impeccable デザインを現状のUXに合わせて調整して"
+  ],
+  "authorization": "Standing リリースして本番反映 authorization used for the requested UI followup.",
+  "changes": [
+    "Remove standalone image-import card and helper copy.",
+    "Use one Document/Photo and PDF/JPEG/PNG setting for scan/import/camera.",
+    "Keep format selection available without scanner hardware.",
+    "Keep feedback and reconciliation beside source actions; freeze shared intent while pending/unknown.",
+    "Preserve keyboard format focus across scanner polling."
+  ],
+  "tests": {
+    "local_full_web_passed": true,
+    "frontend_files_matched_to_release": 22,
+    "manual_render_review": "390px Japanese Photo/PNG; duplicate card absent",
+    "impeccable_detect_findings": 0,
+    "integrated_server_fixed_race_repetitions": 3,
+    "required_ci_run": 43147474181,
+    "all_required_checks_passed": true
+  },
+  "publication": {
+    "assets_verified": 48,
+    "manifest_sha256": "0ce97a8504a1fe4e7ae837eae43f9fb1309f7870cd077abc0ef4ff8f708f800f",
+    "artifact_id": 13912987083,
+    "asset_hashes_and_anonymous_manifest_verified": true,
+    "images": {
+      "core": {
+        "digest": "sha256:f32e6cf20c3550fd1ab2ad2955a91dfbb84e4a93f1565272111f3acb6ac03f1d",
+        "image_id": "sha256:6b778f3ca31a598b14401161438f6b87149f659e43de3aaad8effbb194d6881a",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      },
+      "tesseract": {
+        "digest": "sha256:13420762bafe8f6da294127f2bf9a06270e975986532455303608bb859c83172",
+        "image_id": "sha256:d6abe37ee4cbff6c4698fd6a45baf142c634bb9661fa0eb6ba04db93947ea2fa",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      }
+    },
+    "publish_flag_restored_false": true
+  },
+  "production": {
+    "version": "v0.2.16",
+    "source_sha": "b979486d171a78b84745f3cf3f61756659249926",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-12T03:50:15.200557+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "new_source_actions_bundle_served": true,
+    "exact_source_css_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-d696f8964-5wdvm",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f32e6cf20c3550fd1ab2ad2955a91dfbb84e4a93f1565272111f3acb6ac03f1d",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f32e6cf20c3550fd1ab2ad2955a91dfbb84e4a93f1565272111f3acb6ac03f1d"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f32e6cf20c3550fd1ab2ad2955a91dfbb84e4a93f1565272111f3acb6ac03f1d",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f32e6cf20c3550fd1ab2ad2955a91dfbb84e4a93f1565272111f3acb6ac03f1d"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-76845f9d98-pcvjm",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:13420762bafe8f6da294127f2bf9a06270e975986532455303608bb859c83172"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:13420762bafe8f6da294127f2bf9a06270e975986532455303608bb859c83172"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "metadata_observed_at_ms": 1794455411457,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "owner_device_uat": "pending",
+    "physical_scan_executed": false
+  },
+  "removed_title_absent_from_served_bundle": true,
+  "shared_format_control_present_in_served_bundle": true,
+  "production_verifier_sha256": "253d3398ee38eb7167f598eac5a430dd547e1001fe9a9143ab714e70cfab3fb0",
+  "infrastructure_commit": "5d9a0c460d4b324793b2bc643db32a956de1f24f",
+  "applied_scope": "Core/Tesseract Deployment image references only; temporary Service selector restored exactly. No NetworkPolicy applied.",
+  "schema_migration_performed": false,
+  "new_physical_scan": false,
+  "new_model_adopted": false,
+  "existing_exact_advisory_tuples": 12,
+  "raw_advisory_threshold_passed": false,
+  "new_advisory_findings": 0,
+  "evidence_sha256": {
+    ".planning/releases/v0.2.16/approval.json": "25e95f462bf766e579bc953a4d689cea21d3caa473b83af7cf125ed257e553a6",
+    ".planning/releases/v0.2.16/required_checks-evidence.json": "b5fa160f7e9b014390bc90ecf9f1cc0fca71a1ecec42692661ac3934fcbc0303",
+    ".planning/releases/v0.2.16/publication-plan.json": "2df5696197712c5244d56159b0b966c51658194791741e4b2a1c826918a49be6",
+    ".planning/releases/v0.2.16/publication-verification.json": "1781fe60747c1e27c4c93a89c4a713a636c9d1aeb4b636256aa3f5e6e161d81f",
+    ".planning/releases/v0.2.16/offline-verification.json": "aaa7a32eeb2409c6fc3b6d7034c0edd318dab10d8e3f7ee06506bd4975ad4f51",
+    ".planning/releases/v0.2.16/pdf-content-review.json": "f7d51816df3b79a59a2ecdff8994e26ac58d2a8187cfda26bef22d6e288cc333",
+    ".planning/releases/v0.2.16/local-web-proof.json": "1a8285cec461833034c53eaebbad3b288e495a74d82b42d5de7a031771617d78",
+    ".planning/releases/v0.2.16/design-detect.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    ".planning/ops/v0216/deployment-verification.json": "c66c9a2213a0385a8624589b7a076edf166e68916b84c691d90c81356263ec4d"
+  },
+  "limitations": [
+    "Owner iPhone/PC operation confirmation remains pending.",
+    "Correction-model milestone stays7/14; no automatic slight-angle correction was added."
+  ],
+  "impeccable_update": {
+    "current_skill": "4.8.0",
+    "requested_update": "4.8.2",
+    "owner_words": "次のターンで更新する",
+    "status": "deferred_until_next_turn"
+  }
+}
