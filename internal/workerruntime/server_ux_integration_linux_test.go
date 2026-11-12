@@ -135,7 +135,7 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 		}
 	}))
 	defer remote.Close()
-	var api *apiruntime.App
+	apiHandler := http.NewServeMux()
 	assets := http.FileServer(http.Dir(filepath.Join(project, "web/dist")))
 	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -194,7 +194,7 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 			json.NewEncoder(w).Encode(map[string]any{"documents": docs, "deliveries": deliveries, "uploads": posts.Load(), "ocr_calls": ocrCalls.Load(), "reservations": reservations})
 		default:
 			if len(r.URL.Path) >= 5 && (r.URL.Path[:5] == "/api/" || r.URL.Path[:5] == "/auth") {
-				api.Handler().ServeHTTP(w, r)
+				apiHandler.ServeHTTP(w, r)
 			} else {
 				assets.ServeHTTP(w, r)
 			}
@@ -219,10 +219,11 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	api, e = apiruntime.New(context.Background(), apiConfig)
+	api, e := apiruntime.New(context.Background(), apiConfig)
 	if e != nil {
 		t.Fatal(e)
 	}
+	apiHandler.Handle("/", api.Handler())
 	defer api.Close()
 	workerConfig, e := config.LoadWorker(lookup)
 	if e != nil {
