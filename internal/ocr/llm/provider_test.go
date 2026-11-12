@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"golang.org/x/image/font/gofont/gobold"
@@ -428,4 +429,71 @@ func TestLocalTextByteLimitRemainsAuthoritative(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestPNGBodyRejectedRetriesJPEGWithoutChangingGeometry(t *testing.T) {
+	input := fixture(t)
+	original := bytes.Clone(input)
+	var calls atomic.Int32
+	p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
+		n := calls.Add(1)
+		var body map[string]any
+		if json.NewDecoder(r.Body).Decode(&body) != nil {
+			t.Error("invalid JSON")
+			return
+		}
+		messages := body["messages"].([]any)
+		url := messages[1].(map[string]any)["content"].([]any)[0].(map[string]any)["image_url"].(map[string]any)["url"].(string)
+		if n == 1 {
+			if !strings.HasPrefix(url, "data:image/png;base64,") {
+				t.Error("first request changed original encoding")
+			}
+			w.WriteHeader(http.StatusRequestEntityTooLarge)
+			return
+		}
+		if n != 2 || !strings.HasPrefix(url, "data:image/jpeg;base64,") {
+			t.Error("expected one JPEG retry")
+			w.WriteHeader(500)
+			return
+		}
+		data, err := base64.StdEncoding.DecodeString(strings.TrimPrefix(url, "data:image/jpeg;base64,"))
+		cfg, format, decodeErr := image.DecodeConfig(bytes.NewReader(data))
+		if err != nil || decodeErr != nil || format != "jpeg" || cfg.Width != 80 || cfg.Height != 100 {
+			t.Error("retry must preserve full geometry")
+		}
+		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "unchanged coordinates", "box": map[string]any{"x": 10, "y": 20, "width": 30, "height": 40}}}}))
+	})
+	a := &access{input: input}
+	_, err := p.Run(context.Background(), request(p, ocrplugin.PositionedText), a)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if calls.Load() != 2 || len(a.outputs) != 1 || !bytes.Equal(input, original) {
+		t.Fatal("retry count, publication or immutable original violated")
+	}
+	var result ocrplugin.PositionedPage
+	if json.Unmarshal(a.outputs[0].Bytes(), &result) != nil || result.Width != 80 || result.Height != 100 || result.Spans[0].Box.X != 10 || result.Spans[0].Box.Width != 30 {
+		t.Fatal("source-coordinate result changed")
+	}
+}
+
+func TestPNGTransportRetryOnlyAfterExplicit413(t *testing.T) {
+	for _, status := range []int{400, 401, 429, 500} {
+		t.Run(fmt.Sprint(status), func(t *testing.T) {
+			var calls atomic.Int32
+			p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) { calls.Add(1); w.WriteHeader(status) })
+			a := &access{input: fixture(t)}
+			if _, err := p.Run(context.Background(), request(p, ocrplugin.PositionedText), a); err == nil || calls.Load() != 1 || len(a.outputs) != 0 {
+				t.Fatal("ambiguous/rejected requests must not be retried or published")
+			}
+		})
+	}
+	t.Run("second rejection", func(t *testing.T) {
+		var calls atomic.Int32
+		p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) { calls.Add(1); w.WriteHeader(413) })
+		a := &access{input: fixture(t)}
+		if _, err := p.Run(context.Background(), request(p, ocrplugin.PositionedText), a); err == nil || calls.Load() != 2 || len(a.outputs) != 0 {
+			t.Fatal("413 fallback must stop after one retry without publication")
+		}
+	})
 }
