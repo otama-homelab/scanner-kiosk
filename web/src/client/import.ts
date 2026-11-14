@@ -1,5 +1,6 @@
 import {requestKey} from './request-key';
 import {fileSHA256} from './file-sha256';
+export const isPDFFile=(file:File)=>file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf');
 export type ImportKey='importPDF'|'pdfFile'|'importHelp'|'importLimit'|'importInvalid'|'importPreparing'|'importSending'|'importUncertain'|'checkImport'|'importRejected'|'history'|'requestExpired'|'reloadView'|'loading'|'failed';
 type Options={t:(key:ImportKey)=>string;current:()=>boolean;load:(signal:AbortSignal)=>Promise<any>;send:(file:File,key:string,sha:string,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;history:()=>void;reload:()=>void;classify:(error:unknown)=>'expired'|'rejected'|'uncertain'};
 export function importControls(options:Options){
@@ -15,7 +16,7 @@ export function importControls(options:Options){
  element.append(help,label,file,limit,status,submit,history,reload);
  const controller=new AbortController();let uploadController:AbortController|null=null;let disposed=false,maximum=0,pending=false,uncertain=false,expired=false,key='',sha='',selected:File|null=null;
  const active=()=>!disposed&&options.current();
- const valid=()=>!!selected&&selected.size>0&&selected.size<=maximum&&(selected.type==='application/pdf'||selected.name.toLowerCase().endsWith('.pdf'));
+ const valid=()=>!!selected&&selected.size>0&&selected.size<=maximum&&isPDFFile(selected);
  const update=()=>{file.disabled=pending||uncertain||expired;submit.disabled=pending||expired||!valid();submit.textContent=t(uncertain?'checkImport':'importPDF');element.setAttribute('aria-busy',String(pending));history.hidden=!uncertain&&!expired;reload.hidden=!expired};
  const choose=(value:File|null)=>{selected=value;key='';sha='';status.textContent=selected&&!valid()?t('importInvalid'):'';update()};
  file.addEventListener('change',()=>{if(!pending&&!uncertain&&!expired)choose(file.files?.[0]??null)});

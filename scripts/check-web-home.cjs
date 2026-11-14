@@ -13,7 +13,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
    if(path==='/api/scanners'){
     reads++;if(hold){entered?.();await new Promise(resolve=>release=resolve)}
     if(fail)return route.fulfill({status:503,json:{code:'unavailable'}});
-    return route.fulfill({json:{scanners}});
+    return route.fulfill({json:{scanners,limits:{job_max_bytes:1048576}}});
    }
    return route.fulfill({json:{items:[],next_cursor:null}});
   });
@@ -43,13 +43,16 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   checks.push('Hotplug preserves selection, allows selecting one remaining device and never silently redirects acquisition');
   for(const locale of ['en','ja'])for(const width of [320,768,1440]){
    await page.setViewportSize({width,height:900});await page.selectOption('#locale',locale);await page.locator('main[aria-busy=false] h1').waitFor();
-   const entry=page.getByRole('button',{name:locale==='en'?'Import PDF':'PDFを取り込む',exact:true});
-   const box=await entry.boundingBox(),panels=await page.locator('.capture-panels').boundingBox();
-   assert(box.y+box.height<=panels.y&&await entry.evaluate(button=>button.parentElement.contains(document.querySelector('main h1'))),'Import PDF belongs with the home heading, before scan panels');
+   const entry=page.getByRole('button',{name:locale==='en'?'Import':'取り込む',exact:true});
+   assert.equal(await page.getByRole('button',{name:locale==='en'?'Import PDF':'PDFを取り込む',exact:true}).count(),0);
+   await page.waitForFunction(()=>document.querySelector('input[data-photo-picker]')?.disabled===false);assert(await entry.isEnabled(),'shared Import remains enabled with valid metadata');
+   assert(await entry.evaluate(button=>!!button.closest('.capture-import')),'PDF and images share Import in the file/camera block');
+   assert((await page.locator('input[data-photo-picker]').getAttribute('accept')).includes('application/pdf'));
+   await page.screenshot({path:`/tmp/scanner-unified-import-v28-home-${locale}-${width}.png`,fullPage:true});
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
    if(process.env.SCANNER_TEST_SCREENSHOTS)await page.screenshot({path:`${process.env.SCANNER_TEST_SCREENSHOTS}/home-${locale}-${width}.png`,fullPage:true});
   }
-  checks.push('Bilingual home action grouped with heading at mobile, tablet and desktop widths');
+  checks.push('Bilingual unified PDF/image Import stays in file/camera block at mobile, tablet and desktop widths');
   authenticated=false;
   for(const locale of ['en','ja'])for(const width of [320,768,1440])for(const theme of ['light','dark']){
    await page.setViewportSize({width,height:900});await page.evaluate(({locale,theme})=>{localStorage.setItem('scanner.locale',locale);localStorage.setItem('scanner.theme',theme)},{locale,theme});await page.reload();

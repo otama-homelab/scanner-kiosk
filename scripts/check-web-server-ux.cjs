@@ -40,7 +40,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
    await page.getByRole('button',{name:'Home',exact:true}).click();
    await page.getByRole('heading',{name:'Home',exact:true}).waitFor();
    if(type==='image/jpeg'){await page.waitForFunction(()=>document.querySelector('input[data-photo-picker]')?.disabled===false);await page.locator('input[data-photo-picker]').setInputFiles({name:'synthetic.jpg',mimeType:type,buffer:Buffer.from(data,'base64')})}
-   else await page.locator('.home-heading input[type=file]').setInputFiles({name:'synthetic.pdf',mimeType:type,buffer:Buffer.from(data,'base64')});
+   else await page.locator('input[data-photo-picker]').setInputFiles({name:'synthetic.pdf',mimeType:type,buffer:Buffer.from(data,'base64')});
    await page.locator('h1[data-document-title]').waitFor();return page.locator('h1[data-document-title]').getAttribute('data-document-title');
   };
   await open(fixture.scan);

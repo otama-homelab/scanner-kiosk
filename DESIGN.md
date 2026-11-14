@@ -166,3 +166,8 @@ The source viewer displays the immutable source belonging to the selected recogn
 - Don't add decorative metrics, unsupported accuracy claims or imagery that suggests automatic correction is qualified.
 - Don't use Unicode glyphs as substitutes for the shared SVG action icons.
 - Don't repeat a full original image in ordinary OCR review; make comparison an explicit choice.
+
+
+### Unified file intake
+
+Home exposes one Import action in the Files & camera block for PDF, JPEG and PNG, alongside the existing image-only Take a photo action. There is no separate PDF entry in the home heading. Native file selection dispatches to the existing format-specific workflows; the legacy PDF route remains available for its established form/recovery behavior. Keep the current acquisition panels, tokens and purpose controls.
