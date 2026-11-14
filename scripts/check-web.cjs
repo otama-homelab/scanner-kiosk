@@ -46,7 +46,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   const pageRoute=process.env.SCANNER_TEST_ORIGIN+'/api/documents/document_browser_01/pages/page_browser_0001';let rejectedEdits=0;
   await page.route(pageRoute,route=>{rejectedEdits++;return route.fulfill({status:429,json:{code:'rate_limited'},headers:{Date:new Date().toUTCString(),'Retry-After':'1'}})});
   await page.getByRole('button',{name:'Rotate',exact:true}).focus();await page.keyboard.press('Enter');await page.getByText('Too many requests. Wait 1s, then try again.',{exact:true}).waitFor();assert.deepEqual(await focusedPageAction(),{page:'page_browser_0001',action:'rotate'});assert.equal(rejectedEdits,1);
-  await page.unroute(pageRoute);await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelector('.preview-card img')?.style.transform==='rotate(90deg)');assert.deepEqual(await focusedPageAction(),{page:'page_browser_0001',action:'rotate'});assert.equal(await page.locator('.review-view-switch').count(),0);
+  await page.unroute(pageRoute);await page.keyboard.press('Enter');await page.waitForFunction(()=>document.querySelector('.preview-card img')?.style.transform.endsWith('rotate(90deg)'));assert.deepEqual(await focusedPageAction(),{page:'page_browser_0001',action:'rotate'});assert.equal(await page.locator('.review-view-switch').count(),0);
   await page.waitForFunction(()=>document.querySelector('.preview-card img')?.naturalWidth===32);
   await page.screenshot({path:process.env.SCANNER_TEST_SCREENSHOT.replace('.png','-edit-focus.png'),fullPage:true});
   const delayedRotation=async during=>{
@@ -58,7 +58,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
     await during();release();const response=await completed;await response.finished();await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(resolve)));
    }finally{release();await page.unroute(pageRoute)}
   };
-  await delayedRotation(()=>page.locator('#locale').focus());await page.waitForFunction(()=>document.querySelector('.preview-card img')?.style.transform==='rotate(180deg)');
+  await delayedRotation(()=>page.locator('#locale').focus());await page.waitForFunction(()=>document.querySelector('.preview-card img')?.style.transform.endsWith('rotate(180deg)'));
   assert.equal(await page.evaluate(()=>document.activeElement.id),'locale','late edit must preserve newer header focus');
   await delayedRotation(async()=>{await page.locator('#locale').focus();await page.selectOption('#locale','ja');await page.locator('h1[data-document-title]').waitFor()});
   assert.equal(await page.locator('html').getAttribute('lang'),'ja');assert.equal(await page.evaluate(()=>document.activeElement.id),'locale','late edit must not override a newer locale render');
@@ -66,7 +66,7 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
   await page.selectOption('#locale','en');await page.locator('h1[data-document-title]').waitFor();
   await delayedRotation(async()=>{await page.locator('#history').click();await page.getByRole('heading',{name:'History',exact:true}).waitFor()});
   assert.ok(page.url().endsWith('#/history'));assert.equal(await page.evaluate(()=>document.activeElement.textContent),'History','late edit must not restore the previous document view');
-  await page.getByRole('button',{name:/^Open(?: |$)/}).click();await page.getByRole('button',{name:'Rotate',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.preview-card img')?.style.transform==='rotate(90deg)');
+  await page.getByRole('button',{name:/^Open(?: |$)/}).click();await page.getByRole('button',{name:'Rotate',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.preview-card img')?.style.transform.endsWith('rotate(90deg)'));
   assert.equal(await (await reveal(page.getByRole('button',{name:'Move earlier',exact:true,includeHidden:true}))).isDisabled(),true);assert.equal(await (await reveal(page.getByRole('button',{name:'Move later',exact:true,includeHidden:true}))).isDisabled(),true);
   assert.equal((await page.request.post(process.env.SCANNER_TEST_ORIGIN+'/__fixture/job')).status(),200);
   await page.reload();await page.getByText('Preparing download…',{exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Rotate',exact:true}).isDisabled(),true);assert(await page.getByRole('button',{name:'Save PDF',exact:true}).isDisabled());

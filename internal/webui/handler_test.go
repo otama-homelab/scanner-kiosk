@@ -35,7 +35,7 @@ func TestStaticAssetBoundary(t *testing.T) {
 }
 
 func TestPDFPreviewAssetsKeepStaticBoundary(t *testing.T) {
-	for _, name := range []string{"_astro/pdf.worker.mjs", "pdfjs/cmaps/Japan.bcmap", "pdfjs/standard_fonts/Foxit.pfb", "pdfjs/standard_fonts/font.ttf", "pdfjs/wasm/openjpeg.wasm", "pdfjs/NOTICE.txt"} {
+	for _, name := range []string{"_astro/pdf.worker.mjs", "pdfjs/cmaps/Japan.bcmap", "pdfjs/standard_fonts/Foxit.pfb", "pdfjs/standard_fonts/font.ttf", "pdfjs/wasm/openjpeg.wasm", "pdfjs/NOTICE.txt", "ui/NOTICE.txt"} {
 		handler, err := fromFS("https://scanner.example.test", fstest.MapFS{"index.html": {Data: []byte("ok")}, name: {Data: []byte("asset")}})
 		if err != nil {
 			t.Fatal(name, err)
@@ -47,7 +47,7 @@ func TestPDFPreviewAssetsKeepStaticBoundary(t *testing.T) {
 			t.Fatal(name, response.Code, response.Header())
 		}
 	}
-	for _, name := range []string{"private.ttf", "pdfjs/secret.env", "pdfjs/arbitrary.txt"} {
+	for _, name := range []string{"private.ttf", "pdfjs/secret.env", "pdfjs/arbitrary.txt", "ui/arbitrary.txt"} {
 		if _, err := fromFS("https://scanner.example.test", fstest.MapFS{"index.html": {Data: []byte("ok")}, name: {Data: []byte("private")}}); err == nil {
 			t.Fatal("unreviewed asset type accepted", name)
 		}

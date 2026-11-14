@@ -247,10 +247,7 @@ button:active:not(:disabled){box-shadow:inset 0 0 0 2px var(--accent)}
 .ocr-settings .ocr-toggle{margin:0;padding:0;border:0;background:none}
 .ocr-settings .ocr-toggle input{width:2.75rem;height:1.5rem;min-width:0;min-height:0;flex:0 0 2.75rem;border:1px solid var(--control-line)}
 .ocr-settings .ocr-toggle input::before{content:none}
-.ocr-preview-viewport{height:55dvh;min-height:260px;overflow:auto;background:var(--bg)}
-.ocr-preview-viewport .ocr-source-preview{max-height:none;max-width:none;margin:0}
-.ocr-zoom-controls,.crop-corners{display:flex;flex-wrap:wrap;gap:.5rem}
-.ocr-zoom-controls button{margin:0}
+.crop-corners{display:flex;flex-wrap:wrap;gap:.5rem}
 .photo-crop{width:min(56rem,calc(100vw - 2rem))}
 .crop-stage{position:relative;width:fit-content;max-width:calc(100% - 2.75rem);margin:1.75rem auto;touch-action:none}
 .crop-stage>img{display:block;width:100%;height:auto;user-select:none}

@@ -1,7 +1,8 @@
+import {documentViewer} from './document-viewer';
 import {ocrControls} from './ocr';
 import {requestKey} from './request-key';
 import type {Key} from './messages';
-type Options={doc:any;locale:string;t:(key:Key)=>string;api:(path:string,method?:string,body?:unknown,key?:string,revision?:number,signal?:AbortSignal)=>Promise<any>;refresh:()=>Promise<void>;stopJob:()=>void;onPageChange?:(pageID:string)=>void;current:()=>boolean};
+type Options={doc:any;locale:string;t:(key:Key)=>string;api:(path:string,method?:string,body?:unknown,key?:string,revision?:number,signal?:AbortSignal)=>Promise<any>;refresh:()=>Promise<void>;stopJob:()=>void;current:()=>boolean};
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
 export function ocrResults(o:Options){
  const {doc,t,api}=o,base='/api/documents/'+doc.id;
@@ -56,25 +57,24 @@ export function ocrResults(o:Options){
  const previous=summaries.find((r:any)=>r.state==='adopted');
  start.textContent=t(previous?'reocr':'ocrRecognize');
  if(candidate&&!pending()&&!readDisposition())state.textContent=t('reocrReady');
- if(previous&&opaque(previous.id)&&doc.output?.revision!==doc.revision){const link=document.createElement('a');link.className='download-link';link.href=base+'/ocr-results/'+previous.id+'/output';link.textContent=t('savePDF');element.prepend(link)}
+ if(previous&&opaque(previous.id)&&doc.output?.revision!==doc.revision){const link=document.createElement('a');link.className='download-link';link.href=base+'/ocr-results/'+previous.id+'/output';link.textContent=t('savePreviousPDF');commands.prepend(link)}
  let comparisonAbort:AbortController|null=null,comparisonVersion=0,expiryTimer:ReturnType<typeof setTimeout>|undefined;
+ const viewers=new Set<ReturnType<typeof documentViewer>>();const disposeViewers=()=>{for(const viewer of viewers)viewer.dispose();viewers.clear()};
  const expiryHandlers=new Set<()=>void>(),expires=Date.parse(doc.expires_at);
  const expire=()=>{const remaining=expires-Date.now();if(remaining>0)expiryTimer=setTimeout(expire,Math.min(remaining,2147483647));else for(const clear of expiryHandlers)clear()};expire();
  if(summaries.length){
   if(summaries.length>2||summaries.some((r:any)=>!opaque(r.id)||!['candidate','adopted'].includes(r.state)||!Number.isSafeInteger(r.input_revision)))throw new Error('Invalid result summaries');
   const title=make('h2',t('ocrText'));title.tabIndex=-1;title.dataset.reocrHeading='true';element.append(title);
-  const label=make('label',t('page'));const select=document.createElement('select');label.append(select);
-  for(const [index,p] of doc.pages.entries()){if(!opaque(p.id))throw new Error('Invalid page');const option=document.createElement('option');option.value=p.id;option.textContent=(index+1)+' / '+doc.pages.length;select.append(option)}
-  const pageKey='scanner.document.page.'+doc.id;try{const saved=sessionStorage.getItem(pageKey);if(doc.pages.some((p:any)=>p.id===saved))select.value=saved!}catch{}
+  for(const p of doc.pages)if(!opaque(p.id))throw new Error('Invalid page');
+  let selectedPage=doc.pages[0]?.id;const pageKey='scanner.document.page.'+doc.id;try{const saved=sessionStorage.getItem(pageKey);if(doc.pages.some((p:any)=>p.id===saved))selectedPage=saved}catch{}
   const help=make('p',t('ocrReviewHelp'));help.className='ocr-review-help';
   const toolbar=document.createElement('div');toolbar.className='ocr-review-toolbar';
   const resultControls=document.createElement('div');resultControls.className='ocr-result-choices';resultControls.setAttribute('role','group');resultControls.setAttribute('aria-label',t('reocrCompare'));
   const panels=document.createElement('div');panels.className='ocr-comparison';
-  const body=document.createElement('div');body.className='ocr-review-body';body.dataset.sourceOpen='false';
-  const sourcePane=document.createElement('aside');sourcePane.className='ocr-source-pane';sourcePane.id='ocr-source-pane';sourcePane.setAttribute('aria-label',t('ocrSourceImage'));
-  const sourceTitle=make('p',''),sourceHost=document.createElement('div');sourceTitle.className='ocr-source-title';sourceHost.className='ocr-source-host';sourcePane.append(sourceTitle,sourceHost);
+  const body=document.createElement('div');body.className='ocr-review-body';
+  const sourcePane=document.createElement('aside');sourcePane.className='ocr-source-pane';sourcePane.id='ocr-source-pane';sourcePane.setAttribute('aria-label',t('sourceImage'));
+  const sourceTitle=make('span',''),sourceHeader=document.createElement('div'),sourceHost=document.createElement('div');sourceHeader.className='document-viewer-title ocr-source-title';sourceHeader.append(sourceTitle,toolbar);sourceHost.className='ocr-source-host';sourcePane.append(sourceHeader,sourceHost);
   const textPane=document.createElement('div');textPane.className='ocr-text-pane';textPane.append(panels);
-  const sourceToggle=button('ocrSourceImage',()=>{const open=body.dataset.sourceOpen!=='true';body.dataset.sourceOpen=String(open);sourceToggle.setAttribute('aria-expanded',String(open));sourceToggle.textContent=t(open?'ocrHideSource':'ocrSourceImage')});sourceToggle.className='ocr-source-toggle';sourceToggle.setAttribute('aria-controls',sourcePane.id);sourceToggle.setAttribute('aria-expanded','false');
   let resultView=candidate?'candidate':'adopted',activeSourceID=candidate?.id??previous?.id;
   const sources=new Map<string,{view:HTMLElement;label:string}>(),resultKey='scanner.reocr.result.'+doc.id;
   try{const saved=JSON.parse(sessionStorage.getItem(resultKey)||'null');if(saved?.candidate===(candidate?.id??'')&&['candidate','adopted','compare'].includes(saved.view)&&(saved.view==='compare'||summaries.some((r:any)=>r.state===saved.view)))resultView=saved.view}catch{}
@@ -82,7 +82,7 @@ export function ocrResults(o:Options){
   const viewButtons=new Map<string,HTMLButtonElement>();
   const setResultView=(value:string)=>{resultView=value;panels.dataset.view=value;for(const panel of panels.querySelectorAll<HTMLElement>('.ocr-result-panel'))panel.hidden=value!=='compare'&&panel.dataset.resultState!==value;for(const [key,b] of viewButtons)b.setAttribute('aria-pressed',String(key===value));showSource(value==='adopted'?previous.id:candidate?.id??previous.id);try{sessionStorage.setItem(resultKey,JSON.stringify({view:value,candidate:candidate?.id??''}))}catch{}};
   if(summaries.length===2){for(const [value,key] of [['adopted','ocrSavedView'],['candidate','ocrNewView'],['compare','ocrCompareView']] as const){const control=button(key,()=>setResultView(value));viewButtons.set(value,control);resultControls.append(control)}}
-  toolbar.append(label,resultControls,sourceToggle);body.append(sourcePane,textPane);const heading=document.createElement('div');heading.className='ocr-review-heading';const intro=document.createElement('div');intro.append(title,help);heading.append(intro,commands);element.append(heading,toolbar,body);
+  toolbar.append(resultControls);body.append(sourcePane,textPane);const heading=document.createElement('div');heading.className='ocr-review-heading';const intro=document.createElement('div');intro.append(title,help);heading.append(intro,commands);textPane.prepend(heading);element.append(body);
 
   async function artifact(url:string,expected:string,signal:AbortSignal){
    if(url!==expected)throw new Error('Mismatched result artifact');
@@ -93,8 +93,8 @@ export function ocrResults(o:Options){
    const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.length}return new TextDecoder('utf-8',{fatal:true}).decode(bytes);
   }
   async function compare(){
-   comparisonAbort?.abort();comparisonAbort=new AbortController();const signal=comparisonAbort.signal,version=++comparisonVersion,pageID=select.value;
-   expiryHandlers.clear();panels.replaceChildren();sources.clear();showSource(resultView==='adopted'?previous.id:candidate?.id??previous.id);
+   comparisonAbort?.abort();comparisonAbort=new AbortController();const signal=comparisonAbort.signal,version=++comparisonVersion,pageID=selectedPage;
+   expiryHandlers.clear();disposeViewers();panels.replaceChildren();sources.clear();showSource(resultView==='adopted'?previous.id:candidate?.id??previous.id);
    await Promise.all(summaries.map(async(summary:any)=>{
     const panel=document.createElement('section');panel.className='ocr-result-panel';panel.dataset.resultId=summary.id;panel.dataset.resultState=summary.state;panel.hidden=resultView!=='compare'&&resultView!==summary.state;panels.dataset.view=resultView;panel.append(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('loading')));panels.append(panel);
     try{
@@ -116,10 +116,9 @@ export function ocrResults(o:Options){
       const group=document.createElementNS(svg.namespaceURI,'g');group.setAttribute('transform',rotation===90?`translate(${h} 0) rotate(90)`:rotation===180?`translate(${w} ${h}) rotate(180)`:rotation===270?`translate(0 ${w}) rotate(270)`:'');
       const image=document.createElementNS(svg.namespaceURI,'image');image.setAttribute('href',prefix+kind);image.setAttribute('width',String(w));image.setAttribute('height',String(h));
       const rect=document.createElementNS(svg.namespaceURI,'rect') as SVGRectElement;rect.classList.add('ocr-highlight');rect.setAttribute('visibility','hidden');overlay=rect;
-      const viewport=document.createElement('div');viewport.className='ocr-preview-viewport';viewport.tabIndex=0;viewport.setAttribute('aria-label',t('preview'));
-      const zoomControls=document.createElement('div');zoomControls.className='ocr-zoom-controls';let zoom=1;const out=button('ocrZoomOut',()=>setZoom(zoom-1)),into=button('ocrZoomIn',()=>setZoom(zoom+1));const setZoom=(value:number)=>{zoom=Math.max(1,Math.min(4,value));svg.style.width=zoom*100+'%';svg.style.height=zoom*100+'%';out.disabled=zoom===1;into.disabled=zoom===4};setZoom(1);zoomControls.append(out,into);
-      svg.style.aspectRatio=`${rotation%180?h:w} / ${rotation%180?w:h}`;
-      image.addEventListener('error',()=>{overlay=null;clearSuggestion();out.disabled=into.disabled=true;svg.replaceWith(make('p',t('reocrPreviewUnavailable')))},{once:true});group.append(image,rect);svg.append(group);viewport.append(svg);sourceView.append(viewport,zoomControls);
+      group.append(image,rect);svg.append(group);
+      const viewer=documentViewer({content:svg,title:t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')+' · '+result.settings.ocr.model_id,t});viewers.add(viewer);viewer.setSize(rotation%180?h:w,rotation%180?w:h);sourceView.append(viewer.element);
+      image.addEventListener('error',()=>{overlay=null;clearSuggestion();viewer.dispose();viewers.delete(viewer);sourceView.replaceChildren(make('p',t('reocrPreviewUnavailable')))},{once:true});
      }else sourceView.append(make('p',t('reocrPreviewUnavailable')));
      sources.set(result.id,{view:sourceView,label:t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')+' · '+result.settings.ocr.model_id});if(activeSourceID===result.id)showSource(result.id);
      const footer=()=>panel.append(details);
@@ -162,8 +161,7 @@ export function ocrResults(o:Options){
     }catch{if(current()&&version===comparisonVersion)panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')),make('p',t('reocrTextUnavailable')))}
    }));
   }
-  const changedPage=()=>{try{sessionStorage.setItem(pageKey,select.value)}catch{}o.onPageChange?.(select.value);void compare()};
-  selectPage=(id:string)=>{if(select.value!==id&&doc.pages.some((p:any)=>p.id===id)){select.value=id;changedPage()}};select.addEventListener('change',changedPage);void compare();for(const [key,b] of viewButtons)b.setAttribute('aria-pressed',String(key===resultView));
+  selectPage=(id:string)=>{if(selectedPage!==id&&doc.pages.some((p:any)=>p.id===id)){selectedPage=id;void compare()}};void compare();for(const [key,b] of viewButtons)b.setAttribute('aria-pressed',String(key===resultView));
   if(candidate){
    const actions=document.createElement('div');actions.className='output-actions';
    const adopt=button('reocrAdopt',()=>void disposeCandidate('adopt'));
@@ -182,5 +180,5 @@ export function ocrResults(o:Options){
    actions.append(discard,adopt);actions.classList.add('ocr-review-actions');textPane.append(actions);
   }
  }else{element.prepend(make('h2',t('documentOCR')),make('p',t('ocrEmpty')))}
- return {element,selectPage:(id:string)=>selectPage(id),dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();settings?.remove()}};
+ return {element,selectPage:(id:string)=>selectPage(id),dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();disposeViewers();controls?.dispose();settings?.remove()}};
 }

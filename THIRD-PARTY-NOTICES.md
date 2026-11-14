@@ -269,3 +269,12 @@ nor an upstream homepage is a completed recipient-facing source delivery.
 The [distroless inventory and source subset](docs/design/license-distribution.md#current-distroless-only-delivery-scope-2026-11-04) identify six container-only package records. Retain its exact digest,
 package notices and source obligations with the image release. The standalone
 notice index alone does not close that scope.
+
+## Document viewer UI
+
+The shared viewer's DOM Button/ButtonGroup source is adapted from shadcn/ui (MIT).
+Its original registry source, exact response hash, adaptation scope and MIT notice
+are retained in [web/vendor/shadcn-ui](web/vendor/shadcn-ui/). React/Slot are omitted
+from this DOM adaptation. Tailwind CSS4.3.5 and its Vite plugin compile local CSS;
+class-variance-authority0.7.1 supplies component variants. Their exact npm package
+versions/integrities and notices are collected through the existing lock/SBOM flow.

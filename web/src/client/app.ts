@@ -1,4 +1,5 @@
 import {iconButton} from './icons';
+import {documentViewer} from './document-viewer';
 import {pdfPreview as createPDFPreview} from './pdf-preview';
 import {requestKey,observeRequestTime} from './request-key';
 import {deletionDialog} from './deletion';
@@ -192,7 +193,7 @@ function activeJob(doc:any):string|null{if(doc.active_job_id==null)return null;i
 function pdfPreview(documentID:string,page:any,index:number,thumbnail=false){
  if(!opaque(documentID)||!opaque(page.id)||![0,90,180,270].includes(page.rotation))throw new Error('Invalid PDF preview');
  const url='/api/documents/'+documentID+'/pages/'+page.id+'/preview';const view=generation;
- const preview=createPDFPreview({url,label:`${t('page')} ${index+1}`,rotation:page.rotation,loading:t('loading'),failed:t('failed'),retry:t('retry'),maxWidth:thumbnail?240:1200,current:()=>view===generation});disposePreviews.push(preview.dispose);
+ const preview=createPDFPreview({url,label:`${t('page')} ${index+1}`,rotation:page.rotation,loading:t('loading'),failed:t('failed'),retry:t('retry'),maxWidth:thumbnail?240:1200,thumbnail,t,current:()=>view===generation});disposePreviews.push(preview.dispose);
  const link=document.createElement('a');if(thumbnail){link.href='#/document/'+documentID;link.setAttribute('aria-label',t('open'));const canvas=preview.element.querySelector('canvas')!;canvas.replaceWith(link);link.append(canvas)}else{link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=t('openPDFPage');preview.element.append(link)}return preview.element;
 }
 
@@ -213,7 +214,7 @@ function showDocument(doc:any){
  const delivery=!photo&&!active&&doc.output?.revision===doc.revision&&['review','ready'].includes(doc.state)?deliveryControl({doc,name:documentName(doc),t,api,current:()=>showGeneration===generation}):null;
  if(delivery)disposePreviews.push(delivery.dispose);
  let updatePage=(id:string)=>{};
- const results=photo?null:ocrResults({doc,locale,t,api,refresh:render,stopJob,onPageChange:id=>updatePage(id),current:()=>showGeneration===generation});
+ const results=photo?null:ocrResults({doc,locale,t,api,refresh:render,stopJob,current:()=>showGeneration===generation});
  if(results)disposePreviews.push(results.dispose);
  const grid=document.createElement('div');grid.className=photo||doc.pages.some((page:any)=>page.source_type==='photo')?'preview-grid photo-review':'preview-grid';
  const editable=!active&&['review','ready','failed'].includes(doc.state);
@@ -231,12 +232,12 @@ function showDocument(doc:any){
   const card=document.createElement('article');card.className='preview-card';card.dataset.pageId=page.id;
   let preview:HTMLElement;
   if(page.source_type==='pdf'){preview=pdfPreview(doc.id,page,index);card.dataset.pageLabel=`PDF ${index+1}`}else{
-  const image=document.createElement('img');image.dataset.preview='/api/documents/'+doc.id+'/pages/'+page.id+'/preview';image.dataset.thumbnail='/api/documents/'+doc.id+'/pages/'+page.id+'/thumbnail';image.src=image.dataset.thumbnail;imageFallback(image,image.dataset.preview);image.alt=`${t(photo?'photo':'document')} ${new Intl.NumberFormat(locale).format(index+1)}`;image.loading='lazy';image.style.transform=`rotate(${page.rotation}deg)`;preview=image;
-  if(page.source_type==='photo'){
-   const frame=document.createElement('div');frame.className='photo-page-preview';frame.append(image);preview=frame;
+  const image=document.createElement('img');image.dataset.preview='/api/documents/'+doc.id+'/pages/'+page.id+'/preview';image.dataset.thumbnail='/api/documents/'+doc.id+'/pages/'+page.id+'/thumbnail';image.src=image.dataset.thumbnail;imageFallback(image,image.dataset.preview);image.alt=`${t(photo?'photo':'document')} ${new Intl.NumberFormat(locale).format(index+1)}`;image.loading='lazy';
+   const frame=document.createElement('div');frame.className='photo-page-preview';frame.append(image);
+   let fullPreview=false;const viewer=documentViewer({content:frame,title:t('sourceImage'),t,onZoom:scale=>{if(scale>1&&!fullPreview){fullPreview=true;image.src=image.dataset.preview!}}});preview=viewer.element;preview.dataset.preview=image.dataset.preview;disposePreviews.push(viewer.dispose);
    image.style.transform=`translate(-50%,-50%) rotate(${page.rotation}deg)`;
-   image.addEventListener('load',()=>{const sideways=page.rotation%180!==0;frame.style.setProperty('--preview-ratio',String(sideways?image.naturalHeight/image.naturalWidth:image.naturalWidth/image.naturalHeight));image.style.width=(sideways?100*image.naturalWidth/image.naturalHeight:100)+'%'});
-  }
+   image.addEventListener('load',()=>{const sideways=page.rotation%180!==0;image.style.width=(sideways?100*image.naturalWidth/image.naturalHeight:100)+'%';viewer.setSize(sideways?image.naturalHeight:image.naturalWidth,sideways?image.naturalWidth:image.naturalHeight)});
+   image.addEventListener('error',()=>{if(!image.isConnected)viewer.disable()});
   }
   const actions=document.createElement('div');actions.className='page-actions';const number=text('span',`${t('page')} ${index+1}`);number.className='page-number';if(!photo)actions.append(number);
   const add=(label:Key,action:()=>void,unavailable=false)=>{const control=button(label,action);control.dataset.pageAction=label;control.disabled=!editable||unavailable;control.dataset.unavailable=String(control.disabled);controls.push(control);actions.append(iconButton(control,label));return control};
@@ -279,7 +280,7 @@ function showDocument(doc:any){
   function setView(value:string){
    view=value;
    for(const [index,tab] of buttons.entries()){const selected=(index===0?'preview':'text')===view;tab.setAttribute('aria-selected',String(selected));tab.tabIndex=selected?0:-1;panels[index].hidden=!selected}
-   workspace.dataset.mode=view;pagebar.hidden=view==='text';
+   workspace.dataset.mode=view;pagebar.hidden=false;
    try{sessionStorage.setItem(viewKey,JSON.stringify({view,candidate}))}catch{}
   }
   for(const [index,tab] of buttons.entries()){
