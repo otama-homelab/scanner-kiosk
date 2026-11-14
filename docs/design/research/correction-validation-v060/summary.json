@@ -60,7 +60,7 @@
       "id": "TRUTH-02",
       "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing. Official pairing2_2\u2192scan2 now source-proven. Canonical9 are RGB reencoded derivatives, not exact archive PNG bytes; all decodedRGB/shapes match. RawRGBA scans have nonopaque alpha; independent digit/thinline annotations remain absent.",
+      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing. Official pairing2_2→scan2 now source-proven. Canonical9 are RGB reencoded derivatives, not exact archive PNG bytes; all decodedRGB/shapes match. RawRGBA scans have nonopaque alpha; independent digit/thinline annotations remain absent.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -366,6 +366,10 @@
           "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
           "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df",
           "revision": "f5dd1d95de5180429e43133fc35d4bb6ebe3a124"
+        },
+        {
+          "path": "docs/design/research/llm-pdf-v0232/release.json",
+          "sha256": "e9b3c0ffe4f3ac40e95c484c4208cd2f206a94ca4e8fcdd712adac5cda5f55fb"
         }
       ]
     }
@@ -659,7 +663,7 @@
     "human_review_packet": "../../correction-validation-v060-human-inputs.md"
   },
   "synthetic_supplement": {
-    "authorization": "\u304a\u4efb\u305b\u3001\u751f\u6210\u753b\u50cf\u3067\u3082\u3088\u3044",
+    "authorization": "お任せ、生成画像でもよい",
     "report": "../../correction-synthetic-validation-v060.md",
     "summary": "../correction-synthetic-v060/summary.json",
     "sha256": "78d09893d2fa4c7107f9f2e3ec08fa64c69a5cb71f0510ea335a850e02e5beef",
@@ -851,11 +855,11 @@
       }
     ],
     "owner_ocr_observation": {
-      "words": "OCR\u306e\u7d50\u679c\u306fOK\u3067\u3059",
+      "words": "OCRの結果はOKです",
       "scope": "Recognition result acceptance only; no per-device save/open acceptance."
     }
   },
-  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized correction-first document UI is published/deployed as v0.2.25; v0.2.22 LLM transport repair retained. No new correction algorithm/model qualification or owner-device acceptance.",
+  "release_or_deployment_scope": "False refers to correction-model/milestone deployment. Separately authorized document UI and LLM PDF repair/docs are published/deployed asv0.2.32. No new correction model or owner-device acceptance.",
   "current_fsenet_existing_line_contract": {
     "summary": "../correction-fsenet-existing-line-contract-v060/summary.json",
     "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07",
@@ -864,11 +868,11 @@
     "new_model_inferences": 0
   },
   "current_requirements_reconciliation": {
-    "summary": "../correction-v0230-goal-reconciliation/summary.json",
-    "sha256": "777e74cc41666abd5a3aa21ff8d5efcb4b09d473bfa532090b06d05f1bb0ca39",
+    "summary": "../correction-v0232-goal-reconciliation/summary.json",
+    "sha256": "8388b14fa29a8e79f0c6e5eddd42299727981efcea5abd6ee2267d091b334a3c",
     "complete": 7,
     "total": 14,
-    "scope": "Original14dispositions unchanged; v0.2.30 deployed/14servedreproducer cases passed,42refs verified. No owner/model qualification inferred."
+    "scope": "Original14dispositions unchanged; v0.2.32 OCR/PDF and distribution release deployed,43refs verified. No owner/model qualification inferred."
   },
   "historical_requirements_reconciliation_before_v0214": {
     "summary": "../correction-current-reconciliation-v060/summary.json",
@@ -904,5 +908,12 @@
     "complete": 7,
     "total": 14,
     "scope": "Original14dispositions unchanged; v0.2.29 viewer deployed and 41evidence references verified. No owner/model qualification inferred."
+  },
+  "historical_requirements_reconciliation_before_v0232": {
+    "summary": "../correction-v0230-goal-reconciliation/summary.json",
+    "sha256": "777e74cc41666abd5a3aa21ff8d5efcb4b09d473bfa532090b06d05f1bb0ca39",
+    "complete": 7,
+    "total": 14,
+    "scope": "Original14dispositions unchanged; v0.2.30 deployed/14servedreproducer cases passed,42refs verified. No owner/model qualification inferred."
   }
 }

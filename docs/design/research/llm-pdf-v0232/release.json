@@ -1,0 +1,196 @@
+{
+  "format": "scanner-scoped-release",
+  "version": "v0.2.32",
+  "observed_at": "2026-11-14T16:23:24.463428+00:00",
+  "source_sha": "0535151860d7deec8a0510a07c2153237f564767",
+  "base_version": "v0.2.30",
+  "changed_paths": [
+    "CHANGELOG.md",
+    "README.md",
+    "deploy/README.md",
+    "docs/README.md",
+    "docs/design/ocr-plugins.md",
+    "docs/development.md",
+    "docs/distribution.md",
+    "docs/guide/getting-started.md",
+    "docs/guide/paperless.md",
+    "docs/guide/usage.md",
+    "docs/screenshots/README.md",
+    "docs/screenshots/home-desktop.png",
+    "docs/screenshots/ocr-desktop.png",
+    "docs/screenshots/ocr-mobile.png",
+    "internal/ocr/llm/provider.go",
+    "internal/ocr/llm/provider_test.go",
+    "internal/pdfassemble/ocr.go",
+    "internal/pdfassemble/ocr_test.go",
+    "internal/pdfassemble/process_linux.go",
+    "internal/pdfassemble/process_linux_test.go",
+    "internal/pdftextlayer/overlay.go",
+    "internal/pdftextlayer/positioned.go",
+    "internal/pdftextlayer/positioned_test.go",
+    "internal/renderjob/ocr_linux.go",
+    "internal/renderjob/ocr_linux_test.go",
+    "internal/renderjob/pdf_ocr_linux_test.go",
+    "internal/workerruntime/llm_command_linux_test.go",
+    "internal/workerruntime/ocr_integration_linux_test.go",
+    "internal/workerruntime/server_ux_integration_linux_test.go",
+    "pkg/ocrplugin/contract.go",
+    "pkg/ocrplugin/contract_test.go",
+    "scripts/prepare-candidate.py",
+    "scripts/test_prepare_candidate.py"
+  ],
+  "manifest_sha256": "6e8be0c423bd39c0e6a91edfde2e1f0010ec4a20fc4916ecd6489d335bb60c73",
+  "run_id": 43612344604,
+  "checks_attempt": 1,
+  "publisher_attempt": 2,
+  "artifact_id": 14121501348,
+  "publication": {
+    "verified_at": "2026-11-14T16:19:56.001751+00:00",
+    "passed": true,
+    "version": "v0.2.32",
+    "source_sha": "0535151860d7deec8a0510a07c2153237f564767",
+    "manifest_sha256": "6e8be0c423bd39c0e6a91edfde2e1f0010ec4a20fc4916ecd6489d335bb60c73",
+    "release_id": 445423468,
+    "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.32",
+    "assets_verified": 48,
+    "anonymous_manifest_verified": true,
+    "images": {
+      "core": {
+        "digest": "sha256:1b022abdf281181aca4ccf94851a81b4a4615b91a41eac227cbf75d536a2e80e",
+        "image_id": "sha256:92125c72cb60ff1ffeff70296356c675207bf875f13051210fe07b041ff1d6ff",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      },
+      "tesseract": {
+        "digest": "sha256:7ef401fbeb5864bc636b4a9923a8b02e9d83130fe3f57122925d3a80a9fe5543",
+        "image_id": "sha256:6023b7bfc61ec54e97e3da60b9985a1a8af5d136864b24aeacd63aa22b54c004",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      }
+    },
+    "publication_flag_final": "false"
+  },
+  "deployment": {
+    "version": "v0.2.32",
+    "source_sha": "0535151860d7deec8a0510a07c2153237f564767",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-14T16:21:34.414829+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "served_assets_sha256": {
+      "_astro/index.astro_astro_type_script_index_0_lang.DDNIgHDK.js": "114ecadc4f858bba7d777ff32d69c2b7ab3e4acc6402b2a567b03593842d56e6",
+      "_astro/index.yuPYrw41.css": "a6ed2b37fc78f1f43dedfb8c08e9e4ab7e5da350d8e8ee59c1d19a4c5e9c6e23",
+      "_astro/pdf.YwugTw7Y.js": "8f279b49f5b212e72e2bbec385697bc6d41097adb0517a735a7f2983a4940b45",
+      "_astro/pdf.worker.min.CIqJB0yW.mjs": "1e64c8240e54735ec5913b37acd5134747799cb8c6bb3777c70adbc01232d2aa",
+      "document-review.css": "c92ebd940bd071afc621f2631336bd3e1872a9c8d0d742d259e816abf7c91bb9",
+      "pdfjs/wasm/jbig2_nowasm_fallback.js": "70150223396487e1ccfef7eac61fc780074ad7fcc9e843b702a8a3bc23107494",
+      "pdfjs/wasm/openjpeg_nowasm_fallback.js": "2855f1590e7fd7abbbf204cd13a5c09d30c92fe2c9313fb72b64aa763fe8b4f3",
+      "style.css": "081bebdec0199dc139c632e6c063bdc024a612fa023ad75b17ce58f40f2d7ff6",
+      "theme.js": "588f5a379dfc46c1eb0cf2d46e4b878772d439398914baeb46cba6b8ef5667ba",
+      "ui/NOTICE.txt": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    "new_viewer_bundle_served": true,
+    "exact_css_and_shadcn_notice_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-5fb78fd758-98n5t",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:1b022abdf281181aca4ccf94851a81b4a4615b91a41eac227cbf75d536a2e80e",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:1b022abdf281181aca4ccf94851a81b4a4615b91a41eac227cbf75d536a2e80e"
+        ],
+        "runtime_images": [
+          "sha256:92125c72cb60ff1ffeff70296356c675207bf875f13051210fe07b041ff1d6ff",
+          "sha256:92125c72cb60ff1ffeff70296356c675207bf875f13051210fe07b041ff1d6ff"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:1b022abdf281181aca4ccf94851a81b4a4615b91a41eac227cbf75d536a2e80e",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:1b022abdf281181aca4ccf94851a81b4a4615b91a41eac227cbf75d536a2e80e"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-6dc7b65cdf-cdtl9",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:7ef401fbeb5864bc636b4a9923a8b02e9d83130fe3f57122925d3a80a9fe5543"
+        ],
+        "runtime_images": [
+          "sha256:6023b7bfc61ec54e97e3da60b9985a1a8af5d136864b24aeacd63aa22b54c004"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:7ef401fbeb5864bc636b4a9923a8b02e9d83130fe3f57122925d3a80a9fe5543"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "llm_profile_unchanged": true,
+    "llm_protocol_fingerprint_matches_expected": true,
+    "owner_device_uat": "pending",
+    "new_physical_scan": false,
+    "new_model_qualified": false
+  },
+  "infrastructure_commit": "8bb2b7573a87a323bb1e92e9e4096dc9d7a14481",
+  "infrastructure_commit_scope": "3owned image-reference files only; local commit on existing unrelated branch, not pushed",
+  "capabilities": [
+    "Validated1000grid converted to exact bitmap pixels",
+    "Absolute contain-fit PDF overlay",
+    "Separate bounded labeled searchable interpretation, including imported PDFs with existing text",
+    "User guides, actual synthetic-data screenshots and deployment archive content checks"
+  ],
+  "evidence_sha256": {
+    ".planning/releases/v0.2.32/shipping-verification.json": "afde373bd4061c8c4488abd8d2f25b2b383094a4bd0b85ddbba546eadef0a910",
+    ".planning/releases/v0.2.32/offline-verification.json": "037e1bbc33ad0f37b6c6dbdceacce1a55d31e62a600b8d66bd9759e8ccc1acaa",
+    ".planning/releases/v0.2.32/pdf-content-review.json": "f180bb91eed3b32a49060e5863ef617feadaa58b3132c8e73bc5767391806761",
+    ".planning/releases/v0.2.32/source-ci-run.json": "cd7ac3b9e2f73cf557e2f5a5b3e064358873b2e397c0b56de256dee4c86566fc",
+    ".planning/releases/v0.2.32/source-ci-jobs.json": "5a8a4d7017e2798127a757532686572bbe0a3ee14ae35fce64d003c96826bd36",
+    ".planning/releases/v0.2.32/required_checks-evidence.json": "3373a522b099e89e1d9933d6fe1b974b3efae324e72467cf999c8eb6e40f6e16",
+    ".planning/releases/v0.2.32/approval.json": "2d10b394012a487cb8ad746becdc6701cecd1b1270cec9faac989e4c3469b47f",
+    ".planning/releases/v0.2.32/publication-plan.json": "5921ad63da78d237e7d95bf991f71a7e3f9b0c750607ca4378f64051f005d6b2",
+    ".planning/releases/v0.2.32/publication-verification.json": "a11cdb550620136d8bb132dad0bdc12c1da670bc1aa2095b7bb5e9696e7976c8",
+    ".planning/ops/v0232/deployment-verification.json": "cdcaf3bdd1c4554d6a4957d2e6c1f74afdd35820f7270a0b377740b8490edcb1",
+    ".planning/ops/v0232/expected-llm-fingerprint.json": "5774e3fbad2f3eede70502649e2b003bf78dd38319a7eedda3e9bf3c8d42c756"
+  },
+  "original_requirements": {
+    "complete": 7,
+    "total": 14,
+    "completed_phases": [
+      64
+    ]
+  },
+  "preserved_failures": [
+    "v0.2.31 strict new-schema rejection of old3integrationfixtures; immutabletag remains unpublished",
+    "Local600dpi deadline; later required release-profileCI passed unchanged test",
+    "First local fixture run whitespace assertion on rotated-page text and aggregatebrowser10min timeout; corrected assertion and isolated current-source tests pass",
+    "Initial offline200s timeout and later runtimebinarysize delta rejection; traced check and corrected scoped comparison retained"
+  ],
+  "limits": [
+    "No external LLM re-OCR request/private document replay",
+    "Existing immutable OCR/PDF artifacts unchanged; explicit new candidate/adoption required",
+    "No livePaperless ingestion or owner device acceptance; adapter3.4.2 versus deployed3.2.1 remains unaccepted",
+    "No correction model qualified or milestone archive"
+  ],
+  "advisories": {
+    "existing": 12,
+    "new": 0,
+    "raw_threshold_passed": false,
+    "go_reachable": 0,
+    "go_unused_module": 1,
+    "npm_moderate": 1
+  }
+}

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.32
+
 - Normalize the LLM wire grid to exact input pixels, and fit PDF text overlays to the same image rectangle instead of orientation-based scaling. Existing OCR artifacts remain immutable.
 - Keep LLM layout/content interpretation separate from recognized spans and append it as a clearly labeled searchable PDF supplement. Retain original text when imported PDFs already contain text.
 - Add user-first Japanese README, installation/usage/Paperless guides and real desktop/mobile screenshots with synthetic data. Include the user documentation, images and license in deployment archives.
