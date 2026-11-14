@@ -10,7 +10,7 @@ export function ocrResults(o:Options){
  const button=(key:Key,action:()=>void)=>{const b=document.createElement('button');b.type='button';b.textContent=t(key);b.addEventListener('click',action);return b};
  const state=make('p','');state.dataset.recognitionStatus='true';state.setAttribute('role','status');
  let selectPage=(id:string)=>{};
- let disposed=false,dialog:HTMLDialogElement|null=null,controls:ReturnType<typeof ocrControls>|null=null;
+ let disposed=false,settings:HTMLElement|null=null,controls:ReturnType<typeof ocrControls>|null=null;
  const controller=new AbortController();const current=()=>!disposed&&o.current();
  const pendingKey='scanner.reocr.'+doc.id;
  const pending=()=>{try{return sessionStorage.getItem(pendingKey)!==null}catch{return true}};
@@ -28,22 +28,23 @@ export function ocrResults(o:Options){
   try{const intent=readDisposition();if(intent){if(intent.invalid)throw new Error('Invalid intent');const result=await api(base+'/ocr-results/'+intent.id,'GET',undefined,undefined,undefined,controller.signal);if(result.id!==intent.id||result.state!==(intent.action==='adopt'?'adopted':'discarded'))throw new Error('Uncertain disposition');clearDisposition()}await refresh()}catch{if(current())fail()}finally{if(current())check.disabled=false}
  })());
  const start=button('reocr',()=>{
-  if(dialog||doc.active_job_id||pending())return;
-  dialog=document.createElement('dialog');dialog.className='output-settings with-ocr';dialog.setAttribute('aria-labelledby','reocr-title');
-  const title=make('h2',t(previous?'reocr':'ocrRecognize'));title.id='reocr-title';const hint=make('p',t('reocrHelp'));hint.setAttribute('role','status');
-  const close=button('close',()=>dialog?.close());let sending=false;
+  if(settings||doc.active_job_id||pending())return;
+  settings=document.createElement('section');settings.className='ocr-recognition-settings';settings.tabIndex=-1;settings.setAttribute('aria-labelledby','reocr-title');element.dataset.configuring='true';start.hidden=true;
+  const title=make('h3',t(previous?'reocr':'ocrRecognize'));title.id='reocr-title';const hint=make('p',t('reocrHelp'));hint.setAttribute('role','status');
+  const closeSettings=()=>{controls?.dispose();controls=null;settings?.remove();settings=null;delete element.dataset.configuring;start.hidden=false;if(current())start.focus()};
+  const close=button('close',closeSettings);let sending=false;
   const submit=button('reocrStart',()=>void(async()=>{
    if(sending||!controls?.enabled()||!controls.valid())return;
    const command={format:'pdf',ocr:controls.command()},key=requestKey();
    // Persist uncertainty before sending. A reload may reconcile, never invent a new key.
    try{sessionStorage.setItem(pendingKey,JSON.stringify({key,revision:doc.revision}))}catch{hint.textContent=t('failed');return}
    sending=true;submit.disabled=true;controls.lock(true);
-   try{const job=await api(base+'/reocr','POST',command,key,doc.revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));if(!current())return;if(!opaque(job?.id)||job.document_id!==doc.id||job.kind!=='render')throw new Error('Invalid recognition job');clear();dialog?.close();await refresh()}
+   try{const job=await api(base+'/reocr','POST',command,key,doc.revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));if(!current())return;if(!opaque(job?.id)||job.document_id!==doc.id||job.kind!=='render')throw new Error('Invalid recognition job');clear();closeSettings();await refresh()}
    catch(err){if(current()){const code=(err as {status?:number}).status;if(code&&code>=400&&code<500){clear();hint.textContent=t(code===412?'changed':code===410?'requestExpired':'failed');start.disabled=false}else{hint.textContent=t('reocrUnknown');start.disabled=true}check.hidden=false}}
   })());submit.className='primary';submit.disabled=true;
   controls=ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),help:t('ocrHelp'),languageHint:t('ocrLanguageHint'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},o.locale,()=>{submit.disabled=sending||!controls?.enabled()||!controls.valid()},true);
-  const body=document.createElement('div');body.className='output-body';body.append(hint,controls.element);const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);dialog.append(title,body,actions);commands.append(dialog);
-  dialog.addEventListener('close',()=>{controls?.dispose();controls=null;dialog?.remove();dialog=null;if(current())start.focus()},{once:true});dialog.showModal();controls.start();
+  const body=document.createElement('div');body.className='output-body';body.append(hint,controls.element);const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);settings.append(title,body,actions);element.append(settings);settings.focus({preventScroll:true});
+  settings.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();closeSettings()}});controls.start();
  });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();const commands=document.createElement('div');commands.className='ocr-results-actions';commands.append(start,cancel,check,state);element.append(commands);
  if(pending())state.textContent=t('reocrUnknown');
  if(doc.active_job_id)cancel.hidden=false;
@@ -181,5 +182,5 @@ export function ocrResults(o:Options){
    actions.append(discard,adopt);actions.classList.add('ocr-review-actions');textPane.append(actions);
   }
  }else{element.prepend(make('h2',t('documentOCR')),make('p',t('ocrEmpty')))}
- return {element,selectPage:(id:string)=>selectPage(id),dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();dialog?.remove()}};
+ return {element,selectPage:(id:string)=>selectPage(id),dispose:()=>{disposed=true;controller.abort();comparisonAbort?.abort();clearTimeout(expiryTimer);expiryHandlers.clear();controls?.dispose();settings?.remove()}};
 }
