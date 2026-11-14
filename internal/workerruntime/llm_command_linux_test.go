@@ -38,7 +38,7 @@ func TestLLMWorkerCommandPublishesPositionedPDF(t *testing.T) {
 			t.Error("unexpected method")
 		}
 		number := calls.Add(1)
-		content, _ := json.Marshal(map[string]any{"spans": []any{map[string]any{"text": fmt.Sprintf("Page%d", number), "box": map[string]any{"x": 5, "y": 10, "width": 70, "height": 20}}}})
+		content, _ := json.Marshal(map[string]any{"supplement": "Synthetic layout interpretation.", "spans": []any{map[string]any{"text": fmt.Sprintf("Page%d", number), "box": map[string]any{"x": 50, "y": 100, "width": 700, "height": 200}}}})
 		json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": string(content)}}}})
 	}))
 	defer server.Close()
@@ -154,7 +154,8 @@ func TestLLMWorkerCommandPublishesPositionedPDF(t *testing.T) {
 		for i := 1; i <= 2; i++ {
 			number := fmt.Sprint(i)
 			text, err := exec.Command(tool, "-f", number, "-l", number, "-raw", filepath.Join(root, exported.RelativePath), "-").Output()
-			if err != nil || !strings.Contains(string(text), "Page"+number) || strings.Contains(string(text), "Page"+fmt.Sprint(3-i)) {
+			normalized := strings.Join(strings.Fields(string(text)), " ")
+			if err != nil || !strings.Contains(normalized, "Page"+number) || strings.Contains(normalized, "Page"+fmt.Sprint(3-i)) || !strings.Contains(normalized, "LLM supplement (interpretation, not OCR): Synthetic layout interpretation.") {
 				t.Fatalf("page %d: %q %v", i, text, err)
 			}
 		}

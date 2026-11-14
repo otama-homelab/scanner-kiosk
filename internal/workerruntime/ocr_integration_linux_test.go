@@ -56,7 +56,7 @@ func testRuntimeReOCRDocument(t *testing.T, mode string) {
 				calls.Add(1)
 				payload := map[string]any{"text": "RUNTIME OCR TEXT"}
 				if kind == ocrplugin.PositionedText {
-					payload = map[string]any{"spans": []any{map[string]any{"text": "RUNTIME OCR TEXT", "box": map[string]any{"x": 2, "y": 3, "width": 60, "height": 10}}}}
+					payload = map[string]any{"supplement": "", "spans": []any{map[string]any{"text": "RUNTIME OCR TEXT", "box": map[string]any{"x": 25, "y": 30, "width": 750, "height": 100}}}}
 				}
 				content, _ := json.Marshal(payload)
 				json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": string(content)}}}})
