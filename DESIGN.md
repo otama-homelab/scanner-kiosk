@@ -150,7 +150,7 @@ The document workspace has one thin outer boundary, not nested elevated cards. O
 
 ### Recognition Source and Decisions
 
-The source viewer displays the immutable source belonging to the selected recognition result. Position-linked spans use a transparent highlight with accent stroke and a selected text outline. Ordinary review shows one result; explicit comparison may show two text results while retaining one source viewer. Adopt and discard remain explicit decisions and preserve work context. These visual rules do not weaken source identity, expiry, recovery or retention behavior.
+The source viewer displays the immutable source belonging to the selected recognition result. Position-linked spans use a transparent highlight with accent stroke and a selected text outline. Ordinary review shows one result; explicit comparison may show two text results while retaining one source viewer. Adopt and discard remain explicit decisions and preserve work context. The text pane owns transcript scrolling; selectable span lists expand naturally rather than creating another scroll area. Recognition model, language and quality settings open inline in the same workspace, temporarily replacing the review area. Close or Escape restores the review and its focus. On desktop, only the settings body may scroll; on narrow or short screens, settings follow page flow with a visible sticky action row. These visual rules do not weaken source identity, expiry, recovery or retention behavior.
 
 ## Do's and Don'ts
 
