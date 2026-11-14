@@ -1,0 +1,125 @@
+{
+  "version": "v0.2.26",
+  "source_sha": "c4891dc4c6585d884016b0f1cf8448c7ad9ef389",
+  "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.26",
+  "production_url": "https://scanner.homelab.otama-playground.com",
+  "ci_run_id": 43551564149,
+  "required_checks_attempt": 2,
+  "publisher_attempt": 3,
+  "artifact_id": 14097236391,
+  "manifest_sha256": "2f92ba9949b135c2daf4ce27c35cf6e8dce980b921cfe5b7c8cc278d1a90c504",
+  "changes": [
+    "Recognition controls open enabled without a duplicate toggle; visible shared action footer.",
+    "Distinct initial/repeat actions, unapplied candidate, explicit whole-document adoption and current engine.",
+    "Recognition-specific progress and local failure recovery; retained prior output.",
+    "Shared modal layout fixes clipped primary action."
+  ],
+  "proofs": {
+    "full_browser": "9dbfa5bd563bda37f7268f26ebe29ab6f8a86f2cbae96bdc333cf9b028867259",
+    "source_binding": "4c1db1965b265c83d96b1a2aea3be98523f683090463370f6d0f4c660f64457b",
+    "finish_review": "7a669c1fc01129f354ac761deba1d65c68d94c3c244613ec3e06603994686241",
+    "candidate_pdf": "ca3c18ff904607551e352b84388e18e03f324f7ff4932043b9ce8bd5117ac964",
+    "required_checks": "c90192d8de4735b9f9a6274dbf3d6b9504ca869a1448a06878238ac4d751a551",
+    "publication": "c47c27c1cbd067d650c4afb101346432c4350c71d04501aa668242cdc0365a13",
+    "deployment": "05b8c04c06b289cf404daeb6487b05198024eacc13a7c2fc2315bad7932729c1",
+    "llm_public_provider": "7666897c21b5ecbd1c439e9f92cd934a97d328a01e70e3e8212cf1e71c10c7a8",
+    "llm_cluster_network": "470b3af46bc5a4ae781980ac1a7fb9dc5bab71b588852b42dcc14350ccb7c6ed",
+    "configuration": "82ec851fa5ebce4a6815edb8337ac6e7e492a9980ba4fe4488b9f10ebad9f9ac"
+  },
+  "images": {
+    "core": {
+      "digest": "sha256:8abe03668b44d41b4a36d4b194caf64998316c4cc203326d5d5bb04a8bd19bca",
+      "image_id": "sha256:fca1da57ffdf49b5575fa7dc2ac6d455e46bafe886eb84b9f28f32aadf0fd461",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    },
+    "tesseract": {
+      "digest": "sha256:14f8c4a5521823df0520c81938e746226da3374bcbf58c8872593e12fb8d5ca6",
+      "image_id": "sha256:8f5698076aba6d78f4539089e98ea384963b53dbbca56cb8b2356f6e91ad297d",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    }
+  },
+  "production": {
+    "version": "v0.2.26",
+    "source_sha": "c4891dc4c6585d884016b0f1cf8448c7ad9ef389",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-14T04:08:03.424209+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "new_source_actions_bundle_served": true,
+    "ocr_workspace_bundle_served": true,
+    "recognition_recovery_bundle_served": true,
+    "actual_llm_restored": true,
+    "exact_source_css_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-5c75bfb6-sc6fr",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:8abe03668b44d41b4a36d4b194caf64998316c4cc203326d5d5bb04a8bd19bca",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:8abe03668b44d41b4a36d4b194caf64998316c4cc203326d5d5bb04a8bd19bca"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:8abe03668b44d41b4a36d4b194caf64998316c4cc203326d5d5bb04a8bd19bca",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:8abe03668b44d41b4a36d4b194caf64998316c4cc203326d5d5bb04a8bd19bca"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-7b8d58dc8f-68n7c",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:14f8c4a5521823df0520c81938e746226da3374bcbf58c8872593e12fb8d5ca6"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:14f8c4a5521823df0520c81938e746226da3374bcbf58c8872593e12fb8d5ca6"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "metadata_observed_at_ms": 1794629273822,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "owner_device_uat": "pending",
+    "physical_scan_executed": false
+  },
+  "llm_recovery": {
+    "owner_authorization": "Lemonadeを一時停止してGUFOを復旧する",
+    "lemonade_desired_replicas": 0,
+    "gufo_ready": true,
+    "existing_admission_guard_used": true,
+    "protected_gpu_container_stop_restart_delete": false,
+    "private_documents_replayed": false,
+    "public_fixture_passed": true,
+    "observed_live_reocr_succeeded": true,
+    "one_post_recovery_reocr_failure_before_later_success_cause": "unclassified; both upstream requests HTTP200, no owner content examined",
+    "restart_requires_new_admission": true
+  },
+  "advisories": {
+    "existing_exact_tuples": 12,
+    "new_findings": 0,
+    "raw_threshold_passed": false
+  },
+  "owner_device_uat": "pending",
+  "original_correction_requirements_complete": 7,
+  "original_correction_requirements_total": 14,
+  "original_milestone_complete": false,
+  "next_owner_requested_refinement": [
+    "Remove nested OCR result scroll.",
+    "Move model selection out of modal."
+  ]
+}
