@@ -12,18 +12,19 @@ export function documentViewer(options:{content:HTMLElement|SVGSVGElement;title:
  const command=(key:Key,run:()=>void,icon=false)=>{const button=uiButton(t(key),{variant:icon?'ghost':'outline',size:icon?'icon':'default'});button.addEventListener('click',run);return button};
  const fit=command('viewerFit',()=>setZoom(1)),out=iconButton(command('ocrZoomOut',()=>setZoom(zoom-.25),true),'ocrZoomOut'),into=iconButton(command('ocrZoomIn',()=>setZoom(zoom+.25),true),'ocrZoomIn');
  const level=document.createElement('output');level.setAttribute('aria-label',t('viewerZoom'));level.title=t('viewerZoom');controls.append(fit,uiButtonGroup(t('viewerZoom'),out,level,into));element.append(title,viewport,controls);
- let available=true,width=0,height=0,zoom=1,centerX=.5,centerY=.5,surfaceWidth=0,surfaceHeight=0,offsetX=0,offsetY=0;
+ let available=true,width=0,height=0,zoom=1,centerX=.5,centerY=.5,surfaceWidth=0,surfaceHeight=0,offsetX=0,offsetY=0,viewportWidth=0,viewportHeight=0;
  const controller=new AbortController(),signal=controller.signal;
  const remember=()=>{if(!surfaceWidth||!surfaceHeight||!viewport.clientWidth||!viewport.clientHeight)return;centerX=Math.max(0,Math.min(1,(viewport.scrollLeft+viewport.clientWidth/2-offsetX)/surfaceWidth));centerY=Math.max(0,Math.min(1,(viewport.scrollTop+viewport.clientHeight/2-offsetY)/surfaceHeight))};
  const layout=()=>{
-  const w=viewport.clientWidth,h=viewport.clientHeight;if(!width||!height||!w||!h)return;
+  const w=viewportWidth,h=viewportHeight;if(!width||!height||!w||!h)return;
   const scale=Math.min(w/width,h/height)*zoom;surfaceWidth=width*scale;surfaceHeight=height*scale;offsetX=Math.max(0,(w-surfaceWidth)/2);offsetY=Math.max(0,(h-surfaceHeight)/2);
   stage.style.width=Math.max(w,surfaceWidth)+'px';stage.style.height=Math.max(h,surfaceHeight)+'px';surface.style.width=surfaceWidth+'px';surface.style.height=surfaceHeight+'px';
   viewport.scrollTo(offsetX+centerX*surfaceWidth-w/2,offsetY+centerY*surfaceHeight-h/2);
  };
  const setZoom=(value:number)=>{if(!available)return;remember();zoom=Math.max(1,Math.min(4,value));if(zoom===1)centerX=centerY=.5;level.value=Math.round(zoom*100)+'%';out.disabled=fit.disabled=zoom===1;into.disabled=zoom===4;viewport.dataset.zoomed=String(zoom>1);layout();options.onZoom?.(zoom)};
  setZoom(1);
- const observer=new ResizeObserver(layout);observer.observe(viewport);
+ // Rounded client sizes can overflow a fractional viewport and endlessly toggle scrollbars.
+ const observer=new ResizeObserver(([entry])=>{viewportWidth=entry.contentRect.width;viewportHeight=entry.contentRect.height;layout()});observer.observe(viewport);
  viewport.addEventListener('scroll',remember,{passive:true,signal});
  viewport.addEventListener('keydown',event=>{if(event.target!==viewport||event.ctrlKey||event.metaKey||event.altKey)return;if(['+','=','-','0'].includes(event.key)){event.preventDefault();setZoom(event.key==='0'?1:zoom+(event.key==='-'?-.25:.25))}},{signal});
  let drag:{id:number;x:number;y:number;left:number;top:number}|null=null;
