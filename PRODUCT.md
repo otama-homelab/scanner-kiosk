@@ -28,7 +28,7 @@ Preserve Scanner's product name and recognizable document logo. The owner reques
 
 ## Evidence on Hand
 
-The owner confirmed current OCR results work. Synthetic browser/API/worker fixtures and public example documents exist. This observation is narrower than complete per-device or correction-model acceptance. Unqualified automatic correction and automatic crop detection must not be implied by the interface.
+The owner previously confirmed OCR recognition output. Synthetic browser/API/worker fixtures and public example documents exist. This observation is narrower than complete per-device or correction-model acceptance. Unqualified automatic correction and automatic crop detection must not be implied by the interface.
 
 ## Product Principles
 

@@ -35,6 +35,32 @@ func TestJobProjectionOwnerExpiryAndSafeErrors(t *testing.T) {
 		t.Fatal("disabled cleanup access", err)
 	}
 }
+
+func TestJobProjectionRecognitionPurpose(t *testing.T) {
+	for _, tc := range []struct {
+		name, kind, configuration string
+		want                      bool
+	}{
+		{"reocr", "render", `{"reocr":true}`, true},
+		{"searchable output", "render", `{"settings":{"ocr":{"enabled":true}}}`, true},
+		{"plain output", "render", `{"settings":{"ocr":{"enabled":false}}}`, false},
+		{"scan", "scan", `{"reocr":true}`, false},
+		{"no OCR", "render", `{}`, false},
+		{"string flag", "render", `{"reocr":"true"}`, false},
+		{"numeric flag", "render", `{"reocr":1}`, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			f := setup(t)
+			const projectionJob = "job_projection_ocr_001"
+			must(t, f.docs, `INSERT INTO jobs(id,document_id,owner_id,kind,state,input_revision,configuration_json,created_at_ms,deadline_at_ms)
+ SELECT ?,document_id,owner_id,?,'failed',input_revision,?,created_at_ms,deadline_at_ms FROM jobs WHERE id=?`, projectionJob, tc.kind, tc.configuration, jobA)
+			job, err := f.store.ReadJob(context.Background(), alice, projectionJob)
+			if err != nil || job.Recognition != tc.want {
+				t.Fatalf("recognition=%v want=%v: %v", job.Recognition, tc.want, err)
+			}
+		})
+	}
+}
 func TestJobCancellationReceiptKeepsResourcesAndLatestStatus(t *testing.T) {
 	f := setup(t)
 	ctx := context.Background()
