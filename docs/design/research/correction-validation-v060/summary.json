@@ -292,7 +292,7 @@
       "id": "ACCEPT-01",
       "status": "waiting_external_owner_operation",
       "complete": false,
-      "evidence_scope": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass. v0.2.20 separates scanner/image-camera paths with shared save settings and verified live assets; no new owner per-device observation supplied. Owner confirms OCR results are OK. v0.2.25 correction-first workspace is published/deployed with exact-source hosted, browser, public asset and runtime checks. Actual same-original iPhone/PC correction/OCR/save/open checkpoint remains unconfirmed; no owner UAT pass. Shared viewer v0.2.29 is now deployed with fixed-commit browser/public/runtime proof; no new owner per-device observation or qualified candidate.",
+      "evidence_scope": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass. v0.2.20 separates scanner/image-camera paths with shared save settings and verified live assets; no new owner per-device observation supplied. Owner confirms OCR results are OK. v0.2.25 correction-first workspace is published/deployed with exact-source hosted, browser, public asset and runtime checks. Actual same-original iPhone/PC correction/OCR/save/open checkpoint remains unconfirmed; no owner UAT pass. Shared viewer v0.2.29 is now deployed with fixed-commit browser/public/runtime proof; no new owner per-device observation or qualified candidate. v0.2.30 fractional scrollbar hotfix is public/deployed with14served-original-reproducer cases; no owner-device or correction-model acceptance inferred.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -330,6 +330,11 @@
           "path": "docs/design/research/shared-viewer-v0229/release.json",
           "sha256": "5155a0e63b36f6bf5c24a812a4bca57c2cc4493cb1cd8d2505d29b22166945d0",
           "revision": "5c68421333054651521dba6b89bedd9c54ecc883"
+        },
+        {
+          "path": "docs/design/research/preview-stability-v0230/release.json",
+          "sha256": "10a42b9b59c1ae388d4a12266c2835484067683626a1b6282e251a6d37ba0a6d",
+          "revision": "4974be0450a136288831aa9498d7ed7380ee091e"
         }
       ],
       "historical_evidence_scope_before_v0225": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass. v0.2.20 separates scanner/image-camera paths with shared save settings and verified live assets; no new owner per-device observation supplied."
@@ -790,15 +795,15 @@
   "owner_operation_ui_unblock": {
     "summary": "../photo-import-purpose-v027/summary.json",
     "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
-    "status": "v0229-shared-viewer-deployed-owner-validation-pending",
+    "status": "v0230-preview-stability-deployed-owner-validation-pending",
     "owner_acceptance_complete": false,
     "historical_status": "local-verification-passed-deployment-approval-pending",
     "production_evidence": {
-      "path": "../shared-viewer-v0229/release.json",
-      "sha256": "5155a0e63b36f6bf5c24a812a4bca57c2cc4493cb1cd8d2505d29b22166945d0",
-      "version": "v0.2.29"
+      "path": "../preview-stability-v0230/release.json",
+      "sha256": "10a42b9b59c1ae388d4a12266c2835484067683626a1b6282e251a6d37ba0a6d",
+      "version": "v0.2.30"
     },
-    "updated_at": "2026-11-14T10:39:13.550928+00:00",
+    "updated_at": "2026-11-14T13:43:56.330946+00:00",
     "owner_import_observation": {
       "path": "../photo-import-purpose-v027/owner-import-observation.json",
       "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c"
@@ -838,6 +843,11 @@
         "path": "../document-workspace-v0224/release.json",
         "sha256": "ecc8e18c300be6985c510da7420a058ca9baca88345f6028749885803056bb1b",
         "version": "v0.2.25"
+      },
+      {
+        "path": "../shared-viewer-v0229/release.json",
+        "sha256": "5155a0e63b36f6bf5c24a812a4bca57c2cc4493cb1cd8d2505d29b22166945d0",
+        "version": "v0.2.29"
       }
     ],
     "owner_ocr_observation": {
@@ -854,11 +864,11 @@
     "new_model_inferences": 0
   },
   "current_requirements_reconciliation": {
-    "summary": "../correction-v0229-goal-reconciliation/summary.json",
-    "sha256": "dd4f0e460f2026d21acabc81f5cd3cf973e5b49085bb9ba7a42f250ad87b0f43",
+    "summary": "../correction-v0230-goal-reconciliation/summary.json",
+    "sha256": "777e74cc41666abd5a3aa21ff8d5efcb4b09d473bfa532090b06d05f1bb0ca39",
     "complete": 7,
     "total": 14,
-    "scope": "Original14dispositions unchanged; v0.2.29 viewer deployed and 41evidence references verified. No owner/model qualification inferred."
+    "scope": "Original14dispositions unchanged; v0.2.30 deployed/14servedreproducer cases passed,42refs verified. No owner/model qualification inferred."
   },
   "historical_requirements_reconciliation_before_v0214": {
     "summary": "../correction-current-reconciliation-v060/summary.json",
@@ -887,5 +897,12 @@
     "complete": 7,
     "total": 14,
     "scope": "Original14 dispositions retained, deployed v0.2.25 workspace and 40 verified requirement evidence references; no owner/model qualification inferred."
+  },
+  "historical_requirements_reconciliation_before_v0230": {
+    "summary": "../correction-v0229-goal-reconciliation/summary.json",
+    "sha256": "dd4f0e460f2026d21acabc81f5cd3cf973e5b49085bb9ba7a42f250ad87b0f43",
+    "complete": 7,
+    "total": 14,
+    "scope": "Original14dispositions unchanged; v0.2.29 viewer deployed and 41evidence references verified. No owner/model qualification inferred."
   }
 }

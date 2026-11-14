@@ -1,0 +1,7 @@
+# v0.2.30 idle preview stability hotfix
+
+The shared viewer now fits fractional viewport dimensions from ResizeObserver.contentRect, preventing desktop scrollbar feedback. The exact two-path source and its visible-scrollbar regression shipped as v0.2.30. Seven exact-source checks, offline staged verification, independent synthetic PDF inspection and48publicasset/pairedimage checks passed. Production serves the exact new bundle, schema27 and unchanged OCR identity, with all containers Ready/restart0.
+
+The original reproducer also passed against served production assets:14Fit/zoom cases across7viewports atDPR1.25, all geometry states unique1/ResizeObserverdelta0/pageerrors0. API responses were entirely synthetic; no private document or actual backend job was used. The separate wider production-static probe hit a2500ms screenshot timeout before its idle assertion. That failure and its unresolved cause remain recorded; this is not an all-probes-green claim.
+
+Only five source image references changed in homelab commit44bc35f6, retained locally without pushing the unrelated branch. First CI ancestry failure and the operational runtime-inputs comparison error are retained separately. License/native materials and12existing advisories are unchanged. Owner device acceptance, independent original-photo truth and correction candidate qualification remain incomplete; original7/14is unchanged.

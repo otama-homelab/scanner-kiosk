@@ -1,0 +1,148 @@
+{
+  "format": "scanner-scoped-release",
+  "version": "v0.2.30",
+  "observed_at": "2026-11-14T13:43:56.330946+00:00",
+  "source_sha": "4974be0450a136288831aa9498d7ed7380ee091e",
+  "base_version": "v0.2.29",
+  "changed_paths": [
+    "scripts/check-web-ocr-ui.cjs",
+    "web/src/client/document-viewer.ts"
+  ],
+  "manifest_sha256": "95c8eda023fb72f4c8de5bad6a14013e552109ccaca80f0a59a3a5c4960b6190",
+  "run_id": 43595607102,
+  "checks_attempt": 2,
+  "publisher_attempt": 3,
+  "artifact_id": 14115615331,
+  "publication": {
+    "verified_at": "2026-11-14T13:34:12.328464+00:00",
+    "passed": true,
+    "version": "v0.2.30",
+    "source_sha": "4974be0450a136288831aa9498d7ed7380ee091e",
+    "manifest_sha256": "95c8eda023fb72f4c8de5bad6a14013e552109ccaca80f0a59a3a5c4960b6190",
+    "release_id": 445317110,
+    "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.30",
+    "assets_verified": 48,
+    "anonymous_manifest_verified": true,
+    "images": {
+      "core": {
+        "digest": "sha256:f8bcedca39318ae6895f3e8745f005cca049591e856c65d25aefc5bc8ba5bb9b",
+        "image_id": "sha256:fd14abbe7b7dd3b16e361ed4980340b356e6fc82a6512311b017b8f133b044fa",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      },
+      "tesseract": {
+        "digest": "sha256:545bbfc77ea35b1ea636146baab1e169bb1f71ffa2a1ae5746a57e9089095b8e",
+        "image_id": "sha256:85b98c00b5c5f0fdd36f056b14a5eb83ebf25d938b83d98814cce8935f56e38c",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      }
+    },
+    "publication_flag_final": "false"
+  },
+  "deployment": {
+    "version": "v0.2.30",
+    "source_sha": "4974be0450a136288831aa9498d7ed7380ee091e",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-14T13:35:37.229755+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "served_assets_sha256": {
+      "_astro/index.astro_astro_type_script_index_0_lang.DDNIgHDK.js": "114ecadc4f858bba7d777ff32d69c2b7ab3e4acc6402b2a567b03593842d56e6",
+      "_astro/index.yuPYrw41.css": "a6ed2b37fc78f1f43dedfb8c08e9e4ab7e5da350d8e8ee59c1d19a4c5e9c6e23",
+      "_astro/pdf.YwugTw7Y.js": "8f279b49f5b212e72e2bbec385697bc6d41097adb0517a735a7f2983a4940b45",
+      "_astro/pdf.worker.min.CIqJB0yW.mjs": "1e64c8240e54735ec5913b37acd5134747799cb8c6bb3777c70adbc01232d2aa",
+      "document-review.css": "c92ebd940bd071afc621f2631336bd3e1872a9c8d0d742d259e816abf7c91bb9",
+      "pdfjs/wasm/jbig2_nowasm_fallback.js": "70150223396487e1ccfef7eac61fc780074ad7fcc9e843b702a8a3bc23107494",
+      "pdfjs/wasm/openjpeg_nowasm_fallback.js": "2855f1590e7fd7abbbf204cd13a5c09d30c92fe2c9313fb72b64aa763fe8b4f3",
+      "style.css": "081bebdec0199dc139c632e6c063bdc024a612fa023ad75b17ce58f40f2d7ff6",
+      "theme.js": "588f5a379dfc46c1eb0cf2d46e4b878772d439398914baeb46cba6b8ef5667ba",
+      "ui/NOTICE.txt": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    "new_viewer_bundle_served": true,
+    "exact_css_and_shadcn_notice_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-5d69b685bb-zlwx8",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f8bcedca39318ae6895f3e8745f005cca049591e856c65d25aefc5bc8ba5bb9b",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f8bcedca39318ae6895f3e8745f005cca049591e856c65d25aefc5bc8ba5bb9b"
+        ],
+        "runtime_images": [
+          "sha256:fd14abbe7b7dd3b16e361ed4980340b356e6fc82a6512311b017b8f133b044fa",
+          "sha256:fd14abbe7b7dd3b16e361ed4980340b356e6fc82a6512311b017b8f133b044fa"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f8bcedca39318ae6895f3e8745f005cca049591e856c65d25aefc5bc8ba5bb9b",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:f8bcedca39318ae6895f3e8745f005cca049591e856c65d25aefc5bc8ba5bb9b"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-5f696d97d-bf8ws",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:545bbfc77ea35b1ea636146baab1e169bb1f71ffa2a1ae5746a57e9089095b8e"
+        ],
+        "runtime_images": [
+          "sha256:85b98c00b5c5f0fdd36f056b14a5eb83ebf25d938b83d98814cce8935f56e38c"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:545bbfc77ea35b1ea636146baab1e169bb1f71ffa2a1ae5746a57e9089095b8e"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "llm_fingerprint_unchanged": true,
+    "owner_device_uat": "pending",
+    "new_physical_scan": false,
+    "new_model_qualified": false
+  },
+  "source_proof": {
+    "source_inputs_bound": 547,
+    "local_full_browser_proof_sha256": "c07c7ab9e2397ed7c1266ee0fb884dc991bec270606148b4108624c53c57cb4f",
+    "source_binding_sha256": "9afac6fb53ed66eb8a9d740f3743c0599337a8b2b9dc35a02c022cfd20bb3a91",
+    "staged_verification_sha256": "8da528e5acba2559dc399961085812ca303bca8be100b6d0eb9119762ce8d20a",
+    "independent_pdf_review_sha256": "17613b05c50acb757105f79c260d5ae193165e163bac9fa5130549e431cccd5e"
+  },
+  "served_original_reproducer": {
+    "passed": true,
+    "cases": 14,
+    "all_unique_states": 1,
+    "all_resize_observer_deltas": 0,
+    "page_errors": 0,
+    "device_scale_factor": 1.25,
+    "source_dimensions": [
+      3508,
+      2480
+    ],
+    "classic_scrollbars": true,
+    "fit_and_zoom": true,
+    "mocked_api_only": true,
+    "private_documents_used": false,
+    "evidence_sha256": "bccf1e9047edb99bdb02b964317b4d2415e5dfcce5330141ac6790cc1773b6cf",
+    "script_sha256": "6851de3faf2d814d9264ebe38edd43e8f41acb197362ab0bec6df2609208b725"
+  },
+  "infra_local_commit": "44bc35f6",
+  "infra_scope": "Three owned files, five image references; unrelated branch not pushed",
+  "retained_limitations": [
+    "Earlier broad production-static UI probe timed out at screenshot2500ms before idle assertion; not erased or called passed. The original reproducer subsequently passed with its original browser155 and invariant checks. Root cause of screenshot timeout is not established.",
+    "Same12candidate advisory tuples/raw thresholdfalse; npm moderate1 and Go unused-module1 retained, no new candidate findings or reachable Go vulnerabilities.",
+    "Synthetic Chromium is not owner iPhone/PC/Safari/assistive-technology acceptance. Original7/14complete; no correction model qualified or new physical scan."
+  ]
+}
