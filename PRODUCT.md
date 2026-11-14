@@ -16,7 +16,7 @@ Turn scanned or imported originals into usable saved documents. The owner confir
 
 ## Operating Context
 
-The same web app supports physical scanner acquisition, image import and camera capture. Documents may have multiple pages. Current correction controls include existing manual crop/rotation and undo. Recognition can produce a candidate that is compared with the saved result and explicitly adopted or discarded. The prior saved file remains available during optional processing.
+The same web app supports physical scanner acquisition, a single Import entry for PDF/JPEG/PNG, and separate camera capture. PDF import remains a document; image import retains the selected document/photo purpose. Documents may have multiple pages. Current correction controls include existing manual crop/rotation and undo. Recognition can produce a candidate that is compared with the saved result and explicitly adopted or discarded. The prior saved file remains available during optional processing.
 
 ## Capabilities and Constraints
 

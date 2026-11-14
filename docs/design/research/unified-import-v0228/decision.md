@@ -1,0 +1,7 @@
+# One Import for PDF and images
+
+The owner requests folding Import PDF into image Import. Reuse the native picker in the Files & camera block, accept PDF/JPEG/PNG and remove the duplicate PDF button from the home heading. Take a photo remains image-only. No new upload transaction abstraction or backend change.
+
+The picker dispatches PDFs to the existing PDF controller; images retain their existing controller and immutable document/photo intent. The PDF controller owns its limits, hash, retries and uncertain request state. Reuse its MIME/filename admission predicate for dispatch; server media decoding remains authoritative. PDF stays document even when image Photo is selected. Pending or uncertain image intake blocks PDF dispatch before any new request. Dispose the old camera/scanner metadata controllers before mounting PDF intake.
+
+A browser assertion fails before implementation because the separate PDF entry remains. Full source/browser/API/worker checks pass after the change, including actual anonymous PDF intake and image downloads. The home visual fixture originally omitted /scanners job_max_bytes and displayed disabled image controls; supply its real contract and assert enabled Import before captures. No behavior or safety assertion is weakened. Final frozen proof and independent finish review apply to that final fixture revision. Real-device file-picker acceptance remains separate.

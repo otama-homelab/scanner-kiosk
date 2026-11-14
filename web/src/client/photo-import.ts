@@ -1,11 +1,12 @@
 import {requestKey} from './request-key';
 import {fileSHA256} from './file-sha256';
+import {isPDFFile} from './import';
 import type {CaptureIntent} from './capture';
 import type {Key} from './messages';
 export type PhotoImportIntent={purpose:'photo';photo_format:'jpeg'|'png'};
 type Identity={key:string;sha256:string;input_bytes:number;media_type:'image/jpeg'|'image/png';phase:'uncertain'}&({purpose?:undefined;photo_format?:undefined}|PhotoImportIntent);
 const storageKey='scanner.photo.import';
-export function photoImportControls(options:{getIntent:()=>CaptureIntent;restoreIntent:(intent:CaptureIntent)=>void;lockIntent:(locked:boolean)=>void;t:(key:Key)=>string;current:()=>boolean;load:(signal:AbortSignal)=>Promise<any>;send:(file:File,key:string,sha:string,signal:AbortSignal,intent?:PhotoImportIntent)=>Promise<any>;reconcile:(identity:Identity,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;classify:(error:unknown)=>'expired'|'rejected'|'uncertain'}){
+export function photoImportControls(options:{openPDF:(file:File)=>void;getIntent:()=>CaptureIntent;restoreIntent:(intent:CaptureIntent)=>void;lockIntent:(locked:boolean)=>void;t:(key:Key)=>string;current:()=>boolean;load:(signal:AbortSignal)=>Promise<any>;send:(file:File,key:string,sha:string,signal:AbortSignal,intent?:PhotoImportIntent)=>Promise<any>;reconcile:(identity:Identity,signal:AbortSignal)=>Promise<any>;accepted:(job:any)=>void;classify:(error:unknown)=>'expired'|'rejected'|'uncertain'}){
  const {t}=options,element=document.createElement('div');element.className='photo-import-feedback';
  const actions=document.createElement('div');actions.className='photo-import-actions';
  const status=document.createElement('p');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
@@ -21,10 +22,11 @@ export function photoImportControls(options:{getIntent:()=>CaptureIntent;restore
  const inputs:HTMLInputElement[]=[],buttons:HTMLButtonElement[]=[];
  const check=document.createElement('button');check.type='button';check.textContent=t('checkImport');check.addEventListener('click',()=>void receive());
  const update=()=>{for(const b of buttons)b.disabled=pending||!!identity||maximum===0;for(const i of inputs)i.disabled=pending||!!identity||maximum===0;options.lockIntent(pending||!!identity);check.hidden=!identity;check.disabled=pending;element.hidden=!status.textContent&&!identity;element.setAttribute('aria-busy',String(pending))};
- for(const camera of [false,true]){const input=document.createElement('input');input.type='file';input.accept='image/jpeg,image/png';input.hidden=true;if(camera)input.setAttribute('capture','environment');else input.dataset.photoPicker='true';const button=document.createElement('button');button.type='button';button.textContent=t(camera?'camera':'photoPicker');button.addEventListener('click',()=>input.click());input.addEventListener('cancel',()=>{if(active()){status.textContent=t('photoChooserCancelled');update();button.focus()}});input.addEventListener('change',()=>{const file=input.files?.[0];input.value='';if(file)void receive(file)});inputs.push(input);buttons.push(button);actions.append(button,input)}
+ for(const camera of [false,true]){const input=document.createElement('input');input.type='file';input.accept=camera?'image/jpeg,image/png':'.pdf,application/pdf,image/jpeg,image/png';input.hidden=true;if(camera)input.setAttribute('capture','environment');else input.dataset.photoPicker='true';const button=document.createElement('button');button.type='button';button.textContent=t(camera?'camera':'photoPicker');button.addEventListener('click',()=>input.click());input.addEventListener('cancel',()=>{if(active()){status.textContent=t('photoChooserCancelled');update();button.focus()}});input.addEventListener('change',()=>{const file=input.files?.[0];input.value='';if(file)void receive(file,!camera)});inputs.push(input);buttons.push(button);actions.append(button,input)}
  element.append(status,check);
- async function receive(file?:File){
+ async function receive(file?:File,allowPDF=false){
   if(!active()||pending||file&&identity)return;
+  if(file&&allowPDF&&isPDFFile(file)){options.openPDF(file);return}
   if(file){if(!['image/jpeg','image/png'].includes(file.type)){status.textContent=t(/heic|heif/i.test(file.type+file.name)?'photoHEIC':'photoUnsupported');update();return}if(file.size<1||file.size>maximum){status.textContent=t('photoLimit');update();return}}
   if(!file&&!identity)return;const choice=options.getIntent();const selectedIntent=choice.purpose==='photo'?{purpose:'photo' as const,photo_format:choice.photo_format}:{};pending=true;status.textContent=t(file?'importPreparing':'importUncertain');update();let sent=false;
   try{
