@@ -1,0 +1,81 @@
+{
+  "format": "scanner-eval-artifacts",
+  "version": 1,
+  "run_id": "run_cbdf0c402a8b417b6dfa85e655be2ed2",
+  "candidate": {
+    "id": "correction_scanic_classical_001",
+    "version": "1.7.1",
+    "executable_sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+    "sources": [
+      {
+        "name": "scanic",
+        "version": "1.7.1",
+        "license": "MIT",
+        "sha256": "b0d8ef4028790467b6783f8cbe15db41ffb843f05beb018514001e687c22d4c3"
+      },
+      {
+        "name": "evaluation-only invocation adapter",
+        "version": "1",
+        "license": "Apache-2.0",
+        "sha256": "ba0f746ae276d8954cb90e7ecb0a56d0e09bbb751415600d53eba639c535c54f"
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "scanic-ml official assets",
+        "version": "0.2.0",
+        "license": "MIT",
+        "sha256": "8cb3fb2de65f0939899cdb5663feebb7259214ed9b91503ce665c0e24712ff80"
+      }
+    ],
+    "operator_steps": [
+      "unmodified official npm distribution and model assets",
+      "existing scanner-eval benchmark runner",
+      "loopback-only image/model routes; external requests blocked",
+      "no production dependency/model adoption"
+    ],
+    "parameters": {}
+  },
+  "candidate_config_sha256": "11ecdfb1270c93bba61a1767de927edd1bb3f2e9f0fad8fddcc72470b181c3af",
+  "fixture_id": "fixture_uvdoc_truth_00002",
+  "fixture_sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+  "status": "complete",
+  "original": {
+    "id": "artifact_original_56b5e08d7c0d3d7b8febbe41b4c4f330",
+    "role": "original",
+    "media_type": "image/png",
+    "sha256": "aa477daf45271c982d64afd015c99e9e5d2f639cac5757115a9fab028721ec01",
+    "bytes": 2029190,
+    "source_pages": [
+      "page_uvdoc_00002"
+    ],
+    "algorithm": "harness-copy",
+    "algorithm_version": "scanner-eval/1"
+  },
+  "artifacts": [
+    {
+      "id": "artifact_scanic_correction_001",
+      "role": "correction",
+      "media_type": "image/png",
+      "sha256": "4809c0329e911cd80ae7813d7ef62fd3dd7e9cd17663447ed5f5c562db1e6e79",
+      "bytes": 1386602,
+      "source_pages": [
+        "page_uvdoc_00002"
+      ],
+      "parents": [
+        "artifact_original_56b5e08d7c0d3d7b8febbe41b4c4f330"
+      ],
+      "algorithm": "scanic-classical",
+      "algorithm_version": "1.7.1",
+      "parameters": {
+        "confidence_kind": "scanic_classical_score",
+        "confidence_value": "0.776825407995747",
+        "crop_quad": "[[249.1625,172.0025],[925.92,284.5275],[917.8824999999999,1281.1775],[22.505,1181.5125]]",
+        "fallback_reason": "",
+        "output_height": "1035",
+        "output_width": "901",
+        "rotation_degrees": "0"
+      }
+    }
+  ]
+}
