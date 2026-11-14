@@ -184,7 +184,7 @@ body:has(.document-screen) .locale-control select{min-height:40px;font-size:14px
  .ocr-source-view .ocr-preview-viewport{flex:1;min-height:0;height:0}
  .ocr-text-pane .ocr-comparison{overflow:auto}
  .ocr-review-actions{flex-shrink:0}
- .document-workspace[data-mode=text][data-has-results=false]>.ocr-results{height:100%}
+ .document-workspace[data-mode=text][data-has-results=false]>.ocr-results{height:auto;flex:0 0 auto}
 }
 .document-screen .document-add-page{flex:0 0 auto;min-width:164px;height:auto;white-space:nowrap}
 @media(max-width:600px){.document-screen .document-add-page{flex:0 0 48px;min-width:48px}}

@@ -14,6 +14,7 @@ type JobProjection struct {
 	State         string  `json:"state"`
 	InputRevision int64   `json:"input_revision"`
 	ErrorCode     *string `json:"error_code"`
+	Recognition   bool    `json:"recognition,omitempty"`
 }
 
 func (s *Store) ReadJob(ctx context.Context, owner, jobID string) (JobProjection, error) {
@@ -28,7 +29,11 @@ func (s *Store) projectJob(ctx context.Context, tx *sql.Tx, owner, jobID string)
 	var out JobProjection
 	var code sql.NullString
 	var expiry int64
-	err := tx.QueryRowContext(ctx, `SELECT j.id,j.document_id,j.kind,j.state,j.input_revision,j.error_code,d.expires_at_ms FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND (j.kind='cleanup' OR (d.expires_at_ms>? AND d.state NOT IN ('expired','deleting')))`, jobID, owner, s.now().UnixMilli()).Scan(&out.ID, &out.DocumentID, &out.Kind, &out.State, &out.InputRevision, &code, &expiry)
+	err := tx.QueryRowContext(ctx, `SELECT j.id,j.document_id,j.kind,j.state,j.input_revision,j.error_code,d.expires_at_ms,
+ CASE WHEN j.kind='render' THEN
+ COALESCE(json_type(j.configuration_json,'$.reocr')='true' OR json_type(j.configuration_json,'$.settings.ocr.enabled')='true',0)
+ ELSE 0 END
+ FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND (j.kind='cleanup' OR (d.expires_at_ms>? AND d.state NOT IN ('expired','deleting')))`, jobID, owner, s.now().UnixMilli()).Scan(&out.ID, &out.DocumentID, &out.Kind, &out.State, &out.InputRevision, &code, &expiry, &out.Recognition)
 	if err != nil {
 		return JobProjection{}, 0, readError(err)
 	}

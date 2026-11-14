@@ -3,10 +3,10 @@ export type OCRCommand={enabled:false}|{enabled:true;provider_id:string;model_id
 type Labels={enable:string;model:string;languages:string;quality:string;chooseModel:string;chooseQuality:string;loading:string;unavailable:string;retry:string;external:string;help:string;languageHint:string;presets:Record<string,string>};
 type Model={processing_destination?:string;id:string;name:string;languages:string[];quality_presets:string[];default_quality_preset:string|null;available:boolean;outputs:string[]};
 type Entry={provider:string;name:string;external:boolean;model:Model};
-export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Labels,locale:string,changed:()=>void){
+export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Labels,locale:string,changed:()=>void,required=false){
  const element=document.createElement('section');element.className='ocr-settings';element.hidden=true;
  const toggleLabel=document.createElement('label');toggleLabel.className='ocr-toggle';
- const toggle=document.createElement('input');toggle.type='checkbox';toggle.id='ocr-enabled';toggle.setAttribute('role','switch');toggleLabel.append(document.createTextNode(labels.enable),toggle);
+ const toggle=document.createElement('input');toggle.type='checkbox';toggle.id='ocr-enabled';toggle.checked=required;toggle.setAttribute('role','switch');toggleLabel.append(document.createTextNode(labels.enable),toggle);
  const help=document.createElement('p');help.className='ocr-help';help.textContent=labels.help;help.id='ocr-help';toggle.setAttribute('aria-describedby',help.id);
  const fields=document.createElement('fieldset');fields.className='ocr-fields';fields.hidden=true;
  const modelLabel=document.createElement('label');modelLabel.htmlFor='ocr-model';modelLabel.textContent=labels.model;
@@ -24,7 +24,7 @@ export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Label
  const placeholder=(select:HTMLSelectElement,label:string)=>{select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=label;select.append(option)};
  placeholder(models,labels.chooseModel);placeholder(quality,labels.chooseQuality);
  const selected=()=>models.value===''?undefined:entries[Number(models.value)];
- const sync=()=>{element.hidden=!configured&&!failed&&!toggle.checked;toggleLabel.hidden=!configured&&!toggle.checked;help.hidden=toggleLabel.hidden;fields.hidden=!toggle.checked;toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
+ const sync=()=>{element.hidden=!configured&&!failed&&!toggle.checked;toggleLabel.hidden=required||!configured&&!toggle.checked;help.hidden=toggleLabel.hidden;fields.hidden=!toggle.checked;toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
  function options(preferredLanguages:string[]=[],preset?:string){
   languageList.replaceChildren();placeholder(quality,labels.chooseQuality);
   const entry=selected();notice.textContent=entry?.external?labels.external.replace('{destination}',entry.model.processing_destination!):'';
@@ -56,7 +56,7 @@ export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Label
    for(const [index,entry] of entries.entries()){const option=document.createElement('option');option.value=String(index);option.textContent=`${entry.name} · ${entry.model.name}`;models.append(option)}
    const preferred=capabilities.defaults?.ocr;const index=entries.findIndex(entry=>entry.provider===(previous?.provider??preferred?.provider_id)&&entry.model.id===(previous?.model.id??preferred?.model_id));
    if(index>=0)models.value=String(index);
-   failed=false;ready=entries.length>0;state.textContent=ready||!configured?'':labels.unavailable;retry.hidden=ready||!configured;
+   failed=false;ready=entries.length>0;state.textContent=ready||!configured&&!required?'':labels.unavailable;retry.hidden=ready||!configured&&!required;
    options(index>=0?(previous?previousLanguages:Array.isArray(preferred?.languages)?preferred.languages:[]):[],index>=0?(previous?previousPreset:preferred?.quality_preset):undefined);
   }catch{if(!disposed&&version===request){failed=true;state.textContent=labels.unavailable;retry.hidden=false;sync()}}
   finally{clearTimeout(timeout)}

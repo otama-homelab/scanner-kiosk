@@ -2,6 +2,12 @@
 
 `GET /api/jobs/{job_id}` returns the owned durable job's ID, document ID, kind, state, input revision and a safe error code. Configuration JSON, provider responses, credentials, runner IDs, paths and raw errors are excluded. Only fixed known error codes are passed through; other stored error material becomes `processing_failed`. The route shares server-session and public-origin protections with document routes.
 
+Render jobs performing re-recognition or searchable-output OCR also return
+`recognition: true`. This optional purpose flag lets the UI distinguish text
+recognition from ordinary file preparation. It is derived from exact boolean
+fields in the immutable job configuration, without exposing that configuration.
+It does not imply recognition succeeded or report an unobserved processing stage.
+
 The repository joins job and document while holding the enabled-principal guard. Normal jobs require an unexpired document outside expired/deleting states. Minimal cleanup-job status may remain readable after document expiry/deletion starts, as allowed by the API contract; disabled principals still have no access. A physically removed job/document returns 404. The API reports stored state without guessing whether hardware has stopped or reconciling a worker from a browser request.
 
 `POST /api/jobs/{job_id}/cancel` requires an empty body, exact Origin and Idempotency-Key. It records cancellation intent and returns 202, a job projection and same-origin Location. Queued/running/cancelling jobs can accept a request. Terminal/reconciling jobs and cleanup jobs reject a new request with 409. Cleanup cannot be cancelled through this user API.

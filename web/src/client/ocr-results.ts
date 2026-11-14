@@ -8,7 +8,7 @@ export function ocrResults(o:Options){
  const element=document.createElement('section');element.className='ocr-results';
  const make=(tag:string,value:string)=>{const e=document.createElement(tag);e.textContent=value;return e};
  const button=(key:Key,action:()=>void)=>{const b=document.createElement('button');b.type='button';b.textContent=t(key);b.addEventListener('click',action);return b};
- const state=make('p','');state.setAttribute('role','status');
+ const state=make('p','');state.dataset.recognitionStatus='true';state.setAttribute('role','status');
  let selectPage=(id:string)=>{};
  let disposed=false,dialog:HTMLDialogElement|null=null,controls:ReturnType<typeof ocrControls>|null=null;
  const controller=new AbortController();const current=()=>!disposed&&o.current();
@@ -29,8 +29,8 @@ export function ocrResults(o:Options){
  })());
  const start=button('reocr',()=>{
   if(dialog||doc.active_job_id||pending())return;
-  dialog=document.createElement('dialog');dialog.className='output-settings';dialog.setAttribute('aria-labelledby','reocr-title');
-  const title=make('h2',t('reocr'));title.id='reocr-title';const hint=make('p',t('reocrHelp'));hint.setAttribute('role','status');
+  dialog=document.createElement('dialog');dialog.className='output-settings with-ocr';dialog.setAttribute('aria-labelledby','reocr-title');
+  const title=make('h2',t(previous?'reocr':'ocrRecognize'));title.id='reocr-title';const hint=make('p',t('reocrHelp'));hint.setAttribute('role','status');
   const close=button('close',()=>dialog?.close());let sending=false;
   const submit=button('reocrStart',()=>void(async()=>{
    if(sending||!controls?.enabled()||!controls.valid())return;
@@ -41,8 +41,8 @@ export function ocrResults(o:Options){
    try{const job=await api(base+'/reocr','POST',command,key,doc.revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));if(!current())return;if(!opaque(job?.id)||job.document_id!==doc.id||job.kind!=='render')throw new Error('Invalid recognition job');clear();dialog?.close();await refresh()}
    catch(err){if(current()){const code=(err as {status?:number}).status;if(code&&code>=400&&code<500){clear();hint.textContent=t(code===412?'changed':code===410?'requestExpired':'failed');start.disabled=false}else{hint.textContent=t('reocrUnknown');start.disabled=true}check.hidden=false}}
   })());submit.className='primary';submit.disabled=true;
-  controls=ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),help:t('ocrHelp'),languageHint:t('ocrLanguageHint'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},o.locale,()=>{submit.disabled=sending||!controls?.enabled()||!controls.valid()});
-  const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);dialog.append(title,hint,controls.element,actions);commands.append(dialog);
+  controls=ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),help:t('ocrHelp'),languageHint:t('ocrLanguageHint'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},o.locale,()=>{submit.disabled=sending||!controls?.enabled()||!controls.valid()},true);
+  const body=document.createElement('div');body.className='output-body';body.append(hint,controls.element);const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);dialog.append(title,body,actions);commands.append(dialog);
   dialog.addEventListener('close',()=>{controls?.dispose();controls=null;dialog?.remove();dialog=null;if(current())start.focus()},{once:true});dialog.showModal();controls.start();
  });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();const commands=document.createElement('div');commands.className='ocr-results-actions';commands.append(start,cancel,check,state);element.append(commands);
  if(pending())state.textContent=t('reocrUnknown');
@@ -53,6 +53,8 @@ export function ocrResults(o:Options){
  if(candidate)start.hidden=true;
  if(readDisposition()){check.hidden=false;fail()}
  const previous=summaries.find((r:any)=>r.state==='adopted');
+ start.textContent=t(previous?'reocr':'ocrRecognize');
+ if(candidate&&!pending()&&!readDisposition())state.textContent=t('reocrReady');
  if(previous&&opaque(previous.id)&&doc.output?.revision!==doc.revision){const link=document.createElement('a');link.className='download-link';link.href=base+'/ocr-results/'+previous.id+'/output';link.textContent=t('savePDF');element.prepend(link)}
  let comparisonAbort:AbortController|null=null,comparisonVersion=0,expiryTimer:ReturnType<typeof setTimeout>|undefined;
  const expiryHandlers=new Set<()=>void>(),expires=Date.parse(doc.expires_at);
@@ -101,7 +103,7 @@ export function ocrResults(o:Options){
      if(result.id!==summary.id||result.input_revision!==summary.input_revision||!Array.isArray(result.pages)||result.pages.length>1000||!result.settings?.ocr?.model_id||!result.settings.ocr.model_version)throw new Error('Invalid result identity');
      const matches=result.pages.filter((p:any)=>p.page_id===pageID);if(matches.length!==1)throw new Error('Missing result page');const p=matches[0];
      if(!/^[a-f0-9]{64}$/.test(p.original_sha256)||!/^[a-f0-9]{64}$/.test(p.effective_sha256)||![0,90,180,270].includes(p.rotation)||!Number.isSafeInteger(p.pixel_width)||!Number.isSafeInteger(p.pixel_height)||p.pixel_width<=0||p.pixel_height<=0||p.pixel_width*p.pixel_height>40000000)throw new Error('Invalid source');
-     panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')));const model=make('p',result.settings.ocr.model_id);model.className='ocr-result-model';panel.append(model);
+     panel.replaceChildren(make('h3',t(summary.state==='candidate'?'reocrCandidate':'reocrPrevious')));const engine=result.settings.ocr.provider_id==='llm'?'LLM · '+result.settings.ocr.model_id:result.settings.ocr.provider_id==='tesseract'?'Tesseract':result.settings.ocr.model_id;const model=make('p',t('ocrEngine')+': '+engine);model.className='ocr-result-model';panel.append(model);
      const details=document.createElement('details');details.className='ocr-result-details';details.append(make('summary',t('ocrDetails')));
      details.append(make('p',`${t('reocrRevision')} ${result.input_revision} · ${result.settings.ocr.provider_id} / ${result.settings.ocr.model_id} / ${result.settings.ocr.model_version}`));
      const provenance=make('p',`${t('reocrSource')}: ${p.effective_sha256}`);provenance.className='ocr-source';details.append(provenance);if(p.pdf_text_origin==='retained-source')panel.append(make('p',t('reocrRetained')));
