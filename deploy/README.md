@@ -1,8 +1,10 @@
-# Deployment design examples
+# 配備設定
+
+初めて利用する方は[導入ガイド](../docs/guide/getting-started.md)から進めてください。配布ファイルの役割は[配布物の構成](../docs/distribution.md)を参照してください。
 
 These are configuration/rendering examples. The `scanner serve` /
 `scanner worker` roles, health endpoints and environment loader are implemented,
-and `v0.1.4` is a formally released image pair. Applying an example is still an
+and stable image pairs are available from GitHub Releases. Applying an example is still an
 operator deployment, not automatic migration. See [packaging scope](../docs/design/image-packaging.md)
 and [release channels](../docs/design/release-channels.md). Do not point the
 examples at the old scanservjs output volume.

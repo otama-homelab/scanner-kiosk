@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+- Normalize the LLM wire grid to exact input pixels, and fit PDF text overlays to the same image rectangle instead of orientation-based scaling. Existing OCR artifacts remain immutable.
+- Keep LLM layout/content interpretation separate from recognized spans and append it as a clearly labeled searchable PDF supplement. Retain original text when imported PDFs already contain text.
+- Add user-first Japanese README, installation/usage/Paperless guides and real desktop/mobile screenshots with synthetic data. Include the user documentation, images and license in deployment archives.
+
+## 0.2.30
+
+- Prevent idle preview movement caused by fractional viewport sizing and classic desktop scrollbars.
+
+## 0.2.29
+
+- Share the Adjust/OCR/PDF viewer, including rotation bounds, predictable zoom/pan and consistent page selection.
+
 ## 0.2.6
 
 - Verify photo child dispatch with the production executable under its unchanged parser limits; retain race coverage for normalization code.

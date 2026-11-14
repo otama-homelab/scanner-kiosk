@@ -121,8 +121,10 @@ def prepare(inputs,work):
             if name in {'native/source-inputs.lock.json','native/tesseract-source.lock.json'}:
                 if member.size>2<<20:raise ValueError('oversized source lock')
                 controls[name]=json.load(archive.extractfile(member))
-            if name.startswith('deploy/') or name in {'.env.example','README.md','docs/standalone.md','docs/design/native-replacement.md',
-                    'docs/design/release-channels.md','docs/design/tesseract-api.md','docs/design/image-packaging.md'}:
+            if name.startswith(('deploy/','docs/guide/','docs/screenshots/')) or name in {'.env.example','README.md','LICENSE','THIRD-PARTY-NOTICES.md','CHANGELOG.md','docs/README.md','docs/development.md','docs/distribution.md','docs/standalone.md','docs/design/native-replacement.md',
+                    'docs/design/release-channels.md','docs/design/tesseract-api.md','docs/design/image-packaging.md',
+                    'docs/design/physical-writer-fencing.md','docs/design/operations-release.md','docs/design/homelab-readiness.md',
+                    'docs/design/native-tls.md','docs/design/license-distribution.md'}:
                 if member.size>2<<20:raise ValueError('oversized deployment input')
                 deployment.append((name,archive.extractfile(member).read()))
     for role in ['license','notices','changelog','native-manifest','native-provenance']:
