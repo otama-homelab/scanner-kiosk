@@ -101,6 +101,8 @@ Credentials must never appear literally in profile JSON or endpoint paths.
 
 `internal/ocr/llm` sends one oriented bitmap per request, sequentially, through
 job-scoped input access. It validates JPEG/PNG dimensions and byte bounds first.
+The LLM wire schema uses a fixed top-left 1000×1000 normalized grid. The adapter validates that grid and maps both axes to the exact original bitmap dimensions before persisting positioned text. Other providers and stored artifacts continue to use pixels; no unit is guessed from returned coordinates. The protocol is included in the capability fingerprint, and old immutable results are not rescaled in place.
+Positioned LLM responses also carry a separate `supplement` string for cautious layout/content interpretation (up to16KiB, within the shared local text budget). It is never inserted into recognized spans or the source transcript. The invisible PDF renderer appends a labeled, PDF-only text run after the page OCR, reusing the embedded font and Unicode mapping so both Poppler and PDF.js can extract it. The original image and recognition boxes remain unchanged. Interpretations are searchable too and can affect downstream indexing. Legacy results omit the optional field.
 No document IDs, filenames, arbitrary image URLs, tools or function definitions
 are sent. The image is a data URL; the prompt asks for verbatim transcription and
 treats document instructions as data. Requests disable streaming and storage.

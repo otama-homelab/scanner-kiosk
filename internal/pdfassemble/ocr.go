@@ -15,8 +15,10 @@ import (
 // The coordinator validates provider model/result identities and supplies scoped
 // openers. OCR input must be unrotated; page rotation applies after composition.
 type TextLayer struct {
-	PageID string
-	Open   func(context.Context) (io.ReadCloser, error)
+	// SupplementOnly layers contain no replacement recognition of the source text.
+	SupplementOnly bool
+	PageID         string
+	Open           func(context.Context) (io.ReadCloser, error)
 }
 
 // BuildWithLayers adds bound OCR layers without rasterizing imported PDFs,
@@ -115,7 +117,7 @@ func BuildWithLayers(ctx context.Context, pages []Page, layers []TextLayer, enco
 			if inspectErr != nil {
 				return nil, inspectErr
 			}
-			if origin == pdftextlayer.TextOriginRetainedSource {
+			if origin == pdftextlayer.TextOriginRetainedSource && !byID[page.ID].SupplementOnly {
 				// Validate the supplied layer even when source text wins. A corrupt
 				// candidate must never succeed merely because its layer is unused.
 				_, err = pdftextlayer.OverlayPDF(ctx, base, layer, remaining)

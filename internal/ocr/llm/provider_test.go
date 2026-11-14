@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
@@ -14,6 +15,7 @@ import (
 	"image"
 	"image/png"
 	"io"
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"os/exec"
@@ -23,6 +25,7 @@ import (
 	"time"
 
 	"scanner-kiosk/internal/config"
+	"scanner-kiosk/internal/pdftextlayer"
 	"scanner-kiosk/pkg/ocrplugin"
 )
 
@@ -69,6 +72,11 @@ func request(p *Provider, kind ocrplugin.OutputKind) ocrplugin.Request {
 	return ocrplugin.Request{JobID: "job_000000000001", InputRevision: 1, ModelID: "vision", ModelVersion: p.caps.Models[0].Version, Languages: []string{"ja", "en"}, QualityPreset: "standard", Output: kind, Pages: []ocrplugin.InputPage{{ID: "page_00000000001", ArtifactID: "input_0000000001", Width: 80, Height: 100, DPI: 300}}}
 }
 func completion(content any) map[string]any {
+	if object, ok := content.(map[string]any); ok && object["spans"] != nil {
+		if _, exists := object["supplement"]; !exists {
+			object["supplement"] = ""
+		}
+	}
 	raw, _ := json.Marshal(content)
 	return map[string]any{"model": "pinned", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": string(raw)}}}}
 }
@@ -88,6 +96,9 @@ func TestVisionWireAndPositionedResult(t *testing.T) {
 			t.Error("incorrect protocol options")
 		}
 		messages := body["messages"].([]any)
+		if !strings.Contains(messages[0].(map[string]any)["content"].(string), "1000 by 1000 grid, not pixels") {
+			t.Error("wire coordinate unit is ambiguous")
+		}
 		url := messages[1].(map[string]any)["content"].([]any)[0].(map[string]any)["image_url"].(map[string]any)["url"].(string)
 		encoded := strings.TrimPrefix(url, "data:image/png;base64,")
 		data, err := base64.StdEncoding.DecodeString(encoded)
@@ -168,7 +179,7 @@ func TestRejectsInvalidOrIncompleteResponse(t *testing.T) {
 				case "missing":
 					message["content"] = `{}`
 				case "geometry":
-					message["content"] = `{"spans":[{"text":"x","box":{"x":79,"y":0,"width":9,"height":10}}]}`
+					message["content"] = `{"spans":[{"text":"x","box":{"x":999,"y":0,"width":9,"height":10}}]}`
 				case "unknown-field":
 					message["content"] = `{"spans":[],"command":"secret-canary"}`
 				case "missing-coordinate":
@@ -461,7 +472,7 @@ func TestPNGBodyRejectedRetriesJPEGWithoutChangingGeometry(t *testing.T) {
 		if err != nil || decodeErr != nil || format != "jpeg" || cfg.Width != 80 || cfg.Height != 100 {
 			t.Error("retry must preserve full geometry")
 		}
-		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "unchanged coordinates", "box": map[string]any{"x": 10, "y": 20, "width": 30, "height": 40}}}}))
+		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "unchanged coordinates", "box": map[string]any{"x": 125, "y": 200, "width": 375, "height": 400}}}}))
 	})
 	a := &access{input: input}
 	_, err := p.Run(context.Background(), request(p, ocrplugin.PositionedText), a)
@@ -496,4 +507,109 @@ func TestPNGTransportRetryOnlyAfterExplicit413(t *testing.T) {
 			t.Fatal("413 fallback must stop after one retry without publication")
 		}
 	})
+}
+
+func TestNormalizedCoordinatesUseExactBitmapDimensions(t *testing.T) {
+	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
+	profile := p.profiles["vision"]
+	for _, size := range [][2]int{{2275, 3090}, {1654, 2339}, {80, 100}} {
+		page := ocrplugin.InputPage{ID: "page_00000000001", Width: size[0], Height: size[1]}
+		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": map[string]any{"x": 100, "y": 200, "width": 800, "height": 300}}}}))
+		data, err := p.parse(raw, profile, page, ocrplugin.PositionedText)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var got ocrplugin.PositionedPage
+		if err := json.Unmarshal(data, &got); err != nil {
+			t.Fatal(err)
+		}
+		want := ocrplugin.Box{X: float64(size[0]) * .1, Y: float64(size[1]) * .2, Width: float64(size[0]) * .8, Height: float64(size[1]) * .3}
+		b := got.Spans[0].Box
+		if math.Abs(b.X-want.X) > .000001 || math.Abs(b.Y-want.Y) > .000001 || math.Abs(b.Width-want.Width) > .000001 || math.Abs(b.Height-want.Height) > .000001 {
+			t.Fatalf("bitmap %v: got %+v, want %+v", size, b, want)
+		}
+	}
+	for _, box := range []ocrplugin.Box{{X: 900, Y: 0, Width: 101, Height: 10}, {X: 0, Y: 999, Width: 10, Height: 2}, {X: -1, Y: 0, Width: 10, Height: 10}} {
+		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Reject", "box": box}}}))
+		if _, err := p.parse(raw, profile, ocrplugin.InputPage{ID: "page_00000000001", Width: 2275, Height: 3090}, ocrplugin.PositionedText); err == nil {
+			t.Fatalf("accepted invalid normalized box %+v", box)
+		}
+	}
+}
+
+func TestNormalizedLLMCoordinatesReachPDFSearchBounds(t *testing.T) {
+	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
+	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 2275, Height: 3090}
+	raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": map[string]any{"x": 100, "y": 200, "width": 800, "height": 300}}}}))
+	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var page ocrplugin.PositionedPage
+	if err = json.Unmarshal(data, &page); err != nil {
+		t.Fatal(err)
+	}
+	const width, height = 595.276, 841.89
+	pdf, err := pdftextlayer.RenderPositionedPDF(context.Background(), page, input, goregular.TTF, 1<<20, width, height)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "pdftotext", "-bbox", "-", "-")
+	cmd.Stdin = bytes.NewReader(pdf)
+	output, err := cmd.Output()
+	if err != nil {
+		t.Fatalf("independent PDF search bounds: %v", err)
+	}
+	var doc struct {
+		Words []struct {
+			Text string  `xml:",chardata"`
+			XMin float64 `xml:"xMin,attr"`
+			YMin float64 `xml:"yMin,attr"`
+			XMax float64 `xml:"xMax,attr"`
+			YMax float64 `xml:"yMax,attr"`
+		} `xml:"body>doc>page>word"`
+	}
+	if err = xml.Unmarshal(output, &doc); err != nil {
+		t.Fatal(err)
+	}
+	if len(doc.Words) != 1 {
+		t.Fatalf("unexpected PDF words: %s", output)
+	}
+	b := doc.Words[0]
+	if b.Text != "Position" || math.Abs(b.XMin-width*.1) > .01 || math.Abs(b.YMin-height*.2) > .01 || math.Abs(b.XMax-width*.9) > .01 || math.Abs(b.YMax-height*.5) > .01 {
+		t.Fatalf("PDF search bounds do not match original normalized region: %+v", b)
+	}
+}
+
+func TestLLMSupplementIsSeparateAndBounded(t *testing.T) {
+	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
+	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 2000, Height: 3000}
+	content := map[string]any{"spans": []any{map[string]any{"text": "Original", "box": ocrplugin.Box{X: 100, Y: 100, Width: 200, Height: 20}}}, "supplement": "Two-column invoice. This interpretation is uncertain."}
+	raw, _ := json.Marshal(completion(content))
+	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var page ocrplugin.PositionedPage
+	if err = json.Unmarshal(data, &page); err != nil {
+		t.Fatal(err)
+	}
+	if page.Supplement != content["supplement"] || len(page.Spans) != 1 || page.Spans[0].Text != "Original" {
+		t.Fatal("interpretation mixed into recognized spans")
+	}
+	for _, notes := range []any{strings.Repeat("x", (16<<10)+1), 123, nil} {
+		content["supplement"] = notes
+		raw, _ = json.Marshal(completion(content))
+		if _, err = p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText); err == nil {
+			t.Fatal("invalid supplement accepted")
+		}
+	}
+	content["supplement"] = "too long for shared byte budget"
+	raw, _ = json.Marshal(completion(content))
+	p.options.MaxTextBytes = 8
+	if _, err = p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText); err == nil {
+		t.Fatal("supplement bypassed aggregate text budget")
+	}
 }

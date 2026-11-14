@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"math"
+	"strings"
 	"testing"
 )
 
@@ -267,5 +268,16 @@ func TestExternalPDFModelsRequirePublicDestination(t *testing.T) {
 	f := provider("local", PDFTextLayer)
 	if _, err := New(context.Background(), f); err != nil {
 		t.Fatal("local OCR requires an external destination", err)
+	}
+}
+
+func TestPositionedSupplementValidation(t *testing.T) {
+	input := InputPage{ID: "page", Width: 100, Height: 200}
+	for _, note := range []string{"", "Layout interpretation, not verbatim OCR", strings.Repeat("x", 16<<10), strings.Repeat("x", (16<<10)+1), string([]byte{0xff})} {
+		page := PositionedPage{PageID: input.ID, Width: 100, Height: 200, Supplement: note}
+		valid := len(note) <= 16<<10 && note != string([]byte{0xff})
+		if (ValidatePositionedPage(page, input) == nil) != valid {
+			t.Fatal("supplement validation boundary mismatch")
+		}
 	}
 }
