@@ -1,0 +1,144 @@
+{
+  "version": "v0.2.29",
+  "source_sha": "5c68421333054651521dba6b89bedd9c54ecc883",
+  "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.29",
+  "production_url": "https://scanner.homelab.otama-playground.com",
+  "ci_run_id": 43581045349,
+  "required_checks_attempt": 1,
+  "publisher_attempt": 4,
+  "artifact_id": 14108941345,
+  "manifest_sha256": "220da5be2b68b220c2c759d592f440f8598acc8e116eb8130cafed3197075317",
+  "changes": [
+    "Fix Adjust90/270 layout using shared raster/PDF/OCR viewer bounds.",
+    "Shared Fit/25% zoom/pan and page selection; permanent mobile source display.",
+    "Tailwind and MIT shadcn DOM controls retain native keyboard/browser zoom and existing design."
+  ],
+  "proofs": {
+    "full_browser": "02efbe82be52cd5d3db5b84026aa19c7c08db3e0f6d914a6cead454d8eee5116",
+    "source_binding": "e790e88ce856ef818074af2b2dfacbd03a3863aacbdf51045c2b55f9171c08c3",
+    "finish_review": "df93bb18b5f9b60475bcb07c22783c12c22aeb0d4a81324986cc7517840286fe",
+    "candidate_stage": "71259a406bcce680a0759bd421208b4bb6559728448baeb2aa7eeb316e091fff",
+    "candidate_pdf": "3a9d1cf9b5f94340d2c0fea1e71f0b885efe053beedce027433c3989b91ff61f",
+    "required_checks": "1dc89b1f8787f17ec98c8ce54756d8b6cf9898361ad1e03a2438c5ff1b8124c6",
+    "publication": "ad8e0d513a3c8899ef700f69a2bb3c6b3337d1bea137fdca8e2ab96645f7fab9",
+    "approval": "0be44990b51d82d3b585e7692ccc3d546773dbcadac7d614e9c2a4ac54b5b5c2"
+  },
+  "images": {
+    "core": {
+      "digest": "sha256:59f2ac28772781be04c5995e3bcc0e2a4c31a4d18ce59ea62dcdea209105956f",
+      "image_id": "sha256:0f86e3cbfe3d0695fe3c7804798aa465be461eef91b262410ba19b1729deebba",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    },
+    "tesseract": {
+      "digest": "sha256:29357b4e9be33dd752356e437913f15c4b4b62bf7174b6795e49b3e077566c69",
+      "image_id": "sha256:c915a3335979278655265dbcfc6572ad3e071279cad06cbc72a7122e0676800d",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    }
+  },
+  "production": {
+    "version": "v0.2.29",
+    "source_sha": "5c68421333054651521dba6b89bedd9c54ecc883",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-14T10:37:17.062778+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "served_assets_sha256": {
+      "_astro/index.astro_astro_type_script_index_0_lang.D_PwebYK.js": "c6c19f4d8a64bb9b65be9c70179aed9a486ecf58e67c8b329c3bce495742156f",
+      "_astro/index.yuPYrw41.css": "a6ed2b37fc78f1f43dedfb8c08e9e4ab7e5da350d8e8ee59c1d19a4c5e9c6e23",
+      "_astro/pdf.YwugTw7Y.js": "8f279b49f5b212e72e2bbec385697bc6d41097adb0517a735a7f2983a4940b45",
+      "_astro/pdf.worker.min.CIqJB0yW.mjs": "1e64c8240e54735ec5913b37acd5134747799cb8c6bb3777c70adbc01232d2aa",
+      "document-review.css": "c92ebd940bd071afc621f2631336bd3e1872a9c8d0d742d259e816abf7c91bb9",
+      "pdfjs/wasm/jbig2_nowasm_fallback.js": "70150223396487e1ccfef7eac61fc780074ad7fcc9e843b702a8a3bc23107494",
+      "pdfjs/wasm/openjpeg_nowasm_fallback.js": "2855f1590e7fd7abbbf204cd13a5c09d30c92fe2c9313fb72b64aa763fe8b4f3",
+      "style.css": "081bebdec0199dc139c632e6c063bdc024a612fa023ad75b17ce58f40f2d7ff6",
+      "theme.js": "588f5a379dfc46c1eb0cf2d46e4b878772d439398914baeb46cba6b8ef5667ba",
+      "ui/NOTICE.txt": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    "new_viewer_bundle_served": true,
+    "exact_css_and_shadcn_notice_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-6c8878fff8-9qzsw",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:59f2ac28772781be04c5995e3bcc0e2a4c31a4d18ce59ea62dcdea209105956f",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:59f2ac28772781be04c5995e3bcc0e2a4c31a4d18ce59ea62dcdea209105956f"
+        ],
+        "runtime_images": [
+          "sha256:0f86e3cbfe3d0695fe3c7804798aa465be461eef91b262410ba19b1729deebba",
+          "sha256:0f86e3cbfe3d0695fe3c7804798aa465be461eef91b262410ba19b1729deebba"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:59f2ac28772781be04c5995e3bcc0e2a4c31a4d18ce59ea62dcdea209105956f",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:59f2ac28772781be04c5995e3bcc0e2a4c31a4d18ce59ea62dcdea209105956f"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-679fc567bb-cpjbd",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:29357b4e9be33dd752356e437913f15c4b4b62bf7174b6795e49b3e077566c69"
+        ],
+        "runtime_images": [
+          "sha256:c915a3335979278655265dbcfc6572ad3e071279cad06cbc72a7122e0676800d"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:29357b4e9be33dd752356e437913f15c4b4b62bf7174b6795e49b3e077566c69"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "llm_fingerprint_unchanged": true,
+    "owner_device_uat": "pending",
+    "new_physical_scan": false,
+    "new_model_qualified": false
+  },
+  "infra_commit": "3af63bd5",
+  "infra_scope": "Only infra/scanner/core.json,ocr.json,values.json committed locally;5image references. Unrelated homelab branch not pushed. Live UID/full-spec CAS image patches to existing core/Tesseract deployments; same Recreate/PVC/schema27.",
+  "publication_history": {
+    "attempt2": "Rejected before artifact download/writer: protected plan terminal LF mismatch; no writes.",
+    "attempt3": "Publisher skipped after monitor mistook old terminal attempt; no steps/writes.",
+    "attempt4": "Exact stored plan bytes read back; expected-attempt monitor; publisher success.",
+    "publication_flag_final": "false"
+  },
+  "retained_llm_proof": {
+    "origin_version": "v0.2.26",
+    "new_inference_for_this_release": false,
+    "unchanged_live_catalog_identity": true,
+    "private_documents_replayed": false
+  },
+  "advisories": {
+    "existing_exact_candidate_tuples": 12,
+    "new_candidate_findings": 0,
+    "raw_threshold_passed": false,
+    "npm_moderate_findings": 1,
+    "npm_high_or_critical": 0,
+    "reachable_go_vulnerabilities": 0
+  },
+  "owner_device_uat": "pending",
+  "screen_reader_acceptance": "pending",
+  "new_physical_scan": false,
+  "new_correction_algorithm": false,
+  "new_model_qualified": false,
+  "original_correction_requirements_complete": 7,
+  "original_correction_requirements_total": 14,
+  "original_milestone_complete": false
+}

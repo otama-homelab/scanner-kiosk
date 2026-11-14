@@ -1,0 +1,7 @@
+# Shared document viewer v0.2.29
+
+Owner-requested quarter-turn layout, common Adjust/OCR/PDF controls, centered25% zoom/pan, permanent mobile source and Tailwind/shadcn integration are published and deployed. The exact shipping source is5c684213, not the five main-only backend/test differences. Full frozen browser547source bindings, seven required hosted checks, independent finish review, candidate/OCR/PDF proofs,48public assets and paired OCI/config identities were checked. Production serves exact new JS/CSS/MIT notice, Ready/restart0, schema27; LLM catalogue identity remains unchanged.
+
+The plan-variable terminal-LF failure and old-attempt observer error are retained in local release evidence; neither reached public writes. The successful fourth publisher attempt reset its flagfalse. Service selector propagation was observed before any image mutation. Runtime image fields expose configuration IDs while imageID contains the repository digest; both and the desired spec references were verified. Five source image references only, with a local homelab commit and no unrelated branch push.
+
+Existing12candidate advisory tuples/raw thresholdfalse and one moderate Astro build dependency finding remain recorded; no high/critical npm or reachable Go finding. This scoped viewer repair is not a correction model qualification or actual owner iPhone/Safari/screen-reader acceptance. Original7/14remains unchanged.

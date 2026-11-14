@@ -60,7 +60,7 @@
       "id": "TRUTH-02",
       "status": "waiting_external_input",
       "complete": false,
-      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing. Official pairing2_2→scan2 now source-proven. Canonical9 are RGB reencoded derivatives, not exact archive PNG bytes; all decodedRGB/shapes match. RawRGBA scans have nonopaque alpha; independent digit/thinline annotations remain absent.",
+      "evidence_scope": "Original9 hashes preserved and3independent geometry documents fixed; mandatory photo2_2 digit/thinline truth missing. Official pairing2_2\u2192scan2 now source-proven. Canonical9 are RGB reencoded derivatives, not exact archive PNG bytes; all decodedRGB/shapes match. RawRGBA scans have nonopaque alpha; independent digit/thinline annotations remain absent.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -292,7 +292,7 @@
       "id": "ACCEPT-01",
       "status": "waiting_external_owner_operation",
       "complete": false,
-      "evidence_scope": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass. v0.2.20 separates scanner/image-camera paths with shared save settings and verified live assets; no new owner per-device observation supplied. Owner confirms OCR results are OK. v0.2.25 correction-first workspace is published/deployed with exact-source hosted, browser, public asset and runtime checks. Actual same-original iPhone/PC correction/OCR/save/open checkpoint remains unconfirmed; no owner UAT pass.",
+      "evidence_scope": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass. v0.2.20 separates scanner/image-camera paths with shared save settings and verified live assets; no new owner per-device observation supplied. Owner confirms OCR results are OK. v0.2.25 correction-first workspace is published/deployed with exact-source hosted, browser, public asset and runtime checks. Actual same-original iPhone/PC correction/OCR/save/open checkpoint remains unconfirmed; no owner UAT pass. Shared viewer v0.2.29 is now deployed with fixed-commit browser/public/runtime proof; no new owner per-device observation or qualified candidate.",
       "complete_measurement": false,
       "quality_pass": false,
       "evidence": [
@@ -325,6 +325,11 @@
           "path": "docs/design/research/document-workspace-v0224/release.json",
           "sha256": "ecc8e18c300be6985c510da7420a058ca9baca88345f6028749885803056bb1b",
           "revision": "v0.2.25-production-reconciliation-2026-11-13"
+        },
+        {
+          "path": "docs/design/research/shared-viewer-v0229/release.json",
+          "sha256": "5155a0e63b36f6bf5c24a812a4bca57c2cc4493cb1cd8d2505d29b22166945d0",
+          "revision": "5c68421333054651521dba6b89bedd9c54ecc883"
         }
       ],
       "historical_evidence_scope_before_v0225": "Owner reported image import success after v0.2.10. Grouped source actions v0.2.14 are now published/deployed with automated and public-asset checks. Save/download, device/browser and same-original iPhone/PC acceptance remain unconfirmed; no full owner UAT pass. v0.2.20 separates scanner/image-camera paths with shared save settings and verified live assets; no new owner per-device observation supplied."
@@ -649,7 +654,7 @@
     "human_review_packet": "../../correction-validation-v060-human-inputs.md"
   },
   "synthetic_supplement": {
-    "authorization": "お任せ、生成画像でもよい",
+    "authorization": "\u304a\u4efb\u305b\u3001\u751f\u6210\u753b\u50cf\u3067\u3082\u3088\u3044",
     "report": "../../correction-synthetic-validation-v060.md",
     "summary": "../correction-synthetic-v060/summary.json",
     "sha256": "78d09893d2fa4c7107f9f2e3ec08fa64c69a5cb71f0510ea335a850e02e5beef",
@@ -785,15 +790,15 @@
   "owner_operation_ui_unblock": {
     "summary": "../photo-import-purpose-v027/summary.json",
     "sha256": "49d74e94456a94df7af9cedb252be262c372921a4b7e49c7a0c2969bce6bd157",
-    "status": "v0225-document-workspace-deployed-owner-validation-pending",
+    "status": "v0229-shared-viewer-deployed-owner-validation-pending",
     "owner_acceptance_complete": false,
     "historical_status": "local-verification-passed-deployment-approval-pending",
     "production_evidence": {
-      "path": "../document-workspace-v0224/release.json",
-      "sha256": "ecc8e18c300be6985c510da7420a058ca9baca88345f6028749885803056bb1b",
-      "version": "v0.2.25"
+      "path": "../shared-viewer-v0229/release.json",
+      "sha256": "5155a0e63b36f6bf5c24a812a4bca57c2cc4493cb1cd8d2505d29b22166945d0",
+      "version": "v0.2.29"
     },
-    "updated_at": "2026-11-12T17:10:30.512608+00:00",
+    "updated_at": "2026-11-14T10:39:13.550928+00:00",
     "owner_import_observation": {
       "path": "../photo-import-purpose-v027/owner-import-observation.json",
       "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c"
@@ -828,10 +833,15 @@
         "path": "../scanner-llm-transport-v0222/release.json",
         "sha256": "7870dc62fb0b42ed188089fdf94c5a3ddc3bd7d161d7fbb54d9f02eacc65b3e8",
         "version": "v0.2.22"
+      },
+      {
+        "path": "../document-workspace-v0224/release.json",
+        "sha256": "ecc8e18c300be6985c510da7420a058ca9baca88345f6028749885803056bb1b",
+        "version": "v0.2.25"
       }
     ],
     "owner_ocr_observation": {
-      "words": "OCRの結果はOKです",
+      "words": "OCR\u306e\u7d50\u679c\u306fOK\u3067\u3059",
       "scope": "Recognition result acceptance only; no per-device save/open acceptance."
     }
   },
@@ -844,11 +854,11 @@
     "new_model_inferences": 0
   },
   "current_requirements_reconciliation": {
-    "summary": "../correction-v0225-goal-reconciliation/summary.json",
-    "sha256": "621231b77e8d9ed54c35866030fc76d468a730b9893ecf21f7e61baf1754a5be",
+    "summary": "../correction-v0229-goal-reconciliation/summary.json",
+    "sha256": "dd4f0e460f2026d21acabc81f5cd3cf973e5b49085bb9ba7a42f250ad87b0f43",
     "complete": 7,
     "total": 14,
-    "scope": "Original14 dispositions retained, deployed v0.2.25 workspace and 40 verified requirement evidence references; no owner/model qualification inferred."
+    "scope": "Original14dispositions unchanged; v0.2.29 viewer deployed and 41evidence references verified. No owner/model qualification inferred."
   },
   "historical_requirements_reconciliation_before_v0214": {
     "summary": "../correction-current-reconciliation-v060/summary.json",
@@ -870,5 +880,12 @@
     "complete": 7,
     "total": 14,
     "scope": "Original14 requirement dispositions, current deployed acquisition UX and38 verified evidence references; no inferred owner/model qualification."
+  },
+  "historical_requirements_reconciliation_before_v0229": {
+    "summary": "../correction-v0225-goal-reconciliation/summary.json",
+    "sha256": "621231b77e8d9ed54c35866030fc76d468a730b9893ecf21f7e61baf1754a5be",
+    "complete": 7,
+    "total": 14,
+    "scope": "Original14 dispositions retained, deployed v0.2.25 workspace and 40 verified requirement evidence references; no owner/model qualification inferred."
   }
 }

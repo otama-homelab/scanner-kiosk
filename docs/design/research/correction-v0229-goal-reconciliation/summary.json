@@ -1,0 +1,229 @@
+{
+  "format": "scanner-goal-reconciliation",
+  "observed_at_utc": "2026-11-14T10:39:13.550928+00:00",
+  "turn_classification": "progress: exact v0.2.29 publication/deployment and 68-04 closeout",
+  "complete": 7,
+  "total": 14,
+  "completed_phases": [
+    64
+  ],
+  "requirement_evidence_references_checked": 41,
+  "evidence": [
+    {
+      "requirement": "ENV-01",
+      "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+      "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df"
+    },
+    {
+      "requirement": "ENV-02",
+      "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+      "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df"
+    },
+    {
+      "requirement": "TRUTH-01",
+      "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+      "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df"
+    },
+    {
+      "requirement": "TRUTH-02",
+      "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+      "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732"
+    },
+    {
+      "requirement": "TRUTH-02",
+      "path": "docs/design/research/correction-original-truth-followup-v060/summary.json",
+      "sha256": "fdc9b2311d0f484282048533094820110f13537781523fb0b6ec68d651b11801"
+    },
+    {
+      "requirement": "TRUTH-03",
+      "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+      "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df"
+    },
+    {
+      "requirement": "VERIFY-01",
+      "path": "docs/design/research/correction-autonomous-v060/phase66-runtime.json",
+      "sha256": "a1a53735a19c68b33f6ca59bf3e122b8d8566c3cb0ebc16738f4c8340e847b48"
+    },
+    {
+      "requirement": "VERIFY-01",
+      "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+      "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6"
+    },
+    {
+      "requirement": "VERIFY-01",
+      "path": "docs/design/research/correction-fairscan-full-cpu-v060/summary.json",
+      "sha256": "7037d98957885a2d3733796e6a3d757cc3f91e4edf01c43e088a9528ad939426"
+    },
+    {
+      "requirement": "VERIFY-01",
+      "path": "docs/design/research/correction-fairscan-mask-parity-v060/summary.json",
+      "sha256": "b6a925864294e6dd5daa41267879e1ef8af0b920c2370c77fa04f8887f42eced"
+    },
+    {
+      "requirement": "VERIFY-02",
+      "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+      "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732"
+    },
+    {
+      "requirement": "VERIFY-02",
+      "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+      "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6"
+    },
+    {
+      "requirement": "VERIFY-03",
+      "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+      "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6"
+    },
+    {
+      "requirement": "VERIFY-03",
+      "path": "docs/design/research/correction-validation-v060/all-reload.json",
+      "sha256": "8c5f19960126f479090fc78937ab4b96a6c91dec1211c33a0f4e4a2021a6ef2e"
+    },
+    {
+      "requirement": "VERIFY-03",
+      "path": "docs/design/research/correction-validation-v060/control-reload.json",
+      "sha256": "bdf5d997354854e3e7c794fbab3fed3d53bf8fda1a2248213dde8c98b22a9af6"
+    },
+    {
+      "requirement": "VERIFY-03",
+      "path": "docs/design/research/correction-synthetic-v060/mesh-reload.json",
+      "sha256": "83ef1bfca30d05342c38041cd6e025b46b1e1a11984b1b85a1e66110a555a957"
+    },
+    {
+      "requirement": "VERIFY-04",
+      "path": "docs/design/research/correction-autonomous-v060/phase65-truth-gate.json",
+      "sha256": "5ac53a695ef12dbb026b83d1a045def01afcf11479694d19bce8e77e2f4d2732"
+    },
+    {
+      "requirement": "VERIFY-04",
+      "path": "docs/design/research/correction-autonomous-v060/phase66-comparison.json",
+      "sha256": "fba928b8042c5b2701a35828836e15548f58074b80d25efff78c835aab1c12e6"
+    },
+    {
+      "requirement": "ILL-01",
+      "path": "docs/design/research/correction-autonomous-v060/phase67-resume.json",
+      "sha256": "6688ffe4075f00a71646fa31075e64ae89dca5f0010730990838d3d0dd8678d0"
+    },
+    {
+      "requirement": "ILL-01",
+      "path": "docs/design/research/correction-runtime-followup-v060/summary.json",
+      "sha256": "e3839309f1c8e76a1c27c3a08ee268a243b728de2a0b9acd132b03a6532bb1e3"
+    },
+    {
+      "requirement": "ILL-01",
+      "path": "docs/design/research/correction-docshadow-native-v060/summary.json",
+      "sha256": "dcd8d3ce858a44386d62a5bb9af9dce1c7c9f815ed49f2648c1f5dd3282eb700"
+    },
+    {
+      "requirement": "ILL-01",
+      "path": "docs/design/research/correction-docshadow-ssim-v060/summary.json",
+      "sha256": "3881f3ecf477bfecea2f530f813f27e9028ba1a970cc60ac1259efb69ae7e1c0"
+    },
+    {
+      "requirement": "ILL-01",
+      "path": "docs/design/research/correction-fsenet-cpu-v060/summary.json",
+      "sha256": "276c7b5abf63aca78d6b6453f2d407b2c9c492a9dbcc324b55b287388b110df4"
+    },
+    {
+      "requirement": "ILL-01",
+      "path": "docs/design/research/correction-fsenet-artifact-identity-v060/summary.json",
+      "sha256": "76173fdd69b04fab248e28238552c214b789261b659a49e18dfea244857000cf"
+    },
+    {
+      "requirement": "ILL-01",
+      "path": "docs/design/research/correction-current-criteria-audit-v060/summary.json",
+      "sha256": "96e0dc7c7a2e90ed953a502ad7172c6ebd685476d2d20a0dde31e462c047ac5c"
+    },
+    {
+      "requirement": "ILL-02",
+      "path": "docs/design/research/correction-autonomous-v060/phase67-measurement.json",
+      "sha256": "279c46f23cf12c13f6707a9984164d52b7edec03a407ece8c75c763377387163"
+    },
+    {
+      "requirement": "ILL-02",
+      "path": "docs/design/research/correction-runtime-followup-v060/summary.json",
+      "sha256": "e3839309f1c8e76a1c27c3a08ee268a243b728de2a0b9acd132b03a6532bb1e3"
+    },
+    {
+      "requirement": "ILL-02",
+      "path": "docs/design/research/correction-docshadow-native-v060/summary.json",
+      "sha256": "dcd8d3ce858a44386d62a5bb9af9dce1c7c9f815ed49f2648c1f5dd3282eb700"
+    },
+    {
+      "requirement": "ILL-02",
+      "path": "docs/design/research/correction-docshadow-ssim-v060/summary.json",
+      "sha256": "3881f3ecf477bfecea2f530f813f27e9028ba1a970cc60ac1259efb69ae7e1c0"
+    },
+    {
+      "requirement": "ILL-02",
+      "path": "docs/design/research/correction-fsenet-cpu-v060/summary.json",
+      "sha256": "276c7b5abf63aca78d6b6453f2d407b2c9c492a9dbcc324b55b287388b110df4"
+    },
+    {
+      "requirement": "ILL-02",
+      "path": "docs/design/research/correction-fsenet-content-v060/summary.json",
+      "sha256": "a2f40c2fcfc36b5cdb0075f882b6868107bcb6dd2ea1d4149365cd022de7392d"
+    },
+    {
+      "requirement": "ILL-02",
+      "path": "docs/design/research/correction-fsenet-existing-line-contract-v060/summary.json",
+      "sha256": "8d2a5f8d32af0158a37fd253a4aae39abda4671e8f5218e257131700ec987a07"
+    },
+    {
+      "requirement": "ACCEPT-01",
+      "path": "docs/design/research/correction-autonomous-v060/phase68-owner-evidence.json",
+      "sha256": "d87cc038f952c37a8eadd265d0fcc9c34ffc1c92d820cbb1a9d94633d613df83"
+    },
+    {
+      "requirement": "ACCEPT-01",
+      "path": "docs/design/research/photo-import-purpose-v027/owner-import-observation.json",
+      "sha256": "a0e8276009a71e35b76951417bed757c605ec14ac1bc38330c4b5cde6a1aa71c"
+    },
+    {
+      "requirement": "ACCEPT-01",
+      "path": "docs/design/research/scanner-source-actions-v0214/release.json",
+      "sha256": "426ef77253dcead63da6607c6205af1e87bf8b6a7c7e99744b40d18f72f5164c"
+    },
+    {
+      "requirement": "ACCEPT-01",
+      "path": "docs/design/research/scanner-acquisition-groups-v0220/release.json",
+      "sha256": "8d3d8b9149963f9024376da6eaca347a3d21cb30ffb7c0ba8d65208e619b6698"
+    },
+    {
+      "requirement": "ACCEPT-01",
+      "path": "docs/design/research/scanner-llm-transport-v0222/release.json",
+      "sha256": "7870dc62fb0b42ed188089fdf94c5a3ddc3bd7d161d7fbb54d9f02eacc65b3e8"
+    },
+    {
+      "requirement": "ACCEPT-01",
+      "path": "docs/design/research/document-workspace-v0224/release.json",
+      "sha256": "ecc8e18c300be6985c510da7420a058ca9baca88345f6028749885803056bb1b"
+    },
+    {
+      "requirement": "ACCEPT-01",
+      "path": "docs/design/research/shared-viewer-v0229/release.json",
+      "sha256": "5155a0e63b36f6bf5c24a812a4bca57c2cc4493cb1cd8d2505d29b22166945d0"
+    },
+    {
+      "requirement": "ACCEPT-02",
+      "path": "docs/design/research/correction-autonomous-v060/phase68-candidate-shared-path.json",
+      "sha256": "ddf93c0b7133cf145d638c68035d3a674aec8eafcb4071cb1fbca2408d6723f9"
+    },
+    {
+      "requirement": "ACCEPT-03",
+      "path": "docs/design/research/correction-autonomous-v060/baseline-ledger.json",
+      "sha256": "9e4e5730acac0bedcce0e04685618da9732e28143022a174baae23420d9ae5df"
+    }
+  ],
+  "remaining_requirement_ids": [
+    "TRUTH-02",
+    "VERIFY-01",
+    "VERIFY-02",
+    "VERIFY-04",
+    "ILL-02",
+    "ACCEPT-01",
+    "ACCEPT-02"
+  ],
+  "owner_acceptance_inferred": false,
+  "new_model_qualified": false
+}
