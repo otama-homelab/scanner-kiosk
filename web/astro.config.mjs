@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 import { readdirSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 
@@ -22,5 +23,6 @@ const pdfAssets={name:'pdf-preview-assets',generateBundle(){
   }
  }
  this.emitFile({type:'asset',fileName:'pdfjs/NOTICE.txt',source:notices.join('\n\n')});
+ this.emitFile({type:'asset',fileName:'ui/NOTICE.txt',source:readFileSync(new URL('./vendor/shadcn-ui/LICENSE',import.meta.url),'utf8')});
 }};
-export default defineConfig({output:'static',cacheDir:'./.astro/cache',vite:{plugins:[pdfAssets],build:{assetsInlineLimit:0}}});
+export default defineConfig({output:'static',cacheDir:'./.astro/cache',vite:{plugins:[tailwindcss(),pdfAssets],build:{assetsInlineLimit:0}}});

@@ -1,0 +1,28 @@
+/* Utilities are compiled locally. Keep the existing app's reset and theme. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@source "../client";
+
+@theme inline {
+ --spacing:4px;
+ --color-background:var(--surface);
+ --color-foreground:var(--text);
+ --color-input:var(--control-line);
+ --color-accent:var(--accent-soft);
+ --color-accent-foreground:var(--text);
+ --color-ring:var(--accent);
+ --radius-md:8px;
+ --text-sm:14px;
+ --text-sm--line-height:1.4;
+}
+
+.document-viewer-controls .ui-button{
+ @apply inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap m-0 shadow-none outline-none disabled:opacity-50;
+ @apply focus-visible:outline-solid focus-visible:outline-[3px] focus-visible:outline-ring focus-visible:outline-offset-4;
+}
+.document-viewer-controls .ui-button-outline{@apply border border-input bg-background text-foreground;}
+.document-viewer-controls .ui-button-ghost{@apply border border-transparent bg-transparent text-foreground;}
+.document-viewer-controls .ui-button-default{@apply px-3 py-2;}
+.document-viewer-controls .ui-button-icon{@apply size-11 p-2;}
+.ui-button-group{@apply inline-flex w-fit items-center gap-2;}
+@media(hover:hover) and (pointer:fine){.document-viewer-controls .ui-button:enabled:hover{@apply bg-accent text-accent-foreground;}}

@@ -62,7 +62,7 @@ class BuildWebIdentityTests(unittest.TestCase):
                                ('pdfjs/standard_fonts/font.ttf', True),
                                ('pdfjs/standard_fonts/font.pfb', True),
                                ('pdfjs/wasm/openjpeg.wasm', True),
-                               ('pdfjs/NOTICE.txt', True),
+                               ('pdfjs/NOTICE.txt', True), ('ui/NOTICE.txt', True), ('ui/arbitrary.txt', False),
                                ('_astro/pdf.worker.mjs', True),
                                ('private.ttf', False), ('pdfjs/secret.env', False)]:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:

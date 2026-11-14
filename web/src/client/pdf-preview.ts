@@ -1,15 +1,19 @@
 import workerURL from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import type {PDFDocumentLoadingTask,PDFWorker,RenderTask} from 'pdfjs-dist';
+import {documentViewer} from './document-viewer';
+import type {Key} from './messages';
 
 // One renderer at a time bounds page decoding on phones; finished tasks release their PDF data.
 let queue=Promise.resolve();
 let worker:PDFWorker|undefined;
-export function pdfPreview(options:{url:string;label:string;rotation:number;loading:string;failed:string;retry:string;maxWidth?:number;current:()=>boolean}){
+export function pdfPreview(options:{url:string;label:string;rotation:number;loading:string;failed:string;retry:string;maxWidth?:number;thumbnail:boolean;t:(key:Key)=>string;current:()=>boolean}){
  const element=document.createElement('div');element.className='pdf-page';
  const canvas=document.createElement('canvas');canvas.setAttribute('role','img');canvas.setAttribute('aria-label',options.label);canvas.hidden=true;
  const status=document.createElement('p');status.setAttribute('role','status');status.textContent=options.loading;
  const retry=document.createElement('button');retry.type='button';retry.textContent=options.retry;retry.hidden=true;
- element.append(canvas,status,retry);
+ const viewer=options.thumbnail?null:documentViewer({content:canvas,title:options.t('sourceImage'),t:options.t});
+ if(viewer)viewer.element.hidden=true;
+ element.append(viewer?.element??canvas,status,retry);
  const cancellation=Promise.withResolvers<null>();
  let disposed=false,task:PDFDocumentLoadingTask|null=null,renderTask:RenderTask|null=null,pending=false;
  const active=()=>!disposed&&options.current()&&element.isConnected;
@@ -28,12 +32,12 @@ export function pdfPreview(options:{url:string;label:string;rotation:number;load
     const width=Math.min(options.maxWidth??1200,Math.max(320,element.clientWidth)*Math.min(2,devicePixelRatio||1));
     const viewport=page.getViewport({scale:Math.min(width/original.width,1400/original.height),rotation});
     canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-    renderTask=page.render({canvas,viewport});await renderTask.promise;if(active()){canvas.hidden=false;status.textContent=''}
+    renderTask=page.render({canvas,viewport});await renderTask.promise;if(active()){canvas.hidden=false;if(viewer)viewer.element.hidden=false;viewer?.setSize(canvas.width,canvas.height);status.textContent=''}
    }catch{failed=true;if(active()){status.textContent=options.failed;retry.hidden=false;retry.disabled=true}}
    finally{try{await task?.destroy()}finally{task=null;renderTask=null;pending=false;if(failed){worker?.destroy();worker=undefined}retry.disabled=false}}
   }).catch(()=>{pending=false;if(active()){status.textContent=options.failed;retry.hidden=false}});
  }
  retry.addEventListener('click',start);
  const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){observer.disconnect();start()}},{rootMargin:'240px'});observer.observe(element);
- return {element,dispose(){disposed=true;cancellation.resolve(null);renderTask?.cancel();observer.disconnect()}};
+ return {element,dispose(){disposed=true;cancellation.resolve(null);renderTask?.cancel();observer.disconnect();viewer?.dispose()}};
 }

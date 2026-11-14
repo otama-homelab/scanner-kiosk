@@ -2,6 +2,8 @@ import type {Key} from './messages';
 
 const trash = '<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/>';
 const iconPaths: Partial<Record<Key, string>> = {
+ ocrZoomIn: '<path d="M5 12h14M12 5v14"/>',
+ ocrZoomOut: '<path d="M5 12h14"/>',
  scanNext: '<path d="M6 3h8l4 4v6M14 3v5h5M6 3v18h6M18 15v6M15 18h6"/>',
  rotate: '<path d="M20 7v5h-5M20 12a8 8 0 1 0-2 5"/>',
  moveEarlier: '<path d="m6 12 6-6 6 6M12 6v14"/>',

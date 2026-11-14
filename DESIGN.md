@@ -110,9 +110,9 @@ The inherited root remains the home-body token. Consequently rem-based existing 
 
 ## Layout
 
-The document shell caps at 1560px with 24px horizontal padding; narrow screens use 16px. Compact app chrome precedes the document heading and workflow row. Desktop correction pairs the original with a 260px local action rail. OCR pairs a source pane and text pane at a 1.2:1 ratio. The same selected page remains the working unit across views.
+The document shell caps at 1560px with 24px horizontal padding; narrow screens use 16px. Compact app chrome precedes the document heading and workflow row. Correction and OCR both pair the source pane with local actions or text at a 1.2:1 ratio. Both use the same fitted viewer and zoom controls; the shared page selector stays above the workspace. The same selected page remains the working unit across views.
 
-At 960px and below, OCR becomes one column and its source pane opens on request. At 600px and below, action rails become wrapping rows, toolbar actions reflow, comparison results stack, and page controls retain readable numeric identity. On screens at least 961px wide and 701px high, the document shell fills the viewport with bounded scroll areas for source, transcript and local controls; zoom and adoption decisions stay outside transcript scrolling. Shorter screens use normal page flow.
+At 960px and below, correction and OCR become one column and the source remains visible above local actions or text. There is no source visibility toggle. At 600px and below, action rails become wrapping rows, toolbar actions reflow, comparison results stack, and page controls retain readable numeric identity. On screens at least 961px wide and 701px high, the document shell fills the viewport with bounded scroll areas for source, transcript and local controls; zoom and adoption decisions stay outside transcript scrolling. Shorter screens use normal page flow.
 
 The home/acquisition layer retains its own 760px and 900px responsive rules and wider rounded panels; document breakpoints do not replace them.
 
@@ -150,7 +150,7 @@ The document workspace has one thin outer boundary, not nested elevated cards. O
 
 ### Recognition Source and Decisions
 
-The source viewer displays the immutable source belonging to the selected recognition result. Position-linked spans use a transparent highlight with accent stroke and a selected text outline. Ordinary review shows one result; explicit comparison may show two text results while retaining one source viewer. Adopt and discard remain explicit decisions and preserve work context. The text pane owns transcript scrolling; selectable span lists expand naturally rather than creating another scroll area. Recognition model, language and quality settings open inline in the same workspace, temporarily replacing the review area. Close or Escape restores the review and its focus. On desktop, only the settings body may scroll; on narrow or short screens, settings follow page flow with a visible sticky action row. These visual rules do not weaken source identity, expiry, recovery or retention behavior.
+The shared source viewer displays the immutable source belonging to the selected recognition result. Saved/New/Compare stays above the image so narrow-screen users can change the source without scrolling through the transcript. Source identity, not merely visual similarity, decides which image is shown. Position-linked spans use a transparent highlight with accent stroke and a selected text outline. Ordinary review shows one result; explicit comparison may show two text results while retaining one source viewer. Adopt and discard remain explicit decisions and preserve work context. The text pane owns transcript scrolling; selectable span lists expand naturally rather than creating another scroll area. Recognition model, language and quality settings open inline in the same workspace, temporarily replacing the review area. Close or Escape restores the review and its focus. On desktop, only the settings body may scroll; on narrow or short screens, settings follow page flow with a visible sticky action row. These visual rules do not weaken source identity, expiry, recovery or retention behavior.
 
 ## Do's and Don'ts
 
@@ -171,3 +171,9 @@ The source viewer displays the immutable source belonging to the selected recogn
 ### Unified file intake
 
 Home exposes one Import action in the Files & camera block for PDF, JPEG and PNG, alongside the existing image-only Take a photo action. There is no separate PDF entry in the home heading. Native file selection dispatches to the existing format-specific workflows; the legacy PDF route remains available for its established form/recovery behavior. Keep the current acquisition panels, tokens and purpose controls.
+
+### Shared source viewer
+
+Adjust raster images, existing PDF canvases and OCR SVGs use one viewer for fitting, 25% zoom steps, mouse dragging and native scrolling. Fit is100%; the maximum is400% of fitted size. The zoom label explicitly states that basis. Zoom preserves the document point under the viewport center and updates real scroll dimensions so every edge remains reachable. Fit restores the complete original. Arrow keys scroll; plus/minus and0 provide zoom/fit shortcuts without intercepting browser Ctrl/Command zoom. Touch keeps native scrolling and browser pinch zoom. The mobile viewer is42dvh with a220px minimum; the desktop viewer fills its bounded pane.
+
+Viewer buttons use the shadcn/ui Button/ButtonGroup DOM adaptation and class-variance-authority, compiled with Tailwind CSS4.3.5. Semantic tokens map to the existing Scanner palette. Existing app reset, themes and native button semantics are retained. The MIT source/notice records live underweb/vendor/shadcn-ui and the notice is included at/ui/NOTICE.txt in the delivered assets. The rest of the application retains its existing controls.

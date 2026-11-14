@@ -38,8 +38,8 @@ func fromFS(publicURL string, assets fs.FS) (http.Handler, error) {
 			return nil
 		}
 		ext := path.Ext(name)
-		pdfAsset := strings.HasPrefix(name, "pdfjs/") && (ext == ".bcmap" || ext == ".pfb" || ext == ".ttf" || ext == ".wasm" || name == "pdfjs/NOTICE.txt")
-		if ext != ".js" && ext != ".mjs" && ext != ".css" && ext != ".svg" && name != "index.html" && !pdfAsset {
+		auxiliaryAsset := (strings.HasPrefix(name, "pdfjs/") && (ext == ".bcmap" || ext == ".pfb" || ext == ".ttf" || ext == ".wasm")) || name == "pdfjs/NOTICE.txt" || name == "ui/NOTICE.txt"
+		if ext != ".js" && ext != ".mjs" && ext != ".css" && ext != ".svg" && name != "index.html" && !auxiliaryAsset {
 			return errors.New("unsupported public asset")
 		}
 		data, err := fs.ReadFile(assets, name)
