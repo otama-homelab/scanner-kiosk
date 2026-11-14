@@ -1,0 +1,125 @@
+{
+  "version": "v0.2.28",
+  "source_sha": "5b5c1bea5736726d3791ec9475859652fe95e6ab",
+  "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.28",
+  "production_url": "https://scanner.homelab.otama-playground.com",
+  "ci_run_id": 43563757826,
+  "required_checks_attempt": 1,
+  "publisher_attempt": 2,
+  "artifact_id": 14101907066,
+  "manifest_sha256": "a4f4086c5758de8b2891c069704e23510bc183174d7fd39f812336a9774175a7",
+  "changes": [
+    "One home Import accepts PDF/JPEG/PNG; separate PDF button removed.",
+    "Native file selection dispatches to existing PDF/image controllers; camera remains image-only.",
+    "PDF remains a document even when image Photo purpose is selected. Image immutable purpose and format remain.",
+    "Shared PDF MIME/filename predicate; original hashing, limits, pending/uncertain guards and server decoding remain.",
+    "Generic file cancellation copy, actual anonymous PDF intake and responsive EN/JA320/768/1440 verified."
+  ],
+  "proofs": {
+    "full_browser": "c1ad4b6b16ea18da63fa1686d2909ca1342f0288f1381068d483a43a6ac64902",
+    "source_binding": "f1758c0923959647b3bc57b36767d2976f1f283ec32a6561b62fb3fe79137f09",
+    "finish_review": "d22b2ac284c96855fa5351bfda85785857ea4161582e46769229b03c857c960b",
+    "candidate_pdf": "f1ccde25306b8371002c2f89ba93c7584130bd87cbe688471b8fcdeb6e292d61",
+    "required_checks": "db0bcc47f75857971430293002a0a65178314bc52ead72cfc1e3f449d1b07860",
+    "publication": "5212573705ccf4f6d1e495776cc90c25ef85b10ae99981447bf66fe46357bf41",
+    "deployment": "873cb81546ae4941fe216823d8f4b40153ae8defcf9d82835a13108743da85e4",
+    "configuration": "a198c47dbc727f21d9e2ef6a5c87c96b7302b5deead0e366bed1753e5589f8ce"
+  },
+  "images": {
+    "core": {
+      "digest": "sha256:26858b2a5266c5d18a9fdde0c7c131fc9ad6a28bc3aed17a957e4605f555dacd",
+      "image_id": "sha256:1b79f018451f484a499e3353a468af05dc312e9cb9de75982ceb6a7bf698b365",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    },
+    "tesseract": {
+      "digest": "sha256:284676da4da9a270089034008b4c1ab6087231594a0a0884b754f91d7dad4400",
+      "image_id": "sha256:5eaf1523c76f5fbfc1d7df1dc7ad4a21b75eafa91ce2f4f64637b5b1ce16e120",
+      "latest_matches": true,
+      "runtime_config_verified": true
+    }
+  },
+  "production": {
+    "version": "v0.2.28",
+    "source_sha": "5b5c1bea5736726d3791ec9475859652fe95e6ab",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-14T06:30:38.336928+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "new_source_actions_bundle_served": true,
+    "ocr_workspace_bundle_served": true,
+    "recognition_recovery_bundle_served": true,
+    "actual_llm_restored": true,
+    "exact_source_css_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-69cc7f94bb-qxwll",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:26858b2a5266c5d18a9fdde0c7c131fc9ad6a28bc3aed17a957e4605f555dacd",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:26858b2a5266c5d18a9fdde0c7c131fc9ad6a28bc3aed17a957e4605f555dacd"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:26858b2a5266c5d18a9fdde0c7c131fc9ad6a28bc3aed17a957e4605f555dacd",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:26858b2a5266c5d18a9fdde0c7c131fc9ad6a28bc3aed17a957e4605f555dacd"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-5fb65656bf-prz8c",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:284676da4da9a270089034008b4c1ab6087231594a0a0884b754f91d7dad4400"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:284676da4da9a270089034008b4c1ab6087231594a0a0884b754f91d7dad4400"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "metadata_observed_at_ms": 1794637829470,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "owner_device_uat": "pending",
+    "physical_scan_executed": false
+  },
+  "infra_commit": "d589add7a9f4a94a574b3ce42149ff03ab62171c",
+  "infra_scope": "Only infra/scanner/core.json, ocr.json and values.json committed locally; unrelated homelab branch not pushed. Applied core and extracted Tesseract Deployments only.",
+  "retained_llm_proof": {
+    "origin_version": "v0.2.26",
+    "public_provider_proof_sha256": "7666897c21b5ecbd1c439e9f92cd934a97d328a01e70e3e8212cf1e71c10c7a8",
+    "cluster_network_proof_sha256": "470b3af46bc5a4ae781980ac1a7fb9dc5bab71b588852b42dcc14350ccb7c6ed",
+    "new_inference_for_this_ui_release": false,
+    "unchanged_provider_identity": true,
+    "gufo_ready_at_readback": true,
+    "lemonade_paused_with_prior_explicit_owner_choice": true,
+    "private_documents_replayed": false
+  },
+  "advisories": {
+    "existing_exact_tuples": 12,
+    "new_findings": 0,
+    "raw_threshold_passed": false
+  },
+  "owner_device_native_picker_acceptance": "pending",
+  "screen_reader_acceptance": "pending",
+  "new_physical_scan": false,
+  "new_correction_algorithm": false,
+  "new_model_qualified": false,
+  "original_correction_requirements_complete": 7,
+  "original_correction_requirements_total": 14,
+  "original_milestone_complete": false,
+  "publication_flag_final": "false"
+}
