@@ -1,152 +1,70 @@
-# Scanner kiosk
+# Scanner Kiosk
 
-[Source repository](https://github.com/otama-homelab/scanner-kiosk) · Apache-2.0
+**スキャナーも、スマホ写真も、PDFも。取り込みから文字認識、保存までをブラウザで。**
 
-A browser-based scanner for phones and desktops. Scan documents, import PDFs,
-insert or replace pages, rotate/reorder/delete pages, and download PDF or image
-outputs. Documents belong to individual users and expire automatically.
+Scanner Kioskは、家庭や小さなオフィス向けのセルフホスト型スキャンアプリです。
+PCにもスマートフォンにも、専用のクライアントアプリは不要。紙を読み取り、写真やPDFを取り込み、必要なページを整えて保存できます。
 
-Docker is the primary Linux amd64 deployment path. The distroless core image
-contains the frontend, Go application and SANE/airscan, with OCR disabled by
-default. Tesseract and Japanese/English dictionaries live in an optional terminal
-API container. The lightweight LLM OCR plugin is compiled into the core and
-connects directly to LiteLLM or a configured Chat Completions endpoint. No local
-model, inference SDK or extra LLM adapter service is required.
+[はじめる](docs/guide/getting-started.md) · [使い方](docs/guide/usage.md) · [最新版をダウンロード](https://github.com/otama-homelab/scanner-kiosk/releases/latest) · [ドキュメント一覧](docs/README.md)
 
-**Status:** See the [latest published stable release](https://github.com/otama-homelab/scanner-kiosk/releases/latest) for its exact version, assets and image identities. Publication requires automated checks, acceptance, source/license materials and image verification. The legacy scanservjs runtime has been retired;
-its old PVC data remains retained for operator-controlled backup or removal.
+![原稿と認識文字を並べて確認できるOCR画面](docs/screenshots/ocr-desktop.png)
 
-## Run and configure
+*実際のアプリ画面に架空の請求書とデモOCR結果を表示しています。個人文書は使用していません。*
 
-The core image uses the same executable for both roles:
+## できること
 
-```sh
-scanner serve
-scanner worker
-```
+| | 機能 |
+| --- | --- |
+| 紙を取り込む | 対応するSANE／eSCL・AirScanスキャナーから読み取り。LAN上の対応機器を自動検出し、複数台から選択できます。 |
+| スマホから取り込む | カメラ撮影、PDF・JPEG・PNGのアップロード。書類と写真の用途を選べます。 |
+| ページを整える | 回転・並べ替え・削除・追加・差し替え。対応する画像では手動切り抜きと取り消しが使えます。 |
+| 文字を認識する | 日本語・英語のTesseract OCR、または設定したLLMのVision API。原稿画像と認識結果を見比べ、再OCR結果の採用・破棄を選べます。LLMのレイアウト・内容解釈は、原文と区別したPDF内の補足として残します。 |
+| 保存する | 書類はPDF、写真はJPEG／PNG。OCRを設定すれば検索可能なPDFを作成できます。OCRなしの保存にも対応します。 |
+| 日常で使う | 日本語／英語、ライト／ダーク、スマートフォン／PC表示。文書は利用者ごとに管理し、保存期間の経過後に自動削除します。 |
 
-`serve` provides the frontend, authentication and HTTP interface. `worker` handles
-scanning, OCR, PDF generation and cleanup. Both use the same private state and
-document stores and must run with matching OS identities. Configure environment
-variables explicitly; copying `.env.example` does not make the binary load it.
+![読み取り・ファイル取り込み・カメラ撮影を選べるホーム画面](docs/screenshots/home-desktop.png)
 
-- [Compose and standard Kubernetes deployment](deploy/README.md)
-- [Environment settings](.env.example)
-- [Local user/password setup](docs/design/simple-authentication.md)
-- [OIDC configuration and HTTPS proxy](docs/design/api-runtime.md)
-- [UID/GID, storage, backups and resource requirements](docs/design/homelab-readiness.md)
-- [Identity recovery](docs/design/state-recovery.md)
+<details>
+<summary>スマートフォンの画面を見る</summary>
 
-Use HTTPS for browser access. Choose OIDC, local username/password, or explicit
-`SCANNER_AUTHENTICATE_TYPE=none` for private browser sessions without a login screen. State and temporary documents use separate directories; exclude
-the document store from backups. Existing volume ownership is the operator's
-responsibility. Deployment examples default to UID/GID 10001, API 512 MiB and
-worker 1536 MiB; resource needs depend on scan size and encoding.
+<img src="docs/screenshots/ocr-mobile.png" alt="スマートフォンで原稿とOCR結果を確認する画面" width="300">
 
-For LAN plug and play on Linux Docker, use `deploy/compose.discovery.yaml` alongside
-`deploy/compose.yaml`. The worker discovers IPv4 Bonjour eSCL scanners on its LAN,
-including devices switched on after startup. One device is selected automatically;
-multiple devices can be selected in Home. Manual registrations remain supported.
-See [discovery networking and limits](deploy/README.md#scanner-discovery).
+</details>
 
-Without OCR configuration, ordinary PDF operations remain available and OCR
-controls stay hidden. Optional Tesseract OCR sends images to its configured API
-container; LLM OCR sends them directly to its configured provider. Credentials
-stay on the worker and the selected OCR service, outside the browser/API role. Paperless
-delivery is deferred; the initial workflow ends at downloading the output.
+## はじめる
 
-## Container images and releases
+推奨環境は **Linux amd64・Docker Compose・HTTPS** です。配布済みimageを使う場合、GoやNode.jsをインストールする必要はありません。
 
-Successful main pushes publish two repository-linked development image packages,
-one per responsibility. Stable SemVer tags also publish immutable version tags,
-public GitHub Release assets and `latest`:
+1. [最新Release](https://github.com/otama-homelab/scanner-kiosk/releases/latest)から配布物と対応するimageを選びます。
+2. [導入ガイド](docs/guide/getting-started.md)に沿って保存先・URL・ログイン方法を設定し、APIとworkerを起動します。
+3. ブラウザでアクセスして、スキャナーまたはファイル・カメラから取り込みます。
+4. 必要なら補正・OCRを行い、保存します。
 
-| Image | Package | Stable/release tag | Development tags |
-| --- | --- | --- | --- |
-| Core (`serve` / `worker`) | `ghcr.io/otama-homelab/scanner-kiosk` | `vMAJOR.MINOR.PATCH` / `latest` | `sha-<full-source-commit>` / `preview` |
-| Optional Tesseract API | `ghcr.io/otama-homelab/scanner-kiosk-tesseract` | `vMAJOR.MINOR.PATCH` / `latest` | `sha-<full-source-commit>` / `preview` |
+既存のKubernetesで運用する場合は[配備設定](deploy/README.md)を参照してください。
+配布ファイルの選び方は[配布物の構成](docs/distribution.md)、設定項目は[環境変数一覧](.env.example)にまとめています。
 
-The image is linked to this repository through its OCI source label and the
-repository's Actions token. Preview aliases are development inputs; stable tags
-only advance after the release gates pass. For the historical `v0.1.4` release, the immutable image digests are:
+## OCRとデータの扱い
 
-- Core: `ghcr.io/otama-homelab/scanner-kiosk@sha256:328ca1c8e4c9869ee4a463893e1f4a37c4d40e3f67206a416e62e5a65e6ffcb7`
-- Tesseract API: `ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:dd245059ef1092390dca592822dbda4540ffe68414dddc3e7b7112058c965a10`
+- **OCRは任意です。** 未設定でも通常のPDF・画像保存を利用できます。
+- **Tesseract OCR**は、別コンテナのOCR APIへ画像を送ります。日本語・英語の辞書を同梱した公式imageを利用できます。
+- **LLM OCR**は、設定したChat Completions対応Vision APIへ画像を送ります。送信先の処理・保持方針を確認してから有効化してください。
+- 接続用の認証情報はworker側で扱い、ブラウザへ渡しません。
+- 任意処理中も原本・保存済み出力を保持し、再OCR結果は明示的に採用します。文書は一時保存です。必要な出力は期限前にダウンロードしてください。
 
-The [v0.1.4 release](https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.1.4)
-contains the image archives, corresponding source, notices, SBOMs, raw security
-reports and `SHA256SUMS` tied to source
-`c2c5435a672957c90303cda5c88f1b53a34f6b1d`.
+LLM補足もPDFから検索・コピーできます。補足にだけ含まれる語でも検索にヒットするため、[Paperlessとの組み合わせ](docs/guide/paperless.md)を確認してください。
 
-```sh
-docker pull ghcr.io/otama-homelab/scanner-kiosk:preview
-# Optional OCR API, deployed as a separate container:
-docker pull ghcr.io/otama-homelab/scanner-kiosk-tesseract:preview
-docker run --rm ghcr.io/otama-homelab/scanner-kiosk:preview version
-```
+認識精度は原稿・モデル・設定に依存します。自動のAI歪み補正や影除去は製品採用済みの機能として提供していません。
 
-GHCR controls package visibility separately from repository visibility. A newly
-created package starts private; authenticated pulls are required until its owner
-makes it public in each package’s settings. The workflow does not change that access
-policy or billing settings. Production deployments should pin the verified image
-digest, rather than a moving preview tag.
+## 構成と開発
 
-Before pushing a preview image, the publisher retains corresponding source,
-third-party notices, inventories and raw inspection reports in a source-only
-prerelease named `preview-source-<full-source-commit>`. Formal tags publish the
-same material with both image archives. The compatibility onefile stays internal
-in every channel. The manifest and checksums cover the complete CI candidate,
-including omitted artifacts; verify the entries for the files you download.
-Native bytes must match the reviewed manifest and every advisory finding must
-match the retained review; new findings or changed native payloads stop
-automatic publication. Raw advisory failures are retained, not relabeled as a
-passed production security review.
+利用者向けの説明は`docs/guide/`、配備例は`deploy/`、設計・検証記録は`docs/design/`に分けています。
+アプリケーションはGoとAstroで構成し、フロントエンドをGo実行ファイルへ埋め込んでいます。
 
-## Develop
+- [開発環境・ソース構成](docs/development.md)
+- [配布物と対応するソース・SBOM](docs/distribution.md)
+- [設定と運用のドキュメント一覧](docs/README.md)
+- [変更履歴](CHANGELOG.md)
 
-The application uses Go and Astro. Astro produces static assets embedded in the
-Go application. See [frontend build](docs/design/product-web.md),
-[processing and OCR](docs/adr/0002-processing-and-ocr-ports.md), and the
-[OpenAPI contract](api/openapi.json).
+## ライセンス
 
-```sh
-GOTOOLCHAIN=go1.27.3 go test -race ./...
-```
-
-The CI workflow builds the native runtime, frontend, internal compatibility onefile
-and both distroless images,
-and produces bound source, license, inventory and security materials. Main builds
-are development image previews; SemVer tags select G5-gated formal releases:
-[release channels](docs/design/release-channels.md).
-
-## Module ownership
-
-The CLI composes modules; it does not own their transaction or process-lifecycle
-rules. Use the existing interfaces when changing behavior:
-
-| Module | Interface and ownership | Change here for |
-|---|---|---|
-| `cmd/scanner` | Command selection, signal context, role-specific configuration | CLI commands and process entry |
-| `apiruntime` | `New`/`Run`, HTTP/session composition and request budgets | API startup and HTTP wiring |
-| `workerruntime` | `Run`, boot identity, reconciliation before dispatch, shutdown | Worker lifecycle and scheduling |
-| `documents` | Durable owner/revision/TTL/job/lease transitions | Document authorization and transactional invariants |
-| `scanner` / `scannerdriver` | Validated capture plans and owned attempts; native adapters behind the seam | Device capability/capture behavior and confirmed cleanup |
-| `pkg/ocrplugin` / `internal/ocr` | Provider contract and worker-side implementations | OCR models/providers; preserve owner/publication checks outside providers |
-| `staterecovery` | `Run`/`Export`/`Restore`, identity-only archives and fresh destination publication | Configuration recovery; sessions/documents remain excluded |
-
-Runtime source lives in `cmd/`, `internal/`, `pkg/` and `web/`. `scripts/` owns
-build and verification commands; `native/` retains locked inputs, notices and
-rebuild materials. [Native build documentation](native/README.md) explains these
-inputs. Tests stay beside the code they verify. Local acceptance records and
-personal deployment settings are kept outside version control.
-
-## Security and license
-
-See the [threat model](docs/design/threat-model.md),
-[dependency inventories](docs/design/dependency-security.md), and
-[source distribution](docs/design/source-distribution.md).
-
-Project-owned code and assets use [Apache-2.0](LICENSE), unless otherwise marked.
-Third-party components retain their licenses and redistribution conditions:
-[notices](THIRD-PARTY-NOTICES.md) and
-[distribution requirements](docs/design/license-distribution.md).
+プロジェクトのコード・独自アセットは[Apache-2.0](LICENSE)。同梱するライブラリ、フォント、ネイティブ実行ファイルにはそれぞれのライセンスが適用されます。[第三者ライセンス](THIRD-PARTY-NOTICES.md)も確認してください。

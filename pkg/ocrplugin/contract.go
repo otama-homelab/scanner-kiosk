@@ -79,6 +79,8 @@ type PositionedPage struct {
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
 	Spans  []Span `json:"spans"`
+	// Supplement is model interpretation, separate from recognized text and boxes.
+	Supplement string `json:"supplement,omitempty"`
 }
 type PageResult struct {
 	PageID     string
@@ -268,6 +270,9 @@ func clone(c Capabilities) Capabilities {
 // not establish recognition accuracy or reading order quality. The artifact reader
 // must additionally enforce byte/span/text limits while decoding JSON.
 func ValidatePositionedPage(page PositionedPage, input InputPage) error {
+	if len(page.Supplement) > 16<<10 || !utf8.ValidString(page.Supplement) {
+		return errors.New("invalid OCR supplement")
+	}
 	if page.PageID != input.ID || page.Width != input.Width || page.Height != input.Height || page.Width <= 0 || page.Height <= 0 {
 		return errors.New("OCR geometry does not match input")
 	}

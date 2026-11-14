@@ -220,3 +220,17 @@ func TestOCRBudgetNeverReturnsPartialPDF(t *testing.T) {
 		t.Fatal("incomplete PDF returned on aggregate capacity failure")
 	}
 }
+
+func TestImportedPDFKeepsSourceTextAndExplicitSupplement(t *testing.T) {
+	source := importedOCRFixture(200, 300, "BT /F1 12 Tf 3 Tr 20 30 Td (ORIGINAL TOKEN) Tj ET", "")
+	notePDF := importedOCRFixture(200, 300, "BT /F1 8 Tf 3 Tr 10 5 Td (LLM SUPPLEMENT) Tj ET", "")
+	note := TextLayer{PageID: "source", SupplementOnly: true, Open: func(context.Context) (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(notePDF)), nil }}
+	output, err := BuildWithLayers(context.Background(), []Page{pdfPage("source", source)}, []TextLayer{note}, "lossless", opts())
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := extractedOCRText(t, output)
+	if strings.Count(text, "ORIGINAL TOKEN") != 1 || strings.Count(text, "LLM SUPPLEMENT") != 1 {
+		t.Fatalf("source text or supplement lost/duplicated: %q", text)
+	}
+}

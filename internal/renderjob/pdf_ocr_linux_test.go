@@ -196,3 +196,28 @@ func TestReOCRPDFRasterLimits(t *testing.T) {
 		t.Fatal("failed raster replaced old output", e)
 	}
 }
+
+func TestReOCRImportedPDFSupplementRetainsSourceText(t *testing.T) {
+	records, root, job, options, _ := pdfCandidateFixture(t)
+	records.provider.supplement = "Page layout interpretation."
+	prepared, err := Prepare(context.Background(), records, root, owner, job, runner, options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer prepared.Close()
+	if _, err = prepared.Publish(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	bundle := readCandidateBundle(t, records, job)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, "pdftotext", "-raw", filepath.Join(root, bundle.Output.RelativePath), "-")
+	raw, err := command.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	text := strings.Join(strings.Fields(string(raw)), " ")
+	if strings.Count(text, "OCR RESULT") != 1 || strings.Count(text, "REAL OCR TEXT") != 1 || strings.Count(text, "Page layout interpretation.") != 2 {
+		t.Fatalf("original retained PDF text or per-page supplement lost/duplicated: %q", text)
+	}
+}

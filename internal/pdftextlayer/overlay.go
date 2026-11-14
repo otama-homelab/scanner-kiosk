@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/types"
@@ -95,7 +96,7 @@ func overlay(ctx context.Context, base, layer []byte, width, height int, maxByte
 	conf := model.NewStatelessConfiguration()
 	conf.Optimize = false
 	var rotation int
-	var sourceRatio float64
+	var sourceRatio, targetWidth, targetHeight, scale float64
 	for index, data := range [][]byte{base, layer} {
 		count, err := api.PageCount(ctx, bytes.NewReader(data), conf)
 		if err != nil {
@@ -119,6 +120,11 @@ func overlay(ctx context.Context, base, layer []byte, width, height int, maxByte
 			if media.LL.X != 0 || media.LL.Y != 0 || math.Abs(crop.Width()-media.Width()) > .01 || math.Abs(crop.Height()-media.Height()) > .01 || math.Abs(crop.LL.X-media.LL.X) > .01 || math.Abs(crop.LL.Y-media.LL.Y) > .01 {
 				return nil, ErrInvalid
 			}
+		}
+		if index == 0 {
+			targetWidth, targetHeight = crop.Width(), crop.Height()
+		} else {
+			scale = math.Min(targetWidth/media.Width(), targetHeight/media.Height())
 		}
 		if index == 0 && imported {
 			rotation = boxes[0].Rot
@@ -155,7 +161,8 @@ func overlay(ctx context.Context, base, layer []byte, width, height int, maxByte
 		}
 		base = unrotated.data.Bytes()
 	}
-	stamp, err := api.PDFWatermarkForReadSeeker(ctx, bytes.NewReader(layer), 1, "position:c, scalefactor:1 rel, rotation:0, opacity:1", true, false, types.POINTS)
+	// Relative watermark scaling picks one axis; match the image contain-fit instead.
+	stamp, err := api.PDFWatermarkForReadSeeker(ctx, bytes.NewReader(layer), 1, fmt.Sprintf("position:c, scalefactor:%.12g abs, rotation:0, opacity:1", scale), true, false, types.POINTS)
 	if err != nil {
 		return nil, normalize(ctx, err)
 	}

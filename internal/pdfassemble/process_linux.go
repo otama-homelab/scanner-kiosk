@@ -27,6 +27,7 @@ type ProcessPage struct {
 	Width, Height, Rotation    int
 	Input                      artifactread.Input
 	Layer                      *artifactread.Input `json:",omitempty"`
+	SupplementOnly             bool                `json:",omitempty"`
 }
 type ProcessRequest struct {
 	Pages    []ProcessPage
@@ -51,6 +52,9 @@ func validProcessRequest(r ProcessRequest) bool {
 			return false
 		}
 		seen[p.ID] = true
+		if p.SupplementOnly && (p.Layer == nil || p.MediaType != "application/pdf") {
+			return false
+		}
 		if p.Layer != nil && (!r.OCR || !validInput(*p.Layer) || p.Layer.RelativePath == p.Input.RelativePath) {
 			return false
 		}
@@ -214,7 +218,7 @@ func AssemblyChild(args []string, input, output *os.File) int {
 				return 10
 			}
 			layer := *p.Layer
-			layers = append(layers, TextLayer{PageID: p.ID, Open: func(ctx context.Context) (io.ReadCloser, error) { return root.Open(ctx, layer) }})
+			layers = append(layers, TextLayer{PageID: p.ID, SupplementOnly: p.SupplementOnly, Open: func(ctx context.Context) (io.ReadCloser, error) { return root.Open(ctx, layer) }})
 		}
 	}
 	var data []byte

@@ -220,3 +220,34 @@ func TestIsolatedOutputUsesSingleReservation(t *testing.T) {
 		t.Fatal("output cleanup did not release actual charge", err, budget.Used())
 	}
 }
+
+func TestSupplementOnlyRequiresBoundImportedPDFLayer(t *testing.T) {
+	input := artifactread.Input{RelativePath: "source.pdf", Size: 1, SHA256: sha256.Sum256([]byte("s"))}
+	layer := artifactread.Input{RelativePath: "layer.pdf", Size: 1, SHA256: sha256.Sum256([]byte("l"))}
+	request := ProcessRequest{OCR: true, Encoding: "lossless", Options: opts(), Pages: []ProcessPage{{ID: "source", MediaType: "application/pdf", Input: input, Layer: &layer, SupplementOnly: true}}}
+	if !validProcessRequest(request) {
+		t.Fatal("valid bound supplement layer rejected")
+	}
+	request.Pages[0].Layer = nil
+	if validProcessRequest(request) {
+		t.Fatal("supplement flag without layer accepted")
+	}
+	request.Pages[0].Layer = &layer
+	request.OCR = false
+	if validProcessRequest(request) {
+		t.Fatal("supplement without OCR accepted")
+	}
+	request.OCR = true
+	request.Pages[0].MediaType = "image/png"
+	request.Pages[0].Size = "a4"
+	request.Pages[0].Color = "gray"
+	request.Pages[0].Width = 80
+	request.Pages[0].Height = 100
+	if validProcessRequest(request) {
+		t.Fatal("PDF source-retention flag accepted for image")
+	}
+	request.Pages[0].SupplementOnly = false
+	if !validProcessRequest(request) {
+		t.Fatal("ordinary image OCR changed")
+	}
+}

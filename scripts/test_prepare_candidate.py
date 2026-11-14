@@ -38,6 +38,9 @@ class PrepareCandidateTests(unittest.TestCase):
             module.tar_bytes(archive,'source/native/source-inputs.lock.json',json.dumps(lock).encode())
             module.tar_bytes(archive,'source/native/tesseract-source.lock.json',json.dumps(tesseract).encode())
             module.tar_bytes(archive,'source/deploy/compose.yaml',b'fixture deployment')
+            module.tar_bytes(archive,'source/docs/guide/getting-started.md',b'user guide')
+            module.tar_bytes(archive,'source/docs/screenshots/home-desktop.png',b'public screenshot')
+            module.tar_bytes(archive,'source/docs/design/research/internal.md',b'not deployment docs')
         (candidate/'native-build.json').write_text(json.dumps({'passed':True,'source_revision':fixture.source,
             'source_archive_sha256':module.record(native/'source.tar')['sha256']}))
         with tarfile.open(native/'external-sources.tar','w') as archive:
@@ -59,6 +62,11 @@ class PrepareCandidateTests(unittest.TestCase):
         manifest=module.stage.verify_staged(output/'candidate')
         self.assertTrue(result['passed']);self.assertFalse(manifest['publication_approved'])
         self.assertEqual(manifest['source_sha'],fixture.source)
+        with tarfile.open(output/'candidate'/module.stage.NAMES['deployment']) as archive:
+            self.assertEqual(archive.extractfile('docs/guide/getting-started.md').read(),b'user guide')
+            self.assertEqual(archive.extractfile('docs/screenshots/home-desktop.png').read(),b'public screenshot')
+            self.assertIn('LICENSE',archive.getnames())
+            self.assertNotIn('docs/design/research/internal.md',archive.getnames())
         (candidate/'base-inventory.json').unlink()
         with self.assertRaises(FileNotFoundError):module.prepare(inputs,fixture.root/'incomplete')
         self.assertFalse((fixture.root/'incomplete/candidate').exists())

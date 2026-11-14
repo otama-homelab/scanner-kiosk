@@ -182,7 +182,10 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		return w.Reference(), nil
 	}
 	bundle := &documents.OCRResultBundle{JobID: work.Job.ID, InputRevision: work.Job.Revision, Settings: work.Snapshot.Settings}
-	type refs struct{ text, layer, preview string }
+	type refs struct {
+		text, layer, preview string
+		supplementOnly       bool
+	}
 	references := make([]refs, len(pages))
 	for i, b := range bound {
 		source := work.Snapshot.Sources[i]
@@ -231,12 +234,17 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 			if e != nil {
 				return nil, "", nil, e
 			}
+			rendered := positioned
+			if page.PDFTextOrigin == pdftextlayer.TextOriginRetainedSource && positioned.Supplement != "" {
+				rendered.Spans = nil
+				references[i].supplementOnly = true
+			}
 			var layer []byte
 			if page.PDFRaster != nil {
 				box := page.PDFRaster.CropBox
-				layer, e = pdftextlayer.RenderPositionedPDF(ctx, positioned, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()), box[2]-box[0], box[3]-box[1])
+				layer, e = pdftextlayer.RenderPositionedPDF(ctx, rendered, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()), box[2]-box[0], box[3]-box[1])
 			} else {
-				layer, e = pdftextlayer.RenderPositioned(ctx, positioned, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()))
+				layer, e = pdftextlayer.RenderPositioned(ctx, rendered, b.Input, font, min(options.MaxOutputBytes, budget.Remaining()))
 			}
 			if e != nil {
 				return nil, "", nil, e
@@ -315,6 +323,7 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 			a := p.Layer
 			request.OCR = true
 			request.Pages[i].Layer = &artifactread.Input{RelativePath: a.RelativePath, Size: a.Size, SHA256: a.SHA256}
+			request.Pages[i].SupplementOnly = ref.supplementOnly
 		}
 	}
 	options.MaxOutputBytes = min(options.MaxOutputBytes, budget.Remaining())

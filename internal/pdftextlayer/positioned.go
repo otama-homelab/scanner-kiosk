@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"math"
+	"strings"
 	"unicode/utf16"
 	"unicode/utf8"
 
@@ -62,12 +63,18 @@ func renderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input 
 	if height <= 0 {
 		return nil, ErrInvalid
 	}
+	textRuns := page.Spans
+	if page.Supplement != "" {
+		// This separate PDF-only run has no recognition box in the stored OCR result.
+		textRuns = append([]ocrplugin.Span(nil), page.Spans...)
+		textRuns = append(textRuns, ocrplugin.Span{Text: "LLM supplement (interpretation, not OCR): " + strings.Join(strings.Fields(page.Supplement), " "), Box: ocrplugin.Box{X: float64(page.Width) * .01, Y: float64(page.Height) * .99, Width: float64(page.Width) * .98, Height: float64(page.Height) * .005}})
+	}
 	ids := map[rune]uint16{}
 	runes := []rune{}
 	glyphs := []byte{0, 0}
 	widths := []float64{0}
 	textBytes := 0
-	for _, span := range page.Spans {
+	for _, span := range textRuns {
 		textBytes += len(span.Text)
 		if textBytes > 8<<20 {
 			return nil, ErrLimit
@@ -97,7 +104,7 @@ func renderPositioned(ctx context.Context, page ocrplugin.PositionedPage, input 
 	if _, err := fmt.Fprintf(content, "q %.12g 0 0 %.12g 0 0 cm\n", widthPoints/float64(page.Width), heightPoints/float64(page.Height)); err != nil {
 		return nil, err
 	}
-	for _, span := range page.Spans {
+	for _, span := range textRuns {
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}

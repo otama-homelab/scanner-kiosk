@@ -298,3 +298,115 @@ func TestBlankPositionedPage(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestSupplementIsExtractableAtEndWithoutChangingPixels(t *testing.T) {
+	input := ocrplugin.InputPage{ID: "supplement", Width: 200, Height: 300}
+	page := ocrplugin.PositionedPage{PageID: input.ID, Width: 200, Height: 300, Spans: []ocrplugin.Span{{Text: "Original", Box: ocrplugin.Box{X: 20, Y: 30, Width: 100, Height: 20}}}}
+	before, err := pdftextlayer.RenderPositioned(context.Background(), page, input, goregular.TTF, 1<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	page.Supplement = "Two-column notice. Interpretation may be uncertain."
+	after, err := pdftextlayer.RenderPositioned(context.Background(), page, input, goregular.TTF, 1<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = api.Validate(context.Background(), bytes.NewReader(after), model.NewStatelessConfiguration(), nil); err != nil {
+		t.Fatal(err)
+	}
+	run := func(data []byte, tool string, args ...string) []byte {
+		t.Helper()
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		c := exec.CommandContext(ctx, tool, args...)
+		c.Stdin = bytes.NewReader(data)
+		out, e := c.Output()
+		if e != nil {
+			t.Fatal(e)
+		}
+		return out
+	}
+	text := string(run(after, "pdftotext", "-raw", "-", "-"))
+	if !strings.Contains(text, "Original") || !strings.Contains(text, "LLM supplement") || strings.Index(text, "Original") > strings.Index(text, "LLM supplement") || !strings.Contains(text, page.Supplement) {
+		t.Fatalf("supplement missing or mixed into source: %q", text)
+	}
+	type word struct {
+		Text string  `xml:",chardata"`
+		XMin float64 `xml:"xMin,attr"`
+		YMin float64 `xml:"yMin,attr"`
+		XMax float64 `xml:"xMax,attr"`
+		YMax float64 `xml:"yMax,attr"`
+	}
+	var sourceBounds [2]word
+	for i, pdf := range [][]byte{before, after} {
+		var document struct {
+			Words []word `xml:"body>doc>page>word"`
+		}
+		if err := xml.Unmarshal(run(pdf, "pdftotext", "-bbox", "-", "-"), &document); err != nil {
+			t.Fatal(err)
+		}
+		found := false
+		for _, w := range document.Words {
+			if w.Text == "Original" {
+				sourceBounds[i] = w
+				found = true
+			}
+		}
+		if !found {
+			t.Fatal("source word lost")
+		}
+	}
+	if sourceBounds[0] != sourceBounds[1] || len(page.Spans) != 1 {
+		t.Fatal("supplement moved original OCR search regions")
+	}
+	if !bytes.Equal(run(before, "pdftoppm", "-r", "72", "-singlefile", "-png", "-"), run(after, "pdftoppm", "-r", "72", "-singlefile", "-png", "-")) {
+		t.Fatal("supplement changed visible pixels")
+	}
+}
+
+func TestOverlayFitsTextToTheSameImageRectangle(t *testing.T) {
+	input := ocrplugin.InputPage{ID: "fitted", Width: 80, Height: 100}
+	box := ocrplugin.Box{X: 10, Y: 20, Width: 60, Height: 10}
+	page := ocrplugin.PositionedPage{PageID: input.ID, Width: 80, Height: 100, Spans: []ocrplugin.Span{{Text: "Position", Box: box}}}
+	layer, err := pdftextlayer.RenderPositioned(context.Background(), page, input, goregular.TTF, 1<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	base := basePDF(t)
+	dims, err := api.PageDims(context.Background(), bytes.NewReader(base), model.NewStatelessConfiguration())
+	if err != nil {
+		t.Fatal(err)
+	}
+	output, err := pdftextlayer.Overlay(context.Background(), base, layer, 80, 100, 1<<20)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command("pdftotext", "-bbox", "-", "-")
+	cmd.Stdin = bytes.NewReader(output)
+	raw, err := cmd.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var doc struct {
+		Words []struct {
+			Text string  `xml:",chardata"`
+			XMin float64 `xml:"xMin,attr"`
+			YMin float64 `xml:"yMin,attr"`
+			XMax float64 `xml:"xMax,attr"`
+			YMax float64 `xml:"yMax,attr"`
+		} `xml:"body>doc>page>word"`
+	}
+	if err = xml.Unmarshal(raw, &doc); err != nil {
+		t.Fatal(err)
+	}
+	if len(doc.Words) != 1 {
+		t.Fatalf("word missing: %s", raw)
+	}
+	scale := math.Min(dims[0].Width/80, dims[0].Height/100)
+	x := (dims[0].Width-80*scale)/2 + box.X*scale
+	y := (dims[0].Height-100*scale)/2 + box.Y*scale
+	w := doc.Words[0]
+	if math.Abs(w.XMin-x) > .02 || math.Abs(w.YMin-y) > .02 || math.Abs(w.XMax-x-box.Width*scale) > .02 || math.Abs(w.YMax-y-box.Height*scale) > .02 {
+		t.Fatalf("text fit differs from image fit: got %+v want x=%g y=%g scale=%g", w, x, y, scale)
+	}
+}

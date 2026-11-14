@@ -12,6 +12,7 @@ import (
 	"golang.org/x/image/font/gofont/goregular"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -23,8 +24,9 @@ import (
 )
 
 type candidateProvider struct {
-	kind  ocrplugin.OutputKind
-	calls int
+	kind       ocrplugin.OutputKind
+	calls      int
+	supplement string
 }
 
 func (p *candidateProvider) Capabilities(context.Context) (ocrplugin.Capabilities, error) {
@@ -42,7 +44,7 @@ func (p *candidateProvider) Run(ctx context.Context, r ocrplugin.Request, a ocrp
 		}
 		data := []byte("REAL OCR TEXT")
 		if r.Output == ocrplugin.PositionedText {
-			data, _ = json.Marshal(ocrplugin.PositionedPage{PageID: page.ID, Width: page.Width, Height: page.Height, Spans: []ocrplugin.Span{{Text: "REAL OCR TEXT", Box: ocrplugin.Box{X: 2, Y: 3, Width: 60, Height: 10}}}})
+			data, _ = json.Marshal(ocrplugin.PositionedPage{PageID: page.ID, Width: page.Width, Height: page.Height, Spans: []ocrplugin.Span{{Text: "REAL OCR TEXT", Box: ocrplugin.Box{X: 2, Y: 3, Width: 60, Height: 10}}}, Supplement: p.supplement})
 		}
 		if r.Output == ocrplugin.PDFTextLayer {
 			data = invisibleLayer()
@@ -307,5 +309,47 @@ func TestOCRExecutionPublishesOrPreservesUncertainWork(t *testing.T) {
 				t.Fatal("original removed")
 			}
 		})
+	}
+}
+
+func TestReOCRSupplementStaysSeparateThroughPublication(t *testing.T) {
+	records, root, job, options, old := candidateFixture(t, ocrplugin.PositionedText)
+	records.provider.supplement = "A two-column notice; layout interpretation may be uncertain."
+	prepared, err := Prepare(context.Background(), records, root, owner, job, runner, options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer prepared.Close()
+	if _, err = prepared.Publish(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	current, err := records.GetExport(context.Background(), owner, document)
+	if err != nil || current.ID != old.ID {
+		t.Fatal("new OCR was auto-adopted", err)
+	}
+	bundle := readCandidateBundle(t, records, job)
+	text, err := os.ReadFile(filepath.Join(root, bundle.Pages[0].Text.RelativePath))
+	if err != nil || string(text) != "REAL OCR TEXT" {
+		t.Fatalf("interpretation polluted source transcript: %q %v", text, err)
+	}
+	positions, err := os.ReadFile(filepath.Join(root, bundle.Pages[0].Positions.RelativePath))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var page ocrplugin.PositionedPage
+	if err = json.Unmarshal(positions, &page); err != nil || page.Supplement != records.provider.supplement || len(page.Spans) != 1 {
+		t.Fatal("separate interpretation lost", err)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, "pdftotext", "-raw", filepath.Join(root, bundle.Output.RelativePath), "-")
+	pdfText, err := command.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	// A rotated page may extract each word on a separate line.
+	plain := strings.Join(strings.Fields(string(pdfText)), " ")
+	if !strings.Contains(plain, "REAL OCR TEXT") || !strings.Contains(plain, "LLM supplement") || !strings.Contains(plain, records.provider.supplement) {
+		t.Fatalf("final PDF lost original/supplement: %q", pdfText)
 	}
 }
