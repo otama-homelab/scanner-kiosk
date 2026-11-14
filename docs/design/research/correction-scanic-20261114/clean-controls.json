@@ -1,0 +1,1135 @@
+{
+  "date": "2026-11-14",
+  "scope": "Fixed renderer-known clean controls only; not original six photos",
+  "candidate": "scanic1.7.1/ml0.2.0",
+  "rows": [
+    {
+      "fixture_id": "fixture_ocr_horizontal_001",
+      "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "samples": [
+        {
+          "sample_id": "benchmark_739e62f4bf01c100a2b5377d5f8a013b_001",
+          "mode": "cold",
+          "status": "complete",
+          "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+          "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 2768,
+          "peak_process_rss_bytes": 261476352,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "b6caa85d454be4a15b6bd1e89510cb590378e98c9704ccba8c156541a57c3bce",
+              "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "730006806c9cedaf5187c1e72147c2f69f2fe546465d44eb9247ca5887a6ed4c",
+              "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_739e62f4bf01c100a2b5377d5f8a013b_002",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+          "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1435,
+          "peak_process_rss_bytes": 260866048,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "ebbd21c7bb40959dfe1d723f690a58f2b513e801db44d11161b1df4fda005fdd",
+              "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "bf2fb070b05b15cb0ec3b158db5187b8ed47cd6a26c59c8483d5e6358a5a6242",
+              "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_739e62f4bf01c100a2b5377d5f8a013b_003",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+          "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 6254,
+          "peak_process_rss_bytes": 271351808,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "ab925de782b513e0c5bed349a1ba43608715fea11d6c50e2badf10b03c4b3889",
+              "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "fe9190a38847ecf6b21e42fe9dcb7045622d320b075e1f16e436950964a00e46",
+              "output_sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_mixed_001",
+      "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "samples": [
+        {
+          "sample_id": "benchmark_6bf31f990c4b5fcb35c9e1d16c578146_001",
+          "mode": "cold",
+          "status": "complete",
+          "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1565,
+          "peak_process_rss_bytes": 261038080,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "e43613ccfed37853d0abed001956adca7244397bd1a45b0153a5743345e1ab69",
+              "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "1a2d218e9f9cf5ac550a358561e1da66446b481f498920acd37c9ad866787869",
+              "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_6bf31f990c4b5fcb35c9e1d16c578146_002",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 2488,
+          "peak_process_rss_bytes": 267849728,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "490fc753df2b167734fd44caca8039dea398515831c1a0c709aa31377ed81357",
+              "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "2e259cd34a8d70e8217384fb38410d0fccefb3dd92005d6ad509532311b556de",
+              "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_6bf31f990c4b5fcb35c9e1d16c578146_003",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1328,
+          "peak_process_rss_bytes": 268226560,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "2d8c53cfc02a500c582fcf0e25ea0c99915c1994765bc9269f18d7000d91cd5c",
+              "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "7037307f6d6313606e25c451ec41c9fb81f081493928f2007684d26a3c0fcc30",
+              "output_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_table_001",
+      "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "samples": [
+        {
+          "sample_id": "benchmark_b1621257f1387644c37ee77c8ce0decc_001",
+          "mode": "cold",
+          "status": "complete",
+          "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "output_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1333,
+          "peak_process_rss_bytes": 268161024,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "8d8aa459299aa67d27f29befe75cf99afd610b9734a34fcc859608db4c48d951",
+              "output_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "3f6037cda05375eb8e42c87317ea276a3e8e31ec71a51393df71f64db0f959d3",
+              "output_sha256": "74dc7191837147903085e59b834d41d87875cde617127a388db36f52d390bad9",
+              "same_pixels_proven_by_exact_bytes": false
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_b1621257f1387644c37ee77c8ce0decc_002",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "output_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1309,
+          "peak_process_rss_bytes": 260935680,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "5d6a7fd8f2a152816610971b1764999886593f7af7b9ca35751269e84b47f73b",
+              "output_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "950dd10c4b77aee0f33e56a1c1c8daabca54441c2e1f5f5ee5df8305091705a7",
+              "output_sha256": "74dc7191837147903085e59b834d41d87875cde617127a388db36f52d390bad9",
+              "same_pixels_proven_by_exact_bytes": false
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_b1621257f1387644c37ee77c8ce0decc_003",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "output_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1424,
+          "peak_process_rss_bytes": 261345280,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "6a36929d2a534277bb4d18ff525c02c1f834f067ac2d14e93b5acc2fdc2f14b1",
+              "output_sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "84fe7672226b8809b3b09dc5bf59319366d669d79d2f915ee36b743b14f9ee6c",
+              "output_sha256": "74dc7191837147903085e59b834d41d87875cde617127a388db36f52d390bad9",
+              "same_pixels_proven_by_exact_bytes": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_vertical_001",
+      "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "samples": [
+        {
+          "sample_id": "benchmark_bbc985d888d8b4c01eb22053d1304fba_001",
+          "mode": "cold",
+          "status": "complete",
+          "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+          "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1333,
+          "peak_process_rss_bytes": 260763648,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "9737b59d055492b4802796399b025cea12910ab89c43f02896ccd4cf5f366fa7",
+              "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "c480b0ca1ad5ef6a382c662c5eb322ffde19eea1737d9dbd2a887aab01f745bb",
+              "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_bbc985d888d8b4c01eb22053d1304fba_002",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+          "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1218,
+          "peak_process_rss_bytes": 267923456,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "4123a3d92f451862782ccc5d442c0473d501eddda8e335da71393dcd4a9ce06d",
+              "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "4e2f2e90f59af260193079029ae42d8976ca6fb98f8ee4d987fa90b1b56f1516",
+              "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_bbc985d888d8b4c01eb22053d1304fba_003",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+          "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1269,
+          "peak_process_rss_bytes": 260513792,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "4681a0437a8978eed2961b400a88b951892aa9b6f7a7d714f38c042e76d4580b",
+              "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "b5daa2dc0b3b4fc79e949ed88ca9eef7201ba872fef4fc6f008fbf549fe03065",
+              "output_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_columns_001",
+      "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "samples": [
+        {
+          "sample_id": "benchmark_1d2a07334c267dead0bb3f4748eb5cf9_001",
+          "mode": "cold",
+          "status": "complete",
+          "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+          "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1281,
+          "peak_process_rss_bytes": 260268032,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "fe4d4e90410fabda28d91b3a0a133b217cee0fe55257d14d25d69da992a636e7",
+              "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "08f667e01cc0222a353859653aabdc301cdad98b19b33c14d77aa9a8d55548de",
+              "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_1d2a07334c267dead0bb3f4748eb5cf9_002",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+          "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1244,
+          "peak_process_rss_bytes": 267948032,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "c8b09f9f281eadfceb6738521e0fba8abb59e13a7b1e6dedbcbfb6c0adc0276d",
+              "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "74f2e4a22bbf3ddaf070d930bec5aeec7debc128f9520dc9784df88469d5d05d",
+              "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_1d2a07334c267dead0bb3f4748eb5cf9_003",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+          "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1209,
+          "peak_process_rss_bytes": 267866112,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "501ca8515f4e6040e8ebcbb78a57a01a9b33ca9079d2caf5969b39bc6de0f4fb",
+              "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "19f7c05803770f905c4ff9b22bef9f71b60302e6c7e43d67f32dacbb524799b4",
+              "output_sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "fixture_ocr_wrapped_001",
+      "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "known_full_page_quad": [
+        [
+          0,
+          0
+        ],
+        [
+          899,
+          0
+        ],
+        [
+          899,
+          699
+        ],
+        [
+          0,
+          699
+        ]
+      ],
+      "samples": [
+        {
+          "sample_id": "benchmark_493dab50079cca725147e0665ea46838_001",
+          "mode": "cold",
+          "status": "complete",
+          "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+          "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1379,
+          "peak_process_rss_bytes": 260771840,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "8d53e7c7e792fc231fc3258f242faf90e4342de8e1211c1408071932327f6245",
+              "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "96703f06af5f1a17ae42a77e259c5e045faef31c3fb62342ec55ee246b501fd1",
+              "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_493dab50079cca725147e0665ea46838_002",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+          "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1301,
+          "peak_process_rss_bytes": 265723904,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "4e4ee65c87b0e5c1764f9bb34d36103a13461a90639b36ffab0eb6cba0140ec3",
+              "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "45cd11396477b7f7e847d08e3c18d55ce46b6f0570e5f4274fe71539dd4bb900",
+              "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        },
+        {
+          "sample_id": "benchmark_493dab50079cca725147e0665ea46838_003",
+          "mode": "warm",
+          "status": "complete",
+          "source_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+          "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+          "quad": [
+            [
+              0,
+              0
+            ],
+            [
+              900,
+              0
+            ],
+            [
+              900,
+              700
+            ],
+            [
+              0,
+              700
+            ]
+          ],
+          "corner_errors_diagonal": [
+            0.0,
+            0.0008770580193070292,
+            0.0012403473458920847,
+            0.0008770580193070292
+          ],
+          "max_corner_error_diagonal": 0.0012403473458920847,
+          "corner_pass": true,
+          "fallback_reason": "unsafe-or-missing-corners",
+          "detected": false,
+          "source_byte_identical": true,
+          "wall_millis": 1339,
+          "peak_process_rss_bytes": 261038080,
+          "baseline_bindings": [
+            {
+              "arm": "none",
+              "catalog_sha256": "c1815f7f81125cf941e80113e0b8630dd646ab3dc4c72627dffa69c6705112d1",
+              "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+              "same_pixels_proven_by_exact_bytes": true
+            },
+            {
+              "arm": "docaligner",
+              "catalog_sha256": "a11fc2c40fdb22bd7e5e074a1c0f501e5fd109a0195fe6d3f43228a536d8bf1c",
+              "output_sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+              "same_pixels_proven_by_exact_bytes": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metric_bindings": [
+    {
+      "path": "docs/design/research/correction-detection-v060/measure.py",
+      "sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 13,
+      "statement": "gt=np.array([[0,0],[w-1,0],[w-1,ht-1],[0,ht-1]])"
+    },
+    {
+      "path": "docs/design/research/correction-detection-v060/measure.py",
+      "sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 18,
+      "statement": "err=np.linalg.norm(q-gt,axis=1)/math.hypot(w,ht)"
+    },
+    {
+      "path": "docs/design/research/correction-detection-v060/measure.py",
+      "sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 19,
+      "expression": "float(err.max())"
+    },
+    {
+      "path": "docs/design/research/correction-detection-v060/measure.py",
+      "sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+      "line": 19,
+      "expression": "bool(np.all(err<=0.02))"
+    }
+  ],
+  "preregistration_sha256": "cef55a956ce1d2d5b9bcc0639c1249cbc258fdd1e23326183a06593b2d2bac87",
+  "truth_definition_sha256": "ea70abcab333dd5553bf610bf663451e6ddf975010fa1ba8d77a330f0ea6af93",
+  "summary": {
+    "cases": 6,
+    "samples": 18,
+    "detected_samples": 0,
+    "fallback_samples": 18,
+    "byte_identical_samples": 18,
+    "corner_pass_samples_including_noop_fallback": 18,
+    "maximum_wall_millis": 6254,
+    "maximum_process_rss_bytes": 271351808
+  },
+  "ocr_inferences": 0,
+  "ocr_note": "Exact byte identity permits reuse of existing same-input Tesseract result; no OCR improvement inferred. Existing baseline text remains imperfect.",
+  "qualification": "not-qualified",
+  "reasons": [
+    "Existing public UVDoc00000 serious truncation remains",
+    "Clean controls all preserve original by explicit fallback; fallback is not detection success",
+    "Original-photo human truth, original photo2_2 content proof, owner device operation and full product resource qualification remain missing"
+  ],
+  "requirements_newly_completed": 0,
+  "selfchecks": "Exact GT -> zero/pass; +100px -> reject; all 18 source and output hashes and same-input no-op/DocAligner hashes verified"
+}

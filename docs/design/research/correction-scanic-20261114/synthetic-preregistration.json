@@ -1,0 +1,132 @@
+{
+  "date": "2026-11-14",
+  "candidate": "scanic1.7.1/ml0.2.0",
+  "inputs": [
+    {
+      "id": "fixture_ocr_horizontal_001",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_ocr_horizontal_001"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "document_type": "public-synthetic-known-renderer",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "page_ocr_horizontal_001.png",
+      "sha256": "1e8d4aa7ba0a2cc3c0d2b001ef4bcfc1cb09167e7ae732a628a213bb6357556a",
+      "bytes": 13931
+    },
+    {
+      "id": "fixture_ocr_mixed_001",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_ocr_mixed_001"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "document_type": "public-synthetic-known-renderer",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "page_ocr_mixed_001.png",
+      "sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "bytes": 15152
+    },
+    {
+      "id": "fixture_ocr_table_001",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_ocr_table_001"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "document_type": "public-synthetic-known-renderer",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "page_ocr_table_001.png",
+      "sha256": "d388859643e6e629b0a0a4f182b54ff47b79285e27783f4ed1d2f68620a8b416",
+      "bytes": 10010
+    },
+    {
+      "id": "fixture_ocr_vertical_001",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_ocr_vertical_001"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "document_type": "public-synthetic-known-renderer",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "page_ocr_vertical_001.png",
+      "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "bytes": 10850
+    },
+    {
+      "id": "fixture_ocr_columns_001",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_ocr_columns_001"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "document_type": "public-synthetic-known-renderer",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "page_ocr_columns_001.png",
+      "sha256": "35a288b1be555c5395c71e95482855ba3be7de8b929f550e56082b8e2b4e3ef5",
+      "bytes": 13122
+    },
+    {
+      "id": "fixture_ocr_wrapped_001",
+      "privacy": "owner-private",
+      "media_type": "image/png",
+      "page_ids": [
+        "page_ocr_wrapped_001"
+      ],
+      "languages": [
+        "ja",
+        "en"
+      ],
+      "document_type": "public-synthetic-known-renderer",
+      "expected_outputs": [
+        "correction"
+      ],
+      "relative_path": "page_ocr_wrapped_001.png",
+      "sha256": "0bb47fe51a8227297670d0fac58e130effc18a86483d961fda474c5936b48725",
+      "bytes": 6415
+    }
+  ],
+  "candidate_config_sha256": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+  "adapter_sha256": "ba0f746ae276d8954cb90e7ecb0a56d0e09bbb751415600d53eba639c535c54f",
+  "geometry_metric_source": "docs/design/research/correction-detection-v060/measure.py",
+  "geometry_metric_source_sha256": "4b9cefe95fda6221d8ce6dbe607fd0724cba4d0d0f4d4f6b2c0178cf98b2af4d",
+  "corner_error_gate_diagonal": 0.02,
+  "cold": 1,
+  "warm": 2,
+  "timeout_seconds": 30,
+  "cpu_threads": 2,
+  "rss_bytes": 1073741824,
+  "temp_bytes": 268435456,
+  "scope": "Existing clean renderer controls only; no original-photo human truth, automatic apply or production adoption. RSS is post-hoc observed process peak, not live aggregate memory ceiling."
+}

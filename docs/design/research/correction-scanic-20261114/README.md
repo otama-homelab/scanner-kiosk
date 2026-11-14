@@ -31,3 +31,9 @@ The MIT package declarations and model card were inspected locally. Final redist
 `results.json` binds all source/output hashes, quads, independent truth, no-op comparison, resources and catalog hashes. Each detector/input directory retains the existing runner's benchmark and artifact catalog. Full PNGs, exact pinned assets and evaluation-only adapter remain in the local ignored `.planning/ops/photo-auto-correction-20261114/` directory; they are not production assets.
 
 Still missing: OCR/digits/thin-line retention, representative phone images and real-device acceptance, scan-style color/shadow enhancement, trusted production corner-editing integration and release validation. No implementation or deployment is claimed by this evaluation.
+
+## 正常文書6枚の追加検証
+
+既存のrenderer-known6枚をcold1/warm2、CPU2、30秒、観測process RSS1GiB・temp256MiBで実行した。18/18処理完了、18/18明示fallback、18/18原本とbyte一致。検出成功は0/18。既存no-op/DocAlignerの同一入力・同一repetition出力hashとも一致したため、OCRは再実行せず既存結果を再利用できる。OCR改善や実写真適格性の証拠にはしない。最大whole-process wall6254ms、最大process RSS271351808bytes。
+
+既存corner2%定義では原本fallbackは通るが、これは検出成功ではない。`clean-controls.json`は両者を分離し、既存式のAST束縛とexactGT=0/大offset不合格の自己検査を保存する。`analyze-clean.py`は保存済み既存runner出力を読む解析だけで、runnerを置き換えない。原14要件の新規完了は0。

@@ -1,0 +1,81 @@
+{
+  "format": "scanner-eval-artifacts",
+  "version": 1,
+  "run_id": "run_21a0400a896326a59e860b42f92dad83",
+  "candidate": {
+    "id": "correction_scanic_ml_001",
+    "version": "1.7.1-ml0.2.0",
+    "executable_sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+    "sources": [
+      {
+        "name": "scanic",
+        "version": "1.7.1",
+        "license": "MIT",
+        "sha256": "b0d8ef4028790467b6783f8cbe15db41ffb843f05beb018514001e687c22d4c3"
+      },
+      {
+        "name": "evaluation-only invocation adapter",
+        "version": "1",
+        "license": "Apache-2.0",
+        "sha256": "ba0f746ae276d8954cb90e7ecb0a56d0e09bbb751415600d53eba639c535c54f"
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "scanic-ml official assets",
+        "version": "0.2.0",
+        "license": "MIT",
+        "sha256": "8cb3fb2de65f0939899cdb5663feebb7259214ed9b91503ce665c0e24712ff80"
+      }
+    ],
+    "operator_steps": [
+      "unmodified official npm distribution and model assets",
+      "existing scanner-eval benchmark runner",
+      "loopback-only image/model routes; external requests blocked",
+      "no production dependency/model adoption"
+    ],
+    "parameters": {}
+  },
+  "candidate_config_sha256": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+  "fixture_id": "fixture_ocr_vertical_001",
+  "fixture_sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+  "status": "complete",
+  "original": {
+    "id": "artifact_original_65273172860943b5cef3df2eed748305",
+    "role": "original",
+    "media_type": "image/png",
+    "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+    "bytes": 10850,
+    "source_pages": [
+      "page_ocr_vertical_001"
+    ],
+    "algorithm": "harness-copy",
+    "algorithm_version": "scanner-eval/1"
+  },
+  "artifacts": [
+    {
+      "id": "artifact_scanic_correction_001",
+      "role": "correction",
+      "media_type": "image/png",
+      "sha256": "64c269c7042782a0c403077df6de668640ec6ce8b02c8f7d7ec37de9853633da",
+      "bytes": 10850,
+      "source_pages": [
+        "page_ocr_vertical_001"
+      ],
+      "parents": [
+        "artifact_original_65273172860943b5cef3df2eed748305"
+      ],
+      "algorithm": "scanic-ml",
+      "algorithm_version": "1.7.1/scanic-ml-0.2.0",
+      "parameters": {
+        "confidence_kind": "scanic_document_presence",
+        "confidence_value": "0.1072119808366945",
+        "crop_quad": "[[0,0],[900,0],[900,700],[0,700]]",
+        "fallback_reason": "unsafe-or-missing-corners",
+        "output_height": "700",
+        "output_width": "900",
+        "rotation_degrees": "0"
+      }
+    }
+  ]
+}

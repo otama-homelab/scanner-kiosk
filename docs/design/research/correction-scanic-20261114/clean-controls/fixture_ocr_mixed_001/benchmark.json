@@ -1,0 +1,298 @@
+{
+  "format": "scanner-eval-benchmark",
+  "version": 1,
+  "run_id": "benchmark_6bf31f990c4b5fcb35c9e1d16c578146",
+  "status": "complete",
+  "started_at": "2026-11-14T07:54:34.562341797Z",
+  "finished_at": "2026-11-14T07:54:40.495153753Z",
+  "fixture_id": "fixture_ocr_mixed_001",
+  "fixture_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+  "candidate": {
+    "id": "correction_scanic_ml_001",
+    "version": "1.7.1-ml0.2.0",
+    "executable_sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+    "sources": [
+      {
+        "name": "scanic",
+        "version": "1.7.1",
+        "license": "MIT",
+        "sha256": "b0d8ef4028790467b6783f8cbe15db41ffb843f05beb018514001e687c22d4c3"
+      },
+      {
+        "name": "evaluation-only invocation adapter",
+        "version": "1",
+        "license": "Apache-2.0",
+        "sha256": "ba0f746ae276d8954cb90e7ecb0a56d0e09bbb751415600d53eba639c535c54f"
+      }
+    ],
+    "dependencies": [
+      {
+        "name": "scanic-ml official assets",
+        "version": "0.2.0",
+        "license": "MIT",
+        "sha256": "8cb3fb2de65f0939899cdb5663feebb7259214ed9b91503ce665c0e24712ff80"
+      }
+    ],
+    "operator_steps": [
+      "unmodified official npm distribution and model assets",
+      "existing scanner-eval benchmark runner",
+      "loopback-only image/model routes; external requests blocked",
+      "no production dependency/model adoption"
+    ],
+    "parameters": {}
+  },
+  "candidate_config_sha256": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+  "parameters": {},
+  "environment_names": [
+    "EVAL_CANDIDATE_ID",
+    "EVAL_SCANIC_DETECTOR",
+    "EVAL_SCANIC_PINS",
+    "EVAL_SCANIC_ROOT"
+  ],
+  "invocation_template": [
+    "/usr/bin/time",
+    "-f",
+    "%e %U %S %M",
+    "-o",
+    "{time_usage}",
+    "--",
+    "{candidate}",
+    "/home/yamato/otama-homelab/scanner-kiosk/.planning/ops/photo-auto-correction-20261114/scanic-adapter.cjs"
+  ],
+  "observer": {
+    "path": "/usr/bin/time",
+    "sha256": "3b11dec50514a8473e9f6efa7a34d584d0657538c09988f61b72d38ad4991a10",
+    "version": "time (GNU Time) UNKNOWN",
+    "license": "GPL-3.0-or-later"
+  },
+  "settings": {
+    "cold_repetitions": 1,
+    "warm_repetitions": 2,
+    "timeout_seconds": 30,
+    "max_rss_bytes": 1073741824,
+    "max_temp_disk_bytes": 268435456
+  },
+  "samples": [
+    {
+      "sample_id": "benchmark_6bf31f990c4b5fcb35c9e1d16c578146_001",
+      "mode": "cold",
+      "sequence": 1,
+      "started_at": "2026-11-14T07:54:34.564149666Z",
+      "finished_at": "2026-11-14T07:54:36.307328854Z",
+      "fixture_id": "fixture_ocr_mixed_001",
+      "fixture_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "candidate": {
+        "id": "correction_scanic_ml_001",
+        "version": "1.7.1-ml0.2.0",
+        "executable_sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "sources": [
+          {
+            "name": "scanic",
+            "version": "1.7.1",
+            "license": "MIT",
+            "sha256": "b0d8ef4028790467b6783f8cbe15db41ffb843f05beb018514001e687c22d4c3"
+          },
+          {
+            "name": "evaluation-only invocation adapter",
+            "version": "1",
+            "license": "Apache-2.0",
+            "sha256": "ba0f746ae276d8954cb90e7ecb0a56d0e09bbb751415600d53eba639c535c54f"
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "scanic-ml official assets",
+            "version": "0.2.0",
+            "license": "MIT",
+            "sha256": "8cb3fb2de65f0939899cdb5663feebb7259214ed9b91503ce665c0e24712ff80"
+          }
+        ],
+        "operator_steps": [
+          "unmodified official npm distribution and model assets",
+          "existing scanner-eval benchmark runner",
+          "loopback-only image/model routes; external requests blocked",
+          "no production dependency/model adoption"
+        ],
+        "parameters": {}
+      },
+      "candidate_config_sha256": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+      "parameters": {},
+      "wall_millis": 1565,
+      "user_cpu_seconds": 0.94,
+      "system_cpu_seconds": 0.51,
+      "peak_rss_bytes": 261038080,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 1770284,
+      "temp_disk_sampled": true,
+      "timed_out": false,
+      "status": "complete",
+      "validation_status": "not-required",
+      "artifact_catalog": "repetitions/001-cold/artifact-catalog.json",
+      "receipt_path": "receipts/001-cold.json",
+      "source_hashes_before": {
+        "candidate_config": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+        "executable": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "fixture": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee"
+      },
+      "source_hashes_after": {
+        "candidate_config": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+        "executable": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "fixture": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee"
+      }
+    },
+    {
+      "sample_id": "benchmark_6bf31f990c4b5fcb35c9e1d16c578146_002",
+      "mode": "warm",
+      "sequence": 2,
+      "started_at": "2026-11-14T07:54:36.309091691Z",
+      "finished_at": "2026-11-14T07:54:38.993261083Z",
+      "fixture_id": "fixture_ocr_mixed_001",
+      "fixture_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "candidate": {
+        "id": "correction_scanic_ml_001",
+        "version": "1.7.1-ml0.2.0",
+        "executable_sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "sources": [
+          {
+            "name": "scanic",
+            "version": "1.7.1",
+            "license": "MIT",
+            "sha256": "b0d8ef4028790467b6783f8cbe15db41ffb843f05beb018514001e687c22d4c3"
+          },
+          {
+            "name": "evaluation-only invocation adapter",
+            "version": "1",
+            "license": "Apache-2.0",
+            "sha256": "ba0f746ae276d8954cb90e7ecb0a56d0e09bbb751415600d53eba639c535c54f"
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "scanic-ml official assets",
+            "version": "0.2.0",
+            "license": "MIT",
+            "sha256": "8cb3fb2de65f0939899cdb5663feebb7259214ed9b91503ce665c0e24712ff80"
+          }
+        ],
+        "operator_steps": [
+          "unmodified official npm distribution and model assets",
+          "existing scanner-eval benchmark runner",
+          "loopback-only image/model routes; external requests blocked",
+          "no production dependency/model adoption"
+        ],
+        "parameters": {}
+      },
+      "candidate_config_sha256": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+      "parameters": {},
+      "wall_millis": 2488,
+      "user_cpu_seconds": 0.87,
+      "system_cpu_seconds": 0.55,
+      "peak_rss_bytes": 267849728,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 1717984,
+      "temp_disk_sampled": true,
+      "timed_out": false,
+      "status": "complete",
+      "validation_status": "not-required",
+      "artifact_catalog": "repetitions/002-warm/artifact-catalog.json",
+      "receipt_path": "receipts/002-warm.json",
+      "source_hashes_before": {
+        "candidate_config": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+        "executable": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "fixture": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee"
+      },
+      "source_hashes_after": {
+        "candidate_config": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+        "executable": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "fixture": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee"
+      }
+    },
+    {
+      "sample_id": "benchmark_6bf31f990c4b5fcb35c9e1d16c578146_003",
+      "mode": "warm",
+      "sequence": 3,
+      "started_at": "2026-11-14T07:54:38.995102694Z",
+      "finished_at": "2026-11-14T07:54:40.493594762Z",
+      "fixture_id": "fixture_ocr_mixed_001",
+      "fixture_sha256": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee",
+      "candidate": {
+        "id": "correction_scanic_ml_001",
+        "version": "1.7.1-ml0.2.0",
+        "executable_sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "sources": [
+          {
+            "name": "scanic",
+            "version": "1.7.1",
+            "license": "MIT",
+            "sha256": "b0d8ef4028790467b6783f8cbe15db41ffb843f05beb018514001e687c22d4c3"
+          },
+          {
+            "name": "evaluation-only invocation adapter",
+            "version": "1",
+            "license": "Apache-2.0",
+            "sha256": "ba0f746ae276d8954cb90e7ecb0a56d0e09bbb751415600d53eba639c535c54f"
+          }
+        ],
+        "dependencies": [
+          {
+            "name": "scanic-ml official assets",
+            "version": "0.2.0",
+            "license": "MIT",
+            "sha256": "8cb3fb2de65f0939899cdb5663feebb7259214ed9b91503ce665c0e24712ff80"
+          }
+        ],
+        "operator_steps": [
+          "unmodified official npm distribution and model assets",
+          "existing scanner-eval benchmark runner",
+          "loopback-only image/model routes; external requests blocked",
+          "no production dependency/model adoption"
+        ],
+        "parameters": {}
+      },
+      "candidate_config_sha256": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+      "parameters": {},
+      "wall_millis": 1328,
+      "user_cpu_seconds": 0.85,
+      "system_cpu_seconds": 0.41,
+      "peak_rss_bytes": 268226560,
+      "exit_code": 0,
+      "sampled_temp_disk_bytes": 1687785,
+      "temp_disk_sampled": true,
+      "timed_out": false,
+      "status": "complete",
+      "validation_status": "not-required",
+      "artifact_catalog": "repetitions/003-warm/artifact-catalog.json",
+      "receipt_path": "receipts/003-warm.json",
+      "source_hashes_before": {
+        "candidate_config": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+        "executable": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "fixture": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee"
+      },
+      "source_hashes_after": {
+        "candidate_config": "c7535b522d1647c73ec6b1cb823a3e3d9f0ae28f25c90bfa48cce56ff61d6814",
+        "executable": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52",
+        "fixture": "55d1339dbf04255cecc64f7a35d61680fc3dfeba3773a88b0f97fee8aa81ceee"
+      }
+    }
+  ],
+  "metrics": {
+    "cold": {
+      "samples": 1,
+      "p50_millis": 1565,
+      "p95_millis": 1565,
+      "peak_rss_bytes": 261038080,
+      "user_cpu_seconds": 0.94,
+      "system_cpu_seconds": 0.51,
+      "sampled_temp_disk_bytes": 1770284
+    },
+    "warm": {
+      "samples": 2,
+      "p50_millis": 1328,
+      "p95_millis": 2488,
+      "peak_rss_bytes": 268226560,
+      "user_cpu_seconds": 1.72,
+      "system_cpu_seconds": 0.96,
+      "sampled_temp_disk_bytes": 1717984
+    }
+  }
+}
