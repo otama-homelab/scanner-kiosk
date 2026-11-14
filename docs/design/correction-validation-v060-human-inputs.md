@@ -1,6 +1,6 @@
 # v0.6.0 人による確認票
 
-生成入力の追加検証後、現時点5/14要件を実証、残る9要件は未完。生成画像の既知正解は別途固定済みで、この票の実写真注釈を実施したことにはならない。この票を作っただけでは受入にならない。対象者・確認日・入力SHA256を記録する。「全部OK」だけでは不足する独立正解の代わりにならない。
+2026-11-15更新。現時点7/14要件を実証、残る7要件は未完。[現在の要件照合](research/correction-v0232-goal-reconciliation/report.md)を正本として参照する。v0.2.32のOCR/PDF修正と配布ドキュメントは公開・本番反映済みだが、実写真の独立注釈や本人端末の受入を実施したことにはならない。対象者・確認日・入力SHA256を記録する。「全部OK」だけでは不足する独立正解の代わりにならない。
 
 ## 1. 公開DocUNet6写真の独立注釈（Phase65）
 
@@ -32,17 +32,23 @@
 
 ## 2. 照明用の独立正解（Phase65/67）
 
-必要量は位置合わせ済み影あり／影なし6組以上と、clean control3枚以上。薄字・数字・写真・色紙・印影をそれぞれ2ケース以上含める。各ファイルの出典・利用条件・SHA256・整列確認者・確認日と領域／転記を記録する。単なる同名、似た画像、モデルで影を消した画像は独立正解ではない。自前の影生成や新しい位置合わせアルゴリズムは作らない。公開配布物の小subsetを使う場合も条件とcoverageを確認する。
+影あり／影なしの固定6組とclean control6枚は取得・評価済みで、同じ数の入力を再提出する必要はない。現在のFSENetは公式512経路12/12、native経路10/12を保存している。nativeの資源超過、clean画質の不合格は保持し、不足注釈が埋まっても自動的に採用合格にはしない。
 
-## 3. 重み条件（Phase67）
+残る不足は数字・細線・薄字・写真／色・印影の領域ごとの内容保持を判定できる独立注釈と、native／512それぞれに適用できる既存の測定契約。固定blue／peach画像には印影ROI・mask・layer sourceがなく、出力を見て推測した領域を正解にしない。既存のdark-pixel指標は一定の黒画像も合格するため、意味のある線・文字の保持や「欠落0」の証明には使えない。[内容比較の到達点と限界](research/correction-fsenet-existing-line-contract-v060/report.md)を参照する。
 
-[未送信の質問下書き](research/correction-validation-v060/illumination-clarification-unsent.md)あり。FSENet元checkpointと旧DocShadow ONNXの同一性・変換出所、重みの利用／取得／実行／再配布条件が必要。SyntheticDocは公式の通常31×45、高解像度121×177checkpointリンクを特定したが、MITコード表記のみから重み条件を確定しない。外部問い合わせ送信は未実施。
+追加の独立注釈には確認者・日付・入力SHA256・領域／転記と来歴を記録する。単なる同名、似た画像、モデルで影を消した画像は独立正解ではない。自前の影生成や新しい位置合わせアルゴリズムは作らない。既存の保存出力を優先し、同じ不合格推論を繰り返さない。
+
+## 3. 解決済みの重み条件と残る品質判定（Phase67）
+
+選択した公式SD7K checkpointと作者紹介ONNXについて、出所・利用条件・全parameter対応の確認は完了し、ILL-01は判定完了である。[元要件の監査](research/correction-current-criteria-audit-v060/report.md)と[parameter同一性の証拠](research/correction-fsenet-artifact-identity-v060/report.md)を参照する。同じ条件を改めて権利者回答待ちには戻さない。
+
+固定許容誤差でのCPU出力parityは4/10合格・6/10不合格のまま。出所の確認完了は品質合格や相互置換可能性を意味しない。現在のCPU portability forkは実行済みで、残件は上記の内容比較と適格性判定である。SyntheticDocは任意の別候補であり、今回の選択経路の完了に必須ではない。[旧質問下書き](research/correction-validation-v060/illumination-clarification-unsent.md)は未送信の履歴として保持し、外部問い合わせは行わない。
 
 ## 4. 本人原稿・端末操作（Phase68）
 
 Canonの原稿は許可済み1回の取り込みを完了。基準画像は[ローカルPNG](/home/yamato/.local/share/scanner-validation/v060/canon-baseline.png)、[ローカルreceipt](/home/yamato/.local/share/scanner-validation/v060/capture.json)。外部送信しない。無補正・無再samplingで保持したdecoder-normalized PNGであり、wire JPEG自体は保持していない。再スキャンは不要。
 
-同じ原稿のiPhone写真があれば、その使用許可済みローカル保存先を指定する。本人操作はPC／iPhoneそれぞれについて、対象入力・browser・日付と、原本保持、preview、明示適用、undo、保存、再OCR時の旧OCR保持を確認する。未実装／不適格なAI候補を製品へ接続して受入を通さない。今ある自動browserテストを本人端末の受入としない。
+同じ原稿のiPhone写真があれば、その使用許可済みローカル保存先を指定する。本人操作はPC／iPhoneそれぞれについて、対象入力・browser・日付と、原本保持、preview、明示適用、undo、保存、保存ファイルを開くこと、再OCR時の旧OCR保持を確認する。現在の本番はv0.2.32で、既存OCR結果の更新には新しい候補の作成・明示採用が必要。未実装／不適格なAI候補を製品へ接続して受入を通さない。今ある自動browserテストを本人端末の受入としない。
 
 ## 判定と再開
 
