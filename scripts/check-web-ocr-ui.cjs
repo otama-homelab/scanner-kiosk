@@ -37,10 +37,10 @@ if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
  const {test}=require('node:test');
  const scenario=process.env.SCANNER_TEST_SCENARIO;
  test(scenario==='structure-suggestion'?'TestStructureFilenameSuggestion':scenario==='reocr-start'?'TestReOCRStartLifecycle':scenario==='reocr-adopt'?'TestReOCRWholeDocumentAdoption':'TestReOCRComparePositions',async(t)=>{
-  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE});
+  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_EXECUTABLE,ignoreDefaultArgs:['--hide-scrollbars']});
   const checks=[],requests=[];
   try{for(const width of scenario==='structure-suggestion'?[1280,320,390,768,1440]:scenario==='reocr-compare'?[1280,390,1440,320]:scenario==='reocr-start'?[1280,390,320]:[1280,390]){
-   const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width,height:844}});const page=await context.newPage();page.setDefaultTimeout(2500);
+   const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width,height:844},deviceScaleFactor:1.25});const page=await context.newPage();page.setDefaultTimeout(2500);
    const before=requests.filter(r=>r.path.endsWith('/reocr')).length;const id='document_reocr_001',jobid='job_reocr_0000001',old='result_reocr_old01',candidate='result_reocr_new01',pageid='page_reocr_000001';let active=null,cancelled=false,disposition='candidate',lose=false,stale=false,loseStart=false,offline=false,jobState='queued',noPlugins=false;
    let suggestionMode='normal',expires='2099-01-01T00:00:00Z',sourceText='<script>window.ocrInjected=true</script>',held=null;
    const summary=(rid,state)=>({id:rid,state,input_revision:1,url:'/api/documents/'+id+'/ocr-results/'+rid});
@@ -126,6 +126,10 @@ if(process.env.SCANNER_TEST_SCENARIO==='reocr-native'){
     for(const key of ['x','y','width'])assert(Math.abs(ocrViewport[key]-adjustViewport[key])<=1,'Adjust and OCR preserve the source '+key+' '+JSON.stringify({ocrViewport,adjustViewport}));
     await ocrTab.click();assert((await source.locator('image').getAttribute('href')).includes(old),'changing views retains the chosen exact OCR source');
     assert.equal(await panels.first().locator('.ocr-result-details').getAttribute('open'),null);
+    // Classic desktop scrollbars must not cause Fit to alternate between two sizes.
+    const settled=await source.locator('.document-viewer-viewport').evaluate(async port=>{
+     const samples=[];for(let i=0;i<80;i++){await new Promise(requestAnimationFrame);const r=port.querySelector('.document-viewer-surface').getBoundingClientRect();if(i>=10)samples.push([r.x,r.y,r.width,r.height,port.scrollLeft,port.scrollTop].join(','))}return new Set(samples).size;
+    });assert.equal(settled,1,'untouched OCR preview settles at fractional viewport sizes with visible scrollbars');
     const preview=source.locator('svg.ocr-source-preview'),initial=await preview.boundingBox();await source.getByRole('button',{name:'Zoom in',exact:true}).click();assert(Math.abs((await preview.boundingBox()).width/initial.width-1.25)<.01,'zoom uses a predictable 25% step');await source.getByRole('button',{name:'Zoom out',exact:true}).click();assert(await source.getByRole('button',{name:'Zoom out',exact:true}).isDisabled());
     await panels.first().getByRole('button',{name:'1. <script>window.ocrInjected=true</script>',exact:true}).click();
     const rect=source.locator('rect.ocr-highlight');assert.equal(await rect.getAttribute('x'),'20');assert.equal(await rect.getAttribute('width'),'40');
