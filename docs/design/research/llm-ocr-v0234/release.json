@@ -1,0 +1,220 @@
+{
+  "format": "scanner-scoped-release",
+  "version": "v0.2.34",
+  "observed_at": "2026-11-15T03:28:54.281320+00:00",
+  "source_sha": "c773f05a237d349db1b694a7288afe0f32a8fef7",
+  "base_version": "v0.2.32",
+  "changed_paths": [
+    "CHANGELOG.md",
+    "README.md",
+    "api/openapi.json",
+    "deploy/README.md",
+    "docs/README.md",
+    "docs/design/ocr-plugins.md",
+    "docs/development.md",
+    "docs/distribution.md",
+    "docs/guide/docker-compose.md",
+    "docs/guide/getting-started.md",
+    "docs/guide/paperless.md",
+    "docs/guide/usage.md",
+    "docs/screenshots/README.md",
+    "docs/screenshots/home-desktop.png",
+    "docs/screenshots/ocr-desktop.png",
+    "docs/screenshots/ocr-mobile.png",
+    "docs/standalone.md",
+    "internal/documenthttp/ocr_results_test.go",
+    "internal/documenthttp/render.go",
+    "internal/documents/admission.go",
+    "internal/documents/render_service.go",
+    "internal/documents/render_service_test.go",
+    "internal/ocr/llm/provider.go",
+    "internal/ocr/llm/provider_test.go",
+    "internal/renderadmission/service.go",
+    "internal/renderadmission/service_test.go",
+    "internal/renderjob/ocr_linux.go",
+    "internal/workerruntime/llm_command_linux_test.go",
+    "internal/workerruntime/ocr_integration_linux_test.go",
+    "internal/workerruntime/server_ux_integration_linux_test.go",
+    "pkg/ocrplugin/contract.go",
+    "scripts/check-web-ocr-ui.cjs",
+    "scripts/check-web-server-ux.cjs",
+    "scripts/check-web.py",
+    "web/public/document-review.css",
+    "web/src/client/app.ts",
+    "web/src/client/messages.ts",
+    "web/src/client/ocr-results.ts",
+    "web/src/client/ocr.ts"
+  ],
+  "manifest_sha256": "2e0afb0619c190fe3abea888031b27fe4e2da99ab499ff1483bdf05762f5ec79",
+  "run_id": 43669614972,
+  "checks_attempt": 1,
+  "publisher_attempt": 2,
+  "artifact_id": 14144515140,
+  "publication": {
+    "verified_at": "2026-11-15T03:22:42.832903+00:00",
+    "passed": true,
+    "version": "v0.2.34",
+    "source_sha": "c773f05a237d349db1b694a7288afe0f32a8fef7",
+    "manifest_sha256": "2e0afb0619c190fe3abea888031b27fe4e2da99ab499ff1483bdf05762f5ec79",
+    "release_id": 445781092,
+    "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.34",
+    "assets_verified": 48,
+    "anonymous_manifest_verified": true,
+    "images": {
+      "core": {
+        "digest": "sha256:e7af8d16fcf687a67e88efdaa5446d1d33e613c951000b8a5b3f4fb8410ced85",
+        "image_id": "sha256:72867f1facd1372fea9d9037e31e00ff8403edafef3f6e5b52c1f3ddd54ae30a",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      },
+      "tesseract": {
+        "digest": "sha256:c2bf0117cc786e8cdc99283344b329fde5d94c49c5664b35063ca07250f758a2",
+        "image_id": "sha256:5eeea8c7da9b6bd7091095af98b06cd61c5922f8ed7fe61b8ec2d372793bb06d",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      }
+    },
+    "publication_flag_final": "false"
+  },
+  "deployment": {
+    "version": "v0.2.34",
+    "source_sha": "c773f05a237d349db1b694a7288afe0f32a8fef7",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-15T03:25:02.501195+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "served_assets_sha256": {
+      "_astro/index.astro_astro_type_script_index_0_lang.D6cc0O4Z.js": "deb34201623574d0405698dfca52860bc6c0af3dd019a3b2ed2dfad2196112bc",
+      "_astro/index.yuPYrw41.css": "a6ed2b37fc78f1f43dedfb8c08e9e4ab7e5da350d8e8ee59c1d19a4c5e9c6e23",
+      "_astro/pdf.YwugTw7Y.js": "8f279b49f5b212e72e2bbec385697bc6d41097adb0517a735a7f2983a4940b45",
+      "_astro/pdf.worker.min.CIqJB0yW.mjs": "1e64c8240e54735ec5913b37acd5134747799cb8c6bb3777c70adbc01232d2aa",
+      "document-review.css": "dc5b90c8efc7101f442a4225c5dd58c7493072a0a6c84609c14821dcd9d05eaa",
+      "pdfjs/wasm/jbig2_nowasm_fallback.js": "70150223396487e1ccfef7eac61fc780074ad7fcc9e843b702a8a3bc23107494",
+      "pdfjs/wasm/openjpeg_nowasm_fallback.js": "2855f1590e7fd7abbbf204cd13a5c09d30c92fe2c9313fb72b64aa763fe8b4f3",
+      "style.css": "081bebdec0199dc139c632e6c063bdc024a612fa023ad75b17ce58f40f2d7ff6",
+      "theme.js": "588f5a379dfc46c1eb0cf2d46e4b878772d439398914baeb46cba6b8ef5667ba",
+      "ui/NOTICE.txt": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    "new_viewer_bundle_served": true,
+    "exact_css_and_shadcn_notice_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-5964c98f98-x2n8p",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:e7af8d16fcf687a67e88efdaa5446d1d33e613c951000b8a5b3f4fb8410ced85",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:e7af8d16fcf687a67e88efdaa5446d1d33e613c951000b8a5b3f4fb8410ced85"
+        ],
+        "runtime_images": [
+          "sha256:72867f1facd1372fea9d9037e31e00ff8403edafef3f6e5b52c1f3ddd54ae30a",
+          "sha256:72867f1facd1372fea9d9037e31e00ff8403edafef3f6e5b52c1f3ddd54ae30a"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:e7af8d16fcf687a67e88efdaa5446d1d33e613c951000b8a5b3f4fb8410ced85",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:e7af8d16fcf687a67e88efdaa5446d1d33e613c951000b8a5b3f4fb8410ced85"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-b75866484-kfjmk",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:c2bf0117cc786e8cdc99283344b329fde5d94c49c5664b35063ca07250f758a2"
+        ],
+        "runtime_images": [
+          "sha256:5eeea8c7da9b6bd7091095af98b06cd61c5922f8ed7fe61b8ec2d372793bb06d"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:c2bf0117cc786e8cdc99283344b329fde5d94c49c5664b35063ca07250f758a2"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "llm_profile_unchanged": true,
+    "llm_protocol_fingerprint_matches_expected": true,
+    "owner_device_uat": "pending",
+    "new_physical_scan": false,
+    "new_model_qualified": false
+  },
+  "infrastructure_commit": {
+    "commit": "461238ad0b3bce5f39e4193205818e458f539c25",
+    "paths": [
+      "infra/scanner/core.json",
+      "infra/scanner/ocr.json",
+      "infra/scanner/values.json"
+    ],
+    "pushed": false,
+    "branch": "codex/openbao-cluster-migration"
+  },
+  "capabilities": {
+    "explicit_normalized_corner_arrays": true,
+    "supplement_opt_in": true,
+    "supplement_default": false,
+    "preference_scope": "this browser",
+    "immutable_request_setting": true,
+    "parallel_bounded_text_positions_reads": true,
+    "stable_viewer_scrollbar_gutter": true,
+    "english_current_guides": 11,
+    "docker_run_primary": true,
+    "compose_alternative": true
+  },
+  "evidence_sha256": {
+    ".planning/releases/v0.2.34/scope.json": "75b78b274c6e163f4d8644d0f29144c2e3002963db2327eb16acb3124c3d53be",
+    ".planning/releases/v0.2.34/shipping-verification.json": "8734c09aa6172b30f2178684f175bf75b29c6079ca445c8d4892697c9e261753",
+    ".planning/releases/v0.2.34/offline-verification.json": "9bbbe6af9687ced9d0bf358a5b3869f72f0665ac64242fef41dfe0122d2fdba7",
+    ".planning/releases/v0.2.34/pdf-content-review.json": "e1be2b53486d692bcf6178b3f1be881dc29bd02ff120f3d5984c4bd0e422ac43",
+    ".planning/releases/v0.2.34/publication-verification.json": "a32a2a97a17e6102738de5758ed075b8a25c4a04d258b4aa62c79e5552d7da1a",
+    ".planning/releases/v0.2.34/operator-review.md": "8046a4a281c88fd8877350d0fc530fc78018745fc45c8dfc866949893edbebdb",
+    ".planning/releases/v0.2.34/source-checks.log": "9051cae608a42fc5ec4d4e481315dafccd5f68f56dcb8e71bf9c877b5c151d43",
+    ".planning/releases/v0.2.34/approval.json": "df201f14caca8b611d837fa4f2ace520c3de75fe7154fa3ecee7c907ae154240",
+    ".planning/releases/v0.2.34/publication-plan.json": "f5c6fc3931d6cb0c42e97930eee891b6f8eb646e77746f4cc0fb7fbefb29eb6a",
+    ".planning/releases/v0.2.34/protected-plan-readback.json": "68f44bb119d6f1acc72bbcba2c85aec03f51dcf81de4f9e75b3cbc88b677fef8",
+    ".planning/ops/v0234/deployment-verification.json": "e89e16286a157e2771a8c21e4b18293f695ce2d52273279bc630ac979fabdcea",
+    ".planning/ops/v0234/expected-llm-fingerprint.json": "22d41167f2ee6e6a557221d7bf7ec23f7d151c11d52288413b3a6095ecca03b5",
+    ".planning/ops/v0234/drained-inspection.json": "08703296b27a4b6e3604b2ced099e34a8e17b02af35627c4ef9c23f957bdc815",
+    ".planning/ops/v0234/post-deploy-inspection.json": "966e6da48b3f695c4daf109b71ee7d880a4967f7f7e84e5c75e8828cd6436eea"
+  },
+  "original_requirements": {
+    "complete": 7,
+    "total": 14,
+    "completed_phases": [
+      64
+    ]
+  },
+  "preserved_failures": [
+    "v0.2.33 superseded before publication; immutable tag retained",
+    "initial corner-object synthetic probe rejected native array response",
+    "broader local browser: Unicode suggestion visibility timeout",
+    "broader local browser: correction keyboard reopen timeout",
+    "first offline observer deadline before download/extraction completion; same candidate later verified"
+  ],
+  "limits": [
+    "Only synthetic actual-endpoint OCR probes, never private document replay",
+    "Physical scanner, owner device/native popup latency and live Paperless ingestion unaccepted",
+    "Broader local browser aggregate is not claimed complete; five focused scenarios and real backend pass",
+    "Existing OCR/PDF artifacts require new explicit recognition/adoption to change",
+    "No new correction model qualification or original milestone completion"
+  ],
+  "advisories": {
+    "existing_candidate_findings": 12,
+    "new_candidate_findings": 0,
+    "raw_threshold_passed": false,
+    "reachable_go_findings": 0,
+    "frontend_moderate_packages": 1
+  }
+}
