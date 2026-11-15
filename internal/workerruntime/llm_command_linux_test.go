@@ -38,7 +38,7 @@ func TestLLMWorkerCommandPublishesPositionedPDF(t *testing.T) {
 			t.Error("unexpected method")
 		}
 		number := calls.Add(1)
-		content, _ := json.Marshal(map[string]any{"supplement": "Synthetic layout interpretation.", "spans": []any{map[string]any{"text": fmt.Sprintf("Page%d", number), "box": map[string]any{"x": 50, "y": 100, "width": 700, "height": 200}}}})
+		content, _ := json.Marshal(map[string]any{"supplement": "Synthetic layout interpretation.", "spans": []any{map[string]any{"text": fmt.Sprintf("Page%d", number), "box": []any{50, 100, 750, 300}}}})
 		json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": string(content)}}}})
 	}))
 	defer server.Close()

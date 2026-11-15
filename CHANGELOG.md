@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Use an explicit four-corner LLM box array to prevent lower-right coordinates being interpreted as width/height and rejected. Preserve strict validation and immutable existing results.
+
 ## 0.2.32
 
 - Normalize the LLM wire grid to exact input pixels, and fit PDF text overlays to the same image rectangle instead of orientation-based scaling. Existing OCR artifacts remain immutable.

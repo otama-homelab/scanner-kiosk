@@ -78,7 +78,7 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 				case <-time.After(2 * time.Second):
 				}
 			}
-			json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": `{"supplement":"","spans":[{"text":"SYNTHETIC RECEIPT","box":{"x":25,"y":20,"width":187.5,"height":100}}]}`}}}})
+			json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": `{"supplement":"","spans":[{"text":"SYNTHETIC RECEIPT","box":[25,20,212.5,120]}]}`}}}})
 			return
 		}
 		if r.Method == "POST" && r.URL.Path == "/api/documents/post_document/" {
