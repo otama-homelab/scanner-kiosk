@@ -515,7 +515,7 @@ func TestNormalizedCoordinatesUseExactBitmapDimensions(t *testing.T) {
 	for _, size := range [][2]int{{2275, 3090}, {1654, 2339}, {80, 100}} {
 		page := ocrplugin.InputPage{ID: "page_00000000001", Width: size[0], Height: size[1]}
 		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": []any{100, 200, 900, 500}}}}))
-		data, err := p.parse(raw, profile, page, ocrplugin.PositionedText)
+		data, err := p.parse(raw, profile, page, ocrplugin.PositionedText, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -531,7 +531,7 @@ func TestNormalizedCoordinatesUseExactBitmapDimensions(t *testing.T) {
 	}
 	for _, box := range []ocrplugin.Box{{X: 900, Y: 0, Width: 101, Height: 10}, {X: 0, Y: 999, Width: 10, Height: 2}, {X: -1, Y: 0, Width: 10, Height: 10}} {
 		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Reject", "box": []any{box.X, box.Y, box.X + box.Width, box.Y + box.Height}}}}))
-		if _, err := p.parse(raw, profile, ocrplugin.InputPage{ID: "page_00000000001", Width: 2275, Height: 3090}, ocrplugin.PositionedText); err == nil {
+		if _, err := p.parse(raw, profile, ocrplugin.InputPage{ID: "page_00000000001", Width: 2275, Height: 3090}, ocrplugin.PositionedText, false); err == nil {
 			t.Fatalf("accepted invalid normalized box %+v", box)
 		}
 	}
@@ -541,7 +541,7 @@ func TestNormalizedLLMCoordinatesReachPDFSearchBounds(t *testing.T) {
 	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
 	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 2275, Height: 3090}
 	raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": []any{100, 200, 900, 500}}}}))
-	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
+	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -588,7 +588,7 @@ func TestLLMSupplementIsSeparateAndBounded(t *testing.T) {
 	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 2000, Height: 3000}
 	content := map[string]any{"spans": []any{map[string]any{"text": "Original", "box": []any{100, 100, 300, 120}}}, "supplement": "Two-column invoice. This interpretation is uncertain."}
 	raw, _ := json.Marshal(completion(content))
-	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
+	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText, true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -602,14 +602,14 @@ func TestLLMSupplementIsSeparateAndBounded(t *testing.T) {
 	for _, notes := range []any{strings.Repeat("x", (16<<10)+1), 123, nil} {
 		content["supplement"] = notes
 		raw, _ = json.Marshal(completion(content))
-		if _, err = p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText); err == nil {
+		if _, err = p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText, true); err == nil {
 			t.Fatal("invalid supplement accepted")
 		}
 	}
 	content["supplement"] = "too long for shared byte budget"
 	raw, _ = json.Marshal(completion(content))
 	p.options.MaxTextBytes = 8
-	if _, err = p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText); err == nil {
+	if _, err = p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText, true); err == nil {
 		t.Fatal("supplement bypassed aggregate text budget")
 	}
 }
@@ -618,7 +618,7 @@ func TestNormalizedCornerBoxIsNotTreatedAsExtent(t *testing.T) {
 	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
 	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 1216, Height: 1792}
 	raw, _ := json.Marshal(completion(map[string]any{"supplement": "Synthetic layout.", "spans": []any{map[string]any{"text": "Line", "box": []any{50, 395, 953, 430}}}}))
-	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
+	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -643,8 +643,40 @@ func TestNormalizedCornerBoxIsNotTreatedAsExtent(t *testing.T) {
 		map[string]any{"left": 50, "top": 395, "right": 953, "bottom": 430},
 	} {
 		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Reject", "box": box}}}))
-		if _, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText); err == nil {
+		if _, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText, false); err == nil {
 			t.Fatalf("accepted invalid or ambiguous box %+v", box)
 		}
+	}
+}
+
+func TestSupplementRequiresExplicitOptIn(t *testing.T) {
+	for _, include := range []bool{false, true} {
+		t.Run(fmt.Sprint(include), func(t *testing.T) {
+			p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
+				var body map[string]any
+				if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+					t.Fatal(err)
+				}
+				schema := body["response_format"].(map[string]any)["json_schema"].(map[string]any)["schema"].(map[string]any)
+				_, requested := schema["properties"].(map[string]any)["supplement"]
+				if requested != include {
+					t.Errorf("supplement requested=%v, want %v", requested, include)
+				}
+				json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "Original", "box": []any{100, 100, 200, 200}}}, "supplement": "Interpretation only."}))
+			})
+			req := request(p, ocrplugin.PositionedText)
+			req.IncludeSupplement = include
+			a := &access{input: fixture(t)}
+			if _, err := p.Run(context.Background(), req, a); err != nil {
+				t.Fatal(err)
+			}
+			var page ocrplugin.PositionedPage
+			if err := json.Unmarshal(a.outputs[0].Bytes(), &page); err != nil {
+				t.Fatal(err)
+			}
+			if (page.Supplement != "") != include || page.Spans[0].Text != "Original" {
+				t.Fatal("supplement choice not honored")
+			}
+		})
 	}
 }

@@ -50,14 +50,15 @@ type InputPage struct {
 	DPI        int
 }
 type Request struct {
-	JobID         string
-	InputRevision int64
-	ModelID       string
-	ModelVersion  string
-	Languages     []string
-	QualityPreset string
-	Output        OutputKind
-	Pages         []InputPage
+	IncludeSupplement bool
+	JobID             string
+	InputRevision     int64
+	ModelID           string
+	ModelVersion      string
+	Languages         []string
+	QualityPreset     string
+	Output            OutputKind
+	Pages             []InputPage
 }
 
 // Text geometry uses pixels, with origin at the top-left of the supplied oriented bitmap.

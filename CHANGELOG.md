@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Make LLM interpretation supplements optional, off by default, and remember the checkbox in this browser. Retain the selection in immutable OCR requests.
+- Load OCR text and positions concurrently to reduce waiting during result/page selection.
+- Lead the English quick start with `docker run`; retain Compose as an alternative.
+
 - Publish English overview, installation, usage, integration, development, and distribution guides with English UI screenshots and verified navigation.
 
 - Use an explicit four-corner LLM box array to prevent lower-right coordinates being interpreted as width/height and rejected. Preserve strict validation and immutable existing results.

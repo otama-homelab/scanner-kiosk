@@ -162,3 +162,46 @@ func TestSQLiteRejectsUnpreparedRenderCommands(t *testing.T) {
 		t.Fatal("zero command reached SQL", err)
 	}
 }
+
+func TestRenderSupplementIntentIsBoundAndLLMOnly(t *testing.T) {
+	var hashes [][32]byte
+	service, err := documents.NewRenderAdmissionService(renderRecords{lookup: func(_ context.Context, _ string, i documents.RenderIntent) (documents.Admission, bool, error) {
+		_, hash := i.Hashes()
+		hashes = append(hashes, hash)
+		r, e := i.Request()
+		if e != nil {
+			t.Fatal(e)
+		}
+		if r.Settings.OCR.IncludeSupplement != (len(hashes) == 2) {
+			t.Fatal("supplement intent lost")
+		}
+		return documents.Admission{}, false, nil
+	}, apply: func(context.Context, string, documents.RenderCommand) (documents.Admission, error) {
+		return documents.Admission{}, nil
+	}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := renderServiceRequest()
+	r.Settings.OCR = documents.RenderOCR{Enabled: true, ProviderID: "llm", ModelID: "vision", Languages: []string{"en"}}
+	if _, _, err = service.FindRender(context.Background(), "principal_render_service_001", r); err != nil {
+		t.Fatal(err)
+	}
+	r.Settings.OCR.IncludeSupplement = true
+	if _, _, err = service.FindRender(context.Background(), "principal_render_service_001", r); err != nil {
+		t.Fatal(err)
+	}
+	if hashes[0] == hashes[1] {
+		t.Fatal("supplement choice omitted from request identity")
+	}
+	for _, provider := range []string{"tesseract", "other"} {
+		r.Settings.OCR.ProviderID = provider
+		if _, _, err = service.FindRender(context.Background(), "principal_render_service_001", r); !errors.Is(err, documents.ErrInvalid) {
+			t.Fatal("non-LLM supplement accepted", err)
+		}
+	}
+	r.Settings.OCR = documents.RenderOCR{IncludeSupplement: true}
+	if _, _, err = service.FindRender(context.Background(), "principal_render_service_001", r); !errors.Is(err, documents.ErrInvalid) {
+		t.Fatal("supplement without OCR accepted", err)
+	}
+}

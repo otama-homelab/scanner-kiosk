@@ -94,7 +94,7 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 		}
 		track(providerScope)
 	}
-	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, Output: work.Snapshot.OCROutput}
+	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, IncludeSupplement: settings.IncludeSupplement, Output: work.Snapshot.OCROutput}
 	for i, p := range recognitionPages {
 		dpi := ocrDensity(work.Snapshot.Pages[i])
 		if _, ok := rasterReplies[i]; ok {
@@ -341,7 +341,7 @@ func prepareReOCR(ctx context.Context, records Records, selector OCRSelector, ro
 
 func prepareOCR(ctx context.Context, selector OCRSelector, root string, work documents.RenderWork, inputs map[string]artifactscope.Input, pages []pdfassemble.ScopedPage, ocrScope *artifactscope.Scope, budget *artifactscope.Budget, options pdfassemble.Options) (final *artifactscope.Scope, reference string, err error) {
 	settings := work.Snapshot.Settings.OCR
-	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, Output: ocrplugin.PDFTextLayer}
+	req := ocrplugin.Request{JobID: work.Job.ID, InputRevision: work.Job.Revision, ModelID: settings.ModelID, ModelVersion: settings.ModelVersion, Languages: append([]string(nil), settings.Languages...), QualityPreset: settings.QualityPreset, IncludeSupplement: settings.IncludeSupplement, Output: ocrplugin.PDFTextLayer}
 	for i, page := range pages {
 		if page.MediaType == "application/pdf" {
 			continue

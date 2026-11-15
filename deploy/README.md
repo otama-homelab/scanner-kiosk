@@ -1,6 +1,6 @@
 # Deployment reference
 
-Start with [Getting started](../docs/guide/getting-started.md) for a new installation. See [Release artifacts](../docs/distribution.md) to choose and verify distribution files.
+Start with [Docker run](../docs/guide/getting-started.md) for a new installation, or use the [Docker Compose guide](../docs/guide/docker-compose.md). See [Release artifacts](../docs/distribution.md) to choose and verify distribution files.
 
 These are configuration/rendering examples. The `scanner serve` /
 `scanner worker` roles, health endpoints and environment loader are implemented,

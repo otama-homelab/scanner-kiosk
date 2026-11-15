@@ -34,12 +34,13 @@ type AdmissionLimits struct {
 	JobTimeout, ReceiptRetention              time.Duration
 }
 type RenderOCR struct {
-	Enabled       bool     `json:"enabled"`
-	ProviderID    string   `json:"provider_id,omitempty"`
-	ModelID       string   `json:"model_id,omitempty"`
-	ModelVersion  string   `json:"model_version,omitempty"`
-	Languages     []string `json:"languages,omitempty"`
-	QualityPreset string   `json:"quality_preset,omitempty"`
+	IncludeSupplement bool     `json:"include_supplement,omitempty"`
+	Enabled           bool     `json:"enabled"`
+	ProviderID        string   `json:"provider_id,omitempty"`
+	ModelID           string   `json:"model_id,omitempty"`
+	ModelVersion      string   `json:"model_version,omitempty"`
+	Languages         []string `json:"languages,omitempty"`
+	QualityPreset     string   `json:"quality_preset,omitempty"`
 }
 type RenderSettings struct {
 	Format      string    `json:"format"`

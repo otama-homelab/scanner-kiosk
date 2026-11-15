@@ -2260,6 +2260,11 @@
           },
           "quality_preset": {
             "type": "string"
+          },
+          "include_supplement": {
+            "type": "boolean",
+            "default": false,
+            "description": "Opt in to searchable LLM interpretation text in the PDF. Valid only for enabled LLM OCR; omitted means false."
           }
         },
         "required": [
@@ -2283,6 +2288,32 @@
                 "provider_id",
                 "model_id",
                 "languages"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "include_supplement": {
+                  "const": true
+                }
+              },
+              "required": [
+                "include_supplement"
+              ]
+            },
+            "then": {
+              "properties": {
+                "enabled": {
+                  "const": true
+                },
+                "provider_id": {
+                  "const": "llm"
+                }
+              },
+              "required": [
+                "enabled",
+                "provider_id"
               ]
             }
           }

@@ -66,6 +66,9 @@ func (s *Service) Admit(ctx context.Context, owner string, request documents.Ren
 		if request.ReOCR && resolved.Output != ocrplugin.PositionedText && resolved.Output != ocrplugin.Text && resolved.Output != ocrplugin.PDFTextLayer && resolved.Output != ocrplugin.SearchablePDF {
 			return documents.Admission{}, ErrUnsupported
 		}
+		if request.Settings.OCR.IncludeSupplement && resolved.Output != ocrplugin.PositionedText && resolved.Output != ocrplugin.PDFTextLayer {
+			return documents.Admission{}, ErrUnsupported
+		}
 		limits.OCRMaxPages, limits.OCRMaxPagePixels = resolved.MaxPages, resolved.MaxPagePixels
 		if s.Limits.OCRMaxPagePixels > 0 {
 			limits.OCRMaxPagePixels = min(limits.OCRMaxPagePixels, s.Limits.OCRMaxPagePixels)
