@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Make LLM interpretation supplements optional, off by default, and remember the checkbox in this browser. Retain the selection in immutable OCR requests.
+- Reserve stable scrollbar space so common viewer zoom does not resize its fit area.
 - Load OCR text and positions concurrently to reduce waiting during result/page selection.
 - Lead the English quick start with `docker run`; retain Compose as an alternative.
 
