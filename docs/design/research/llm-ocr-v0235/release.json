@@ -1,0 +1,235 @@
+{
+  "format": "scanner-scoped-release",
+  "version": "v0.2.35",
+  "observed_at": "2026-11-15T04:46:23.088894+00:00",
+  "source_sha": "d692137cb05df6ce7b807a72ef0d2dcc21fad0ec",
+  "base_version": "v0.2.34",
+  "changed_paths": [
+    "CHANGELOG.md",
+    "api/openapi.json",
+    "docs/guide/usage.md",
+    "internal/documents/job_projection.go",
+    "internal/documents/job_projection_test.go",
+    "internal/documents/projection.go",
+    "internal/documents/render_completion.go",
+    "internal/documents/render_completion_test.go",
+    "internal/ocr/llm/provider.go",
+    "internal/ocr/llm/provider_test.go",
+    "internal/renderjob/execute_linux.go",
+    "internal/renderjob/ocr_linux_test.go",
+    "internal/renderjob/render_linux.go",
+    "internal/workerruntime/server_ux_integration_linux_test.go",
+    "pkg/ocrplugin/contract.go",
+    "scripts/check-web-ocr-ui.cjs",
+    "scripts/check-web-server-ux.cjs",
+    "scripts/check-web.py",
+    "web/src/client/app.ts",
+    "web/src/client/messages.ts",
+    "web/src/client/ocr-results.ts",
+    "web/src/client/ocr.ts"
+  ],
+  "manifest_sha256": "f42952ee64fa340bd90f2f2a09a0d46dbf24091cab8fdedde2c3fdbd45102989",
+  "run_id": 43675379353,
+  "checks_attempt": 1,
+  "publisher_attempt": 2,
+  "artifact_id": 14146492781,
+  "artifact_bytes": 1185573851,
+  "artifact_sha256": "41637d00d9d559137a097ef09134922e84ce903877096c74012bee465f0deab5",
+  "publication": {
+    "verified_at": "2026-11-15T04:41:54.902939+00:00",
+    "passed": true,
+    "version": "v0.2.35",
+    "source_sha": "d692137cb05df6ce7b807a72ef0d2dcc21fad0ec",
+    "manifest_sha256": "f42952ee64fa340bd90f2f2a09a0d46dbf24091cab8fdedde2c3fdbd45102989",
+    "release_id": 445813800,
+    "release_url": "https://github.com/otama-homelab/scanner-kiosk/releases/tag/v0.2.35",
+    "assets_verified": 48,
+    "anonymous_manifest_verified": true,
+    "images": {
+      "core": {
+        "digest": "sha256:cdb6acee83a5688058464bf7d5ba79305e0a6a1d61c32c044530ee070c5a62c6",
+        "image_id": "sha256:7a0fcd2053e1e470ac947d70dd29e2ad2d3ba9cb24af2f6c949bc3111cd8c3fa",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      },
+      "tesseract": {
+        "digest": "sha256:2fba4481b32d12ff0a1f177cf7b847a5efd4bc15954b0049e46ec8e80816e45f",
+        "image_id": "sha256:3269fa626fc0d2f425614fca7047ee186961492b6669572f80526acab0a7faf5",
+        "latest_matches": true,
+        "runtime_config_verified": true
+      }
+    },
+    "publication_flag_final": "false"
+  },
+  "deployment": {
+    "version": "v0.2.35",
+    "source_sha": "d692137cb05df6ce7b807a72ef0d2dcc21fad0ec",
+    "go_version": "go1.27.4",
+    "verified_at": "2026-11-15T04:44:11.230077+00:00",
+    "maintenance_removed": true,
+    "public_http": {
+      "/health/live": 200,
+      "/health/ready": 200,
+      "/api/session": 200,
+      "/api/capabilities": 401
+    },
+    "served_assets_sha256": {
+      "_astro/index.astro_astro_type_script_index_0_lang.DEzcuzPt.js": "44ceebb1b67805835ad315f959bea2a1f5a25940b83765500514307172c89e69",
+      "_astro/index.yuPYrw41.css": "a6ed2b37fc78f1f43dedfb8c08e9e4ab7e5da350d8e8ee59c1d19a4c5e9c6e23",
+      "_astro/pdf.YwugTw7Y.js": "8f279b49f5b212e72e2bbec385697bc6d41097adb0517a735a7f2983a4940b45",
+      "_astro/pdf.worker.min.CIqJB0yW.mjs": "1e64c8240e54735ec5913b37acd5134747799cb8c6bb3777c70adbc01232d2aa",
+      "document-review.css": "dc5b90c8efc7101f442a4225c5dd58c7493072a0a6c84609c14821dcd9d05eaa",
+      "pdfjs/wasm/jbig2_nowasm_fallback.js": "70150223396487e1ccfef7eac61fc780074ad7fcc9e843b702a8a3bc23107494",
+      "pdfjs/wasm/openjpeg_nowasm_fallback.js": "2855f1590e7fd7abbbf204cd13a5c09d30c92fe2c9313fb72b64aa763fe8b4f3",
+      "style.css": "081bebdec0199dc139c632e6c063bdc024a612fa023ad75b17ce58f40f2d7ff6",
+      "theme.js": "588f5a379dfc46c1eb0cf2d46e4b878772d439398914baeb46cba6b8ef5667ba",
+      "ui/NOTICE.txt": "1564074e13439397221ffd522e2e504d56561994a23d371aa5e3ad43e4f5423f"
+    },
+    "new_viewer_bundle_served": true,
+    "exact_css_and_shadcn_notice_served": true,
+    "pods": {
+      "core": {
+        "name": "scanner-kiosk-84467b954b-5z294",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:cdb6acee83a5688058464bf7d5ba79305e0a6a1d61c32c044530ee070c5a62c6",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:cdb6acee83a5688058464bf7d5ba79305e0a6a1d61c32c044530ee070c5a62c6"
+        ],
+        "runtime_images": [
+          "sha256:7a0fcd2053e1e470ac947d70dd29e2ad2d3ba9cb24af2f6c949bc3111cd8c3fa",
+          "sha256:7a0fcd2053e1e470ac947d70dd29e2ad2d3ba9cb24af2f6c949bc3111cd8c3fa"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:cdb6acee83a5688058464bf7d5ba79305e0a6a1d61c32c044530ee070c5a62c6",
+          "ghcr.io/otama-homelab/scanner-kiosk@sha256:cdb6acee83a5688058464bf7d5ba79305e0a6a1d61c32c044530ee070c5a62c6"
+        ],
+        "restarts": [
+          0,
+          0
+        ]
+      },
+      "tesseract": {
+        "name": "scanner-kiosk-tesseract-766559fc87-psxkd",
+        "node": "k3s-04",
+        "images": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:2fba4481b32d12ff0a1f177cf7b847a5efd4bc15954b0049e46ec8e80816e45f"
+        ],
+        "runtime_images": [
+          "sha256:3269fa626fc0d2f425614fca7047ee186961492b6669572f80526acab0a7faf5"
+        ],
+        "image_ids": [
+          "ghcr.io/otama-homelab/scanner-kiosk-tesseract@sha256:2fba4481b32d12ff0a1f177cf7b847a5efd4bc15954b0049e46ec8e80816e45f"
+        ],
+        "restarts": [
+          0
+        ]
+      }
+    },
+    "documents_schema": 27,
+    "ocr_catalog_providers": [
+      "tesseract",
+      "llm"
+    ],
+    "llm_profile_unchanged": true,
+    "llm_protocol_fingerprint_matches_expected": true,
+    "owner_device_uat": "pending",
+    "new_physical_scan": false,
+    "new_model_qualified": false
+  },
+  "infrastructure_commit": {
+    "commit": "beadd91af8b911c61428677b0a5447c6a6468a03",
+    "paths": [
+      "infra/scanner/core.json",
+      "infra/scanner/ocr.json",
+      "infra/scanner/values.json"
+    ],
+    "pushed": false,
+    "branch": "codex/openbao-cluster-migration"
+  },
+  "capabilities": {
+    "complete_span_object_examples": true,
+    "strict_response_validation_retained": true,
+    "safe_response_format_error_code": "ocr_response_invalid",
+    "error_classification_after_confirmed_cleanup": true,
+    "retry_settings_exclude_worker_model_version": true,
+    "retry_only_latest_owned_current_revision_failure": true,
+    "retry_reuses_render_or_reocr_operation": true,
+    "retry_retains_model_languages_quality_pdf_encoding_supplement": true,
+    "retry_requires_explicit_click_and_fresh_key": true,
+    "uncertain_post_blocks_new_attempt": true,
+    "no_automatic_adoption_or_scan": true,
+    "single_quality_auto_selected_and_hidden": true,
+    "multiple_quality_presets_selectable": true,
+    "supplement_default": false,
+    "supplement_preference_scope": "this browser"
+  },
+  "validation": {
+    "formal_required_jobs": 7,
+    "focused_browser_scenarios": [
+      "ocr-preferences",
+      "ocr-retry",
+      "server-ux"
+    ],
+    "real_backend_malformed_response_to_retry_success": true,
+    "saved_pdf_hash_unchanged_through_failed_retry": true,
+    "actual_endpoint_synthetic_spans_on": 79,
+    "actual_endpoint_synthetic_spans_off": 79,
+    "supplement_bytes_on": 575,
+    "supplement_bytes_off": 0,
+    "dense_independent_poppler_extraction_passed": true,
+    "runtime_image_pdfs_inspected": 4,
+    "runtime_image_pages_inspected": 8,
+    "english_current_guides": 11,
+    "local_links_and_anchors": 95,
+    "shell_examples_syntax_checked": 17
+  },
+  "evidence_sha256": {
+    ".planning/releases/v0.2.35/scope.json": "4818e9b4ec73dce13100dd9e6254aaf46e7b1035807698f893afcf98336a8572",
+    ".planning/releases/v0.2.35/shipping-verification.json": "18096846ac1439234ced28a5f4b14193fe342ca8c724b8ac88bafae7573f0af5",
+    ".planning/releases/v0.2.35/docs-verification.json": "dfea9609c87dcbc9250b5c8127a6799e824905fe22c9574392ddaf0c7c96f52e",
+    ".planning/releases/v0.2.35/offline-verification.json": "b5d2627992b58a4d7b91e6ca9c87a5ef8e75c28666a63d4fed3904ead8891a9c",
+    ".planning/releases/v0.2.35/pdf-content-review.json": "301091b9299b172c2f5c183eb3c8013a8fc39b578b1940f47fc2d2f104a15309",
+    ".planning/releases/v0.2.35/publication-verification.json": "6ada9339c0905ec8309cfd9a723cb7d48ef84c785ab3e198d71a0b98afd79b9f",
+    ".planning/releases/v0.2.35/operator-review.md": "c2e0cba9d9dddc2a1a45ece2066eb6cde6ddb09ae7346cb74ca8634e9e153d0d",
+    ".planning/releases/v0.2.35/source-checks.log": "5e97574ed4116509d882c436b3aa8e3edafeef1735b57f897af3ad16ea38a9ea",
+    ".planning/releases/v0.2.35/approval.json": "26e9b811ea0e5b8cb110245e04e8fdcc4279c2c35efc51f2f0ef9bca76ebf03f",
+    ".planning/releases/v0.2.35/publication-plan.json": "464f1791f05d78604bda488d25ac279b3a3e76d7ec342d40b4c0f06c292a6627",
+    ".planning/releases/v0.2.35/protected-plan-readback.json": "10f9b01120a7052c2b646be45535fec052082b0c4f05a0c4c9832ae0d8ccd25f",
+    ".planning/releases/v0.2.35/main-ci-run.json": "d0f5e202479000ea48df87a420d03178dabaf037754584676ccaadbafecd2169",
+    ".planning/releases/v0.2.35/main-ci-jobs.json": "5735b3b6071b727ec07e04123aafe52343591a16bbba39bcc37667f4214ea934",
+    ".planning/ops/v0235/deployment-verification.json": "04ac4f6c6d4210930400ecfea69a5fda553198650d25cc3a30722db36e46e2d3",
+    ".planning/ops/v0235/expected-llm-fingerprint.json": "f09673fc5373984edb389c1da69e77c7450214255ff9f95592dc89d641d93786",
+    ".planning/ops/v0235/drained-inspection.json": "4582c6d227d43e3c5eda3285761cf5b9f98efbadb0ac7dbfa5798e57eafa64d7",
+    ".planning/ops/v0235/post-deploy-inspection.json": "5e25b15df8dcd1877fc8ae8d7ad012f043ac07c5fd394e0fae55be68766eaaec",
+    ".planning/ops/ocr-supplement-failure-20261115/diagnosis.json": "c40ec0d3341626d68bcd97c852886404e2785dc05b80d3beba007194166cff3d",
+    ".planning/ops/ocr-supplement-failure-20261115/dense-independent-pdf.json": "68322a7a584d08e884a92b50937cd9fb176ce5181d835e9504a0ce16fcf3e2ff"
+  },
+  "original_requirements": {
+    "complete": 7,
+    "total": 14,
+    "completed_phases": [
+      64
+    ]
+  },
+  "preserved_failures": [
+    "initial quality/retry browser setup navigation timeouts retained separately from intended regression failures",
+    "initial complete-example regression and missing typed-code fields failed before implementation",
+    "initial retry fixture counted previous viewport POSTs; corrected per-viewport baseline",
+    "immutable-input trigger rejected a test that tried to mutate a job; fixture test corrected without weakening production trigger",
+    "initial main observer assumed preview was gated; existing automatic main preview was allowed to finish and fresh alias state verified before scoped tag publication",
+    "priorv34 broader browser timeouts retained as historical records"
+  ],
+  "limits": [
+    "LLM output can still be malformed; reject it and offer explicit retry instead of guessing geometry",
+    "No private document replay, physical scan, actual owner phone/PC popup acceptance, live Paperless upload or new correction model qualification",
+    "Old job error categories are not rewritten; safe format classification applies to new observed failures",
+    "The whole mocked browser aggregate is not claimed complete; current formal full Go/native/real-backend CI and focused feature scenarios passed"
+  ],
+  "advisories": {
+    "existing_candidate_findings": 12,
+    "new_candidate_findings": 0,
+    "raw_threshold_passed": false,
+    "reachable_go_findings": 0,
+    "frontend_moderate_packages": 1
+  }
+}
