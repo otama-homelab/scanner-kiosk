@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Publish English overview, installation, usage, integration, development, and distribution guides with English UI screenshots and verified navigation.
+
 - Use an explicit four-corner LLM box array to prevent lower-right coordinates being interpreted as width/height and rejected. Preserve strict validation and immutable existing results.
 
 ## 0.2.32

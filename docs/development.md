@@ -1,41 +1,45 @@
-# 開発とソース構成
+# Development
 
-[README](../README.md) · [ドキュメント一覧](README.md)
+[Overview](../README.md) · [Documentation](README.md)
 
-GoのbackendとAstroのfrontendを使います。frontendは静的アセットとしてGo実行ファイルへ埋め込みます。Goのバージョンは`go.mod`、Nodeとfrontend依存はbuild設定と`web/package-lock.json`に固定しています。
+Scanner Kiosk uses a Go backend and an Astro/TypeScript frontend. Static frontend assets are embedded in the Go executable. `go.mod` pins the Go toolchain; build configuration and `web/package-lock.json` pin frontend tooling and dependencies.
+
+## Source layout
 
 ```text
-cmd/                 実行ファイルの入口とroleの構成
-internal/            API・worker・文書管理・OCR・PDFなどの実装
-pkg/ocrplugin/       OCR providerの公開契約
-web/                 Astro画面・TypeScript・スタイル
-api/                 HTTP API契約
-deploy/              利用者向けのCompose・Kubernetes配備例
-docs/guide/          導入と操作手順
-docs/screenshots/    架空データで撮影した実画面
-docs/design/         設計・実装・評価記録
-docs/adr/            設計判断
-native/              ネイティブ依存の固定入力・再build資料
-scripts/             build・検証・配布素材作成
-tests/               横断的なテスト資産
+cmd/                 Executable entry points and role composition
+internal/            API, worker, documents, OCR, and PDF implementations
+pkg/ocrplugin/       Public OCR provider contract
+web/                 Astro pages, TypeScript, and styles
+api/                 HTTP API contract
+deploy/              Compose and Kubernetes examples
+docs/guide/          Installation and user workflows
+docs/screenshots/    Real UI captures using synthetic data
+docs/design/         Design, implementation, and evaluation records
+docs/adr/            Architecture decisions
+native/              Pinned native inputs and rebuild materials
+scripts/             Build, verification, and distribution tooling
+tests/               Cross-cutting test assets
 ```
 
-テストは原則として対象コードのそばに置きます。個人用設定・認証情報・ローカル進捗は配布ソースへ含めません。
+Keep tests next to the code they exercise. Credentials, private configuration, private documents, and local progress records do not belong in distributed source.
 
-## 責任の境界
+## Module ownership
 
-| 場所 | 主な責任 |
+| Location | Responsibility |
 | --- | --- |
-| `cmd/scanner` | CLI・シグナル・roleごとの設定 |
-| `internal/apiruntime` | HTTP・認証session・API起動 |
-| `internal/workerruntime` | 起動整合・ジョブ実行・終了処理 |
-| `internal/documents` | 所有者・revision・保持期間・ジョブの永続状態 |
-| `internal/scanner` / `scannerdriver` | 機器の検証・読み取り・所有する試行の回収 |
-| `internal/ocr` / `pkg/ocrplugin` | OCR実装とprovider契約 |
-| `internal/pdftextlayer` / `pdfassemble` | 文字座標・PDF合成 |
-| `internal/staterecovery` | identityのbackup・restore。文書とsessionは対象外 |
+| `cmd/scanner` | CLI, signals, and role-specific configuration |
+| `internal/apiruntime` | HTTP, authenticated sessions, and API startup |
+| `internal/workerruntime` | Startup consistency, job execution, and shutdown |
+| `internal/documents` | Ownership, revisions, retention, and durable job state |
+| `internal/scanner` / `internal/scannerdriver` | Device validation, acquisition, and owned-attempt cleanup |
+| `internal/ocr` / `pkg/ocrplugin` | Provider implementations and OCR contracts |
+| `internal/pdftextlayer` / `pdfassemble` | Text geometry and PDF assembly |
+| `internal/staterecovery` | Identity backup/restore; excludes documents and sessions |
 
-## buildと検証
+## Build and check
+
+For focused OCR/PDF changes:
 
 ```sh
 go test ./pkg/ocrplugin ./internal/ocr/llm ./internal/pdftextlayer
@@ -43,6 +47,16 @@ python3 -m unittest discover -s scripts -p 'test_prepare_candidate.py'
 python3 scripts/build-web.py --output /tmp/scanner
 ```
 
-全体検証・race・native PDF runtime・browser検証には、[CIで固定した依存と手順](https://github.com/otama-homelab/scanner-kiosk/blob/main/.github/workflows/checks.yml)を使用してください。対象packageだけの成功を全機能・実機の受入に読み替えないでください。
+Use the [pinned CI workflow](https://github.com/otama-homelab/scanner-kiosk/blob/main/.github/workflows/checks.yml) for full race, native PDF runtime, browser, release-profile, and security checks. Some integration tests require explicitly supplied native/browser dependencies. Passing a focused package does not establish physical-scanner or owner-device acceptance.
 
-mainのimageは開発用previewです。正式な安定版は、検証・source/license/SBOM・承認を束縛した候補から配布します。[配布物の構成](distribution.md)を参照してください。
+## Change expectations
+
+- Reproduce a behavior defect before repairing its owning layer. Update callers, fixtures, configuration, and documentation affected by a contract change.
+- Preserve ownership checks, input validation, original artifacts, explicit candidate adoption, retention, and failure recovery.
+- Keep UI text in the existing English/Japanese message catalogs. Do not add credentials or private content to logs, screenshots, or fixtures.
+- Document prerequisites, runnable commands, expected outcomes, compatibility boundaries, and material limitations in maintained English guides.
+- Include the problem, resulting behavior, and relevant verification in a change description. Keep historical failed measurements distinct from later passes.
+
+## Releases
+
+Main-branch images are development previews. Stable releases bind exact source, tests, licenses, SBOMs, security reports, and reviewed candidate materials. Do not rewrite published artifacts or treat a successful build as publication approval. See [distribution](distribution.md).

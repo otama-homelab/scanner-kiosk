@@ -1,23 +1,27 @@
-# ドキュメント
+# Documentation
 
-[プロジェクトREADME](../README.md)
+[Project overview](../README.md)
 
-## 使う・配備する
+## Get started
 
-- [Docker Composeで導入する](guide/getting-started.md)
-- [画面の使い方・よくある確認事項](guide/usage.md)
-- [Paperlessでの検索・再OCR・直接連携](guide/paperless.md)
-- [配布ファイルとimageの選び方](distribution.md)
-- [Compose・Kubernetesの詳細設定](../deploy/README.md)
-- [環境変数一覧](../.env.example)
-- [単体実行ファイルの扱い](standalone.md)
+- [Install with Docker Compose](guide/getting-started.md): prerequisites, verified downloads, storage, authentication, HTTPS, and first capture.
+- [Use Scanner Kiosk](guide/usage.md): import, review, OCR candidates, export, and troubleshooting.
+- [Use Paperless-ngx](guide/paperless.md): searchable text, OCR modes, and the direct-delivery compatibility boundary.
 
-## 開発・設計
+## Configure and operate
 
-- [開発環境とディレクトリ構成](development.md)
-- [設計資料](https://github.com/otama-homelab/scanner-kiosk/tree/main/docs/design)
-- [設計判断の記録](https://github.com/otama-homelab/scanner-kiosk/tree/main/docs/adr)
-- [API仕様](https://github.com/otama-homelab/scanner-kiosk/blob/main/api/openapi.json)
-- [第三者ライセンス](../THIRD-PARTY-NOTICES.md)
+- [Deployment reference](../deploy/README.md): Compose, Kubernetes, authentication, OCR, and storage contracts.
+- [Environment variables](../.env.example): available application settings.
+- [Release artifacts](distribution.md): images, checksums, sources, licenses, and SBOMs.
+- [Single-file compatibility artifact](standalone.md): internal build and verification scope.
 
-`guide/`は利用者向けの現行手順、`design/`とその`research/`は実装・評価の根拠や過去の判断を保持する領域です。研究記録にある候補・不合格・試作を、そのまま製品の提供機能として扱わないでください。
+## Develop and understand
+
+- [Development](development.md): toolchains, source ownership, tests, and change expectations.
+- [HTTP API](https://github.com/otama-homelab/scanner-kiosk/blob/main/api/openapi.json)
+- [Design references](https://github.com/otama-homelab/scanner-kiosk/tree/main/docs/design)
+- [Architecture decisions](https://github.com/otama-homelab/scanner-kiosk/tree/main/docs/adr)
+- [Screenshot provenance](screenshots/README.md)
+- [Third-party notices](../THIRD-PARTY-NOTICES.md)
+
+The maintained overview and user/operator guides are in English. `docs/design/`, `docs/adr/`, and research subdirectories retain their original technical and historical records, which may use Japanese. A prototype, rejected model, or evaluation result in those records is not a supported product feature. Start with the current guides for installation and use.
