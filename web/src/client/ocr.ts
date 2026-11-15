@@ -29,7 +29,7 @@ export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Label
  const placeholder=(select:HTMLSelectElement,label:string)=>{select.replaceChildren();const option=document.createElement('option');option.value='';option.textContent=label;select.append(option)};
  placeholder(models,labels.chooseModel);placeholder(quality,labels.chooseQuality);
  const selected=()=>models.value===''?undefined:entries[Number(models.value)];
- const sync=()=>{element.hidden=!configured&&!failed&&!toggle.checked;toggleLabel.hidden=required||!configured&&!toggle.checked;help.hidden=toggleLabel.hidden;fields.hidden=!toggle.checked;toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;supplementLabel.hidden=supplementHelp.hidden=selected()?.provider!=='llm';supplement.disabled=supplementLabel.hidden;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
+ const sync=()=>{element.hidden=!configured&&!failed&&!toggle.checked;toggleLabel.hidden=required||!configured&&!toggle.checked;help.hidden=toggleLabel.hidden;fields.hidden=!toggle.checked;toggle.disabled=locked||(!ready&&!toggle.checked);fields.disabled=locked||!ready||!toggle.checked;supplementLabel.hidden=supplementHelp.hidden=selected()?.provider!=='llm';supplement.disabled=supplementLabel.hidden;quality.hidden=qualityLabel.hidden=(selected()?.model.quality_presets.length??0)<2;quality.disabled=!(selected()?.model.quality_presets.length);retry.disabled=locked;changed()};
  function options(preferredLanguages:string[]=[],preset?:string){
   languageList.replaceChildren();placeholder(quality,labels.chooseQuality);
   const entry=selected();notice.textContent=entry?.external?labels.external.replace('{destination}',entry.model.processing_destination!):'';
@@ -37,7 +37,7 @@ export function ocrControls(load:(signal:AbortSignal)=>Promise<any>,labels:Label
    const orderedLanguages=[...preferredLanguages.filter(language=>entry.model.languages.includes(language)),...entry.model.languages.filter(language=>!preferredLanguages.includes(language))];
    for(const language of orderedLanguages){const label=document.createElement('label');const input=document.createElement('input');input.type='checkbox';input.value=language;input.checked=preferredLanguages.includes(language);input.addEventListener('change',changed);let name=language;try{name=new Intl.DisplayNames([locale],{type:'language'}).of(language)||language}catch{}label.append(input,document.createTextNode(name));languageList.append(label)}
    for(const value of entry.model.quality_presets){const option=document.createElement('option');option.value=value;option.textContent=labels.presets[value]??value;quality.append(option)}
-   const preference=preset??entry.model.default_quality_preset;if(preference!==null&&preference!==undefined&&entry.model.quality_presets.includes(preference))quality.value=preference;
+   const preference=entry.model.quality_presets.length===1?entry.model.quality_presets[0]:preset??entry.model.default_quality_preset;if(preference!==null&&preference!==undefined&&entry.model.quality_presets.includes(preference))quality.value=preference;
   }
   sync();
  }

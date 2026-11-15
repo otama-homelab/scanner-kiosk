@@ -2,6 +2,7 @@ package documents
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"testing"
 	"time"
@@ -91,5 +92,22 @@ func TestJobCancellationReceiptKeepsResourcesAndLatestStatus(t *testing.T) {
 	f.now = 10000
 	if _, err = f.store.CancelJob(ctx, alice, jobA, "request_cancel_01", time.Hour); !errors.Is(err, ErrGone) {
 		t.Fatal("expired cancellation replay", err)
+	}
+}
+
+func TestRecognitionRetryRetainsOnlyClientSettings(t *testing.T) {
+	for _, reocr := range []bool{false, true} {
+		f := setup(t)
+		snapshot := RenderSnapshot{ReOCR: reocr, Settings: RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: RenderOCR{Enabled: true, ProviderID: "llm", ModelID: "vision", ModelVersion: "server-only-version", Languages: []string{"ja"}, QualityPreset: "standard", IncludeSupplement: true}}}
+		raw, err := json.Marshal(snapshot)
+		if err != nil {
+			t.Fatal(err)
+		}
+		const id = "job_retry_projection_001"
+		must(t, f.docs, `INSERT INTO jobs(id,document_id,owner_id,kind,state,input_revision,configuration_json,created_at_ms,deadline_at_ms,error_code) VALUES(?,?,?,'render','failed',1,?,1500,9000,'ocr_response_invalid')`, id, docA, alice, string(raw))
+		job, err := f.store.ReadJob(context.Background(), alice, id)
+		if err != nil || job.Retry == nil || job.Retry.ReOCR != reocr || !job.Retry.Settings.OCR.IncludeSupplement || job.Retry.Settings.OCR.ModelVersion != "" || job.Retry.Settings.PDFEncoding != "lossless" {
+			t.Fatal(job, err)
+		}
 	}
 }

@@ -4,7 +4,7 @@ import {pdfPreview as createPDFPreview} from './pdf-preview';
 import {requestKey,observeRequestTime} from './request-key';
 import {deletionDialog} from './deletion';
 import {ocrControls} from './ocr';
-import {ocrResults} from './ocr-results';
+import {ocrResults,recognitionFailure} from './ocr-results';
 import {passwordLogin} from './login';
 import {captureControls} from './capture';
 import {correctionControl,photoCorrectionControl} from './correction';
@@ -161,10 +161,10 @@ async function loadJob(id:string,version:number,attempts=0,inline=false){
   if(version!==generation||controller.signal.aborted)return;
   if(!opaque(job.id)||job.id!==id||!opaque(job.document_id)||!jobStates.has(job.state)||!['scan','render','ocr','cleanup','import'].includes(job.kind)||job.recognition!==undefined&&typeof job.recognition!=='boolean')throw new Error('Invalid job');
   if(job.kind!=='cleanup'&&job.state==='succeeded'){const download=saveJob===id;saveJob='';if(location.hash==='#/document/'+job.document_id)await render();else{navigate('#/document/'+job.document_id);if(download)await render()}if(download&&location.hash==='#/document/'+job.document_id)location.assign('/api/documents/'+job.document_id+'/download');return}
-  const reason:Key|undefined=job.kind==='import'&&job.state==='failed'?new Map<string,Key>([['pdf_invalid','pdfInvalid'],['pdf_encrypted','pdfEncrypted'],['pdf_unsupported','pdfUnsupported'],['pdf_limit','pdfLimit'],['photo_invalid','photoInvalid'],['photo_limit','photoLimit']]).get(job.error_code):job.recognition&&job.state==='failed'?'recognitionFailed':undefined;
+  const reason:Key|undefined=job.kind==='import'&&job.state==='failed'?new Map<string,Key>([['pdf_invalid','pdfInvalid'],['pdf_encrypted','pdfEncrypted'],['pdf_unsupported','pdfUnsupported'],['pdf_limit','pdfLimit'],['photo_invalid','photoInvalid'],['photo_limit','photoLimit']]).get(job.error_code):job.recognition&&job.state==='failed'?recognitionFailure(job.error_code):undefined;
   if(job.kind==='cleanup'){navigate('#/history');return}
   if(job.state==='failed'&&!inline){let target='';if(job.kind!=='import'){try{const doc=await api('/api/documents/'+job.document_id);if(doc.page_count>0)target='#/document/'+job.document_id}catch(err){if(!(err instanceof APIError&&err.status===404))throw err}}if(version!==generation)return;saveJob='';navigate(target,reason||'failed');return}
-  const working=['queued','running'].includes(job.state);const progress:Key=working?(job.kind==='scan'?'readingOriginal':job.kind==='import'?'importingPDF':job.recognition?'recognizingText':'preparingFile'):job.state==='failed'?(job.recognition?'recognitionFailed':'failedState'):job.state as Key;
+  const working=['queued','running'].includes(job.state);const progress:Key=working?(job.kind==='scan'?'readingOriginal':job.kind==='import'?'importingPDF':job.recognition?'recognizingText':'preparingFile'):job.state==='failed'?(job.recognition?recognitionFailure(job.error_code):'failedState'):job.state as Key;
   if(inline){const line=main.querySelector('#document-progress');if(line&&line.textContent!==t(progress))line.textContent=t(progress);const cancel=main.querySelector<HTMLButtonElement>('[data-job-cancel]');if(cancel){const focused=document.activeElement===cancel;cancel.hidden=!working;if(focused&&!working)focusHeading()}if(processingStates.has(job.state))schedule(750);else{saveJob='';await render();if(location.hash!=='#/document/'+job.document_id)return;const local=job.recognition?main.querySelector<HTMLElement>('[data-recognition-status]'):null;if(local){local.textContent=t(progress);local.setAttribute('role',job.state==='failed'?'alert':'status')}else status.textContent=t(progress)}return}
   status.textContent='';const viewKey=`${id}:${progress}:${reason||""}:${locale}`;
   if(jobViewKey===viewKey){if(processingStates.has(job.state))schedule(750);return}

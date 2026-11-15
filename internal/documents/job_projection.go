@@ -3,18 +3,25 @@ package documents
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"time"
 )
 
+type RecognitionRetry struct {
+	Settings RenderSettings `json:"settings"`
+	ReOCR    bool           `json:"reocr"`
+}
+
 type JobProjection struct {
-	ID            string  `json:"id"`
-	DocumentID    string  `json:"document_id"`
-	Kind          string  `json:"kind"`
-	State         string  `json:"state"`
-	InputRevision int64   `json:"input_revision"`
-	ErrorCode     *string `json:"error_code"`
-	Recognition   bool    `json:"recognition,omitempty"`
+	Retry         *RecognitionRetry `json:"retry,omitempty"`
+	ID            string            `json:"id"`
+	DocumentID    string            `json:"document_id"`
+	Kind          string            `json:"kind"`
+	State         string            `json:"state"`
+	InputRevision int64             `json:"input_revision"`
+	ErrorCode     *string           `json:"error_code"`
+	Recognition   bool              `json:"recognition,omitempty"`
 }
 
 func (s *Store) ReadJob(ctx context.Context, owner, jobID string) (JobProjection, error) {
@@ -29,11 +36,12 @@ func (s *Store) projectJob(ctx context.Context, tx *sql.Tx, owner, jobID string)
 	var out JobProjection
 	var code sql.NullString
 	var expiry int64
-	err := tx.QueryRowContext(ctx, `SELECT j.id,j.document_id,j.kind,j.state,j.input_revision,j.error_code,d.expires_at_ms,
+	var configuration string
+	err := tx.QueryRowContext(ctx, `SELECT j.id,j.document_id,j.kind,j.state,j.input_revision,j.error_code,d.expires_at_ms,j.configuration_json,
  CASE WHEN j.kind='render' THEN
  COALESCE(json_type(j.configuration_json,'$.reocr')='true' OR json_type(j.configuration_json,'$.settings.ocr.enabled')='true',0)
  ELSE 0 END
- FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND (j.kind='cleanup' OR (d.expires_at_ms>? AND d.state NOT IN ('expired','deleting')))`, jobID, owner, s.now().UnixMilli()).Scan(&out.ID, &out.DocumentID, &out.Kind, &out.State, &out.InputRevision, &code, &expiry, &out.Recognition)
+ FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id WHERE j.id=? AND j.owner_id=? AND (j.kind='cleanup' OR (d.expires_at_ms>? AND d.state NOT IN ('expired','deleting')))`, jobID, owner, s.now().UnixMilli()).Scan(&out.ID, &out.DocumentID, &out.Kind, &out.State, &out.InputRevision, &code, &expiry, &configuration, &out.Recognition)
 	if err != nil {
 		return JobProjection{}, 0, readError(err)
 	}
@@ -41,12 +49,23 @@ func (s *Store) projectJob(ctx context.Context, tx *sql.Tx, owner, jobID string)
 		safe := code.String
 		switch safe {
 		case "failed", "interrupted", "cancelled", "not_started":
+		case "ocr_response_invalid":
+			if out.Kind != "render" || out.State != "failed" || !out.Recognition {
+				safe = "processing_failed"
+			}
 		default:
 			if out.Kind != "import" || out.State != "failed" || !validImportFailure(safe) {
 				safe = "processing_failed"
 			}
 		}
 		out.ErrorCode = &safe
+	}
+	if out.Recognition && out.State == "failed" {
+		var snapshot RenderSnapshot
+		if json.Unmarshal([]byte(configuration), &snapshot) == nil && snapshot.Settings.Format == "pdf" && snapshot.Settings.OCR.Enabled {
+			snapshot.Settings.OCR.ModelVersion = ""
+			out.Retry = &RecognitionRetry{Settings: snapshot.Settings, ReOCR: snapshot.ReOCR}
+		}
 	}
 	if out.Kind != "cleanup" && s.now().UnixMilli() >= expiry {
 		return JobProjection{}, 0, ErrUnavailable

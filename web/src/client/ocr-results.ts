@@ -4,6 +4,7 @@ import {requestKey} from './request-key';
 import type {Key} from './messages';
 type Options={doc:any;locale:string;t:(key:Key)=>string;api:(path:string,method?:string,body?:unknown,key?:string,revision?:number,signal?:AbortSignal)=>Promise<any>;refresh:()=>Promise<void>;stopJob:()=>void;current:()=>boolean};
 const opaque=(id:unknown):id is string=>typeof id==='string'&&/^[A-Za-z0-9_-]{16,96}$/.test(id);
+export const recognitionFailure=(code:unknown):Key=>code==='ocr_response_invalid'?'recognitionFormatFailed':'recognitionFailed';
 export function ocrResults(o:Options){
  const {doc,t,api}=o,base='/api/documents/'+doc.id;
  const element=document.createElement('section');element.className='ocr-results';
@@ -28,6 +29,15 @@ export function ocrResults(o:Options){
   check.disabled=true;
   try{const intent=readDisposition();if(intent){if(intent.invalid)throw new Error('Invalid intent');const result=await api(base+'/ocr-results/'+intent.id,'GET',undefined,undefined,undefined,controller.signal);if(result.id!==intent.id||result.state!==(intent.action==='adopt'?'adopted':'discarded'))throw new Error('Uncertain disposition');clearDisposition()}await refresh()}catch{if(current())fail()}finally{if(current())check.disabled=false}
  })());
+ let retryIntent:{settings:any;reocr:boolean;jobID:string}|null=null;
+ const retry=button('recognitionRetry',()=>void(async()=>{
+  if(!retryIntent||settings||doc.active_job_id||pending()||candidate||readDisposition())return;
+  const intent=retryIntent,key=requestKey();
+  try{sessionStorage.setItem(pendingKey,JSON.stringify({key,revision:doc.revision}))}catch{state.textContent=t('failed');return}
+  retry.disabled=true;start.disabled=true;
+  try{const job=await api(base+(intent.reocr?'/reocr':'/render'),'POST',intent.settings,key,doc.revision,AbortSignal.any([controller.signal,AbortSignal.timeout(15000)]));if(!current())return;if(!opaque(job?.id)||job.id===intent.jobID||job.document_id!==doc.id||job.kind!=='render')throw new Error('Invalid recognition job');clear();await refresh()}
+  catch(err){if(current()){const code=(err as {status?:number}).status;if(code&&code>=400&&code<500){clear();state.textContent=t(code===412?'changed':code===410?'requestExpired':'failed');start.disabled=false;retry.disabled=false}else{fail();check.hidden=false}}}
+ })());retry.hidden=true;retry.title=t('recognitionRetryHelp');retry.setAttribute('aria-description',t('recognitionRetryHelp'));
  const start=button('reocr',()=>{
   if(settings||doc.active_job_id||pending())return;
   settings=document.createElement('section');settings.className='ocr-recognition-settings';settings.tabIndex=-1;settings.setAttribute('aria-labelledby','reocr-title');element.dataset.configuring='true';start.hidden=true;
@@ -46,7 +56,7 @@ export function ocrResults(o:Options){
   controls=ocrControls(signal=>api('/api/capabilities','GET',undefined,undefined,undefined,signal),{supplement:t('ocrSupplement'),supplementHelp:t('ocrSupplementHelp'),enable:t('searchablePDF'),model:t('ocrModel'),languages:t('ocrLanguages'),quality:t('ocrQuality'),chooseModel:t('chooseModel'),chooseQuality:t('chooseQuality'),loading:t('loading'),unavailable:t('ocrUnavailable'),retry:t('retry'),external:t('ocrExternal'),help:t('ocrHelp'),languageHint:t('ocrLanguageHint'),presets:{auto:t('automatic'),standard:t('standardQuality'),fast:t('fastQuality'),accurate:t('accurateQuality')}},o.locale,()=>{submit.disabled=sending||!controls?.enabled()||!controls.valid()},true);
   const body=document.createElement('div');body.className='output-body';body.append(hint,controls.element);const actions=document.createElement('div');actions.className='output-actions';actions.append(close,submit);settings.append(title,body,actions);element.append(settings);settings.focus({preventScroll:true});
   settings.addEventListener('keydown',event=>{if(event.key==='Escape'){event.preventDefault();closeSettings()}});controls.start();
- });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();const commands=document.createElement('div');commands.className='ocr-results-actions';commands.append(start,cancel,check,state);element.append(commands);
+ });start.dataset.reocrAction='true';start.disabled=!!doc.active_job_id||pending();check.hidden=!pending();const commands=document.createElement('div');commands.className='ocr-results-actions';commands.append(start,retry,cancel,check,state);element.append(commands);
  if(pending())state.textContent=t('reocrUnknown');
  if(doc.active_job_id)cancel.hidden=false;
  const summaries=Array.isArray(doc.ocr_results)?doc.ocr_results:[];
@@ -55,6 +65,17 @@ export function ocrResults(o:Options){
  if(candidate)start.hidden=true;
  if(readDisposition()){check.hidden=false;fail()}
  const previous=summaries.find((r:any)=>r.state==='adopted');
+ if(opaque(doc.recognition_failure_id)&&!doc.active_job_id&&!pending()&&!candidate&&!readDisposition())void(async()=>{
+  try{
+   const job=await api('/api/jobs/'+doc.recognition_failure_id,'GET',undefined,undefined,undefined,controller.signal);
+   if(!current()||pending()||job.id!==doc.recognition_failure_id||job.document_id!==doc.id||job.kind!=='render'||job.state!=='failed'||job.recognition!==true||job.input_revision!==doc.revision)return;
+   state.textContent=t(recognitionFailure(job.error_code));state.setAttribute('role','alert');
+   const intent=job.retry,value=intent?.settings,ocr=value?.ocr;
+   if(typeof intent?.reocr!=='boolean'||value?.format!=='pdf'||value.pdf_encoding!==undefined&&!['jpeg','lossless'].includes(value.pdf_encoding)||ocr?.enabled!==true||typeof ocr.provider_id!=='string'||typeof ocr.model_id!=='string'||!Array.isArray(ocr.languages)||!ocr.languages.length||ocr.languages.length>32||!ocr.languages.every((x:unknown)=>typeof x==='string')||ocr.quality_preset!==undefined&&typeof ocr.quality_preset!=='string'||ocr.include_supplement!==undefined&&typeof ocr.include_supplement!=='boolean')return;
+   retryIntent={jobID:job.id,reocr:intent.reocr,settings:{format:'pdf',...(value.pdf_encoding?{pdf_encoding:value.pdf_encoding}:{}),ocr:{enabled:true,provider_id:ocr.provider_id,model_id:ocr.model_id,languages:[...ocr.languages],...(ocr.quality_preset?{quality_preset:ocr.quality_preset}:{}),...(ocr.include_supplement?{include_supplement:true}:{})}}};retry.hidden=false;
+  }catch{}
+ })();
+
  start.textContent=t(previous?'reocr':'ocrRecognize');
  if(candidate&&!pending()&&!readDisposition())state.textContent=t('reocrReady');
  if(previous&&opaque(previous.id)&&doc.output?.revision!==doc.revision){const link=document.createElement('a');link.className='download-link';link.href=base+'/ocr-results/'+previous.id+'/output';link.textContent=t('savePreviousPDF');commands.prepend(link)}

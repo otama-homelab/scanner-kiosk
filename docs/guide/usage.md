@@ -26,6 +26,14 @@ A new recognition run creates a candidate; it does not silently replace the adop
 
 After an OCR implementation update, create a new candidate to use the new behavior. Existing OCR artifacts and previously generated PDFs are not rewritten in place. If a run fails, keep the existing result and diagnose the failure before retrying.
 
+## Recognition failures and retry
+
+If the recognition service returns malformed or incomplete output, the app reports an **invalid response format** separately from a general recognition failure. The original and saved PDF remain available.
+
+**Retry recognition** starts a new attempt with the failed job's model, languages, quality, PDF encoding and interpretation setting. It does not adopt a new OCR candidate automatically. The server rechecks the document revision, quotas and current model availability. Reloading only reads status; an uncertain request must be checked before another attempt can start.
+
+Quality is selected automatically and its dropdown is hidden when the model offers only one preset. Models with several presets retain the selector.
+
 ## LLM interpretation supplements
 
 LLM OCR can interpret a page's layout and content separately from verbatim recognition. The **Include LLM interpretation in PDF** checkbox is off by default. Your choice is remembered in this browser and applies only to LLM OCR. When enabled, each PDF page appends that interpretation to its invisible OCR text under `LLM supplement (interpretation, not OCR)`. The visible original and page count remain unchanged.

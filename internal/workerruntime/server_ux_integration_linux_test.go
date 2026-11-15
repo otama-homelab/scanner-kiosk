@@ -78,6 +78,10 @@ func TestServerUXIntegratedSavePrimary(t *testing.T) {
 				case <-time.After(2 * time.Second):
 				}
 			}
+			if mode.Load() == 5 {
+				json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": `{"supplement":"Synthetic interpretation.","spans":[{"box":[25,20,212.5,"SYNTHETIC RECEIPT",120]}]}`}}}})
+				return
+			}
 			json.NewEncoder(w).Encode(map[string]any{"model": "fixture", "choices": []any{map[string]any{"finish_reason": "stop", "message": map[string]any{"role": "assistant", "content": `{"supplement":"","spans":[{"text":"SYNTHETIC RECEIPT","box":[25,20,212.5,120]}]}`}}}})
 			return
 		}

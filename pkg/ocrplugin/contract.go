@@ -12,6 +12,9 @@ import (
 	"unicode/utf8"
 )
 
+// ErrInvalidResponse identifies an invalid or incomplete provider response without exposing content.
+var ErrInvalidResponse = errors.New("OCR response format is invalid or incomplete")
+
 const APIVersion = 1
 
 type OutputKind string
