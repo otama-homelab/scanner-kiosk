@@ -1,38 +1,40 @@
-# Docker Composeで導入する
+# Getting started
 
-[README](../../README.md) · [使い方](usage.md)
+[Overview](../../README.md) · [User guide](usage.md) · [Deployment reference](../../deploy/README.md)
 
-## 用意するもの
+This guide sets up a new Linux amd64 installation with released Docker images, local accounts, and an HTTPS reverse proxy. A scanner and OCR service are optional: verify file import and ordinary PDF export first.
 
-- Linux amd64のDockerホストとDocker Compose。
-- ブラウザから使うHTTPSのURLと、そのホストへのリバースプロキシ。スマートフォンのカメラもHTTPSで利用します。
-- 同じホスト上の保存領域を2つ。設定・アカウント用のstateと、期限付き原稿用のdocumentsを分けます。NFS共有をSQLite保存先の代わりには使わないでください。
-- スキャンを使う場合は、対応するスキャナーとホストからの接続。ファイル取り込みだけでも使用できます。
+## Prerequisites
 
-## 1. 配布物を展開する
+- A Linux amd64 host with Docker and Docker Compose v2.
+- An HTTPS hostname and reverse proxy. Browser camera access requires a secure context.
+- Two separate local storage directories: persistent identity/account state and temporary private documents. The filesystem must support SQLite locking and durability; NFS is outside the storage contract.
+- For scanning, a supported scanner reachable from the worker host.
 
-[最新Release](https://github.com/otama-homelab/scanner-kiosk/releases/latest)から`scanner-deployment.tar`と`SHA256SUMS`を取得します。
-ダウンロードしたファイルのSHA256を該当する行と照合してから展開します。
+## 1. Download and verify
+
+Download `scanner-deployment.tar` and `SHA256SUMS` from the [same release](https://github.com/otama-homelab/scanner-kiosk/releases/latest). Verify the selected archive before extracting it:
 
 ```sh
-sha256sum scanner-deployment.tar
+awk '$2 == "scanner-deployment.tar" { print; found=1 } END { if (!found) exit 1 }' SHA256SUMS | sha256sum --check -
 mkdir scanner-kiosk
 tar -xf scanner-deployment.tar -C scanner-kiosk
 cd scanner-kiosk
 ```
 
-ソースから利用する場合はリポジトリを取得して、そのルートで以降の操作を行えます。配布imageの利用だけならコンパイルは不要です。
+You can also work from a repository checkout. Running released images does not require compiling the application.
 
-## 2. ディレクトリと設定を用意する
+## 2. Prepare storage and configuration
 
-新規導入の例です。既存領域に対して所有者や権限を一括変更しないでください。
+For a new installation using container UID/GID `10001:10001`:
 
 ```sh
 sudo install -d -m 700 -o 10001 -g 10001 /srv/scanner/state /srv/scanner/documents
 ```
 
-`scanner.env`を作成します。`SCANNER_IMAGE`には、選んだReleaseのcore imageの**repository digest**を設定します。image設定IDとは別の値です。
-URLと保存先は利用する環境に合わせて変更してください。
+Check UID/GID mappings for rootless Docker or user namespaces first. Do not recursively change ownership or permissions on existing data.
+
+Create `scanner.env`:
 
 ```dotenv
 SCANNER_IMAGE=ghcr.io/otama-homelab/scanner-kiosk@sha256:REPLACE_WITH_RELEASE_CORE_DIGEST
@@ -46,17 +48,19 @@ PUID=10001
 PGID=10001
 ```
 
+Replace the image placeholder with the release's **repository digest**, not its image configuration ID. Set the hostname and paths for your installation. Keep acquisition disabled until the services and storage are ready.
+
 ```sh
 chmod 600 scanner.env
 docker compose --env-file scanner.env -f deploy/compose.yaml config --quiet
 docker compose --env-file scanner.env -f deploy/compose.yaml up -d
 ```
 
-`serve`と`worker`は同じimage・OSユーザー・保存先を使います。`scanner.env`はComposeが読み込みます。実行ファイル自体に`.env`自動読み込み機能はありません。
+The API (`serve`) and worker use the same core image, runtime identity, and storage. Compose reads `scanner.env`; the executable does not automatically load `.env` files. See [configuration variables](../../.env.example).
 
-## 3. ローカルアカウントを作る
+## 3. Create a local account
 
-以下はBashで、パスワードを画面や引数に出さず標準入力へ渡す例です。
+In Bash, read the password without echoing it and pass it through standard input:
 
 ```bash
 read -r -s -p 'Scanner password: ' scanner_password
@@ -65,11 +69,11 @@ printf '%s\n' "$scanner_password" | docker compose --env-file scanner.env -f dep
 unset scanner_password
 ```
 
-このアカウント名は`admin`ですが、名前による特別な管理権限を与える設定ではありません。OIDCを使う場合は[配備設定](../../deploy/README.md)の認証設定を選んでください。
+`admin` is the account name; it does not grant special privileges based on its name. For OIDC, follow the authentication section of the [deployment reference](../../deploy/README.md) instead.
 
-## 4. HTTPSを接続する
+## 4. Connect HTTPS
 
-ComposeのAPIはホストの`127.0.0.1:8080`へ公開します。同じホスト上のCaddyを使う場合の設定例です。
+Compose binds the API to `127.0.0.1:8080` on the host. With Caddy running on that same host:
 
 ```caddyfile
 scanner.example.com {
@@ -77,35 +81,46 @@ scanner.example.com {
 }
 ```
 
-実際のDNS・証明書の取得条件に合わせて設定してください。プロキシ自体を別コンテナで動かす場合、そのコンテナの`127.0.0.1`はホストを指しません。ネットワークと転送先を別途設定します。
+Configure DNS and certificate issuance for your environment. If the proxy runs in another container, its `127.0.0.1` does not refer to the Docker host; configure an appropriate network and upstream address.
 
-ブラウザで設定したURLを開き、作成したアカウントでログインします。APIとworkerの起動確認には次を使います。
+Open your configured URL and sign in. Check service startup and API readiness:
 
 ```sh
 docker compose --env-file scanner.env -f deploy/compose.yaml logs --tail=50 api worker
 curl --fail https://scanner.example.com/health/ready
 ```
 
-## 5. 取り込みを有効にする
+An API health response does not prove scanner availability or successful worker acquisition.
 
-保存先の権限・容量とworkerの起動を確認したら、`scanner.env`の`SCANNER_ACQUISITION_ENABLED`を`true`へ変更し、同じComposeコマンドで反映します。
+## 5. Enable acquisition and save your first document
 
-LANのBonjour eSCL機器をDocker上で検出する場合は、[discoveryのネットワーク条件](../../deploy/README.md#scanner-discovery)を確認し、次のoverrideを追加します。
+After checking storage permissions, capacity, and worker startup, set `SCANNER_ACQUISITION_ENABLED=true` in `scanner.env` and apply the same Compose command again.
+
+1. Import a small image, choose document output, and save a PDF without OCR.
+2. Open the downloaded PDF and check its contents.
+3. Select a scanner and capture a page, if scanning is needed.
+
+For Bonjour eSCL discovery on Docker, review the [network requirements](../../deploy/README.md#scanner-discovery) and add the discovery override:
 
 ```sh
 docker compose --env-file scanner.env -f deploy/compose.yaml -f deploy/compose.discovery.yaml up -d
 ```
 
-最初にアップロードした画像でPDFの保存を確認し、その後、機器を選択してスキャンしてください。
-保存先を旧scanservjsの出力領域へ直接向ける使い方はサポートしていません。
+Do not reuse the old scanservjs output volume as Scanner Kiosk storage.
 
-## OCRを追加する
+## Add optional OCR
 
-通常のPDF保存を確認してから、[配備設定のOCR設定](../../deploy/README.md)に沿って追加します。
-Tesseractを使う場合は、同じReleaseのTesseract imageを選びます。LLMを使う場合はVision対応モデル・正確な応答model名・送信先・認証情報と、日本語対応の適切なライセンスのテキストレイヤー用フォントが必要です。
+After ordinary export works, follow the [OCR configuration reference](../../deploy/README.md).
 
-## 更新・バックアップ
+- **Tesseract:** use the Tesseract service image from the same release as the core image.
+- **LLM:** configure a compatible vision endpoint, exact response model identity, destination label, worker credential, and a suitable licensed TrueType font for the PDF text layer. The selected font must cover the document's characters.
 
-受付を停止し、処理中ジョブがない状態で、stateとdocumentsの整合を取って更新してください。
-両roleは同じReleaseへ更新します。schema変更を伴う場合、古いimageだけへの差し戻しは安全な復元とは限りません。
-通常のバックアップ対象はstateです。documentsは期限付きの私的原稿なので、保存・廃棄方針を分けてください。詳しい条件は[配備設定](../../deploy/README.md)と[設計資料の索引](../README.md)を参照してください。
+LLM OCR sends images to that endpoint. Check its processing and retention policy before enabling it. See [usage and supplements](usage.md#llm-interpretation-supplements).
+
+## Upgrade and back up
+
+Stop new intake and let active jobs finish before an upgrade. Preserve a consistent state/document relationship and update all roles to the same release. A schema change can make an image-only rollback unsafe.
+
+Persistent identity state is the normal backup scope. Private documents are temporary and need a separate retention/disposal policy. Follow the [deployment reference](../../deploy/README.md) for storage, backup, and recovery details; review the [changelog](../../CHANGELOG.md) before updating.
+
+For operational symptoms, see [troubleshooting](usage.md#troubleshooting).

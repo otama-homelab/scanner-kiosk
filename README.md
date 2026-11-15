@@ -1,70 +1,99 @@
+<div align="center">
+
 # Scanner Kiosk
 
-**スキャナーも、スマホ写真も、PDFも。取り込みから文字認識、保存までをブラウザで。**
+**From paper, photos, and PDFs to searchable documents — in your browser.**
 
-Scanner Kioskは、家庭や小さなオフィス向けのセルフホスト型スキャンアプリです。
-PCにもスマートフォンにも、専用のクライアントアプリは不要。紙を読み取り、写真やPDFを取り込み、必要なページを整えて保存できます。
+A self-hosted scanning workspace for home and small-office use.
 
-[はじめる](docs/guide/getting-started.md) · [使い方](docs/guide/usage.md) · [最新版をダウンロード](https://github.com/otama-homelab/scanner-kiosk/releases/latest) · [ドキュメント一覧](docs/README.md)
+[![Release](https://img.shields.io/github/v/release/otama-homelab/scanner-kiosk?style=flat-square)](https://github.com/otama-homelab/scanner-kiosk/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/otama-homelab/scanner-kiosk/checks.yml?branch=main&style=flat-square&label=CI)](https://github.com/otama-homelab/scanner-kiosk/actions/workflows/checks.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue?style=flat-square)](LICENSE)
 
-![原稿と認識文字を並べて確認できるOCR画面](docs/screenshots/ocr-desktop.png)
+[Features](#features) · [Screenshots](#screenshots) · [Quick start](#quick-start) · [Documentation](docs/README.md) · [Releases](https://github.com/otama-homelab/scanner-kiosk/releases)
 
-*実際のアプリ画面に架空の請求書とデモOCR結果を表示しています。個人文書は使用していません。*
+</div>
 
-## できること
+![Document image beside recognized text, with the selected line highlighted](docs/screenshots/ocr-desktop.png)
 
-| | 機能 |
+## What is Scanner Kiosk?
+
+Scan a paper document, upload a PDF or image, or take a photo from your phone. Review the pages, run optional OCR, and download the result. Use the same web interface on desktop and mobile, without installing a dedicated client.
+
+Keep a usable saved result while you compare new OCR candidates. Choose when to adopt or discard them, and retain the original throughout optional processing.
+
+## Features
+
+| Workflow | What you can do |
 | --- | --- |
-| 紙を取り込む | 対応するSANE／eSCL・AirScanスキャナーから読み取り。LAN上の対応機器を自動検出し、複数台から選択できます。 |
-| スマホから取り込む | カメラ撮影、PDF・JPEG・PNGのアップロード。書類と写真の用途を選べます。 |
-| ページを整える | 回転・並べ替え・削除・追加・差し替え。対応する画像では手動切り抜きと取り消しが使えます。 |
-| 文字を認識する | 日本語・英語のTesseract OCR、または設定したLLMのVision API。原稿画像と認識結果を見比べ、再OCR結果の採用・破棄を選べます。LLMのレイアウト・内容解釈は、原文と区別したPDF内の補足として残します。 |
-| 保存する | 書類はPDF、写真はJPEG／PNG。OCRを設定すれば検索可能なPDFを作成できます。OCRなしの保存にも対応します。 |
-| 日常で使う | 日本語／英語、ライト／ダーク、スマートフォン／PC表示。文書は利用者ごとに管理し、保存期間の経過後に自動削除します。 |
+| **Scan** | Capture from supported SANE/eSCL/AirScan scanners. Discover compatible LAN devices and choose between registered scanners. |
+| **Import** | Upload PDF, JPEG, or PNG files, or use your phone camera. Choose document or photo output before importing. |
+| **Review** | Rotate, reorder, delete, add, or replace pages. Crop and undo supported image edits. |
+| **Recognize** | Use Japanese/English Tesseract OCR or a configured compatible vision LLM. Compare recognized text with the source image and review new candidates before adoption. |
+| **Understand** | Embed the LLM's layout/content interpretation as a separately labeled, searchable PDF supplement. |
+| **Export** | Save documents as PDF and photos as JPEG/PNG. Create searchable PDFs with OCR, or save without OCR. |
+| **Self-host** | Use English/Japanese, light/dark themes, configurable retention, and the project's authentication options. |
 
-![読み取り・ファイル取り込み・カメラ撮影を選べるホーム画面](docs/screenshots/home-desktop.png)
+Automatic AI dewarping and shadow removal are not qualified production features. OCR quality depends on the document, model, and configuration.
+
+## Screenshots
+
+![Home screen with scanner, file import, and camera options](docs/screenshots/home-desktop.png)
 
 <details>
-<summary>スマートフォンの画面を見る</summary>
+<summary>Mobile OCR view</summary>
 
-<img src="docs/screenshots/ocr-mobile.png" alt="スマートフォンで原稿とOCR結果を確認する画面" width="300">
+<img src="docs/screenshots/ocr-mobile.png" alt="Source image and recognized text stacked on a mobile screen" width="300">
 
 </details>
 
-## はじめる
+These are captures of the real application using a synthetic invoice and demo OCR data. They do not contain private documents or demonstrate model accuracy. See [screenshot provenance](docs/screenshots/README.md).
 
-推奨環境は **Linux amd64・Docker Compose・HTTPS** です。配布済みimageを使う場合、GoやNode.jsをインストールする必要はありません。
+## Quick start
 
-1. [最新Release](https://github.com/otama-homelab/scanner-kiosk/releases/latest)から配布物と対応するimageを選びます。
-2. [導入ガイド](docs/guide/getting-started.md)に沿って保存先・URL・ログイン方法を設定し、APIとworkerを起動します。
-3. ブラウザでアクセスして、スキャナーまたはファイル・カメラから取り込みます。
-4. 必要なら補正・OCRを行い、保存します。
+**Recommended: Linux amd64, Docker Compose, local storage, and an HTTPS reverse proxy.** Released images do not require Go or Node.js on the host.
 
-既存のKubernetesで運用する場合は[配備設定](deploy/README.md)を参照してください。
-配布ファイルの選び方は[配布物の構成](docs/distribution.md)、設定項目は[環境変数一覧](.env.example)にまとめています。
+1. Download `scanner-deployment.tar` and `SHA256SUMS` from the [latest release](https://github.com/otama-homelab/scanner-kiosk/releases/latest).
+2. Verify the archive, then unpack it:
 
-## OCRとデータの扱い
+   ```sh
+   awk '$2 == "scanner-deployment.tar" { print; found=1 } END { if (!found) exit 1 }' SHA256SUMS | sha256sum --check -
+   mkdir scanner-kiosk
+   tar -xf scanner-deployment.tar -C scanner-kiosk
+   cd scanner-kiosk
+   ```
 
-- **OCRは任意です。** 未設定でも通常のPDF・画像保存を利用できます。
-- **Tesseract OCR**は、別コンテナのOCR APIへ画像を送ります。日本語・英語の辞書を同梱した公式imageを利用できます。
-- **LLM OCR**は、設定したChat Completions対応Vision APIへ画像を送ります。送信先の処理・保持方針を確認してから有効化してください。
-- 接続用の認証情報はworker側で扱い、ブラウザへ渡しません。
-- 任意処理中も原本・保存済み出力を保持し、再OCR結果は明示的に採用します。文書は一時保存です。必要な出力は期限前にダウンロードしてください。
+3. Follow the [installation guide](docs/guide/getting-started.md) to prepare storage, pin the release image digest, configure HTTPS, and create an account.
+4. Start with an uploaded image, save a PDF, then enable scanner acquisition and optional OCR.
 
-LLM補足もPDFから検索・コピーできます。補足にだけ含まれる語でも検索にヒットするため、[Paperlessとの組み合わせ](docs/guide/paperless.md)を確認してください。
+The [installation guide](docs/guide/getting-started.md) includes complete Compose commands and a reverse-proxy example. For existing Kubernetes installations, see the [deployment reference](deploy/README.md). Use files and image digests from the same release; see [release artifacts](docs/distribution.md).
 
-認識精度は原稿・モデル・設定に依存します。自動のAI歪み補正や影除去は製品採用済みの機能として提供していません。
+## OCR and privacy
 
-## 構成と開発
+- **OCR is optional.** Ordinary PDF/image export remains available without an OCR provider.
+- **Tesseract** processes images in the separate OCR service. The released service image includes Japanese and English language data.
+- **LLM OCR** sends images to the configured Chat Completions-compatible vision endpoint. Review that service's processing and retention policy before enabling it. Credentials stay with the worker and are not sent to the browser.
+- **Documents expire.** Download the files you need before their retention deadline. Optional processing preserves the original and existing saved output; OCR candidates require explicit adoption.
+- **Interpretations are searchable too.** The PDF labels them `LLM supplement (interpretation, not OCR)`. They can contain mistakes and match words absent from the original. See [Paperless compatibility](docs/guide/paperless.md).
 
-利用者向けの説明は`docs/guide/`、配備例は`deploy/`、設計・検証記録は`docs/design/`に分けています。
-アプリケーションはGoとAstroで構成し、フロントエンドをGo実行ファイルへ埋め込んでいます。
+Existing OCR/PDF artifacts are immutable. To use a newer recognition implementation, create a new OCR candidate, review it, and explicitly adopt it.
 
-- [開発環境・ソース構成](docs/development.md)
-- [配布物と対応するソース・SBOM](docs/distribution.md)
-- [設定と運用のドキュメント一覧](docs/README.md)
-- [変更履歴](CHANGELOG.md)
+## Documentation and development
 
-## ライセンス
+| I want to… | Start here |
+| --- | --- |
+| Install and configure the app | [Getting started](docs/guide/getting-started.md) |
+| Scan, review, recognize, and save | [User guide](docs/guide/usage.md) |
+| Diagnose a problem | [Troubleshooting](docs/guide/usage.md#troubleshooting) |
+| Use Paperless-ngx | [Paperless guide](docs/guide/paperless.md) |
+| Choose or verify a release artifact | [Distribution](docs/distribution.md) |
+| Build or contribute a change | [Development](docs/development.md) |
+| Browse configuration and technical references | [Documentation index](docs/README.md) |
 
-プロジェクトのコード・独自アセットは[Apache-2.0](LICENSE)。同梱するライブラリ、フォント、ネイティブ実行ファイルにはそれぞれのライセンスが適用されます。[第三者ライセンス](THIRD-PARTY-NOTICES.md)も確認してください。
+Built with Go and Astro. The frontend is embedded in the Go executable. [Changelog](CHANGELOG.md) · [API specification](https://github.com/otama-homelab/scanner-kiosk/blob/main/api/openapi.json) · [Report an issue](https://github.com/otama-homelab/scanner-kiosk/issues)
+
+When reporting a problem, include the version, deployment method, browser, selected OCR provider, and a redacted error description. Do not attach private originals, recognized text, credentials, or session cookies.
+
+## License
+
+Project code and original assets are licensed under [Apache-2.0](LICENSE). Bundled libraries, fonts, and native tools retain their own licenses; see [third-party notices](THIRD-PARTY-NOTICES.md) and the corresponding release materials.

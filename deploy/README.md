@@ -1,6 +1,6 @@
-# 配備設定
+# Deployment reference
 
-初めて利用する方は[導入ガイド](../docs/guide/getting-started.md)から進めてください。配布ファイルの役割は[配布物の構成](../docs/distribution.md)を参照してください。
+Start with [Getting started](../docs/guide/getting-started.md) for a new installation. See [Release artifacts](../docs/distribution.md) to choose and verify distribution files.
 
 These are configuration/rendering examples. The `scanner serve` /
 `scanner worker` roles, health endpoints and environment loader are implemented,
@@ -87,18 +87,18 @@ Helm override: workerEnv.GOMEMLIMIT). Supply it only to the worker environment.
 This standard Go runtime setting is a soft budget, separate from the1536MiB
 container limit and native/OCR child allocations. Local synthetic measurements
 are documented in docs/design/resource-measurement.md; container/native/OOM and
-production resource acceptance remain incomplete. No deployment was performed.
+production resource acceptance remain separate from those measurements.
 
 Optional positioned LLM PDF support uses `SCANNER_OCR_LLM_TEXT_LAYER_FONT`, an absolute clean path to a worker-readable, license-approved TrueType font. Empty means disabled. The metadata loader performs no font I/O; worker initialization reads only regular files up to 32 MiB, without blocking on FIFOs, and enforces SCANNER_OCR_MAX_RESULT_BYTES on rendered layers. A configured invalid font fails OCR initialization without fallback. Provision a read-only font file separately and review its embedding/redistribution conditions; this repository does not install or redistribute a production font. The font digest and renderer version are pinned in model identity. Capabilities reach the API through the worker catalogue; a path alone does not advertise accepted OCR quality.
 
 
-Kubernetes標準のDeployment・Service・既存PVC・HTTP Probeを使用する（Knative Servingは不要）。実行ファイルはimageのexec形式 `ENTRYPOINT ["/usr/local/bin/scanner"]` に任せ、Helmは `args: [serve]` / `[worker]` のみ指定する。Composeの `command` もCMDの引数置換なのでENTRYPOINTは維持される。
+The Kubernetes example uses standard Deployments, Services, existing PVCs, and HTTP probes; Knative Serving is not required. Preserve the image exec-form `ENTRYPOINT ["/usr/local/bin/scanner"]`: Helm supplies only `args: [serve]` / `[worker]`, and Compose `command` replaces CMD arguments while retaining ENTRYPOINT.
 
-本体の各containerはread-only rootと専用 `/tmp`（Helmは512Mi emptyDir、Composeは512MiB tmpfs）を持つ。現在の本体imageはnative runtimeを直接配置し、onefile展開は行わない。APIには最大約300秒のstartup probe猶予を設けるが、実環境の起動時間受入は別途必要。health probeはAPI/DB状態のみを示し、workerや実機scannerのreadiness証明には使わない。worker用の偽のHTTP probeは設けない。
+Each core container has a read-only root and private `/tmp` (512Mi emptyDir in Helm, 512MiB tmpfs in Compose). The image contains the native runtime directly, without onefile extraction. API startup probes allow approximately 300 seconds; verify startup behavior in the actual environment. Health probes cover API/database state, not worker or physical-scanner readiness. The worker does not expose a synthetic HTTP readiness endpoint.
 
-HelmとComposeの既定値はOCR無効。本体imageにはSANE/airscanを直接配置し、Tesseractと辞書は含めない。`Dockerfile` は本体、`Dockerfile.tesseract` は任意の終端OCR API。LLM pluginは本体に組み込み、LiteLLMへ直接接続する。onefileは内部互換・検証用artifactのみ。scanner tool pathを上書きする場合はworkerだけに設定する。Alpineはnative依存の取得元で、container baseではない。
+OCR is disabled by default in Helm and Compose. The core image contains SANE/airscan, without Tesseract or its language data. `Dockerfile` builds the core; `Dockerfile.tesseract` builds the optional terminal OCR API. The built-in LLM plugin connects to the configured compatible vision endpoint. Onefile packaging is an internal compatibility/verification artifact. Apply scanner-tool path overrides only to the worker. Alpine supplies native dependencies; it is not the container base.
 
-ローカルrender検証: `python3 scripts/test_helm_native.py`（HelmとPyYAML）、`python3 scripts/test_compose_native.py`（Docker Compose v2）。cluster／Docker daemon接続なし。
+Local rendering checks: `python3 scripts/test_helm_native.py` (Helm and PyYAML) and `python3 scripts/test_compose_native.py` (Docker Compose v2). Neither check connects to a cluster or Docker daemon.
 
 The earlier sane-airscan payload failed native TLS peer authentication. The selected native runtime includes a verifying fork and CA roots, with isolated
 wrapper tests, including 26 direct peer/trust and 14 redirect cases in the

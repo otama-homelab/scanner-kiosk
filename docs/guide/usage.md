@@ -1,51 +1,56 @@
-# 使い方
+# User guide
 
-[README](../../README.md) · [導入ガイド](getting-started.md)
+[Overview](../../README.md) · [Installation](getting-started.md)
 
-## 取り込みから保存まで
+## From import to export
 
-1. **用途を選ぶ。** 書類はPDF、写真はJPEG／PNGとして扱います。
-2. **取り込む。** ホームからスキャナーで読み取る、ファイルを取り込む、カメラで撮影する、のいずれかを選びます。機器が複数あるときは読み取り先を確認してください。
-3. **原稿を整える。** 補正画面でページを回転・並べ替えます。対応する画像では切り抜きと取り消しも利用できます。「書類の操作」から追加・差し替えなどの操作へ進みます。
-4. **必要なら文字認識。** OCRが設定されている場合、「文字認識（OCR）」で原稿画像と認識した文字を見比べます。文字を選ぶと、位置情報がある結果では対応する画像領域を強調します。
-5. **結果を選び、保存する。** 再OCRは結果を確認して採用または破棄します。保存済みの結果を残したまま比較できます。最後に「PDFを保存」または画像の保存操作を選びます。
+1. **Choose a purpose.** Documents produce PDF output; photos produce JPEG/PNG output.
+2. **Import.** Scan from a device, upload a file, or use the camera. Check the selected scanner when several devices are available.
+3. **Review the original.** Rotate or reorder pages in the adjustment view. Supported image edits include crop and undo. Use document actions to add or replace pages.
+4. **Recognize text, if needed.** Open the OCR view to compare recognized text with the image. Selecting a text line highlights its image region when positions are available.
+5. **Review and save.** Adopt or discard a new OCR candidate explicitly. Existing saved output remains available during comparison. Download the PDF or image, then open it to check the result.
 
-![PCでのOCR確認](../screenshots/ocr-desktop.png)
+![Desktop OCR comparison with a selected source region](../screenshots/ocr-desktop.png)
 
-## 拡大・ページ操作
+## Zoom and page navigation
 
-画像下の拡大・縮小と「全体表示」を使います。拡大中は画像を移動できます。複数ページの文書はページ選択で切り替えます。
-スマートフォンでは原稿と文字を縦に配置します。
+Use the zoom controls and **Fit page** below the image. Pan while zoomed in, and use the page selector for multi-page documents. The mobile layout stacks the source image and text.
 
-<img src="../screenshots/ocr-mobile.png" alt="スマートフォンのOCR画面" width="300">
+<img src="../screenshots/ocr-mobile.png" alt="Mobile OCR comparison" width="300">
 
-画面例は架空データを使った実アプリの撮影です。表示しているOCR結果はデモ用で、実モデルの認識精度を示すものではありません。
+Screenshots use synthetic documents and demo OCR results in the real application. They are not measurements of recognition accuracy.
 
-## LLMによる補足
+## OCR candidates and existing output
 
-LLM OCRでは、レイアウトや内容の解釈を認識原文とは別の情報として保持します。PDFの各ページのOCRテキスト末尾へ`LLM supplement (interpretation, not OCR)`の見出しとともに埋め込みます。画面上の原稿やページ数は変わりません。補足も検索・コピー対象になりますが、原稿に書かれた事実とは限らず、推測や誤りを含みます。
+A new recognition run creates a candidate; it does not silently replace the adopted result. Compare it, then choose whether to adopt or discard it. Optional processing preserves the original and the current saved output.
 
-過去に生成したPDFを上書きする機能ではありません。新版のOCR結果を使うには、新しい候補として再認識し、確認して採用してください。
+After an OCR implementation update, create a new candidate to use the new behavior. Existing OCR artifacts and previously generated PDFs are not rewritten in place. If a run fails, keep the existing result and diagnose the failure before retrying.
 
-[Paperlessでの検索・再OCRの注意](paperless.md)も参照してください。
+## LLM interpretation supplements
 
-## 知っておきたいこと
+LLM OCR can interpret a page's layout and content separately from verbatim recognition. Each PDF page appends that interpretation to its invisible OCR text under `LLM supplement (interpretation, not OCR)`. The visible original and page count remain unchanged.
 
-- 原稿は期限付きです。画面の保存期限までに必要なファイルをダウンロードしてください。
-- OCRは原稿やモデルによって誤ることがあります。検索・コピーした文字も確認してください。
-- LLM OCRを選ぶと、設定されたサービスへ画像を送信します。送信先の表示と運用方針を確認してください。
-- OCR未設定の環境では、認識ボタンが表示されない場合があります。通常の保存は利用できます。
-- 回転・切り抜きなどを変更した後は、以前のOCRと新しい原稿の対応に注意してください。再認識は明示的に実行します。
-- 任意のAI歪み補正・影除去モデルが自動的に導入されるアプリではありません。
+Supplements can be searched and copied, but may contain guesses or mistakes. They are not statements printed in the original. Words found only in a supplement can affect search results or automatic classification; see the [Paperless guide](paperless.md).
 
-## 困ったとき
+## Retention and processing
 
-| 状況 | 確認すること |
+- Download what you need before the displayed retention deadline. The app is temporary document storage.
+- Review OCR text before relying on search, copied numbers, or extracted details.
+- Choosing LLM OCR sends images to the configured service. Check the displayed destination and its policies.
+- OCR controls may be unavailable when no provider is configured. Ordinary export remains available.
+- Editing page geometry can make an earlier OCR result unsuitable. Run recognition explicitly when needed.
+- Automatic AI dewarping and shadow removal are not qualified production features.
+
+## Troubleshooting
+
+| Symptom | Check |
 | --- | --- |
-| スキャナーが見つからない | 電源、同一LAN、対応機種、Dockerのdiscovery設定。選択済み機器が消えた場合は別の機器へ自動変更しません。 |
-| 読み取りが開始できない | workerの起動、取得許可、機器の状態、ジョブ・保存容量の上限。 |
-| スマホのカメラが使えない | HTTPSとブラウザのカメラ許可。写真・ファイルからの取り込みも利用できます。 |
-| OCRが利用できない | 管理者によるprovider・モデル・フォント・OCR APIの設定。原稿の通常保存は別に確認できます。 |
-| OCRの位置や文字がおかしい | 原稿と使用モデル、選んだOCR結果を確認。古い結果の採用を取り消す代わりに、新しい候補として再認識して比較します。 |
+| Scanner is missing | Power, LAN reachability, device support, and Docker discovery networking. A missing selected device is not silently replaced by another. |
+| Capture cannot start | Worker startup, acquisition enabled, device state, job limits, free space, and retention/storage limits. |
+| Camera is unavailable | HTTPS and browser camera permission. You can also upload a photo or file. |
+| OCR is unavailable | Provider, exact model identity, service authentication, and font configuration. Test ordinary export separately. |
+| “Text recognition failed” | Preserve the original/current export. Check worker/provider availability, response format, model limits, and font coverage. A model's HTTP success alone does not prove its output passed validation. |
+| OCR text or positions look wrong | Check the source, model, and selected candidate. Create a new candidate and compare it before adoption. |
+| Download succeeds but search differs in Paperless | Check text extraction, Paperless's OCR mode, and whether a match appears only in an interpretation supplement. |
 
-設定・ログ・容量の確認は[導入ガイド](getting-started.md)と[配備資料](../../deploy/README.md)を参照してください。
+Administrators can use the [installation guide](getting-started.md) and [deployment reference](../../deploy/README.md) to inspect settings, logs, and capacity. For a bug report, include the version, browser, deployment method, OCR provider, and a redacted description. Do not publish private originals, recognized text, credentials, or cookies.

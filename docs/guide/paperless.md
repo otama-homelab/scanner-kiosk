@@ -1,27 +1,29 @@
-# Paperless-ngxで使う
+# Paperless-ngx compatibility
 
-[使い方](usage.md) · [導入ガイド](getting-started.md)
+[User guide](usage.md) · [Installation](getting-started.md)
 
-## PDFの検索性
+## Searchable PDF text
 
-Paperlessの全文検索では、PDFから抽出したテキストが重要です。OCR文字の位置ずれは文字選択・画像上の強調に影響し、文字そのものの欠落・誤認識は検索漏れにつながります。
+Paperless full-text search depends on extracted text. Incorrect OCR characters or missing text can cause missed matches; coordinate errors primarily affect selection and highlighting.
 
-ScannerのLLM補足もPDFの文字情報です。原文にはない説明語でもヒットするので、内容を探す手掛かりになる一方、曖昧な検索結果や自動分類への影響もあり得ます。`LLM supplement (interpretation, not OCR)`で認識原文と区別します。PDFだけでは、検索エンジンに原文と補足を別フィールドとして渡すことはできません。
+LLM supplements are also PDF text. Their additional descriptions can help discovery, but may produce matches for words absent from the original and influence automatic classification. The label `LLM supplement (interpretation, not OCR)` distinguishes their meaning for readers. A PDF text layer alone does not give the search engine separate original-text and supplement fields.
 
-## Paperless側のOCR設定
+## Choose an OCR mode
 
-[公式設定資料（v3.2.1）](https://github.com/paperless-ngx/paperless-ngx/blob/v3.2.1/docs/configuration.md#PAPERLESS_OCR_MODE)では、以下の動作です。
+The [Paperless v3.2.1 configuration reference](https://github.com/paperless-ngx/paperless-ngx/blob/v3.2.1/docs/configuration.md#PAPERLESS_OCR_MODE) describes these modes:
 
-- `auto`: `pdftotext`で十分な既存テキストが見つかれば再OCRを省略します。ScannerのOCR結果を利用する場合の基本となる設定です。
-- `off`: OCRを起動せず、PDFのテキスト抽出のみ行います。画像だけの文書には文字が入らないため、全体の運用を確認して選びます。
-- `redo` / `force`: 文字レイヤーの置換や画像化・再OCRを行います。原画像に見えないLLM補足は失われる可能性があります。
+| Mode | Effect on Scanner Kiosk PDFs |
+| --- | --- |
+| `auto` | Uses `pdftotext` to detect sufficient existing text and skips OCR when found. A suitable starting point for retaining Scanner Kiosk's OCR. |
+| `off` | Extracts existing text without running OCR. Image-only documents will not gain recognized text. Consider the rest of your intake workflow before selecting it. |
+| `redo` / `force` | Can replace text layers or rasterize and recognize again. Invisible interpretation supplements may be lost. |
 
-保存用PDF/Aの生成設定とOCRモードは別です。管理画面の設定が環境変数に優先する場合もあるため、実際の設定を確認してください。こちらの機能追加でPaperlessの設定を自動変更することはありません。
+Archive PDF/A generation is a separate setting. UI settings may override environment variables; check the effective configuration. Scanner Kiosk does not automatically change Paperless settings.
 
-PopplerとPDF.jsによる抽出、原稿画像と認識文字位置の保持をローカルで検証しています。実際のPaperless consumerでの取り込み・PDF/A変換・検索結果は別の受入です。
+Poppler/PDF.js extraction and original-image/text geometry are covered by local tests. Actual Paperless consumption, PDF/A conversion, and indexed search remain a separate integration check.
 
-## アプリからの直接送信
+## Direct delivery from the app
 
-既存の直接送信アダプターはPaperless-ngx **v3.4.2/API9**向けの固定契約です。他のversionを互換とみなして送信しません。たとえばv3.2.1環境への直接連携は、version検査・task応答・checksum確認まで別途検証が必要です。
+The existing adapter has a fixed **Paperless-ngx v3.4.2 / API9** contract. It does not treat other versions as compatible. For example, direct delivery to v3.2.1 requires separate acceptance of version checks, task responses, and checksum reconciliation.
 
-直接送信が未構成・未受入の場合は、まずScannerからPDFを保存してPaperless側へ取り込む運用で確認してください。アプリによる送信は、利用者が対象・送信先を確認して明示的に実行する操作です。通常のOCRやPDF保存が、自動的にPaperlessへ送信することはありません。
+If direct delivery is not configured and accepted, download the PDF and import it through Paperless's own intake workflow first. App delivery requires the user to confirm the document and destination explicitly. Running OCR or saving a PDF does not automatically upload it to Paperless.
