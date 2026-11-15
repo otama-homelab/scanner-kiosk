@@ -184,6 +184,9 @@ func (p *layerProvider) Capabilities(context.Context) (ocrplugin.Capabilities, e
 	return ocrplugin.Capabilities{APIVersion: 1, ID: "testocr", Name: "Test OCR", Version: "1", Models: []ocrplugin.Model{{ID: "installed", Name: "Installed", Version: "test-version", Languages: []string{"ja", "en"}, QualityPresets: []string{"auto"}, Outputs: []ocrplugin.OutputKind{ocrplugin.PDFTextLayer}, MaxPages: 50, MaxPagePixels: 1000000}}}, nil
 }
 func (p *layerProvider) Run(ctx context.Context, request ocrplugin.Request, access ocrplugin.Access) (ocrplugin.Result, error) {
+	if p.mode == "invalid-response" {
+		return ocrplugin.Result{}, ocrplugin.ErrInvalidResponse
+	}
 	p.seen = append([]ocrplugin.InputPage(nil), request.Pages...)
 	result := ocrplugin.Result{ModelVersion: request.ModelVersion}
 	for _, page := range request.Pages {
@@ -232,7 +235,7 @@ func invisibleLayer() []byte {
 	return b.Bytes()
 }
 func TestOCRExecutionPublishesOrPreservesUncertainWork(t *testing.T) {
-	for _, mode := range []string{"success", "mutating-request", "bad-version", "foreign-page", "unknown-execution"} {
+	for _, mode := range []string{"success", "mutating-request", "bad-version", "foreign-page", "invalid-response", "unknown-execution"} {
 		t.Run(mode, func(t *testing.T) {
 			settings := documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, ProviderID: "testocr", ModelID: "installed", ModelVersion: "test-version", Languages: []string{"ja", "en"}, QualityPreset: "auto"}}
 			records, docs, root, job, options := fixture(t, settings)
@@ -281,6 +284,9 @@ func TestOCRExecutionPublishesOrPreservesUncertainWork(t *testing.T) {
 						recovery.mu.Unlock()
 					}
 					t.Fatal("invalid OCR result accepted or cleanup incomplete")
+				}
+				if mode == "invalid-response" && (selected.stop.ErrorCode != "ocr_response_invalid" || !errors.Is(err, ocrplugin.ErrInvalidResponse)) {
+					t.Fatal("typed format failure was lost", selected.stop, err)
 				}
 				var reservations int
 				docs.QueryRow("SELECT count(*) FROM reservations WHERE job_id=?", job).Scan(&reservations)

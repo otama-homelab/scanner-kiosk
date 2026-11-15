@@ -14,19 +14,20 @@ import (
 // Projection contains public metadata only. Storage paths, owners and provider
 // configuration are deliberately absent. All fields are read in one transaction.
 type Projection struct {
-	OCRResults    []OCRResultSummary `json:"ocr_results"`
-	ID            string             `json:"id"`
-	Revision      int64              `json:"revision"`
-	ActiveJobID   *string            `json:"active_job_id"`
-	PhotoFormat   *string            `json:"photo_format"`
-	Purpose       string             `json:"purpose"`
-	State         string             `json:"state"`
-	CreatedAt     time.Time          `json:"created_at"`
-	ExpiresAt     time.Time          `json:"expires_at"`
-	PageCount     int                `json:"page_count"`
-	Pages         []PageProjection   `json:"pages"`
-	Output        *OutputProjection  `json:"output"`
-	ReadyRevision *int64             `json:"ready_revision"`
+	RecognitionFailureID *string            `json:"recognition_failure_id,omitempty"`
+	OCRResults           []OCRResultSummary `json:"ocr_results"`
+	ID                   string             `json:"id"`
+	Revision             int64              `json:"revision"`
+	ActiveJobID          *string            `json:"active_job_id"`
+	PhotoFormat          *string            `json:"photo_format"`
+	Purpose              string             `json:"purpose"`
+	State                string             `json:"state"`
+	CreatedAt            time.Time          `json:"created_at"`
+	ExpiresAt            time.Time          `json:"expires_at"`
+	PageCount            int                `json:"page_count"`
+	Pages                []PageProjection   `json:"pages"`
+	Output               *OutputProjection  `json:"output"`
+	ReadyRevision        *int64             `json:"ready_revision"`
 }
 type CaptureProjection struct {
 	Size  string `json:"size"`
@@ -94,17 +95,21 @@ func (s *Store) ReadDocument(ctx context.Context, owner, documentID string) (Pro
 const projectionColumns = `d.id,d.revision,d.purpose,d.state,d.created_at_ms,d.expires_at_ms,
  CASE WHEN d.purpose='photo' THEN COALESCE((SELECT COALESCE(json_extract(j.configuration_json,'$.settings.format'),json_extract(j.configuration_json,'$.photo_format')) FROM jobs j WHERE j.document_id=d.id AND j.owner_id=d.owner_id AND j.kind IN ('scan','render','import') AND COALESCE(json_extract(j.configuration_json,'$.settings.format'),json_extract(j.configuration_json,'$.photo_format')) IN ('jpeg','png') ORDER BY j.input_revision DESC,j.created_at_ms DESC,j.id DESC LIMIT 1),'jpeg') END,
  (SELECT j.id FROM jobs j WHERE j.document_id=d.id AND j.owner_id=d.owner_id AND j.kind!='cleanup' AND j.state IN ('queued','running','cancelling','reconciling') LIMIT 1),
- (SELECT json_group_array(json_object('id',r.id,'state',r.state,'input_revision',r.input_revision)) FROM ocr_results r WHERE r.document_id=d.id AND r.owner_id=d.owner_id AND (r.state='candidate' OR r.state='adopted' AND r.id=(SELECT r2.id FROM ocr_results r2 WHERE r2.document_id=d.id AND r2.owner_id=d.owner_id AND r2.state='adopted' ORDER BY r2.adopted_revision DESC LIMIT 1)))`
+ (SELECT json_group_array(json_object('id',r.id,'state',r.state,'input_revision',r.input_revision)) FROM ocr_results r WHERE r.document_id=d.id AND r.owner_id=d.owner_id AND (r.state='candidate' OR r.state='adopted' AND r.id=(SELECT r2.id FROM ocr_results r2 WHERE r2.document_id=d.id AND r2.owner_id=d.owner_id AND r2.state='adopted' ORDER BY r2.adopted_revision DESC LIMIT 1))),
+ (SELECT CASE WHEN j.state='failed' AND COALESCE(json_type(j.configuration_json,'$.reocr')='true' OR json_type(j.configuration_json,'$.settings.ocr.enabled')='true',0) THEN j.id END FROM jobs j WHERE j.document_id=d.id AND j.owner_id=d.owner_id AND j.kind='render' AND j.input_revision=d.revision ORDER BY j.created_at_ms DESC,j.id DESC LIMIT 1)`
 
 type projectionRow interface{ Scan(...any) error }
 
 func scanProjection(row projectionRow) (Projection, error) {
 	var p Projection
 	var created, expires int64
-	var photo, active sql.NullString
+	var photo, active, recognitionFailure sql.NullString
 	var results string
-	if err := row.Scan(&p.ID, &p.Revision, &p.Purpose, &p.State, &created, &expires, &photo, &active, &results); err != nil {
+	if err := row.Scan(&p.ID, &p.Revision, &p.Purpose, &p.State, &created, &expires, &photo, &active, &results, &recognitionFailure); err != nil {
 		return Projection{}, readError(err)
+	}
+	if recognitionFailure.Valid {
+		p.RecognitionFailureID = &recognitionFailure.String
 	}
 	p.CreatedAt = time.UnixMilli(created).UTC()
 	p.ExpiresAt = time.UnixMilli(expires).UTC()

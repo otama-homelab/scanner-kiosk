@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Report malformed/incomplete OCR responses distinctly and offer explicit same-settings retry with a fresh request key, keeping originals and saved PDFs intact.
+- Specify complete JSON span examples so recognized text stays separate from numeric coordinates, including when LLM interpretation is enabled.
+- Automatically select a lone OCR quality preset and hide its redundant selector; retain selection for models with multiple presets.
+
+## 0.2.34
+
 - Make LLM interpretation supplements optional, off by default, and remember the checkbox in this browser. Retain the selection in immutable OCR requests.
 - Reserve stable scrollbar space so common viewer zoom does not resize its fit area.
 - Load OCR text and positions concurrently to reduce waiting during result/page selection.

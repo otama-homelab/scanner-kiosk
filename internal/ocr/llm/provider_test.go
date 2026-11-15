@@ -680,3 +680,73 @@ func TestSupplementRequiresExplicitOptIn(t *testing.T) {
 		})
 	}
 }
+
+func TestPromptSpecifiesSeparateTextAndNumericBox(t *testing.T) {
+	for _, include := range []bool{false, true} {
+		t.Run(fmt.Sprint(include), func(t *testing.T) {
+			p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
+				var body struct {
+					Messages []struct {
+						Role    string          `json:"role"`
+						Content json.RawMessage `json:"content"`
+					} `json:"messages"`
+				}
+				if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+					t.Fatal(err)
+				}
+				var prompt string
+				for _, message := range body.Messages {
+					if message.Role == "system" {
+						if err := json.Unmarshal(message.Content, &prompt); err != nil {
+							t.Fatal(err)
+						}
+					}
+				}
+				marker := "Example JSON output: "
+				start := strings.Index(prompt, marker)
+				if start < 0 {
+					t.Error("missing complete JSON output example")
+					http.Error(w, "missing shape", 400)
+					return
+				}
+				var example struct {
+					Spans []struct {
+						Text string    `json:"text"`
+						Box  []float64 `json:"box"`
+					} `json:"spans"`
+					Supplement *string `json:"supplement"`
+				}
+				decoder := json.NewDecoder(strings.NewReader(prompt[start+len(marker):]))
+				if err := decoder.Decode(&example); err != nil || len(example.Spans) != 1 || example.Spans[0].Text == "" || len(example.Spans[0].Box) != 4 || (example.Supplement != nil) != include {
+					t.Error("ambiguous span example", err)
+					http.Error(w, "bad shape", 400)
+					return
+				}
+				if !strings.Contains(prompt, "Never put text inside a box") {
+					t.Error("missing explicit text/coordinate separation")
+				}
+				json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "Original", "box": []any{100, 100, 200, 200}}}, "supplement": "Interpretation."}))
+			})
+			req := request(p, ocrplugin.PositionedText)
+			req.IncludeSupplement = include
+			if _, err := p.Run(context.Background(), req, &access{input: fixture(t)}); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+
+func TestMalformedTextInsideBoxIsRejected(t *testing.T) {
+	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
+	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 1200, Height: 1800}
+	for _, span := range []any{
+		map[string]any{"box": []any{100, 200, 900, "Synthetic text", 500}},
+		map[string]any{"text": "Original", "box": []any{100, 200, 900, "Synthetic text", 500}},
+		map[string]any{"box": []any{100, 200, 900, "Synthetic text", "500"}},
+	} {
+		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{span}, "supplement": "Valid interpretation."}))
+		if _, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText, true); !errors.Is(err, ocrplugin.ErrInvalidResponse) {
+			t.Fatal("malformed text/geometry classification was lost", err)
+		}
+	}
+}

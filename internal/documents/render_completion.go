@@ -9,6 +9,7 @@ import (
 // RenderStop is trusted worker evidence, never client input. The coordinator must
 // have ended all owned processing and removed unpublished work before reporting.
 type RenderStop struct {
+	ErrorCode                                string
 	RunnerID                                 string
 	ProcessStoppedAtMS, WorkspaceCleanedAtMS int64
 }
@@ -17,7 +18,7 @@ type RenderStop struct {
 // It is worker-internal authority and remains usable for disabled/expired owners.
 // It does not stop work or remove files; uncertain publication must resolve first.
 func (s *Store) FinishStoppedRender(ctx context.Context, owner, jobID string, stop RenderStop, outcome string) error {
-	if !id(owner) || !id(jobID) || !id(stop.RunnerID) || (outcome != "failed" && outcome != "interrupted") {
+	if !id(owner) || !id(jobID) || !id(stop.RunnerID) || (outcome != "failed" && outcome != "interrupted") || stop.ErrorCode != "" && (outcome != "failed" || stop.ErrorCode != "ocr_response_invalid") {
 		return ErrInvalid
 	}
 	tx, err := s.documents.BeginTx(ctx, nil)
@@ -26,18 +27,22 @@ func (s *Store) FinishStoppedRender(ctx context.Context, owner, jobID string, st
 	}
 	defer tx.Rollback()
 	var jobState, document, documentState string
+	var recognition bool
 	var started, jobRevision, docRevision, expiry int64
-	err = tx.QueryRowContext(ctx, `SELECT j.state,j.document_id,j.started_at_ms,j.input_revision,d.revision,d.expires_at_ms,d.state
+	err = tx.QueryRowContext(ctx, `SELECT j.state,j.document_id,j.started_at_ms,j.input_revision,d.revision,d.expires_at_ms,d.state,COALESCE(json_type(j.configuration_json,'$.reocr')='true' OR json_type(j.configuration_json,'$.settings.ocr.enabled')='true',0)
  FROM jobs j JOIN documents d ON d.id=j.document_id AND d.owner_id=j.owner_id
  WHERE j.id=? AND j.owner_id=? AND j.runner_id=? AND j.kind='render' AND j.state IN ('running','cancelling','reconciling') AND j.started_at_ms IS NOT NULL
  AND EXISTS(SELECT 1 FROM reservations r WHERE r.job_id=j.id AND r.owner_id=j.owner_id)
  AND NOT EXISTS(SELECT 1 FROM job_artifacts a WHERE a.job_id=j.id)
- AND NOT EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id)`, jobID, owner, stop.RunnerID).Scan(&jobState, &document, &started, &jobRevision, &docRevision, &expiry, &documentState)
+ AND NOT EXISTS(SELECT 1 FROM device_leases l WHERE l.job_id=j.id)`, jobID, owner, stop.RunnerID).Scan(&jobState, &document, &started, &jobRevision, &docRevision, &expiry, &documentState, &recognition)
 	if errors.Is(err, sql.ErrNoRows) {
 		return ErrConflict
 	}
 	if err != nil {
 		return ErrStorage
+	}
+	if stop.ErrorCode != "" && !recognition {
+		return ErrInvalid
 	}
 	now := s.now().UnixMilli()
 	if stop.ProcessStoppedAtMS < started || stop.ProcessStoppedAtMS <= 0 || stop.WorkspaceCleanedAtMS < stop.ProcessStoppedAtMS || stop.WorkspaceCleanedAtMS > now {
@@ -47,7 +52,11 @@ func (s *Store) FinishStoppedRender(ctx context.Context, owner, jobID string, st
 	if jobState == "cancelling" {
 		terminal = "cancelled"
 	}
-	if _, err = tx.ExecContext(ctx, "UPDATE jobs SET state=?,error_code=?,heartbeat_at_ms=? WHERE id=? AND owner_id=?", terminal, terminal, now, jobID, owner); err != nil {
+	code := terminal
+	if terminal == "failed" && stop.ErrorCode != "" {
+		code = stop.ErrorCode
+	}
+	if _, err = tx.ExecContext(ctx, "UPDATE jobs SET state=?,error_code=?,heartbeat_at_ms=? WHERE id=? AND owner_id=?", terminal, code, now, jobID, owner); err != nil {
 		return ErrStorage
 	}
 	if _, err = tx.ExecContext(ctx, "DELETE FROM reservations WHERE job_id=? AND owner_id=?", jobID, owner); err != nil {

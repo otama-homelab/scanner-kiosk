@@ -2403,6 +2403,13 @@
             ],
             "pattern": "^[A-Za-z0-9_-]{16,96}$",
             "description": "Owned active non-cleanup job for this retained document; server-derived and null after terminal completion. Opening it reads status and never replays work."
+          },
+          "recognition_failure_id": {
+            "type": "string",
+            "minLength": 16,
+            "maxLength": 96,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "The latest render job only if it failed recognition for this document revision. Read its owned job status for the safe error and retry settings; absent after newer work or edits."
           }
         },
         "required": [
@@ -2462,7 +2469,29 @@
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Safe failure category. ocr_response_invalid identifies an invalid or incomplete recognition response; raw provider responses are never returned."
+          },
+          "recognition": {
+            "type": "boolean",
+            "description": "True for a render job that performs text recognition."
+          },
+          "retry": {
+            "type": "object",
+            "description": "Client OCR intent, present only on a failed recognition job. Submit explicitly with a new idempotency key and the same input revision. Model version and worker-only data are excluded; admission revalidates current capabilities.",
+            "properties": {
+              "settings": {
+                "$ref": "#/components/schemas/Render"
+              },
+              "reocr": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "settings",
+              "reocr"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [

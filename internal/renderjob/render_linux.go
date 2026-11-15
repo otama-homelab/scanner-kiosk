@@ -48,6 +48,7 @@ type ThumbnailRecords interface {
 }
 
 type Prepared struct {
+	failureCode                   string
 	manualCrop                    bool
 	mu                            sync.Mutex
 	records                       Records
@@ -441,7 +442,11 @@ func (p *Prepared) Finish(ctx context.Context, outcome string) error {
 			return err
 		}
 
-		err := records.FinishStoppedRender(ctx, p.owner, p.job, documents.RenderStop{RunnerID: p.runner, ProcessStoppedAtMS: p.stoppedAtMS, WorkspaceCleanedAtMS: time.Now().UnixMilli()}, outcome)
+		code := ""
+		if outcome == "failed" {
+			code = p.failureCode
+		}
+		err := records.FinishStoppedRender(ctx, p.owner, p.job, documents.RenderStop{ErrorCode: code, RunnerID: p.runner, ProcessStoppedAtMS: p.stoppedAtMS, WorkspaceCleanedAtMS: time.Now().UnixMilli()}, outcome)
 		if err == nil {
 			p.finished = true
 			return nil

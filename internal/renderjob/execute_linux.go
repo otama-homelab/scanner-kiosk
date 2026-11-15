@@ -9,6 +9,7 @@ import (
 	"scanner-kiosk/internal/documents"
 	"scanner-kiosk/internal/pdfassemble"
 	"scanner-kiosk/internal/workwatch"
+	"scanner-kiosk/pkg/ocrplugin"
 	"time"
 )
 
@@ -60,14 +61,14 @@ func ExecuteClaimed(ctx context.Context, records Records, root, owner, job, runn
 		}
 		if !failure.clean {
 			if failure.scope != nil {
-				return &Prepared{records: records, scope: failure.scope, extraScopes: failure.extras, executionUncertain: failure.uncertain, owner: owner, job: job, runner: runner, discarded: true, stoppedAtMS: failure.stoppedAtMS}, err
+				return &Prepared{failureCode: renderFailureCode(err), records: records, scope: failure.scope, extraScopes: failure.extras, executionUncertain: failure.uncertain, owner: owner, job: job, runner: runner, discarded: true, stoppedAtMS: failure.stoppedAtMS}, err
 			}
 			return nil, err // unknown scope creation outcome: reserve remains for reconciliation.
 		}
 		cleanup, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 		defer cancel()
 
-		recovery := &Prepared{records: records, scope: failure.scope, extraScopes: failure.extras, executionUncertain: failure.uncertain, owner: owner, job: job, runner: runner, discarded: true, stoppedAtMS: failure.stoppedAtMS}
+		recovery := &Prepared{failureCode: renderFailureCode(err), records: records, scope: failure.scope, extraScopes: failure.extras, executionUncertain: failure.uncertain, owner: owner, job: job, runner: runner, discarded: true, stoppedAtMS: failure.stoppedAtMS}
 		if finishErr := recovery.Finish(cleanup, stopOutcome(err)); finishErr != nil {
 			return recovery, errors.Join(err, finishErr)
 		}
@@ -95,4 +96,11 @@ func stopOutcome(err error) string {
 		return "interrupted"
 	}
 	return "failed"
+}
+
+func renderFailureCode(err error) string {
+	if errors.Is(err, ocrplugin.ErrInvalidResponse) {
+		return "ocr_response_invalid"
+	}
+	return ""
 }

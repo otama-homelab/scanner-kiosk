@@ -174,3 +174,59 @@ func TestRenderStopCommitReadBack(t *testing.T) {
 		})
 	}
 }
+
+func TestRecognitionFormatFailureAndRetryProjection(t *testing.T) {
+	for _, cancelled := range []bool{false, true} {
+		t.Run(map[bool]string{false: "failed", true: "cancelled"}[cancelled], func(t *testing.T) {
+			f, _ := ocrCandidateFixture(t)
+			ctx := context.Background()
+			if cancelled {
+				if err := f.store.RequestCancel(ctx, alice, jobA); err != nil {
+					t.Fatal(err)
+				}
+			}
+			stop := RenderStop{RunnerID: runner, ProcessStoppedAtMS: 2000, WorkspaceCleanedAtMS: 2000, ErrorCode: "ocr_response_invalid"}
+			if err := f.store.FinishStoppedRender(ctx, alice, jobA, stop, "failed"); err != nil {
+				t.Fatal(err)
+			}
+			job, err := f.store.ReadJob(ctx, alice, jobA)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if cancelled {
+				if job.State != "cancelled" || job.ErrorCode == nil || *job.ErrorCode != "cancelled" || job.Retry != nil {
+					t.Fatal(job)
+				}
+				return
+			}
+			if job.State != "failed" || job.ErrorCode == nil || *job.ErrorCode != "ocr_response_invalid" || job.Retry == nil || job.Retry.ReOCR || job.Retry.Settings.OCR.IncludeSupplement || job.Retry.Settings.OCR.ModelVersion != "" {
+				t.Fatal("format classification or safe retry intent lost", job)
+			}
+			if _, err := f.store.ReadJob(ctx, bob, jobA); !errors.Is(err, ErrUnavailable) {
+				t.Fatal("cross-owner retry settings exposed", err)
+			}
+			must(t, f.docs, "UPDATE jobs SET error_code='private-provider-token' WHERE id=?", jobA)
+			projected, err := f.store.ReadJob(ctx, alice, jobA)
+			if err != nil || projected.ErrorCode == nil || *projected.ErrorCode != "processing_failed" {
+				t.Fatal("raw provider error escaped", projected, err)
+			}
+			doc, err := f.store.ReadDocument(ctx, alice, docA)
+			if err != nil || doc.Output == nil || doc.State != "ready" || doc.RecognitionFailureID == nil || *doc.RecognitionFailureID != jobA {
+				t.Fatal("failed recognition changed saved PDF", doc, err)
+			}
+		})
+	}
+}
+
+func TestRenderFailureRejectsUnsafeErrorCodes(t *testing.T) {
+	for _, code := range []string{"private-provider-token", "unknown"} {
+		f, _ := ocrCandidateFixture(t)
+		err := f.store.FinishStoppedRender(context.Background(), alice, jobA, RenderStop{RunnerID: runner, ProcessStoppedAtMS: 2000, WorkspaceCleanedAtMS: 2000, ErrorCode: code}, "failed")
+		if !errors.Is(err, ErrInvalid) {
+			t.Fatal("unreviewed worker error accepted", err)
+		}
+		if scalar(t, f.docs, "SELECT count(*) FROM reservations WHERE job_id=?", jobA) != 1 {
+			t.Fatal("invalid failure released reservation")
+		}
+	}
+}

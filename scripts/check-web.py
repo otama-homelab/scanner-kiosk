@@ -6,7 +6,7 @@ from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--playwright-module',required=True);p.add_argument('--chromium',required=True);p.add_argument('--receipt',required=True);
 for name in ['fixture-python','tesseract-binary','tessdata','font']:p.add_argument('--'+name)
-p.add_argument('--scenario',choices=['ocr-preferences','ocr-parallel','reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion','delivery','photo','server-ux'])
+p.add_argument('--scenario',choices=['ocr-retry','ocr-preferences','ocr-parallel','reocr-start','reocr-compare','reocr-adopt','reocr-native','structure-suggestion','delivery','photo','server-ux'])
 args=p.parse_args()
 # Node resolves require paths from each checker, so normalize CLI paths once.
 args.playwright_module=str(Path(args.playwright_module).resolve())
@@ -18,7 +18,7 @@ files=sorted([*root.glob('cmd/**/*.go'),*root.glob('internal/**/*.go'),*root.glo
 files=sorted(set(files)|set((root/'scripts').glob('check-web*.cjs'))|{root/'docs/design/paperless-delivery.md'})
 def hashes():return {str(f.relative_to(root)):hashlib.sha256(f.read_bytes()).hexdigest() for f in files}
 def validate_scenario(evidence,scenario):
- names={'ocr-preferences':['TestOCRSupplementPreferences'],'ocr-parallel':['TestOCRArtifactParallelism'],'reocr-start':['TestReOCRStartLifecycle'],'reocr-compare':['TestReOCRComparePositions','TestReOCRReadingOrder'],'reocr-adopt':['TestReOCRWholeDocumentAdoption','TestReOCRDiscardRecovery','TestReOCRKeyboardFocus'],'structure-suggestion':['TestStructureFilenameSuggestion']}[scenario]
+ names={'ocr-retry':['TestOCRExplicitRetry'],'ocr-preferences':['TestOCRSupplementPreferences'],'ocr-parallel':['TestOCRArtifactParallelism'],'reocr-start':['TestReOCRStartLifecycle'],'reocr-compare':['TestReOCRComparePositions','TestReOCRReadingOrder'],'reocr-adopt':['TestReOCRWholeDocumentAdoption','TestReOCRDiscardRecovery','TestReOCRKeyboardFocus'],'structure-suggestion':['TestStructureFilenameSuggestion']}[scenario]
  assert evidence['passed'] and evidence['requests'] and evidence['scenario']==scenario
  for name in names:
   for width in ([1280,320,390,768,1440] if scenario=='structure-suggestion' else [1280,390]):assert name+' '+str(width) in evidence['checks'],'required browser scenario missing'
@@ -370,7 +370,7 @@ for index in [1,2]:
    if ocr_ui_result.returncode:raise RuntimeError(ocr_ui_result.stderr[-12000:])
    ocr_ui_browser=json.loads(ocr_ui_result.stdout)
    reocr_browser={}
-   for scenario in ['reocr-start','reocr-compare','reocr-adopt','structure-suggestion','ocr-preferences','ocr-parallel']:
+   for scenario in ['reocr-start','reocr-compare','reocr-adopt','structure-suggestion','ocr-preferences','ocr-parallel','ocr-retry']:
     scenario_receipt=work/(scenario+'.json')
     outcome=subprocess.run(['node','--test','--test-reporter=tap','scripts/check-web-ocr-ui.cjs'],cwd=root,env=dict(browser_env,SCANNER_TEST_SCENARIO=scenario,SCANNER_TEST_RECEIPT=str(scenario_receipt)),capture_output=True,text=True,timeout=90)
     if outcome.returncode:raise RuntimeError(outcome.stdout+outcome.stderr)
