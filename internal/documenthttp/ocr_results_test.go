@@ -30,8 +30,12 @@ const reocrBody = `{"format":"pdf","ocr":{"enabled":true,"provider_id":"local","
 
 type httpOCRResolver struct{}
 
-func (httpOCRResolver) ResolveOCR(context.Context, documents.RenderOCR, bool) (renderadmission.ResolvedOCR, error) {
-	return renderadmission.ResolvedOCR{ModelVersion: "v1", MaxPages: 10, MaxPagePixels: 100000, Output: ocrplugin.Text}, nil
+func (httpOCRResolver) ResolveOCR(_ context.Context, selection documents.RenderOCR, _ bool) (renderadmission.ResolvedOCR, error) {
+	output := ocrplugin.Text
+	if selection.ProviderID == "llm" {
+		output = ocrplugin.PositionedText
+	}
+	return renderadmission.ResolvedOCR{ModelVersion: "v1", MaxPages: 10, MaxPagePixels: 100000, Output: output}, nil
 }
 
 type ocrHTTPFixture struct {
@@ -394,7 +398,7 @@ func TestReOCRHTTPReadHasNoSideEffect(t *testing.T) {
 func TestReOCRHTTPRejectsMalformed(t *testing.T) {
 	f := newOCRHTTP(t)
 	path := "/api/documents/" + documentID + "/reocr"
-	for _, body := range []string{`{"format":"pdf","ocr":{"enabled":true,"enabled":false}}`, strings.Replace(reocrBody, `"enabled":true`, `"enabled":true,"pages":[]`, 1), strings.Replace(reocrBody, `"pdf"`, `"png"`, 1), strings.Replace(reocrBody, `true`, `false`, 1), `null`, strings.Repeat(" ", 65537)} {
+	for _, body := range []string{strings.Replace(reocrBody, `"enabled":true`, `"enabled":true,"include_supplement":null`, 1), strings.Replace(reocrBody, `"enabled":true`, `"enabled":true,"include_supplement":"true"`, 1), strings.Replace(reocrBody, `"enabled":true`, `"enabled":true,"include_supplement":true`, 1), `{"format":"pdf","ocr":{"enabled":true,"enabled":false}}`, strings.Replace(reocrBody, `"enabled":true`, `"enabled":true,"pages":[]`, 1), strings.Replace(reocrBody, `"pdf"`, `"png"`, 1), strings.Replace(reocrBody, `true`, `false`, 1), `null`, strings.Repeat(" ", 65537)} {
 		code, _, b := f.call("POST", path, body, f.cookie, nil)
 		if code != 400 && code != 413 {
 			t.Fatalf("malformed command accepted: %d %s", code, b)
@@ -436,5 +440,31 @@ func TestReOCRHTTPRejectsMalformed(t *testing.T) {
 	code, _, _ = f.call("POST", path, reocrBody, f.cookie, nil)
 	if code != 401 {
 		t.Fatal("disabled", code)
+	}
+}
+
+func TestReOCRHTTPSupplementIntent(t *testing.T) {
+	f := newOCRHTTP(t)
+	path := "/api/documents/" + documentID + "/reocr"
+	body := strings.Replace(strings.Replace(reocrBody, `"local"`, `"llm"`, 1), `"enabled":true`, `"enabled":true,"include_supplement":true`, 1)
+	code, _, b := f.call("POST", path, body, f.cookie, nil)
+	if code != 202 {
+		t.Fatalf("opt-in admission %d %s", code, b)
+	}
+	var job documents.JobProjection
+	if err := json.Unmarshal(b, &job); err != nil {
+		t.Fatal(err)
+	}
+	var raw string
+	if err := f.docs.QueryRow("SELECT configuration_json FROM jobs WHERE id=?", job.ID).Scan(&raw); err != nil {
+		t.Fatal(err)
+	}
+	var snapshot documents.RenderSnapshot
+	if err := json.Unmarshal([]byte(raw), &snapshot); err != nil || !snapshot.Settings.OCR.IncludeSupplement {
+		t.Fatal("opt-in not retained", err)
+	}
+	code, _, _ = f.call("POST", path, strings.Replace(body, `,"include_supplement":true`, "", 1), f.cookie, nil)
+	if code != 409 {
+		t.Fatal("changed supplement intent replayed", code)
 	}
 }

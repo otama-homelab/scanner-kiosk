@@ -1,126 +1,91 @@
-# Getting started
+# Install with Docker
 
-[Overview](../../README.md) · [User guide](usage.md) · [Deployment reference](../../deploy/README.md)
+[Overview](../../README.md) · [Docker Compose](docker-compose.md) · [User guide](usage.md) · [Deployment reference](../../deploy/README.md)
 
-This guide sets up a new Linux amd64 installation with released Docker images, local accounts, and an HTTPS reverse proxy. A scanner and OCR service are optional: verify file import and ordinary PDF export first.
+The [README quick start](../../README.md#quick-start-docker) contains the complete `docker run` commands for a new installation. This guide explains their configuration and operation. Compose is an [alternative](docker-compose.md), not a requirement.
 
 ## Prerequisites
 
-- A Linux amd64 host with Docker and Docker Compose v2.
+- Linux amd64 with Docker Engine.
+- A released core image, selected by its immutable repository digest.
+- Two separate local storage directories with supported SQLite locking/durability. NFS is outside the storage contract.
 - An HTTPS hostname and reverse proxy. Browser camera access requires a secure context.
-- Two separate local storage directories: persistent identity/account state and temporary private documents. The filesystem must support SQLite locking and durability; NFS is outside the storage contract.
-- For scanning, a supported scanner reachable from the worker host.
 
-## 1. Download and verify
+Start with file import and ordinary PDF export. A physical scanner and OCR service are optional.
 
-Download `scanner-deployment.tar` and `SHA256SUMS` from the [same release](https://github.com/otama-homelab/scanner-kiosk/releases/latest). Verify the selected archive before extracting it:
+## Storage and runtime identity
 
-```sh
-awk '$2 == "scanner-deployment.tar" { print; found=1 } END { if (!found) exit 1 }' SHA256SUMS | sha256sum --check -
-mkdir scanner-kiosk
-tar -xf scanner-deployment.tar -C scanner-kiosk
-cd scanner-kiosk
-```
+Both the API and worker must use the same image, UID/GID, and state/document mounts. The default container identity is `10001:10001`.
 
-You can also work from a repository checkout. Running released images does not require compiling the application.
+| Host path in the example | Container path | Purpose |
+| --- | --- | --- |
+| `/srv/scanner/state` | `/var/lib/scanner/state` | Persistent account/identity state |
+| `/srv/scanner/documents` | `/var/lib/scanner/documents` | Temporary private originals and outputs |
+| Container-private tmpfs | `/tmp` | Scratch space; 512MiB per role |
 
-## 2. Prepare storage and configuration
-
-For a new installation using container UID/GID `10001:10001`:
+For new, empty storage:
 
 ```sh
 sudo install -d -m 700 -o 10001 -g 10001 /srv/scanner/state /srv/scanner/documents
 ```
 
-Check UID/GID mappings for rootless Docker or user namespaces first. Do not recursively change ownership or permissions on existing data.
+With rootless Docker or user namespaces, establish the host/container UID mapping first. Do not recursively change ownership or permissions on existing data. Preserve the selected identity across upgrades. Use `--mount type=bind` as shown in the README: Docker rejects a missing bind source instead of silently creating a directory with unexpected ownership.
 
-Create `scanner.env`:
+Do not reuse the old scanservjs output volume.
 
-```dotenv
-SCANNER_IMAGE=ghcr.io/otama-homelab/scanner-kiosk@sha256:REPLACE_WITH_RELEASE_CORE_DIGEST
-SCANNER_PUBLIC_URL=https://scanner.example.com
-SCANNER_STATE_HOST_PATH=/srv/scanner/state
-SCANNER_DOCUMENT_HOST_PATH=/srv/scanner/documents
-SCANNER_AUTHENTICATE_TYPE=simple
-SCANNER_ACQUISITION_ENABLED=false
-SCANNER_SCANNERS_JSON=[]
-PUID=10001
-PGID=10001
-```
+## Configuration
 
-Replace the image placeholder with the release's **repository digest**, not its image configuration ID. Set the hostname and paths for your installation. Keep acquisition disabled until the services and storage are ready.
+The quick start uses `scanner.env` for shared, non-secret application settings. Docker passes those values into each container; the executable does not load `.env` files itself. `SCANNER_IMAGE` is a shell variable consumed by `docker run`, not an application setting.
 
-```sh
-chmod 600 scanner.env
-docker compose --env-file scanner.env -f deploy/compose.yaml config --quiet
-docker compose --env-file scanner.env -f deploy/compose.yaml up -d
-```
+- `SCANNER_PUBLIC_URL`: the exact HTTPS origin used in the browser.
+- `SCANNER_STATE_DIR` / `SCANNER_DOCUMENT_DIR`: **container** paths matching the mounts.
+- `SCANNER_AUTHENTICATE_TYPE=simple`: local-account login. OIDC is available through the [authentication reference](../../deploy/README.md).
+- `SCANNER_ACQUISITION_ENABLED=true`: explicitly enables acquisition for this installation; it does not initiate a capture on startup.
+- `SCANNER_DISCOVERY_ENABLED=false` and `SCANNER_SCANNERS_JSON=[]`: start without automatically discovering devices. File import remains available.
+- `SCANNER_OCR_PLUGINS=`: ordinary export without OCR.
 
-The API (`serve`) and worker use the same core image, runtime identity, and storage. Compose reads `scanner.env`; the executable does not automatically load `.env` files. See [configuration variables](../../.env.example).
+See the [environment reference](../../.env.example) for limits and retention settings. Keep API-only and worker-only secrets separate; do not later add all credentials to a shared environment file.
 
-## 3. Create a local account
+The commands use a read-only root, private executable scratch tmpfs, dropped capabilities, no privilege escalation, resource limits, and a 180-second stop timeout. The worker also has a Go soft-memory budget distinct from its container/native-child limit. Both roles restart unless explicitly stopped.
 
-In Bash, read the password without echoing it and pass it through standard input:
+## First sign-in and export
 
-```bash
-read -r -s -p 'Scanner password: ' scanner_password
-printf '\n'
-printf '%s\n' "$scanner_password" | docker compose --env-file scanner.env -f deploy/compose.yaml run --rm --no-deps -T api user create admin
-unset scanner_password
-```
+Use the README's `docker exec -i scanner-api /usr/local/bin/scanner user create admin` example to create an account without exposing a password in arguments. `admin` is the account name; the name itself does not grant special privileges.
 
-`admin` is the account name; it does not grant special privileges based on its name. For OIDC, follow the authentication section of the [deployment reference](../../deploy/README.md) instead.
+The API is published only at `127.0.0.1:8080`. Point an HTTPS reverse proxy at that host address. If the proxy runs in another container, configure a suitable Docker network/upstream instead of using its own loopback address.
 
-## 4. Connect HTTPS
-
-Compose binds the API to `127.0.0.1:8080` on the host. With Caddy running on that same host:
-
-```caddyfile
-scanner.example.com {
-    reverse_proxy 127.0.0.1:8080
-}
-```
-
-Configure DNS and certificate issuance for your environment. If the proxy runs in another container, its `127.0.0.1` does not refer to the Docker host; configure an appropriate network and upstream address.
-
-Open your configured URL and sign in. Check service startup and API readiness:
+Check both roles and API readiness:
 
 ```sh
-docker compose --env-file scanner.env -f deploy/compose.yaml logs --tail=50 api worker
+docker logs --tail=50 scanner-api
+docker logs --tail=50 scanner-worker
 curl --fail https://scanner.example.com/health/ready
 ```
 
-An API health response does not prove scanner availability or successful worker acquisition.
+Open the public URL, sign in, upload a small image, save a PDF, and open the downloaded file. API health alone does not prove worker acquisition or scanner readiness.
 
-## 5. Enable acquisition and save your first document
+## Add a scanner
 
-After checking storage permissions, capacity, and worker startup, set `SCANNER_ACQUISITION_ENABLED=true` in `scanner.env` and apply the same Compose command again.
+A Docker bridge can reach configured LAN scanner endpoints, but Bonjour/mDNS discovery does not normally cross that bridge. Choose either:
 
-1. Import a small image, choose document output, and save a PDF without OCR.
-2. Open the downloaded PDF and check its contents.
-3. Select a scanner and capture a page, if scanning is needed.
+- Register the scanner's supported eSCL endpoint using `SCANNER_SCANNERS_JSON` as shown in the [environment reference](../../.env.example).
+- For Linux LAN discovery, set `SCANNER_DISCOVERY_ENABLED=true` and recreate the **worker** with `--network host`, retaining all its other flags, image, identity, and mounts. This follows the existing [discovery networking contract](../../deploy/README.md#scanner-discovery). The worker publishes no HTTP port; keep the API's loopback binding.
 
-For Bonjour eSCL discovery on Docker, review the [network requirements](../../deploy/README.md#scanner-discovery) and add the discovery override:
-
-```sh
-docker compose --env-file scanner.env -f deploy/compose.yaml -f deploy/compose.discovery.yaml up -d
-```
-
-Do not reuse the old scanservjs output volume as Scanner Kiosk storage.
+Stop competing scanner writers before enabling capture. Confirm device identity and readiness, then make an explicit scan request; startup does not automatically capture a document.
 
 ## Add optional OCR
 
-After ordinary export works, follow the [OCR configuration reference](../../deploy/README.md).
+First verify ordinary export, then follow the [OCR reference](../../deploy/README.md).
 
-- **Tesseract:** use the Tesseract service image from the same release as the core image.
-- **LLM:** configure a compatible vision endpoint, exact response model identity, destination label, worker credential, and a suitable licensed TrueType font for the PDF text layer. The selected font must cover the document's characters.
+- **Tesseract:** deploy its separate service image from the same release, with its own authentication. Give the worker the service endpoint and named credential. Supply provider/model metadata to the API only through the existing worker catalog.
+- **LLM:** configure a compatible vision endpoint, exact response-model identity, destination label, worker credential, and a suitable licensed TrueType font. Mount the font read-only; it must cover the document's characters.
 
-LLM OCR sends images to that endpoint. Check its processing and retention policy before enabling it. See [usage and supplements](usage.md#llm-interpretation-supplements).
+Keep OCR credentials on the worker. LLM OCR sends images to the selected endpoint, so review its processing/retention policy first. Supplements and their indexing implications are described in the [user guide](usage.md#llm-interpretation-supplements).
 
-## Upgrade and back up
+## Change configuration or upgrade
 
-Stop new intake and let active jobs finish before an upgrade. Preserve a consistent state/document relationship and update all roles to the same release. A schema change can make an image-only rollback unsafe.
+Editing an environment file does not change a running container. Stop new intake, let active jobs finish, then stop/recreate the API and worker with the reviewed flags and image. Keep both mounted directories and their identity intact. Update every role to the same release, and review the [changelog](../../CHANGELOG.md).
 
-Persistent identity state is the normal backup scope. Private documents are temporary and need a separate retention/disposal policy. Follow the [deployment reference](../../deploy/README.md) for storage, backup, and recovery details; review the [changelog](../../CHANGELOG.md) before updating.
+The two named containers in the quick start are application instances; deleting an instance is not a storage migration. Do not delete or replace the bind-mounted directories to upgrade an image. A schema change can make an image-only rollback unsafe; use the [backup/recovery contract](../../deploy/README.md).
 
-For operational symptoms, see [troubleshooting](usage.md#troubleshooting).
+Persistent identity state is the normal backup scope. Temporary private documents need a separate retention/disposal policy. See [troubleshooting](usage.md#troubleshooting) for operational symptoms and [release artifacts](../distribution.md) for distribution verification.

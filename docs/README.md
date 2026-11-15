@@ -4,7 +4,8 @@
 
 ## Get started
 
-- [Install with Docker Compose](guide/getting-started.md): prerequisites, verified downloads, storage, authentication, HTTPS, and first capture.
+- [Install with Docker](guide/getting-started.md): primary `docker run` workflow, storage, authentication, HTTPS, and first capture.
+- [Use Docker Compose](guide/docker-compose.md): declarative alternative with the same runtime/storage contracts.
 - [Use Scanner Kiosk](guide/usage.md): import, review, OCR candidates, export, and troubleshooting.
 - [Use Paperless-ngx](guide/paperless.md): searchable text, OCR modes, and the direct-delivery compatibility boundary.
 

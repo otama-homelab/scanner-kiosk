@@ -6,7 +6,7 @@
 
 Paperless full-text search depends on extracted text. Incorrect OCR characters or missing text can cause missed matches; coordinate errors primarily affect selection and highlighting.
 
-LLM supplements are also PDF text. Their additional descriptions can help discovery, but may produce matches for words absent from the original and influence automatic classification. The label `LLM supplement (interpretation, not OCR)` distinguishes their meaning for readers. A PDF text layer alone does not give the search engine separate original-text and supplement fields.
+LLM supplements are optional and off by default. When enabled, they are also PDF text. Their additional descriptions can help discovery, but may produce matches for words absent from the original and influence automatic classification. The label `LLM supplement (interpretation, not OCR)` distinguishes their meaning for readers. A PDF text layer alone does not give the search engine separate original-text and supplement fields.
 
 ## Choose an OCR mode
 

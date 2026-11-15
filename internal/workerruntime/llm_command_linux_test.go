@@ -74,7 +74,7 @@ func TestLLMWorkerCommandPublishesPositionedPDF(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	admitted, err := store.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: document, Revision: 1, IdempotencyKey: "request_llm_command_001", Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, ProviderID: defaults.PluginID, ModelID: defaults.ModelID, ModelVersion: defaults.ModelVersion, Languages: defaults.Languages, QualityPreset: defaults.QualityPreset}}, ReserveBytes: 8 << 20}, documents.AdmissionLimits{UserMaxBytes: 32 << 20, GlobalMaxBytes: 64 << 20, JobMaxBytes: 16 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
+	admitted, err := store.AdmitRender(context.Background(), owner, documents.RenderAdmission{DocumentID: document, Revision: 1, IdempotencyKey: "request_llm_command_001", Settings: documents.RenderSettings{Format: "pdf", PDFEncoding: "lossless", OCR: documents.RenderOCR{Enabled: true, IncludeSupplement: true, ProviderID: defaults.PluginID, ModelID: defaults.ModelID, ModelVersion: defaults.ModelVersion, Languages: defaults.Languages, QualityPreset: defaults.QualityPreset}}, ReserveBytes: 8 << 20}, documents.AdmissionLimits{UserMaxBytes: 32 << 20, GlobalMaxBytes: 64 << 20, JobMaxBytes: 16 << 20, MaxPages: 50, JobTimeout: time.Minute, ReceiptRetention: 72 * time.Hour})
 	if err != nil {
 		t.Fatal(err)
 	}

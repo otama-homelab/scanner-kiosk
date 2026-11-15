@@ -118,11 +118,12 @@ func (h *Handler) renderCommand(w http.ResponseWriter, r *http.Request, p webses
 		Format      string  `json:"format"`
 		PDFEncoding *string `json:"pdf_encoding"`
 		OCR         *struct {
-			Enabled       *bool    `json:"enabled"`
-			ProviderID    string   `json:"provider_id"`
-			ModelID       string   `json:"model_id"`
-			Languages     []string `json:"languages"`
-			QualityPreset string   `json:"quality_preset"`
+			IncludeSupplement bool     `json:"include_supplement"`
+			Enabled           *bool    `json:"enabled"`
+			ProviderID        string   `json:"provider_id"`
+			ModelID           string   `json:"model_id"`
+			Languages         []string `json:"languages"`
+			QualityPreset     string   `json:"quality_preset"`
 		} `json:"ocr"`
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))
@@ -143,13 +144,13 @@ func (h *Handler) renderCommand(w http.ResponseWriter, r *http.Request, p webses
 	var ocrFields map[string]json.RawMessage
 	_ = json.Unmarshal(fields["ocr"], &ocrFields)
 	for name, raw := range ocrFields {
-		known := name == "enabled" || name == "provider_id" || name == "model_id" || name == "languages" || name == "quality_preset"
+		known := name == "enabled" || name == "provider_id" || name == "model_id" || name == "languages" || name == "quality_preset" || name == "include_supplement"
 		if !known || bytes.Equal(bytes.TrimSpace(raw), []byte("null")) || name == "languages" && len(input.OCR.Languages) == 0 {
 			failure(w, documents.ErrInvalid)
 			return
 		}
 	}
-	settings := documents.RenderSettings{Format: input.Format, OCR: documents.RenderOCR{Enabled: *input.OCR.Enabled, ProviderID: input.OCR.ProviderID, ModelID: input.OCR.ModelID, Languages: input.OCR.Languages, QualityPreset: input.OCR.QualityPreset}}
+	settings := documents.RenderSettings{Format: input.Format, OCR: documents.RenderOCR{Enabled: *input.OCR.Enabled, ProviderID: input.OCR.ProviderID, ModelID: input.OCR.ModelID, Languages: input.OCR.Languages, QualityPreset: input.OCR.QualityPreset, IncludeSupplement: input.OCR.IncludeSupplement}}
 	if reocr && (settings.Format != "pdf" || !settings.OCR.Enabled) {
 		failure(w, documents.ErrInvalid)
 		return

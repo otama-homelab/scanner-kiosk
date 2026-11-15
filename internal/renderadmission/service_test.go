@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"scanner-kiosk/internal/documents"
+	"scanner-kiosk/pkg/ocrplugin"
 	"testing"
 	"time"
 )
@@ -138,5 +139,21 @@ func TestAdmissionFreezesLanguagesAcrossCallerRecordsAndResolver(t *testing.T) {
 	}
 	if record.admitted != 1 || record.request.Settings.OCR.Languages[0] != "eng" || languages[0] != "caller_mutation" {
 		t.Fatal("lookup/resolver changed the admitted client intent", record.request, languages)
+	}
+}
+
+func TestSupplementRequiresPositionedOutput(t *testing.T) {
+	for _, output := range []ocrplugin.OutputKind{ocrplugin.Text, ocrplugin.SearchablePDF, ocrplugin.PositionedText, ocrplugin.PDFTextLayer} {
+		t.Run(string(output), func(t *testing.T) {
+			record := &records{}
+			service := Service{Records: record, Resolver: resolverFunc(func(context.Context, documents.RenderOCR, bool) (ResolvedOCR, error) {
+				return ResolvedOCR{ModelVersion: "v1", MaxPages: 1, MaxPagePixels: 100, Output: output}, nil
+			})}
+			_, err := service.Admit(context.Background(), "owner", documents.RenderAdmission{ReOCR: true, Settings: documents.RenderSettings{Format: "pdf", OCR: documents.RenderOCR{Enabled: true, ProviderID: "llm", IncludeSupplement: true}}})
+			supported := output == ocrplugin.PositionedText || output == ocrplugin.PDFTextLayer
+			if supported && (err != nil || record.admitted != 1) || !supported && (!errors.Is(err, ErrUnsupported) || record.admitted != 0) {
+				t.Fatal(output, err, record.admitted)
+			}
+		})
 	}
 }

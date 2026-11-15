@@ -147,10 +147,13 @@ func normalizeRender(in RenderSettings) (RenderSettings, error) {
 	}
 	o := out.OCR
 	if !o.Enabled {
-		if o.ProviderID != "" || o.ModelID != "" || o.ModelVersion != "" || len(o.Languages) > 0 || o.QualityPreset != "" {
+		if o.IncludeSupplement || o.ProviderID != "" || o.ModelID != "" || o.ModelVersion != "" || len(o.Languages) > 0 || o.QualityPreset != "" {
 			return RenderSettings{}, ErrInvalid
 		}
 		return out, nil
+	}
+	if o.IncludeSupplement && o.ProviderID != "llm" {
+		return RenderSettings{}, ErrInvalid
 	}
 	if !label(o.ProviderID) || !label(o.ModelID) || len(o.Languages) < 1 || len(o.Languages) > 32 || (o.QualityPreset != "" && !label(o.QualityPreset)) || (o.ModelVersion != "" && !label(o.ModelVersion)) {
 		return RenderSettings{}, ErrInvalid

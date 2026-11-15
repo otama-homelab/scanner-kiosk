@@ -28,7 +28,7 @@ After an OCR implementation update, create a new candidate to use the new behavi
 
 ## LLM interpretation supplements
 
-LLM OCR can interpret a page's layout and content separately from verbatim recognition. Each PDF page appends that interpretation to its invisible OCR text under `LLM supplement (interpretation, not OCR)`. The visible original and page count remain unchanged.
+LLM OCR can interpret a page's layout and content separately from verbatim recognition. The **Include LLM interpretation in PDF** checkbox is off by default. Your choice is remembered in this browser and applies only to LLM OCR. When enabled, each PDF page appends that interpretation to its invisible OCR text under `LLM supplement (interpretation, not OCR)`. The visible original and page count remain unchanged.
 
 Supplements can be searched and copied, but may contain guesses or mistakes. They are not statements printed in the original. Words found only in a supplement can affect search results or automatic classification; see the [Paperless guide](paperless.md).
 
