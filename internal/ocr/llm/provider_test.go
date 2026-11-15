@@ -109,7 +109,7 @@ func TestVisionWireAndPositionedResult(t *testing.T) {
 		if format["type"] != "json_schema" || format["json_schema"].(map[string]any)["strict"] != true {
 			t.Error("missing strict schema")
 		}
-		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "日本語 English", "box": map[string]any{"x": 1, "y": 2, "width": 60, "height": 10}}}}))
+		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "日本語 English", "box": []any{1, 2, 61, 12}}}}))
 	})
 	a := &access{input: input}
 	result, err := p.Run(context.Background(), request(p, ocrplugin.PositionedText), a)
@@ -164,7 +164,7 @@ func TestRejectsInvalidOrIncompleteResponse(t *testing.T) {
 			var calls atomic.Int32
 			p, _ := setup(t, func(w http.ResponseWriter, r *http.Request) {
 				calls.Add(1)
-				response := completion(map[string]any{"spans": []any{map[string]any{"text": "x", "box": map[string]any{"x": 1, "y": 1, "width": 5, "height": 5}}}})
+				response := completion(map[string]any{"spans": []any{map[string]any{"text": "x", "box": []any{1, 1, 6, 6}}}})
 				choice := response["choices"].([]any)[0].(map[string]any)
 				message := choice["message"].(map[string]any)
 				switch mode {
@@ -306,7 +306,7 @@ func TestPositionedResponseBecomesPinnedTextLayer(t *testing.T) {
 		if schema["properties"].(map[string]any)["spans"] == nil {
 			t.Error("PDF request must ask for positioned spans")
 		}
-		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": text.Load().(string), "box": map[string]any{"x": 5, "y": 10, "width": 70, "height": 20}}}}))
+		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": text.Load().(string), "box": []any{5, 10, 75, 30}}}}))
 	})
 	options := baseline.options
 	// A PDF-capable external model must carry a public destination disclosure.
@@ -401,7 +401,7 @@ func TestLargeLocalTextBudgetDoesNotRequireLargeSchemaStringLimit(t *testing.T) 
 				}
 				var content any = map[string]any{"text": "日本語 English"}
 				if kind == ocrplugin.PositionedText {
-					content = map[string]any{"spans": []any{map[string]any{"text": "日本語 English", "box": map[string]any{"x": 1, "y": 2, "width": 60, "height": 10}}}}
+					content = map[string]any{"spans": []any{map[string]any{"text": "日本語 English", "box": []any{1, 2, 61, 12}}}}
 				}
 				json.NewEncoder(w).Encode(completion(content))
 			})
@@ -426,8 +426,8 @@ func TestLocalTextByteLimitRemainsAuthoritative(t *testing.T) {
 				var content any = map[string]any{"text": "日本語"}
 				if kind == ocrplugin.PositionedText {
 					content = map[string]any{"spans": []any{
-						map[string]any{"text": "日", "box": map[string]any{"x": 1, "y": 2, "width": 20, "height": 10}},
-						map[string]any{"text": "本", "box": map[string]any{"x": 21, "y": 2, "width": 20, "height": 10}},
+						map[string]any{"text": "日", "box": []any{1, 2, 21, 12}},
+						map[string]any{"text": "本", "box": []any{21, 2, 41, 12}},
 					}}
 				}
 				json.NewEncoder(w).Encode(completion(content))
@@ -472,7 +472,7 @@ func TestPNGBodyRejectedRetriesJPEGWithoutChangingGeometry(t *testing.T) {
 		if err != nil || decodeErr != nil || format != "jpeg" || cfg.Width != 80 || cfg.Height != 100 {
 			t.Error("retry must preserve full geometry")
 		}
-		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "unchanged coordinates", "box": map[string]any{"x": 125, "y": 200, "width": 375, "height": 400}}}}))
+		json.NewEncoder(w).Encode(completion(map[string]any{"spans": []any{map[string]any{"text": "unchanged coordinates", "box": []any{125, 200, 500, 600}}}}))
 	})
 	a := &access{input: input}
 	_, err := p.Run(context.Background(), request(p, ocrplugin.PositionedText), a)
@@ -514,7 +514,7 @@ func TestNormalizedCoordinatesUseExactBitmapDimensions(t *testing.T) {
 	profile := p.profiles["vision"]
 	for _, size := range [][2]int{{2275, 3090}, {1654, 2339}, {80, 100}} {
 		page := ocrplugin.InputPage{ID: "page_00000000001", Width: size[0], Height: size[1]}
-		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": map[string]any{"x": 100, "y": 200, "width": 800, "height": 300}}}}))
+		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": []any{100, 200, 900, 500}}}}))
 		data, err := p.parse(raw, profile, page, ocrplugin.PositionedText)
 		if err != nil {
 			t.Fatal(err)
@@ -530,7 +530,7 @@ func TestNormalizedCoordinatesUseExactBitmapDimensions(t *testing.T) {
 		}
 	}
 	for _, box := range []ocrplugin.Box{{X: 900, Y: 0, Width: 101, Height: 10}, {X: 0, Y: 999, Width: 10, Height: 2}, {X: -1, Y: 0, Width: 10, Height: 10}} {
-		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Reject", "box": box}}}))
+		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Reject", "box": []any{box.X, box.Y, box.X + box.Width, box.Y + box.Height}}}}))
 		if _, err := p.parse(raw, profile, ocrplugin.InputPage{ID: "page_00000000001", Width: 2275, Height: 3090}, ocrplugin.PositionedText); err == nil {
 			t.Fatalf("accepted invalid normalized box %+v", box)
 		}
@@ -540,7 +540,7 @@ func TestNormalizedCoordinatesUseExactBitmapDimensions(t *testing.T) {
 func TestNormalizedLLMCoordinatesReachPDFSearchBounds(t *testing.T) {
 	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
 	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 2275, Height: 3090}
-	raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": map[string]any{"x": 100, "y": 200, "width": 800, "height": 300}}}}))
+	raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Position", "box": []any{100, 200, 900, 500}}}}))
 	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
 	if err != nil {
 		t.Fatal(err)
@@ -586,7 +586,7 @@ func TestNormalizedLLMCoordinatesReachPDFSearchBounds(t *testing.T) {
 func TestLLMSupplementIsSeparateAndBounded(t *testing.T) {
 	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
 	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 2000, Height: 3000}
-	content := map[string]any{"spans": []any{map[string]any{"text": "Original", "box": ocrplugin.Box{X: 100, Y: 100, Width: 200, Height: 20}}}, "supplement": "Two-column invoice. This interpretation is uncertain."}
+	content := map[string]any{"spans": []any{map[string]any{"text": "Original", "box": []any{100, 100, 300, 120}}}, "supplement": "Two-column invoice. This interpretation is uncertain."}
 	raw, _ := json.Marshal(completion(content))
 	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
 	if err != nil {
@@ -611,5 +611,40 @@ func TestLLMSupplementIsSeparateAndBounded(t *testing.T) {
 	p.options.MaxTextBytes = 8
 	if _, err = p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText); err == nil {
 		t.Fatal("supplement bypassed aggregate text budget")
+	}
+}
+
+func TestNormalizedCornerBoxIsNotTreatedAsExtent(t *testing.T) {
+	p, _ := setup(t, func(http.ResponseWriter, *http.Request) {})
+	input := ocrplugin.InputPage{ID: "page_00000000001", Width: 1216, Height: 1792}
+	raw, _ := json.Marshal(completion(map[string]any{"supplement": "Synthetic layout.", "spans": []any{map[string]any{"text": "Line", "box": []any{50, 395, 953, 430}}}}))
+	data, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var page ocrplugin.PositionedPage
+	if err = json.Unmarshal(data, &page); err != nil {
+		t.Fatal(err)
+	}
+	want := ocrplugin.Box{X: 60.8, Y: 707.84, Width: 1098.048, Height: 62.72}
+	got := page.Spans[0].Box
+	if math.Abs(got.X-want.X) > .000001 || math.Abs(got.Y-want.Y) > .000001 || math.Abs(got.Width-want.Width) > .000001 || math.Abs(got.Height-want.Height) > .000001 {
+		t.Fatalf("got %+v, want %+v", got, want)
+	}
+	for _, box := range []any{
+		[]any{50, 395, 1001, 430},
+		[]any{50, 395, 50, 430},
+		[]any{50, 395, 953, 394},
+		[]any{50, 395, 953},
+		[]any{50, 395, 953, 430, 500},
+		[]any{nil, 395, 953, 430},
+		[]any{[]any{50}, 395, 953, 430},
+		map[string]any{"x": 50, "y": 395, "width": 953, "height": 430},
+		map[string]any{"left": 50, "top": 395, "right": 953, "bottom": 430},
+	} {
+		raw, _ := json.Marshal(completion(map[string]any{"spans": []any{map[string]any{"text": "Reject", "box": box}}}))
+		if _, err := p.parse(raw, p.profiles["vision"], input, ocrplugin.PositionedText); err == nil {
+			t.Fatalf("accepted invalid or ambiguous box %+v", box)
+		}
 	}
 }
